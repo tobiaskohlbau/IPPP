@@ -91,6 +91,7 @@ bool RRTPlanner<dim>::connectGoalNode(std::shared_ptr<Node<dim>> goalNode) {
     if (minCost < std::numeric_limits<float>::max()) {
         goalNode->setParent(nearestNode);
         this->m_graph.addNode(goalNode);
+        std::cout << "goalNode connected" << std::endl;
         return true;
     }
 

@@ -12,11 +12,13 @@ class KDTree
 public:
     void addNode(const Vec<dim, float> &vec, T node);
     T getNearestNeighbor(const Vec<dim, float> &vec);
+    std::vector<T> searchRange(const Vec<dim, float> &vec, const float &range);
 
 private:
     std::shared_ptr<KDNode<dim, T>> insert(std::shared_ptr<KDNode<dim, T>> insertNode, std::shared_ptr<KDNode<dim, T>> currentNode, uint16_t depth);
     void NNS(const Vec<dim, float> &point, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode, float &bestDist);
-
+    void RS(const Vec<dim, float> &point, std::shared_ptr<KDNode<dim, T>> node, std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes,
+        const float &sqRange, const Vec<dim, float> &maxBoundary, const Vec<dim, float> &minBoundary);
     //variables
     std::shared_ptr<KDNode<dim, T>> m_root;
 };
@@ -62,6 +64,23 @@ T KDTree<dim, T>::getNearestNeighbor(const Vec<dim, float> &vec) {
 }
 
 template<uint16_t dim, class T>
+std::vector<T> KDTree<dim, T>::searchRange(const Vec<dim, float> &vec, const float &range) {
+    std::vector<T> nodes;
+    if (m_root == NULL)
+        return nodes;
+
+    std::vector<std::shared_ptr<KDNode<dim, T>>> kdNodes;
+    float sqRange = range * range;
+    Vec<dim, float> maxBoundary = vec + range;
+    Vec<dim, float> minBoundary = vec - range;
+    RS(vec, m_root, kdNodes, sqRange, maxBoundary, minBoundary);
+
+    for (int i = 0; i < kdNodes.size(); ++i)
+        nodes.push_back(kdNodes[i]->node);
+    return nodes;
+}
+
+template<uint16_t dim, class T>
 void KDTree<dim, T>::NNS(const Vec<dim, float> &vec, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode, float &bestDist) {
     if (node->left == NULL && node->right == NULL) {
         float dist = vec.getSqDist(node->vec);
@@ -86,6 +105,25 @@ void KDTree<dim, T>::NNS(const Vec<dim, float> &vec, std::shared_ptr<KDNode<dim,
     }
 }
 
-
+template<uint16_t dim, class T>
+void KDTree<dim, T>::RS(const Vec<dim, float> &vec, std::shared_ptr<KDNode<dim, T>> node, std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes,
+    const float &sqRange, const Vec<dim, float> &maxBoundary, const Vec<dim, float> &minBoundary) {
+    if (node == NULL) {
+        return;
+    }
+    if (vec.getSqDist(node->vec) < sqRange) {
+        refNodes.push_back(node);
+    }
+    if (vec[node->axis] < maxBoundary[node->axis] && vec[node->axis] < minBoundary[node->axis]) {
+        RS(vec, node->left, refNodes, sqRange, maxBoundary, minBoundary);
+    }
+    else if (vec[node->axis] > maxBoundary[node->axis] && vec[node->axis] > minBoundary[node->axis]) {
+        RS(vec, node->right, refNodes, sqRange, maxBoundary, minBoundary);
+    }
+    else {
+        RS(vec, node->left, refNodes, sqRange, maxBoundary, minBoundary);
+        RS(vec, node->right, refNodes, sqRange, maxBoundary, minBoundary);
+    }
+}
 
 #endif /* KDTREE_H_ */

@@ -19,7 +19,7 @@ public:
     std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
 
     std::shared_ptr<Node<dim>> getNearestNode(const Node<dim> node);
-    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>>, const float distance);
+    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, const float &distance);
 
 private:
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;
@@ -50,8 +50,8 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> node) {
 }
 
 template<uint16_t dim>
-std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shared_ptr<Node<dim>> node, const float distance) {
-    return SearchNearestNeighbor::searchNearNodes(m_nodes, node, distance);
+std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shared_ptr<Node<dim>> node, const float &distance) {
+    return m_kdTree.searchRange(node->getVec(), distance);
 }
 
 

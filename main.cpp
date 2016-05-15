@@ -14,6 +14,7 @@
 #endif
 
 #include <memory>
+#include <ctime>
 #include "NormalRRTPlanner.h"
 #include "StarRRTPlanner.h"
 #include "Drawing.h"
@@ -33,14 +34,20 @@ int main(int argc, char** argv)
         obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     }
 
-    cv::Mat workspace = freeWorkspace;
+    cv::Mat workspace = obstacleWorkspace;
     const uint16_t dim = 2;
     StarRRTPlanner<dim> planner(70.0);
     NormalRRTPlanner<dim> planner2(70.0);
     planner.setWorkspace(workspace);
     planner.setInitNode(Node<dim>(10.0, 10.0));
     //planner.setInitNode(Node<dim>(10, 10, 10 ,10, 10 ,10));
-    planner.computeTree(1000);
+    clock_t begin = std::clock();
+
+    planner.computeTree(3000);
+
+    clock_t end = std::clock();
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    std::cout << "computation time: " << elapsed_secs << std::endl;
 
     //cv::Mat image = cv::Mat(40, 40, CV_8U);
     std::vector<std::shared_ptr<Node<dim>>> nodes;
