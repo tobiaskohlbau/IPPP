@@ -46,8 +46,6 @@ bool RRTPlanner<dim>::setInitNode(Node<dim> node) {
 template<uint16_t dim>
 bool RRTPlanner<dim>::computeTree(const int nbOfNodes)
 {
-    if (dim == 2 && this->m_workspace.empty())
-        return false;
     if (!this->controlConstraints())
         return false;
 
@@ -74,10 +72,10 @@ template<uint16_t dim>
 bool RRTPlanner<dim>::connectGoalNode(std::shared_ptr<Node<dim>> goalNode) {
     if (this->m_collision->template controlCollision<dim>(goalNode))
         return false;
-    std::shared_ptr<Node<dim>> nearestNode;
 
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = this->m_graph.getNearNodes(goalNode, this->m_stepSize * 3);
 
+    std::shared_ptr<Node<dim>> nearestNode;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < minCost) {
@@ -106,9 +104,7 @@ Vec<dim, float> RRTPlanner<dim>::computeNodeNew(const Vec<dim, float> &randNode,
     // p = a + k * (b-a)
     // ||u|| = ||b - a||
     // k = stepSize / ||u||
-    Vec<dim, float> u = randNode;
-    u -= nearestNode;
-    float k = this->m_stepSize / u.norm();
+    Vec<dim, float> u = randNode - nearestNode;
     u *= this->m_stepSize / u.norm();
     u += nearestNode;
     return u;

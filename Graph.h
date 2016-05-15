@@ -46,7 +46,7 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() const{
 
 template<uint16_t dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> node) {
-    return m_kdTree.getNearestNeighbor(node.getVec());
+    return m_kdTree.searchNearestNeighbor(node.getVec());
 }
 
 template<uint16_t dim>

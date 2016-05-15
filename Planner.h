@@ -54,7 +54,10 @@ void Planner<dim>::getTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) const
 
 template<uint16_t dim>
 bool Planner<dim>::controlConstraints() {
-    return true;
+    if (dim == 2 && this->m_workspace.empty())
+        return false;
+    else
+        return true;
 }
 
 #endif /* RRTPLANNER_H_ */
