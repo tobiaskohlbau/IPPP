@@ -48,7 +48,7 @@ Planner<dim>::Planner(const float &stepSize, TrajectoryMethod trajectory, Sampli
 template<uint16_t dim>
 void Planner<dim>::set2DWorkspace(cv::Mat space) {
     m_workspace = space;
-    m_collision->setWorkspace(m_workspace);
+    m_collision->set2DWorkspace(m_workspace);
 }
 
 template<uint16_t dim>

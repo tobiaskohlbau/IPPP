@@ -17,23 +17,13 @@ class CollisionDetection
 public:
     template<uint16_t dim>
     bool controlCollision(const std::shared_ptr<Node<dim>> node);
-
     bool controlCollision2D(const float x, const float y);
-    void setWorkspace(cv::Mat space);
-    cv::Mat getWorkspace();
+
+    void set2DWorkspace(cv::Mat space);
+    cv::Mat get2DWorkspace() const;
 private:
     cv::Mat m_workspace;
 };
-
-void CollisionDetection::setWorkspace(cv::Mat space) {
-    if (space.empty())
-        return;
-    m_workspace = space;
-}
-
-cv::Mat CollisionDetection::getWorkspace() {
-    return m_workspace;
-}
 
 template<uint16_t dim>
 bool CollisionDetection::controlCollision(const std::shared_ptr<Node<dim>> node) {
@@ -47,14 +37,21 @@ bool CollisionDetection::controlCollision2D(const float x, const float y) {
     if (m_workspace.empty())
         return false;
 
-    if (x < 0 || x > m_workspace.rows || y < 0 || y > m_workspace.cols)
-        return false;
-
     uint8_t value = m_workspace.at<uint8_t>((int)y, (int)x);
     if (value != 0)
         return false;
     else
         return true;
+}
+
+void CollisionDetection::set2DWorkspace(cv::Mat space) {
+    if (space.empty())
+        return;
+    m_workspace = space;
+}
+
+cv::Mat CollisionDetection::get2DWorkspace() const {
+    return m_workspace;
 }
 
 #endif /* COLLISIONDETECTION_H_ */

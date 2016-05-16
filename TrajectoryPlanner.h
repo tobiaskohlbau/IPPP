@@ -39,15 +39,13 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod method, CollisionDet
 
 template<uint16_t dim>
 bool TrajectoryPlanner::computeTrajectory(const std::shared_ptr<Node<dim>> node1, const std::shared_ptr<Node<dim>> node2) {
-    if (dim == 2)
-    {
+    if (dim == 2) {
         cv::Point pt1(node1->getX(), node1->getY());
         cv::Point pt2(node2->getX(), node2->getY());
-        cv::LineIterator it(m_collision->getWorkspace(), pt1, pt2, 8);
+        cv::LineIterator it(m_collision->get2DWorkspace(), pt1, pt2, 8);
 
-        for (int i = 0; i < it.count; i++, ++it)
-        {
-            uint8_t val = m_collision->getWorkspace().at<uint8_t>(it.pos());
+        for (int i = 0; i < it.count; i++, ++it) {
+            uint8_t val = m_collision->get2DWorkspace().at<uint8_t>(it.pos());
             if (val == 0)
                 return false;
         }
