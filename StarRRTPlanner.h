@@ -9,7 +9,7 @@ template<uint16_t dim>
 class StarRRTPlanner : public RRTPlanner<dim>
 {
 public:
-    StarRRTPlanner(const float stepSize, const TrajectoryPlanner::TrajectoryMethod trajectory = TrajectoryPlanner::TrajectoryMethod::linear, const SamplingMethod sampling = SamplingMethod::randomly)
+    StarRRTPlanner(const float stepSize, const TrajectoryMethod trajectory = TrajectoryMethod::linear, const SamplingMethod sampling = SamplingMethod::randomly)
     : RRTPlanner<dim>(stepSize, trajectory, sampling) // Argumente an Basisklassenkonstruktor weiterleiten
     {
     }

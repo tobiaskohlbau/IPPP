@@ -9,7 +9,7 @@ template<uint16_t dim>
 class RRTPlanner : public Planner<dim>
 {
 public:
-    RRTPlanner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, SamplingMethod sampling);
+    RRTPlanner(float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
     bool setInitNode(Node<dim> node);
     bool computeTree(const int nbOfNodes);
@@ -25,7 +25,7 @@ protected:
 };
 
 template<uint16_t dim>
-RRTPlanner<dim>::RRTPlanner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, SamplingMethod sampling)
+RRTPlanner<dim>::RRTPlanner(float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
     : Planner<dim>(stepSize, trajectory, sampling)
 {
 }

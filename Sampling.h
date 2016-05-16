@@ -43,7 +43,7 @@ Vec<dim, float> Sampling<dim>::getSample(const int index, const int nbSamples) {
     if (m_method == SamplingMethod::randomly)
     {
         for (uint16_t i = 0; i < dim; ++i)
-            vec[i] = (float)(rand() % (int)m_maxBoundary[i]);
+            vec[i] = m_minBoundary[i] + (float)(rand() % (int)(m_maxBoundary[i]-m_minBoundary[i]));
         return vec;
     }
     return vec;

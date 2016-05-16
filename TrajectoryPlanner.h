@@ -14,15 +14,15 @@
 #include "Edge.h"
 #include "Node.h"
 
+enum class TrajectoryMethod
+{
+    linear,
+    spline,
+};
+
 class TrajectoryPlanner
 {
 public:
-    enum class TrajectoryMethod
-    {
-        linear,
-        spline,
-    };
-
     TrajectoryPlanner(const TrajectoryMethod method, CollisionDetection *collision);
     template<uint16_t dim>
     bool computeTrajectory(const std::shared_ptr<Node<dim>> node1, const std::shared_ptr<Node<dim>> node2);

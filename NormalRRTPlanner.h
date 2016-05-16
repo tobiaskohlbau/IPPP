@@ -9,7 +9,7 @@ template<uint16_t dim>
 class NormalRRTPlanner : public RRTPlanner<dim>
 {
 public:
-    NormalRRTPlanner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory = TrajectoryPlanner::TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
+    NormalRRTPlanner(float stepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
     : RRTPlanner<dim>(stepSize, trajectory, sampling) // Argumente an Basisklassenkonstruktor weiterleiten
     {
     }

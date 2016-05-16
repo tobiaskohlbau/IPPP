@@ -14,7 +14,7 @@ template<uint16_t dim>
 class Planner
 {
 public:
-    Planner(const float &stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, SamplingMethod sampling);
+    Planner(const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
     void set2DWorkspace(cv::Mat space);
     std::vector<Node<dim>> getPath();
@@ -38,7 +38,7 @@ protected:
 };
 
 template<uint16_t dim>
-Planner<dim>::Planner(const float &stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, SamplingMethod sampling) {
+Planner<dim>::Planner(const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling) {
     m_stepSize = stepSize;
     m_sampler = new Sampling<dim>();
     m_collision = new CollisionDetection();
