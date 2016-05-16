@@ -9,47 +9,50 @@
 #include "Node.h"
 #include "Vec.h"
 
+enum SamplingMethod
+{
+    randomly,
+    uniform,
+    hammersley,
+    halton
+};
+
+template<uint16_t dim>
 class Sampling
 {
 public:
-    enum SamplingMethod
-    {
-        random,
-        uniform,
-        hammersley,
-        halton,
-    };
-
-    Sampling(const int maxSize = 0, const SamplingMethod method = SamplingMethod::random);
-    template<uint16_t dim>
+    Sampling(const SamplingMethod method = SamplingMethod::randomly);
     Vec<dim, float> getSample(const int index, const int nbSamples);
-    void setMaxWorkspaceSize(const int max);
+    void setBoundaries(const Vec<dim, float> &maxBoundary, const Vec<dim, float> &minBoundary);
 
 private:
-    int m_maxSize;
+    Vec<dim, float> m_maxBoundary;
+    Vec<dim, float> m_minBoundary;
     SamplingMethod m_method;
 };
 
-Sampling::Sampling(const int maxSize, const SamplingMethod method) {
+template<uint16_t dim>
+Sampling<dim>::Sampling(const SamplingMethod method) {
     m_method = method;
-    m_maxSize = maxSize;
     srand(time(NULL));
 }
 
 template<uint16_t dim>
-Vec<dim, float> Sampling::getSample(const int index, const int nbSamples) {
+Vec<dim, float> Sampling<dim>::getSample(const int index, const int nbSamples) {
     Vec<dim, float> vec;
-    if (m_method == SamplingMethod::random)
+    if (m_method == SamplingMethod::randomly)
     {
         for (uint16_t i = 0; i < dim; ++i)
-            vec[i] = (float)(rand() % m_maxSize);
+            vec[i] = (float)(rand() % (int)m_maxBoundary[i]);
         return vec;
     }
     return vec;
 }
 
-void Sampling::setMaxWorkspaceSize(const int max) {
-    m_maxSize = max;
+template<uint16_t dim>
+void Sampling<dim>::setBoundaries(const Vec<dim, float> &maxBoundary, const Vec<dim, float> &minBoundary) {
+    m_maxBoundary = maxBoundary;
+    m_minBoundary = minBoundary;
 }
 
 #endif /* SAMPLING_H_ */

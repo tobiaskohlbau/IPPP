@@ -7,15 +7,15 @@ template<uint16_t dim>
 class NormalRRTPlanner : public RRTPlanner<dim>
 {
 public:
-    NormalRRTPlanner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory = TrajectoryPlanner::TrajectoryMethod::linear, Sampling::SamplingMethod sampling = Sampling::SamplingMethod::random)
+    NormalRRTPlanner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory = TrajectoryPlanner::TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
     : RRTPlanner<dim>(stepSize, trajectory, sampling) // Argumente an Basisklassenkonstruktor weiterleiten
     {
     }
 
 protected:
-    void computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode) {
+    void computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode) {
         // get nearest neighbor
-        nearestNode = this->m_graph.getNearestNode(Node<dim>(randVec));
+        std::shared_ptr<Node<dim>> nearestNode = this->m_graph.getNearestNode(Node<dim>(randVec));
         if (nearestNode == NULL)
             std::cout << "NULL" << std::endl;
         // compute node new with fixed step size

@@ -38,6 +38,11 @@ int main(int argc, char** argv)
     const uint16_t dim = 2;
     StarRRTPlanner<dim> planner(70.0);
     NormalRRTPlanner<dim> planner2(70.0);
+
+    Vec<dim, float> minBoundary(0,0);
+    Vec<dim, float> maxBoundary(1000,1000);
+
+    planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
     planner.setWorkspace(workspace);
     planner.setInitNode(Node<dim>(10.0, 10.0));
     //planner.setInitNode(Node<dim>(10, 10, 10 ,10, 10 ,10));

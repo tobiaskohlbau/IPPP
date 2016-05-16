@@ -13,30 +13,33 @@ template<uint16_t dim>
 class Planner
 {
 public:
-    Planner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, Sampling::SamplingMethod sampling);
+    Planner(const float &stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, SamplingMethod sampling);
 
     void setWorkspace(cv::Mat space);
     std::vector<Node<dim>> getPath();
     void getTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
+    void setWorkspaceBoundaries(Vec<dim, float> &minBoundary, Vec<dim, float> &maxBoundary);
 
 protected:
     bool controlConstraints();
 
     // modules
     TrajectoryPlanner  *m_planner;
-    Sampling           *m_sampler;
+    Sampling<dim>      *m_sampler;
     CollisionDetection *m_collision;
 
     // variables
     float      m_stepSize;
     Graph<dim> m_graph;
     cv::Mat    m_workspace;
+    Vec<dim, float> m_maxBoundary;
+    Vec<dim, float> m_minBoundary;
 };
 
 template<uint16_t dim>
-Planner<dim>::Planner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, Sampling::SamplingMethod sampling) {
+Planner<dim>::Planner(const float &stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, SamplingMethod sampling) {
     m_stepSize = stepSize;
-    m_sampler = new Sampling();
+    m_sampler = new Sampling<dim>();
     m_collision = new CollisionDetection();
     m_planner = new TrajectoryPlanner(trajectory, m_collision);
 }
@@ -48,12 +51,29 @@ void Planner<dim>::setWorkspace(cv::Mat space) {
 }
 
 template<uint16_t dim>
+void Planner<dim>::setWorkspaceBoundaries(Vec<dim, float> &minBoundary, Vec<dim, float> &maxBoundary) {
+    for (uint16_t i = 0; i < dim; ++i) {
+        if (minBoundary[i] > maxBoundary[i]) {
+            std::cout << "Wrong boudaries set" << std::endl;
+            return;
+        }
+    }
+    m_maxBoundary = maxBoundary;
+    m_minBoundary = minBoundary;
+    m_sampler->setBoundaries(maxBoundary, minBoundary);
+}
+
+template<uint16_t dim>
 void Planner<dim>::getTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) const {
     nodes = m_graph.getNodes();
 }
 
 template<uint16_t dim>
 bool Planner<dim>::controlConstraints() {
+    if (m_minBoundary.empty() || m_maxBoundary.empty()) {
+        std::cout << "No boudaries set" << std::endl;
+        return false;
+    }
     if (dim == 2 && this->m_workspace.empty())
         return false;
     else

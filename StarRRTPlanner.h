@@ -7,22 +7,22 @@ template<uint16_t dim>
 class StarRRTPlanner : public RRTPlanner<dim>
 {
 public:
-    StarRRTPlanner(const float stepSize, const TrajectoryPlanner::TrajectoryMethod trajectory = TrajectoryPlanner::TrajectoryMethod::linear, const Sampling::SamplingMethod sampling = Sampling::SamplingMethod::random)
+    StarRRTPlanner(const float stepSize, const TrajectoryPlanner::TrajectoryMethod trajectory = TrajectoryPlanner::TrajectoryMethod::linear, const SamplingMethod sampling = SamplingMethod::randomly)
     : RRTPlanner<dim>(stepSize, trajectory, sampling) // Argumente an Basisklassenkonstruktor weiterleiten
     {
     }
 
 protected:
-    void computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode);
+    void computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode);
     void chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode, std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
     void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode, std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
 };
 
 template<uint16_t dim>
-void StarRRTPlanner<dim>::computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode) {
+void StarRRTPlanner<dim>::computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode) {
     // get nearest neighbor
-    nearestNode = this->m_graph.getNearestNode(Node<dim>(randVec));
+    std::shared_ptr<Node<dim>> nearestNode = this->m_graph.getNearestNode(Node<dim>(randVec));
     // set node new fix fixed step size of 10
     Vec<dim, float> newVec = RRTPlanner<dim>::computeNodeNew(randVec, nearestNode->getVec());
     newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));

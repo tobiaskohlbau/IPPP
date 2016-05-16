@@ -7,14 +7,14 @@ template<uint16_t dim>
 class RRTPlanner : public Planner<dim>
 {
 public:
-    RRTPlanner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, Sampling::SamplingMethod sampling);
+    RRTPlanner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, SamplingMethod sampling);
 
     bool setInitNode(Node<dim> node);
     bool computeTree(const int nbOfNodes);
     bool connectGoalNode(std::shared_ptr<Node<dim>> goalNode);
 
 protected:
-    virtual void computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode) = 0;
+    virtual void computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode) = 0;
     Vec<dim, float> computeNodeNew(const Vec<dim, float> &randNode, const Vec<dim, float> &nearestNode);
 
     // variables
@@ -23,16 +23,17 @@ protected:
 };
 
 template<uint16_t dim>
-RRTPlanner<dim>::RRTPlanner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, Sampling::SamplingMethod sampling)
+RRTPlanner<dim>::RRTPlanner(float stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, SamplingMethod sampling)
     : Planner<dim>(stepSize, trajectory, sampling)
 {
 }
 
 template<uint16_t dim>
 bool RRTPlanner<dim>::setInitNode(Node<dim> node) {
-    cv::Size workspaceSize = this->m_workspace.size();
-    if (node.getX() > workspaceSize.width || node.getY() > workspaceSize.height)
-        return false;
+    this->controlConstraints();
+    for (uint16_t i = 0; i < dim; ++i)
+        if (node.getVec()[i] < this->m_minBoundary[i] || node.getVec()[i] > this->m_maxBoundary[i])
+            return false;
 
     std::shared_ptr<Node<dim>> shrNode(new Node<dim>(node));
     if (this->m_collision->template controlCollision<dim>(shrNode))
@@ -49,15 +50,13 @@ bool RRTPlanner<dim>::computeTree(const int nbOfNodes)
     if (!this->controlConstraints())
         return false;
 
-    this->m_sampler->setMaxWorkspaceSize(this->m_workspace.size().width);
-
     for (int i = 0; i < nbOfNodes; ++i)
     {
-        std::shared_ptr<Node<dim>> nearestNode, newNode;
-        // compute random sample
-        Vec<dim, float> randVec = this->m_sampler->template getSample<dim>(i, nbOfNodes);
+        std::shared_ptr<Node<dim>> newNode;
+        // compute randomly sample
+        Vec<dim, float> randVec = this->m_sampler->getSample(i, nbOfNodes);
 
-        computeRRTNode(randVec, newNode, nearestNode);
+        computeRRTNode(randVec, newNode);
 
         if (newNode == NULL)
             continue;
