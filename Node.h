@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include "Vec.h"
+#include "Edge.h"
 
 using std::shared_ptr;
 
@@ -45,9 +46,10 @@ public:
     Vec<dim, float> getVec() const;
 
 private:
-    float m_cost;
+    float           m_cost;
     Vec<dim, float> m_vec;
-    shared_ptr<Node<dim>> m_parent;
+    std::vector<Edge<dim>>             m_edges;
+    shared_ptr<Node<dim>>              m_parent;
     std::vector<shared_ptr<Node<dim>>> m_childs;
 };
 
@@ -100,7 +102,7 @@ Node<dim>::Node(const float &x, const float &y, const float &z, const float &rx,
 
 template<uint16_t dim>
 Node<dim>::Node(const Vec<dim, float> &vec) {
-    m_vec = Vec<dim, float>(vec);
+    m_vec = vec;
     m_cost = 0;
 }
 
@@ -184,6 +186,7 @@ void Node<dim>::clearParent() {
 template<uint16_t dim>
 void Node<dim>::addChild(const shared_ptr<Node<dim>> &child) {
     m_childs.push_back(child);
+    m_edges.push_back(Edge<dim>(m_vec, child->getVec()));
 }
 
 template<uint16_t dim>
@@ -194,6 +197,7 @@ std::vector<shared_ptr<Node<dim>>> Node<dim>::getChilds() {
 template<uint16_t dim>
 void Node<dim>::clearChilds() {
     m_childs.clear();
+    m_edges.clear();
 }
 
 template<uint16_t dim>

@@ -1,7 +1,7 @@
 #ifndef EDGE_H_
 #define EDGE_H_
 
-#include "Node.h"
+#include "Vec.h"
 #include <cstdint>
 #include <memory>
 
@@ -11,49 +11,49 @@ template<uint16_t dim>
 class Edge
 {
 public:
-    Edge(shared_ptr<Node<dim>> parent, shared_ptr<Node<dim>> child);
+    Edge(const Vec<dim, float> &parent, const Vec<dim, float> &child);
 
     float getLength() const;
 
-    void setParent(shared_ptr<Node<dim>> parent);
-    void setChild(shared_ptr<Node<dim>> child);
+    void setParent(const Vec<dim, float> &parent);
+    void setChild (const Vec<dim, float> &child);
 
-    shared_ptr<Node<dim>> getParent() const;
-    shared_ptr<Node<dim>> getChild() const;
+    Vec<dim, float> getParent() const;
+    Vec<dim, float> getChild() const;
 
 private:
-    shared_ptr<Node<dim>> m_parent;//parent
-    shared_ptr<Node<dim>> m_child;//child
+    Vec<dim, float> m_parent;
+    Vec<dim, float> m_child;
 };
 
 template<uint16_t dim>
-Edge<dim>::Edge(shared_ptr<Node<dim>> parent, shared_ptr<Node<dim>> child) {
+Edge<dim>::Edge(const Vec<dim, float> &parent, const Vec<dim, float> &child) {
     m_parent = parent;
     m_child = child;
 }
 
 template<uint16_t dim>
 float Edge<dim>::getLength() const {
-    return m_parent->DistanceTo(*m_child);
+    return m_parent->getDist(m_child);
 }
 
 template<uint16_t dim>
-void Edge<dim>::setParent(shared_ptr<Node<dim>> parent) {
+void Edge<dim>::setParent(const Vec<dim, float> &parent) {
     m_parent = parent;
 }
 
 template<uint16_t dim>
-void Edge<dim>::setChild(shared_ptr<Node<dim>> child) {
+void Edge<dim>::setChild(const Vec<dim, float> &child) {
     m_child = child;
 }
 
 template<uint16_t dim>
-shared_ptr<Node<dim>> Edge<dim>::getParent() const {
+Vec<dim, float> Edge<dim>::getParent() const {
     return m_parent;
 }
 
 template<uint16_t dim>
-shared_ptr<Node<dim>> Edge<dim>::getChild() const {
+Vec<dim, float> Edge<dim>::getChild() const {
     return m_child;
 }
 
