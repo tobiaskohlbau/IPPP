@@ -3,14 +3,16 @@
 
 #include <cstdint>
 
+using std::shared_ptr;
+
 template<uint16_t dim, class T>
 class KDNode
 {
 public:
     KDNode(Vec<dim, float> vec, T node);
 
-    std::shared_ptr<KDNode<dim, T>> left;
-    std::shared_ptr<KDNode<dim, T>> right;
+    shared_ptr<KDNode<dim, T>> left;
+    shared_ptr<KDNode<dim, T>> right;
     Vec<dim, float> vec;
     T node;
     uint16_t axis;

@@ -5,27 +5,29 @@
 #include <cstdint>
 #include <memory>
 
+using std::shared_ptr;
+
 template<uint16_t dim>
 class Edge
 {
 public:
-    Edge(std::shared_ptr<Node<dim>> parent, std::shared_ptr<Node<dim>> child);
+    Edge(shared_ptr<Node<dim>> parent, shared_ptr<Node<dim>> child);
 
     float getLength() const;
 
-    void setParent(std::shared_ptr<Node<dim>> parent);
-    void setChild(std::shared_ptr<Node<dim>> child);
+    void setParent(shared_ptr<Node<dim>> parent);
+    void setChild(shared_ptr<Node<dim>> child);
 
-    std::shared_ptr<Node<dim>> getParent() const;
-    std::shared_ptr<Node<dim>> getChild() const;
+    shared_ptr<Node<dim>> getParent() const;
+    shared_ptr<Node<dim>> getChild() const;
 
 private:
-    std::shared_ptr<Node<dim>> m_parent;//parent
-    std::shared_ptr<Node<dim>> m_child;//child
+    shared_ptr<Node<dim>> m_parent;//parent
+    shared_ptr<Node<dim>> m_child;//child
 };
 
 template<uint16_t dim>
-Edge<dim>::Edge(std::shared_ptr<Node<dim>> parent, std::shared_ptr<Node<dim>> child) {
+Edge<dim>::Edge(shared_ptr<Node<dim>> parent, shared_ptr<Node<dim>> child) {
     m_parent = parent;
     m_child = child;
 }
@@ -36,22 +38,22 @@ float Edge<dim>::getLength() const {
 }
 
 template<uint16_t dim>
-void Edge<dim>::setParent(std::shared_ptr<Node<dim>> parent) {
+void Edge<dim>::setParent(shared_ptr<Node<dim>> parent) {
     m_parent = parent;
 }
 
 template<uint16_t dim>
-void Edge<dim>::setChild(std::shared_ptr<Node<dim>> child) {
+void Edge<dim>::setChild(shared_ptr<Node<dim>> child) {
     m_child = child;
 }
 
 template<uint16_t dim>
-std::shared_ptr<Node<dim>> Edge<dim>::getParent() const {
+shared_ptr<Node<dim>> Edge<dim>::getParent() const {
     return m_parent;
 }
 
 template<uint16_t dim>
-std::shared_ptr<Node<dim>> Edge<dim>::getChild() const {
+shared_ptr<Node<dim>> Edge<dim>::getChild() const {
     return m_child;
 }
 

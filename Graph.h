@@ -10,24 +10,26 @@
 #include "Node.h"
 #include "SearchNearestNeighbor.h"
 
+using std::shared_ptr;
+
 template<uint16_t dim>
 class Graph
 {
 public:
-    void addNode(std::shared_ptr<Node<dim>> node);
+    void addNode(shared_ptr<Node<dim>> node);
     void removeNode(const int index);
-    std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
+    std::vector<shared_ptr<Node<dim>>> getNodes() const;
 
-    std::shared_ptr<Node<dim>> getNearestNode(const Node<dim> node);
-    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, const float &distance);
+    shared_ptr<Node<dim>> getNearestNode(const Node<dim> node);
+    std::vector<shared_ptr<Node<dim>>> getNearNodes(const shared_ptr<Node<dim>> node, const float &distance);
 
 private:
-    std::vector<std::shared_ptr<Node<dim>>> m_nodes;
-    KDTree<dim, std::shared_ptr<Node<dim>>> m_kdTree;
+    std::vector<shared_ptr<Node<dim>>> m_nodes;
+    KDTree<dim, shared_ptr<Node<dim>>> m_kdTree;
 };
 
 template<uint16_t dim>
-void Graph<dim>::addNode(std::shared_ptr<Node<dim>> node) {
+void Graph<dim>::addNode(shared_ptr<Node<dim>> node) {
     m_nodes.push_back(node);
     m_kdTree.addNode(node->getVec(), node);
 }
@@ -40,17 +42,17 @@ void Graph<dim>::removeNode(const int index) {
 }
 
 template<uint16_t dim>
-std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() const{
+std::vector<shared_ptr<Node<dim>>> Graph<dim>::getNodes() const{
     return m_nodes;
 }
 
 template<uint16_t dim>
-std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> node) {
+shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> node) {
     return m_kdTree.searchNearestNeighbor(node.getVec());
 }
 
 template<uint16_t dim>
-std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shared_ptr<Node<dim>> node, const float &distance) {
+std::vector<shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const shared_ptr<Node<dim>> node, const float &distance) {
     return m_kdTree.searchRange(node->getVec(), distance);
 }
 

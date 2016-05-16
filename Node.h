@@ -6,6 +6,8 @@
 #include <memory>
 #include "Vec.h"
 
+using std::shared_ptr;
+
 template <uint16_t dim>
 class Node
 {
@@ -25,7 +27,7 @@ public:
 
     bool empty() const ;
     void setVecValue(const float &value, const uint16_t &index);
-    float getDist(const std::shared_ptr<Node<dim>> &node) const;
+    float getDist(const shared_ptr<Node<dim>> &node) const;
     float getDist(const Node<dim> &node) const;
     float getDistToParent() const;
     float norm() const;
@@ -33,18 +35,20 @@ public:
     void setCost(const float &cost);
     float getCost() const;
 
-    void setParent(const std::shared_ptr<Node<dim>> &parent);
-    std::shared_ptr<Node<dim>> getParent();
-    void addChild(const std::shared_ptr<Node<dim>> &child);
-    std::vector<std::shared_ptr<Node<dim>>> getChilds();
+    void setParent(const shared_ptr<Node<dim>> &parent);
+    shared_ptr<Node<dim>> getParent();
+    void clearParent();
+    void addChild(const shared_ptr<Node<dim>> &child);
+    std::vector<shared_ptr<Node<dim>>> getChilds();
+    void clearChilds();
 
     Vec<dim, float> getVec() const;
 
 private:
     float m_cost;
-    std::shared_ptr<Node<dim>> m_parent;
-    std::vector<std::shared_ptr<Node<dim>>> m_childs;
     Vec<dim, float> m_vec;
+    shared_ptr<Node<dim>> m_parent;
+    std::vector<shared_ptr<Node<dim>>> m_childs;
 };
 
 template<uint16_t dim>
@@ -134,7 +138,7 @@ float Node<dim>::norm() const {
 }
 
 template<uint16_t dim>
-float Node<dim>::getDist(const std::shared_ptr<Node<dim>> &node) const {
+float Node<dim>::getDist(const shared_ptr<Node<dim>> &node) const {
     return getDist(*node);
 }
 
@@ -163,23 +167,33 @@ float Node<dim>::getCost() const {
 }
 
 template<uint16_t dim>
-void Node<dim>::setParent(const std::shared_ptr<Node<dim>> &parent) {
+void Node<dim>::setParent(const shared_ptr<Node<dim>> &parent) {
     m_parent = parent;
 }
 
 template<uint16_t dim>
-std::shared_ptr<Node<dim>> Node<dim>::getParent() {
+shared_ptr<Node<dim>> Node<dim>::getParent() {
     return m_parent;
 }
 
 template<uint16_t dim>
-void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child) {
+void Node<dim>::clearParent() {
+    m_parent = NULL;
+}
+
+template<uint16_t dim>
+void Node<dim>::addChild(const shared_ptr<Node<dim>> &child) {
     m_childs.push_back(child);
 }
 
 template<uint16_t dim>
-std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChilds() {
+std::vector<shared_ptr<Node<dim>>> Node<dim>::getChilds() {
     return m_childs;
+}
+
+template<uint16_t dim>
+void Node<dim>::clearChilds() {
+    m_childs.clear();
 }
 
 template<uint16_t dim>

@@ -3,6 +3,8 @@
 
 #include "Planner.h"
 
+using std::shared_ptr;
+
 template<uint16_t dim>
 class RRTPlanner : public Planner<dim>
 {
@@ -11,10 +13,10 @@ public:
 
     bool setInitNode(Node<dim> node);
     bool computeTree(const int nbOfNodes);
-    bool connectGoalNode(std::shared_ptr<Node<dim>> goalNode);
+    bool connectGoalNode(shared_ptr<Node<dim>> goalNode);
 
 protected:
-    virtual void computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode) = 0;
+    virtual void computeRRTNode(const Vec<dim, float> &randVec, shared_ptr<Node<dim>> &newNode) = 0;
     Vec<dim, float> computeNodeNew(const Vec<dim, float> &randNode, const Vec<dim, float> &nearestNode);
 
     // variables
@@ -35,7 +37,7 @@ bool RRTPlanner<dim>::setInitNode(Node<dim> node) {
         if (node.getVec()[i] < this->m_minBoundary[i] || node.getVec()[i] > this->m_maxBoundary[i])
             return false;
 
-    std::shared_ptr<Node<dim>> shrNode(new Node<dim>(node));
+    shared_ptr<Node<dim>> shrNode(new Node<dim>(node));
     if (this->m_collision->template controlCollision<dim>(shrNode))
         return false;
 
@@ -52,7 +54,7 @@ bool RRTPlanner<dim>::computeTree(const int nbOfNodes)
 
     for (int i = 0; i < nbOfNodes; ++i)
     {
-        std::shared_ptr<Node<dim>> newNode;
+        shared_ptr<Node<dim>> newNode;
         // compute randomly sample
         Vec<dim, float> randVec = this->m_sampler->getSample(i, nbOfNodes);
 
@@ -68,13 +70,13 @@ bool RRTPlanner<dim>::computeTree(const int nbOfNodes)
 }
 
 template<uint16_t dim>
-bool RRTPlanner<dim>::connectGoalNode(std::shared_ptr<Node<dim>> goalNode) {
+bool RRTPlanner<dim>::connectGoalNode(shared_ptr<Node<dim>> goalNode) {
     if (this->m_collision->template controlCollision<dim>(goalNode))
         return false;
 
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes = this->m_graph.getNearNodes(goalNode, this->m_stepSize * 3);
+    std::vector<shared_ptr<Node<dim>>> nearNodes = this->m_graph.getNearNodes(goalNode, this->m_stepSize * 3);
 
-    std::shared_ptr<Node<dim>> nearestNode;
+    shared_ptr<Node<dim>> nearestNode;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < minCost) {

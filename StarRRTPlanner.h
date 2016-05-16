@@ -3,6 +3,8 @@
 
 #include "RRTPlanner.h"
 
+using std::shared_ptr;
+
 template<uint16_t dim>
 class StarRRTPlanner : public RRTPlanner<dim>
 {
@@ -13,21 +15,21 @@ public:
     }
 
 protected:
-    void computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode);
-    void chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode, std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
-    void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode, std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
+    void computeRRTNode(const Vec<dim, float> &randVec, shared_ptr<Node<dim>> &newNode);
+    void chooseParent(shared_ptr<Node<dim>> &newNode, shared_ptr<Node<dim>> &nearestNode, std::vector<shared_ptr<Node<dim>>> &nearNodes);
+    void reWire(shared_ptr<Node<dim>> &newNode, shared_ptr<Node<dim>> &nearestNode, std::vector<shared_ptr<Node<dim>>> &nearNodes);
 
 };
 
 template<uint16_t dim>
-void StarRRTPlanner<dim>::computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode) {
+void StarRRTPlanner<dim>::computeRRTNode(const Vec<dim, float> &randVec, shared_ptr<Node<dim>> &newNode) {
     // get nearest neighbor
-    std::shared_ptr<Node<dim>> nearestNode = this->m_graph.getNearestNode(Node<dim>(randVec));
+    shared_ptr<Node<dim>> nearestNode = this->m_graph.getNearestNode(Node<dim>(randVec));
     // set node new fix fixed step size of 10
     Vec<dim, float> newVec = RRTPlanner<dim>::computeNodeNew(randVec, nearestNode->getVec());
-    newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
+    newNode = shared_ptr<Node<dim>>(new Node<dim>(newVec));
 
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes;
+    std::vector<shared_ptr<Node<dim>>> nearNodes;
     chooseParent(newNode, nearestNode, nearNodes);
 
     if (this->m_collision->template controlCollision(newNode)) {
@@ -47,7 +49,7 @@ void StarRRTPlanner<dim>::computeRRTNode(const Vec<dim, float> &randVec, std::sh
 }
 
 template<uint16_t dim>
-void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode, std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
+void StarRRTPlanner<dim>::chooseParent(shared_ptr<Node<dim>> &newNode, shared_ptr<Node<dim>> &nearestNode, std::vector<shared_ptr<Node<dim>>> &nearNodes) {
     // get near nodes to the new node
     nearNodes = this->m_graph.getNearNodes(newNode, this->m_stepSize * 1.5);
 
@@ -62,7 +64,7 @@ void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std:
 }
 
 template<uint16_t dim>
-void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode, std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
+void StarRRTPlanner<dim>::reWire(shared_ptr<Node<dim>> &newNode, shared_ptr<Node<dim>> &parentNode, std::vector<shared_ptr<Node<dim>>> &nearNodes) {
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i] != parentNode && nearNodes[i]->getChilds().size() != 0) {
             float oldDist = nearNodes[i]->getCost();

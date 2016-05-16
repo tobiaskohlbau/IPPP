@@ -14,12 +14,14 @@
 #include <memory>
 #include "Graph.h"
 
+using std::shared_ptr;
+
 class Drawing
 {
 public:
 
     template<uint16_t dim>
-    static void drawTree(std::vector<std::shared_ptr<Node<dim>>> nodes, cv::Mat &image)
+    static void drawTree(std::vector<shared_ptr<Node<dim>>> nodes, cv::Mat &image)
     {
         for (auto& elem : nodes) {
             cv::Point point(elem->getX(), elem->getY());
@@ -32,12 +34,12 @@ public:
     }
 
     template<uint16_t dim>
-    static void drawPath(const std::shared_ptr<Node<dim>> goalNode, cv::Mat &image)
+    static void drawPath(const shared_ptr<Node<dim>> goalNode, cv::Mat &image)
     {
         // build vector for Drawing
-        std::vector<std::shared_ptr<Node<dim>>> nodes;
+        std::vector<shared_ptr<Node<dim>>> nodes;
         nodes.push_back(goalNode);
-        std::shared_ptr<Node<dim>> temp = goalNode->getParent();
+        shared_ptr<Node<dim>> temp = goalNode->getParent();
         while(temp != NULL) {
             nodes.push_back(temp);
             temp = temp->getParent();
@@ -46,7 +48,7 @@ public:
     }
 
     template<uint16_t dim>
-    static void drawPath(std::vector<std::shared_ptr<Node<dim>>> nodes, cv::Mat &image)
+    static void drawPath(std::vector<shared_ptr<Node<dim>>> nodes, cv::Mat &image)
     {
         for (auto& elem : nodes) {
             if (elem->getParent() != NULL) {

@@ -2,6 +2,7 @@
 #define PLANNER_H_
 
 #include <cstdint>
+#include <iostream>
 
 #include "CollisionDetection.h"
 #include "Graph.h"
@@ -15,7 +16,7 @@ class Planner
 public:
     Planner(const float &stepSize, TrajectoryPlanner::TrajectoryMethod trajectory, SamplingMethod sampling);
 
-    void setWorkspace(cv::Mat space);
+    void set2DWorkspace(cv::Mat space);
     std::vector<Node<dim>> getPath();
     void getTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
     void setWorkspaceBoundaries(Vec<dim, float> &minBoundary, Vec<dim, float> &maxBoundary);
@@ -27,11 +28,11 @@ protected:
     TrajectoryPlanner  *m_planner;
     Sampling<dim>      *m_sampler;
     CollisionDetection *m_collision;
+    Graph<dim>          m_graph;
 
     // variables
-    float      m_stepSize;
-    Graph<dim> m_graph;
-    cv::Mat    m_workspace;
+    float           m_stepSize;
+    cv::Mat         m_workspace;
     Vec<dim, float> m_maxBoundary;
     Vec<dim, float> m_minBoundary;
 };
@@ -45,7 +46,7 @@ Planner<dim>::Planner(const float &stepSize, TrajectoryPlanner::TrajectoryMethod
 }
 
 template<uint16_t dim>
-void Planner<dim>::setWorkspace(cv::Mat space) {
+void Planner<dim>::set2DWorkspace(cv::Mat space) {
     m_workspace = space;
     m_collision->setWorkspace(m_workspace);
 }

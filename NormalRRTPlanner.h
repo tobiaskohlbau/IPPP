@@ -3,6 +3,8 @@
 
 #include "RRTPlanner.h"
 
+using std::shared_ptr;
+
 template<uint16_t dim>
 class NormalRRTPlanner : public RRTPlanner<dim>
 {
@@ -13,14 +15,14 @@ public:
     }
 
 protected:
-    void computeRRTNode(const Vec<dim, float> &randVec, std::shared_ptr<Node<dim>> &newNode) {
+    void computeRRTNode(const Vec<dim, float> &randVec, shared_ptr<Node<dim>> &newNode) {
         // get nearest neighbor
-        std::shared_ptr<Node<dim>> nearestNode = this->m_graph.getNearestNode(Node<dim>(randVec));
+        shared_ptr<Node<dim>> nearestNode = this->m_graph.getNearestNode(Node<dim>(randVec));
         if (nearestNode == NULL)
             std::cout << "NULL" << std::endl;
         // compute node new with fixed step size
         Vec<dim, float> newVec = RRTPlanner<dim>::computeNodeNew(randVec, nearestNode->getVec());
-        newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
+        newNode = shared_ptr<Node<dim>>(new Node<dim>(newVec));
 
         if (this->m_collision->template controlCollision<dim>(newNode)) {
             newNode = NULL;
