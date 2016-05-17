@@ -20,6 +20,7 @@ public:
 
     void setAllTo(const T &value);
 
+    T getValue(uint16_t index);
     bool empty() const;
     T norm() const;
     Vec<dim, T> abs() const;
@@ -204,6 +205,11 @@ template<uint16_t dim, class T>
 void Vec<dim, T>::setAllTo(const T &value) {
     for (uint16_t i = 0; i < dim; ++i)
         (*this)[i] = value;
+}
+
+template<uint16_t dim, class T>
+T Vec<dim, T>:: getValue(uint16_t index){
+    return m_data[index];
 }
 
 template<uint16_t dim, class T>

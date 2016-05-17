@@ -16,6 +16,17 @@ endif()
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_calib3d)
 #include_directories( ${OpenCV_INCLUDE_DIRS} )
 
+set(VREP_DIR "/opt/v-rep" CACHE PATH "v-rep directory")
+set(VREP_REMOTE ${VREP_DIR}/programming/remoteApi)
+set(VREP_INCLUDE ${VREP_DIR}/programming/include)
+set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write-strings")
+include_directories (
+    ${VREP_DIR}/programming/common
+    ${VREP_DIR}/programming/include
+    ${VREP_DIR}/programming/remoteApi)
+link_directories(
+    ${VREP_DIR}/programming/v_repExtRemoteApi/lib)
+
 
 #source
 set(SRCS
@@ -36,11 +47,16 @@ set(HDRS
     SearchNearestNeighbor.h
     StarRRTPlanner.h
     TrajectoryPlanner.h
-    Vec.h)
+    Vec.h
+    VrepHelper.h)
 
-add_executable(${PROJECT_NAME} ${SRCS} ${HDRS})
-# link the libraries to the executable
-target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} ${ADDITIONAL_LIBRARIES})
+set(VREP
+    ${VREP_REMOTE}/extApiPlatform.c
+    ${VREP_REMOTE}/extApi.c
+    ${VREP_INCLUDE}/v_repConst.h)
+
+add_executable(${PROJECT_NAME} ${SRCS} ${HDRS} ${VREP})
+target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} pthread)
 
 # copy the workspace images
 configure_file(${CMAKE_SOURCE_DIR}/spaces/freeWorkspace.png

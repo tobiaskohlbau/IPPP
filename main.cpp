@@ -18,10 +18,11 @@
 #include "NormalRRTPlanner.h"
 #include "StarRRTPlanner.h"
 #include "Drawing.h"
+#include "VrepHelper.h"
 
+void planning2D() {
+    const uint16_t dim = 2;
 
-int main(int argc, char** argv)
-{
     cv::Mat freeWorkspace, obstacleWorkspace;
     if (OSPROJECT == "windows") {
         freeWorkspace = cv::imread("../spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
@@ -31,7 +32,7 @@ int main(int argc, char** argv)
         freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
         obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     }
-    const uint16_t dim = 2;
+
     StarRRTPlanner<dim> planner(70.0);
     NormalRRTPlanner<dim> planner2(70.0);
 
@@ -71,6 +72,29 @@ int main(int argc, char** argv)
         cv::imshow("planner", image);
         cv::waitKey(0);
     }
+}
+
+void planning6D() {
+    const uint16_t dim = 6;
+    VrepHelper<dim> vrep;
+
+    vrep.startVrep();
+
+    Vec<dim, float> pos(100,100,100,100,100,100);
+    vrep.setPos(pos);
+
+    pos = Vec<dim, float>(-10, -10, -10, -10, -100, -100);
+    vrep.setPos(pos);
+}
+
+int main(int argc, char** argv)
+{
+    const uint16_t dim = 6;
+
+    if (dim == 2)
+        planning2D();
+    else if (dim == 6)
+        planning6D();
 
     return 0;
 }
