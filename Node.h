@@ -43,6 +43,10 @@ public:
     std::vector<shared_ptr<Node<dim>>> getChilds();
     void clearChilds();
 
+    void addEdge(Edge<dim> edge);
+    std::vector<Edge<dim>> getEdges();
+    void clearEdges();
+
     Vec<dim, float> getVec() const;
 
 private:
@@ -186,7 +190,6 @@ void Node<dim>::clearParent() {
 template<uint16_t dim>
 void Node<dim>::addChild(const shared_ptr<Node<dim>> &child) {
     m_childs.push_back(child);
-    m_edges.push_back(Edge<dim>(m_vec, child->getVec()));
 }
 
 template<uint16_t dim>
@@ -197,6 +200,20 @@ std::vector<shared_ptr<Node<dim>>> Node<dim>::getChilds() {
 template<uint16_t dim>
 void Node<dim>::clearChilds() {
     m_childs.clear();
+}
+
+template<uint16_t dim>
+void Node<dim>::addEdge(Edge<dim> edge) {
+    m_edges.push_back(edge);
+}
+
+template<uint16_t dim>
+std::vector<Edge<dim>> Node<dim>::getEdges() {
+    return m_edges;
+}
+
+template<uint16_t dim>
+void Node<dim>::clearEdges() {
     m_edges.clear();
 }
 

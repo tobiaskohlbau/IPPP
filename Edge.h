@@ -1,60 +1,63 @@
 #ifndef EDGE_H_
 #define EDGE_H_
 
-#include "Vec.h"
 #include <cstdint>
 #include <memory>
 
 using std::shared_ptr;
 
 template<uint16_t dim>
+class Node;
+
+template<uint16_t dim>
 class Edge
 {
 public:
-    Edge(const Vec<dim, float> &parent, const Vec<dim, float> &child);
+    Edge(const shared_ptr<Node<dim>> &parent, const shared_ptr<Node<dim>> &target);
 
     float getLength() const;
 
-    void setParent(const Vec<dim, float> &parent);
-    void setChild (const Vec<dim, float> &child);
+    void setSource(const shared_ptr<Node<dim>> &parent);
+    void setTarget (const shared_ptr<Node<dim>> &target);
 
-    Vec<dim, float> getParent() const;
-    Vec<dim, float> getChild() const;
+    shared_ptr<Node<dim>> getSource() const;
+    shared_ptr<Node<dim>> getTarget() const;
 
 private:
-    Vec<dim, float> m_parent;
-    Vec<dim, float> m_child;
+    shared_ptr<Node<dim>> m_parent;
+    shared_ptr<Node<dim>> m_target;
 };
 
 template<uint16_t dim>
-Edge<dim>::Edge(const Vec<dim, float> &parent, const Vec<dim, float> &child) {
+Edge<dim>::Edge(const shared_ptr<Node<dim>> &parent, const shared_ptr<Node<dim>> &target) {
     m_parent = parent;
-    m_child = child;
+    m_target = target;
+
 }
 
 template<uint16_t dim>
 float Edge<dim>::getLength() const {
-    return m_parent->getDist(m_child);
+    return m_parent->getDist(m_target);
 }
 
 template<uint16_t dim>
-void Edge<dim>::setParent(const Vec<dim, float> &parent) {
+void Edge<dim>::setSource(const shared_ptr<Node<dim>> &parent) {
     m_parent = parent;
 }
 
 template<uint16_t dim>
-void Edge<dim>::setChild(const Vec<dim, float> &child) {
-    m_child = child;
+void Edge<dim>::setTarget(const shared_ptr<Node<dim>> &target) {
+    m_target = target;
 }
 
 template<uint16_t dim>
-Vec<dim, float> Edge<dim>::getParent() const {
+shared_ptr<Node<dim>> Edge<dim>::getSource() const {
     return m_parent;
 }
 
 template<uint16_t dim>
-Vec<dim, float> Edge<dim>::getChild() const {
-    return m_child;
+shared_ptr<Node<dim>> Edge<dim>::getTarget() const {
+    return m_target;
 }
 
 #endif /* EDGE_H_ */
