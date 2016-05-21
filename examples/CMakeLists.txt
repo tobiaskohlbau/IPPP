@@ -59,10 +59,10 @@ add_executable(${PROJECT_NAME} ${SRCS} ${HDRS} ${VREP})
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} pthread)
 
 # copy the workspace images
-configure_file(${CMAKE_SOURCE_DIR}/examples/spaces/freeWorkspace.png
-    ${CMAKE_CURRENT_BINARY_DIR}/examples/spaces/freeWorkspace.png COPYONLY)
-configure_file(${CMAKE_SOURCE_DIR}/examples/spaces/obstacleWorkspace.png
-    ${CMAKE_CURRENT_BINARY_DIR}/examples/spaces/obstacleWorkspace.png COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/spaces/freeWorkspace.png
+    ${CMAKE_CURRENT_BINARY_DIR}/spaces/freeWorkspace.png COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/spaces/obstacleWorkspace.png
+    ${CMAKE_CURRENT_BINARY_DIR}/spaces/obstacleWorkspace.png COPYONLY)
 
 # copy the dll files to the executable at windows
 IF (WIN32)
