@@ -5,7 +5,9 @@
 #include <cstdint>
 #include <math.h>
 
-template<uint16_t dim, class T>
+using std::shared_ptr;
+
+template<uint16_t dim, typename T>
 class Vec
 {
 public:
@@ -138,26 +140,26 @@ private:
     T m_data[dim];
 };
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 Vec<dim, T>::Vec() {
     for (uint16_t i = 0; i < dim; ++i)
         m_data[i] = NAN;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 Vec<dim, T>::Vec(const T &x) {
     assert(dim == 1);
     m_data[0] = x;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 Vec<dim, T>::Vec(const T &x, const T &y) {
     assert(dim == 2);
     m_data[0] = x;
     m_data[1] = y;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 Vec<dim, T>::Vec(const T &x, const T &y, const T &z) {
     assert(dim == 3);
     m_data[0] = x;
@@ -165,7 +167,7 @@ Vec<dim, T>::Vec(const T &x, const T &y, const T &z) {
     m_data[2] = z;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx) {
     assert(dim == 4);
     m_data[0] = x;
@@ -174,7 +176,7 @@ Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx) {
     m_data[3] = rx;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry) {
     assert(dim == 5);
     m_data[0] = x;
@@ -184,7 +186,7 @@ Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry) {
     m_data[4] = ry;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz) {
     assert(dim == 6);
     m_data[0] = x;
@@ -195,24 +197,24 @@ Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, c
     m_data[5] = rz;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 Vec<dim, T>::Vec(const T data[]) {
     for (uint16_t i = 0; i < dim; ++i)
         (*this)[i] = data[i];
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 void Vec<dim, T>::setAllTo(const T &value) {
     for (uint16_t i = 0; i < dim; ++i)
         (*this)[i] = value;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 T Vec<dim, T>:: getValue(uint16_t index){
     return m_data[index];
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 bool Vec<dim, T>::empty() const{
     for (uint16_t i = 0; i < dim; ++i)
         if ((*this)[i] == NAN)
@@ -220,7 +222,7 @@ bool Vec<dim, T>::empty() const{
     return false;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 T Vec<dim, T>::norm() const {
     T norm = 0;
     for (uint16_t i = 0; i < dim; ++i)
@@ -228,7 +230,7 @@ T Vec<dim, T>::norm() const {
     return sqrtf(norm);
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 Vec<dim, T> Vec<dim, T>::abs() const {
     Vec<dim, T> result;
     for (uint16_t i = 0; i < dim; ++i)
@@ -236,12 +238,12 @@ Vec<dim, T> Vec<dim, T>::abs() const {
     return result;
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 T Vec<dim, T>::getDist(const Vec<dim, T> &vec) const{
     return sqrtf(getSqDist(vec));
 }
 
-template<uint16_t dim, class T>
+template<uint16_t dim, typename T>
 T Vec<dim, T>::getSqDist(const Vec<dim, T> &vec) const{
     T dist = 0;
     for (uint16_t i = 0; i < dim; ++i)
