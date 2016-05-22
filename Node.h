@@ -28,6 +28,7 @@ public:
 
     bool empty() const ;
     void setVecValue(const float &value, const unsigned int &index);
+    float getVecValue(const unsigned int &index);
     float getDist(const shared_ptr<Node<dim>> &node) const;
     float getDist(const Node<dim> &node) const;
     float getDistToParent() const;
@@ -48,6 +49,7 @@ public:
     void clearEdges();
 
     Vec<dim, float> getVec() const;
+
 
 private:
     float           m_cost;
@@ -136,6 +138,11 @@ bool Node<dim>::empty() const {
 template<unsigned int dim>
 void Node<dim>::setVecValue(const float &value, const unsigned int &index) {
     m_vec[index] = value;
+}
+
+template<unsigned int dim>
+float Node<dim>::getVecValue(const unsigned int &index) {
+    return m_vec[index];
 }
 
 template<unsigned int dim>
