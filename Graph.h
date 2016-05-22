@@ -8,7 +8,6 @@
 
 #include "KDTree.h"
 #include "Node.h"
-#include "SearchNearestNeighbor.h"
 
 using std::shared_ptr;
 

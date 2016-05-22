@@ -47,7 +47,6 @@ set(HDRS
     planner/RRTPlanner.h
     planner/StarRRTPlanner.h
     Sampling.h
-    SearchNearestNeighbor.h
     TrajectoryPlanner.h
     Vec.h
     VrepHelper.h)
