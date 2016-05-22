@@ -11,9 +11,9 @@
 #include "Vec.h"
 
 extern "C" {
-    #include "extApi.h"
-    #include "extApiPlatform.h"
-    #include "v_repConst.h"
+    #include <extApi.h>
+    #include <extApiPlatform.h>
+    #include <v_repConst.h>
 }
 #define NON_MATLAB_PARSING
 

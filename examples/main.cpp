@@ -1,37 +1,19 @@
 #include <cstdint>
 #include <iostream>
 
-#ifdef __linux__
-    #include "opencv2/imgproc/imgproc.hpp"
-    #include "opencv2/highgui/highgui.hpp"
-    //#include "opencv2/imgcodecs/imgcodecs.hpp"
-    #define OSPROJECT "linux"
-#else
-    #include <opencv2/imgproc.hpp>
-    #include <opencv2/highgui.hpp>
-    #include <opencv2/imgcodecs.hpp>
-    #define OSPROJECT "windows"
-#endif
-
 #include <memory>
 #include <ctime>
 #include <NormalRRTPlanner.h>
 #include <StarRRTPlanner.h>
-#include "Drawing.h"
-#include "VrepHelper.h"
+#include <Drawing.h>
+#include <VrepHelper.h>
 
 void planning2D() {
     const unsigned int dim = 2;
 
     cv::Mat freeWorkspace, obstacleWorkspace;
-    if (OSPROJECT == "windows") {
-        freeWorkspace = cv::imread("../spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-        obstacleWorkspace = cv::imread("../spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    }
-    else {
-        freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-        obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    }
+    freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
     StarRRTPlanner<dim> planner(70.0);
     NormalRRTPlanner<dim> planner2(70.0);

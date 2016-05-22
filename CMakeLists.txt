@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.10)
-project (RobotMotionPlanning)
+project (RobotMotionPlanningLib)
 set(CMAKE_AUTOMOC ON)
 
 include(CheckCXXCompilerFlag)
@@ -29,8 +29,7 @@ link_directories(
 
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/planner)
 
-set(SRCS
-    main.cpp)
+#set(SRCS)
 
 set(HDRS
     CollisionDetection.h
@@ -51,14 +50,13 @@ set(HDRS
 
 set(VREP
     ${VREP_REMOTE}/extApiPlatform.c
+    ${VREP_REMOTE}/extApiPlatform.h
     ${VREP_REMOTE}/extApi.c
+    ${VREP_REMOTE}/extApi.h
     ${VREP_INCLUDE}/v_repConst.h)
 
-add_executable(${PROJECT_NAME} ${SRCS} ${HDRS} ${VREP})
+add_library(${PROJECT_NAME} STATIC  ${HDRS} ${VREP}) #${SRCS}
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} pthread)
-
-# copy the workspace images
-configure_file(${CMAKE_SOURCE_DIR}/examples/spaces/freeWorkspace.png
-    ${CMAKE_CURRENT_BINARY_DIR}/examples/spaces/freeWorkspace.png COPYONLY)
-configure_file(${CMAKE_SOURCE_DIR}/examples/spaces/obstacleWorkspace.png
-    ${CMAKE_CURRENT_BINARY_DIR}/examples/spaces/obstacleWorkspace.png COPYONLY)
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib)
+install(FILES ${HDRS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
+install(FILES ${VREP} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
