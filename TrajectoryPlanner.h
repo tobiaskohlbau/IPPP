@@ -24,7 +24,7 @@ class TrajectoryPlanner
 {
 public:
     TrajectoryPlanner(const TrajectoryMethod method, CollisionDetection *collision);
-    template<uint16_t dim>
+    template<unsigned int dim>
     bool computeTrajectory(const std::shared_ptr<Node<dim>> node1, const std::shared_ptr<Node<dim>> node2);
 
 private:
@@ -37,7 +37,7 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod method, CollisionDet
     m_collision = collision;
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 bool TrajectoryPlanner::computeTrajectory(const std::shared_ptr<Node<dim>> node1, const std::shared_ptr<Node<dim>> node2) {
     if (dim == 2) {
         cv::Point pt1(node1->getX(), node1->getY());

@@ -21,7 +21,7 @@
 #include "VrepHelper.h"
 
 void planning2D() {
-    const uint16_t dim = 2;
+    const unsigned int dim = 2;
 
     cv::Mat freeWorkspace, obstacleWorkspace;
     if (OSPROJECT == "windows") {
@@ -75,7 +75,7 @@ void planning2D() {
 }
 
 void planning6D() {
-    const uint16_t dim = 6;
+    const unsigned int dim = 6;
     VrepHelper<dim> vrep;
 
     vrep.startVrep();
@@ -89,7 +89,7 @@ void planning6D() {
 
 int main(int argc, char** argv)
 {
-    const uint16_t dim = 6;
+    const unsigned int dim = 2;
 
     if (dim == 2)
         planning2D();

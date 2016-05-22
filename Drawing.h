@@ -20,7 +20,7 @@ class Drawing
 {
 public:
 
-    template<uint16_t dim>
+    template<unsigned int dim>
     static void drawTree(std::vector<shared_ptr<Node<dim>>> nodes, cv::Mat &image)
     {
         for (auto& elem : nodes) {
@@ -33,7 +33,7 @@ public:
         }
     }
 
-    template<uint16_t dim>
+    template<unsigned int dim>
     static void drawPath(const shared_ptr<Node<dim>> goalNode, cv::Mat &image)
     {
         // build vector for Drawing
@@ -47,7 +47,7 @@ public:
         drawPath<dim>(nodes, image);
     }
 
-    template<uint16_t dim>
+    template<unsigned int dim>
     static void drawPath(std::vector<shared_ptr<Node<dim>>> nodes, cv::Mat &image)
     {
         for (auto& elem : nodes) {

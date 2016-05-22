@@ -11,7 +11,7 @@ class SearchNearestNeighbor
 {
 public:
 
-    template<uint16_t dim>
+    template<unsigned int dim>
     static shared_ptr<Node<dim>> search(const std::vector<shared_ptr<Node<dim>>> nodes, const Node<dim> node) {
         float dist = std::numeric_limits<float>::max();
         int index;
@@ -25,7 +25,7 @@ public:
         return nodes[index];
     }
 
-    template<uint16_t dim>
+    template<unsigned int dim>
     static std::vector<shared_ptr<Node<dim>>> searchNearNodes(const std::vector<shared_ptr<Node<dim>>> nodes, const shared_ptr<Node<dim>> &node, const float dist) {
         std::vector<shared_ptr<Node<dim>>> nearNodes;
         for (auto& elem : nodes)

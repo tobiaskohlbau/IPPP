@@ -10,7 +10,7 @@
 #include "Sampling.h"
 #include "TrajectoryPlanner.h"
 
-template<uint16_t dim>
+template<unsigned int dim>
 class Planner
 {
 public:
@@ -37,7 +37,7 @@ protected:
     Vec<dim, float> m_minBoundary;
 };
 
-template<uint16_t dim>
+template<unsigned int dim>
 Planner<dim>::Planner(const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling) {
     m_stepSize = stepSize;
     m_sampler = new Sampling<dim>();
@@ -45,15 +45,15 @@ Planner<dim>::Planner(const float &stepSize, TrajectoryMethod trajectory, Sampli
     m_planner = new TrajectoryPlanner(trajectory, m_collision);
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 void Planner<dim>::set2DWorkspace(cv::Mat space) {
     m_workspace = space;
     m_collision->set2DWorkspace(m_workspace);
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 void Planner<dim>::setWorkspaceBoundaries(Vec<dim, float> &minBoundary, Vec<dim, float> &maxBoundary) {
-    for (uint16_t i = 0; i < dim; ++i) {
+    for (unsigned int i = 0; i < dim; ++i) {
         if (minBoundary[i] > maxBoundary[i]) {
             std::cout << "Wrong boudaries set" << std::endl;
             return;
@@ -64,12 +64,12 @@ void Planner<dim>::setWorkspaceBoundaries(Vec<dim, float> &minBoundary, Vec<dim,
     m_sampler->setBoundaries(maxBoundary, minBoundary);
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 void Planner<dim>::getTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) const {
     nodes = m_graph.getNodes();
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 bool Planner<dim>::controlConstraints() {
     if (m_minBoundary.empty() || m_maxBoundary.empty()) {
         std::cout << "No boudaries set" << std::endl;

@@ -5,7 +5,7 @@
 
 using std::shared_ptr;
 
-template<uint16_t dim>
+template<unsigned int dim>
 class RRTPlanner : public Planner<dim>
 {
 public:
@@ -24,16 +24,16 @@ protected:
     Node<dim>  m_goalNode;
 };
 
-template<uint16_t dim>
+template<unsigned int dim>
 RRTPlanner<dim>::RRTPlanner(float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
     : Planner<dim>(stepSize, trajectory, sampling)
 {
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 bool RRTPlanner<dim>::setInitNode(Node<dim> node) {
     this->controlConstraints();
-    for (uint16_t i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < dim; ++i)
         if (node.getVec()[i] < this->m_minBoundary[i] || node.getVec()[i] > this->m_maxBoundary[i])
             return false;
 
@@ -46,7 +46,7 @@ bool RRTPlanner<dim>::setInitNode(Node<dim> node) {
     return true;
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 bool RRTPlanner<dim>::computeTree(const int nbOfNodes)
 {
     if (!this->controlConstraints())
@@ -69,7 +69,7 @@ bool RRTPlanner<dim>::computeTree(const int nbOfNodes)
     return true;
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 bool RRTPlanner<dim>::connectGoalNode(shared_ptr<Node<dim>> goalNode) {
     if (this->m_collision->template controlCollision<dim>(goalNode))
         return false;
@@ -97,7 +97,7 @@ bool RRTPlanner<dim>::connectGoalNode(shared_ptr<Node<dim>> goalNode) {
     return false;
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 Vec<dim, float> RRTPlanner<dim>::computeNodeNew(const Vec<dim, float> &randNode, const Vec<dim, float> &nearestNode) {
     if (randNode.getDist(nearestNode) < this->m_stepSize)
         return randNode;

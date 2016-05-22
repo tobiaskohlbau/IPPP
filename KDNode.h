@@ -5,7 +5,7 @@
 
 using std::shared_ptr;
 
-template<uint16_t dim, class T>
+template<unsigned int dim, class T>
 class KDNode
 {
 public:
@@ -15,13 +15,13 @@ public:
     shared_ptr<KDNode<dim, T>> right;
     Vec<dim, float> vec;
     T node;
-    uint16_t axis;
+    unsigned int axis;
     float value;
 private:
 
 };
 
-template<uint16_t dim, class T>
+template<unsigned int dim, class T>
 KDNode<dim, T>::KDNode(Vec<dim, float> vec, T node) {
     this->vec = vec;
     this->node = node;

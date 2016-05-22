@@ -17,7 +17,7 @@ extern "C" {
 }
 #define NON_MATLAB_PARSING
 
-template<uint16_t dim>
+template<unsigned int dim>
 class VrepHelper
 {
 public:
@@ -34,14 +34,14 @@ private:
     Vec<dim, simxInt> m_collisionHandle;
 };
 
-template<uint16_t dim>
+template<unsigned int dim>
 VrepHelper<dim>::VrepHelper() {
     m_clientId = -1;
-    for (uint16_t i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < dim; ++i)
         m_jointHandles[i] = -1;
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 void VrepHelper<dim>::startVrep() {
     std::cout << "Program started" << std::endl;
 
@@ -80,7 +80,7 @@ void VrepHelper<dim>::startVrep() {
         printf("Error code Jaco %d\n",errorCodejaco);
 
         simxUChar collisionState;
-        for (uint16_t i = 0; i < dim; ++i) {
+        for (unsigned int i = 0; i < dim; ++i) {
             simxReadCollision(m_clientId, m_collisionHandle[i], &collisionState, simx_opmode_oneshot_wait);
             printf("Error code Jaco link collision %d %d\n",i,collisionState);
         }
@@ -92,13 +92,13 @@ void VrepHelper<dim>::startVrep() {
     }
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 bool VrepHelper<dim>::setPos(const Vec<dim, float> &vec) {
     if (m_clientId != -1) {
 
         simxInt errorCodeJointPos[dim];
         Vec<dim, simxFloat> pos = convertVecToRad(vec);
-        for (uint16_t i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < dim; ++i)
             errorCodeJointPos[i]=simxSetJointPosition(m_clientId,m_jointHandles[i],pos[i],simx_opmode_oneshot_wait);
         usleep(2000000);
 
@@ -106,7 +106,7 @@ bool VrepHelper<dim>::setPos(const Vec<dim, float> &vec) {
             printf("Error code Joint Position%d %d\n",i,errorCodeJointPos[i]);
 
         simxUChar collisionState;
-        for (uint16_t i = 0; i < dim; ++i) {
+        for (unsigned int i = 0; i < dim; ++i) {
             simxReadCollision(m_clientId, m_collisionHandle[i], &collisionState, simx_opmode_oneshot_wait);
             printf("Error code Jaco link collision %d %d\n",i,collisionState);
         }
@@ -122,10 +122,10 @@ bool VrepHelper<dim>::setPos(const Vec<dim, float> &vec) {
     }
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 Vec<dim, simxFloat> VrepHelper<dim>::convertVecToRad(const Vec<dim, float> &vec) {
     Vec<dim, simxFloat> rads;
-    for (uint16_t i = 0; i < dim; ++i) {
+    for (unsigned int i = 0; i < dim; ++i) {
         rads[i] = vec[i]*M_PI/180;
     }
     return rads;

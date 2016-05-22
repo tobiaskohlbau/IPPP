@@ -17,7 +17,7 @@ enum SamplingMethod
     halton
 };
 
-template<uint16_t dim>
+template<unsigned int dim>
 class Sampling
 {
 public:
@@ -31,25 +31,25 @@ private:
     SamplingMethod m_method;
 };
 
-template<uint16_t dim>
+template<unsigned int dim>
 Sampling<dim>::Sampling(const SamplingMethod method) {
     m_method = method;
     srand(time(NULL));
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 Vec<dim, float> Sampling<dim>::getSample(const int index, const int nbSamples) {
     Vec<dim, float> vec;
     if (m_method == SamplingMethod::randomly)
     {
-        for (uint16_t i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < dim; ++i)
             vec[i] = m_minBoundary[i] + (float)(rand() % (int)(m_maxBoundary[i]-m_minBoundary[i]));
         return vec;
     }
     return vec;
 }
 
-template<uint16_t dim>
+template<unsigned int dim>
 void Sampling<dim>::setBoundaries(const Vec<dim, float> &maxBoundary, const Vec<dim, float> &minBoundary) {
     m_maxBoundary = maxBoundary;
     m_minBoundary = minBoundary;

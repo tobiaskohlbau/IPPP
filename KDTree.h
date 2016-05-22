@@ -8,7 +8,7 @@
 
 using std::shared_ptr;
 
-template<uint16_t dim, class T>
+template<unsigned int dim, class T>
 class KDTree
 {
 public:
@@ -17,7 +17,7 @@ public:
     std::vector<T> searchRange(const Vec<dim, float> &vec, const float &range);
 
 private:
-    shared_ptr<KDNode<dim, T>> insert(shared_ptr<KDNode<dim, T>> insertNode, shared_ptr<KDNode<dim, T>> currentNode, uint16_t depth);
+    shared_ptr<KDNode<dim, T>> insert(shared_ptr<KDNode<dim, T>> insertNode, shared_ptr<KDNode<dim, T>> currentNode, unsigned int depth);
     void NNS(const Vec<dim, float> &point, shared_ptr<KDNode<dim, T>> node, shared_ptr<KDNode<dim, T>> &refNode, float &bestDist);
     void RS(const Vec<dim, float> &point, shared_ptr<KDNode<dim, T>> node, std::vector<shared_ptr<KDNode<dim, T>>> &refNodes,
         const float &sqRange, const Vec<dim, float> &maxBoundary, const Vec<dim, float> &minBoundary);
@@ -25,7 +25,7 @@ private:
     shared_ptr<KDNode<dim, T>> m_root;
 };
 
-template<uint16_t dim, class T>
+template<unsigned int dim, class T>
 void KDTree<dim, T>::addNode(const Vec<dim, float> &vec, T node) {
     shared_ptr<KDNode<dim, T>> shrKDNode(new KDNode<dim, T>(vec, node));
     if (m_root == NULL) {
@@ -35,8 +35,8 @@ void KDTree<dim, T>::addNode(const Vec<dim, float> &vec, T node) {
     insert(shrKDNode, m_root, 0);
 }
 
-template<uint16_t dim, class T>
-shared_ptr<KDNode<dim, T>> KDTree<dim, T>::insert(shared_ptr<KDNode<dim, T>> insertNode, shared_ptr<KDNode<dim, T>> currentNode, uint16_t cd) {
+template<unsigned int dim, class T>
+shared_ptr<KDNode<dim, T>> KDTree<dim, T>::insert(shared_ptr<KDNode<dim, T>> insertNode, shared_ptr<KDNode<dim, T>> currentNode, unsigned int cd) {
     if (currentNode == NULL) {              // node at leaf doesn't exist and will be added
         currentNode = insertNode;
         currentNode->axis = cd;
@@ -54,7 +54,7 @@ shared_ptr<KDNode<dim, T>> KDTree<dim, T>::insert(shared_ptr<KDNode<dim, T>> ins
     return currentNode;
 }
 
-template<uint16_t dim, class T>
+template<unsigned int dim, class T>
 T KDTree<dim, T>::searchNearestNeighbor(const Vec<dim, float> &vec) {
     if (m_root == NULL)
         return NULL;
@@ -65,7 +65,7 @@ T KDTree<dim, T>::searchNearestNeighbor(const Vec<dim, float> &vec) {
     return node->node;
 }
 
-template<uint16_t dim, class T>
+template<unsigned int dim, class T>
 std::vector<T> KDTree<dim, T>::searchRange(const Vec<dim, float> &vec, const float &range) {
     std::vector<T> nodes;
     if (m_root == NULL)
@@ -82,7 +82,7 @@ std::vector<T> KDTree<dim, T>::searchRange(const Vec<dim, float> &vec, const flo
     return nodes;
 }
 
-template<uint16_t dim, class T>
+template<unsigned int dim, class T>
 void KDTree<dim, T>::NNS(const Vec<dim, float> &vec, shared_ptr<KDNode<dim, T>> node, shared_ptr<KDNode<dim, T>> &refNode, float &bestDist) {
     if (node->left == NULL && node->right == NULL) {
         float dist = vec.getSqDist(node->vec);
@@ -107,7 +107,7 @@ void KDTree<dim, T>::NNS(const Vec<dim, float> &vec, shared_ptr<KDNode<dim, T>> 
     }
 }
 
-template<uint16_t dim, class T>
+template<unsigned int dim, class T>
 void KDTree<dim, T>::RS(const Vec<dim, float> &vec, shared_ptr<KDNode<dim, T>> node, std::vector<shared_ptr<KDNode<dim, T>>> &refNodes,
     const float &sqRange, const Vec<dim, float> &maxBoundary, const Vec<dim, float> &minBoundary) {
     if (node == NULL) {

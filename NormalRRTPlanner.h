@@ -5,7 +5,7 @@
 
 using std::shared_ptr;
 
-template<uint16_t dim>
+template<unsigned int dim>
 class NormalRRTPlanner : public RRTPlanner<dim>
 {
 public:
