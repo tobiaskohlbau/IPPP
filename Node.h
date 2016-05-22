@@ -6,10 +6,10 @@
 #include <memory>
 #include "Vec.h"
 #include "Edge.h"
+#include <vector>
 
 using std::shared_ptr;
 
-template <unsigned int dim>
 class Node
 {
 public:
@@ -20,212 +20,181 @@ public:
     Node(const float &x, const float &y, const float &z, const float &rx);
     Node(const float &x, const float &y, const float &z, const float &rx, const float &ry);
     Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz);
-    Node(const Vec<dim, float> &vec);
+    Node(const Vec<float> &vec);
 
     float getX() const;
     float getY() const;
     float getZ() const;
 
+    unsigned int getDim();
     bool empty() const ;
     void setVecValue(const float &value, const unsigned int &index);
     float getVecValue(const unsigned int &index);
-    float getDist(const shared_ptr<Node<dim>> &node) const;
-    float getDist(const Node<dim> &node) const;
+    float getDist(const shared_ptr<Node> &node) const;
+    float getDist(const Node &node) const;
     float getDistToParent() const;
     float norm() const;
 
     void setCost(const float &cost);
     float getCost() const;
 
-    void setParent(const shared_ptr<Node<dim>> &parent);
-    shared_ptr<Node<dim>> getParent();
+    void setParent(const shared_ptr<Node> &parent);
+    shared_ptr<Node> getParent();
     void clearParent();
-    void addChild(const shared_ptr<Node<dim>> &child);
-    std::vector<shared_ptr<Node<dim>>> getChilds();
+    void addChild(const shared_ptr<Node> &child);
+    std::vector<shared_ptr<Node>> getChilds();
     void clearChilds();
 
-    void addEdge(Edge<dim> edge);
-    std::vector<Edge<dim>> getEdges();
+    void addEdge(Edge edge);
+    std::vector<Edge> getEdges();
     void clearEdges();
 
-    Vec<dim, float> getVec() const;
+    Vec<float> getVec() const;
 
 
 private:
-    float           m_cost;
-    Vec<dim, float> m_vec;
-    std::vector<Edge<dim>>             m_edges;
-    shared_ptr<Node<dim>>              m_parent;
-    std::vector<shared_ptr<Node<dim>>> m_childs;
+    float        m_cost;
+    Vec<float>   m_vec;
+    std::vector<Edge>        m_edges;
+    shared_ptr<Node>              m_parent;
+    std::vector<shared_ptr<Node>> m_childs;
 };
 
-template<unsigned int dim>
-Node<dim>::Node() {
+Node::Node() {
     m_cost = 0;
 }
 
-template<unsigned int dim>
-Node<dim>::Node(const float &x) {
-    assert(dim == 1);
+Node::Node(const float &x) {
     m_cost = 0;
-    m_vec = Vec<dim, float>(x);
+    m_vec = Vec<float>(x);
 }
 
-template<unsigned int dim>
-Node<dim>::Node(const float &x, const float &y) {
-    assert(dim == 2);
+Node::Node(const float &x, const float &y) {
     m_cost = 0;
-    m_vec = Vec<dim, float>(x, y);
+    m_vec = Vec<float>(x, y);
 }
 
-template<unsigned int dim>
-Node<dim>::Node(const float &x, const float &y, const float &z) {
-    assert(dim == 3);
+Node::Node(const float &x, const float &y, const float &z) {
     m_cost = 0;
-    m_vec = Vec<dim, float>(x, y, z);
+    m_vec = Vec<float>(x, y, z);
 }
 
-template<unsigned int dim>
-Node<dim>::Node(const float &x, const float &y, const float &z, const float &rx) {
-    assert(dim == 4);
+Node::Node(const float &x, const float &y, const float &z, const float &rx) {
     m_cost = 0;
-    m_vec = Vec<dim, float>(x, y, z, rx);
+    m_vec = Vec<float>(x, y, z, rx);
 }
 
-template<unsigned int dim>
-Node<dim>::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry) {
-    assert(dim == 5);
+Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry) {
     m_cost = 0;
-    m_vec = Vec<dim, float>(x, y, z, rx, ry);
+    m_vec = Vec<float>(x, y, z, rx, ry);
 }
 
-template<unsigned int dim>
-Node<dim>::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz) {
-    assert(dim == 6);
+Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz) {
     m_cost = 0;
-    m_vec = Vec<dim, float>(x, y, z, rx, ry, rz);
+    m_vec = Vec<float>(x, y, z, rx, ry, rz);
 }
 
-template<unsigned int dim>
-Node<dim>::Node(const Vec<dim, float> &vec) {
+Node::Node(const Vec<float> &vec) {
     m_vec = vec;
     m_cost = 0;
 }
 
-template<unsigned int dim>
-float Node<dim>::getX() const {
-    assert(dim > 0);
+float Node::getX() const {
+    assert(m_vec.getDim() > 0);
     return m_vec[0];
 }
 
-template<unsigned int dim>
-float Node<dim>::getY() const {
-    assert(dim > 1);
+float Node::getY() const {
+    assert(m_vec.getDim() > 1);
     return m_vec[1];
 }
 
-template<unsigned int dim>
-float Node<dim>::getZ() const {
-    assert(dim > 2);
+float Node::getZ() const {
+    assert(m_vec.getDim() > 2);
     return m_vec[2];
 }
 
-template<unsigned int dim>
-bool Node<dim>::empty() const {
+unsigned int Node::getDim() {
+    return m_vec.getDim();
+}
+
+bool Node::empty() const {
     return m_vec.empty();
 }
 
-template<unsigned int dim>
-void Node<dim>::setVecValue(const float &value, const unsigned int &index) {
+void Node::setVecValue(const float &value, const unsigned int &index) {
     m_vec[index] = value;
 }
 
-template<unsigned int dim>
-float Node<dim>::getVecValue(const unsigned int &index) {
+float Node::getVecValue(const unsigned int &index) {
     return m_vec[index];
 }
 
-template<unsigned int dim>
-float Node<dim>::norm() const {
+float Node::norm() const {
     return m_vec.norm();
 }
 
-template<unsigned int dim>
-float Node<dim>::getDist(const shared_ptr<Node<dim>> &node) const {
+float Node::getDist(const shared_ptr<Node> &node) const {
     return getDist(*node);
 }
 
-template<unsigned int dim>
-float Node<dim>::getDist(const Node<dim> &node) const {
+float Node::getDist(const Node &node) const {
     return m_vec.getDist(node.getVec());
 }
 
-template<unsigned int dim>
-float Node<dim>::getDistToParent() const {
+float Node::getDistToParent() const {
     if (m_parent == NULL)
         return -1;
     else
         return getDist(m_parent);
 }
 
-template<unsigned int dim>
-void Node<dim>::setCost(const float &cost) {
+void Node::setCost(const float &cost) {
     if (cost > 0)
         m_cost = cost;
 }
 
-template<unsigned int dim>
-float Node<dim>::getCost() const {
+float Node::getCost() const {
     return m_cost;
 }
 
-template<unsigned int dim>
-void Node<dim>::setParent(const shared_ptr<Node<dim>> &parent) {
+void Node::setParent(const shared_ptr<Node> &parent) {
     m_parent = parent;
 }
 
-template<unsigned int dim>
-shared_ptr<Node<dim>> Node<dim>::getParent() {
+shared_ptr<Node> Node::getParent() {
     return m_parent;
 }
 
-template<unsigned int dim>
-void Node<dim>::clearParent() {
+void Node::clearParent() {
     m_parent = NULL;
 }
 
-template<unsigned int dim>
-void Node<dim>::addChild(const shared_ptr<Node<dim>> &child) {
+void Node::addChild(const shared_ptr<Node> &child) {
     m_childs.push_back(child);
 }
 
-template<unsigned int dim>
-std::vector<shared_ptr<Node<dim>>> Node<dim>::getChilds() {
+std::vector<shared_ptr<Node>> Node::getChilds() {
     return m_childs;
 }
 
-template<unsigned int dim>
-void Node<dim>::clearChilds() {
+void Node::clearChilds() {
     m_childs.clear();
 }
 
-template<unsigned int dim>
-void Node<dim>::addEdge(Edge<dim> edge) {
+void Node::addEdge(Edge edge) {
     m_edges.push_back(edge);
 }
 
-template<unsigned int dim>
-std::vector<Edge<dim>> Node<dim>::getEdges() {
+std::vector<Edge> Node::getEdges() {
     return m_edges;
 }
 
-template<unsigned int dim>
-void Node<dim>::clearEdges() {
+void Node::clearEdges() {
     m_edges.clear();
 }
 
-template<unsigned int dim>
-Vec<dim, float> Node<dim>::getVec() const {
+Vec<float> Node::getVec() const {
     return m_vec;
 }
 

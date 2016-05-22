@@ -6,57 +6,48 @@
 
 using std::shared_ptr;
 
-template<unsigned int dim>
 class Node;
 
-template<unsigned int dim>
 class Edge
 {
 public:
-    Edge(const shared_ptr<Node<dim>> &parent, const shared_ptr<Node<dim>> &target);
+    Edge(const shared_ptr<Node> &parent, const shared_ptr<Node> &target);
 
     float getLength() const;
 
-    void setSource(const shared_ptr<Node<dim>> &parent);
-    void setTarget (const shared_ptr<Node<dim>> &target);
+    void setSource(const shared_ptr<Node> &parent);
+    void setTarget (const shared_ptr<Node> &target);
 
-    shared_ptr<Node<dim>> getSource() const;
-    shared_ptr<Node<dim>> getTarget() const;
+    shared_ptr<Node> getSource() const;
+    shared_ptr<Node> getTarget() const;
 
 private:
-    shared_ptr<Node<dim>> m_parent;
-    shared_ptr<Node<dim>> m_target;
+    shared_ptr<Node> m_parent;
+    shared_ptr<Node> m_target;
 };
 
-template<unsigned int dim>
-Edge<dim>::Edge(const shared_ptr<Node<dim>> &parent, const shared_ptr<Node<dim>> &target) {
+Edge::Edge(const shared_ptr<Node> &parent, const shared_ptr<Node> &target) {
     m_parent = parent;
     m_target = target;
-
 }
 
-template<unsigned int dim>
-float Edge<dim>::getLength() const {
-    return m_parent->getDist(m_target);
+float Edge::getLength() const {
+    return 0;//return m_parent->getDist(m_target);
 }
 
-template<unsigned int dim>
-void Edge<dim>::setSource(const shared_ptr<Node<dim>> &parent) {
+void Edge::setSource(const shared_ptr<Node> &parent) {
     m_parent = parent;
 }
 
-template<unsigned int dim>
-void Edge<dim>::setTarget(const shared_ptr<Node<dim>> &target) {
+void Edge::setTarget(const shared_ptr<Node> &target) {
     m_target = target;
 }
 
-template<unsigned int dim>
-shared_ptr<Node<dim>> Edge<dim>::getSource() const {
+shared_ptr<Node> Edge::getSource() const {
     return m_parent;
 }
 
-template<unsigned int dim>
-shared_ptr<Node<dim>> Edge<dim>::getTarget() const {
+shared_ptr<Node> Edge::getTarget() const {
     return m_target;
 }
 

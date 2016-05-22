@@ -1,15 +1,12 @@
 #ifndef DRAWING_H_
 #define DRAWING_H_
 
-#ifdef __linux__
-    #include "opencv2/imgproc/imgproc.hpp"
-    #include "opencv2/highgui/highgui.hpp"
-#else
-    #include <opencv2/imgproc.hpp>
-    #include <opencv2/highgui.hpp>
-    #include <opencv2/imgcodecs.hpp>
-#endif
 
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+
+
+#include <assert.h>
 #include <cstdint>
 #include <memory>
 #include "Graph.h"
@@ -20,9 +17,9 @@ class Drawing
 {
 public:
 
-    template<unsigned int dim>
-    static void drawTree(std::vector<shared_ptr<Node<dim>>> nodes, cv::Mat &image)
+    static void drawTree(std::vector<shared_ptr<Node>> nodes, cv::Mat &image)
     {
+        assert(nodes[0]->getDim() == 2);
         for (auto& elem : nodes) {
             cv::Point point(elem->getX(), elem->getY());
             cv::circle(image, point, 3, cv::Scalar(0, 0, 255), 2);
@@ -33,22 +30,21 @@ public:
         }
     }
 
-    template<unsigned int dim>
-    static void drawPath(const shared_ptr<Node<dim>> goalNode, cv::Mat &image)
+    static void drawPath(const shared_ptr<Node> goalNode, cv::Mat &image)
     {
+        assert(goalNode->getDim() == 2);
         // build vector for Drawing
-        std::vector<shared_ptr<Node<dim>>> nodes;
+        std::vector<shared_ptr<Node>> nodes;
         nodes.push_back(goalNode);
-        shared_ptr<Node<dim>> temp = goalNode->getParent();
+        shared_ptr<Node> temp = goalNode->getParent();
         while(temp != NULL) {
             nodes.push_back(temp);
             temp = temp->getParent();
         }
-        drawPath<dim>(nodes, image);
+        drawPath(nodes, image);
     }
 
-    template<unsigned int dim>
-    static void drawPath(std::vector<shared_ptr<Node<dim>>> nodes, cv::Mat &image)
+    static void drawPath(std::vector<shared_ptr<Node>> nodes, cv::Mat &image)
     {
         for (auto& elem : nodes) {
             if (elem->getParent() != NULL) {

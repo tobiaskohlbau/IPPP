@@ -5,40 +5,37 @@
 
 using std::shared_ptr;
 
-template<unsigned int dim>
-class RRTPlanner : public Planner<dim>
+class RRTPlanner : public Planner
 {
 public:
-    RRTPlanner(float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
+    RRTPlanner(const unsigned int &dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
-    bool setInitNode(Node<dim> node);
+    bool setInitNode(Node node);
     bool computeTree(const int nbOfNodes);
-    bool connectGoalNode(shared_ptr<Node<dim>> goalNode);
+    bool connectGoalNode(shared_ptr<Node> goalNode);
 
 protected:
-    virtual void computeRRTNode(const Vec<dim, float> &randVec, shared_ptr<Node<dim>> &newNode) = 0;
-    Vec<dim, float> computeNodeNew(const Vec<dim, float> &randNode, const Vec<dim, float> &nearestNode);
+    virtual void computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) = 0;
+    Vec<float> computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode);
 
     // variables
-    Node<dim>  m_initNode;
-    Node<dim>  m_goalNode;
+    Node  m_initNode;
+    Node  m_goalNode;
 };
 
-template<unsigned int dim>
-RRTPlanner<dim>::RRTPlanner(float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
-    : Planner<dim>(stepSize, trajectory, sampling)
+RRTPlanner::RRTPlanner(const unsigned int &dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+    : Planner(dim, stepSize, trajectory, sampling)
 {
 }
 
-template<unsigned int dim>
-bool RRTPlanner<dim>::setInitNode(Node<dim> node) {
+bool RRTPlanner::setInitNode(Node node) {
     this->controlConstraints();
-    for (unsigned int i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < this->m_dim; ++i)
         if (node.getVec()[i] < this->m_minBoundary[i] || node.getVec()[i] > this->m_maxBoundary[i])
             return false;
 
-    shared_ptr<Node<dim>> shrNode(new Node<dim>(node));
-    if (this->m_collision->template controlCollision<dim>(shrNode))
+    shared_ptr<Node> shrNode(new Node(node));
+    if (this->m_collision->controlCollision(shrNode))
         return false;
 
     m_initNode = node;
@@ -46,17 +43,16 @@ bool RRTPlanner<dim>::setInitNode(Node<dim> node) {
     return true;
 }
 
-template<unsigned int dim>
-bool RRTPlanner<dim>::computeTree(const int nbOfNodes)
+bool RRTPlanner::computeTree(const int nbOfNodes)
 {
     if (!this->controlConstraints())
         return false;
 
     for (int i = 0; i < nbOfNodes; ++i)
     {
-        shared_ptr<Node<dim>> newNode;
+        shared_ptr<Node> newNode;
         // compute randomly sample
-        Vec<dim, float> randVec = this->m_sampler->getSample(i, nbOfNodes);
+        Vec<float> randVec = this->m_sampler->getSample(m_dim, i, nbOfNodes);
 
         computeRRTNode(randVec, newNode);
 
@@ -69,14 +65,13 @@ bool RRTPlanner<dim>::computeTree(const int nbOfNodes)
     return true;
 }
 
-template<unsigned int dim>
-bool RRTPlanner<dim>::connectGoalNode(shared_ptr<Node<dim>> goalNode) {
-    if (this->m_collision->template controlCollision<dim>(goalNode))
+bool RRTPlanner::connectGoalNode(shared_ptr<Node> goalNode) {
+    if (this->m_collision->controlCollision(goalNode))
         return false;
 
-    std::vector<shared_ptr<Node<dim>>> nearNodes = this->m_graph.getNearNodes(goalNode, this->m_stepSize * 3);
+    std::vector<shared_ptr<Node>> nearNodes = this->m_graph.getNearNodes(goalNode, this->m_stepSize * 3);
 
-    shared_ptr<Node<dim>> nearestNode;
+    shared_ptr<Node> nearestNode;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < minCost) {
@@ -97,15 +92,14 @@ bool RRTPlanner<dim>::connectGoalNode(shared_ptr<Node<dim>> goalNode) {
     return false;
 }
 
-template<unsigned int dim>
-Vec<dim, float> RRTPlanner<dim>::computeNodeNew(const Vec<dim, float> &randNode, const Vec<dim, float> &nearestNode) {
+Vec<float> RRTPlanner::computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode) {
     if (randNode.getDist(nearestNode) < this->m_stepSize)
         return randNode;
 
     // p = a + k * (b-a)
     // ||u|| = ||b - a||
     // k = stepSize / ||u||
-    Vec<dim, float> u = randNode - nearestNode;
+    Vec<float> u = randNode - nearestNode;
     u *= this->m_stepSize / u.norm();
     u += nearestNode;
     return u;

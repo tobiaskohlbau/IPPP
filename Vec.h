@@ -7,7 +7,7 @@
 
 using std::shared_ptr;
 
-template<unsigned int dim, typename T>
+template<typename T>
 class Vec
 {
 public:
@@ -18,167 +18,199 @@ public:
     Vec(const T &x, const T &y, const T &z, const T &rx);
     Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry);
     Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz);
-    Vec(const T data[]);
+    Vec(const unsigned int &dim);
+    Vec(const unsigned int &dim, const T data[]);
+    Vec(const Vec<T> &vec);
 
     void setAllTo(const T &value);
 
-    T getValue(unsigned int index);
+    unsigned int getDim() const;
     bool empty() const;
     T norm() const;
-    Vec<dim, T> abs() const;
-    T getDist(const Vec<dim, T> &vec) const;
-    T getSqDist(const Vec<dim, T> &vec) const;
+    Vec<T> abs() const;
+    T getDist(const Vec<T> &vec) const;
+    T getSqDist(const Vec<T> &vec) const;
+    void print();
 
     inline T& operator [] (const unsigned int index) {
-        assert (index < dim);
+        assert (index < m_dim);
         return m_data[index];
     }
 
     inline const T& operator [] (const unsigned int index) const {
-        assert (index < dim);
+        assert (index < m_dim);
         return m_data[index];
     }
 
-    Vec<dim, T>& operator += (const Vec<dim, T> &vec) {
-        for (unsigned int i = 0; i < dim; ++i)
+    Vec<T> &operator = (const Vec<T> &vec) {
+        if (this == &vec)      // Same object?
+              return *this;
+        m_dim = vec.getDim();
+        this->m_data = std::unique_ptr<T[]>(new T[m_dim]);
+        for (unsigned int i = 0; i < m_dim; ++i) {
+            this->m_data[i] = vec[i];
+        }
+        return *this;
+    }
+
+    Vec<T>& operator += (const Vec<T> &vec) {
+        assert(m_dim == vec.getDim());
+        for (unsigned int i = 0; i < m_dim; ++i)
             m_data[i] += vec[i];
         return *this;
     }
 
-    Vec<dim, T>& operator += (const T scalar) {
-        for (unsigned int i = 0; i < dim; ++i)
+    Vec<T>& operator += (const T scalar) {
+        for (unsigned int i = 0; i < m_dim; ++i)
             m_data[i] += scalar;
         return *this;
     }
 
-    Vec operator + (const Vec<dim, T> &v) const {
-        Vec result = Vec<dim, T>::zeros();
-        for (unsigned int i = 0; i < dim; ++i)
-            result[i] = (*this)[i] + v[i];
+    Vec operator + (const Vec<T> &vec) const {
+        assert(m_dim == vec.getDim());
+        Vec result = Vec<T>::zeros(m_dim);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result[i] = (*this)[i] + vec[i];
         return result;
     }
 
-    Vec& operator -= (const Vec<dim, T> &v) {
-        for (unsigned int i = 0; i < dim; ++i)
-            (*this)[i] -= v[i];
+    Vec& operator -= (const Vec<T> &vec) {
+        assert(m_dim == vec.getDim());
+        for (unsigned int i = 0; i < m_dim; ++i)
+            (*this)[i] -= vec[i];
         return *this;
     }
 
     Vec& operator -= (const T scalar) {
-        for (unsigned int i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] -= scalar;
         return *this;
     }
 
-    Vec operator - (const Vec<dim, T> &v) const {
-        Vec result = Vec<dim, T>::zeros();
-        for (unsigned int i = 0; i < dim; ++i)
-            result[i] = (*this)[i] - v[i];
+    Vec operator - (const Vec<T> &vec) const {
+        assert(m_dim == vec.getDim());
+        Vec result = Vec<T>::zeros(m_dim);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result[i] = (*this)[i] - vec[i];
         return result;
     }
 
     Vec operator + (const T &s) const {
-        Vec<dim, T> result(*this);
-        for (unsigned int i = 0; i < dim; ++i)
+        Vec<T> result(*this);
+        for (unsigned int i = 0; i < m_dim; ++i)
             result[i] += s;
         return result;
     }
 
     Vec operator - (const T &s) const {
-        Vec<dim, T> result(*this);
-        for (unsigned int i = 0; i < dim; ++i)
+        Vec<T> result(*this);
+        for (unsigned int i = 0; i < m_dim; ++i)
             result[i] -= s;
         return result;
     }
 
     Vec& operator *= (const T s) {
-        for (unsigned int i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] *= s;
         return *this;
     }
 
     Vec operator * (const T &s) const {
-        Vec result = Vec<dim, T>::zeros();
-        for (unsigned int i = 0; i < dim; ++i)
+        Vec result = Vec<T>::zeros(m_dim);
+        for (unsigned int i = 0; i < m_dim; ++i)
             result[i] = (*this)[i] * s;
         return result;
     }
 
-    T operator * (const Vec<dim, T> &v) const {
+    T operator * (const Vec<T> &vec) const {
+        assert(m_dim == vec.getDim());
         T result = 0;
-        for (unsigned int i = 0; i < dim; ++i)
-            result += (*this)[i] * v[i];
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result += (*this)[i] * vec[i];
         return result;
     }
 
     Vec& operator /= (const T &s) {
-        for (unsigned int i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] /= s;
         return *this;
     }
 
     Vec operator / (const T &s) const {
-        Vec result = Vec<dim, T>::zeros();
-        for (unsigned int i = 0; i < dim; ++i)
+        Vec result = Vec<T>::zeros(m_dim);
+        for (unsigned int i = 0; i < m_dim; ++i)
             result[i] = (*this)[i] / s;
         return result;
     }
 
-    static Vec<dim, T> zeros() {
-        Vec<dim, T> vec;
+    static Vec<T> zeros(unsigned int dim) {
+        Vec<T> vec(dim);
         vec.setAllTo(0);
         return vec;
     }
 
-    static Vec<dim, T> ones() {
-        Vec<dim, T> vec;
+    static Vec<T> ones(unsigned int dim) {
+        Vec<T> vec(dim);
         vec.setAllTo(1);
         return vec;
     }
 
 private:
-    T m_data[dim];
+    std::unique_ptr<T[]> m_data;
+    unsigned int m_dim;
 };
 
-template<unsigned int dim, typename T>
-Vec<dim, T>::Vec() {
-    for (unsigned int i = 0; i < dim; ++i)
-        m_data[i] = NAN;
+template<typename T>
+Vec<T>::Vec() {
+    m_dim = 0;
 }
 
-template<unsigned int dim, typename T>
-Vec<dim, T>::Vec(const T &x) {
-    assert(dim == 1);
+template<typename T>
+Vec<T>::Vec(const unsigned int &dim) {
+    m_dim = dim;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
+    for (unsigned int i = 0; i < m_dim; ++i)
+        (*this)[i] = NAN;
+}
+
+template<typename T>
+Vec<T>::Vec(const T &x) {
+    m_dim = 1;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
 }
 
-template<unsigned int dim, typename T>
-Vec<dim, T>::Vec(const T &x, const T &y) {
-    assert(dim == 2);
+template<typename T>
+Vec<T>::Vec(const T &x, const T &y) {
+    m_dim = 2;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
     m_data[1] = y;
 }
 
-template<unsigned int dim, typename T>
-Vec<dim, T>::Vec(const T &x, const T &y, const T &z) {
-    assert(dim == 3);
+template<typename T>
+Vec<T>::Vec(const T &x, const T &y, const T &z) {
+    m_dim = 3;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
     m_data[1] = y;
     m_data[2] = z;
 }
 
-template<unsigned int dim, typename T>
-Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx) {
-    assert(dim == 4);
+template<typename T>
+Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx) {
+    m_dim = 4;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
     m_data[1] = y;
     m_data[2] = z;
     m_data[3] = rx;
 }
 
-template<unsigned int dim, typename T>
-Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry) {
-    assert(dim == 5);
+template<typename T>
+Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry) {
+    m_dim = 5;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
     m_data[1] = y;
     m_data[2] = z;
@@ -186,9 +218,10 @@ Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry) {
     m_data[4] = ry;
 }
 
-template<unsigned int dim, typename T>
-Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz) {
-    assert(dim == 6);
+template<typename T>
+Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz) {
+    m_dim = 6;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
     m_data[1] = y;
     m_data[2] = z;
@@ -197,58 +230,76 @@ Vec<dim, T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, c
     m_data[5] = rz;
 }
 
-template<unsigned int dim, typename T>
-Vec<dim, T>::Vec(const T data[]) {
-    for (unsigned int i = 0; i < dim; ++i)
+template<typename T>
+Vec<T>::Vec(const unsigned int &dim, const T data[]) {
+    m_dim = m_dim;
+    for (unsigned int i = 0; i < m_dim; ++i)
         (*this)[i] = data[i];
 }
 
-template<unsigned int dim, typename T>
-void Vec<dim, T>::setAllTo(const T &value) {
-    for (unsigned int i = 0; i < dim; ++i)
+template<typename T>
+Vec<T>::Vec(const Vec<T> &vec) {
+    *this = vec;
+}
+
+template<typename T>
+void Vec<T>::setAllTo(const T &value) {
+    for (unsigned int i = 0; i < m_dim; ++i)
         (*this)[i] = value;
 }
 
-template<unsigned int dim, typename T>
-T Vec<dim, T>:: getValue(unsigned int index){
-    return m_data[index];
+template<typename T>
+unsigned int Vec<T>::getDim() const {
+    return m_dim;
 }
 
-template<unsigned int dim, typename T>
-bool Vec<dim, T>::empty() const{
-    for (unsigned int i = 0; i < dim; ++i)
+template<typename T>
+bool Vec<T>::empty() const{
+    if (m_dim == 0)
+        return true;
+    for (unsigned int i = 0; i < m_dim; ++i)
         if ((*this)[i] == NAN)
             return true;
     return false;
 }
 
-template<unsigned int dim, typename T>
-T Vec<dim, T>::norm() const {
+template<typename T>
+T Vec<T>::norm() const {
     T norm = 0;
-    for (unsigned int i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < m_dim; ++i)
         norm += (*this)[i] * (*this)[i];
     return sqrtf(norm);
 }
 
-template<unsigned int dim, typename T>
-Vec<dim, T> Vec<dim, T>::abs() const {
-    Vec<dim, T> result;
-    for (unsigned int i = 0; i < dim; ++i)
+template<typename T>
+Vec<T> Vec<T>::abs() const {
+    Vec<T> result;
+    for (unsigned int i = 0; i < m_dim; ++i)
         result[i] = fabs((*this)[i]);
     return result;
 }
 
-template<unsigned int dim, typename T>
-T Vec<dim, T>::getDist(const Vec<dim, T> &vec) const{
+template<typename T>
+T Vec<T>::getDist(const Vec<T> &vec) const{
+    assert(m_dim == vec.getDim());
     return sqrtf(getSqDist(vec));
 }
 
-template<unsigned int dim, typename T>
-T Vec<dim, T>::getSqDist(const Vec<dim, T> &vec) const{
+template<typename T>
+T Vec<T>::getSqDist(const Vec<T> &vec) const{
+    assert(m_dim == vec.getDim());
     T dist = 0;
-    for (unsigned int i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < m_dim; ++i)
         dist += ((*this)[i] - vec[i]) * ((*this)[i] - vec[i]);
     return dist;
+}
+
+template<typename T>
+void Vec<T>::print() {
+    std::cout << "Dim: " << m_dim << " | ";
+    for (unsigned int i = 0; i < m_dim; ++i)
+        std::cout << "Value" << i << ": " << (*this)[i] << "  ";
+    std::cout << std::endl;
 }
 
 #endif /* VEC_H_ */

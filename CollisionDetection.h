@@ -15,8 +15,7 @@
 class CollisionDetection
 {
 public:
-    template<unsigned int dim>
-    bool controlCollision(const std::shared_ptr<Node<dim>> node);
+    bool controlCollision(const std::shared_ptr<Node> node);
     bool controlCollision2D(const float x, const float y);
 
     void set2DWorkspace(cv::Mat space);
@@ -25,9 +24,8 @@ private:
     cv::Mat m_workspace;
 };
 
-template<unsigned int dim>
-bool CollisionDetection::controlCollision(const std::shared_ptr<Node<dim>> node) {
-    if (dim == 2)
+bool CollisionDetection::controlCollision(const std::shared_ptr<Node> node) {
+    if (node->getDim() == 2)
         return controlCollision2D(node->getX(), node->getY());
     else
         return false;

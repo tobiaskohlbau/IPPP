@@ -5,26 +5,25 @@
 
 using std::shared_ptr;
 
-template<unsigned int dim>
-class NormalRRTPlanner : public RRTPlanner<dim>
+class NormalRRTPlanner : public RRTPlanner
 {
 public:
-    NormalRRTPlanner(float stepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
-    : RRTPlanner<dim>(stepSize, trajectory, sampling) // Argumente an Basisklassenkonstruktor weiterleiten
+    NormalRRTPlanner(const unsigned int &dim, float stepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
+    : RRTPlanner(dim, stepSize, trajectory, sampling)
     {
     }
 
 protected:
-    void computeRRTNode(const Vec<dim, float> &randVec, shared_ptr<Node<dim>> &newNode) {
+    void computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
         // get nearest neighbor
-        shared_ptr<Node<dim>> nearestNode = this->m_graph.getNearestNode(Node<dim>(randVec));
+        shared_ptr<Node> nearestNode = this->m_graph.getNearestNode(Node(randVec));
         if (nearestNode == NULL)
             std::cout << "NULL" << std::endl;
         // compute node new with fixed step size
-        Vec<dim, float> newVec = RRTPlanner<dim>::computeNodeNew(randVec, nearestNode->getVec());
-        newNode = shared_ptr<Node<dim>>(new Node<dim>(newVec));
+        Vec<float> newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getVec());
+        newNode = shared_ptr<Node>(new Node(newVec));
 
-        if (this->m_collision->template controlCollision<dim>(newNode)) {
+        if (this->m_collision->controlCollision(newNode)) {
             newNode = NULL;
             return;
         }

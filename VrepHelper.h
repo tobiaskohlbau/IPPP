@@ -17,32 +17,35 @@ extern "C" {
 }
 #define NON_MATLAB_PARSING
 
-template<unsigned int dim>
 class VrepHelper
 {
 public:
-    VrepHelper();
+    VrepHelper(const unsigned int &dim);
     void startVrep();
-    bool setPos(const Vec<dim, float> &vec);
+    bool setPos(const Vec<float> &vec);
 
 private:
-    Vec<dim, simxFloat> convertVecToRad(const Vec<dim, float> &vec); // convert to simxFloat array and radiant
+    unsigned int m_dim;
+    Vec<simxFloat> convertVecToRad(const Vec<float> &vec); // convert to simxFloat array and radiant
     simxInt m_clientId;
     simxInt m_jacoHandle;
-    Vec<dim, simxInt> m_jointHandles;
-    Vec<dim, simxInt> m_linkHandles;
-    Vec<dim, simxInt> m_collisionHandle;
+    Vec<simxInt> m_jointHandles;
+    Vec<simxInt> m_linkHandles;
+    Vec<simxInt> m_collisionHandle;
 };
 
-template<unsigned int dim>
-VrepHelper<dim>::VrepHelper() {
+VrepHelper::VrepHelper(const unsigned int &dim) {
+    m_dim = dim;
     m_clientId = -1;
-    for (unsigned int i = 0; i < dim; ++i)
+
+    m_jointHandles = Vec<simxInt>(m_dim);
+    m_linkHandles = Vec<simxInt>(m_dim);
+    m_collisionHandle = Vec<simxInt>(m_dim);
+    for (unsigned int i = 0; i < m_dim; ++i)
         m_jointHandles[i] = -1;
 }
 
-template<unsigned int dim>
-void VrepHelper<dim>::startVrep() {
+void VrepHelper::startVrep() {
     std::cout << "Program started" << std::endl;
 
     simxInt errorCodejaco, errorcode[10];
@@ -80,7 +83,7 @@ void VrepHelper<dim>::startVrep() {
         printf("Error code Jaco %d\n",errorCodejaco);
 
         simxUChar collisionState;
-        for (unsigned int i = 0; i < dim; ++i) {
+        for (unsigned int i = 0; i < m_dim; ++i) {
             simxReadCollision(m_clientId, m_collisionHandle[i], &collisionState, simx_opmode_oneshot_wait);
             printf("Error code Jaco link collision %d %d\n",i,collisionState);
         }
@@ -92,21 +95,20 @@ void VrepHelper<dim>::startVrep() {
     }
 }
 
-template<unsigned int dim>
-bool VrepHelper<dim>::setPos(const Vec<dim, float> &vec) {
+bool VrepHelper::setPos(const Vec<float> &vec) {
     if (m_clientId != -1) {
 
-        simxInt errorCodeJointPos[dim];
-        Vec<dim, simxFloat> pos = convertVecToRad(vec);
-        for (unsigned int i = 0; i < dim; ++i)
+        simxInt errorCodeJointPos[m_dim];
+        Vec<simxFloat> pos = convertVecToRad(vec);
+        for (unsigned int i = 0; i < m_dim; ++i)
             errorCodeJointPos[i]=simxSetJointPosition(m_clientId,m_jointHandles[i],pos[i],simx_opmode_oneshot_wait);
         usleep(2000000);
 
-        for (int i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < m_dim; ++i)
             printf("Error code Joint Position%d %d\n",i,errorCodeJointPos[i]);
 
         simxUChar collisionState;
-        for (unsigned int i = 0; i < dim; ++i) {
+        for (unsigned int i = 0; i < m_dim; ++i) {
             simxReadCollision(m_clientId, m_collisionHandle[i], &collisionState, simx_opmode_oneshot_wait);
             printf("Error code Jaco link collision %d %d\n",i,collisionState);
         }
@@ -122,10 +124,9 @@ bool VrepHelper<dim>::setPos(const Vec<dim, float> &vec) {
     }
 }
 
-template<unsigned int dim>
-Vec<dim, simxFloat> VrepHelper<dim>::convertVecToRad(const Vec<dim, float> &vec) {
-    Vec<dim, simxFloat> rads;
-    for (unsigned int i = 0; i < dim; ++i) {
+Vec<simxFloat> VrepHelper::convertVecToRad(const Vec<float> &vec) {
+    Vec<simxFloat> rads(vec.getDim());
+    for (unsigned int i = 0; i < m_dim; ++i) {
         rads[i] = vec[i]*M_PI/180;
     }
     return rads;

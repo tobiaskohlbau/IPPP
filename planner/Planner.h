@@ -9,50 +9,57 @@
 #include <Sampling.h>
 #include <TrajectoryPlanner.h>
 
-template<unsigned int dim>
 class Planner
 {
 public:
-    Planner(const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
+    Planner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
     void set2DWorkspace(cv::Mat space);
-    std::vector<Node<dim>> getPath();
-    void getTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
-    void setWorkspaceBoundaries(Vec<dim, float> &minBoundary, Vec<dim, float> &maxBoundary);
+    std::vector<Node> getPath();
+    void getTree(std::vector<std::shared_ptr<Node>> &nodes) const;
+    void setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary);
 
 protected:
     bool controlConstraints();
 
     // modules
     TrajectoryPlanner  *m_planner;
-    Sampling<dim>      *m_sampler;
+    Sampling           *m_sampler;
     CollisionDetection *m_collision;
-    Graph<dim>          m_graph;
+    Graph               m_graph;
 
     // variables
-    float           m_stepSize;
-    cv::Mat         m_workspace;
-    Vec<dim, float> m_maxBoundary;
-    Vec<dim, float> m_minBoundary;
+    unsigned int m_dim;
+    float        m_stepSize;
+    cv::Mat      m_workspace;
+    Vec<float>   m_maxBoundary;
+    Vec<float>   m_minBoundary;
 };
 
-template<unsigned int dim>
-Planner<dim>::Planner(const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling) {
+Planner::Planner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling) {
+    m_dim = dim;
     m_stepSize = stepSize;
-    m_sampler = new Sampling<dim>();
+    m_sampler = new Sampling(sampling);
     m_collision = new CollisionDetection();
     m_planner = new TrajectoryPlanner(trajectory, m_collision);
 }
 
-template<unsigned int dim>
-void Planner<dim>::set2DWorkspace(cv::Mat space) {
+void Planner::set2DWorkspace(cv::Mat space) {
     m_workspace = space;
     m_collision->set2DWorkspace(m_workspace);
 }
 
-template<unsigned int dim>
-void Planner<dim>::setWorkspaceBoundaries(Vec<dim, float> &minBoundary, Vec<dim, float> &maxBoundary) {
-    for (unsigned int i = 0; i < dim; ++i) {
+void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary) {
+    if (minBoundary.empty() || maxBoundary.empty()) {
+        std::cout << "No boundaries set" << std::endl;
+        return;
+    }
+    else if (minBoundary.getDim() != maxBoundary.getDim()) {
+        std::cout << "Boudaries have different dimensions" << std::endl;
+        return;
+    }
+
+    for (unsigned int i = 0; i < m_dim; ++i) {
         if (minBoundary[i] > maxBoundary[i]) {
             std::cout << "Wrong boudaries set" << std::endl;
             return;
@@ -60,21 +67,19 @@ void Planner<dim>::setWorkspaceBoundaries(Vec<dim, float> &minBoundary, Vec<dim,
     }
     m_maxBoundary = maxBoundary;
     m_minBoundary = minBoundary;
-    m_sampler->setBoundaries(maxBoundary, minBoundary);
+    m_sampler->setBoundaries(minBoundary, maxBoundary);
 }
 
-template<unsigned int dim>
-void Planner<dim>::getTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) const {
+void Planner::getTree(std::vector<std::shared_ptr<Node>> &nodes) const {
     nodes = m_graph.getNodes();
 }
 
-template<unsigned int dim>
-bool Planner<dim>::controlConstraints() {
+bool Planner::controlConstraints() {
     if (m_minBoundary.empty() || m_maxBoundary.empty()) {
         std::cout << "No boudaries set" << std::endl;
         return false;
     }
-    if (dim == 2 && this->m_workspace.empty())
+    if (m_dim == 2 && this->m_workspace.empty())
         return false;
     else
         return true;
