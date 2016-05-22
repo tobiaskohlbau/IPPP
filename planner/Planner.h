@@ -4,11 +4,10 @@
 #include <cstdint>
 #include <iostream>
 
-#include "CollisionDetection.h"
-#include "Graph.h"
-#include "Node.h"
-#include "Sampling.h"
-#include "TrajectoryPlanner.h"
+#include <CollisionDetection.h>
+#include <Graph.h>
+#include <Sampling.h>
+#include <TrajectoryPlanner.h>
 
 template<unsigned int dim>
 class Planner

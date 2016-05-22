@@ -15,8 +15,8 @@
 
 #include <memory>
 #include <ctime>
-#include "NormalRRTPlanner.h"
-#include "StarRRTPlanner.h"
+#include <NormalRRTPlanner.h>
+#include <StarRRTPlanner.h>
 #include "Drawing.h"
 #include "VrepHelper.h"
 

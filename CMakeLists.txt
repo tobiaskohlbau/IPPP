@@ -27,6 +27,7 @@ include_directories (
 link_directories(
     ${VREP_DIR}/programming/v_repExtRemoteApi/lib)
 
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/planner)
 
 #source
 set(SRCS
@@ -41,11 +42,12 @@ set(HDRS
     KDNode.h
     KDTree.h
     Node.h
-    NormalRRTPlanner.h
-    RRTPlanner.h
+    planner/NormalRRTPlanner.h
+    planner/Planner.h
+    planner/RRTPlanner.h
+    planner/StarRRTPlanner.h
     Sampling.h
     SearchNearestNeighbor.h
-    StarRRTPlanner.h
     TrajectoryPlanner.h
     Vec.h
     VrepHelper.h)
