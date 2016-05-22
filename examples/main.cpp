@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <ctime>
+#include <Planner.h>
 #include <NormalRRTPlanner.h>
 #include <StarRRTPlanner.h>
 #include <Drawing.h>
@@ -29,13 +30,12 @@ void planning2D() {
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(7000);
+    planner.computeTree(2000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
 
-    std::vector<std::shared_ptr<Node>> nodes;
-    planner.getTree(nodes);
+    std::vector<std::shared_ptr<Node>> nodes = planner.getTree();
 
     // draw the result, if 2D is used
     cv::Mat image = obstacleWorkspace.clone();

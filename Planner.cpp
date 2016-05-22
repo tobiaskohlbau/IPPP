@@ -1,40 +1,4 @@
-#ifndef PLANNER_H_
-#define PLANNER_H_
-
-#include <cstdint>
-#include <iostream>
-
-#include <CollisionDetection.h>
-#include <Graph.h>
-#include <Sampling.h>
-#include <TrajectoryPlanner.h>
-
-class Planner
-{
-public:
-    Planner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
-
-    void set2DWorkspace(cv::Mat space);
-    std::vector<Node> getPath();
-    std::vector<std::shared_ptr<Node>> getTree();
-    void setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary);
-
-protected:
-    bool controlConstraints();
-
-    // modules
-    TrajectoryPlanner  *m_planner;
-    Sampling           *m_sampler;
-    CollisionDetection *m_collision;
-    Graph               m_graph;
-
-    // variables
-    unsigned int m_dim;
-    float        m_stepSize;
-    cv::Mat      m_workspace;
-    Vec<float>   m_maxBoundary;
-    Vec<float>   m_minBoundary;
-};
+#include "Planner.h"
 
 Planner::Planner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling) {
     m_dim = dim;
@@ -70,7 +34,7 @@ void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBou
     m_sampler->setBoundaries(minBoundary, maxBoundary);
 }
 
-std::vector<std::shared_ptr<Node>> Planner::getTree() {
+std::vector<std::shared_ptr<Node>> &nodes Planner::getTree() const {
     return m_graph.getNodes();
 }
 
@@ -84,5 +48,3 @@ bool Planner::controlConstraints() {
     else
         return true;
 }
-
-#endif /* RRTPLANNER_H_ */
