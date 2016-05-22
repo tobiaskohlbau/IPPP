@@ -29,11 +29,9 @@ link_directories(
 
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/planner)
 
-#source
 set(SRCS
     main.cpp)
 
-#header
 set(HDRS
     CollisionDetection.h
     Edge.h
@@ -64,30 +62,3 @@ configure_file(${CMAKE_SOURCE_DIR}/examples/spaces/freeWorkspace.png
     ${CMAKE_CURRENT_BINARY_DIR}/examples/spaces/freeWorkspace.png COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/examples/spaces/obstacleWorkspace.png
     ${CMAKE_CURRENT_BINARY_DIR}/examples/spaces/obstacleWorkspace.png COPYONLY)
-
-# copy the dll files to the executable at windows
-IF (WIN32)
-# DEBUG
-configure_file(${OpenCV_DIR}/bin/Debug/opencv_highgui300d.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Debug/opencv_highgui300d.dll COPYONLY)
-configure_file(${OpenCV_DIR}/bin/Debug/opencv_core300d.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Debug/opencv_core300d.dll COPYONLY)
-configure_file(${OpenCV_DIR}/bin/Debug/opencv_imgproc300d.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Debug/opencv_imgproc300d.dll COPYONLY)
-configure_file(${OpenCV_DIR}/bin/Debug/opencv_imgcodecs300d.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Debug/opencv_imgcodecs300d.dll COPYONLY)
-configure_file(${OpenCV_DIR}/bin/Debug/opencv_videoio300d.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Debug/opencv_videoio300d.dll COPYONLY)
-
-# RELEASE
-configure_file(${OpenCV_DIR}/bin/Release/opencv_highgui300.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Release/opencv_highgui300.dll COPYONLY)
-configure_file(${OpenCV_DIR}/bin/Release/opencv_core300.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Release/opencv_core300.dll COPYONLY)
-configure_file(${OpenCV_DIR}/bin/Release/opencv_imgproc300.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Release/opencv_imgproc300.dll COPYONLY)
-configure_file(${OpenCV_DIR}/bin/Release/opencv_imgcodecs300.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Release/opencv_imgcodecs300.dll COPYONLY)
-configure_file(${OpenCV_DIR}/bin/Release/opencv_videoio300.dll
-    ${CMAKE_CURRENT_BINARY_DIR}/Release/opencv_videoio300.dll COPYONLY)
-ENDIF()
