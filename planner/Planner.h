@@ -61,7 +61,7 @@ void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBou
 
     for (unsigned int i = 0; i < m_dim; ++i) {
         if (minBoundary[i] > maxBoundary[i]) {
-            std::cout << "Wrong boudaries set" << std::endl;
+            std::cout << "Min boundary is larger than max boundary" << std::endl;
             return;
         }
     }

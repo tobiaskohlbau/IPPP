@@ -10,6 +10,12 @@
 
 using std::shared_ptr;
 
+/*!
+* \brief   Class Node to present nodes of path planner
+* \details Consists of the position by an Vec, a cost parameter, pointer to an parent Node and a list of child nodes
+* \author  Sascha Kaden
+* \date    2016-05-23
+*/
 class Node
 {
 public:
@@ -192,9 +198,9 @@ float Node::getZ() const {
 }
 
 /*!
-*  \brief      Return the dimension of the node
+*  \brief      Return the dimension of the Node
 *  \author     Sascha Kaden
-*  \param[out] Dimension of the node
+*  \param[out] Dimension of the Node
 *  \date       2016-05-24
 */
 unsigned int Node::getDim() {
@@ -202,9 +208,9 @@ unsigned int Node::getDim() {
 }
 
 /*!
-*  \brief      Return true, if the vec is empty
+*  \brief      Return true, if the vector is empty
 *  \author     Sascha Kaden
-*  \param[out] State of the node
+*  \param[out] State of the Node
 *  \date       2016-05-24
 */
 bool Node::empty() const {
@@ -212,7 +218,7 @@ bool Node::empty() const {
 }
 
 /*!
-*  \brief      Set the vec element by index
+*  \brief      Set the vector element by index
 *  \author     Sascha Kaden
 *  \param[in]  value
 *  \param[in]  index
@@ -223,7 +229,7 @@ void Node::setVecValue(const float &value, const unsigned int &index) {
 }
 
 /*!
-*  \brief      Return the vec element by index
+*  \brief      Return the vector element by index
 *  \author     Sascha Kaden
 *  \param[in]  index
 *  \param[out] value
@@ -234,7 +240,7 @@ float Node::getVecValue(const unsigned int &index) {
 }
 
 /*!
-*  \brief      Return norm 2 from the vec
+*  \brief      Return norm 2 from the vector
 *  \author     Sascha Kaden
 *  \param[out] norm 2
 *  \date       2016-05-24
@@ -244,9 +250,9 @@ float Node::norm() const {
 }
 
 /*!
-*  \brief      Return distance to given node
+*  \brief      Return distance to given Node
 *  \author     Sascha Kaden
-*  \param[in]  shared_ptr to node
+*  \param[in]  shared_ptr to Node
 *  \param[out] distance
 *  \date       2016-05-24
 */
@@ -257,9 +263,9 @@ float Node::getDist(const shared_ptr<Node> &node) const {
 }
 
 /*!
-*  \brief      Return distance to given node
+*  \brief      Return distance to given Node
 *  \author     Sascha Kaden
-*  \param[in]  node
+*  \param[in]  Node
 *  \param[out] distance
 *  \date       2016-05-24
 */
@@ -270,7 +276,7 @@ float Node::getDist(const Node &node) const {
 }
 
 /*!
-*  \brief      Return distance to parent node
+*  \brief      Return distance to parent Node
 *  \author     Sascha Kaden
 *  \param[out] distance
 *  \date       2016-05-24
@@ -283,7 +289,7 @@ float Node::getDistToParent() const {
 }
 
 /*!
-*  \brief      Set cost of node
+*  \brief      Set cost of Node
 *  \author     Sascha Kaden
 *  \param[in]  cost
 *  \date       2016-05-24
@@ -294,7 +300,7 @@ void Node::setCost(const float &cost) {
 }
 
 /*!
-*  \brief      Return cost of node
+*  \brief      Return cost of Node
 *  \author     Sascha Kaden
 *  \param[out] cost
 *  \date       2016-05-24
@@ -304,9 +310,9 @@ float Node::getCost() const {
 }
 
 /*!
-*  \brief      Set parent of node
+*  \brief      Set parent of Node
 *  \author     Sascha Kaden
-*  \param[in]  shared_ptr parent node
+*  \param[in]  shared_ptr parent Node
 *  \date       2016-05-24
 */
 void Node::setParent(const shared_ptr<Node> &parent) {
@@ -314,9 +320,9 @@ void Node::setParent(const shared_ptr<Node> &parent) {
 }
 
 /*!
-*  \brief      Return parent of node
+*  \brief      Return parent of Node
 *  \author     Sascha Kaden
-*  \param[out] shared_ptr parent node
+*  \param[out] shared_ptr parent Node
 *  \date       2016-05-24
 */
 shared_ptr<Node> Node::getParent() {
@@ -324,7 +330,7 @@ shared_ptr<Node> Node::getParent() {
 }
 
 /*!
-*  \brief      Set parent node to nullptr
+*  \brief      Set parent Node to nullptr
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
@@ -333,9 +339,9 @@ void Node::clearParent() {
 }
 
 /*!
-*  \brief      Add child node to child list
+*  \brief      Add a child Node to child list
 *  \author     Sascha Kaden
-*  \param[in]  shared_ptr child node
+*  \param[in]  shared_ptr child Node
 *  \date       2016-05-24
 */
 void Node::addChild(const shared_ptr<Node> &child) {
