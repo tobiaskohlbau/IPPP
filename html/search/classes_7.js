@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['trajectoryplanner',['TrajectoryPlanner',['../classTrajectoryPlanner.html',1,'']]]
+  ['rrtplanner',['RRTPlanner',['../classRRTPlanner.html',1,'']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sampling',['Sampling',['../classSampling.html',1,'']]]
+  ['planner',['Planner',['../classPlanner.html',1,'']]]
 ];
