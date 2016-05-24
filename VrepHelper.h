@@ -24,6 +24,9 @@ public:
     void startVrep();
     bool setPos(const Vec<float> &vec);
 
+    bool isInCollision(const Vec<float> &jointAngles);
+    bool isInCollision(const Vec<float> &qStart, const Vec<float> &qGoal);
+
 private:
     unsigned int m_dim;
     Vec<simxFloat> convertVecToRad(const Vec<float> &vec); // convert to simxFloat array and radiant
@@ -122,6 +125,54 @@ bool VrepHelper::setPos(const Vec<float> &vec) {
     else {
         return false;
     }
+}
+
+bool VrepHelper::isInCollision(const Vec<float> &jointAngles)
+{
+	simxInt retJointColCnt;
+	simxInt* retJointCols;
+	simxInt result=0;
+	bool flag;
+	float startGoalPos[12]={0};
+	float jointPosition[6]={0};
+	for(uint16_t i=0;i<6;i++){
+			simxGetJointPosition(m_clientId,m_jointHandles[i],&jointPosition[i],simx_opmode_oneshot_wait);
+	}
+	for(uint16_t i=0;i<6;i++){
+		startGoalPos[i]=jointPosition[i];
+		startGoalPos[i+6]=jointAngles[i];
+	}
+	simxInt collisionJacoResult=simxCallScriptFunction(m_clientId,"Jaco",sim_scripttype_childscript,"checkCollisionOMPL_function",0,NULL,12,startGoalPos,0,NULL,0,NULL,&retJointColCnt,&retJointCols,NULL,NULL,NULL,NULL,NULL,NULL,simx_opmode_blocking);
+	if(retJointCols[0]==1)
+		flag=false;
+	else
+		flag=true;
+
+    std::cout << std::endl << std::endl << flag;
+	return flag;
+
+}
+
+bool VrepHelper::isInCollision(const Vec<float> &qStart, const Vec<float> &qGoal)
+{
+    Vec<simxFloat> start = convertVecToRad(qStart);
+    Vec<simxFloat> goal = convertVecToRad(qGoal);
+	simxInt retJointColCnt;
+	simxInt* retJointCols;
+	simxInt result=0;
+	bool flag;
+	float startGoalPos[12];
+	for(int i=0;i<6;i++){
+		startGoalPos[i]=start[i];
+		startGoalPos[i+6]=goal[i];
+	}
+	//simxInt collisionJacoResult=simxCallScriptFunction(m_clientId,"Jaco",sim_scripttype_childscript,"checkCollisionOMPL_function",(simxInt)6,m_jointHandles,(simxInt)12,startGoalPos,(simxInt)0,NULL,0,NULL,&retJointColCnt,&retJointCols,NULL,NULL,NULL,NULL,NULL,NULL,simx_opmode_blocking);
+	if(retJointCols[0]==1)
+		flag=false;
+	else
+		flag=true;
+
+	return flag;
 }
 
 Vec<simxFloat> VrepHelper::convertVecToRad(const Vec<float> &vec) {

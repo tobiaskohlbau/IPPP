@@ -60,10 +60,21 @@ private:
     std::vector<shared_ptr<Node>> m_childs;
 };
 
+/*!
+*  \brief      Constructor of the class Node
+*  \author     Sascha Kaden
+*  \date       2016-05-24
+*/
 Node::Node() {
     m_cost = 0;
 }
 
+/*!
+*  \brief      Constructor of the class Node (1D)
+*  \author     Sascha Kaden
+*  \param[in]  x
+*  \date       2016-05-24
+*/
 Node::Node(const float &x) {
     m_cost = 0;
     m_vec = Vec<float>(x);

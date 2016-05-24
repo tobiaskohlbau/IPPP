@@ -1,0 +1,145 @@
+\hypertarget{class_node}{\section{Node Class Reference}
+\label{class_node}\index{Node@{Node}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_node_ad7a34779cad45d997bfd6d3d8043c75f}{Node} ()
+\begin{DoxyCompactList}\small\item\em Constructor of the class \hyperlink{class_node}{Node}. \end{DoxyCompactList}\item 
+\hyperlink{class_node_ab4f09787f68f60e3113b13765dcea5b6}{Node} (const float \&x)
+\begin{DoxyCompactList}\small\item\em Constructor of the class \hyperlink{class_node}{Node} (1\-D) \end{DoxyCompactList}\item 
+\hypertarget{class_node_a620187a44025c75eeb9078be94e6ddfc}{{\bfseries Node} (const float \&x, const float \&y)}\label{class_node_a620187a44025c75eeb9078be94e6ddfc}
+
+\item 
+\hypertarget{class_node_a964376712af9d7a785debc0bc204cc01}{{\bfseries Node} (const float \&x, const float \&y, const float \&z)}\label{class_node_a964376712af9d7a785debc0bc204cc01}
+
+\item 
+\hypertarget{class_node_a3b50c25e03ec70f076da3ed11caec7f2}{{\bfseries Node} (const float \&x, const float \&y, const float \&z, const float \&rx)}\label{class_node_a3b50c25e03ec70f076da3ed11caec7f2}
+
+\item 
+\hypertarget{class_node_a02c999afe2369d2c1f3b5c662fbeef29}{{\bfseries Node} (const float \&x, const float \&y, const float \&z, const float \&rx, const float \&ry)}\label{class_node_a02c999afe2369d2c1f3b5c662fbeef29}
+
+\item 
+\hypertarget{class_node_af7afeb76b02d1ef9ccd8aeb4843f82c3}{{\bfseries Node} (const float \&x, const float \&y, const float \&z, const float \&rx, const float \&ry, const float \&rz)}\label{class_node_af7afeb76b02d1ef9ccd8aeb4843f82c3}
+
+\item 
+\hypertarget{class_node_a29f8f2670cd2ce5fdbdc200c85d8cb71}{{\bfseries Node} (const \hyperlink{class_vec}{Vec}$<$ float $>$ \&vec)}\label{class_node_a29f8f2670cd2ce5fdbdc200c85d8cb71}
+
+\item 
+\hypertarget{class_node_aec879abd3300422ebfa014908432d47b}{float {\bfseries get\-X} () const }\label{class_node_aec879abd3300422ebfa014908432d47b}
+
+\item 
+\hypertarget{class_node_ad29f9632ca8d71eedeeb5fd8c96dff1e}{float {\bfseries get\-Y} () const }\label{class_node_ad29f9632ca8d71eedeeb5fd8c96dff1e}
+
+\item 
+\hypertarget{class_node_a386248330119d5b003e6a41f51fbe4b1}{float {\bfseries get\-Z} () const }\label{class_node_a386248330119d5b003e6a41f51fbe4b1}
+
+\item 
+\hypertarget{class_node_a169a154e1ada22003acea7a95553bbd8}{unsigned int {\bfseries get\-Dim} ()}\label{class_node_a169a154e1ada22003acea7a95553bbd8}
+
+\item 
+\hypertarget{class_node_abfe17e7be0efb32246a6fffad333ed9a}{bool {\bfseries empty} () const }\label{class_node_abfe17e7be0efb32246a6fffad333ed9a}
+
+\item 
+\hypertarget{class_node_aea90bb1051adfa9bcb2e736854ff03b3}{void {\bfseries set\-Vec\-Value} (const float \&value, const unsigned int \&index)}\label{class_node_aea90bb1051adfa9bcb2e736854ff03b3}
+
+\item 
+\hypertarget{class_node_a20b64482645b17e1fdf2b374513e119e}{float {\bfseries get\-Vec\-Value} (const unsigned int \&index)}\label{class_node_a20b64482645b17e1fdf2b374513e119e}
+
+\item 
+\hypertarget{class_node_a4c537515257bb0a1ebcbfb7e8d06186d}{float {\bfseries get\-Dist} (const shared\-\_\-ptr$<$ \hyperlink{class_node}{Node} $>$ \&node) const }\label{class_node_a4c537515257bb0a1ebcbfb7e8d06186d}
+
+\item 
+\hypertarget{class_node_a236f1b02291f54812c5fd682a46dd1fe}{float {\bfseries get\-Dist} (const \hyperlink{class_node}{Node} \&node) const }\label{class_node_a236f1b02291f54812c5fd682a46dd1fe}
+
+\item 
+\hypertarget{class_node_a2c628af3afb6b890e6524ce84f916386}{float {\bfseries get\-Dist\-To\-Parent} () const }\label{class_node_a2c628af3afb6b890e6524ce84f916386}
+
+\item 
+\hypertarget{class_node_a4773ac9f913d974957e7075148f5c5b7}{float {\bfseries norm} () const }\label{class_node_a4773ac9f913d974957e7075148f5c5b7}
+
+\item 
+\hypertarget{class_node_aa3c3eacdb00cb8bd1a10a86c8d34e2ee}{void {\bfseries set\-Cost} (const float \&cost)}\label{class_node_aa3c3eacdb00cb8bd1a10a86c8d34e2ee}
+
+\item 
+\hypertarget{class_node_a2f39e084f067c581c315f33cc2f87d3c}{float {\bfseries get\-Cost} () const }\label{class_node_a2f39e084f067c581c315f33cc2f87d3c}
+
+\item 
+\hypertarget{class_node_a7bf1b7705353fc6e36fcd61393c06370}{void {\bfseries set\-Parent} (const shared\-\_\-ptr$<$ \hyperlink{class_node}{Node} $>$ \&parent)}\label{class_node_a7bf1b7705353fc6e36fcd61393c06370}
+
+\item 
+\hypertarget{class_node_a585e94ae0fa6c80c2caee471689260f0}{shared\-\_\-ptr$<$ \hyperlink{class_node}{Node} $>$ {\bfseries get\-Parent} ()}\label{class_node_a585e94ae0fa6c80c2caee471689260f0}
+
+\item 
+\hypertarget{class_node_a6c4496fb0c1cca593766765f6878f0e3}{void {\bfseries clear\-Parent} ()}\label{class_node_a6c4496fb0c1cca593766765f6878f0e3}
+
+\item 
+\hypertarget{class_node_ae73324eeab0437fc01c42545286e5eaa}{void {\bfseries add\-Child} (const shared\-\_\-ptr$<$ \hyperlink{class_node}{Node} $>$ \&child)}\label{class_node_ae73324eeab0437fc01c42545286e5eaa}
+
+\item 
+\hypertarget{class_node_a28a777e512424f44c567e009a61fa114}{std\-::vector$<$ shared\-\_\-ptr$<$ \hyperlink{class_node}{Node} $>$ $>$ {\bfseries get\-Childs} ()}\label{class_node_a28a777e512424f44c567e009a61fa114}
+
+\item 
+\hypertarget{class_node_a3c2f953a0a08323110014c5fcb8def22}{void {\bfseries clear\-Childs} ()}\label{class_node_a3c2f953a0a08323110014c5fcb8def22}
+
+\item 
+\hypertarget{class_node_ac602522dacc9f56704dbbce5aa75c45c}{void {\bfseries add\-Edge} (\hyperlink{class_edge}{Edge} edge)}\label{class_node_ac602522dacc9f56704dbbce5aa75c45c}
+
+\item 
+\hypertarget{class_node_a6520fa60877907338842d351c78f4444}{std\-::vector$<$ \hyperlink{class_edge}{Edge} $>$ {\bfseries get\-Edges} ()}\label{class_node_a6520fa60877907338842d351c78f4444}
+
+\item 
+\hypertarget{class_node_a1365689584bde7ffb5a3c383ad35f3f8}{void {\bfseries clear\-Edges} ()}\label{class_node_a1365689584bde7ffb5a3c383ad35f3f8}
+
+\item 
+\hypertarget{class_node_ab4affdfdd392a73c6fcc51ce02385e49}{\hyperlink{class_vec}{Vec}$<$ float $>$ {\bfseries get\-Vec} () const }\label{class_node_ab4affdfdd392a73c6fcc51ce02385e49}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_node_ad7a34779cad45d997bfd6d3d8043c75f}{\index{Node@{Node}!Node@{Node}}
+\index{Node@{Node}!Node@{Node}}
+\subsubsection[{Node}]{\setlength{\rightskip}{0pt plus 5cm}Node\-::\-Node (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_node_ad7a34779cad45d997bfd6d3d8043c75f}
+
+
+Constructor of the class \hyperlink{class_node}{Node}. 
+
+\begin{DoxyAuthor}{Author}
+Sascha Kaden 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2016-\/05-\/24 
+\end{DoxyDate}
+\hypertarget{class_node_ab4f09787f68f60e3113b13765dcea5b6}{\index{Node@{Node}!Node@{Node}}
+\index{Node@{Node}!Node@{Node}}
+\subsubsection[{Node}]{\setlength{\rightskip}{0pt plus 5cm}Node\-::\-Node (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{x}
+\end{DoxyParamCaption}
+)}}\label{class_node_ab4f09787f68f60e3113b13765dcea5b6}
+
+
+Constructor of the class \hyperlink{class_node}{Node} (1\-D) 
+
+\begin{DoxyAuthor}{Author}
+Sascha Kaden 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em x} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyDate}{Date}
+2016-\/05-\/24 
+\end{DoxyDate}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/sascha/projects/robot\-Motion/Node.\-h\item 
+/home/sascha/projects/robot\-Motion/Node.\-cpp\end{DoxyCompactItemize}

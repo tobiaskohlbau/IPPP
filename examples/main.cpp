@@ -18,8 +18,8 @@ void planning2D() {
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-    StarRRTPlanner planner(dim, 70.0, TrajectoryMethod::linear, SamplingMethod::randomly);
-    NormalRRTPlanner planner2(dim, 70.0, TrajectoryMethod::linear, SamplingMethod::randomly);
+    StarRRTPlanner planner2(dim, 70.0, TrajectoryMethod::linear, SamplingMethod::randomly);
+    NormalRRTPlanner planner(dim, 70.0, TrajectoryMethod::linear, SamplingMethod::randomly);
 
     // set properties to the planner
     Vec<float> minBoundary(0.0,0.0);
@@ -66,6 +66,7 @@ void planning6D() {
 
     pos = Vec<float>(-10.0, -10.0, -10.0, -10.0, -100.0, -100.0);
     vrep.setPos(pos);
+    vrep.isInCollision(pos);
 }
 
 int main(int argc, char** argv)
