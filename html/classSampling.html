@@ -89,19 +89,138 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Sampling Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Class <a class="el" href="classSampling.html" title="Class Sampling creates samples of new vectors by a given method. ">Sampling</a> creates samples of new vectors by a given method.  
+ <a href="classSampling.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Sampling_8h_source.html">Sampling.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab4e77a1fb7e64f6d337e9143b2e7ef66"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4e77a1fb7e64f6d337e9143b2e7ef66"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Sampling</b> (const SamplingMethod &amp;method=SamplingMethod::randomly)</td></tr>
+<tr class="memitem:ab4e77a1fb7e64f6d337e9143b2e7ef66"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampling.html#ab4e77a1fb7e64f6d337e9143b2e7ef66">Sampling</a> (const SamplingMethod &amp;method=SamplingMethod::randomly)</td></tr>
+<tr class="memdesc:ab4e77a1fb7e64f6d337e9143b2e7ef66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor of the class <a class="el" href="classSampling.html" title="Class Sampling creates samples of new vectors by a given method. ">Sampling</a>.  <a href="#ab4e77a1fb7e64f6d337e9143b2e7ef66">More...</a><br/></td></tr>
 <tr class="separator:ab4e77a1fb7e64f6d337e9143b2e7ef66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb439f05570d873cf1742d20b87f83f1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afb439f05570d873cf1742d20b87f83f1"></a>
-<a class="el" href="classVec.html">Vec</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getSample</b> (const unsigned int &amp;dim, const int index, const int nbSamples)</td></tr>
+<tr class="memitem:afb439f05570d873cf1742d20b87f83f1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classVec.html">Vec</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampling.html#afb439f05570d873cf1742d20b87f83f1">getSample</a> (const unsigned int &amp;dim, const int index, const int nbSamples)</td></tr>
+<tr class="memdesc:afb439f05570d873cf1742d20b87f83f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return sample.  <a href="#afb439f05570d873cf1742d20b87f83f1">More...</a><br/></td></tr>
 <tr class="separator:afb439f05570d873cf1742d20b87f83f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05851d474e200665221b15fd3fcba56a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a05851d474e200665221b15fd3fcba56a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setBoundaries</b> (const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;maxBoundary, const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;minBoundary)</td></tr>
+<tr class="memitem:a05851d474e200665221b15fd3fcba56a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampling.html#a05851d474e200665221b15fd3fcba56a">setBoundaries</a> (const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;maxBoundary, const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;minBoundary)</td></tr>
+<tr class="memdesc:a05851d474e200665221b15fd3fcba56a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set minimum and maximum boundaries of configuration space.  <a href="#a05851d474e200665221b15fd3fcba56a">More...</a><br/></td></tr>
 <tr class="separator:a05851d474e200665221b15fd3fcba56a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Class <a class="el" href="classSampling.html" title="Class Sampling creates samples of new vectors by a given method. ">Sampling</a> creates samples of new vectors by a given method. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-23 </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ab4e77a1fb7e64f6d337e9143b2e7ef66"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Sampling::Sampling </td>
+          <td>(</td>
+          <td class="paramtype">const SamplingMethod &amp;&#160;</td>
+          <td class="paramname"><em>method</em> = <code>SamplingMethod::randomly</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor of the class <a class="el" href="classSampling.html" title="Class Sampling creates samples of new vectors by a given method. ">Sampling</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">SamplingMethod</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-24 </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="afb439f05570d873cf1742d20b87f83f1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classVec.html">Vec</a>&lt; float &gt; Sampling::getSample </td>
+          <td>(</td>
+          <td class="paramtype">const unsigned int &amp;&#160;</td>
+          <td class="paramname"><em>dim</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>nbSamples</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return sample. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">dimension</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>from loop of samples </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">absolute</td><td>number of samples, which will be created </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname"><a class="el" href="classVec.html" title="Class Vec present a normal vector. ">Vec</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-24 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a05851d474e200665221b15fd3fcba56a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Sampling::setBoundaries </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;&#160;</td>
+          <td class="paramname"><em>minBoundary</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;&#160;</td>
+          <td class="paramname"><em>maxBoundary</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set minimum and maximum boundaries of configuration space. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">minimum</td><td>boundaries </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">maximum</td><td>boundaries </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-24 </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>source/<a class="el" href="Sampling_8h_source.html">Sampling.h</a></li>
 <li>source/Sampling.cpp</li>
@@ -109,7 +228,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setBoundaries</b> (co
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 24 2016 22:44:04 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 24 2016 23:40:40 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

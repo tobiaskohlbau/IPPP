@@ -175,7 +175,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classKDTree.html">KDTree&lt;T&gt;::NNS</a>(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;vec, shared_ptr&lt;<a class="code" href="classKDNode.html">KDNode&lt;T&gt;</a>&gt; node, shared_ptr&lt;<a class="code" href="classKDNode.html">KDNode&lt;T&gt;</a>&gt; &amp;refNode, <span class="keywordtype">float</span> &amp;bestDist) {</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordflow">if</span> (node-&gt;left == NULL &amp;&amp; node-&gt;right == NULL) {</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordtype">float</span> dist = vec.getSqDist(node-&gt;vec);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordtype">float</span> dist = vec.<a class="code" href="classVec.html#a371f2087dff668951721cf7568f2416a">getSqDist</a>(node-&gt;vec);</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">if</span> (dist &lt; bestDist) {</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            bestDist = dist;</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            refNode = node;</div>
@@ -203,7 +203,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">if</span> (node == NULL) {</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    }</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">if</span> (vec.getSqDist(node-&gt;vec) &lt; sqRange) {</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">if</span> (vec.<a class="code" href="classVec.html#a371f2087dff668951721cf7568f2416a">getSqDist</a>(node-&gt;vec) &lt; sqRange) {</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        refNodes.push_back(node);</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    }</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordflow">if</span> (vec[node-&gt;axis] &lt; maxBoundary[node-&gt;axis] &amp;&amp; vec[node-&gt;axis] &lt; minBoundary[node-&gt;axis]) {</div>
@@ -221,11 +221,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* KDTREE_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="classKDTree_html"><div class="ttname"><a href="classKDTree.html">KDTree</a></div><div class="ttdef"><b>Definition:</b> KDTree.h:12</div></div>
 <div class="ttc" id="classVec_html"><div class="ttname"><a href="classVec.html">Vec&lt; float &gt;</a></div></div>
+<div class="ttc" id="classVec_html_a371f2087dff668951721cf7568f2416a"><div class="ttname"><a href="classVec.html#a371f2087dff668951721cf7568f2416a">Vec::getSqDist</a></div><div class="ttdeci">T getSqDist(const Vec&lt; T &gt; &amp;vec) const </div><div class="ttdoc">Return squared distance to given Vec. </div><div class="ttdef"><b>Definition:</b> Vec.h:415</div></div>
 <div class="ttc" id="classKDNode_html"><div class="ttname"><a href="classKDNode.html">KDNode</a></div><div class="ttdef"><b>Definition:</b> KDNode.h:9</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 24 2016 22:44:04 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 24 2016 23:40:40 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

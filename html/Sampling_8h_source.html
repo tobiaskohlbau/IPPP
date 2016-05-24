@@ -107,60 +107,75 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    halton</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;};</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classSampling.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classSampling.html">Sampling</a></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="classSampling.html">Sampling</a>(<span class="keyword">const</span> SamplingMethod &amp;method = SamplingMethod::randomly);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> getSample(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;dim, <span class="keyword">const</span> <span class="keywordtype">int</span> index, <span class="keyword">const</span> <span class="keywordtype">int</span> nbSamples);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">void</span> setBoundaries(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;maxBoundary, <span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;minBoundary);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">bool</span> controlBoudaries();</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> m_maxBoundary;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> m_minBoundary;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    SamplingMethod m_method;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;};</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classSampling.html">   25</a></span>&#160;<span class="keyword">class </span><a class="code" href="classSampling.html">Sampling</a></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;{</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="classSampling.html#ab4e77a1fb7e64f6d337e9143b2e7ef66">Sampling</a>(<span class="keyword">const</span> SamplingMethod &amp;method = SamplingMethod::randomly);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> <a class="code" href="classSampling.html#afb439f05570d873cf1742d20b87f83f1">getSample</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;dim, <span class="keyword">const</span> <span class="keywordtype">int</span> index, <span class="keyword">const</span> <span class="keywordtype">int</span> nbSamples);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classSampling.html#a05851d474e200665221b15fd3fcba56a">setBoundaries</a>(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;maxBoundary, <span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;minBoundary);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">bool</span> checkBoudaries();</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;Sampling::Sampling(<span class="keyword">const</span> SamplingMethod &amp;method) {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    m_method = method;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    srand(time(NULL));</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> m_maxBoundary;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> m_minBoundary;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    SamplingMethod m_method;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;};</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<a class="code" href="classVec.html">Vec&lt;float&gt;</a> Sampling::getSample(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;dim, <span class="keyword">const</span> <span class="keywordtype">int</span> index, <span class="keyword">const</span> <span class="keywordtype">int</span> nbSamples) {</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> vec(dim);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">if</span> (!controlBoudaries())</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordflow">return</span> vec;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">if</span> (<span class="keyword">true</span>)<span class="comment">//m_method == SamplingMethod::randomly)</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = 0; i &lt; dim; ++i)</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            vec[i] = m_minBoundary[i] + (<span class="keywordtype">float</span>)(rand() % (int)(m_maxBoundary[i]-m_minBoundary[i]));</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">return</span> vec;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordflow">return</span> vec;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keywordtype">void</span> Sampling::setBoundaries(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;minBoundary, <span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;maxBoundary) {</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    m_maxBoundary = maxBoundary;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    m_minBoundary = minBoundary;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keywordtype">bool</span> Sampling::controlBoudaries() {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordflow">if</span> (m_maxBoundary.empty() || m_minBoundary.empty()) {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        std::cout &lt;&lt; <span class="stringliteral">&quot;No boundaries set&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    }</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* SAMPLING_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="classSampling_html"><div class="ttname"><a href="classSampling.html">Sampling</a></div><div class="ttdef"><b>Definition:</b> Sampling.h:20</div></div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classSampling.html#ab4e77a1fb7e64f6d337e9143b2e7ef66">   46</a></span>&#160;<a class="code" href="classSampling.html#ab4e77a1fb7e64f6d337e9143b2e7ef66">Sampling::Sampling</a>(<span class="keyword">const</span> SamplingMethod &amp;method) {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    m_method = method;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    srand(time(NULL));</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<a class="code" href="classVec.html">Vec&lt;float&gt;</a> <a class="code" href="classSampling.html#afb439f05570d873cf1742d20b87f83f1">Sampling::getSample</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;dim, <span class="keyword">const</span> <span class="keywordtype">int</span> index, <span class="keyword">const</span> <span class="keywordtype">int</span> nbSamples) {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> vec(dim);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordflow">if</span> (!checkBoudaries())</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordflow">return</span> vec;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">if</span> (<span class="keyword">true</span>)<span class="comment">//m_method == SamplingMethod::randomly)</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = 0; i &lt; dim; ++i)</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            vec[i] = m_minBoundary[i] + (<span class="keywordtype">float</span>)(rand() % (int)(m_maxBoundary[i]-m_minBoundary[i]));</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordflow">return</span> vec;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordflow">return</span> vec;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classSampling.html#a05851d474e200665221b15fd3fcba56a">Sampling::setBoundaries</a>(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;minBoundary, <span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;maxBoundary) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordflow">if</span> (minBoundary.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>() != maxBoundary.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>()) {</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        std::cout &lt;&lt; <span class="stringliteral">&quot;Boudaries have different dimensions&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    }</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = 0; i &lt; m_dim; ++i) {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">if</span> (minBoundary[i] &gt; maxBoundary[i]) {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            std::cout &lt;&lt; <span class="stringliteral">&quot;Min boundary is larger than max boundary&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        }</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    m_maxBoundary = maxBoundary;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    m_minBoundary = minBoundary;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keywordtype">bool</span> Sampling::checkBoudaries() {</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordflow">if</span> (m_maxBoundary.<a class="code" href="classVec.html#a5ceca3b447f22abfcac2eb1c26d69fc6">empty</a>() || m_minBoundary.<a class="code" href="classVec.html#a5ceca3b447f22abfcac2eb1c26d69fc6">empty</a>()) {</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        std::cout &lt;&lt; <span class="stringliteral">&quot;Boundaries are empty&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    }</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;}</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* SAMPLING_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classVec_html_a5ceca3b447f22abfcac2eb1c26d69fc6"><div class="ttname"><a href="classVec.html#a5ceca3b447f22abfcac2eb1c26d69fc6">Vec::empty</a></div><div class="ttdeci">bool empty() const </div><div class="ttdoc">Return true, if Vec is empty. </div><div class="ttdef"><b>Definition:</b> Vec.h:357</div></div>
+<div class="ttc" id="classSampling_html"><div class="ttname"><a href="classSampling.html">Sampling</a></div><div class="ttdoc">Class Sampling creates samples of new vectors by a given method. </div><div class="ttdef"><b>Definition:</b> Sampling.h:25</div></div>
+<div class="ttc" id="classVec_html_a68e6c17c80ae91a15578dda0ed00e9be"><div class="ttname"><a href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">Vec::getDim</a></div><div class="ttdeci">unsigned int getDim() const </div><div class="ttdoc">Return dimension of Vec. </div><div class="ttdef"><b>Definition:</b> Vec.h:346</div></div>
 <div class="ttc" id="classVec_html"><div class="ttname"><a href="classVec.html">Vec&lt; float &gt;</a></div></div>
+<div class="ttc" id="classSampling_html_afb439f05570d873cf1742d20b87f83f1"><div class="ttname"><a href="classSampling.html#afb439f05570d873cf1742d20b87f83f1">Sampling::getSample</a></div><div class="ttdeci">Vec&lt; float &gt; getSample(const unsigned int &amp;dim, const int index, const int nbSamples)</div><div class="ttdoc">Return sample. </div><div class="ttdef"><b>Definition:</b> Sampling.cpp:3</div></div>
+<div class="ttc" id="classSampling_html_a05851d474e200665221b15fd3fcba56a"><div class="ttname"><a href="classSampling.html#a05851d474e200665221b15fd3fcba56a">Sampling::setBoundaries</a></div><div class="ttdeci">void setBoundaries(const Vec&lt; float &gt; &amp;maxBoundary, const Vec&lt; float &gt; &amp;minBoundary)</div><div class="ttdoc">Set minimum and maximum boundaries of configuration space. </div><div class="ttdef"><b>Definition:</b> Sampling.cpp:17</div></div>
+<div class="ttc" id="classSampling_html_ab4e77a1fb7e64f6d337e9143b2e7ef66"><div class="ttname"><a href="classSampling.html#ab4e77a1fb7e64f6d337e9143b2e7ef66">Sampling::Sampling</a></div><div class="ttdeci">Sampling(const SamplingMethod &amp;method=SamplingMethod::randomly)</div><div class="ttdoc">Constructor of the class Sampling. </div><div class="ttdef"><b>Definition:</b> Sampling.h:46</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 24 2016 22:44:04 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 24 2016 23:40:40 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
