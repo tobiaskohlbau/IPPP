@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sampling',['Sampling',['../classSampling.html',1,'']]]
+  ['robotmotionplanner',['RobotMotionPlanner',['../md_RobotMotionPlanner_README.html',1,'']]]
 ];

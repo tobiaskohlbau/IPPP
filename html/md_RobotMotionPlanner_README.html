@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>Robot Motion Planner: KDTree&lt; T &gt; Class Template Reference</title>
+<title>Robot Motion Planner: RobotMotionPlanner</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -38,8 +38,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -59,13 +59,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
-  <div id="navrow2" class="tabs2">
-    <ul class="tablist">
-      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
-      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
-    </ul>
-  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -82,30 +75,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classKDTree-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">KDTree&lt; T &gt; Class Template Reference</div>  </div>
+<div class="title">RobotMotionPlanner </div>  </div>
 </div><!--header-->
 <div class="contents">
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:a142c48007362e5de4925261aaacd5024"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a142c48007362e5de4925261aaacd5024"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addNode</b> (const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;vec, T node)</td></tr>
-<tr class="separator:a142c48007362e5de4925261aaacd5024"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30dc6a5bde4ad1cd3d2ec437a7ad83b3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a30dc6a5bde4ad1cd3d2ec437a7ad83b3"></a>
-T&#160;</td><td class="memItemRight" valign="bottom"><b>searchNearestNeighbor</b> (const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;vec)</td></tr>
-<tr class="separator:a30dc6a5bde4ad1cd3d2ec437a7ad83b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a657f8fcb951f49ba268ff1d15bf836dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a657f8fcb951f49ba268ff1d15bf836dd"></a>
-std::vector&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>searchRange</b> (const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;vec, const float &amp;range)</td></tr>
-<tr class="separator:a657f8fcb951f49ba268ff1d15bf836dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>RobotMotionPlanner/<a class="el" href="KDTree_8h_source.html">KDTree.h</a></li>
-</ul>
-</div><!-- contents -->
+<div class="textblock"><p>This planner can be used in multi dimensional space. At the time the RRT and the RRT* are implemented.</p>
+<p>For drawing an showing the results the OpenCV libary is included. </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated on Tue May 24 2016 22:01:59 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
