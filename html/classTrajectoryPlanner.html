@@ -98,24 +98,101 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7007b670a2e42154dc39036c042c61f8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7007b670a2e42154dc39036c042c61f8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>TrajectoryPlanner</b> (const TrajectoryMethod method, <a class="el" href="classCollisionDetection.html">CollisionDetection</a> *collision)</td></tr>
+<tr class="memitem:a7007b670a2e42154dc39036c042c61f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrajectoryPlanner.html#a7007b670a2e42154dc39036c042c61f8">TrajectoryPlanner</a> (const TrajectoryMethod method, <a class="el" href="classCollisionDetection.html">CollisionDetection</a> *collision)</td></tr>
+<tr class="memdesc:a7007b670a2e42154dc39036c042c61f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor of the class <a class="el" href="classTrajectoryPlanner.html" title="Class TrajectoryPlanner plans edges/paths to given nodes. ">TrajectoryPlanner</a>.  <a href="#a7007b670a2e42154dc39036c042c61f8">More...</a><br/></td></tr>
 <tr class="separator:a7007b670a2e42154dc39036c042c61f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a119dbff9c0d27bd153f7beb76a8f5313"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a119dbff9c0d27bd153f7beb76a8f5313"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>computeTrajectory</b> (const std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; node1, const std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; node2)</td></tr>
+<tr class="memitem:a119dbff9c0d27bd153f7beb76a8f5313"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrajectoryPlanner.html#a119dbff9c0d27bd153f7beb76a8f5313">computeTrajectory</a> (const std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; node1, const std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; node2)</td></tr>
+<tr class="memdesc:a119dbff9c0d27bd153f7beb76a8f5313"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the trajectory and return if possible or not.  <a href="#a119dbff9c0d27bd153f7beb76a8f5313">More...</a><br/></td></tr>
 <tr class="separator:a119dbff9c0d27bd153f7beb76a8f5313"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class <a class="el" href="classTrajectoryPlanner.html" title="Class TrajectoryPlanner plans edges/paths to given nodes. ">TrajectoryPlanner</a> plans edges/paths to given nodes. </p>
 <dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a7007b670a2e42154dc39036c042c61f8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TrajectoryPlanner::TrajectoryPlanner </td>
+          <td>(</td>
+          <td class="paramtype">const TrajectoryMethod&#160;</td>
+          <td class="paramname"><em>method</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCollisionDetection.html">CollisionDetection</a> *&#160;</td>
+          <td class="paramname"><em>collision</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor of the class <a class="el" href="classTrajectoryPlanner.html" title="Class TrajectoryPlanner plans edges/paths to given nodes. ">TrajectoryPlanner</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">TrajectoryMethod</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">pointer</td><td>to ColllisionDetection instance </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a119dbff9c0d27bd153f7beb76a8f5313"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TrajectoryPlanner::computeTrajectory </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt;&#160;</td>
+          <td class="paramname"><em>node1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt;&#160;</td>
+          <td class="paramname"><em>node2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Compute the trajectory and return if possible or not. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">first</td><td><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">second</td><td><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">possibility</td><td>of trjectory </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>source/<a class="el" href="TrajectoryPlanner_8h_source.html">TrajectoryPlanner.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 11:57:42 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

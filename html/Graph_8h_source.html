@@ -101,54 +101,58 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">using</span> std::shared_ptr;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classGraph.html">   14</a></span>&#160;<span class="keyword">class </span><a class="code" href="classGraph.html">Graph</a></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> addNode(shared_ptr&lt;Node&gt; node);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">void</span> removeNode(<span class="keyword">const</span> <span class="keywordtype">int</span> index);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; getNodes() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    shared_ptr&lt;Node&gt; getNearestNode(<span class="keyword">const</span> <a class="code" href="classNode.html">Node</a> node);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; getNearNodes(<span class="keyword">const</span> shared_ptr&lt;Node&gt; node, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;distance);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; m_nodes;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classKDTree.html">KDTree&lt;shared_ptr&lt;Node&gt;</a>&gt; m_kdTree;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;};</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classGraph.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classGraph.html">Graph</a></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classGraph.html#ac4736c6d4b946ab7249bf8e4a84df2d4">addNode</a>(shared_ptr&lt;Node&gt; node);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classGraph.html#a183c86d4f21573c2a67204583e9108d9">removeNode</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> index);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; <a class="code" href="classGraph.html#a13c3317fdecc13e9a900a6ef69c9387e">getNodes</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    shared_ptr&lt;Node&gt; <a class="code" href="classGraph.html#a083a9aa551b6c79618be08a520a520f5">getNearestNode</a>(<span class="keyword">const</span> <a class="code" href="classNode.html">Node</a> node);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; <a class="code" href="classGraph.html#a7d11365c5e0730d1211e27e8f51810b0">getNearNodes</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; node, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;distance);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keywordtype">void</span> Graph::addNode(shared_ptr&lt;Node&gt; node) {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    m_nodes.push_back(node);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    m_kdTree.addNode(node-&gt;getVec(), node);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; m_nodes;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classKDTree.html">KDTree&lt;shared_ptr&lt;Node&gt;</a>&gt; m_kdTree;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;};</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keywordtype">void</span> Graph::removeNode(<span class="keyword">const</span> <span class="keywordtype">int</span> index) {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">if</span> (index &lt; m_nodes.size()) {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        m_nodes.erase(m_nodes.begin() + index);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;std::vector&lt;shared_ptr&lt;Node&gt;&gt; Graph::getNodes()<span class="keyword"> const</span>{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordflow">return</span> m_nodes;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;}</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;shared_ptr&lt;Node&gt; Graph::getNearestNode(<span class="keyword">const</span> <a class="code" href="classNode.html">Node</a> node) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">return</span> m_kdTree.searchNearestNeighbor(node.<a class="code" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">getVec</a>());</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;std::vector&lt;shared_ptr&lt;Node&gt;&gt; Graph::getNearNodes(<span class="keyword">const</span> shared_ptr&lt;Node&gt; node, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;distance) {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">return</span> m_kdTree.searchRange(node-&gt;getVec(), distance);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GRAPH_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classGraph.html#ac4736c6d4b946ab7249bf8e4a84df2d4">Graph::addNode</a>(shared_ptr&lt;Node&gt; node) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    m_nodes.push_back(node);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    m_kdTree.addNode(node-&gt;getVec(), node);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classGraph.html#a183c86d4f21573c2a67204583e9108d9">Graph::removeNode</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> index) {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">if</span> (index &lt; m_nodes.size()) {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        m_nodes.erase(m_nodes.begin() + index);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;std::vector&lt;shared_ptr&lt;Node&gt;&gt; <a class="code" href="classGraph.html#a13c3317fdecc13e9a900a6ef69c9387e">Graph::getNodes</a>()<span class="keyword"> const</span>{</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> m_nodes;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;shared_ptr&lt;Node&gt; <a class="code" href="classGraph.html#a083a9aa551b6c79618be08a520a520f5">Graph::getNearestNode</a>(<span class="keyword">const</span> <a class="code" href="classNode.html">Node</a> node) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">return</span> m_kdTree.searchNearestNeighbor(node.<a class="code" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">getVec</a>());</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;std::vector&lt;shared_ptr&lt;Node&gt;&gt; <a class="code" href="classGraph.html#a7d11365c5e0730d1211e27e8f51810b0">Graph::getNearNodes</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; node, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;distance) {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordflow">return</span> m_kdTree.searchRange(node-&gt;getVec(), distance);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;}</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GRAPH_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="classNode_html"><div class="ttname"><a href="classNode.html">Node</a></div><div class="ttdoc">Class Node to present nodes of path planner. </div><div class="ttdef"><b>Definition:</b> Node.h:19</div></div>
 <div class="ttc" id="classKDTree_html"><div class="ttname"><a href="classKDTree.html">KDTree</a></div><div class="ttdef"><b>Definition:</b> KDTree.h:12</div></div>
-<div class="ttc" id="classGraph_html"><div class="ttname"><a href="classGraph.html">Graph</a></div><div class="ttdef"><b>Definition:</b> Graph.h:14</div></div>
+<div class="ttc" id="classGraph_html"><div class="ttname"><a href="classGraph.html">Graph</a></div><div class="ttdoc">Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through...</div><div class="ttdef"><b>Definition:</b> Graph.h:19</div></div>
+<div class="ttc" id="classGraph_html_ac4736c6d4b946ab7249bf8e4a84df2d4"><div class="ttname"><a href="classGraph.html#ac4736c6d4b946ab7249bf8e4a84df2d4">Graph::addNode</a></div><div class="ttdeci">void addNode(shared_ptr&lt; Node &gt; node)</div><div class="ttdoc">Add Node to the graph. </div><div class="ttdef"><b>Definition:</b> Graph.cpp:3</div></div>
+<div class="ttc" id="classGraph_html_a083a9aa551b6c79618be08a520a520f5"><div class="ttname"><a href="classGraph.html#a083a9aa551b6c79618be08a520a520f5">Graph::getNearestNode</a></div><div class="ttdeci">shared_ptr&lt; Node &gt; getNearestNode(const Node node)</div><div class="ttdoc">Search for nearrest neighbor. </div><div class="ttdef"><b>Definition:</b> Graph.cpp:18</div></div>
+<div class="ttc" id="classGraph_html_a183c86d4f21573c2a67204583e9108d9"><div class="ttname"><a href="classGraph.html#a183c86d4f21573c2a67204583e9108d9">Graph::removeNode</a></div><div class="ttdeci">void removeNode(const int index)</div><div class="ttdoc">Remove Node from the graph. </div><div class="ttdef"><b>Definition:</b> Graph.cpp:8</div></div>
 <div class="ttc" id="classNode_html_ab4affdfdd392a73c6fcc51ce02385e49"><div class="ttname"><a href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">Node::getVec</a></div><div class="ttdeci">Vec&lt; float &gt; getVec() const </div><div class="ttdoc">Return Vec. </div><div class="ttdef"><b>Definition:</b> Node.cpp:137</div></div>
+<div class="ttc" id="classGraph_html_a7d11365c5e0730d1211e27e8f51810b0"><div class="ttname"><a href="classGraph.html#a7d11365c5e0730d1211e27e8f51810b0">Graph::getNearNodes</a></div><div class="ttdeci">std::vector&lt; shared_ptr&lt; Node &gt; &gt; getNearNodes(const shared_ptr&lt; Node &gt; node, const float &amp;distance)</div><div class="ttdoc">Search range. </div><div class="ttdef"><b>Definition:</b> Graph.cpp:22</div></div>
+<div class="ttc" id="classGraph_html_a13c3317fdecc13e9a900a6ef69c9387e"><div class="ttname"><a href="classGraph.html#a13c3317fdecc13e9a900a6ef69c9387e">Graph::getNodes</a></div><div class="ttdeci">std::vector&lt; shared_ptr&lt; Node &gt; &gt; getNodes() const </div><div class="ttdoc">Return a the list of nodes. </div><div class="ttdef"><b>Definition:</b> Graph.cpp:14</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 11:57:42 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

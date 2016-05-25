@@ -90,25 +90,177 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Graph Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Class <a class="el" href="classGraph.html" title="Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through...">Graph</a> contain all nodes of the planner and offers the nearest neighbor and range search through a <a class="el" href="classKDTree.html">KDTree</a>.  
+ <a href="classGraph.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Graph_8h_source.html">Graph.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac4736c6d4b946ab7249bf8e4a84df2d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac4736c6d4b946ab7249bf8e4a84df2d4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addNode</b> (shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; node)</td></tr>
+<tr class="memitem:ac4736c6d4b946ab7249bf8e4a84df2d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraph.html#ac4736c6d4b946ab7249bf8e4a84df2d4">addNode</a> (shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; node)</td></tr>
+<tr class="memdesc:ac4736c6d4b946ab7249bf8e4a84df2d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> to the graph.  <a href="#ac4736c6d4b946ab7249bf8e4a84df2d4">More...</a><br/></td></tr>
 <tr class="separator:ac4736c6d4b946ab7249bf8e4a84df2d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a183c86d4f21573c2a67204583e9108d9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a183c86d4f21573c2a67204583e9108d9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (const int index)</td></tr>
+<tr class="memitem:a183c86d4f21573c2a67204583e9108d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraph.html#a183c86d4f21573c2a67204583e9108d9">removeNode</a> (const int index)</td></tr>
+<tr class="memdesc:a183c86d4f21573c2a67204583e9108d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> from the graph.  <a href="#a183c86d4f21573c2a67204583e9108d9">More...</a><br/></td></tr>
 <tr class="separator:a183c86d4f21573c2a67204583e9108d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13c3317fdecc13e9a900a6ef69c9387e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a13c3317fdecc13e9a900a6ef69c9387e"></a>
-std::vector&lt; shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getNodes</b> () const </td></tr>
+<tr class="memitem:a13c3317fdecc13e9a900a6ef69c9387e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraph.html#a13c3317fdecc13e9a900a6ef69c9387e">getNodes</a> () const </td></tr>
+<tr class="memdesc:a13c3317fdecc13e9a900a6ef69c9387e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a the list of nodes.  <a href="#a13c3317fdecc13e9a900a6ef69c9387e">More...</a><br/></td></tr>
 <tr class="separator:a13c3317fdecc13e9a900a6ef69c9387e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a083a9aa551b6c79618be08a520a520f5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a083a9aa551b6c79618be08a520a520f5"></a>
-shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getNearestNode</b> (const <a class="el" href="classNode.html">Node</a> node)</td></tr>
+<tr class="memitem:a083a9aa551b6c79618be08a520a520f5"><td class="memItemLeft" align="right" valign="top">shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraph.html#a083a9aa551b6c79618be08a520a520f5">getNearestNode</a> (const <a class="el" href="classNode.html">Node</a> node)</td></tr>
+<tr class="memdesc:a083a9aa551b6c79618be08a520a520f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search for nearrest neighbor.  <a href="#a083a9aa551b6c79618be08a520a520f5">More...</a><br/></td></tr>
 <tr class="separator:a083a9aa551b6c79618be08a520a520f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d11365c5e0730d1211e27e8f51810b0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7d11365c5e0730d1211e27e8f51810b0"></a>
-std::vector&lt; shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getNearNodes</b> (const shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; node, const float &amp;distance)</td></tr>
+<tr class="memitem:a7d11365c5e0730d1211e27e8f51810b0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraph.html#a7d11365c5e0730d1211e27e8f51810b0">getNearNodes</a> (const shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; node, const float &amp;distance)</td></tr>
+<tr class="memdesc:a7d11365c5e0730d1211e27e8f51810b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search range.  <a href="#a7d11365c5e0730d1211e27e8f51810b0">More...</a><br/></td></tr>
 <tr class="separator:a7d11365c5e0730d1211e27e8f51810b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Class <a class="el" href="classGraph.html" title="Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through...">Graph</a> contain all nodes of the planner and offers the nearest neighbor and range search through a <a class="el" href="classKDTree.html">KDTree</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ac4736c6d4b946ab7249bf8e4a84df2d4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Graph::addNode </td>
+          <td>(</td>
+          <td class="paramtype">shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt;&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> to the graph. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a083a9aa551b6c79618be08a520a520f5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; Graph::getNearestNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classNode.html">Node</a>&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Search for nearrest neighbor. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a></td><td>for the search </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">nearest</td><td>neighbor <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a7d11365c5e0730d1211e27e8f51810b0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt; Graph::getNearNodes </td>
+          <td>(</td>
+          <td class="paramtype">const shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt;&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>distance</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Search range. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a></td><td>for the search </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">distance</td><td>around the given <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">list</td><td>of nodes inside the range </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a13c3317fdecc13e9a900a6ef69c9387e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt; Graph::getNodes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return a the list of nodes. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">list</td><td>of nodes </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a183c86d4f21573c2a67204583e9108d9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Graph::removeNode </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Remove <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> from the graph. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>source/<a class="el" href="Graph_8h_source.html">Graph.h</a></li>
 <li>source/Graph.cpp</li>
@@ -116,7 +268,7 @@ std::vector&lt; shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt;
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 11:57:42 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

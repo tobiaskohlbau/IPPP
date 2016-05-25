@@ -90,22 +90,148 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">CollisionDetection Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Class <a class="el" href="classCollisionDetection.html" title="Class CollisionDetection checks the configuration on collision and return boolean value...">CollisionDetection</a> checks the configuration on collision and return boolean value.  
+ <a href="classCollisionDetection.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="CollisionDetection_8h_source.html">CollisionDetection.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3034baabebcbc46c25cf02b811aa1500"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3034baabebcbc46c25cf02b811aa1500"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>controlCollision</b> (const std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; node)</td></tr>
-<tr class="separator:a3034baabebcbc46c25cf02b811aa1500"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8df29ec9271c2d49a9c8d4c502cdb531"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8df29ec9271c2d49a9c8d4c502cdb531"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>controlCollision2D</b> (const float x, const float y)</td></tr>
-<tr class="separator:a8df29ec9271c2d49a9c8d4c502cdb531"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd6266ee643d89dcbabb19e8252a6cd9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acd6266ee643d89dcbabb19e8252a6cd9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set2DWorkspace</b> (cv::Mat space)</td></tr>
-<tr class="separator:acd6266ee643d89dcbabb19e8252a6cd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f9a583abbcfe9e6cb4f1062312bfb2b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f9a583abbcfe9e6cb4f1062312bfb2b"></a>
-cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><b>get2DWorkspace</b> () const </td></tr>
+<tr class="memitem:ad9c50d617227244eb14080b3589ba5cc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollisionDetection.html#ad9c50d617227244eb14080b3589ba5cc">controlCollision</a> (const std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &amp;node)</td></tr>
+<tr class="memdesc:ad9c50d617227244eb14080b3589ba5cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for collision.  <a href="#ad9c50d617227244eb14080b3589ba5cc">More...</a><br/></td></tr>
+<tr class="separator:ad9c50d617227244eb14080b3589ba5cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0418a477fe1ee79836a78e5d14886745"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollisionDetection.html#a0418a477fe1ee79836a78e5d14886745">controlCollision2D</a> (const float &amp;x, const float &amp;y)</td></tr>
+<tr class="memdesc:a0418a477fe1ee79836a78e5d14886745"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for 2D collision.  <a href="#a0418a477fe1ee79836a78e5d14886745">More...</a><br/></td></tr>
+<tr class="separator:a0418a477fe1ee79836a78e5d14886745"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad958dcb7e5caab88e47d82aa66e05bf0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollisionDetection.html#ad958dcb7e5caab88e47d82aa66e05bf0">set2DWorkspace</a> (cv::Mat &amp;space)</td></tr>
+<tr class="memdesc:ad958dcb7e5caab88e47d82aa66e05bf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set workspace for 2D collision check.  <a href="#ad958dcb7e5caab88e47d82aa66e05bf0">More...</a><br/></td></tr>
+<tr class="separator:ad958dcb7e5caab88e47d82aa66e05bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f9a583abbcfe9e6cb4f1062312bfb2b"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollisionDetection.html#a0f9a583abbcfe9e6cb4f1062312bfb2b">get2DWorkspace</a> () const </td></tr>
+<tr class="memdesc:a0f9a583abbcfe9e6cb4f1062312bfb2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return workspace for 2D collision.  <a href="#a0f9a583abbcfe9e6cb4f1062312bfb2b">More...</a><br/></td></tr>
 <tr class="separator:a0f9a583abbcfe9e6cb4f1062312bfb2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Class <a class="el" href="classCollisionDetection.html" title="Class CollisionDetection checks the configuration on collision and return boolean value...">CollisionDetection</a> checks the configuration on collision and return boolean value. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad9c50d617227244eb14080b3589ba5cc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CollisionDetection::controlCollision </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check for collision. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a></td><td></td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">possibility</td><td>of collision </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a0418a477fe1ee79836a78e5d14886745"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CollisionDetection::controlCollision2D </td>
+          <td>(</td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check for 2D collision. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">x</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">y</td><td></td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">possibility</td><td>of collision </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a0f9a583abbcfe9e6cb4f1062312bfb2b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cv::Mat CollisionDetection::get2DWorkspace </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return workspace for 2D collision. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">workspace</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ad958dcb7e5caab88e47d82aa66e05bf0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CollisionDetection::set2DWorkspace </td>
+          <td>(</td>
+          <td class="paramtype">cv::Mat &amp;&#160;</td>
+          <td class="paramname"><em>space</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set workspace for 2D collision check. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">workspace</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-25 </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>source/<a class="el" href="CollisionDetection_8h_source.html">CollisionDetection.h</a></li>
 <li>source/CollisionDetection.cpp</li>
@@ -113,7 +239,7 @@ cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><b>get2DWorkspace</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 11:57:42 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

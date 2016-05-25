@@ -112,7 +112,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keywordtype">void</span> StarRRTPlanner::computeRRTNode(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;randVec, shared_ptr&lt;Node&gt; &amp;newNode) {</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="comment">// get nearest neighbor</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    shared_ptr&lt;Node&gt; nearestNode = this-&gt;m_graph.getNearestNode(<a class="code" href="classNode.html">Node</a>(randVec));</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    shared_ptr&lt;Node&gt; nearestNode = this-&gt;m_graph.<a class="code" href="classGraph.html#a083a9aa551b6c79618be08a520a520f5">getNearestNode</a>(<a class="code" href="classNode.html">Node</a>(randVec));</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="comment">// set node new fix fixed step size of 10</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> newVec = RRTPlanner::computeNodeNew(randVec, nearestNode-&gt;getVec());</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    newNode = shared_ptr&lt;Node&gt;(<span class="keyword">new</span> <a class="code" href="classNode.html">Node</a>(newVec));</div>
@@ -120,11 +120,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; nearNodes;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    chooseParent(newNode, nearestNode, nearNodes);</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">if</span> (this-&gt;m_collision-&gt;controlCollision(newNode)) {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">if</span> (this-&gt;m_collision-&gt;<a class="code" href="classCollisionDetection.html#ad9c50d617227244eb14080b3589ba5cc">controlCollision</a>(newNode)) {</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        newNode = NULL;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    }</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (!this-&gt;m_planner-&gt;computeTrajectory(newNode, nearestNode)) {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (!this-&gt;m_planner-&gt;<a class="code" href="classTrajectoryPlanner.html#a119dbff9c0d27bd153f7beb76a8f5313">computeTrajectory</a>(newNode, nearestNode)) {</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        newNode = NULL;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    }</div>
@@ -138,12 +138,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keywordtype">void</span> StarRRTPlanner::chooseParent(shared_ptr&lt;Node&gt; &amp;newNode, shared_ptr&lt;Node&gt; &amp;nearestNode, std::vector&lt;shared_ptr&lt;Node&gt;&gt; &amp;nearNodes) {</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="comment">// get near nodes to the new node</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    nearNodes = this-&gt;m_graph.getNearNodes(newNode, this-&gt;m_stepSize * 1.5);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    nearNodes = this-&gt;m_graph.<a class="code" href="classGraph.html#a7d11365c5e0730d1211e27e8f51810b0">getNearNodes</a>(newNode, this-&gt;m_stepSize * 1.5);</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">float</span> nearestNodeCost = nearestNode-&gt;getCost();</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; nearNodes.size(); ++i) {</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">if</span> (nearNodes[i]-&gt;getCost() &lt; nearestNodeCost)</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keywordflow">if</span> (this-&gt;m_planner-&gt;computeTrajectory(newNode, nearNodes[i])) {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keywordflow">if</span> (this-&gt;m_planner-&gt;<a class="code" href="classTrajectoryPlanner.html#a119dbff9c0d27bd153f7beb76a8f5313">computeTrajectory</a>(newNode, nearNodes[i])) {</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                nearestNodeCost = nearNodes[i]-&gt;getCost();</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                nearestNode = nearNodes[i];</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            }</div>
@@ -156,7 +156,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            <span class="keywordtype">float</span> oldDist = nearNodes[i]-&gt;getCost();</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordtype">float</span> newDist = nearNodes[i]-&gt;getDist(newNode) + newNode-&gt;getCost();</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <span class="keywordflow">if</span> (newDist &lt; oldDist) {</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                <span class="keywordflow">if</span> (this-&gt;m_planner-&gt;computeTrajectory(newNode, nearNodes[i])) {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                <span class="keywordflow">if</span> (this-&gt;m_planner-&gt;<a class="code" href="classTrajectoryPlanner.html#a119dbff9c0d27bd153f7beb76a8f5313">computeTrajectory</a>(newNode, nearNodes[i])) {</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                    <span class="keywordtype">float</span> cost = nearNodes[i]-&gt;getCost() - nearNodes[i]-&gt;getDist(nearNodes[i]-&gt;getParent());</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                    cost += newNode-&gt;getDist(nearNodes[i]);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                    nearNodes[i]-&gt;setCost(cost);</div>
@@ -168,14 +168,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;}</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* STARRRTPLANNER_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classCollisionDetection_html_ad9c50d617227244eb14080b3589ba5cc"><div class="ttname"><a href="classCollisionDetection.html#ad9c50d617227244eb14080b3589ba5cc">CollisionDetection::controlCollision</a></div><div class="ttdeci">bool controlCollision(const std::shared_ptr&lt; Node &gt; &amp;node)</div><div class="ttdoc">Check for collision. </div><div class="ttdef"><b>Definition:</b> CollisionDetection.h:34</div></div>
+<div class="ttc" id="classTrajectoryPlanner_html_a119dbff9c0d27bd153f7beb76a8f5313"><div class="ttname"><a href="classTrajectoryPlanner.html#a119dbff9c0d27bd153f7beb76a8f5313">TrajectoryPlanner::computeTrajectory</a></div><div class="ttdeci">bool computeTrajectory(const std::shared_ptr&lt; Node &gt; node1, const std::shared_ptr&lt; Node &gt; node2)</div><div class="ttdoc">Compute the trajectory and return if possible or not. </div><div class="ttdef"><b>Definition:</b> TrajectoryPlanner.h:53</div></div>
 <div class="ttc" id="classNode_html"><div class="ttname"><a href="classNode.html">Node</a></div><div class="ttdoc">Class Node to present nodes of path planner. </div><div class="ttdef"><b>Definition:</b> Node.h:19</div></div>
+<div class="ttc" id="classGraph_html_a083a9aa551b6c79618be08a520a520f5"><div class="ttname"><a href="classGraph.html#a083a9aa551b6c79618be08a520a520f5">Graph::getNearestNode</a></div><div class="ttdeci">shared_ptr&lt; Node &gt; getNearestNode(const Node node)</div><div class="ttdoc">Search for nearrest neighbor. </div><div class="ttdef"><b>Definition:</b> Graph.cpp:18</div></div>
 <div class="ttc" id="classStarRRTPlanner_html"><div class="ttname"><a href="classStarRRTPlanner.html">StarRRTPlanner</a></div><div class="ttdef"><b>Definition:</b> StarRRTPlanner.h:8</div></div>
 <div class="ttc" id="classVec_html"><div class="ttname"><a href="classVec.html">Vec&lt; float &gt;</a></div></div>
+<div class="ttc" id="classGraph_html_a7d11365c5e0730d1211e27e8f51810b0"><div class="ttname"><a href="classGraph.html#a7d11365c5e0730d1211e27e8f51810b0">Graph::getNearNodes</a></div><div class="ttdeci">std::vector&lt; shared_ptr&lt; Node &gt; &gt; getNearNodes(const shared_ptr&lt; Node &gt; node, const float &amp;distance)</div><div class="ttdoc">Search range. </div><div class="ttdef"><b>Definition:</b> Graph.cpp:22</div></div>
 <div class="ttc" id="classRRTPlanner_html"><div class="ttname"><a href="classRRTPlanner.html">RRTPlanner</a></div><div class="ttdef"><b>Definition:</b> RRTPlanner.h:8</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 11:57:42 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
