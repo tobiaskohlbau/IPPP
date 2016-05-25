@@ -44,11 +44,11 @@ void planning2D() {
     std::shared_ptr<Node> goal(new Node(650.0,750.0));
     bool connected = planner.connectGoalNode(goal);
     if (connected) {
-        Drawing::drawTree(nodes, image);
-        Drawing::drawPath(goal, image);
+        Drawing::drawTree(nodes, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,0,0), 1);
+        Drawing::drawPath(goal, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,255,0), 2);
     }
     else {
-        Drawing::drawTree(nodes, image);
+        Drawing::drawTree(nodes, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,0,0), 1);
     }
     cv::namedWindow("planner", CV_WINDOW_AUTOSIZE);
     cv::imshow("planner", image);

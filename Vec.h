@@ -47,7 +47,106 @@ public:
         return m_data[index];
     }
 
+    Vec<T> &operator = (const Vec<T> &vec) {
+        if (this == &vec)      // Same object?
+              return *this;
+        m_dim = vec.getDim();
+        this->m_data = std::unique_ptr<T[]>(new T[m_dim]);
+        for (unsigned int i = 0; i < m_dim; ++i) {
+            this->m_data[i] = vec[i];
+        }
+        return *this;
+    }
 
+    Vec<T>& operator += (const Vec<T> &vec) {
+        assert(m_dim == vec.getDim());
+        for (unsigned int i = 0; i < m_dim; ++i)
+            m_data[i] += vec[i];
+        return *this;
+    }
+
+    Vec<T>& operator += (const T scalar) {
+        for (unsigned int i = 0; i < m_dim; ++i)
+            m_data[i] += scalar;
+        return *this;
+    }
+
+    Vec operator + (const Vec<T> &vec) const {
+        assert(m_dim == vec.getDim());
+        Vec result = Vec<T>::zeros(m_dim);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result[i] = (*this)[i] + vec[i];
+        return result;
+    }
+
+    Vec& operator -= (const Vec<T> &vec) {
+        assert(m_dim == vec.getDim());
+        for (unsigned int i = 0; i < m_dim; ++i)
+            (*this)[i] -= vec[i];
+        return *this;
+    }
+
+    Vec& operator -= (const T scalar) {
+        for (unsigned int i = 0; i < m_dim; ++i)
+            (*this)[i] -= scalar;
+        return *this;
+    }
+
+    Vec operator - (const Vec<T> &vec) const {
+        assert(m_dim == vec.getDim());
+        Vec result = Vec<T>::zeros(m_dim);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result[i] = (*this)[i] - vec[i];
+        return result;
+    }
+
+    Vec operator + (const T &s) const {
+        Vec<T> result(*this);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result[i] += s;
+        return result;
+    }
+
+    Vec operator - (const T &s) const {
+        Vec<T> result(*this);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result[i] -= s;
+        return result;
+    }
+
+    Vec& operator *= (const T s) {
+        for (unsigned int i = 0; i < m_dim; ++i)
+            (*this)[i] *= s;
+        return *this;
+    }
+
+    Vec operator * (const T &s) const {
+        Vec result = Vec<T>::zeros(m_dim);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result[i] = (*this)[i] * s;
+        return result;
+    }
+
+    T operator * (const Vec<T> &vec) const {
+        assert(m_dim == vec.getDim());
+        T result = 0;
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result += (*this)[i] * vec[i];
+        return result;
+    }
+
+    Vec& operator /= (const T &s) {
+        for (unsigned int i = 0; i < m_dim; ++i)
+            (*this)[i] /= s;
+        return *this;
+    }
+
+    Vec operator / (const T &s) const {
+        Vec result = Vec<T>::zeros(m_dim);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            result[i] = (*this)[i] / s;
+        return result;
+    }
 
     static Vec<T> zeros(unsigned int dim) {
         Vec<T> vec(dim);
@@ -65,107 +164,6 @@ private:
     std::unique_ptr<T[]> m_data;
     unsigned int m_dim;
 };
-
-Vec<T> &operator = (const Vec<T> &vec) {
-    if (this == &vec)      // Same object?
-          return *this;
-    m_dim = vec.getDim();
-    this->m_data = std::unique_ptr<T[]>(new T[m_dim]);
-    for (unsigned int i = 0; i < m_dim; ++i) {
-        this->m_data[i] = vec[i];
-    }
-    return *this;
-}
-
-Vec<T>& operator += (const Vec<T> &vec) {
-    assert(m_dim == vec.getDim());
-    for (unsigned int i = 0; i < m_dim; ++i)
-        m_data[i] += vec[i];
-    return *this;
-}
-
-Vec<T>& operator += (const T scalar) {
-    for (unsigned int i = 0; i < m_dim; ++i)
-        m_data[i] += scalar;
-    return *this;
-}
-
-Vec operator + (const Vec<T> &vec) const {
-    assert(m_dim == vec.getDim());
-    Vec result = Vec<T>::zeros(m_dim);
-    for (unsigned int i = 0; i < m_dim; ++i)
-        result[i] = (*this)[i] + vec[i];
-    return result;
-}
-
-Vec& operator -= (const Vec<T> &vec) {
-    assert(m_dim == vec.getDim());
-    for (unsigned int i = 0; i < m_dim; ++i)
-        (*this)[i] -= vec[i];
-    return *this;
-}
-
-Vec& operator -= (const T scalar) {
-    for (unsigned int i = 0; i < m_dim; ++i)
-        (*this)[i] -= scalar;
-    return *this;
-}
-
-Vec operator - (const Vec<T> &vec) const {
-    assert(m_dim == vec.getDim());
-    Vec result = Vec<T>::zeros(m_dim);
-    for (unsigned int i = 0; i < m_dim; ++i)
-        result[i] = (*this)[i] - vec[i];
-    return result;
-}
-
-Vec operator + (const T &s) const {
-    Vec<T> result(*this);
-    for (unsigned int i = 0; i < m_dim; ++i)
-        result[i] += s;
-    return result;
-}
-
-Vec operator - (const T &s) const {
-    Vec<T> result(*this);
-    for (unsigned int i = 0; i < m_dim; ++i)
-        result[i] -= s;
-    return result;
-}
-
-Vec& operator *= (const T s) {
-    for (unsigned int i = 0; i < m_dim; ++i)
-        (*this)[i] *= s;
-    return *this;
-}
-
-Vec operator * (const T &s) const {
-    Vec result = Vec<T>::zeros(m_dim);
-    for (unsigned int i = 0; i < m_dim; ++i)
-        result[i] = (*this)[i] * s;
-    return result;
-}
-
-T operator * (const Vec<T> &vec) const {
-    assert(m_dim == vec.getDim());
-    T result = 0;
-    for (unsigned int i = 0; i < m_dim; ++i)
-        result += (*this)[i] * vec[i];
-    return result;
-}
-
-Vec& operator /= (const T &s) {
-    for (unsigned int i = 0; i < m_dim; ++i)
-        (*this)[i] /= s;
-    return *this;
-}
-
-Vec operator / (const T &s) const {
-    Vec result = Vec<T>::zeros(m_dim);
-    for (unsigned int i = 0; i < m_dim; ++i)
-        result[i] = (*this)[i] / s;
-    return result;
-}
 
 /*!
 *  \brief      Constructor of the class Vec, set dimension to 0

@@ -12,7 +12,7 @@ using std::shared_ptr;
 
 /*!
 * \brief   Class Node to present nodes of path planner
-* \details Consists of the position by an Vec, a cost parameter, pointer to an parent Node and a list of child nodes
+* \details Consists of the position by an Vec, a cost parameter, pointer to an parent Node and a list of child
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
@@ -379,6 +379,12 @@ void Node::clearEdges() {
     m_edges.clear();
 }
 
+/*!
+*  \brief      Return Vec
+*  \author     Sascha Kaden
+*  \param[out] Vec
+*  \date       2016-05-24
+*/
 Vec<float> Node::getVec() const {
     return m_vec;
 }

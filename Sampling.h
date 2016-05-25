@@ -83,7 +83,7 @@ void Sampling::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &ma
         std::cout << "Boudaries have different dimensions" << std::endl;
         return;
     }
-    for (unsigned int i = 0; i < m_dim; ++i) {
+    for (unsigned int i = 0; i < minBoundary.getDim(); ++i) {
         if (minBoundary[i] > maxBoundary[i]) {
             std::cout << "Min boundary is larger than max boundary" << std::endl;
             return;

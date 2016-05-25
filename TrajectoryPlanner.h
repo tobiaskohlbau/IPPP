@@ -15,6 +15,11 @@ enum class TrajectoryMethod
     spline,
 };
 
+/*!
+* \brief   Class TrajectoryPlanner plans edges/paths to given nodes
+* \author  Sascha Kaden
+* \date    2016-05-25
+*/
 class TrajectoryPlanner
 {
 public:
