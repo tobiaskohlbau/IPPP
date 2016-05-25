@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['empty',['empty',['../classNode.html#abfe17e7be0efb32246a6fffad333ed9a',1,'Node::empty()'],['../classVec.html#a5ceca3b447f22abfcac2eb1c26d69fc6',1,'Vec::empty()']]]
+  ['drawpath',['drawPath',['../classDrawing.html#aea471c6e3e682a4525eb8d88cc784e61',1,'Drawing']]],
+  ['drawtree',['drawTree',['../classDrawing.html#af613dbdb8a3fdf6a7017df05eb11857e',1,'Drawing']]]
 ];

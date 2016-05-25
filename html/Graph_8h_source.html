@@ -132,7 +132,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;}</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;shared_ptr&lt;Node&gt; Graph::getNearestNode(<span class="keyword">const</span> <a class="code" href="classNode.html">Node</a> node) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">return</span> m_kdTree.searchNearestNeighbor(node.getVec());</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">return</span> m_kdTree.searchNearestNeighbor(node.<a class="code" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">getVec</a>());</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;std::vector&lt;shared_ptr&lt;Node&gt;&gt; Graph::getNearNodes(<span class="keyword">const</span> shared_ptr&lt;Node&gt; node, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;distance) {</div>
@@ -144,10 +144,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classNode_html"><div class="ttname"><a href="classNode.html">Node</a></div><div class="ttdoc">Class Node to present nodes of path planner. </div><div class="ttdef"><b>Definition:</b> Node.h:19</div></div>
 <div class="ttc" id="classKDTree_html"><div class="ttname"><a href="classKDTree.html">KDTree</a></div><div class="ttdef"><b>Definition:</b> KDTree.h:12</div></div>
 <div class="ttc" id="classGraph_html"><div class="ttname"><a href="classGraph.html">Graph</a></div><div class="ttdef"><b>Definition:</b> Graph.h:14</div></div>
+<div class="ttc" id="classNode_html_ab4affdfdd392a73c6fcc51ce02385e49"><div class="ttname"><a href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">Node::getVec</a></div><div class="ttdeci">Vec&lt; float &gt; getVec() const </div><div class="ttdoc">Return Vec. </div><div class="ttdef"><b>Definition:</b> Node.cpp:137</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 00:04:55 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 25 2016 11:57:42 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

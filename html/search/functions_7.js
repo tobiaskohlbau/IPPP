@@ -1,4 +1,9 @@
 var searchData=
 [
-  ['vec',['Vec',['../classVec.html#a205bf548b98a3f6a2032854091f60ef8',1,'Vec::Vec()'],['../classVec.html#a18b36a6dca8e132738970a16d13082df',1,'Vec::Vec(const T &amp;x)'],['../classVec.html#a4221f98304b3c765c83fd37b93e702c4',1,'Vec::Vec(const T &amp;x, const T &amp;y)'],['../classVec.html#a5ad45cc16f495d26737b925c345137e5',1,'Vec::Vec(const T &amp;x, const T &amp;y, const T &amp;z)'],['../classVec.html#a141b06b3d545325e4d1337f496d69dc8',1,'Vec::Vec(const T &amp;x, const T &amp;y, const T &amp;z, const T &amp;rx)'],['../classVec.html#a7b51eeb80aa7d9a38eebb3825e31a91f',1,'Vec::Vec(const T &amp;x, const T &amp;y, const T &amp;z, const T &amp;rx, const T &amp;ry)'],['../classVec.html#a424a599b41e6cb30151965cbf2592e87',1,'Vec::Vec(const T &amp;x, const T &amp;y, const T &amp;z, const T &amp;rx, const T &amp;ry, const T &amp;rz)'],['../classVec.html#a01bc377e20fbf5a9a3a849c83caca1e7',1,'Vec::Vec(const unsigned int &amp;dim)'],['../classVec.html#a482065701497995521b79c62f36b9b47',1,'Vec::Vec(const unsigned int &amp;dim, const T data[])'],['../classVec.html#a1e10adde7df64c297917d952834172c1',1,'Vec::Vec(const Vec&lt; T &gt; &amp;vec)']]]
+  ['sampling',['Sampling',['../classSampling.html#ab4e77a1fb7e64f6d337e9143b2e7ef66',1,'Sampling']]],
+  ['setallto',['setAllTo',['../classVec.html#a4a7eec8a1a09fa18b7c47759c9e1eb3e',1,'Vec']]],
+  ['setboundaries',['setBoundaries',['../classSampling.html#a05851d474e200665221b15fd3fcba56a',1,'Sampling']]],
+  ['setcost',['setCost',['../classNode.html#aa3c3eacdb00cb8bd1a10a86c8d34e2ee',1,'Node']]],
+  ['setparent',['setParent',['../classNode.html#a7bf1b7705353fc6e36fcd61393c06370',1,'Node']]],
+  ['setvecvalue',['setVecValue',['../classNode.html#aea90bb1051adfa9bcb2e736854ff03b3',1,'Node']]]
 ];

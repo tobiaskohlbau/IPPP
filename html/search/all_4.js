@@ -8,6 +8,7 @@ var searchData=
   ['getparent',['getParent',['../classNode.html#a585e94ae0fa6c80c2caee471689260f0',1,'Node']]],
   ['getsample',['getSample',['../classSampling.html#afb439f05570d873cf1742d20b87f83f1',1,'Sampling']]],
   ['getsqdist',['getSqDist',['../classVec.html#a371f2087dff668951721cf7568f2416a',1,'Vec']]],
+  ['getvec',['getVec',['../classNode.html#ab4affdfdd392a73c6fcc51ce02385e49',1,'Node']]],
   ['getvecvalue',['getVecValue',['../classNode.html#a20b64482645b17e1fdf2b374513e119e',1,'Node']]],
   ['getx',['getX',['../classNode.html#aec879abd3300422ebfa014908432d47b',1,'Node']]],
   ['gety',['getY',['../classNode.html#ad29f9632ca8d71eedeeb5fd8c96dff1e',1,'Node']]],

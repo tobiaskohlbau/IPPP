@@ -1,6 +1,6 @@
 <map id="RRTPlanner" name="RRTPlanner">
 <area shape="rect" id="node2" href="$classPlanner.html" title="Planner" alt="" coords="303,109,369,136"/>
-<area shape="rect" id="node3" href="$classTrajectoryPlanner.html" title="TrajectoryPlanner" alt="" coords="5,5,128,32"/>
+<area shape="rect" id="node3" href="$classTrajectoryPlanner.html" title="Class TrajectoryPlanner plans edges/paths to given nodes. " alt="" coords="5,5,128,32"/>
 <area shape="rect" id="node4" href="$classCollisionDetection.html" title="CollisionDetection" alt="" coords="153,5,281,32"/>
 <area shape="rect" id="node5" href="$classVec.html" title="Vec\&lt; float \&gt;" alt="" coords="306,5,400,32"/>
 <area shape="rect" id="node6" href="$classGraph.html" title="Graph" alt="" coords="441,5,497,32"/>
