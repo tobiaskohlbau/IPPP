@@ -5,6 +5,12 @@
 
 using std::shared_ptr;
 
+/*!
+* \brief   Class KDNode is the node object of the KDTree
+* \details Owns the position of the node, pointer to left and right leaf, pointer to an extern object, axis split value and the split value itself.
+* \author  Sascha Kaden
+* \date    2016-05-27
+*/
 template<typename T>
 class KDNode
 {
@@ -18,10 +24,15 @@ public:
     T node;
     unsigned int axis;
     float value;
-private:
-
 };
 
+/*!
+*  \brief      Constructor of the class KDNode
+*  \author     Sascha Kaden
+*  \param[in]  position
+*  \param[in]  pointer to an extern object
+*  \date       2016-05-27
+*/
 template<typename T>
 KDNode<T>::KDNode(Vec<float> vec, T node) {
     this->vec = vec;
@@ -30,6 +41,12 @@ KDNode<T>::KDNode(Vec<float> vec, T node) {
     value = 0;
 }
 
+/*!
+*  \brief      Return dimension of KDNode
+*  \author     Sascha Kaden
+*  \param[out] dimension
+*  \date       2016-05-27
+*/
 template<typename T>
 unsigned int KDNode<T>::getDim() {
     return vec.getDim();

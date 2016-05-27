@@ -8,6 +8,12 @@
 
 using std::shared_ptr;
 
+/*!
+* \brief   Class KDTree for a fast binary search
+* \details Class uses KDNode to save the points
+* \author  Sascha Kaden
+* \date    2016-05-27
+*/
 template<class T>
 class KDTree
 {
@@ -21,10 +27,17 @@ private:
     void NNS(const Vec<float> &point, shared_ptr<KDNode<T>> node, shared_ptr<KDNode<T>> &refNode, float &bestDist);
     void RS(const Vec<float> &point, shared_ptr<KDNode<T>> node, std::vector<shared_ptr<KDNode<T>>> &refNodes,
         const float &sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary);
-    //variables
+
     shared_ptr<KDNode<T>> m_root;
 };
 
+/*!
+*  \brief      Add Node to the KDTree
+*  \author     Sascha Kaden
+*  \param[in]  position
+*  \param[in]  pointer to the Node
+*  \date       2016-05-27
+*/
 template<class T>
 void KDTree<T>::addNode(const Vec<float> &vec, T node) {
     shared_ptr<KDNode<T>> shrKDNode(new KDNode<T>(vec, node));
@@ -35,6 +48,15 @@ void KDTree<T>::addNode(const Vec<float> &vec, T node) {
     insert(shrKDNode, m_root, 0);
 }
 
+/*!
+*  \brief      Insert KDNode to the KDTree (recursive function)
+*  \author     Sascha Kaden
+*  \param[in]  KDNode to insert
+*  \param[in]  current KDNode in the KDTree
+*  \param[in]  split dimension
+*  \param[out] current KDNode
+*  \date       2016-05-27
+*/
 template<class T>
 shared_ptr<KDNode<T>> KDTree<T>::insert(shared_ptr<KDNode<T>> insertNode, shared_ptr<KDNode<T>> currentNode, unsigned int cd) {
     if (currentNode == NULL) {              // node at leaf doesn't exist and will be added
@@ -54,6 +76,13 @@ shared_ptr<KDNode<T>> KDTree<T>::insert(shared_ptr<KDNode<T>> insertNode, shared
     return currentNode;
 }
 
+/*!
+*  \brief      Search for the nearest neighbor
+*  \author     Sascha Kaden
+*  \param[in]  position
+*  \param[out] pointer to the nearest Node
+*  \date       2016-05-27
+*/
 template<class T>
 T KDTree<T>::searchNearestNeighbor(const Vec<float> &vec) {
     if (m_root == NULL)
@@ -65,6 +94,14 @@ T KDTree<T>::searchNearestNeighbor(const Vec<float> &vec) {
     return node->node;
 }
 
+/*!
+*  \brief      Search for range around a position
+*  \author     Sascha Kaden
+*  \param[in]  position
+*  \param[in]  distance of the range
+*  \param[out] list of near nodes to the position
+*  \date       2016-05-27
+*/
 template<class T>
 std::vector<T> KDTree<T>::searchRange(const Vec<float> &vec, const float &range) {
     std::vector<T> nodes;
@@ -82,6 +119,14 @@ std::vector<T> KDTree<T>::searchRange(const Vec<float> &vec, const float &range)
     return nodes;
 }
 
+/*!
+*  \brief      Search for the nearest neighbor (recursive function)
+*  \author     Sascha Kaden
+*  \param[in]  position
+*  \param[in]  reference KDNode
+*  \param[in]  shortest distance
+*  \date       2016-05-27
+*/
 template<class T>
 void KDTree<T>::NNS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, shared_ptr<KDNode<T>> &refNode, float &bestDist) {
     if (node->left == NULL && node->right == NULL) {
@@ -107,6 +152,16 @@ void KDTree<T>::NNS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, shared_pt
     }
 }
 
+/*!
+*  \brief      Search range for near nodes (recursive function)
+*  \author     Sascha Kaden
+*  \param[in]  position
+*  \param[in]  list of reference kdNodes
+*  \param[in]  squared range distance
+*  \param[in]  maximum boundary
+*  \param[in]  minimum boundary
+*  \date       2016-05-27
+*/
 template<class T>
 void KDTree<T>::RS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, std::vector<shared_ptr<KDNode<T>>> &refNodes,
     const float &sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary) {
