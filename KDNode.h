@@ -2,6 +2,7 @@
 #define KDNODE_H_
 
 #include <cstdint>
+#include "Vec.h"
 
 using std::shared_ptr;
 

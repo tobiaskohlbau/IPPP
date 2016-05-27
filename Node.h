@@ -4,9 +4,10 @@
 #include <assert.h>
 #include <cstdint>
 #include <memory>
+#include <vector>
+
 #include "Vec.h"
 #include "Edge.h"
-#include <vector>
 
 using std::shared_ptr;
 

@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <cstdint>
 #include <math.h>
+#include <iostream>
 
 using std::shared_ptr;
 

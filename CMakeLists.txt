@@ -26,7 +26,8 @@ link_directories(
 
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/planner)
 
-#set(SRCS)
+set(SRCS
+    )
 
 set(HDRS
     CollisionDetection.h
