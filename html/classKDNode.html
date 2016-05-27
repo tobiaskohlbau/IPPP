@@ -91,6 +91,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">KDNode&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Class <a class="el" href="classKDNode.html" title="Class KDNode is the node object of the KDTree. ">KDNode</a> is the node object of the <a class="el" href="classKDTree.html" title="Class KDTree for a fast binary search. ">KDTree</a>.  
+ <a href="classKDNode.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="KDNode_8h_source.html">KDNode.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for KDNode&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -101,11 +106,11 @@ Collaboration diagram for KDNode&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aabf86d2924f766614ace111d9a53ecfa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aabf86d2924f766614ace111d9a53ecfa"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>KDNode</b> (<a class="el" href="classVec.html">Vec</a>&lt; float &gt; vec, T node)</td></tr>
+<tr class="memitem:aabf86d2924f766614ace111d9a53ecfa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classKDNode.html#aabf86d2924f766614ace111d9a53ecfa">KDNode</a> (<a class="el" href="classVec.html">Vec</a>&lt; float &gt; vec, T node)</td></tr>
+<tr class="memdesc:aabf86d2924f766614ace111d9a53ecfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor of the class <a class="el" href="classKDNode.html" title="Class KDNode is the node object of the KDTree. ">KDNode</a>.  <a href="#aabf86d2924f766614ace111d9a53ecfa">More...</a><br/></td></tr>
 <tr class="separator:aabf86d2924f766614ace111d9a53ecfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ac781bf115cbf04efbbed454380aecd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ac781bf115cbf04efbbed454380aecd"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>getDim</b> ()</td></tr>
+<tr class="memitem:a1ac781bf115cbf04efbbed454380aecd"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classKDNode.html#a1ac781bf115cbf04efbbed454380aecd">getDim</a> ()</td></tr>
+<tr class="memdesc:a1ac781bf115cbf04efbbed454380aecd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return dimension of <a class="el" href="classKDNode.html" title="Class KDNode is the node object of the KDTree. ">KDNode</a>.  <a href="#a1ac781bf115cbf04efbbed454380aecd">More...</a><br/></td></tr>
 <tr class="separator:a1ac781bf115cbf04efbbed454380aecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -129,13 +134,89 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>axis</b></td>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>value</b></td></tr>
 <tr class="separator:a1aef17959c9bf85c36c4180345828cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br/>
+class KDNode&lt; T &gt;</h3>
+
+<p>Class <a class="el" href="classKDNode.html" title="Class KDNode is the node object of the KDTree. ">KDNode</a> is the node object of the <a class="el" href="classKDTree.html" title="Class KDTree for a fast binary search. ">KDTree</a>. </p>
+<p>Owns the position of the node, pointer to left and right leaf, pointer to an extern object, axis split value and the split value itself. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="aabf86d2924f766614ace111d9a53ecfa"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classKDNode.html">KDNode</a>&lt; T &gt;::<a class="el" href="classKDNode.html">KDNode</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classVec.html">Vec</a>&lt; float &gt;&#160;</td>
+          <td class="paramname"><em>vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>node</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor of the class <a class="el" href="classKDNode.html" title="Class KDNode is the node object of the KDTree. ">KDNode</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">pointer</td><td>to an extern object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a1ac781bf115cbf04efbbed454380aecd"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int <a class="el" href="classKDNode.html">KDNode</a>&lt; T &gt;::getDim </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return dimension of <a class="el" href="classKDNode.html" title="Class KDNode is the node object of the KDTree. ">KDNode</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">dimension</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>source/<a class="el" href="KDNode_8h_source.html">KDNode.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 27 2016 13:03:05 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

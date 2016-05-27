@@ -1,4 +1,4 @@
 <map id="StarRRTPlanner" name="StarRRTPlanner">
-<area shape="rect" id="node2" href="$classRRTPlanner.html" title="RRTPlanner" alt="" coords="17,80,111,107"/>
-<area shape="rect" id="node3" href="$classPlanner.html" title="Planner" alt="" coords="31,5,97,32"/>
+<area shape="rect" id="node2" href="$classRRTPlanner.html" title="Super class of the RRTPlanner. " alt="" coords="17,80,111,107"/>
+<area shape="rect" id="node3" href="$classPlanner.html" title="Super class of all planners. " alt="" coords="31,5,97,32"/>
 </map>

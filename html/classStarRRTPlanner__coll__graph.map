@@ -1,6 +1,6 @@
 <map id="StarRRTPlanner" name="StarRRTPlanner">
-<area shape="rect" id="node2" href="$classRRTPlanner.html" title="RRTPlanner" alt="" coords="350,213,444,240"/>
-<area shape="rect" id="node3" href="$classPlanner.html" title="Planner" alt="" coords="303,109,369,136"/>
+<area shape="rect" id="node2" href="$classRRTPlanner.html" title="Super class of the RRTPlanner. " alt="" coords="350,213,444,240"/>
+<area shape="rect" id="node3" href="$classPlanner.html" title="Super class of all planners. " alt="" coords="303,109,369,136"/>
 <area shape="rect" id="node4" href="$classTrajectoryPlanner.html" title="Class TrajectoryPlanner plans edges/paths to given nodes. " alt="" coords="5,5,128,32"/>
 <area shape="rect" id="node5" href="$classCollisionDetection.html" title="Class CollisionDetection checks the configuration on collision and return boolean value..." alt="" coords="153,5,281,32"/>
 <area shape="rect" id="node6" href="$classVec.html" title="Vec\&lt; float \&gt;" alt="" coords="306,5,400,32"/>

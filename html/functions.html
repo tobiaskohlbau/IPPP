@@ -80,6 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="#index_d"><span>d</span></a></li>
       <li><a href="#index_e"><span>e</span></a></li>
       <li><a href="#index_g"><span>g</span></a></li>
+      <li><a href="#index_k"><span>k</span></a></li>
       <li><a href="#index_n"><span>n</span></a></li>
       <li><a href="#index_p"><span>p</span></a></li>
       <li><a href="#index_r"><span>r</span></a></li>
@@ -115,6 +116,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>addNode()
 : <a class="el" href="classGraph.html#ac4736c6d4b946ab7249bf8e4a84df2d4">Graph</a>
+, <a class="el" href="classKDTree.html#a142c48007362e5de4925261aaacd5024">KDTree&lt; T &gt;</a>
 </li>
 </ul>
 
@@ -126,14 +128,26 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>clearParent()
 : <a class="el" href="classNode.html#a6c4496fb0c1cca593766765f6878f0e3">Node</a>
 </li>
+<li>computeNodeNew()
+: <a class="el" href="classRRTPlanner.html#a6c3cd58aa9139103ed8b740dac1b4eb9">RRTPlanner</a>
+</li>
 <li>computeTrajectory()
 : <a class="el" href="classTrajectoryPlanner.html#a119dbff9c0d27bd153f7beb76a8f5313">TrajectoryPlanner</a>
+</li>
+<li>computeTree()
+: <a class="el" href="classRRTPlanner.html#a6ca57a7d22348ebcd221cf4e20e0e4d3">RRTPlanner</a>
+</li>
+<li>connectGoalNode()
+: <a class="el" href="classRRTPlanner.html#ae620abbd72a94672823f337be89b28cf">RRTPlanner</a>
 </li>
 <li>controlCollision()
 : <a class="el" href="classCollisionDetection.html#ad9c50d617227244eb14080b3589ba5cc">CollisionDetection</a>
 </li>
 <li>controlCollision2D()
 : <a class="el" href="classCollisionDetection.html#a0418a477fe1ee79836a78e5d14886745">CollisionDetection</a>
+</li>
+<li>controlConstraints()
+: <a class="el" href="classPlanner.html#a41d284add7ea4494bb4874636202fa93">Planner</a>
 </li>
 </ul>
 
@@ -150,7 +164,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
 <li>Edge()
-: <a class="el" href="classEdge.html#a932433a5fb3c63570fab7e1d284b696e">Edge</a>
+: <a class="el" href="classEdge.html#acd9b5857e9418e87e7b77010f1f2e284">Edge</a>
 </li>
 <li>empty()
 : <a class="el" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">Node</a>
@@ -170,7 +184,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classNode.html#a2f39e084f067c581c315f33cc2f87d3c">Node</a>
 </li>
 <li>getDim()
-: <a class="el" href="classNode.html#a169a154e1ada22003acea7a95553bbd8">Node</a>
+: <a class="el" href="classKDNode.html#a1ac781bf115cbf04efbbed454380aecd">KDNode&lt; T &gt;</a>
+, <a class="el" href="classNode.html#a169a154e1ada22003acea7a95553bbd8">Node</a>
 , <a class="el" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">Vec&lt; T &gt;</a>
 </li>
 <li>getDist()
@@ -207,6 +222,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>getTarget()
 : <a class="el" href="classEdge.html#a44b1853be0f01178cd11be8811482fa2">Edge</a>
 </li>
+<li>getTree()
+: <a class="el" href="classPlanner.html#ada1c3ea6d3fa39b01fa36cc9b3294b96">Planner</a>
+</li>
 <li>getVec()
 : <a class="el" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">Node</a>
 </li>
@@ -225,6 +243,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </ul>
 
 
+<h3><a class="anchor" id="index_k"></a>- k -</h3><ul>
+<li>KDNode()
+: <a class="el" href="classKDNode.html#aabf86d2924f766614ace111d9a53ecfa">KDNode&lt; T &gt;</a>
+</li>
+</ul>
+
+
 <h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
 <li>Node()
 : <a class="el" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>
@@ -237,6 +262,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
+<li>Planner()
+: <a class="el" href="classPlanner.html#a198396710384a35d825acf5f8c46e1c8">Planner</a>
+</li>
 <li>print()
 : <a class="el" href="classVec.html#a9e40a038541cb670051f7676dba7bd57">Vec&lt; T &gt;</a>
 </li>
@@ -247,6 +275,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>removeNode()
 : <a class="el" href="classGraph.html#a183c86d4f21573c2a67204583e9108d9">Graph</a>
 </li>
+<li>RRTPlanner()
+: <a class="el" href="classRRTPlanner.html#a10329e9317f6c4862f46de36dab71426">RRTPlanner</a>
+</li>
 </ul>
 
 
@@ -254,8 +285,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>Sampling()
 : <a class="el" href="classSampling.html#ab4e77a1fb7e64f6d337e9143b2e7ef66">Sampling</a>
 </li>
+<li>searchNearestNeighbor()
+: <a class="el" href="classKDTree.html#a30dc6a5bde4ad1cd3d2ec437a7ad83b3">KDTree&lt; T &gt;</a>
+</li>
+<li>searchRange()
+: <a class="el" href="classKDTree.html#a657f8fcb951f49ba268ff1d15bf836dd">KDTree&lt; T &gt;</a>
+</li>
 <li>set2DWorkspace()
 : <a class="el" href="classCollisionDetection.html#ad958dcb7e5caab88e47d82aa66e05bf0">CollisionDetection</a>
+, <a class="el" href="classPlanner.html#a9f6c1b678e99016d5daafe68a0295d7c">Planner</a>
 </li>
 <li>setAllTo()
 : <a class="el" href="classVec.html#a4a7eec8a1a09fa18b7c47759c9e1eb3e">Vec&lt; T &gt;</a>
@@ -266,17 +304,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>setCost()
 : <a class="el" href="classNode.html#aa3c3eacdb00cb8bd1a10a86c8d34e2ee">Node</a>
 </li>
+<li>setInitNode()
+: <a class="el" href="classRRTPlanner.html#ac7f0a162541fd3c3ba6468cd21ee4b8a">RRTPlanner</a>
+</li>
 <li>setParent()
 : <a class="el" href="classNode.html#a7bf1b7705353fc6e36fcd61393c06370">Node</a>
 </li>
 <li>setSource()
-: <a class="el" href="classEdge.html#a4e332dd4630fd74542ac796e6d03924d">Edge</a>
+: <a class="el" href="classEdge.html#a68c98e2bfd8aeee1ffc3a89963f1b38a">Edge</a>
 </li>
 <li>setTarget()
 : <a class="el" href="classEdge.html#a6e67c0858411eb3512a70cfd163bff3b">Edge</a>
 </li>
 <li>setVecValue()
 : <a class="el" href="classNode.html#aea90bb1051adfa9bcb2e736854ff03b3">Node</a>
+</li>
+<li>setWorkspaceBoundaries()
+: <a class="el" href="classPlanner.html#a89bd64ddfc609211ce26fb711677be8f">Planner</a>
 </li>
 </ul>
 
@@ -296,7 +340,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 27 2016 13:03:05 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

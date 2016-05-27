@@ -92,12 +92,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Planner Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Super class of all planners.  
+ <a href="classPlanner.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Planner_8h_source.html">Planner.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Planner:</div>
 <div class="dyncontent">
 <div class="center"><img src="classPlanner__inherit__graph.png" border="0" usemap="#Planner_inherit__map" alt="Inheritance graph"/></div>
 <map name="Planner_inherit__map" id="Planner_inherit__map">
-<area shape="rect" id="node2" href="classRRTPlanner.html" title="RRTPlanner" alt="" coords="101,80,195,107"/><area shape="rect" id="node3" href="classNormalRRTPlanner.html" title="NormalRRTPlanner" alt="" coords="5,155,140,181"/><area shape="rect" id="node4" href="classStarRRTPlanner.html" title="StarRRTPlanner" alt="" coords="165,155,283,181"/></map>
+<area shape="rect" id="node2" href="classRRTPlanner.html" title="Super class of the RRTPlanner. " alt="" coords="101,80,195,107"/><area shape="rect" id="node3" href="classNormalRRTPlanner.html" title="Class of the NormalRRTPlanner. " alt="" coords="5,155,140,181"/><area shape="rect" id="node4" href="classStarRRTPlanner.html" title="Class of the StarRRTPlanner. " alt="" coords="165,155,283,181"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for Planner:</div>
@@ -109,27 +114,27 @@ Collaboration diagram for Planner:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a198396710384a35d825acf5f8c46e1c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a198396710384a35d825acf5f8c46e1c8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Planner</b> (const unsigned int &amp;dim, const float &amp;stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)</td></tr>
+<tr class="memitem:a198396710384a35d825acf5f8c46e1c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#a198396710384a35d825acf5f8c46e1c8">Planner</a> (const unsigned int &amp;dim, const float &amp;stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)</td></tr>
+<tr class="memdesc:a198396710384a35d825acf5f8c46e1c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor of the class <a class="el" href="classPlanner.html" title="Super class of all planners. ">Planner</a>.  <a href="#a198396710384a35d825acf5f8c46e1c8">More...</a><br/></td></tr>
 <tr class="separator:a198396710384a35d825acf5f8c46e1c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f6c1b678e99016d5daafe68a0295d7c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f6c1b678e99016d5daafe68a0295d7c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set2DWorkspace</b> (cv::Mat space)</td></tr>
+<tr class="memitem:a9f6c1b678e99016d5daafe68a0295d7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#a9f6c1b678e99016d5daafe68a0295d7c">set2DWorkspace</a> (cv::Mat space)</td></tr>
+<tr class="memdesc:a9f6c1b678e99016d5daafe68a0295d7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set 2D workspace to <a class="el" href="classPlanner.html" title="Super class of all planners. ">Planner</a> and <a class="el" href="classCollisionDetection.html" title="Class CollisionDetection checks the configuration on collision and return boolean value...">CollisionDetection</a>.  <a href="#a9f6c1b678e99016d5daafe68a0295d7c">More...</a><br/></td></tr>
 <tr class="separator:a9f6c1b678e99016d5daafe68a0295d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3e637597e3d8c2eae7358e187413d43"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3e637597e3d8c2eae7358e187413d43"></a>
 std::vector&lt; <a class="el" href="classNode.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getPath</b> ()</td></tr>
 <tr class="separator:ad3e637597e3d8c2eae7358e187413d43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada1c3ea6d3fa39b01fa36cc9b3294b96"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada1c3ea6d3fa39b01fa36cc9b3294b96"></a>
-std::vector&lt; std::shared_ptr<br class="typebreak"/>
-&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getTree</b> ()</td></tr>
+<tr class="memitem:ada1c3ea6d3fa39b01fa36cc9b3294b96"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr<br class="typebreak"/>
+&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#ada1c3ea6d3fa39b01fa36cc9b3294b96">getTree</a> ()</td></tr>
+<tr class="memdesc:ada1c3ea6d3fa39b01fa36cc9b3294b96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return all nodes from the <a class="el" href="classGraph.html" title="Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through...">Graph</a>.  <a href="#ada1c3ea6d3fa39b01fa36cc9b3294b96">More...</a><br/></td></tr>
 <tr class="separator:ada1c3ea6d3fa39b01fa36cc9b3294b96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89bd64ddfc609211ce26fb711677be8f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a89bd64ddfc609211ce26fb711677be8f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setWorkspaceBoundaries</b> (<a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;minBoundary, <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;maxBoundary)</td></tr>
+<tr class="memitem:a89bd64ddfc609211ce26fb711677be8f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#a89bd64ddfc609211ce26fb711677be8f">setWorkspaceBoundaries</a> (<a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;minBoundary, <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;maxBoundary)</td></tr>
+<tr class="memdesc:a89bd64ddfc609211ce26fb711677be8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set configuration space boundaries.  <a href="#a89bd64ddfc609211ce26fb711677be8f">More...</a><br/></td></tr>
 <tr class="separator:a89bd64ddfc609211ce26fb711677be8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a41d284add7ea4494bb4874636202fa93"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a41d284add7ea4494bb4874636202fa93"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>controlConstraints</b> ()</td></tr>
+<tr class="memitem:a41d284add7ea4494bb4874636202fa93"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#a41d284add7ea4494bb4874636202fa93">controlConstraints</a> ()</td></tr>
+<tr class="memdesc:a41d284add7ea4494bb4874636202fa93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Control all constraints of the <a class="el" href="classPlanner.html" title="Super class of all planners. ">Planner</a>.  <a href="#a41d284add7ea4494bb4874636202fa93">More...</a><br/></td></tr>
 <tr class="separator:a41d284add7ea4494bb4874636202fa93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
@@ -162,13 +167,190 @@ cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><b>m_workspace</b></t
 <a class="el" href="classVec.html">Vec</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_minBoundary</b></td></tr>
 <tr class="separator:a19fc8ba654ca9a4abe120179bffadfda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Super class of all planners. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a198396710384a35d825acf5f8c46e1c8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Planner::Planner </td>
+          <td>(</td>
+          <td class="paramtype">const unsigned int &amp;&#160;</td>
+          <td class="paramname"><em>dim</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>stepSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TrajectoryMethod&#160;</td>
+          <td class="paramname"><em>trajectory</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SamplingMethod&#160;</td>
+          <td class="paramname"><em>sampling</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor of the class <a class="el" href="classPlanner.html" title="Super class of all planners. ">Planner</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">dimension</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">TrajectoryMethod</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">SamplingMethod</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a41d284add7ea4494bb4874636202fa93"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Planner::controlConstraints </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Control all constraints of the <a class="el" href="classPlanner.html" title="Super class of all planners. ">Planner</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">check</td><td>flag </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ada1c3ea6d3fa39b01fa36cc9b3294b96"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt; Planner::getTree </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return all nodes from the <a class="el" href="classGraph.html" title="Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through...">Graph</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">list</td><td>of all nodes </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a9f6c1b678e99016d5daafe68a0295d7c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Planner::set2DWorkspace </td>
+          <td>(</td>
+          <td class="paramtype">cv::Mat&#160;</td>
+          <td class="paramname"><em>space</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set 2D workspace to <a class="el" href="classPlanner.html" title="Super class of all planners. ">Planner</a> and <a class="el" href="classCollisionDetection.html" title="Class CollisionDetection checks the configuration on collision and return boolean value...">CollisionDetection</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">2D</td><td>workspace </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a89bd64ddfc609211ce26fb711677be8f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Planner::setWorkspaceBoundaries </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;&#160;</td>
+          <td class="paramname"><em>minBoundary</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;&#160;</td>
+          <td class="paramname"><em>maxBoundary</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set configuration space boundaries. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">minimum</td><td>Boudaries </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">maximum</td><td>Boudaries </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>source/planner/<a class="el" href="Planner_8h_source.html">Planner.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 27 2016 13:03:05 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

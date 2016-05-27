@@ -92,51 +92,56 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">RRTPlanner Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Super class of the <a class="el" href="classRRTPlanner.html" title="Super class of the RRTPlanner. ">RRTPlanner</a>.  
+ <a href="classRRTPlanner.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="RRTPlanner_8h_source.html">RRTPlanner.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for RRTPlanner:</div>
 <div class="dyncontent">
 <div class="center"><img src="classRRTPlanner__inherit__graph.png" border="0" usemap="#RRTPlanner_inherit__map" alt="Inheritance graph"/></div>
 <map name="RRTPlanner_inherit__map" id="RRTPlanner_inherit__map">
-<area shape="rect" id="node3" href="classNormalRRTPlanner.html" title="NormalRRTPlanner" alt="" coords="5,155,140,181"/><area shape="rect" id="node4" href="classStarRRTPlanner.html" title="StarRRTPlanner" alt="" coords="165,155,283,181"/><area shape="rect" id="node2" href="classPlanner.html" title="Planner" alt="" coords="115,5,181,32"/></map>
+<area shape="rect" id="node3" href="classNormalRRTPlanner.html" title="Class of the NormalRRTPlanner. " alt="" coords="5,155,140,181"/><area shape="rect" id="node4" href="classStarRRTPlanner.html" title="Class of the StarRRTPlanner. " alt="" coords="165,155,283,181"/><area shape="rect" id="node2" href="classPlanner.html" title="Super class of all planners. " alt="" coords="115,5,181,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for RRTPlanner:</div>
 <div class="dyncontent">
 <div class="center"><img src="classRRTPlanner__coll__graph.png" border="0" usemap="#RRTPlanner_coll__map" alt="Collaboration graph"/></div>
 <map name="RRTPlanner_coll__map" id="RRTPlanner_coll__map">
-<area shape="rect" id="node2" href="classPlanner.html" title="Planner" alt="" coords="303,109,369,136"/><area shape="rect" id="node3" href="classTrajectoryPlanner.html" title="Class TrajectoryPlanner plans edges/paths to given nodes. " alt="" coords="5,5,128,32"/><area shape="rect" id="node4" href="classCollisionDetection.html" title="Class CollisionDetection checks the configuration on collision and return boolean value..." alt="" coords="153,5,281,32"/><area shape="rect" id="node5" href="classVec.html" title="Vec\&lt; float \&gt;" alt="" coords="306,5,400,32"/><area shape="rect" id="node6" href="classGraph.html" title="Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through..." alt="" coords="441,5,497,32"/><area shape="rect" id="node7" href="classSampling.html" title="Class Sampling creates samples of new vectors by a given method. " alt="" coords="522,5,597,32"/><area shape="rect" id="node8" href="classNode.html" title="Class Node to present nodes of path planner. " alt="" coords="393,109,447,136"/></map>
+<area shape="rect" id="node2" href="classPlanner.html" title="Super class of all planners. " alt="" coords="303,109,369,136"/><area shape="rect" id="node3" href="classTrajectoryPlanner.html" title="Class TrajectoryPlanner plans edges/paths to given nodes. " alt="" coords="5,5,128,32"/><area shape="rect" id="node4" href="classCollisionDetection.html" title="Class CollisionDetection checks the configuration on collision and return boolean value..." alt="" coords="153,5,281,32"/><area shape="rect" id="node5" href="classVec.html" title="Vec\&lt; float \&gt;" alt="" coords="306,5,400,32"/><area shape="rect" id="node6" href="classGraph.html" title="Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through..." alt="" coords="441,5,497,32"/><area shape="rect" id="node7" href="classSampling.html" title="Class Sampling creates samples of new vectors by a given method. " alt="" coords="522,5,597,32"/><area shape="rect" id="node8" href="classNode.html" title="Class Node to present nodes of path planner. " alt="" coords="393,109,447,136"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a10329e9317f6c4862f46de36dab71426"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a10329e9317f6c4862f46de36dab71426"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>RRTPlanner</b> (const unsigned int &amp;dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)</td></tr>
+<tr class="memitem:a10329e9317f6c4862f46de36dab71426"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRRTPlanner.html#a10329e9317f6c4862f46de36dab71426">RRTPlanner</a> (const unsigned int &amp;dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)</td></tr>
+<tr class="memdesc:a10329e9317f6c4862f46de36dab71426"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor of the class <a class="el" href="classRRTPlanner.html" title="Super class of the RRTPlanner. ">RRTPlanner</a>.  <a href="#a10329e9317f6c4862f46de36dab71426">More...</a><br/></td></tr>
 <tr class="separator:a10329e9317f6c4862f46de36dab71426"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7f0a162541fd3c3ba6468cd21ee4b8a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac7f0a162541fd3c3ba6468cd21ee4b8a"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>setInitNode</b> (<a class="el" href="classNode.html">Node</a> node)</td></tr>
+<tr class="memitem:ac7f0a162541fd3c3ba6468cd21ee4b8a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRRTPlanner.html#ac7f0a162541fd3c3ba6468cd21ee4b8a">setInitNode</a> (<a class="el" href="classNode.html">Node</a> node)</td></tr>
+<tr class="memdesc:ac7f0a162541fd3c3ba6468cd21ee4b8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set init <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> of the <a class="el" href="classRRTPlanner.html" title="Super class of the RRTPlanner. ">RRTPlanner</a>.  <a href="#ac7f0a162541fd3c3ba6468cd21ee4b8a">More...</a><br/></td></tr>
 <tr class="separator:ac7f0a162541fd3c3ba6468cd21ee4b8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ca57a7d22348ebcd221cf4e20e0e4d3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6ca57a7d22348ebcd221cf4e20e0e4d3"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>computeTree</b> (const int nbOfNodes)</td></tr>
+<tr class="memitem:a6ca57a7d22348ebcd221cf4e20e0e4d3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRRTPlanner.html#a6ca57a7d22348ebcd221cf4e20e0e4d3">computeTree</a> (const int nbOfNodes)</td></tr>
+<tr class="memdesc:a6ca57a7d22348ebcd221cf4e20e0e4d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute tree of the <a class="el" href="classRRTPlanner.html" title="Super class of the RRTPlanner. ">RRTPlanner</a>.  <a href="#a6ca57a7d22348ebcd221cf4e20e0e4d3">More...</a><br/></td></tr>
 <tr class="separator:a6ca57a7d22348ebcd221cf4e20e0e4d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae620abbd72a94672823f337be89b28cf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae620abbd72a94672823f337be89b28cf"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>connectGoalNode</b> (shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; goalNode)</td></tr>
+<tr class="memitem:ae620abbd72a94672823f337be89b28cf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRRTPlanner.html#ae620abbd72a94672823f337be89b28cf">connectGoalNode</a> (shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; goalNode)</td></tr>
+<tr class="memdesc:ae620abbd72a94672823f337be89b28cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect goal <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a>.  <a href="#ae620abbd72a94672823f337be89b28cf">More...</a><br/></td></tr>
 <tr class="separator:ae620abbd72a94672823f337be89b28cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPlanner"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPlanner')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPlanner.html">Planner</a></td></tr>
-<tr class="memitem:a198396710384a35d825acf5f8c46e1c8 inherit pub_methods_classPlanner"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a198396710384a35d825acf5f8c46e1c8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Planner</b> (const unsigned int &amp;dim, const float &amp;stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)</td></tr>
+<tr class="memitem:a198396710384a35d825acf5f8c46e1c8 inherit pub_methods_classPlanner"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#a198396710384a35d825acf5f8c46e1c8">Planner</a> (const unsigned int &amp;dim, const float &amp;stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)</td></tr>
+<tr class="memdesc:a198396710384a35d825acf5f8c46e1c8 inherit pub_methods_classPlanner"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor of the class <a class="el" href="classPlanner.html" title="Super class of all planners. ">Planner</a>.  <a href="#a198396710384a35d825acf5f8c46e1c8">More...</a><br/></td></tr>
 <tr class="separator:a198396710384a35d825acf5f8c46e1c8 inherit pub_methods_classPlanner"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f6c1b678e99016d5daafe68a0295d7c inherit pub_methods_classPlanner"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f6c1b678e99016d5daafe68a0295d7c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set2DWorkspace</b> (cv::Mat space)</td></tr>
+<tr class="memitem:a9f6c1b678e99016d5daafe68a0295d7c inherit pub_methods_classPlanner"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#a9f6c1b678e99016d5daafe68a0295d7c">set2DWorkspace</a> (cv::Mat space)</td></tr>
+<tr class="memdesc:a9f6c1b678e99016d5daafe68a0295d7c inherit pub_methods_classPlanner"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set 2D workspace to <a class="el" href="classPlanner.html" title="Super class of all planners. ">Planner</a> and <a class="el" href="classCollisionDetection.html" title="Class CollisionDetection checks the configuration on collision and return boolean value...">CollisionDetection</a>.  <a href="#a9f6c1b678e99016d5daafe68a0295d7c">More...</a><br/></td></tr>
 <tr class="separator:a9f6c1b678e99016d5daafe68a0295d7c inherit pub_methods_classPlanner"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3e637597e3d8c2eae7358e187413d43 inherit pub_methods_classPlanner"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3e637597e3d8c2eae7358e187413d43"></a>
 std::vector&lt; <a class="el" href="classNode.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getPath</b> ()</td></tr>
 <tr class="separator:ad3e637597e3d8c2eae7358e187413d43 inherit pub_methods_classPlanner"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada1c3ea6d3fa39b01fa36cc9b3294b96 inherit pub_methods_classPlanner"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada1c3ea6d3fa39b01fa36cc9b3294b96"></a>
-std::vector&lt; std::shared_ptr<br class="typebreak"/>
-&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getTree</b> ()</td></tr>
+<tr class="memitem:ada1c3ea6d3fa39b01fa36cc9b3294b96 inherit pub_methods_classPlanner"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr<br class="typebreak"/>
+&lt; <a class="el" href="classNode.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#ada1c3ea6d3fa39b01fa36cc9b3294b96">getTree</a> ()</td></tr>
+<tr class="memdesc:ada1c3ea6d3fa39b01fa36cc9b3294b96 inherit pub_methods_classPlanner"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return all nodes from the <a class="el" href="classGraph.html" title="Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through...">Graph</a>.  <a href="#ada1c3ea6d3fa39b01fa36cc9b3294b96">More...</a><br/></td></tr>
 <tr class="separator:ada1c3ea6d3fa39b01fa36cc9b3294b96 inherit pub_methods_classPlanner"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89bd64ddfc609211ce26fb711677be8f inherit pub_methods_classPlanner"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a89bd64ddfc609211ce26fb711677be8f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setWorkspaceBoundaries</b> (<a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;minBoundary, <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;maxBoundary)</td></tr>
+<tr class="memitem:a89bd64ddfc609211ce26fb711677be8f inherit pub_methods_classPlanner"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#a89bd64ddfc609211ce26fb711677be8f">setWorkspaceBoundaries</a> (<a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;minBoundary, <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;maxBoundary)</td></tr>
+<tr class="memdesc:a89bd64ddfc609211ce26fb711677be8f inherit pub_methods_classPlanner"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set configuration space boundaries.  <a href="#a89bd64ddfc609211ce26fb711677be8f">More...</a><br/></td></tr>
 <tr class="separator:a89bd64ddfc609211ce26fb711677be8f inherit pub_methods_classPlanner"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
@@ -144,12 +149,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a7396fae1b3a77b1a036fbcca2311b0a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7396fae1b3a77b1a036fbcca2311b0a4"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>computeRRTNode</b> (const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;randVec, shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt; &amp;newNode)=0</td></tr>
 <tr class="separator:a7396fae1b3a77b1a036fbcca2311b0a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c3cd58aa9139103ed8b740dac1b4eb9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6c3cd58aa9139103ed8b740dac1b4eb9"></a>
-<a class="el" href="classVec.html">Vec</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>computeNodeNew</b> (const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;randNode, const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;nearestNode)</td></tr>
+<tr class="memitem:a6c3cd58aa9139103ed8b740dac1b4eb9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classVec.html">Vec</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRRTPlanner.html#a6c3cd58aa9139103ed8b740dac1b4eb9">computeNodeNew</a> (const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;randNode, const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;nearestNode)</td></tr>
+<tr class="memdesc:a6c3cd58aa9139103ed8b740dac1b4eb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computation of a new <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> from the RRT algorithm.  <a href="#a6c3cd58aa9139103ed8b740dac1b4eb9">More...</a><br/></td></tr>
 <tr class="separator:a6c3cd58aa9139103ed8b740dac1b4eb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classPlanner"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classPlanner')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classPlanner.html">Planner</a></td></tr>
-<tr class="memitem:a41d284add7ea4494bb4874636202fa93 inherit pro_methods_classPlanner"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a41d284add7ea4494bb4874636202fa93"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>controlConstraints</b> ()</td></tr>
+<tr class="memitem:a41d284add7ea4494bb4874636202fa93 inherit pro_methods_classPlanner"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlanner.html#a41d284add7ea4494bb4874636202fa93">controlConstraints</a> ()</td></tr>
+<tr class="memdesc:a41d284add7ea4494bb4874636202fa93 inherit pro_methods_classPlanner"><td class="mdescLeft">&#160;</td><td class="mdescRight">Control all constraints of the <a class="el" href="classPlanner.html" title="Super class of all planners. ">Planner</a>.  <a href="#a41d284add7ea4494bb4874636202fa93">More...</a><br/></td></tr>
 <tr class="separator:a41d284add7ea4494bb4874636202fa93 inherit pro_methods_classPlanner"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
@@ -189,13 +194,188 @@ cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><b>m_workspace</b></t
 <a class="el" href="classVec.html">Vec</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_minBoundary</b></td></tr>
 <tr class="separator:a19fc8ba654ca9a4abe120179bffadfda inherit pro_attribs_classPlanner"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Super class of the <a class="el" href="classRRTPlanner.html" title="Super class of the RRTPlanner. ">RRTPlanner</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a10329e9317f6c4862f46de36dab71426"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">RRTPlanner::RRTPlanner </td>
+          <td>(</td>
+          <td class="paramtype">const unsigned int &amp;&#160;</td>
+          <td class="paramname"><em>dim</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>stepSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TrajectoryMethod&#160;</td>
+          <td class="paramname"><em>trajectory</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SamplingMethod&#160;</td>
+          <td class="paramname"><em>sampling</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor of the class <a class="el" href="classRRTPlanner.html" title="Super class of the RRTPlanner. ">RRTPlanner</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a6c3cd58aa9139103ed8b740dac1b4eb9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classVec.html">Vec</a>&lt; float &gt; RRTPlanner::computeNodeNew </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;&#160;</td>
+          <td class="paramname"><em>randNode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classVec.html">Vec</a>&lt; float &gt; &amp;&#160;</td>
+          <td class="paramname"><em>nearestNode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computation of a new <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> from the RRT algorithm. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">random</td><td><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">nearest</td><td><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname"><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a></td><td>new </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a6ca57a7d22348ebcd221cf4e20e0e4d3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool RRTPlanner::computeTree </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>nbOfNodes</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Compute tree of the <a class="el" href="classRRTPlanner.html" title="Super class of the RRTPlanner. ">RRTPlanner</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">number</td><td>of samples </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">return</td><td>check of the constraints </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ae620abbd72a94672823f337be89b28cf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool RRTPlanner::connectGoalNode </td>
+          <td>(</td>
+          <td class="paramtype">shared_ptr&lt; <a class="el" href="classNode.html">Node</a> &gt;&#160;</td>
+          <td class="paramname"><em>goalNode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Connect goal <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">goal</td><td><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">true,if</td><td>the connection was possible </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ac7f0a162541fd3c3ba6468cd21ee4b8a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool RRTPlanner::setInitNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classNode.html">Node</a>&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set init <a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> of the <a class="el" href="classRRTPlanner.html" title="Super class of the RRTPlanner. ">RRTPlanner</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Sascha Kaden </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">initial</td><td><a class="el" href="classNode.html" title="Class Node to present nodes of path planner. ">Node</a> </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">true,if</td><td>set was possible </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section date"><dt>Date</dt><dd>2016-05-27 </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>source/planner/<a class="el" href="RRTPlanner_8h_source.html">RRTPlanner.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 27 2016 13:03:05 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

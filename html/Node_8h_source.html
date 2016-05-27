@@ -94,237 +94,238 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;assert.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;Vec.h&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;Edge.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">using</span> std::shared_ptr;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classNode.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classNode.html">Node</a></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;ry);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;ry, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rz);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;vec);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#aec879abd3300422ebfa014908432d47b">getX</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#ad29f9632ca8d71eedeeb5fd8c96dff1e">getY</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a386248330119d5b003e6a41f51fbe4b1">getZ</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classNode.html#a169a154e1ada22003acea7a95553bbd8">getDim</a>();</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">empty</a>() <span class="keyword">const</span> ;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#aea90bb1051adfa9bcb2e736854ff03b3">setVecValue</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;value, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;index);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a20b64482645b17e1fdf2b374513e119e">getVecValue</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;index);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">getDist</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;node) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">getDist</a>(<span class="keyword">const</span> <a class="code" href="classNode.html">Node</a> &amp;node) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a2c628af3afb6b890e6524ce84f916386">getDistToParent</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a4773ac9f913d974957e7075148f5c5b7">norm</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#aa3c3eacdb00cb8bd1a10a86c8d34e2ee">setCost</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;cost);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a2f39e084f067c581c315f33cc2f87d3c">getCost</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#a7bf1b7705353fc6e36fcd61393c06370">setParent</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;parent);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    shared_ptr&lt;Node&gt; <a class="code" href="classNode.html#a585e94ae0fa6c80c2caee471689260f0">getParent</a>();</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#a6c4496fb0c1cca593766765f6878f0e3">clearParent</a>();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#ae73324eeab0437fc01c42545286e5eaa">addChild</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;child);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; <a class="code" href="classNode.html#a28a777e512424f44c567e009a61fa114">getChilds</a>();</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#a3c2f953a0a08323110014c5fcb8def22">clearChilds</a>();</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">void</span> addEdge(<a class="code" href="classEdge.html">Edge</a> edge);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    std::vector&lt;Edge&gt; getEdges();</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> clearEdges();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> <a class="code" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">getVec</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;Vec.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;Edge.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">using</span> std::shared_ptr;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classNode.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classNode.html">Node</a></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;ry);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;ry, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rz);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node</a>(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;vec);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#aec879abd3300422ebfa014908432d47b">getX</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#ad29f9632ca8d71eedeeb5fd8c96dff1e">getY</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a386248330119d5b003e6a41f51fbe4b1">getZ</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classNode.html#a169a154e1ada22003acea7a95553bbd8">getDim</a>();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">empty</a>() <span class="keyword">const</span> ;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#aea90bb1051adfa9bcb2e736854ff03b3">setVecValue</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;value, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;index);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a20b64482645b17e1fdf2b374513e119e">getVecValue</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;index);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">getDist</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;node) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">getDist</a>(<span class="keyword">const</span> <a class="code" href="classNode.html">Node</a> &amp;node) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a2c628af3afb6b890e6524ce84f916386">getDistToParent</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a4773ac9f913d974957e7075148f5c5b7">norm</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#aa3c3eacdb00cb8bd1a10a86c8d34e2ee">setCost</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;cost);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classNode.html#a2f39e084f067c581c315f33cc2f87d3c">getCost</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#a7bf1b7705353fc6e36fcd61393c06370">setParent</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;parent);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    shared_ptr&lt;Node&gt; <a class="code" href="classNode.html#a585e94ae0fa6c80c2caee471689260f0">getParent</a>();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#a6c4496fb0c1cca593766765f6878f0e3">clearParent</a>();</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#ae73324eeab0437fc01c42545286e5eaa">addChild</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;child);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; <a class="code" href="classNode.html#a28a777e512424f44c567e009a61fa114">getChilds</a>();</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classNode.html#a3c2f953a0a08323110014c5fcb8def22">clearChilds</a>();</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> addEdge(<a class="code" href="classEdge.html">Edge</a> edge);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    std::vector&lt;Edge&gt; getEdges();</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">void</span> clearEdges();</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a> <a class="code" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">getVec</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">float</span>        m_cost;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a>   m_vec;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    std::vector&lt;Edge&gt;        m_edges;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    shared_ptr&lt;Node&gt;              m_parent;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; m_childs;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;};</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>() {</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    m_cost = 0;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x) {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    m_cost = 0;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;}</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y) {</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    m_cost = 0;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;}</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z) {</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    m_cost = 0;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y, z);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;}</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx) {</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    m_cost = 0;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y, z, rx);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;}</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;ry) {</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    m_cost = 0;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y, z, rx, ry);</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;}</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;ry, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rz) {</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    m_cost = 0;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y, z, rx, ry, rz);</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;}</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;vec) {</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    m_vec = vec;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    m_cost = 0;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;}</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#aec879abd3300422ebfa014908432d47b">Node::getX</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    assert(m_vec.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>() &gt; 0);</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordflow">return</span> m_vec[0];</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;}</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#ad29f9632ca8d71eedeeb5fd8c96dff1e">Node::getY</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    assert(m_vec.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>() &gt; 1);</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keywordflow">return</span> m_vec[1];</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;}</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a386248330119d5b003e6a41f51fbe4b1">Node::getZ</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    assert(m_vec.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>() &gt; 2);</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    <span class="keywordflow">return</span> m_vec[2];</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;}</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classNode.html#a169a154e1ada22003acea7a95553bbd8">Node::getDim</a>() {</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordflow">return</span> m_vec.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>();</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;}</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">Node::empty</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    <span class="keywordflow">return</span> m_vec.<a class="code" href="classVec.html#a5ceca3b447f22abfcac2eb1c26d69fc6">empty</a>();</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;}</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#aea90bb1051adfa9bcb2e736854ff03b3">Node::setVecValue</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;value, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;index) {</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    m_vec[index] = value;</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;}</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a20b64482645b17e1fdf2b374513e119e">Node::getVecValue</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;index) {</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="keywordflow">return</span> m_vec[index];</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;}</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a4773ac9f913d974957e7075148f5c5b7">Node::norm</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    <span class="keywordflow">return</span> m_vec.<a class="code" href="classVec.html#a9e1ad475113041eb69801193f7af467e">norm</a>();</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;}</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">Node::getDist</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;node)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    <span class="keywordflow">if</span> (node == <span class="keyword">nullptr</span>)</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">getDist</a>(*node);</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;}</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">Node::getDist</a>(<span class="keyword">const</span> <a class="code" href="classNode.html">Node</a> &amp;node)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    <span class="keywordflow">if</span> (node.<a class="code" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">empty</a>() || <a class="code" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">empty</a>())</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    <span class="keywordflow">return</span> m_vec.<a class="code" href="classVec.html#a499baac66505ebd7dd6d8bb7461fd5c5">getDist</a>(node.<a class="code" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">getVec</a>());</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;}</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a2c628af3afb6b890e6524ce84f916386">Node::getDistToParent</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    <span class="keywordflow">if</span> (m_parent == <span class="keyword">nullptr</span>)</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">getDist</a>(m_parent);</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;}</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#aa3c3eacdb00cb8bd1a10a86c8d34e2ee">Node::setCost</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;cost) {</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    <span class="keywordflow">if</span> (cost &gt; 0)</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        m_cost = cost;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;}</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a2f39e084f067c581c315f33cc2f87d3c">Node::getCost</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    <span class="keywordflow">return</span> m_cost;</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;}</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#a7bf1b7705353fc6e36fcd61393c06370">Node::setParent</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;parent) {</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    m_parent = parent;</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;}</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;shared_ptr&lt;Node&gt; <a class="code" href="classNode.html#a585e94ae0fa6c80c2caee471689260f0">Node::getParent</a>() {</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    <span class="keywordflow">return</span> m_parent;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;}</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#a6c4496fb0c1cca593766765f6878f0e3">Node::clearParent</a>() {</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    m_parent = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;}</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#ae73324eeab0437fc01c42545286e5eaa">Node::addChild</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;child) {</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    m_childs.push_back(child);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;}</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;std::vector&lt;shared_ptr&lt;Node&gt;&gt; <a class="code" href="classNode.html#a28a777e512424f44c567e009a61fa114">Node::getChilds</a>() {</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    <span class="keywordflow">return</span> m_childs;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;}</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#a3c2f953a0a08323110014c5fcb8def22">Node::clearChilds</a>() {</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    m_childs.clear();</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;}</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="keywordtype">void</span> Node::addEdge(<a class="code" href="classEdge.html">Edge</a> edge) {</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    m_edges.push_back(edge);</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;}</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;std::vector&lt;Edge&gt; Node::getEdges() {</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <span class="keywordflow">return</span> m_edges;</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;}</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="keywordtype">void</span> Node::clearEdges() {</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    m_edges.clear();</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;}</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<a class="code" href="classVec.html">Vec&lt;float&gt;</a> <a class="code" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">Node::getVec</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    <span class="keywordflow">return</span> m_vec;</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;}</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">float</span>        m_cost;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <a class="code" href="classVec.html">Vec&lt;float&gt;</a>   m_vec;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    std::vector&lt;Edge&gt;        m_edges;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    shared_ptr&lt;Node&gt;              m_parent;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    std::vector&lt;shared_ptr&lt;Node&gt;&gt; m_childs;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;};</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">   75</a></span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>() {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    m_cost = 0;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classNode.html#ab4f09787f68f60e3113b13765dcea5b6">   85</a></span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x) {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    m_cost = 0;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;}</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="classNode.html#a620187a44025c75eeb9078be94e6ddfc">   97</a></span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y) {</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    m_cost = 0;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="classNode.html#a964376712af9d7a785debc0bc204cc01">  110</a></span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z) {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    m_cost = 0;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y, z);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;}</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="classNode.html#a3b50c25e03ec70f076da3ed11caec7f2">  124</a></span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx) {</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    m_cost = 0;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y, z, rx);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;}</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;</div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="classNode.html#a02c999afe2369d2c1f3b5c662fbeef29">  139</a></span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;ry) {</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    m_cost = 0;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y, z, rx, ry);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;}</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
+<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="classNode.html#af7afeb76b02d1ef9ccd8aeb4843f82c3">  155</a></span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;z, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rx, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;ry, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;rz) {</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    m_cost = 0;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    m_vec = <a class="code" href="classVec.html">Vec&lt;float&gt;</a>(x, y, z, rx, ry, rz);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;}</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
+<div class="line"><a name="l00166"></a><span class="lineno"><a class="line" href="classNode.html#a29f8f2670cd2ce5fdbdc200c85d8cb71">  166</a></span>&#160;<a class="code" href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a>(<span class="keyword">const</span> <a class="code" href="classVec.html">Vec&lt;float&gt;</a> &amp;vec) {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    m_vec = vec;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    m_cost = 0;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;}</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;</div>
+<div class="line"><a name="l00176"></a><span class="lineno"><a class="line" href="classNode.html#aec879abd3300422ebfa014908432d47b">  176</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#aec879abd3300422ebfa014908432d47b">Node::getX</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    assert(m_vec.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>() &gt; 0);</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordflow">return</span> m_vec[0];</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;}</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
+<div class="line"><a name="l00186"></a><span class="lineno"><a class="line" href="classNode.html#ad29f9632ca8d71eedeeb5fd8c96dff1e">  186</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#ad29f9632ca8d71eedeeb5fd8c96dff1e">Node::getY</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    assert(m_vec.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>() &gt; 1);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordflow">return</span> m_vec[1];</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;}</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;</div>
+<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="classNode.html#a386248330119d5b003e6a41f51fbe4b1">  196</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a386248330119d5b003e6a41f51fbe4b1">Node::getZ</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    assert(m_vec.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>() &gt; 2);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="keywordflow">return</span> m_vec[2];</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;}</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;</div>
+<div class="line"><a name="l00207"></a><span class="lineno"><a class="line" href="classNode.html#a169a154e1ada22003acea7a95553bbd8">  207</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classNode.html#a169a154e1ada22003acea7a95553bbd8">Node::getDim</a>() {</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="keywordflow">return</span> m_vec.<a class="code" href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">getDim</a>();</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;}</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
+<div class="line"><a name="l00217"></a><span class="lineno"><a class="line" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">  217</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">Node::empty</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keywordflow">return</span> m_vec.<a class="code" href="classVec.html#a5ceca3b447f22abfcac2eb1c26d69fc6">empty</a>();</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;}</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;</div>
+<div class="line"><a name="l00228"></a><span class="lineno"><a class="line" href="classNode.html#aea90bb1051adfa9bcb2e736854ff03b3">  228</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#aea90bb1051adfa9bcb2e736854ff03b3">Node::setVecValue</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;value, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;index) {</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    m_vec[index] = value;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;}</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;</div>
+<div class="line"><a name="l00239"></a><span class="lineno"><a class="line" href="classNode.html#a20b64482645b17e1fdf2b374513e119e">  239</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a20b64482645b17e1fdf2b374513e119e">Node::getVecValue</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;index) {</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    <span class="keywordflow">return</span> m_vec[index];</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;}</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
+<div class="line"><a name="l00249"></a><span class="lineno"><a class="line" href="classNode.html#a4773ac9f913d974957e7075148f5c5b7">  249</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a4773ac9f913d974957e7075148f5c5b7">Node::norm</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    <span class="keywordflow">return</span> m_vec.<a class="code" href="classVec.html#a9e1ad475113041eb69801193f7af467e">norm</a>();</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;}</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
+<div class="line"><a name="l00260"></a><span class="lineno"><a class="line" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">  260</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">Node::getDist</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;node)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="keywordflow">if</span> (node == <span class="keyword">nullptr</span>)</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">getDist</a>(*node);</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;}</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;</div>
+<div class="line"><a name="l00273"></a><span class="lineno"><a class="line" href="classNode.html#a236f1b02291f54812c5fd682a46dd1fe">  273</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">Node::getDist</a>(<span class="keyword">const</span> <a class="code" href="classNode.html">Node</a> &amp;node)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="keywordflow">if</span> (node.<a class="code" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">empty</a>() || <a class="code" href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">empty</a>())</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="keywordflow">return</span> m_vec.<a class="code" href="classVec.html#a499baac66505ebd7dd6d8bb7461fd5c5">getDist</a>(node.<a class="code" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">getVec</a>());</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;}</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;</div>
+<div class="line"><a name="l00285"></a><span class="lineno"><a class="line" href="classNode.html#a2c628af3afb6b890e6524ce84f916386">  285</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a2c628af3afb6b890e6524ce84f916386">Node::getDistToParent</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    <span class="keywordflow">if</span> (m_parent == <span class="keyword">nullptr</span>)</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">getDist</a>(m_parent);</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;}</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;</div>
+<div class="line"><a name="l00298"></a><span class="lineno"><a class="line" href="classNode.html#aa3c3eacdb00cb8bd1a10a86c8d34e2ee">  298</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#aa3c3eacdb00cb8bd1a10a86c8d34e2ee">Node::setCost</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;cost) {</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordflow">if</span> (cost &gt; 0)</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        m_cost = cost;</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;}</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;</div>
+<div class="line"><a name="l00309"></a><span class="lineno"><a class="line" href="classNode.html#a2f39e084f067c581c315f33cc2f87d3c">  309</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classNode.html#a2f39e084f067c581c315f33cc2f87d3c">Node::getCost</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    <span class="keywordflow">return</span> m_cost;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;}</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;</div>
+<div class="line"><a name="l00319"></a><span class="lineno"><a class="line" href="classNode.html#a7bf1b7705353fc6e36fcd61393c06370">  319</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#a7bf1b7705353fc6e36fcd61393c06370">Node::setParent</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;parent) {</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    m_parent = parent;</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;}</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;</div>
+<div class="line"><a name="l00329"></a><span class="lineno"><a class="line" href="classNode.html#a585e94ae0fa6c80c2caee471689260f0">  329</a></span>&#160;shared_ptr&lt;Node&gt; <a class="code" href="classNode.html#a585e94ae0fa6c80c2caee471689260f0">Node::getParent</a>() {</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    <span class="keywordflow">return</span> m_parent;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;}</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;</div>
+<div class="line"><a name="l00338"></a><span class="lineno"><a class="line" href="classNode.html#a6c4496fb0c1cca593766765f6878f0e3">  338</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#a6c4496fb0c1cca593766765f6878f0e3">Node::clearParent</a>() {</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    m_parent = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;}</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;</div>
+<div class="line"><a name="l00348"></a><span class="lineno"><a class="line" href="classNode.html#ae73324eeab0437fc01c42545286e5eaa">  348</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#ae73324eeab0437fc01c42545286e5eaa">Node::addChild</a>(<span class="keyword">const</span> shared_ptr&lt;Node&gt; &amp;child) {</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    m_childs.push_back(child);</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;}</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;</div>
+<div class="line"><a name="l00358"></a><span class="lineno"><a class="line" href="classNode.html#a28a777e512424f44c567e009a61fa114">  358</a></span>&#160;std::vector&lt;shared_ptr&lt;Node&gt;&gt; <a class="code" href="classNode.html#a28a777e512424f44c567e009a61fa114">Node::getChilds</a>() {</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    <span class="keywordflow">return</span> m_childs;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;}</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;</div>
+<div class="line"><a name="l00367"></a><span class="lineno"><a class="line" href="classNode.html#a3c2f953a0a08323110014c5fcb8def22">  367</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNode.html#a3c2f953a0a08323110014c5fcb8def22">Node::clearChilds</a>() {</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    m_childs.clear();</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;}</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="keywordtype">void</span> Node::addEdge(<a class="code" href="classEdge.html">Edge</a> edge) {</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    m_edges.push_back(edge);</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;}</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;std::vector&lt;Edge&gt; Node::getEdges() {</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    <span class="keywordflow">return</span> m_edges;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;}</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="keywordtype">void</span> Node::clearEdges() {</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    m_edges.clear();</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;}</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;</div>
+<div class="line"><a name="l00389"></a><span class="lineno"><a class="line" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">  389</a></span>&#160;<a class="code" href="classVec.html">Vec&lt;float&gt;</a> <a class="code" href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">Node::getVec</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <span class="keywordflow">return</span> m_vec;</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;}</div>
 <div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* NODE_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="classVec_html_a5ceca3b447f22abfcac2eb1c26d69fc6"><div class="ttname"><a href="classVec.html#a5ceca3b447f22abfcac2eb1c26d69fc6">Vec::empty</a></div><div class="ttdeci">bool empty() const </div><div class="ttdoc">Return true, if Vec is empty. </div><div class="ttdef"><b>Definition:</b> Vec.h:355</div></div>
-<div class="ttc" id="classNode_html_abfe17e7be0efb32246a6fffad333ed9a"><div class="ttname"><a href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">Node::empty</a></div><div class="ttdeci">bool empty() const </div><div class="ttdoc">Return true, if the vector is empty. </div><div class="ttdef"><b>Definition:</b> Node.cpp:61</div></div>
-<div class="ttc" id="classNode_html_a169a154e1ada22003acea7a95553bbd8"><div class="ttname"><a href="classNode.html#a169a154e1ada22003acea7a95553bbd8">Node::getDim</a></div><div class="ttdeci">unsigned int getDim()</div><div class="ttdoc">Return the dimension of the Node. </div><div class="ttdef"><b>Definition:</b> Node.cpp:57</div></div>
-<div class="ttc" id="classNode_html"><div class="ttname"><a href="classNode.html">Node</a></div><div class="ttdoc">Class Node to present nodes of path planner. </div><div class="ttdef"><b>Definition:</b> Node.h:19</div></div>
-<div class="ttc" id="classVec_html_a9e1ad475113041eb69801193f7af467e"><div class="ttname"><a href="classVec.html#a9e1ad475113041eb69801193f7af467e">Vec::norm</a></div><div class="ttdeci">T norm() const </div><div class="ttdoc">Return norm 2 of Vec. </div><div class="ttdef"><b>Definition:</b> Vec.h:371</div></div>
-<div class="ttc" id="classNode_html_ad7a34779cad45d997bfd6d3d8043c75f"><div class="ttname"><a href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a></div><div class="ttdeci">Node()</div><div class="ttdoc">Constructor of the class Node. </div><div class="ttdef"><b>Definition:</b> Node.cpp:3</div></div>
-<div class="ttc" id="classVec_html_a68e6c17c80ae91a15578dda0ed00e9be"><div class="ttname"><a href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">Vec::getDim</a></div><div class="ttdeci">unsigned int getDim() const </div><div class="ttdoc">Return dimension of Vec. </div><div class="ttdef"><b>Definition:</b> Vec.h:344</div></div>
-<div class="ttc" id="classNode_html_a2f39e084f067c581c315f33cc2f87d3c"><div class="ttname"><a href="classNode.html#a2f39e084f067c581c315f33cc2f87d3c">Node::getCost</a></div><div class="ttdeci">float getCost() const </div><div class="ttdoc">Return cost of Node. </div><div class="ttdef"><b>Definition:</b> Node.cpp:97</div></div>
-<div class="ttc" id="classNode_html_aec879abd3300422ebfa014908432d47b"><div class="ttname"><a href="classNode.html#aec879abd3300422ebfa014908432d47b">Node::getX</a></div><div class="ttdeci">float getX() const </div><div class="ttdoc">Return first element of the vector. </div><div class="ttdef"><b>Definition:</b> Node.cpp:42</div></div>
-<div class="ttc" id="classNode_html_ad29f9632ca8d71eedeeb5fd8c96dff1e"><div class="ttname"><a href="classNode.html#ad29f9632ca8d71eedeeb5fd8c96dff1e">Node::getY</a></div><div class="ttdeci">float getY() const </div><div class="ttdoc">Return second element of the vector. </div><div class="ttdef"><b>Definition:</b> Node.cpp:47</div></div>
-<div class="ttc" id="classNode_html_a4c537515257bb0a1ebcbfb7e8d06186d"><div class="ttname"><a href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">Node::getDist</a></div><div class="ttdeci">float getDist(const shared_ptr&lt; Node &gt; &amp;node) const </div><div class="ttdoc">Return distance to given Node. </div><div class="ttdef"><b>Definition:</b> Node.cpp:77</div></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* NODE_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classVec_html_a5ceca3b447f22abfcac2eb1c26d69fc6"><div class="ttname"><a href="classVec.html#a5ceca3b447f22abfcac2eb1c26d69fc6">Vec::empty</a></div><div class="ttdeci">bool empty() const </div><div class="ttdoc">Return true, if Vec is empty. </div><div class="ttdef"><b>Definition:</b> Vec.h:356</div></div>
+<div class="ttc" id="classNode_html_abfe17e7be0efb32246a6fffad333ed9a"><div class="ttname"><a href="classNode.html#abfe17e7be0efb32246a6fffad333ed9a">Node::empty</a></div><div class="ttdeci">bool empty() const </div><div class="ttdoc">Return true, if the vector is empty. </div><div class="ttdef"><b>Definition:</b> Node.h:217</div></div>
+<div class="ttc" id="classNode_html_a169a154e1ada22003acea7a95553bbd8"><div class="ttname"><a href="classNode.html#a169a154e1ada22003acea7a95553bbd8">Node::getDim</a></div><div class="ttdeci">unsigned int getDim()</div><div class="ttdoc">Return the dimension of the Node. </div><div class="ttdef"><b>Definition:</b> Node.h:207</div></div>
+<div class="ttc" id="classNode_html"><div class="ttname"><a href="classNode.html">Node</a></div><div class="ttdoc">Class Node to present nodes of path planner. </div><div class="ttdef"><b>Definition:</b> Node.h:20</div></div>
+<div class="ttc" id="classVec_html_a9e1ad475113041eb69801193f7af467e"><div class="ttname"><a href="classVec.html#a9e1ad475113041eb69801193f7af467e">Vec::norm</a></div><div class="ttdeci">T norm() const </div><div class="ttdoc">Return norm 2 of Vec. </div><div class="ttdef"><b>Definition:</b> Vec.h:372</div></div>
+<div class="ttc" id="classNode_html_ad7a34779cad45d997bfd6d3d8043c75f"><div class="ttname"><a href="classNode.html#ad7a34779cad45d997bfd6d3d8043c75f">Node::Node</a></div><div class="ttdeci">Node()</div><div class="ttdoc">Constructor of the class Node. </div><div class="ttdef"><b>Definition:</b> Node.h:75</div></div>
+<div class="ttc" id="classVec_html_a68e6c17c80ae91a15578dda0ed00e9be"><div class="ttname"><a href="classVec.html#a68e6c17c80ae91a15578dda0ed00e9be">Vec::getDim</a></div><div class="ttdeci">unsigned int getDim() const </div><div class="ttdoc">Return dimension of Vec. </div><div class="ttdef"><b>Definition:</b> Vec.h:345</div></div>
+<div class="ttc" id="classNode_html_a2f39e084f067c581c315f33cc2f87d3c"><div class="ttname"><a href="classNode.html#a2f39e084f067c581c315f33cc2f87d3c">Node::getCost</a></div><div class="ttdeci">float getCost() const </div><div class="ttdoc">Return cost of Node. </div><div class="ttdef"><b>Definition:</b> Node.h:309</div></div>
+<div class="ttc" id="classNode_html_aec879abd3300422ebfa014908432d47b"><div class="ttname"><a href="classNode.html#aec879abd3300422ebfa014908432d47b">Node::getX</a></div><div class="ttdeci">float getX() const </div><div class="ttdoc">Return first element of the vector. </div><div class="ttdef"><b>Definition:</b> Node.h:176</div></div>
+<div class="ttc" id="classNode_html_ad29f9632ca8d71eedeeb5fd8c96dff1e"><div class="ttname"><a href="classNode.html#ad29f9632ca8d71eedeeb5fd8c96dff1e">Node::getY</a></div><div class="ttdeci">float getY() const </div><div class="ttdoc">Return second element of the vector. </div><div class="ttdef"><b>Definition:</b> Node.h:186</div></div>
+<div class="ttc" id="classNode_html_a4c537515257bb0a1ebcbfb7e8d06186d"><div class="ttname"><a href="classNode.html#a4c537515257bb0a1ebcbfb7e8d06186d">Node::getDist</a></div><div class="ttdeci">float getDist(const shared_ptr&lt; Node &gt; &amp;node) const </div><div class="ttdoc">Return distance to given Node. </div><div class="ttdef"><b>Definition:</b> Node.h:260</div></div>
 <div class="ttc" id="classEdge_html"><div class="ttname"><a href="classEdge.html">Edge</a></div><div class="ttdoc">Class Edge contains the two nodes of the Edge and different parameters. </div><div class="ttdef"><b>Definition:</b> Edge.h:16</div></div>
-<div class="ttc" id="classNode_html_a3c2f953a0a08323110014c5fcb8def22"><div class="ttname"><a href="classNode.html#a3c2f953a0a08323110014c5fcb8def22">Node::clearChilds</a></div><div class="ttdeci">void clearChilds()</div><div class="ttdoc">Clear list of child nodes. </div><div class="ttdef"><b>Definition:</b> Node.cpp:121</div></div>
-<div class="ttc" id="classNode_html_a2c628af3afb6b890e6524ce84f916386"><div class="ttname"><a href="classNode.html#a2c628af3afb6b890e6524ce84f916386">Node::getDistToParent</a></div><div class="ttdeci">float getDistToParent() const </div><div class="ttdoc">Return distance to parent Node. </div><div class="ttdef"><b>Definition:</b> Node.cpp:85</div></div>
-<div class="ttc" id="classNode_html_aa3c3eacdb00cb8bd1a10a86c8d34e2ee"><div class="ttname"><a href="classNode.html#aa3c3eacdb00cb8bd1a10a86c8d34e2ee">Node::setCost</a></div><div class="ttdeci">void setCost(const float &amp;cost)</div><div class="ttdoc">Set cost of Node. </div><div class="ttdef"><b>Definition:</b> Node.cpp:92</div></div>
-<div class="ttc" id="classNode_html_a6c4496fb0c1cca593766765f6878f0e3"><div class="ttname"><a href="classNode.html#a6c4496fb0c1cca593766765f6878f0e3">Node::clearParent</a></div><div class="ttdeci">void clearParent()</div><div class="ttdoc">Set parent Node to nullptr. </div><div class="ttdef"><b>Definition:</b> Node.cpp:109</div></div>
-<div class="ttc" id="classNode_html_a386248330119d5b003e6a41f51fbe4b1"><div class="ttname"><a href="classNode.html#a386248330119d5b003e6a41f51fbe4b1">Node::getZ</a></div><div class="ttdeci">float getZ() const </div><div class="ttdoc">Return third element of the vector. </div><div class="ttdef"><b>Definition:</b> Node.cpp:52</div></div>
-<div class="ttc" id="classNode_html_a585e94ae0fa6c80c2caee471689260f0"><div class="ttname"><a href="classNode.html#a585e94ae0fa6c80c2caee471689260f0">Node::getParent</a></div><div class="ttdeci">shared_ptr&lt; Node &gt; getParent()</div><div class="ttdoc">Return parent of Node. </div><div class="ttdef"><b>Definition:</b> Node.cpp:105</div></div>
-<div class="ttc" id="classNode_html_ab4affdfdd392a73c6fcc51ce02385e49"><div class="ttname"><a href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">Node::getVec</a></div><div class="ttdeci">Vec&lt; float &gt; getVec() const </div><div class="ttdoc">Return Vec. </div><div class="ttdef"><b>Definition:</b> Node.cpp:137</div></div>
+<div class="ttc" id="classNode_html_a3c2f953a0a08323110014c5fcb8def22"><div class="ttname"><a href="classNode.html#a3c2f953a0a08323110014c5fcb8def22">Node::clearChilds</a></div><div class="ttdeci">void clearChilds()</div><div class="ttdoc">Clear list of child nodes. </div><div class="ttdef"><b>Definition:</b> Node.h:367</div></div>
+<div class="ttc" id="classNode_html_a2c628af3afb6b890e6524ce84f916386"><div class="ttname"><a href="classNode.html#a2c628af3afb6b890e6524ce84f916386">Node::getDistToParent</a></div><div class="ttdeci">float getDistToParent() const </div><div class="ttdoc">Return distance to parent Node. </div><div class="ttdef"><b>Definition:</b> Node.h:285</div></div>
+<div class="ttc" id="classNode_html_aa3c3eacdb00cb8bd1a10a86c8d34e2ee"><div class="ttname"><a href="classNode.html#aa3c3eacdb00cb8bd1a10a86c8d34e2ee">Node::setCost</a></div><div class="ttdeci">void setCost(const float &amp;cost)</div><div class="ttdoc">Set cost of Node. </div><div class="ttdef"><b>Definition:</b> Node.h:298</div></div>
+<div class="ttc" id="classNode_html_a6c4496fb0c1cca593766765f6878f0e3"><div class="ttname"><a href="classNode.html#a6c4496fb0c1cca593766765f6878f0e3">Node::clearParent</a></div><div class="ttdeci">void clearParent()</div><div class="ttdoc">Set parent Node to nullptr. </div><div class="ttdef"><b>Definition:</b> Node.h:338</div></div>
+<div class="ttc" id="classNode_html_a386248330119d5b003e6a41f51fbe4b1"><div class="ttname"><a href="classNode.html#a386248330119d5b003e6a41f51fbe4b1">Node::getZ</a></div><div class="ttdeci">float getZ() const </div><div class="ttdoc">Return third element of the vector. </div><div class="ttdef"><b>Definition:</b> Node.h:196</div></div>
+<div class="ttc" id="classNode_html_a585e94ae0fa6c80c2caee471689260f0"><div class="ttname"><a href="classNode.html#a585e94ae0fa6c80c2caee471689260f0">Node::getParent</a></div><div class="ttdeci">shared_ptr&lt; Node &gt; getParent()</div><div class="ttdoc">Return parent of Node. </div><div class="ttdef"><b>Definition:</b> Node.h:329</div></div>
+<div class="ttc" id="classNode_html_ab4affdfdd392a73c6fcc51ce02385e49"><div class="ttname"><a href="classNode.html#ab4affdfdd392a73c6fcc51ce02385e49">Node::getVec</a></div><div class="ttdeci">Vec&lt; float &gt; getVec() const </div><div class="ttdoc">Return Vec. </div><div class="ttdef"><b>Definition:</b> Node.h:389</div></div>
 <div class="ttc" id="classVec_html"><div class="ttname"><a href="classVec.html">Vec&lt; float &gt;</a></div></div>
-<div class="ttc" id="classNode_html_a28a777e512424f44c567e009a61fa114"><div class="ttname"><a href="classNode.html#a28a777e512424f44c567e009a61fa114">Node::getChilds</a></div><div class="ttdeci">std::vector&lt; shared_ptr&lt; Node &gt; &gt; getChilds()</div><div class="ttdoc">Return list of child nodes. </div><div class="ttdef"><b>Definition:</b> Node.cpp:117</div></div>
-<div class="ttc" id="classNode_html_a7bf1b7705353fc6e36fcd61393c06370"><div class="ttname"><a href="classNode.html#a7bf1b7705353fc6e36fcd61393c06370">Node::setParent</a></div><div class="ttdeci">void setParent(const shared_ptr&lt; Node &gt; &amp;parent)</div><div class="ttdoc">Set parent of Node. </div><div class="ttdef"><b>Definition:</b> Node.cpp:101</div></div>
-<div class="ttc" id="classNode_html_aea90bb1051adfa9bcb2e736854ff03b3"><div class="ttname"><a href="classNode.html#aea90bb1051adfa9bcb2e736854ff03b3">Node::setVecValue</a></div><div class="ttdeci">void setVecValue(const float &amp;value, const unsigned int &amp;index)</div><div class="ttdoc">Set the vector element by index. </div><div class="ttdef"><b>Definition:</b> Node.cpp:65</div></div>
-<div class="ttc" id="classNode_html_a20b64482645b17e1fdf2b374513e119e"><div class="ttname"><a href="classNode.html#a20b64482645b17e1fdf2b374513e119e">Node::getVecValue</a></div><div class="ttdeci">float getVecValue(const unsigned int &amp;index)</div><div class="ttdoc">Return the vector element by index. </div><div class="ttdef"><b>Definition:</b> Node.cpp:69</div></div>
-<div class="ttc" id="classVec_html_a499baac66505ebd7dd6d8bb7461fd5c5"><div class="ttname"><a href="classVec.html#a499baac66505ebd7dd6d8bb7461fd5c5">Vec::getDist</a></div><div class="ttdeci">T getDist(const Vec&lt; T &gt; &amp;vec) const </div><div class="ttdoc">Return distance to given Vec. </div><div class="ttdef"><b>Definition:</b> Vec.h:400</div></div>
-<div class="ttc" id="classNode_html_ae73324eeab0437fc01c42545286e5eaa"><div class="ttname"><a href="classNode.html#ae73324eeab0437fc01c42545286e5eaa">Node::addChild</a></div><div class="ttdeci">void addChild(const shared_ptr&lt; Node &gt; &amp;child)</div><div class="ttdoc">Add a child Node to child list. </div><div class="ttdef"><b>Definition:</b> Node.cpp:113</div></div>
-<div class="ttc" id="classNode_html_a4773ac9f913d974957e7075148f5c5b7"><div class="ttname"><a href="classNode.html#a4773ac9f913d974957e7075148f5c5b7">Node::norm</a></div><div class="ttdeci">float norm() const </div><div class="ttdoc">Return norm 2 from the vector. </div><div class="ttdef"><b>Definition:</b> Node.cpp:73</div></div>
+<div class="ttc" id="classNode_html_a28a777e512424f44c567e009a61fa114"><div class="ttname"><a href="classNode.html#a28a777e512424f44c567e009a61fa114">Node::getChilds</a></div><div class="ttdeci">std::vector&lt; shared_ptr&lt; Node &gt; &gt; getChilds()</div><div class="ttdoc">Return list of child nodes. </div><div class="ttdef"><b>Definition:</b> Node.h:358</div></div>
+<div class="ttc" id="classNode_html_a7bf1b7705353fc6e36fcd61393c06370"><div class="ttname"><a href="classNode.html#a7bf1b7705353fc6e36fcd61393c06370">Node::setParent</a></div><div class="ttdeci">void setParent(const shared_ptr&lt; Node &gt; &amp;parent)</div><div class="ttdoc">Set parent of Node. </div><div class="ttdef"><b>Definition:</b> Node.h:319</div></div>
+<div class="ttc" id="classNode_html_aea90bb1051adfa9bcb2e736854ff03b3"><div class="ttname"><a href="classNode.html#aea90bb1051adfa9bcb2e736854ff03b3">Node::setVecValue</a></div><div class="ttdeci">void setVecValue(const float &amp;value, const unsigned int &amp;index)</div><div class="ttdoc">Set the vector element by index. </div><div class="ttdef"><b>Definition:</b> Node.h:228</div></div>
+<div class="ttc" id="classNode_html_a20b64482645b17e1fdf2b374513e119e"><div class="ttname"><a href="classNode.html#a20b64482645b17e1fdf2b374513e119e">Node::getVecValue</a></div><div class="ttdeci">float getVecValue(const unsigned int &amp;index)</div><div class="ttdoc">Return the vector element by index. </div><div class="ttdef"><b>Definition:</b> Node.h:239</div></div>
+<div class="ttc" id="classVec_html_a499baac66505ebd7dd6d8bb7461fd5c5"><div class="ttname"><a href="classVec.html#a499baac66505ebd7dd6d8bb7461fd5c5">Vec::getDist</a></div><div class="ttdeci">T getDist(const Vec&lt; T &gt; &amp;vec) const </div><div class="ttdoc">Return distance to given Vec. </div><div class="ttdef"><b>Definition:</b> Vec.h:401</div></div>
+<div class="ttc" id="classNode_html_ae73324eeab0437fc01c42545286e5eaa"><div class="ttname"><a href="classNode.html#ae73324eeab0437fc01c42545286e5eaa">Node::addChild</a></div><div class="ttdeci">void addChild(const shared_ptr&lt; Node &gt; &amp;child)</div><div class="ttdoc">Add a child Node to child list. </div><div class="ttdef"><b>Definition:</b> Node.h:348</div></div>
+<div class="ttc" id="classNode_html_a4773ac9f913d974957e7075148f5c5b7"><div class="ttname"><a href="classNode.html#a4773ac9f913d974957e7075148f5c5b7">Node::norm</a></div><div class="ttdeci">float norm() const </div><div class="ttdoc">Return norm 2 from the vector. </div><div class="ttdef"><b>Definition:</b> Node.h:249</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 27 2016 13:03:05 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

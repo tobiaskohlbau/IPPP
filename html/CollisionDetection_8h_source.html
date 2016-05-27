@@ -116,37 +116,37 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;}</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classCollisionDetection.html#a0418a477fe1ee79836a78e5d14886745">CollisionDetection::controlCollision2D</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y) {</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classCollisionDetection.html#a0418a477fe1ee79836a78e5d14886745">   49</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classCollisionDetection.html#a0418a477fe1ee79836a78e5d14886745">CollisionDetection::controlCollision2D</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> &amp;x, <span class="keyword">const</span> <span class="keywordtype">float</span> &amp;y) {</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordflow">if</span> (m_workspace.empty())</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    uint8_t value = m_workspace.at&lt;uint8_t&gt;((int)y, (<span class="keywordtype">int</span>)x);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    if (value != 0)</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        return false;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    else</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        return true;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">if</span> (value != 0)</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classCollisionDetection.html">CollisionDetection</a>::<a class="code" href="classCollisionDetection.html#ad958dcb7e5caab88e47d82aa66e05bf0">set2DWorkspace</a>(cv::Mat &amp;space) {</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classCollisionDetection.html#ad958dcb7e5caab88e47d82aa66e05bf0">   66</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classCollisionDetection.html#ad958dcb7e5caab88e47d82aa66e05bf0">CollisionDetection::set2DWorkspace</a>(cv::Mat &amp;space) {</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">if</span> (space.empty())</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    m_workspace = space.clone();</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;cv::Mat <a class="code" href="classCollisionDetection.html#a0f9a583abbcfe9e6cb4f1062312bfb2b">CollisionDetection::get2DWorkspace</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classCollisionDetection.html#a0f9a583abbcfe9e6cb4f1062312bfb2b">   78</a></span>&#160;cv::Mat <a class="code" href="classCollisionDetection.html#a0f9a583abbcfe9e6cb4f1062312bfb2b">CollisionDetection::get2DWorkspace</a>()<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">return</span> m_workspace;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* COLLISIONDETECTION_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="classCollisionDetection_html_ad9c50d617227244eb14080b3589ba5cc"><div class="ttname"><a href="classCollisionDetection.html#ad9c50d617227244eb14080b3589ba5cc">CollisionDetection::controlCollision</a></div><div class="ttdeci">bool controlCollision(const std::shared_ptr&lt; Node &gt; &amp;node)</div><div class="ttdoc">Check for collision. </div><div class="ttdef"><b>Definition:</b> CollisionDetection.h:34</div></div>
-<div class="ttc" id="classCollisionDetection_html_a0f9a583abbcfe9e6cb4f1062312bfb2b"><div class="ttname"><a href="classCollisionDetection.html#a0f9a583abbcfe9e6cb4f1062312bfb2b">CollisionDetection::get2DWorkspace</a></div><div class="ttdeci">cv::Mat get2DWorkspace() const </div><div class="ttdoc">Return workspace for 2D collision. </div><div class="ttdef"><b>Definition:</b> CollisionDetection.cpp:20</div></div>
+<div class="ttc" id="classCollisionDetection_html_a0f9a583abbcfe9e6cb4f1062312bfb2b"><div class="ttname"><a href="classCollisionDetection.html#a0f9a583abbcfe9e6cb4f1062312bfb2b">CollisionDetection::get2DWorkspace</a></div><div class="ttdeci">cv::Mat get2DWorkspace() const </div><div class="ttdoc">Return workspace for 2D collision. </div><div class="ttdef"><b>Definition:</b> CollisionDetection.h:78</div></div>
 <div class="ttc" id="classCollisionDetection_html"><div class="ttname"><a href="classCollisionDetection.html">CollisionDetection</a></div><div class="ttdoc">Class CollisionDetection checks the configuration on collision and return boolean value...</div><div class="ttdef"><b>Definition:</b> CollisionDetection.h:15</div></div>
-<div class="ttc" id="classCollisionDetection_html_a0418a477fe1ee79836a78e5d14886745"><div class="ttname"><a href="classCollisionDetection.html#a0418a477fe1ee79836a78e5d14886745">CollisionDetection::controlCollision2D</a></div><div class="ttdeci">bool controlCollision2D(const float &amp;x, const float &amp;y)</div><div class="ttdoc">Check for 2D collision. </div><div class="ttdef"><b>Definition:</b> CollisionDetection.cpp:3</div></div>
-<div class="ttc" id="classCollisionDetection_html_ad958dcb7e5caab88e47d82aa66e05bf0"><div class="ttname"><a href="classCollisionDetection.html#ad958dcb7e5caab88e47d82aa66e05bf0">CollisionDetection::set2DWorkspace</a></div><div class="ttdeci">void set2DWorkspace(cv::Mat &amp;space)</div><div class="ttdoc">Set workspace for 2D collision check. </div><div class="ttdef"><b>Definition:</b> CollisionDetection.cpp:14</div></div>
+<div class="ttc" id="classCollisionDetection_html_a0418a477fe1ee79836a78e5d14886745"><div class="ttname"><a href="classCollisionDetection.html#a0418a477fe1ee79836a78e5d14886745">CollisionDetection::controlCollision2D</a></div><div class="ttdeci">bool controlCollision2D(const float &amp;x, const float &amp;y)</div><div class="ttdoc">Check for 2D collision. </div><div class="ttdef"><b>Definition:</b> CollisionDetection.h:49</div></div>
+<div class="ttc" id="classCollisionDetection_html_ad958dcb7e5caab88e47d82aa66e05bf0"><div class="ttname"><a href="classCollisionDetection.html#ad958dcb7e5caab88e47d82aa66e05bf0">CollisionDetection::set2DWorkspace</a></div><div class="ttdeci">void set2DWorkspace(cv::Mat &amp;space)</div><div class="ttdoc">Set workspace for 2D collision check. </div><div class="ttdef"><b>Definition:</b> CollisionDetection.h:66</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 25 2016 14:14:06 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 27 2016 13:03:05 for Robot Motion Planner by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

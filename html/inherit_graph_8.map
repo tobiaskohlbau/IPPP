@@ -1,6 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classPlanner.html" title="Planner" alt="" coords="5,31,72,57"/>
-<area shape="rect" id="node2" href="$classRRTPlanner.html" title="RRTPlanner" alt="" coords="121,31,215,57"/>
-<area shape="rect" id="node3" href="$classNormalRRTPlanner.html" title="NormalRRTPlanner" alt="" coords="264,5,400,32"/>
-<area shape="rect" id="node4" href="$classStarRRTPlanner.html" title="StarRRTPlanner" alt="" coords="273,56,391,83"/>
+<area shape="rect" id="node1" href="$classPlanner.html" title="Super class of all planners. " alt="" coords="5,31,72,57"/>
+<area shape="rect" id="node2" href="$classRRTPlanner.html" title="Super class of the RRTPlanner. " alt="" coords="121,31,215,57"/>
+<area shape="rect" id="node3" href="$classNormalRRTPlanner.html" title="Class of the NormalRRTPlanner. " alt="" coords="264,5,400,32"/>
+<area shape="rect" id="node4" href="$classStarRRTPlanner.html" title="Class of the StarRRTPlanner. " alt="" coords="273,56,391,83"/>
 </map>
