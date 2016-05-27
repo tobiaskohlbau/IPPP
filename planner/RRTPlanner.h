@@ -5,6 +5,11 @@
 
 using std::shared_ptr;
 
+/*!
+* \brief   Super class of the RRTPlanner
+* \author  Sascha Kaden
+* \date    2016-05-27
+*/
 class RRTPlanner : public Planner
 {
 public:
@@ -23,11 +28,23 @@ protected:
     Node  m_goalNode;
 };
 
+/*!
+*  \brief      Constructor of the class RRTPlanner
+*  \author     Sascha Kaden
+*  \date       2016-05-27
+*/
 RRTPlanner::RRTPlanner(const unsigned int &dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
     : Planner(dim, stepSize, trajectory, sampling)
 {
 }
 
+/*!
+*  \brief      Set init Node of the RRTPlanner
+*  \author     Sascha Kaden
+*  \param[in]  initial Node
+*  \param[out] true, if set was possible
+*  \date       2016-05-27
+*/
 bool RRTPlanner::setInitNode(Node node) {
     this->controlConstraints();
     for (unsigned int i = 0; i < this->m_dim; ++i)
@@ -43,6 +60,13 @@ bool RRTPlanner::setInitNode(Node node) {
     return true;
 }
 
+/*!
+*  \brief      Compute tree of the RRTPlanner
+*  \author     Sascha Kaden
+*  \param[in]  number of samples
+*  \param[out] return check of the constraints
+*  \date       2016-05-27
+*/
 bool RRTPlanner::computeTree(const int nbOfNodes)
 {
     if (!this->controlConstraints())
@@ -65,6 +89,13 @@ bool RRTPlanner::computeTree(const int nbOfNodes)
     return true;
 }
 
+/*!
+*  \brief      Connect goal Node
+*  \author     Sascha Kaden
+*  \param[in]  goal Node
+*  \param[out] true, if the connection was possible
+*  \date       2016-05-27
+*/
 bool RRTPlanner::connectGoalNode(shared_ptr<Node> goalNode) {
     if (this->m_collision->controlCollision(goalNode))
         return false;
@@ -92,6 +123,14 @@ bool RRTPlanner::connectGoalNode(shared_ptr<Node> goalNode) {
     return false;
 }
 
+/*!
+*  \brief      Computation of a new Node from the RRT algorithm
+*  \author     Sascha Kaden
+*  \param[in]  random Node
+*  \param[in]  nearest Node
+*  \param[out] Node new
+*  \date       2016-05-27
+*/
 Vec<float> RRTPlanner::computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode) {
     if (randNode.getDist(nearestNode) < this->m_stepSize)
         return randNode;

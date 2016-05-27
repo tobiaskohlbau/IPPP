@@ -9,6 +9,11 @@
 #include <Sampling.h>
 #include <TrajectoryPlanner.h>
 
+/*!
+* \brief   Super class of all planners
+* \author  Sascha Kaden
+* \date    2016-05-27
+*/
 class Planner
 {
 public:
@@ -36,6 +41,14 @@ protected:
     Vec<float>   m_minBoundary;
 };
 
+/*!
+*  \brief      Constructor of the class Planner
+*  \author     Sascha Kaden
+*  \param[in]  dimension
+*  \param[in]  TrajectoryMethod
+*  \param[in]  SamplingMethod
+*  \date       2016-05-27
+*/
 Planner::Planner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling) {
     m_dim = dim;
     m_stepSize = stepSize;
@@ -44,11 +57,24 @@ Planner::Planner(const unsigned int &dim, const float &stepSize, TrajectoryMetho
     m_planner = new TrajectoryPlanner(trajectory, m_collision);
 }
 
+/*!
+*  \brief      Set 2D workspace to Planner and CollisionDetection
+*  \author     Sascha Kaden
+*  \param[in]  2D workspace
+*  \date       2016-05-27
+*/
 void Planner::set2DWorkspace(cv::Mat space) {
     m_workspace = space;
     m_collision->set2DWorkspace(m_workspace);
 }
 
+/*!
+*  \brief      Set configuration space boundaries
+*  \author     Sascha Kaden
+*  \param[in]  minimum Boudaries
+*  \param[in]  maximum Boudaries
+*  \date       2016-05-27
+*/
 void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary) {
     if (minBoundary.empty() || maxBoundary.empty()) {
         std::cout << "No boundaries set" << std::endl;
@@ -70,10 +96,22 @@ void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBou
     m_sampler->setBoundaries(minBoundary, maxBoundary);
 }
 
+/*!
+*  \brief      Return all nodes from the Graph
+*  \author     Sascha Kaden
+*  \param[out] list of all nodes
+*  \date       2016-05-27
+*/
 std::vector<std::shared_ptr<Node>> Planner::getTree() {
     return m_graph.getNodes();
 }
 
+/*!
+*  \brief      Control all constraints of the Planner
+*  \author     Sascha Kaden
+*  \param[out] check flag
+*  \date       2016-05-27
+*/
 bool Planner::controlConstraints() {
     if (m_minBoundary.empty() || m_maxBoundary.empty()) {
         std::cout << "No boudaries set" << std::endl;

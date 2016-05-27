@@ -5,6 +5,11 @@
 
 using std::shared_ptr;
 
+/*!
+* \brief   Class of the StarRRTPlanner
+* \author  Sascha Kaden
+* \date    2016-05-27
+*/
 class StarRRTPlanner : public RRTPlanner
 {
 public:

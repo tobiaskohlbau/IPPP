@@ -5,6 +5,11 @@
 
 using std::shared_ptr;
 
+/*!
+* \brief   Class of the NormalRRTPlanner
+* \author  Sascha Kaden
+* \date    2016-05-27
+*/
 class NormalRRTPlanner : public RRTPlanner
 {
 public:
@@ -16,6 +21,7 @@ public:
 protected:
     void computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode);
 };
+
 
 void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
