@@ -12,7 +12,7 @@ else()
 endif()
 
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_calib3d)
-set(RMP_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Robot Motion Planner DIR")
+set(RMP_DIR "/home/sascha/projects/robotMotion_build" CACHE PATH "Robot Motion Planner DIR")
 link_directories(${RMP_DIR}/lib})
 include_directories(${RMP_DIR}/include)
 
@@ -21,8 +21,8 @@ set(SRCS
 
 set(HDRS)
 
-add_executable(${PROJECT_NAME} ${SRCS}) #${HDRS}
-target_link_libraries( ${PROJECT_NAME} RobotMotionPlanningLib ${OpenCV_LIBS} pthread)
+add_executable(planner ${SRCS}) #${HDRS}
+target_link_libraries( planner RobotMotionPlanningLib ${OpenCV_LIBS} pthread)
 
 # copy the workspace images
 configure_file(${CMAKE_SOURCE_DIR}/spaces/freeWorkspace.png

@@ -18,19 +18,19 @@ void planning2D() {
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-    StarRRTPlanner planner2(dim, 70.0, TrajectoryMethod::linear, SamplingMethod::randomly);
-    NormalRRTPlanner planner(dim, 70.0, TrajectoryMethod::linear, SamplingMethod::randomly);
+    StarRRTPlanner planner(dim, 50.0, TrajectoryMethod::linear, SamplingMethod::randomly);
+    NormalRRTPlanner planner2(dim, 50.0, TrajectoryMethod::linear, SamplingMethod::randomly);
 
     // set properties to the planner
     Vec<float> minBoundary(0.0,0.0);
     Vec<float> maxBoundary(1000.0,1000.0);
     planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
-    planner.set2DWorkspace(obstacleWorkspace); // only be used by 2D
+    planner.set2DWorkspace(freeWorkspace); // only be used by 2D
     planner.setInitNode(Node(10.0, 10.0));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(2000);
+    planner.computeTree(50);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
@@ -38,14 +38,14 @@ void planning2D() {
     std::vector<std::shared_ptr<Node>> nodes = planner.getTree();
 
     // draw the result, if 2D is used
-    cv::Mat image = obstacleWorkspace.clone();
+    cv::Mat image = freeWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
     std::shared_ptr<Node> goal(new Node(650.0,750.0));
     bool connected = planner.connectGoalNode(goal);
     if (connected) {
         Drawing::drawTree(nodes, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,0,0), 1);
-        Drawing::drawPath(goal, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,255,0), 2);
+        //Drawing::drawPath(goal, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,255,0), 2);
     }
     else {
         Drawing::drawTree(nodes, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,0,0), 1);
