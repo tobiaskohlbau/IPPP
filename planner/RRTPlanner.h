@@ -80,9 +80,10 @@ bool RRTPlanner::computeTree(const int nbOfNodes)
 
         computeRRTNode(randVec, newNode);
 
-        if (newNode == NULL)
+        if (newNode == nullptr)
             continue;
 
+        //newNode->getVec().print();
         this->m_graph.addNode(newNode);
     }
 
@@ -132,6 +133,7 @@ bool RRTPlanner::connectGoalNode(shared_ptr<Node> goalNode) {
 *  \date       2016-05-27
 */
 Vec<float> RRTPlanner::computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode) {
+    std::cout << (randNode.getDist(nearestNode)) << std::endl;
     if (randNode.getDist(nearestNode) < this->m_stepSize)
         return randNode;
 
@@ -141,6 +143,8 @@ Vec<float> RRTPlanner::computeNodeNew(const Vec<float> &randNode, const Vec<floa
     Vec<float> u = randNode - nearestNode;
     u *= this->m_stepSize / u.norm();
     u += nearestNode;
+    std::cout << "U: ";
+    u.print();
     return u;
 }
 

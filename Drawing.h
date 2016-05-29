@@ -36,7 +36,7 @@ void Drawing::drawTree(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &imag
     for (auto& elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
         cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 2);
-        if (elem->getParent() != NULL) {
+        if (elem->getParent() != nullptr) {
             cv::Point point2(elem->getParent()->getX(), elem->getParent()->getY());
             cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
         }
@@ -57,7 +57,7 @@ void Drawing::drawPath(const shared_ptr<Node> &goalNode, cv::Mat &image, const V
     std::vector<shared_ptr<Node>> nodes;
     nodes.push_back(goalNode);
     shared_ptr<Node> temp = goalNode->getParent();
-    while(temp != NULL) {
+    while(temp != nullptr) {
         nodes.push_back(temp);
         temp = temp->getParent();
     }

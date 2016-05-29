@@ -36,11 +36,11 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
     chooseParent(newNode, nearestNode, nearNodes);
 
     if (this->m_collision->controlCollision(newNode)) {
-        newNode = NULL;
+        newNode = nullptr;
         return;
     }
     else if (!this->m_planner->computeTrajectory(newNode, nearestNode)) {
-        newNode = NULL;
+        newNode = nullptr;
         return;
     }
 

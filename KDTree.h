@@ -41,7 +41,7 @@ private:
 template<class T>
 void KDTree<T>::addNode(const Vec<float> &vec, T node) {
     shared_ptr<KDNode<T>> shrKDNode(new KDNode<T>(vec, node));
-    if (m_root == NULL) {
+    if (m_root == nullptr) {
         m_root = shrKDNode;
         return;
     }
@@ -59,7 +59,7 @@ void KDTree<T>::addNode(const Vec<float> &vec, T node) {
 */
 template<class T>
 shared_ptr<KDNode<T>> KDTree<T>::insert(shared_ptr<KDNode<T>> insertNode, shared_ptr<KDNode<T>> currentNode, unsigned int cd) {
-    if (currentNode == NULL) {              // node at leaf doesn't exist and will be added
+    if (currentNode == nullptr) {              // node at leaf doesn't exist and will be added
         currentNode = insertNode;
         currentNode->axis = cd;
         currentNode->value = currentNode->vec[cd];
@@ -85,8 +85,8 @@ shared_ptr<KDNode<T>> KDTree<T>::insert(shared_ptr<KDNode<T>> insertNode, shared
 */
 template<class T>
 T KDTree<T>::searchNearestNeighbor(const Vec<float> &vec) {
-    if (m_root == NULL)
-        return NULL;
+    if (m_root == nullptr)
+        return nullptr;
 
     shared_ptr<KDNode<T>> node;
     float bestDist = std::numeric_limits<float>::max();
@@ -105,7 +105,7 @@ T KDTree<T>::searchNearestNeighbor(const Vec<float> &vec) {
 template<class T>
 std::vector<T> KDTree<T>::searchRange(const Vec<float> &vec, const float &range) {
     std::vector<T> nodes;
-    if (m_root == NULL)
+    if (m_root == nullptr)
         return nodes;
 
     std::vector<shared_ptr<KDNode<T>>> kdNodes;
@@ -129,7 +129,7 @@ std::vector<T> KDTree<T>::searchRange(const Vec<float> &vec, const float &range)
 */
 template<class T>
 void KDTree<T>::NNS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, shared_ptr<KDNode<T>> &refNode, float &bestDist) {
-    if (node->left == NULL && node->right == NULL) {
+    if (node->left == nullptr && node->right == nullptr) {
         float dist = vec.getSqDist(node->vec);
         if (dist < bestDist) {
             bestDist = dist;
@@ -138,15 +138,15 @@ void KDTree<T>::NNS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, shared_pt
     }
     else {
         if (vec[node->axis] <= node->value) {
-            if (vec[node->axis] - bestDist <= node->value && node->left != NULL)
+            if (vec[node->axis] - bestDist <= node->value && node->left != nullptr)
                 NNS(vec, node->left, refNode, bestDist);
-            if (vec[node->axis] + bestDist > node->value && node->right != NULL)
+            if (vec[node->axis] + bestDist > node->value && node->right != nullptr)
                 NNS(vec, node->right, refNode, bestDist);
         }
         else {
-            if (vec[node->axis] + bestDist > node->value && node->right != NULL)
+            if (vec[node->axis] + bestDist > node->value && node->right != nullptr)
                 NNS(vec, node->right, refNode, bestDist);
-            if (vec[node->axis] - bestDist <= node->value && node->left != NULL)
+            if (vec[node->axis] - bestDist <= node->value && node->left != nullptr)
                 NNS(vec, node->left, refNode, bestDist);
         }
     }
@@ -165,7 +165,7 @@ void KDTree<T>::NNS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, shared_pt
 template<class T>
 void KDTree<T>::RS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, std::vector<shared_ptr<KDNode<T>>> &refNodes,
     const float &sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary) {
-    if (node == NULL) {
+    if (node == nullptr) {
         return;
     }
     if (vec.getSqDist(node->vec) < sqRange) {

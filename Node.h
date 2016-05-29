@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "Vec.h"
-#include "Edge.h"
 
 using std::shared_ptr;
 
@@ -52,17 +51,11 @@ public:
     std::vector<shared_ptr<Node>> getChilds();
     void clearChilds();
 
-    void addEdge(Edge edge);
-    std::vector<Edge> getEdges();
-    void clearEdges();
-
     Vec<float> getVec() const;
-
 
 private:
     float        m_cost;
     Vec<float>   m_vec;
-    std::vector<Edge>        m_edges;
     shared_ptr<Node>              m_parent;
     std::vector<shared_ptr<Node>> m_childs;
 };
@@ -366,18 +359,6 @@ std::vector<shared_ptr<Node>> Node::getChilds() {
 */
 void Node::clearChilds() {
     m_childs.clear();
-}
-
-void Node::addEdge(Edge edge) {
-    m_edges.push_back(edge);
-}
-
-std::vector<Edge> Node::getEdges() {
-    return m_edges;
-}
-
-void Node::clearEdges() {
-    m_edges.clear();
 }
 
 /*!
