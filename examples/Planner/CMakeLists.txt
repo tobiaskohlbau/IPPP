@@ -13,7 +13,7 @@ endif()
 
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_calib3d)
 set(RMP_DIR "/home/sascha/projects/robotMotion_build" CACHE PATH "Robot Motion Planner DIR")
-link_directories(${RMP_DIR}/lib})
+link_directories(${RMP_DIR}/lib)
 include_directories(${RMP_DIR}/include)
 
 set(SRCS
