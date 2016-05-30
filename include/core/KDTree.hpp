@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "KDNode.h"
+#include <core/KDNode.hpp>
 #include <core/Node.h>
 
 using std::shared_ptr;

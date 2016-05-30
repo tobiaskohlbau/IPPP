@@ -1,4 +1,4 @@
-#include "CollisionDetection.h"
+#include <core/CollisionDetection.h>
 
 /*!
 *  \brief      Check for collision

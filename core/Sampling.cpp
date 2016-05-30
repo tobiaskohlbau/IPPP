@@ -1,4 +1,4 @@
-#include "Sampling.h"
+#include <core/Sampling.h>
 
 /*!
 *  \brief      Constructor of the class Sampling

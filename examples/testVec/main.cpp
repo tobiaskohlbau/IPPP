@@ -3,10 +3,10 @@
 
 #include <memory>
 #include <ctime>
-#include <Vec.h>
-#include <Node.h>
-#include <Graph.h>
-#include <Sampling.h>
+#include <core/Vec.hpp>
+#include <core/Node.h>
+#include <core/Graph.h>
+#include <core/Sampling.h>
 
 int main(int argc, char** argv)
 {

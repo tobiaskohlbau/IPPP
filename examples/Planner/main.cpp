@@ -5,11 +5,10 @@
 
 #include <memory>
 #include <ctime>
-#include <Planner.h>
-#include <NormalRRTPlanner.h>
-#include <StarRRTPlanner.h>
-#include <Drawing.h>
-#include <VrepHelper.h>
+#include <planner/NormalRRTPlanner.h>
+#include <planner/StarRRTPlanner.h>
+#include <ui/Drawing.h>
+#include <vrep/Helper.h>
 
 void planning2D() {
     const unsigned int dim = 2;
@@ -57,9 +56,9 @@ void planning2D() {
 
 void planning6D() {
     const unsigned int dim = 6;
-    VrepHelper vrep(dim);
+    Helper vrep(dim);
 
-    vrep.startVrep();
+    vrep.start();
 
     Vec<float> pos(100.0,100.0,100.0,100.0,100.0,100.0);
     vrep.setPos(pos);

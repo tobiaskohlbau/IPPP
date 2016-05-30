@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-#include "Vec.h"
+#include <core/Vec.hpp>
 #include <core/Edge.h>
 
 using std::shared_ptr;

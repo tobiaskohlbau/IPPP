@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-#include "KDTree.h"
+#include <core/KDTree.hpp>
 #include <core/Node.h>
 
 using std::shared_ptr;
