@@ -27,7 +27,15 @@ link_directories(
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/planner)
 
 set(SRCS
-    )
+    CollisionDetection.cpp
+    Drawing.cpp
+    Edge.cpp
+    Graph.cpp
+    Node.cpp
+    Sampling.cpp
+    TrajectoryPlanner.cpp
+    VrepHelper.cpp
+)
 
 set(HDRS
     CollisionDetection.h
@@ -53,7 +61,7 @@ set(VREP
     ${VREP_REMOTE}/extApi.h
     ${VREP_INCLUDE}/v_repConst.h)
 
-add_library(${PROJECT_NAME} STATIC  ${HDRS} ${VREP}) #${SRCS}
+add_library(${PROJECT_NAME} STATIC  ${HDRS} ${VREP} ${SRCS})
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} pthread)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib)
 install(FILES ${HDRS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
