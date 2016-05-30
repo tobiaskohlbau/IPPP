@@ -2,6 +2,15 @@
 #include <core/Node.h>
 
 /*!
+*  \brief      Default constructor of the class Edge
+*  \author     Sasch Kaden
+*  \date       2016-05-30
+*/
+Edge::Edge()
+{
+}
+
+/*!
 *  \brief      Constructor of the class Edge
 *  \author     Sascha Kaden
 *  \param[in]  source Node

@@ -1,6 +1,6 @@
-#include "VrepHelper.h"
+#include <vrep/Helper.h>
 
-VrepHelper::VrepHelper(const unsigned int &dim) {
+Helper::Helper(const unsigned int &dim) {
     m_dim = dim;
     m_clientId = -1;
 
@@ -11,14 +11,14 @@ VrepHelper::VrepHelper(const unsigned int &dim) {
         m_jointHandles[i] = -1;
 }
 
-void VrepHelper::startVrep() {
+void Helper::start() {
     std::cout << "Program started" << std::endl;
 
     simxInt errorCodejaco, errorcode[10];
 
     m_clientId=simxStart((simxChar*)"127.0.0.1",19999,true,true,2000,5);
     if (m_clientId!=-1) {
-        std::cout << "connected to Vrep remote API" << std::endl;
+        std::cout << "connected to  remote API" << std::endl;
 
         errorcode[1]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint1",&m_jointHandles[0],simx_opmode_oneshot_wait);
         errorcode[2]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint2",&m_jointHandles[1],simx_opmode_oneshot_wait);
@@ -61,7 +61,7 @@ void VrepHelper::startVrep() {
     }
 }
 
-bool VrepHelper::setPos(const Vec<float> &vec) {
+bool Helper::setPos(const Vec<float> &vec) {
     if (m_clientId != -1) {
 
         simxInt errorCodeJointPos[m_dim];
@@ -90,7 +90,7 @@ bool VrepHelper::setPos(const Vec<float> &vec) {
     }
 }
 
-bool VrepHelper::isInCollision(const Vec<float> &jointAngles)
+bool Helper::isInCollision(const Vec<float> &jointAngles)
 {
 	simxInt retJointColCnt;
 	simxInt* retJointCols;
@@ -116,7 +116,7 @@ bool VrepHelper::isInCollision(const Vec<float> &jointAngles)
 
 }
 
-bool VrepHelper::isInCollision(const Vec<float> &qStart, const Vec<float> &qGoal)
+bool Helper::isInCollision(const Vec<float> &qStart, const Vec<float> &qGoal)
 {
     Vec<simxFloat> start = convertVecToRad(qStart);
     Vec<simxFloat> goal = convertVecToRad(qGoal);
@@ -138,7 +138,7 @@ bool VrepHelper::isInCollision(const Vec<float> &qStart, const Vec<float> &qGoal
 	return flag;
 }
 
-Vec<simxFloat> VrepHelper::convertVecToRad(const Vec<float> &vec) {
+Vec<simxFloat> Helper::convertVecToRad(const Vec<float> &vec) {
     Vec<simxFloat> rads(vec.getDim());
     for (unsigned int i = 0; i < m_dim; ++i) {
         rads[i] = vec[i]*M_PI/180;

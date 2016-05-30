@@ -1,5 +1,5 @@
-#ifndef VREPHELPER_H_
-#define VREPHELPER_H_
+#ifndef HELPER_H_
+#define HELPER_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,20 +9,20 @@
 #include <cstdint>
 #include <memory>
 
-#include "Vec.h"
+#include <core/Vec.hpp>
 
 extern "C" {
-    #include <extApi.h>
-    #include <extApiPlatform.h>
-    #include <v_repConst.h>
+    #include <vrep/extApi.h>
+    #include <vrep/extApiPlatform.h>
+    #include <vrep/v_repConst.h>
 }
 #define NON_MATLAB_PARSING
 
-class VrepHelper
+class Helper
 {
 public:
-    VrepHelper(const unsigned int &dim);
-    void startVrep();
+    Helper(const unsigned int &dim);
+    void start();
     bool setPos(const Vec<float> &vec);
 
     bool isInCollision(const Vec<float> &jointAngles);
@@ -38,4 +38,4 @@ private:
     Vec<simxInt> m_collisionHandle;
 };
 
-#endif /* VREPHELPER_H_ */
+#endif /* HELPER_H_ */

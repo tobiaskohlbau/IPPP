@@ -1,4 +1,4 @@
-#include "TrajectoryPlanner.h"
+#include <core/TrajectoryPlanner.h>
 
 /*!
 *  \brief      Constructor of the class TrajectoryPlanner

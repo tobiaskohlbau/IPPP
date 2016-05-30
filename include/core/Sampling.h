@@ -7,7 +7,7 @@
 #include <math.h>
 
 #include <core/Node.h>
-#include "Vec.h"
+#include <core/Vec.hpp>
 
 enum SamplingMethod
 {
