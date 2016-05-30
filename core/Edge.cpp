@@ -1,6 +1,5 @@
-#include "Edge.h"
-
-#include "Node.h"
+#include <core/Edge.h>
+#include <core/Node.h>
 
 /*!
 *  \brief      Constructor of the class Edge

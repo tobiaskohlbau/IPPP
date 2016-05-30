@@ -7,7 +7,8 @@
 #include <assert.h>
 #include <cstdint>
 #include <memory>
-#include "Graph.h"
+
+#include <core/Node.h>
 
 using std::shared_ptr;
 

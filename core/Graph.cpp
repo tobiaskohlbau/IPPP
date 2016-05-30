@@ -1,4 +1,4 @@
-#include "Graph.h"
+#include <core/Graph.h>
 
 /*!
 * \brief      Add Node to the graph

@@ -1,4 +1,4 @@
-#include "Node.h"
+#include <core/Node.h>
 
 /*!
 *  \brief      Constructor of the class Node
