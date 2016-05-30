@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "Vec.h"
-#include "Edge.h"
+#include <core/Edge.h>
 
 using std::shared_ptr;
 

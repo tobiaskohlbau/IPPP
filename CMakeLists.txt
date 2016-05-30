@@ -24,14 +24,14 @@ include_directories (
 link_directories(
     ${VREP_DIR}/programming/v_repExtRemoteApi/lib)
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/planner)
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/planner ${CMAKE_SOURCE_DIR}/include)
 
 set(SRCS
     CollisionDetection.cpp
     Drawing.cpp
-    Edge.cpp
-    Graph.cpp
-    Node.cpp
+    core/Edge.cpp
+    core/Graph.cpp
+    core/Node.cpp
     Sampling.cpp
     TrajectoryPlanner.cpp
     VrepHelper.cpp
@@ -39,12 +39,9 @@ set(SRCS
 
 set(HDRS
     CollisionDetection.h
-    Edge.h
     Drawing.h
-    Graph.h
     KDNode.h
     KDTree.h
-    Node.h
     planner/NormalRRTPlanner.h
     planner/Planner.h
     planner/RRTPlanner.h

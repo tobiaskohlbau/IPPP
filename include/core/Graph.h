@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "KDTree.h"
-#include "Node.h"
+#include <core/Node.h>
 
 using std::shared_ptr;
 

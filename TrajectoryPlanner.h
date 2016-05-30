@@ -6,7 +6,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include "CollisionDetection.h"
-#include "Node.h"
+#include <core/Node.h>
 
 enum class TrajectoryMethod
 {

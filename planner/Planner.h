@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include <CollisionDetection.h>
-#include <Graph.h>
+#include <core/Graph.h>
 #include <Sampling.h>
 #include <TrajectoryPlanner.h>
 

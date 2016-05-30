@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "Node.h"
+#include <core/Node.h>
 #include "Vec.h"
 
 enum SamplingMethod

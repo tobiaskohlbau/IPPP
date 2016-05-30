@@ -4,7 +4,7 @@
 #include <cstdint>
 
 #include "KDNode.h"
-#include "Node.h"
+#include <core/Node.h>
 
 using std::shared_ptr;
 

@@ -5,7 +5,7 @@
 #include <memory>
 #include "opencv2/core/core.hpp"
 
-#include "Node.h"
+#include <core/Node.h>
 
 /*!
 * \brief   Class CollisionDetection checks the configuration on collision and return boolean value
