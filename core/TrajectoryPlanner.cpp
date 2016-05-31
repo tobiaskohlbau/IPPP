@@ -13,29 +13,83 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod method, CollisionDet
 }
 
 /*!
-*  \brief      Compute the trajectory and return if possible or not
+*  \brief      Control the trajectory and return if possible or not
 *  \author     Sascha Kaden
 *  \param[in]  first Node
 *  \param[in]  second Node
-*  \param[out] possibility of trjectory
-*  \date       2016-05-25
+*  \param[in]  step size
+*  \param[out] possibility of trajectory
+*  \date       2016-05-31
 */
-bool TrajectoryPlanner::computeTrajectory(const std::shared_ptr<Node> node1, const std::shared_ptr<Node> node2) {
-    if (node1->getDim() != node2->getDim()) {
-        std::cout << "TrajectoryPlanner: Nodes have different dimensions" << std::endl;
+bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target, const float &stepSize) {
+    return controlTrajectory(source->getVec(), target->getVec(), stepSize);
+}
+
+/*!
+*  \brief      Control the trajectory and return if possible or not
+*  \author     Sascha Kaden
+*  \param[in]  first Vec
+*  \param[in]  second Vec
+*  \param[in]  step size
+*  \param[out] possibility of trajectory
+*  \date       2016-05-31
+*/
+bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<float> &target, const float &stepSize) {
+    if (source.getDim() != target.getDim()) {
+        std::cout << "TrajectoryPlanner: Nodes/Vecs have different dimensions" << std::endl;
         return false;
     }
 
-    if (node1->getDim() == 2) {
-        cv::Point pt1(node1->getX(), node1->getY());
-        cv::Point pt2(node2->getX(), node2->getY());
-        cv::LineIterator it(m_collision->get2DWorkspace(), pt1, pt2, 8);
+    std::vector<Vec<float>> vecs = computeTrajectory(source, target, stepSize);
 
-        for (int i = 0; i < it.count; i++, ++it) {
-            uint8_t val = m_collision->get2DWorkspace().at<uint8_t>(it.pos());
-            if (val == 0)
+    if (source.getDim() == 2) {
+        for (int i = 0; i < vecs.size(); ++i) {
+            if (m_collision->controlCollision(vecs[i]))
                 return false;
         }
     }
+
     return true;
+}
+
+/*!
+*  \brief      Compute the trajectory and return the list of nodes
+*  \author     Sascha Kaden
+*  \param[in]  first Node
+*  \param[in]  second Node
+*  \param[in]  step size
+*  \param[out] trajectory
+*  \date       2016-05-31
+*/
+std::vector<Node> TrajectoryPlanner::computeTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target, const float &stepSize) {
+    std::vector<Node> nodes;
+    std::vector<Vec<float>> vecs = computeTrajectory(source->getVec(), target->getVec(), stepSize);
+    for (int i = 0; i < vecs.size(); ++i)
+        nodes.push_back(Node(vecs[i]));
+    return nodes;
+}
+
+/*!
+*  \brief      Compute the trajectory and return the list of vecs
+*  \author     Sascha Kaden
+*  \param[in]  first Vec
+*  \param[in]  second Vec
+*  \param[in]  step size
+*  \param[out] trajectory
+*  \date       2016-05-31
+*/
+std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &source, const Vec<float> &target, const float &stepSize) {
+    std::vector<Vec<float>> vecs;
+
+    if (source.getDim() != target.getDim()) {
+        std::cout << "TrajectoryPlanner: Nodes/Vecs have different dimensions" << std::endl;
+        return vecs;
+    }
+    Vec<float> u = target - source;
+    Vec<float> temp(source);
+    while (std::abs(temp.norm() - target.norm()) > 1) {
+        vecs.push_back(temp);
+        temp += u * stepSize;
+    }
+    return vecs;
 }

@@ -4,7 +4,6 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
     // get nearest neighbor
     shared_ptr<Node> nearestNode = this->m_graph.getNearestNode(Node(randVec));
     std::cout << "nearestNode: ";
-    nearestNode->getVec().print();
     if (nearestNode == nullptr)
         std::cout << "nullptr" << std::endl;
     // compute node new with fixed step size
@@ -15,7 +14,7 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
         newNode = nullptr;
         return;
     }
-    else if (!this->m_planner->computeTrajectory(newNode, nearestNode)) {
+    else if (!this->m_planner->controlTrajectory(newNode, nearestNode, 0.1)) {
         newNode = nullptr;
         return;
     }

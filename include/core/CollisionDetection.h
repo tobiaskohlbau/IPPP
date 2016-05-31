@@ -16,6 +16,7 @@ class CollisionDetection
 {
 public:
     bool controlCollision(const std::shared_ptr<Node> &node);
+    bool controlCollision(const Vec<float> &vec);
     bool controlCollision2D(const float &x, const float &y);
 
     void set2DWorkspace(cv::Mat &space);

@@ -15,6 +15,20 @@ bool CollisionDetection::controlCollision(const std::shared_ptr<Node> &node) {
 }
 
 /*!
+*  \brief      Check for collision
+*  \author     Sascha Kaden
+*  \param[in]  vec
+*  \param[out] possibility of collision
+*  \date       2016-05-25
+*/
+bool CollisionDetection::controlCollision(const Vec<float> &vec) {
+    if (vec.getDim() == 2)
+        return controlCollision2D(vec[0], vec[1]);
+    else
+        return false;
+}
+
+/*!
 *  \brief      Check for 2D collision
 *  \author     Sascha Kaden
 *  \param[in]  x
@@ -26,7 +40,7 @@ bool CollisionDetection::controlCollision2D(const float &x, const float &y) {
     if (m_workspace.empty())
         return false;
 
-    uint8_t value = m_workspace.at<uint8_t>((int)y, (int)x);
+    uint8_t value = m_workspace.at<uint8_t>((unsigned int)y, (unsigned int)x);
     if (value != 0)
         return false;
     else

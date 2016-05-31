@@ -79,7 +79,7 @@ bool RRTPlanner::connectGoalNode(shared_ptr<Node> goalNode) {
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < minCost) {
-            if (this->m_planner->computeTrajectory(goalNode, nearNodes[i])) {
+            if (this->m_planner->controlTrajectory(goalNode, nearNodes[i], 0.1)) {
                 minCost = nearNodes[i]->getCost();
                 nearestNode = nearNodes[i];
             }
@@ -105,7 +105,6 @@ bool RRTPlanner::connectGoalNode(shared_ptr<Node> goalNode) {
 *  \date       2016-05-27
 */
 Vec<float> RRTPlanner::computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode) {
-    std::cout << (randNode.getDist(nearestNode)) << std::endl;
     if (randNode.getDist(nearestNode) < this->m_stepSize)
         return randNode;
 
@@ -115,7 +114,5 @@ Vec<float> RRTPlanner::computeNodeNew(const Vec<float> &randNode, const Vec<floa
     Vec<float> u = randNode - nearestNode;
     u *= this->m_stepSize / u.norm();
     u += nearestNode;
-    std::cout << "U: ";
-    u.print();
     return u;
 }
