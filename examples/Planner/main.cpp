@@ -60,17 +60,36 @@ void planning6D() {
 
     vrep.start();
 
-    Vec<float> pos(100.0,100.0,100.0,100.0,100.0,100.0);
+    Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
     vrep.setPos(pos);
 
+    pos = Vec<float>(1.0,1.0,1.0,1.0,1.0,1.0);
+    vrep.setPos(pos);
     pos = Vec<float>(-10.0, -10.0, -10.0, -10.0, -100.0, -100.0);
     vrep.setPos(pos);
-    vrep.isInCollision(pos);
+    //bool result = vrep.isInCollision(pos);
+    //if(result==false){
+    //    printf("No collision \n");
+    //}
+    //else{
+    //    printf("Collision Occurred \n");
+    //}
+
+    //pos = Vec<float>(-10.0, -10.0, -10.0, -10.0, -100.0, -100.0);
+    ////vrep.setPos(pos);
+    //result = vrep.isInCollision(pos);
+    //if(result==false){
+    //    printf("No collision \n");
+    //}
+    //else{
+    //    printf("Collision Occurred \n");
+    //}
+
 }
 
 int main(int argc, char** argv)
 {
-    const unsigned int dim = 2;
+    const unsigned int dim = 6;
 
     if (dim == 2)
         planning2D();

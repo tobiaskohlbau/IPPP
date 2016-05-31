@@ -8,6 +8,7 @@
 #include <string>
 #include <cstdint>
 #include <memory>
+#include <iostream>
 
 #include <core/Vec.hpp>
 

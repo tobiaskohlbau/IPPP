@@ -63,38 +63,31 @@ void Helper::start() {
 
 bool Helper::setPos(const Vec<float> &vec) {
     if (m_clientId != -1) {
-
-        simxInt errorCodeJointPos[m_dim];
         Vec<simxFloat> pos = convertVecToRad(vec);
         for (unsigned int i = 0; i < m_dim; ++i)
-            errorCodeJointPos[i]=simxSetJointPosition(m_clientId,m_jointHandles[i],pos[i],simx_opmode_oneshot_wait);
-        usleep(2000000);
+            simxSetJointTargetPosition(m_clientId,m_jointHandles[i],pos[i],simx_opmode_oneshot_wait);
+        usleep(3000000);
+        int *distHandle;
+        float *dist;
+        simxGetObjectHandle(m_clientId, "distance", distHandle, simx_opmode_oneshot_wait);
+        simxReadDistance(m_clientId, *distHandle, dist, simx_opmode_oneshot_wait);
+        simxInt numDist;
+        simxFloat *distance;
+        simxCallScriptFunction(m_clientId,"Jaco",sim_scripttype_childscript,"checkDist_function",0,NULL,0,NULL,0,NULL,0,NULL,NULL,NULL,&numDist,&distance,NULL,NULL,NULL,NULL,simx_opmode_blocking);
 
-        for (unsigned int i = 0; i < m_dim; ++i)
-            printf("Error code Joint Position%d %d\n",i,errorCodeJointPos[i]);
-
-        simxUChar collisionState;
-        for (unsigned int i = 0; i < m_dim; ++i) {
-            simxReadCollision(m_clientId, m_collisionHandle[i], &collisionState, simx_opmode_oneshot_wait);
-            printf("Error code Jaco link collision %d %d\n",i,collisionState);
-        }
-        //collisionHandle = simxGetCollisionHandle(m_clientId, (simxChar*)"Jaco", &m_jacoHandle, simx_opmode_oneshot_wait);
-        //simxReadCollision(m_clientId, collisionHandle, &collisionState[0], simx_opmode_oneshot_wait);
-        //printf("Error code Jaco collision  %d\n",collisionState[0]);
-
-
-        return true;
-    }
-    else {
-        return false;
+        if (numDist == NULL)
+            std::cout << "no output" << std::endl;
+        else
+            if (numDist > 0)
+                std::cout << "distance: " << distance[0] << std::endl;
     }
 }
 
 bool Helper::isInCollision(const Vec<float> &jointAngles)
 {
-	simxInt retJointColCnt;
-	simxInt* retJointCols;
-	simxInt result=0;
+    int retJointColCnt;
+	int* retJointCols;
+	int result=0;
 	bool flag;
 	float startGoalPos[12]={0};
 	float jointPosition[6]={0};
@@ -105,15 +98,13 @@ bool Helper::isInCollision(const Vec<float> &jointAngles)
 		startGoalPos[i]=jointPosition[i];
 		startGoalPos[i+6]=jointAngles[i];
 	}
-	simxInt collisionJacoResult=simxCallScriptFunction(m_clientId,"Jaco",sim_scripttype_childscript,"checkCollisionOMPL_function",0,NULL,12,startGoalPos,0,NULL,0,NULL,&retJointColCnt,&retJointCols,NULL,NULL,NULL,NULL,NULL,NULL,simx_opmode_blocking);
+	int collisionJacoResult=simxCallScriptFunction(m_clientId,"Jaco",sim_scripttype_childscript,"checkCollisionOMPL_function",0,NULL,12,startGoalPos,0,NULL,0,NULL,&retJointColCnt,&retJointCols,NULL,NULL,NULL,NULL,NULL,NULL,simx_opmode_blocking);
 	if(retJointCols[0]==1)
 		flag=false;
 	else
 		flag=true;
 
-    std::cout << std::endl << std::endl << flag;
 	return flag;
-
 }
 
 bool Helper::isInCollision(const Vec<float> &qStart, const Vec<float> &qGoal)
