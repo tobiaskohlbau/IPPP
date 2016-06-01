@@ -9,8 +9,6 @@
 #include <core/KDTree.hpp>
 #include <core/Node.h>
 
-using std::shared_ptr;
-
 /*!
 * \brief   Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through a KDTree
 * \author  Sascha Kaden
@@ -19,16 +17,16 @@ using std::shared_ptr;
 class Graph
 {
 public:
-    void addNode(shared_ptr<Node> node);
+    void addNode(std::shared_ptr<Node> node);
     void removeNode(const int index);
-    std::vector<shared_ptr<Node>> getNodes() const;
+    std::vector<std::shared_ptr<Node>> getNodes() const;
 
-    shared_ptr<Node> getNearestNode(const Node node);
-    std::vector<shared_ptr<Node>> getNearNodes(const shared_ptr<Node> node, const float &distance);
+    std::shared_ptr<Node> getNearestNode(const Node node);
+    std::vector<std::shared_ptr<Node>> getNearNodes(const std::shared_ptr<Node> node, const float &distance);
 
 private:
-    std::vector<shared_ptr<Node>> m_nodes;
-    KDTree<shared_ptr<Node>> m_kdTree;
+    std::vector<std::shared_ptr<Node>> m_nodes;
+    KDTree<std::shared_ptr<Node>> m_kdTree;
 };
 
 #endif /* GRAPH_H_ */

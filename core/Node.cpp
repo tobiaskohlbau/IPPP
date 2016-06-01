@@ -1,5 +1,7 @@
 #include <core/Node.h>
 
+using std::shared_ptr;
+
 /*!
 *  \brief      Constructor of the class Node
 *  \author     Sascha Kaden

@@ -1,6 +1,8 @@
 #include <core/Edge.h>
 #include <core/Node.h>
 
+using std::shared_ptr;
+
 /*!
 *  \brief      Default constructor of the class Edge
 *  \author     Sasch Kaden

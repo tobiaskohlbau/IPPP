@@ -3,7 +3,7 @@
 
 #include "Planner.h"
 
-using std::shared_ptr;
+
 
 /*!
 * \brief   Super class of the RRTPlanner
@@ -24,7 +24,7 @@ public:
     std::shared_ptr<Node> getGoalNode();
 
 protected:
-    virtual void computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) = 0;
+    virtual void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode) = 0;
     Vec<float> computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode);
 
     // variables

@@ -9,7 +9,7 @@
 #include <core/Vec.hpp>
 #include <core/Edge.h>
 
-using std::shared_ptr;
+
 
 
 /*!
@@ -38,7 +38,7 @@ public:
     bool empty() const ;
     void setVecValue(const float &value, const unsigned int &index);
     float getVecValue(const unsigned int &index);
-    float getDist(const shared_ptr<Node> &node) const;
+    float getDist(const std::shared_ptr<Node> &node) const;
     float getDist(const Node &node) const;
     float getDistToParent() const;
     float norm() const;
@@ -46,11 +46,11 @@ public:
     void setCost(const float &cost);
     float getCost() const;
 
-    void setParent(const shared_ptr<Node> &parent);
-    shared_ptr<Node> getParent();
+    void setParent(const std::shared_ptr<Node> &parent);
+    std::shared_ptr<Node> getParent();
     void clearParent();
-    void addChild(const shared_ptr<Node> &child);
-    std::vector<shared_ptr<Node>> getChilds();
+    void addChild(const std::shared_ptr<Node> &child);
+    std::vector<std::shared_ptr<Node>> getChilds();
     void clearChilds();
 
     Vec<float> getVec() const;
@@ -58,8 +58,8 @@ public:
 private:
     float        m_cost;
     Vec<float>   m_vec;
-    shared_ptr<Node>              m_parent;
-    std::vector<shared_ptr<Node>> m_childs;
+    std::shared_ptr<Node>              m_parent;
+    std::vector<std::shared_ptr<Node>> m_childs;
     Edge m_edge;
 };
 

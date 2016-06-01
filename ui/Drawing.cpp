@@ -1,5 +1,7 @@
 #include <ui/Drawing.h>
 
+using std::shared_ptr;
+
 /*!
 *  \brief          Draw nodes and there edge to the parent Node
 *  \author         Sascha Kaden

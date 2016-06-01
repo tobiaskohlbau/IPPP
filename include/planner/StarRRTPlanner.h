@@ -3,7 +3,7 @@
 
 #include "RRTPlanner.h"
 
-using std::shared_ptr;
+
 
 /*!
 * \brief   Class of the StarRRTPlanner
@@ -19,10 +19,9 @@ public:
     }
 
 protected:
-    void computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode);
-    void chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &nearestNode, std::vector<shared_ptr<Node>> &nearNodes);
-    void reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &nearestNode, std::vector<shared_ptr<Node>> &nearNodes);
-
+    void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
+    void chooseParent(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode, std::vector<std::shared_ptr<Node>> &nearNodes);
+    void reWire(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode, std::vector<std::shared_ptr<Node>> &nearNodes);
 };
 
 #endif /* STARRRTPLANNER_H_ */

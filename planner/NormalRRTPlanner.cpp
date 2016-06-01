@@ -1,5 +1,7 @@
 #include <planner/NormalRRTPlanner.h>
 
+using std::shared_ptr;
+
 void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
     shared_ptr<Node> nearestNode = this->m_graph.getNearestNode(Node(randVec));
@@ -14,7 +16,7 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
         newNode = nullptr;
         return;
     }
-    else if (!this->m_planner->controlTrajectory(newNode, nearestNode, 0.1)) {
+    else if (!this->m_planner->controlTrajectory(newNode, nearestNode, 0.01)) {
         newNode = nullptr;
         return;
     }

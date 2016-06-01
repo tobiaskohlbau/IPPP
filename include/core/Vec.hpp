@@ -6,8 +6,6 @@
 #include <math.h>
 #include <iostream>
 
-using std::shared_ptr;
-
 /*!
 * \brief   Class Vec present a normal vector
 * \author  Sascha Kaden

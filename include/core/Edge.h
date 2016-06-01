@@ -6,7 +6,7 @@
 
 class Node;
 
-using std::shared_ptr;
+
 
 /*!
 * \brief   Class Edge contains the two nodes of the Edge and different parameters
@@ -17,19 +17,19 @@ class Edge
 {
 public:
     Edge();
-    Edge(const shared_ptr<Node> &source, const shared_ptr<Node> &target);
+    Edge(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target);
 
     float getLength() const;
 
-    void setSource(const shared_ptr<Node> &source);
-    void setTarget (const shared_ptr<Node> &target);
+    void setSource(const std::shared_ptr<Node> &source);
+    void setTarget (const std::shared_ptr<Node> &target);
 
-    shared_ptr<Node> getSource() const;
-    shared_ptr<Node> getTarget() const;
+    std::shared_ptr<Node> getSource() const;
+    std::shared_ptr<Node> getTarget() const;
 
 private:
-    shared_ptr<Node> m_source;
-    shared_ptr<Node> m_target;
+    std::shared_ptr<Node> m_source;
+    std::shared_ptr<Node> m_target;
     float m_length;
 };
 

@@ -1,5 +1,7 @@
 #include <core/Graph.h>
 
+using std::shared_ptr;
+
 /*!
 * \brief      Add Node to the graph
 * \author     Sascha Kaden

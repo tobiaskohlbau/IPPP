@@ -1,5 +1,7 @@
 #include <planner/RRTPlanner.h>
 
+using std::shared_ptr;
+
 /*!
 *  \brief      Constructor of the class RRTPlanner
 *  \author     Sascha Kaden
@@ -80,7 +82,7 @@ bool RRTPlanner::connectGoalNode(Node goal) {
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < minCost) {
-            if (this->m_planner->controlTrajectory(goalNode, nearNodes[i], 0.1)) {
+            if (this->m_planner->controlTrajectory(goalNode, nearNodes[i], 0.01)) {
                 minCost = nearNodes[i]->getCost();
                 nearestNode = nearNodes[i];
             }
