@@ -25,7 +25,7 @@ public:
     TrajectoryPlanner(const TrajectoryMethod method, CollisionDetection *collision);
     bool controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target, const float &stepSize);
     bool controlTrajectory(const Vec<float> &source, const Vec<float> &target, const float &stepSize);
-    std::vector<Node> computeTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target, const float &stepSize);
+    std::vector<std::shared_ptr<Node>> computeTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target, const float &stepSize);
     std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target, const float &stepSize);
 
 private:

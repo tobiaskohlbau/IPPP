@@ -17,15 +17,19 @@ public:
 
     bool setInitNode(Node node);
     bool computeTree(const int nbOfNodes);
-    bool connectGoalNode(shared_ptr<Node> goalNode);
+    bool connectGoalNode(Node goalNode);
+    std::vector<std::shared_ptr<Node>> getPathNodes();
+    std::vector<Vec<float>> getPath();
+    std::shared_ptr<Node> getInitNode();
+    std::shared_ptr<Node> getGoalNode();
 
 protected:
     virtual void computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) = 0;
     Vec<float> computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode);
 
     // variables
-    Node  m_initNode;
-    Node  m_goalNode;
+    std::shared_ptr<Node>  m_initNode;
+    std::shared_ptr<Node>  m_goalNode;
 };
 
 #endif /* RRTPLANNER_H_ */

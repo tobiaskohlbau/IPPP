@@ -24,12 +24,12 @@ void planning2D() {
     Vec<float> minBoundary(0.0,0.0);
     Vec<float> maxBoundary(1000.0,1000.0);
     planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
-    planner.set2DWorkspace(freeWorkspace); // only be used by 2D
+    planner.set2DWorkspace(obstacleWorkspace); // only be used by 2D
     planner.setInitNode(Node(10.0, 10.0));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(50);
+    planner.computeTree(2000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
@@ -37,17 +37,21 @@ void planning2D() {
     std::vector<std::shared_ptr<Node>> nodes = planner.getTree();
 
     // draw the result, if 2D is used
-    cv::Mat image = freeWorkspace.clone();
+    cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    std::shared_ptr<Node> goal(new Node(650.0,750.0));
+    Node goal(650.0,750.0);
     bool connected = planner.connectGoalNode(goal);
     if (connected) {
-        Drawing::drawTree(nodes, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,0,0), 1);
-        //Drawing::drawPath(goal, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,255,0), 2);
+        Drawing::drawTree(nodes, image, Vec<uint8_t>(0,0,255), Vec<uint8_t>(0,0,0), 1);
+        std::vector<Vec<float>> pathPoints = planner.getPath();
+        Drawing::drawPath(pathPoints, image, Vec<uint8_t>(255,0,0), 3);
+
+        //shared_ptr<Node> goalNode = planner.getGoalNode();
+        //Drawing::drawPath(goalNode, image, Vec<uint8_t>(0,0,255), Vec<uint8_t>(0,255,0), 2);
     }
     else {
-        Drawing::drawTree(nodes, image, Vec<uint8_t>(255,0,0), Vec<uint8_t>(0,0,0), 1);
+        Drawing::drawTree(nodes, image, Vec<uint8_t>(0,0,255), Vec<uint8_t>(0,0,0), 1);
     }
     cv::namedWindow("planner", CV_WINDOW_AUTOSIZE);
     cv::imshow("planner", image);
@@ -67,29 +71,14 @@ void planning6D() {
     vrep.setPos(pos);
     pos = Vec<float>(-10.0, -10.0, -10.0, -10.0, -100.0, -100.0);
     vrep.setPos(pos);
-    //bool result = vrep.isInCollision(pos);
-    //if(result==false){
-    //    printf("No collision \n");
-    //}
-    //else{
-    //    printf("Collision Occurred \n");
-    //}
 
-    //pos = Vec<float>(-10.0, -10.0, -10.0, -10.0, -100.0, -100.0);
-    ////vrep.setPos(pos);
-    //result = vrep.isInCollision(pos);
-    //if(result==false){
-    //    printf("No collision \n");
-    //}
-    //else{
-    //    printf("Collision Occurred \n");
-    //}
+
 
 }
 
 int main(int argc, char** argv)
 {
-    const unsigned int dim = 6;
+    const unsigned int dim = 2;
 
     if (dim == 2)
         planning2D();

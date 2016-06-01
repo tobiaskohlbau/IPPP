@@ -22,6 +22,7 @@ class Drawing
 public:
     static void drawTree(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode, const Vec<uint8_t> &colorEdge, const int &thickness);
     static void drawPath(const shared_ptr<Node> &goalNode, cv::Mat &image, const Vec<uint8_t> &colorNode, const Vec<uint8_t> &colorEdge, const int &thickness);
+    static void drawPath(const std::vector<Vec<float>> vecs, cv::Mat &image, const Vec<uint8_t> &colorEdge, const int &thickness);
 };
 
 #endif /* DRAWING_H_ */

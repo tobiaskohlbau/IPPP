@@ -3,8 +3,11 @@
 /*!
 *  \brief          Draw nodes and there edge to the parent Node
 *  \author         Sascha Kaden
-*  \param[in]      nodes
+*  \param[in]      vector of nodes
 *  \param[in, out] image
+*  \param[in]      color of the nodes
+*  \param[in]      color of the edges
+*  \param[in]      thickness of the points
 *  \date           2016-05-25
 */
 void Drawing::drawTree(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode, const Vec<uint8_t> &colorEdge, const int &thickness)
@@ -25,6 +28,9 @@ void Drawing::drawTree(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &imag
 *  \author         Sascha Kaden
 *  \param[in]      goal Node
 *  \param[in, out] image
+*  \param[in]      color of the nodes
+*  \param[in]      color of the edges
+*  \param[in]      thickness of the points
 *  \date           2016-05-25
 */
 void Drawing::drawPath(const shared_ptr<Node> &goalNode, cv::Mat &image, const Vec<uint8_t> &colorNode, const Vec<uint8_t> &colorEdge, const int &thickness)
@@ -39,4 +45,21 @@ void Drawing::drawPath(const shared_ptr<Node> &goalNode, cv::Mat &image, const V
         temp = temp->getParent();
     }
     drawTree(nodes, image, colorNode, colorEdge, thickness);
+}
+
+/*!
+*  \brief          Draw a path with the given points
+*  \author         Sascha Kaden
+*  \param[in]      goal Node
+*  \param[in, out] image
+*  \param[in]      color of the points
+*  \param[in]      thickness of the points
+*  \date           2016-05-25
+*/
+void Drawing::drawPath(const std::vector<Vec<float>> vecs, cv::Mat &image, const Vec<uint8_t> &colorPoint, const int &thickness)
+{
+    for (int i = 0; i < vecs.size(); ++i) {
+        cv::Point point(vecs[i][0], vecs[i][1]);
+        cv::circle(image, point, 3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+    }
 }

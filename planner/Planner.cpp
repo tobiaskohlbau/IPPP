@@ -9,6 +9,7 @@
 *  \date       2016-05-27
 */
 Planner::Planner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling) {
+    m_pathPlanned = false;
     m_dim = dim;
     m_stepSize = stepSize;
     m_sampler = new Sampling(sampling);
@@ -81,4 +82,3 @@ bool Planner::controlConstraints() {
     else
         return true;
 }
-

@@ -20,8 +20,9 @@ public:
     Planner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
     void set2DWorkspace(cv::Mat space);
-    std::vector<Node> getPath();
     std::vector<std::shared_ptr<Node>> getTree();
+    virtual std::vector<Vec<float>> getPath() = 0;
+    virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
     void setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary);
 
 protected:
@@ -34,6 +35,7 @@ protected:
     Graph               m_graph;
 
     // variables
+    bool         m_pathPlanned;
     unsigned int m_dim;
     float        m_stepSize;
     cv::Mat      m_workspace;

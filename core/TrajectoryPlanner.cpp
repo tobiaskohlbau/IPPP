@@ -61,11 +61,11 @@ bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<fl
 *  \param[out] trajectory
 *  \date       2016-05-31
 */
-std::vector<Node> TrajectoryPlanner::computeTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target, const float &stepSize) {
-    std::vector<Node> nodes;
+std::vector<std::shared_ptr<Node>> TrajectoryPlanner::computeTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target, const float &stepSize) {
+    std::vector<std::shared_ptr<Node>> nodes;
     std::vector<Vec<float>> vecs = computeTrajectory(source->getVec(), target->getVec(), stepSize);
     for (int i = 0; i < vecs.size(); ++i)
-        nodes.push_back(Node(vecs[i]));
+        nodes.push_back(std::shared_ptr<Node>(new Node(vecs[i])));
     return nodes;
 }
 
