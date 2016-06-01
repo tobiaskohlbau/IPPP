@@ -2,6 +2,12 @@
 
 using namespace rmpl;
 
+CollisionDetection::CollisionDetection() {
+    const unsigned int dim = 6;
+    m_vrep = new Helper(dim);
+    m_vrep->start();
+}
+
 /*!
 *  \brief      Check for collision
 *  \author     Sascha Kaden
@@ -12,6 +18,8 @@ using namespace rmpl;
 bool CollisionDetection::controlCollision(const std::shared_ptr<Node> &node) {
     if (node->getDim() == 2)
         return controlCollision2D(node->getX(), node->getY());
+    else if (node->getDim() == 6)
+        return controlCollision6D(node->getVec());
     else
         return false;
 }
@@ -26,6 +34,8 @@ bool CollisionDetection::controlCollision(const std::shared_ptr<Node> &node) {
 bool CollisionDetection::controlCollision(const Vec<float> &vec) {
     if (vec.getDim() == 2)
         return controlCollision2D(vec[0], vec[1]);
+    else if (vec.getDim() == 6)
+        return controlCollision6D(vec);
     else
         return false;
 }
@@ -47,6 +57,11 @@ bool CollisionDetection::controlCollision2D(const float &x, const float &y) {
         return false;
     else
         return true;
+}
+
+bool CollisionDetection::controlCollision6D(const Vec<float> &vec) {
+    assert(vec.getDim() == 6);
+    return m_vrep->checkCollision(vec);
 }
 
 /*!

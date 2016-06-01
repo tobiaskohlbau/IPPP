@@ -6,7 +6,6 @@ using std::shared_ptr;
 void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
     shared_ptr<Node> nearestNode = this->m_graph.getNearestNode(Node(randVec));
-    std::cout << "nearestNode: ";
     if (nearestNode == nullptr)
         std::cout << "nullptr" << std::endl;
     // compute node new with fixed step size

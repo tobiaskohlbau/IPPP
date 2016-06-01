@@ -27,12 +27,13 @@ public:
     void start();
     bool setPos(const Vec<float> &vec);
 
-    bool isInCollision(const Vec<float> &jointAngles);
-    bool isInCollision(const Vec<float> &qStart, const Vec<float> &qGoal);
+    bool checkCollision(const Vec<float> &jointAngles);
+
 
 private:
-    unsigned int m_dim;
     Vec<simxFloat> convertVecToRad(const Vec<float> &vec); // convert to simxFloat array and radiant
+
+    unsigned int m_dim;
     simxInt m_clientId;
     simxInt m_jacoHandle;
     Vec<simxInt> m_jointHandles;

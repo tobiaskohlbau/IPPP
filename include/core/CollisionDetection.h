@@ -6,6 +6,7 @@
 #include "opencv2/core/core.hpp"
 
 #include <core/Node.h>
+#include <vrep/Helper.h>
 
 namespace rmpl {
 
@@ -17,14 +18,17 @@ namespace rmpl {
 class CollisionDetection
 {
 public:
+    CollisionDetection();
     bool controlCollision(const std::shared_ptr<Node> &node);
     bool controlCollision(const Vec<float> &vec);
     bool controlCollision2D(const float &x, const float &y);
+    bool controlCollision6D(const Vec<float> &vec);
 
     void set2DWorkspace(cv::Mat &space);
     cv::Mat get2DWorkspace() const;
 private:
     cv::Mat m_workspace;
+    Helper *m_vrep;
 };
 
 } /* namespace rmpl */

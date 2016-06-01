@@ -17,8 +17,8 @@ void planning2D() {
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-    rmpl::StarRRTPlanner planner(dim, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::NormalRRTPlanner planner2(dim, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner2(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     // set properties to the planner
     rmpl::Vec<float> minBoundary(0.0,0.0);
@@ -29,7 +29,7 @@ void planning2D() {
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(2000);
+    planner.computeTree(4000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
@@ -60,23 +60,37 @@ void planning2D() {
 
 void planning6D() {
     const unsigned int dim = 6;
-    rmpl::Helper vrep(dim);
+    rmpl::StarRRTPlanner planner(dim, 15.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
-    vrep.start();
+    // set properties to the planner
+    rmpl::Vec<float> minBoundary(0.0,0.0,0.0,0.0,0.0,0.0);
+    rmpl::Vec<float> maxBoundary(360,360,360,360,360,360);
+    planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
+    planner.setInitNode(rmpl::Node(180.0,180.0,180.0,180.0,180.0,180.0));
 
-    rmpl::Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
-    vrep.setPos(pos);
+    // compute the tree
+    clock_t begin = std::clock();
+    planner.computeTree(1500);
+    clock_t end = std::clock();
 
-    pos = rmpl::Vec<float>(1.0,1.0,1.0,1.0,1.0,1.0);
-    vrep.setPos(pos);
-    pos = rmpl::Vec<float>(-10.0, -10.0, -10.0, -10.0, -100.0, -100.0);
-    vrep.setPos(pos);
+    rmpl::Node goal(170.0, 280.0, 240.0, 80.0, 100.0, 180.0);
+    bool connected = planner.connectGoalNode(goal);
+
+    //rmpl::Helper vrep(dim);
+    //vrep.start();
+    //rmpl::Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
+    //vrep.setPos(pos);
+
+    //pos = rmpl::Vec<float>(180.0,180.0,180.0,180.0,180.0,180.0);
+    //std::cout << vrep.checkCollision(pos) << std::endl;
+    //pos = rmpl::Vec<float>(180.0,180.0,180.0,180.0,300.0,200.0);
+    //std::cout << vrep.checkCollision(pos) << std::endl;
 
 }
 
 int main(int argc, char** argv)
 {
-    const unsigned int dim = 2;
+    const unsigned int dim = 6;
 
     if (dim == 2)
         planning2D();

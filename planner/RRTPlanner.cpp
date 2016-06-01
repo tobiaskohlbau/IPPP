@@ -94,10 +94,12 @@ bool RRTPlanner::connectGoalNode(Node goal) {
         m_goalNode = goalNode;
         goalNode->setParent(nearestNode);
         this->m_graph.addNode(goalNode);
-        std::cout << "goalNode connected" << std::endl;
+        std::cout << "Goal node is connected" << std::endl;
         this->m_pathPlanned = true;
         return true;
     }
+
+    std::cout << "Goal node is NOT connected" << std::endl;
 
     return false;
 }
