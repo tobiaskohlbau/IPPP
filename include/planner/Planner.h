@@ -26,15 +26,17 @@ public:
     virtual std::vector<Vec<float>> getPath() = 0;
     virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
     void setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary);
+    std::shared_ptr<Helper> getVrep();
 
 protected:
     bool controlConstraints();
 
     // modules
-    TrajectoryPlanner  *m_planner;
-    Sampling           *m_sampler;
-    CollisionDetection *m_collision;
-    Graph               m_graph;
+    std::shared_ptr<TrajectoryPlanner>  m_planner;
+    std::shared_ptr<Sampling>           m_sampler;
+    std::shared_ptr<CollisionDetection> m_collision;
+    std::shared_ptr<Graph>              m_graph;
+    std::shared_ptr<Helper>             m_vrep;
 
     // variables
     bool         m_pathPlanned;

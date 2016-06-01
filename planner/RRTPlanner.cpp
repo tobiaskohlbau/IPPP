@@ -31,7 +31,7 @@ bool RRTPlanner::setInitNode(Node node) {
         return false;
 
     m_initNode = initNode;
-    this->m_graph.addNode(initNode);
+    this->m_graph->addNode(initNode);
     return true;
 }
 
@@ -59,7 +59,7 @@ bool RRTPlanner::computeTree(const int nbOfNodes)
             continue;
 
         //newNode->getVec().print();
-        this->m_graph.addNode(newNode);
+        this->m_graph->addNode(newNode);
     }
 
     return true;
@@ -77,7 +77,7 @@ bool RRTPlanner::connectGoalNode(Node goal) {
     if (this->m_collision->controlCollision(goalNode))
         return false;
 
-    std::vector<shared_ptr<Node>> nearNodes = this->m_graph.getNearNodes(goalNode, this->m_stepSize * 3);
+    std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
 
     shared_ptr<Node> nearestNode;
     float minCost = std::numeric_limits<float>::max();
@@ -93,7 +93,7 @@ bool RRTPlanner::connectGoalNode(Node goal) {
     if (minCost < std::numeric_limits<float>::max()) {
         m_goalNode = goalNode;
         goalNode->setParent(nearestNode);
-        this->m_graph.addNode(goalNode);
+        this->m_graph->addNode(goalNode);
         std::cout << "Goal node is connected" << std::endl;
         this->m_pathPlanned = true;
         return true;

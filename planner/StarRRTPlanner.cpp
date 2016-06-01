@@ -5,7 +5,7 @@ using std::shared_ptr;
 
 void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
-    shared_ptr<Node> nearestNode = this->m_graph.getNearestNode(Node(randVec));
+    shared_ptr<Node> nearestNode = this->m_graph->getNearestNode(Node(randVec));
     // set node new fix fixed step size of 10
     Vec<float> newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getVec());
     newNode = shared_ptr<Node>(new Node(newVec));
@@ -31,7 +31,7 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
 
 void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &nearestNode, std::vector<shared_ptr<Node>> &nearNodes) {
     // get near nodes to the new node
-    nearNodes = this->m_graph.getNearNodes(newNode, this->m_stepSize * 1.5);
+    nearNodes = this->m_graph->getNearNodes(newNode, this->m_stepSize * 1.5);
 
     float nearestNodeCost = nearestNode->getCost();
     for (int i = 0; i < nearNodes.size(); ++i) {

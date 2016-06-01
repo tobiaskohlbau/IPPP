@@ -2,9 +2,8 @@
 
 using namespace rmpl;
 
-CollisionDetection::CollisionDetection() {
-    const unsigned int dim = 6;
-    m_vrep = new Helper(dim);
+CollisionDetection::CollisionDetection(std::shared_ptr<Helper> vrep) {
+    m_vrep = vrep;
     m_vrep->start();
 }
 

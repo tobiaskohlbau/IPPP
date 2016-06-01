@@ -9,7 +9,7 @@ using namespace rmpl;
 *  \param[in]  pointer to ColllisionDetection instance
 *  \date       2016-05-25
 */
-TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod method, CollisionDetection *collision) {
+TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod method, std::shared_ptr<CollisionDetection> collision) {
     m_method = method;
     m_collision = collision;
 }

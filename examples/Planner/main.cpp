@@ -76,6 +76,15 @@ void planning6D() {
     rmpl::Node goal(170.0, 280.0, 240.0, 80.0, 100.0, 180.0);
     bool connected = planner.connectGoalNode(goal);
 
+    if (connected) {
+        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
+        std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
+
+        for (int i = 0; i < pathPoints.size(); ++i) {
+            vrep->setPos(pathPoints[i]);
+        }
+    }
+
     //rmpl::Helper vrep(dim);
     //vrep.start();
     //rmpl::Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);

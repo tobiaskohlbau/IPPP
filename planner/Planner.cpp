@@ -14,9 +14,10 @@ Planner::Planner(const unsigned int &dim, const float &stepSize, TrajectoryMetho
     m_pathPlanned = false;
     m_dim = dim;
     m_stepSize = stepSize;
-    m_sampler = new Sampling(sampling);
-    m_collision = new CollisionDetection();
-    m_planner = new TrajectoryPlanner(trajectory, m_collision);
+    m_sampler = std::shared_ptr<Sampling>(new Sampling(sampling));
+    m_vrep = std::shared_ptr<Helper>(new Helper(m_dim));
+    m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_vrep));
+    m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(trajectory, m_collision));
 }
 
 /*!
@@ -65,7 +66,11 @@ void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBou
 *  \date       2016-05-27
 */
 std::vector<std::shared_ptr<Node>> Planner::getTree() {
-    return m_graph.getNodes();
+    return m_graph->getNodes();
+}
+
+std::shared_ptr<Helper> Planner::getVrep() {
+    return m_vrep;
 }
 
 /*!

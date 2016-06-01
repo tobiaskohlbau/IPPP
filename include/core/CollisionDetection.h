@@ -18,7 +18,7 @@ namespace rmpl {
 class CollisionDetection
 {
 public:
-    CollisionDetection();
+    CollisionDetection(std::shared_ptr<Helper> vrep);
     bool controlCollision(const std::shared_ptr<Node> &node);
     bool controlCollision(const Vec<float> &vec);
     bool controlCollision2D(const float &x, const float &y);
@@ -28,7 +28,7 @@ public:
     cv::Mat get2DWorkspace() const;
 private:
     cv::Mat m_workspace;
-    Helper *m_vrep;
+    std::shared_ptr<Helper>  m_vrep;
 };
 
 } /* namespace rmpl */
