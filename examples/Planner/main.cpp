@@ -85,8 +85,6 @@ void planning6D() {
         }
     }
 
-    //rmpl::Helper vrep(dim);
-    //vrep.start();
     //rmpl::Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
     //vrep.setPos(pos);
 
