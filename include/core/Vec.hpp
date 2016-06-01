@@ -6,6 +6,8 @@
 #include <math.h>
 #include <iostream>
 
+namespace rmpl{
+
 /*!
 * \brief   Class Vec present a normal vector
 * \author  Sascha Kaden
@@ -429,5 +431,7 @@ void Vec<T>::print() {
         std::cout << "Value" << i << ": " << (*this)[i] << "  ";
     std::cout << std::endl;
 }
+
+} /* namespace rmpl */
 
 #endif /* VEC_H_ */

@@ -9,6 +9,8 @@
 #include <core/Node.h>
 #include <core/Vec.hpp>
 
+namespace rmpl{
+
 enum SamplingMethod
 {
     randomly,
@@ -36,5 +38,7 @@ private:
     Vec<float> m_minBoundary;
     SamplingMethod m_method;
 };
+
+} /* namespace rmpl */
 
 #endif /* SAMPLING_H_ */

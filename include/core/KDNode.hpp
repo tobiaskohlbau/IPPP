@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <core/Vec.hpp>
 
-using std::shared_ptr;
+namespace rmpl {
 
 /*!
 * \brief   Class KDNode is the node object of the KDTree
@@ -19,8 +19,8 @@ public:
     KDNode(Vec<float> vec, T node);
     unsigned int getDim();
 
-    shared_ptr<KDNode<T>> left;
-    shared_ptr<KDNode<T>> right;
+    std::shared_ptr<KDNode<T>> left;
+    std::shared_ptr<KDNode<T>> right;
     Vec<float> vec;
     T node;
     unsigned int axis;
@@ -52,5 +52,7 @@ template<typename T>
 unsigned int KDNode<T>::getDim() {
     return vec.getDim();
 }
+
+} /* namespace rmpl */
 
 #endif /* KDNODE_H_ */

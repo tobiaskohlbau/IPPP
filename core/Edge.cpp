@@ -2,6 +2,8 @@
 #include <core/Node.h>
 
 using std::shared_ptr;
+using namespace rmpl;
+
 
 /*!
 *  \brief      Default constructor of the class Edge

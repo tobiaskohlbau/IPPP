@@ -1,5 +1,7 @@
 #include <core/Sampling.h>
 
+using namespace rmpl;
+
 /*!
 *  \brief      Constructor of the class Sampling
 *  \author     Sascha Kaden

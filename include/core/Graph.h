@@ -9,6 +9,8 @@
 #include <core/KDTree.hpp>
 #include <core/Node.h>
 
+namespace rmpl{
+
 /*!
 * \brief   Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through a KDTree
 * \author  Sascha Kaden
@@ -28,5 +30,7 @@ private:
     std::vector<std::shared_ptr<Node>> m_nodes;
     KDTree<std::shared_ptr<Node>> m_kdTree;
 };
+
+} /* namespace rmpl */
 
 #endif /* GRAPH_H_ */

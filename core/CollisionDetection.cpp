@@ -1,5 +1,7 @@
 #include <core/CollisionDetection.h>
 
+using namespace rmpl;
+
 /*!
 *  \brief      Check for collision
 *  \author     Sascha Kaden

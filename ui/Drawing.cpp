@@ -1,5 +1,6 @@
 #include <ui/Drawing.h>
 
+using namespace rmpl;
 using std::shared_ptr;
 
 /*!

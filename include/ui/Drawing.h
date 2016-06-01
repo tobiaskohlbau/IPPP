@@ -10,7 +10,7 @@
 
 #include <core/Node.h>
 
-
+namespace rmpl {
 
 /*!
 * \brief   Class Drawing for drawing 2D paths with OpenCV
@@ -24,5 +24,7 @@ public:
     static void drawPath(const std::shared_ptr<Node> &goalNode, cv::Mat &image, const Vec<uint8_t> &colorNode, const Vec<uint8_t> &colorEdge, const int &thickness);
     static void drawPath(const std::vector<Vec<float>> vecs, cv::Mat &image, const Vec<uint8_t> &colorEdge, const int &thickness);
 };
+
+} /* namespace rmpl */
 
 #endif /* DRAWING_H_ */

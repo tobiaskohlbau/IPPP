@@ -1,5 +1,7 @@
 #include <vrep/Helper.h>
 
+using namespace rmpl;
+
 Helper::Helper(const unsigned int &dim) {
     m_dim = dim;
     m_clientId = -1;
@@ -41,18 +43,6 @@ void Helper::start() {
 
         simxInt handleAll = -2;
         simxInt linkhandle = simxGetObjectHandle(m_clientId, (simxChar*)"Jaco_link1", &handleAll, simx_opmode_oneshot_wait);
-
-        //for(int i=0;i<6;i++)
-        //    printf("Joint code%d %d\n",i,m_jointHandles[i]);
-
-        errorCodejaco=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco", &m_jacoHandle , simx_opmode_oneshot_wait);
-        printf("Error code Jaco %d\n",errorCodejaco);
-
-        simxUChar collisionState;
-        for (unsigned int i = 0; i < m_dim; ++i) {
-            simxReadCollision(m_clientId, m_collisionHandle[i], &collisionState, simx_opmode_oneshot_wait);
-            printf("Error code Jaco link collision %d %d\n",i,collisionState);
-        }
 
         std::cout << std::endl << std::endl;
     }

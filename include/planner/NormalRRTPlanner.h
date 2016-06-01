@@ -3,6 +3,8 @@
 
 #include "RRTPlanner.h"
 
+namespace rmpl {
+
 /*!
 * \brief   Class of the NormalRRTPlanner
 * \author  Sascha Kaden
@@ -19,5 +21,7 @@ public:
 protected:
     void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
 };
+
+} /* namespace rmpl */
 
 #endif /* NORMALRRTPLANNER_H_ */

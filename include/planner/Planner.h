@@ -9,6 +9,8 @@
 #include <core/Sampling.h>
 #include <core/TrajectoryPlanner.h>
 
+namespace rmpl {
+
 /*!
 * \brief   Super class of all planners
 * \author  Sascha Kaden
@@ -42,5 +44,7 @@ protected:
     Vec<float>   m_maxBoundary;
     Vec<float>   m_minBoundary;
 };
+
+} /* namespace rmpl */
 
 #endif /* RRTPLANNER_H_ */

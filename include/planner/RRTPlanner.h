@@ -3,7 +3,7 @@
 
 #include "Planner.h"
 
-
+namespace rmpl {
 
 /*!
 * \brief   Super class of the RRTPlanner
@@ -31,5 +31,7 @@ protected:
     std::shared_ptr<Node>  m_initNode;
     std::shared_ptr<Node>  m_goalNode;
 };
+
+} /* namespace rmpl */
 
 #endif /* RRTPLANNER_H_ */

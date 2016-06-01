@@ -8,6 +8,8 @@
 #include "CollisionDetection.h"
 #include <core/Node.h>
 
+namespace rmpl{
+
 enum class TrajectoryMethod
 {
     linear,
@@ -32,5 +34,7 @@ private:
     TrajectoryMethod m_method;
     CollisionDetection *m_collision;
 };
+
+} /* namespace rmpl */
 
 #endif /* TRAJECTORYPLANNER_H_ */

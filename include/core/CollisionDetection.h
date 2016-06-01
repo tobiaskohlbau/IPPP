@@ -7,6 +7,8 @@
 
 #include <core/Node.h>
 
+namespace rmpl {
+
 /*!
 * \brief   Class CollisionDetection checks the configuration on collision and return boolean value
 * \author  Sascha Kaden
@@ -24,5 +26,7 @@ public:
 private:
     cv::Mat m_workspace;
 };
+
+} /* namespace rmpl */
 
 #endif /* COLLISIONDETECTION_H_ */

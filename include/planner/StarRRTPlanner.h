@@ -3,7 +3,7 @@
 
 #include "RRTPlanner.h"
 
-
+namespace rmpl {
 
 /*!
 * \brief   Class of the StarRRTPlanner
@@ -23,5 +23,7 @@ protected:
     void chooseParent(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode, std::vector<std::shared_ptr<Node>> &nearNodes);
     void reWire(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode, std::vector<std::shared_ptr<Node>> &nearNodes);
 };
+
+} /* namespace rmpl */
 
 #endif /* STARRRTPLANNER_H_ */

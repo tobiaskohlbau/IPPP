@@ -1,5 +1,6 @@
 #include <planner/NormalRRTPlanner.h>
 
+using namespace rmpl;
 using std::shared_ptr;
 
 void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {

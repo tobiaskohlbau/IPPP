@@ -1,5 +1,6 @@
 #include <planner/RRTPlanner.h>
 
+using namespace rmpl;
 using std::shared_ptr;
 
 /*!

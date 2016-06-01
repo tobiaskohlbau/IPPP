@@ -1,5 +1,6 @@
 #include <planner/StarRRTPlanner.h>
 
+using namespace rmpl;
 using std::shared_ptr;
 
 void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {

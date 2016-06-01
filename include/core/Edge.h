@@ -4,9 +4,11 @@
 #include <cstdint>
 #include <memory>
 
+
+
+namespace rmpl {
+
 class Node;
-
-
 
 /*!
 * \brief   Class Edge contains the two nodes of the Edge and different parameters
@@ -32,5 +34,7 @@ private:
     std::shared_ptr<Node> m_target;
     float m_length;
 };
+
+} /* namespace rmpl */
 
 #endif /* EDGE_H_ */

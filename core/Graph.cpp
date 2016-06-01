@@ -1,5 +1,6 @@
 #include <core/Graph.h>
 
+using namespace rmpl;
 using std::shared_ptr;
 
 /*!

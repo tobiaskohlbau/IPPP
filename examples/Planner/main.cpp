@@ -17,15 +17,15 @@ void planning2D() {
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-    StarRRTPlanner planner(dim, 50.0, TrajectoryMethod::linear, SamplingMethod::randomly);
-    NormalRRTPlanner planner2(dim, 50.0, TrajectoryMethod::linear, SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(dim, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner2(dim, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     // set properties to the planner
-    Vec<float> minBoundary(0.0,0.0);
-    Vec<float> maxBoundary(1000.0,1000.0);
+    rmpl::Vec<float> minBoundary(0.0,0.0);
+    rmpl::Vec<float> maxBoundary(1000.0,1000.0);
     planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
     planner.set2DWorkspace(obstacleWorkspace); // only be used by 2D
-    planner.setInitNode(Node(10.0, 10.0));
+    planner.setInitNode(rmpl::Node(10.0, 10.0));
 
     // compute the tree
     clock_t begin = std::clock();
@@ -34,24 +34,24 @@ void planning2D() {
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
 
-    std::vector<std::shared_ptr<Node>> nodes = planner.getTree();
+    std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getTree();
 
     // draw the result, if 2D is used
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    Node goal(650.0,750.0);
+    rmpl::Node goal(650.0,750.0);
     bool connected = planner.connectGoalNode(goal);
     if (connected) {
-        Drawing::drawTree(nodes, image, Vec<uint8_t>(0,0,255), Vec<uint8_t>(0,0,0), 1);
-        std::vector<Vec<float>> pathPoints = planner.getPath();
-        Drawing::drawPath(pathPoints, image, Vec<uint8_t>(255,0,0), 3);
+        rmpl::Drawing::drawTree(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
+        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
+        rmpl::Drawing::drawPath(pathPoints, image, rmpl::Vec<uint8_t>(255,0,0), 3);
 
         //shared_ptr<Node> goalNode = planner.getGoalNode();
         //Drawing::drawPath(goalNode, image, Vec<uint8_t>(0,0,255), Vec<uint8_t>(0,255,0), 2);
     }
     else {
-        Drawing::drawTree(nodes, image, Vec<uint8_t>(0,0,255), Vec<uint8_t>(0,0,0), 1);
+        rmpl::Drawing::drawTree(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
     }
     cv::namedWindow("planner", CV_WINDOW_AUTOSIZE);
     cv::imshow("planner", image);
@@ -60,19 +60,17 @@ void planning2D() {
 
 void planning6D() {
     const unsigned int dim = 6;
-    Helper vrep(dim);
+    rmpl::Helper vrep(dim);
 
     vrep.start();
 
-    Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
+    rmpl::Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
     vrep.setPos(pos);
 
-    pos = Vec<float>(1.0,1.0,1.0,1.0,1.0,1.0);
+    pos = rmpl::Vec<float>(1.0,1.0,1.0,1.0,1.0,1.0);
     vrep.setPos(pos);
-    pos = Vec<float>(-10.0, -10.0, -10.0, -10.0, -100.0, -100.0);
+    pos = rmpl::Vec<float>(-10.0, -10.0, -10.0, -10.0, -100.0, -100.0);
     vrep.setPos(pos);
-
-
 
 }
 

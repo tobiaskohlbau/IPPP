@@ -1,5 +1,7 @@
 #include <core/TrajectoryPlanner.h>
 
+using namespace rmpl;
+
 /*!
 *  \brief      Constructor of the class TrajectoryPlanner
 *  \author     Sascha Kaden

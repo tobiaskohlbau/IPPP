@@ -17,7 +17,8 @@ extern "C" {
     #include <vrep/extApiPlatform.h>
     #include <vrep/v_repConst.h>
 }
-#define NON_MATLAB_PARSING
+
+namespace rmpl {
 
 class Helper
 {
@@ -38,5 +39,7 @@ private:
     Vec<simxInt> m_linkHandles;
     Vec<simxInt> m_collisionHandle;
 };
+
+} /* namespace rmpl */
 
 #endif /* HELPER_H_ */

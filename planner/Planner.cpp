@@ -1,5 +1,7 @@
 #include <planner/Planner.h>
 
+using namespace rmpl;
+
 /*!
 *  \brief      Constructor of the class Planner
 *  \author     Sascha Kaden

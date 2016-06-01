@@ -9,8 +9,7 @@
 #include <core/Vec.hpp>
 #include <core/Edge.h>
 
-
-
+namespace rmpl {
 
 /*!
 * \brief   Class Node to present nodes of path planner
@@ -62,5 +61,7 @@ private:
     std::vector<std::shared_ptr<Node>> m_childs;
     Edge m_edge;
 };
+
+} /* namespace rmpl */
 
 #endif /* NODE_H_ */

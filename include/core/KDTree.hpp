@@ -6,7 +6,7 @@
 #include <core/KDNode.hpp>
 #include <core/Node.h>
 
-using std::shared_ptr;
+namespace rmpl {
 
 /*!
 * \brief   Class KDTree for a fast binary search
@@ -23,12 +23,12 @@ public:
     std::vector<T> searchRange(const Vec<float> &vec, const float &range);
 
 private:
-    shared_ptr<KDNode<T>> insert(shared_ptr<KDNode<T>> insertNode, shared_ptr<KDNode<T>> currentNode, unsigned int depth);
-    void NNS(const Vec<float> &point, shared_ptr<KDNode<T>> node, shared_ptr<KDNode<T>> &refNode, float &bestDist);
-    void RS(const Vec<float> &point, shared_ptr<KDNode<T>> node, std::vector<shared_ptr<KDNode<T>>> &refNodes,
+    std::shared_ptr<KDNode<T>> insert(std::shared_ptr<KDNode<T>> insertNode, std::shared_ptr<KDNode<T>> currentNode, unsigned int depth);
+    void NNS(const Vec<float> &point, std::shared_ptr<KDNode<T>> node, std::shared_ptr<KDNode<T>> &refNode, float &bestDist);
+    void RS(const Vec<float> &point, std::shared_ptr<KDNode<T>> node, std::vector<std::shared_ptr<KDNode<T>>> &refNodes,
         const float &sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary);
 
-    shared_ptr<KDNode<T>> m_root;
+    std::shared_ptr<KDNode<T>> m_root;
 };
 
 /*!
@@ -40,7 +40,7 @@ private:
 */
 template<class T>
 void KDTree<T>::addNode(const Vec<float> &vec, T node) {
-    shared_ptr<KDNode<T>> shrKDNode(new KDNode<T>(vec, node));
+    std::shared_ptr<KDNode<T>> shrKDNode(new KDNode<T>(vec, node));
     if (m_root == nullptr) {
         m_root = shrKDNode;
         return;
@@ -58,7 +58,7 @@ void KDTree<T>::addNode(const Vec<float> &vec, T node) {
 *  \date       2016-05-27
 */
 template<class T>
-shared_ptr<KDNode<T>> KDTree<T>::insert(shared_ptr<KDNode<T>> insertNode, shared_ptr<KDNode<T>> currentNode, unsigned int cd) {
+std::shared_ptr<KDNode<T>> KDTree<T>::insert(std::shared_ptr<KDNode<T>> insertNode, std::shared_ptr<KDNode<T>> currentNode, unsigned int cd) {
     if (currentNode == nullptr) {              // node at leaf doesn't exist and will be added
         currentNode = insertNode;
         currentNode->axis = cd;
@@ -88,7 +88,7 @@ T KDTree<T>::searchNearestNeighbor(const Vec<float> &vec) {
     if (m_root == nullptr)
         return nullptr;
 
-    shared_ptr<KDNode<T>> node;
+    std::shared_ptr<KDNode<T>> node;
     float bestDist = std::numeric_limits<float>::max();
     NNS(vec, m_root, node, bestDist);
     return node->node;
@@ -108,7 +108,7 @@ std::vector<T> KDTree<T>::searchRange(const Vec<float> &vec, const float &range)
     if (m_root == nullptr)
         return nodes;
 
-    std::vector<shared_ptr<KDNode<T>>> kdNodes;
+    std::vector<std::shared_ptr<KDNode<T>>> kdNodes;
     float sqRange = range * range;
     Vec<float> maxBoundary = vec + range;
     Vec<float> minBoundary = vec - range;
@@ -128,7 +128,7 @@ std::vector<T> KDTree<T>::searchRange(const Vec<float> &vec, const float &range)
 *  \date       2016-05-27
 */
 template<class T>
-void KDTree<T>::NNS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, shared_ptr<KDNode<T>> &refNode, float &bestDist) {
+void KDTree<T>::NNS(const Vec<float> &vec, std::shared_ptr<KDNode<T>> node, std::shared_ptr<KDNode<T>> &refNode, float &bestDist) {
     if (node->left == nullptr && node->right == nullptr) {
         float dist = vec.getSqDist(node->vec);
         if (dist < bestDist) {
@@ -163,7 +163,7 @@ void KDTree<T>::NNS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, shared_pt
 *  \date       2016-05-27
 */
 template<class T>
-void KDTree<T>::RS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, std::vector<shared_ptr<KDNode<T>>> &refNodes,
+void KDTree<T>::RS(const Vec<float> &vec, std::shared_ptr<KDNode<T>> node, std::vector<std::shared_ptr<KDNode<T>>> &refNodes,
     const float &sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary) {
     if (node == nullptr) {
         return;
@@ -182,5 +182,7 @@ void KDTree<T>::RS(const Vec<float> &vec, shared_ptr<KDNode<T>> node, std::vecto
         RS(vec, node->right, refNodes, sqRange, maxBoundary, minBoundary);
     }
 }
+
+} /* namespace rmpl */
 
 #endif /* KDTREE_H_ */
