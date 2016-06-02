@@ -34,7 +34,7 @@ void planning2D() {
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
 
-    std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getTree();
+    std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
 
     // draw the result, if 2D is used
     cv::Mat image = obstacleWorkspace.clone();
@@ -60,7 +60,7 @@ void planning2D() {
 
 void planning6D() {
     const unsigned int dim = 6;
-    rmpl::NormalRRTPlanner planner(dim, 15.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(dim, 20.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
@@ -71,12 +71,12 @@ void planning6D() {
 
     // compute the tree
     clock_t begin = std::clock();
-    //planner.computeTree(1500);
+    planner.computeTree(2500);
     clock_t end = std::clock();
 
     rmpl::Node goal(170.0, 280.0, 240.0, 80.0, 100.0, 180.0);
     bool connected = false;
-    //connected = planner.connectGoalNode(goal);
+    connected = planner.connectGoalNode(goal);
 
     if (connected) {
         std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
@@ -86,8 +86,8 @@ void planning6D() {
         }
     }
 
-    rmpl::Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
-    vrep->setPos(pos);
+    //rmpl::Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
+    //vrep->setPos(pos);
 
     //pos = rmpl::Vec<float>(180.0,180.0,180.0,180.0,180.0,180.0);
     //std::cout << vrep.checkCollision(pos) << std::endl;
@@ -98,7 +98,7 @@ void planning6D() {
 
 int main(int argc, char** argv)
 {
-    const unsigned int dim = 2;
+    const unsigned int dim = 6;
 
     if (dim == 2)
         planning2D();

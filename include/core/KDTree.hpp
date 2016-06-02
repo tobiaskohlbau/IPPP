@@ -18,7 +18,7 @@ class KDTree : public Base
 {
 public:
     KDTree();
-    void addNode(const Vec<float> &vec, T node);
+    void addNode(const Vec<float> &vec, const T &node);
     T searchNearestNeighbor(const Vec<float> &vec);
     std::vector<T> searchRange(const Vec<float> &vec, const float &range);
 
@@ -50,7 +50,7 @@ KDTree<T>::KDTree()
 *  \date       2016-05-27
 */
 template<class T>
-void KDTree<T>::addNode(const Vec<float> &vec, T node) {
+void KDTree<T>::addNode(const Vec<float> &vec, const T &node) {
     std::shared_ptr<KDNode<T>> shrKDNode(new KDNode<T>(vec, node));
     if (m_root == nullptr) {
         m_root = shrKDNode;

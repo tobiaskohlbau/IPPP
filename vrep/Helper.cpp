@@ -11,18 +11,18 @@ Helper::Helper(const unsigned int &dim)
 }
 
 void Helper::start() {
-    if (!m_started)
+    if (m_started)
         return;
     m_started = true;
-    std::cout << "Program started" << std::endl;
+    this->sendMessage("Program started");
 
     m_clientId=simxStart((simxChar*)"127.0.0.1",19999,true,true,2000,5);
     if (m_clientId == -1) {
-        std::cout << "Could not connect to server" << std::endl;
+        this->sendMessage("Could not connect to server");
         return;
     }
 
-    std::cout << "Connected to remote API" << std::endl;
+    this->sendMessage("Connected to remote API");
     simxInt errorcode[m_dim];
     errorcode[0]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint1",&m_jointHandles[0],simx_opmode_oneshot_wait);
     errorcode[1]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint2",&m_jointHandles[1],simx_opmode_oneshot_wait);
@@ -39,7 +39,7 @@ bool Helper::setPos(const Vec<float> &vec) {
     Vec<simxFloat> pos = convertVecToRad(vec);
     for (unsigned int i = 0; i < m_dim; ++i)
         simxSetJointTargetPosition(m_clientId,m_jointHandles[i],pos[i],simx_opmode_oneshot_wait);
-    usleep(3000000);
+    usleep(100);
     return true;
 }
 
@@ -63,11 +63,11 @@ bool Helper::checkCollision(const Vec<float> &jointAngles) {
     if (numResult == 1)
         if (result[0] == 1)
             if (distance[0] > 0.01) {
-                std::cout << "Distance to objects is: " << distance[0] << std::endl;
+                this->sendMessage("Distance to objects is: " + std::to_string(distance[0]));
                 return false;
             }
             else {
-                std::cout << "Roboter is in collision" << std::endl;
+                this->sendMessage("Roboter is in collision");
                 return true;
             }
 

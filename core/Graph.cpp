@@ -29,7 +29,7 @@ void Graph::addNode(const shared_ptr<Node> &node) {
 * \param[in]  index
 * \date       2016-05-25
 */
-void Graph::removeNode(const int index) {
+void Graph::removeNode(const int &index) {
     if (index < m_nodes.size()) {
         m_nodes.erase(m_nodes.begin() + index);
     }
@@ -52,8 +52,19 @@ std::vector<shared_ptr<Node>> Graph::getNodes() const{
 * \param[out] nearest neighbor Node
 * \date       2016-05-25
 */
-shared_ptr<Node> Graph::getNearestNode(const Node node) {
+shared_ptr<Node> Graph::getNearestNode(const Node &node) {
     return m_kdTree.searchNearestNeighbor(node.getVec());
+}
+
+/*!
+* \brief      Search for nearrest neighbor
+* \author     Sascha Kaden
+* \param[in]  pointer of the Node for the search
+* \param[out] nearest neighbor Node
+* \date       2016-05-25
+*/
+shared_ptr<Node> Graph::getNearestNode(const shared_ptr<Node> &node) {
+    return m_kdTree.searchNearestNeighbor(node->getVec());
 }
 
 /*!

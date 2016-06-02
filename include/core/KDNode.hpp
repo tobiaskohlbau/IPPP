@@ -16,7 +16,7 @@ template<typename T>
 class KDNode
 {
 public:
-    KDNode(Vec<float> vec, T node);
+    KDNode(const Vec<float> &vec, const T &node);
     unsigned int getDim();
 
     std::shared_ptr<KDNode<T>> left;
@@ -35,7 +35,7 @@ public:
 *  \date       2016-05-27
 */
 template<typename T>
-KDNode<T>::KDNode(Vec<float> vec, T node) {
+KDNode<T>::KDNode(const Vec<float> &vec, const T &node) {
     this->vec = vec;
     this->node = node;
     axis = 0;

@@ -31,7 +31,7 @@ Planner::Planner(const std::string &name, const unsigned int &dim, const float &
 *  \param[in]  2D workspace
 *  \date       2016-05-27
 */
-void Planner::set2DWorkspace(cv::Mat space) {
+void Planner::set2DWorkspace(const cv::Mat &space) {
     m_workspace = space;
     m_collision->set2DWorkspace(m_workspace);
 }
@@ -70,11 +70,17 @@ void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBou
 *  \param[out] list of all nodes
 *  \date       2016-05-27
 */
-std::vector<std::shared_ptr<Node>> Planner::getTree() {
+std::vector<std::shared_ptr<Node>> Planner::getGraphNodes() {
     return m_graph->getNodes();
 }
 
-std::shared_ptr<Helper> Planner::getVrep() {
+/*!
+*  \brief      Return the pointer to the VREP Helper initiation
+*  \author     Sascha Kaden
+*  \param[out] pointer to VREP Helper
+*  \date       2016-05-27
+*/
+std::shared_ptr<Helper> Planner::getVrep() const {
     return m_vrep;
 }
 

@@ -8,7 +8,7 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-05-27
 */
-RRTPlanner::RRTPlanner(const std::string &name, const unsigned int &dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+RRTPlanner::RRTPlanner(const std::string &name, const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
     : Planner(name, dim, stepSize, trajectory, sampling)
 {
 }
@@ -20,7 +20,7 @@ RRTPlanner::RRTPlanner(const std::string &name, const unsigned int &dim, float s
 *  \param[out] true, if set was possible
 *  \date       2016-05-27
 */
-bool RRTPlanner::setInitNode(Node node) {
+bool RRTPlanner::setInitNode(const Node &node) {
     this->controlConstraints();
     for (unsigned int i = 0; i < this->m_dim; ++i)
         if (node.getVec()[i] < this->m_minBoundary[i] || node.getVec()[i] > this->m_maxBoundary[i])
@@ -42,7 +42,7 @@ bool RRTPlanner::setInitNode(Node node) {
 *  \param[out] return check of the constraints
 *  \date       2016-05-27
 */
-bool RRTPlanner::computeTree(const int nbOfNodes)
+bool RRTPlanner::computeTree(const int &nbOfNodes)
 {
     if (!this->controlConstraints())
         return false;
@@ -72,7 +72,7 @@ bool RRTPlanner::computeTree(const int nbOfNodes)
 *  \param[out] true, if the connection was possible
 *  \date       2016-05-27
 */
-bool RRTPlanner::connectGoalNode(Node goal) {
+bool RRTPlanner::connectGoalNode(const Node &goal) {
     shared_ptr<Node> goalNode(new Node(goal));
     if (this->m_collision->controlCollision(goalNode))
         return false;
@@ -94,12 +94,12 @@ bool RRTPlanner::connectGoalNode(Node goal) {
         m_goalNode = goalNode;
         goalNode->setParent(nearestNode);
         this->m_graph->addNode(goalNode);
-        this->sendMessage("Goal node is connected");
+        this->sendMessage("Goal Node is connected");
         this->m_pathPlanned = true;
         return true;
     }
 
-    this->sendMessage("Goal node is NOT connected");
+    this->sendMessage("Goal Node is NOT connected");
 
     return false;
 }
@@ -121,8 +121,7 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
         nodes.push_back(temp);
         temp = temp->getParent();
     }
-    std::string message = "Path has: " + std::to_string(nodes.size()) + " nodes";
-    this->sendMessage(message);
+    this->sendMessage("Path has: " + std::to_string(nodes.size()) + " nodes");
     return nodes;
 }
 
@@ -148,8 +147,7 @@ std::vector<Vec<float>> RRTPlanner::getPath() {
         }
         temp = temp->getParent();
     }
-    std::string message = "Path has: " + std::to_string(path.size()) + " points";
-    this->sendMessage(message);
+    this->sendMessage("Path has: " + std::to_string(path.size()) + " points");
     return path;
 }
 

@@ -1,6 +1,7 @@
 #include <core/TrajectoryPlanner.h>
 
 using namespace rmpl;
+using std::shared_ptr;
 
 /*!
 *  \brief      Constructor of the class TrajectoryPlanner
@@ -9,7 +10,7 @@ using namespace rmpl;
 *  \param[in]  pointer to ColllisionDetection instance
 *  \date       2016-05-25
 */
-TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod method, std::shared_ptr<CollisionDetection> collision)
+TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, const shared_ptr<CollisionDetection> &collision)
     : Base("TrajectoryPlanner") {
     m_method = method;
     m_collision = collision;
@@ -24,7 +25,7 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod method, std::shared_
 *  \param[out] possibility of trajectory
 *  \date       2016-05-31
 */
-bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target, const float &stepSize) {
+bool TrajectoryPlanner::controlTrajectory(const shared_ptr<Node> &source, const shared_ptr<Node> &target, const float &stepSize) {
     return controlTrajectory(source->getVec(), target->getVec(), stepSize);
 }
 
@@ -39,7 +40,7 @@ bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, c
 */
 bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<float> &target, const float &stepSize) {
     if (source.getDim() != target.getDim()) {
-        this->sendMessage("TrajectoryPlanner: Nodes/Vecs have different dimensions");
+        this->sendMessage("Nodes/Vecs have different dimensions");
         return false;
     }
 
@@ -64,11 +65,11 @@ bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<fl
 *  \param[out] trajectory
 *  \date       2016-05-31
 */
-std::vector<std::shared_ptr<Node>> TrajectoryPlanner::computeTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target, const float &stepSize) {
-    std::vector<std::shared_ptr<Node>> nodes;
+std::vector<shared_ptr<Node>> TrajectoryPlanner::computeTrajectory(const shared_ptr<Node> &source, const shared_ptr<Node> &target, const float &stepSize) {
+    std::vector<shared_ptr<Node>> nodes;
     std::vector<Vec<float>> vecs = computeTrajectory(source->getVec(), target->getVec(), stepSize);
     for (int i = 0; i < vecs.size(); ++i)
-        nodes.push_back(std::shared_ptr<Node>(new Node(vecs[i])));
+        nodes.push_back(shared_ptr<Node>(new Node(vecs[i])));
     return nodes;
 }
 
@@ -85,7 +86,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     std::vector<Vec<float>> vecs;
 
     if (source.getDim() != target.getDim()) {
-        this->sendMessage("TrajectoryPlanner: Nodes/Vecs have different dimensions");
+        this->sendMessage("Nodes/Vecs have different dimensions");
         return vecs;
     }
     Vec<float> u = target - source;

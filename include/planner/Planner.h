@@ -19,12 +19,12 @@ class Planner : public Base
 public:
     Planner(const std::string &name, const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
-    void set2DWorkspace(cv::Mat space);
-    std::vector<std::shared_ptr<Node>> getTree();
+    void set2DWorkspace(const cv::Mat &space);
+    std::vector<std::shared_ptr<Node>> getGraphNodes();
     virtual std::vector<Vec<float>> getPath() = 0;
     virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
     void setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary);
-    std::shared_ptr<Helper> getVrep();
+    std::shared_ptr<Helper> getVrep() const;
 
 protected:
     bool controlConstraints();

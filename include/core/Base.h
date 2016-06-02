@@ -17,9 +17,9 @@ namespace rmpl{
 class Base
 {
 public:
-    Base(std::string name);
+    Base(const std::string &name);
     std::string getName();
-    void sendMessage(std::string message);
+    void sendMessage(const std::string &message);
 
 protected:
     std::string m_name;

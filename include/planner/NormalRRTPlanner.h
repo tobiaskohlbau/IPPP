@@ -13,7 +13,7 @@ namespace rmpl {
 class NormalRRTPlanner : public RRTPlanner
 {
 public:
-    NormalRRTPlanner(const unsigned int &dim, float stepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
+    NormalRRTPlanner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
     : RRTPlanner("Normal RRT Planner", dim, stepSize, trajectory, sampling)
     {
     }

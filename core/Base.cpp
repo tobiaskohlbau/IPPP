@@ -8,7 +8,7 @@ using namespace rmpl;
 *  \param[in]  name
 *  \date       2016-05-30
 */
-Base::Base(std::string name) {
+Base::Base(const std::string &name) {
     m_name = name;
 }
 
@@ -28,7 +28,7 @@ std::string Base::getName() {
 *  \param[in]  message
 *  \date       2016-05-30
 */
-void Base::sendMessage(std::string message) {
+void Base::sendMessage(const std::string &message) {
     std::cout << m_name << ": ";
     std::cout << message << std::endl;
 }

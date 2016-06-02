@@ -13,11 +13,11 @@ namespace rmpl {
 class RRTPlanner : public Planner
 {
 public:
-    RRTPlanner(const std::string &name, const unsigned int &dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
+    RRTPlanner(const std::string &name, const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
-    bool setInitNode(Node node);
-    bool computeTree(const int nbOfNodes);
-    bool connectGoalNode(Node goalNode);
+    bool setInitNode(const Node &node);
+    bool computeTree(const int &nbOfNodes);
+    bool connectGoalNode(const Node &goalNode);
     std::vector<std::shared_ptr<Node>> getPathNodes();
     std::vector<Vec<float>> getPath();
     std::shared_ptr<Node> getInitNode();
