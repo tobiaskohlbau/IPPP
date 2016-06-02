@@ -20,6 +20,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/include/vrep
 set(SRCS
     core/CollisionDetection.cpp
     ui/Drawing.cpp
+    core/Base.cpp
     core/Edge.cpp
     core/Graph.cpp
     core/Node.cpp

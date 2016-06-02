@@ -1,9 +1,7 @@
 #ifndef PLANNER_H_
 #define PLANNER_H_
 
-#include <cstdint>
-#include <iostream>
-
+#include <core/Base.h>
 #include <core/CollisionDetection.h>
 #include <core/Graph.h>
 #include <core/Sampling.h>
@@ -16,10 +14,10 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-27
 */
-class Planner
+class Planner : public Base
 {
 public:
-    Planner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
+    Planner(const std::string &name, const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
     void set2DWorkspace(cv::Mat space);
     std::vector<std::shared_ptr<Node>> getTree();

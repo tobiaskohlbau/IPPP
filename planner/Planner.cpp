@@ -10,7 +10,8 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-27
 */
-Planner::Planner(const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling) {
+Planner::Planner(const std::string &name, const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+        : Base(name){
     m_pathPlanned = false;
     m_dim = dim;
     m_stepSize = stepSize;
@@ -40,17 +41,17 @@ void Planner::set2DWorkspace(cv::Mat space) {
 */
 void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary) {
     if (minBoundary.empty() || maxBoundary.empty()) {
-        std::cout << "No boundaries set" << std::endl;
+        this->sendMessage("No boundaries set");
         return;
     }
     else if (minBoundary.getDim() != maxBoundary.getDim()) {
-        std::cout << "Boudaries have different dimensions" << std::endl;
+        this->sendMessage("Boudaries have different dimensions");
         return;
     }
 
     for (unsigned int i = 0; i < m_dim; ++i) {
         if (minBoundary[i] > maxBoundary[i]) {
-            std::cout << "Min boundary is larger than max boundary" << std::endl;
+            this->sendMessage("Min boundary is larger than max boundary");
             return;
         }
     }
@@ -80,8 +81,8 @@ std::shared_ptr<Helper> Planner::getVrep() {
 *  \date       2016-05-27
 */
 bool Planner::controlConstraints() {
-    if (m_minBoundary.empty() || m_maxBoundary.empty()) {
-        std::cout << "No boudaries set" << std::endl;
+    if (m_minBoundary.empty() || m_maxBoundary.empty()) {\
+        this->sendMessage("Boundaries are Empty!");
         return false;
     }
     if (m_dim == 2 && this->m_workspace.empty())

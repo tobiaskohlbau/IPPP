@@ -1,10 +1,7 @@
 #ifndef EDGE_H_
 #define EDGE_H_
 
-#include <cstdint>
-#include <memory>
-
-
+#include <core/Base.h>
 
 namespace rmpl {
 
@@ -15,7 +12,7 @@ class Node;
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class Edge
+class Edge : public Base
 {
 public:
     Edge();

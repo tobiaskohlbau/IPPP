@@ -14,7 +14,7 @@ class NormalRRTPlanner : public RRTPlanner
 {
 public:
     NormalRRTPlanner(const unsigned int &dim, float stepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
-    : RRTPlanner(dim, stepSize, trajectory, sampling)
+    : RRTPlanner("Normal RRT Planner", dim, stepSize, trajectory, sampling)
     {
     }
 

@@ -1,11 +1,11 @@
 #ifndef TRAJECTORYPLANNER_H_
 #define TRAJECTORYPLANNER_H_
 
-#include <cstdint>
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-#include "CollisionDetection.h"
+#include <core/Base.h>
+#include <core/CollisionDetection.h>
 #include <core/Node.h>
 
 namespace rmpl{
@@ -21,7 +21,7 @@ enum class TrajectoryMethod
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class TrajectoryPlanner
+class TrajectoryPlanner : public Base
 {
 public:
     TrajectoryPlanner(const TrajectoryMethod method, std::shared_ptr<CollisionDetection> collision);

@@ -2,10 +2,8 @@
 #define GRAPH_H_
 
 #include <algorithm>
-#include <cstdint>
-#include <memory>
-#include <vector>
 
+#include <core/Base.h>
 #include <core/KDTree.hpp>
 #include <core/Node.h>
 
@@ -16,9 +14,10 @@ namespace rmpl{
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class Graph
+class Graph : public Base
 {
 public:
+    Graph();
     void addNode(std::shared_ptr<Node> node);
     void removeNode(const int index);
     std::vector<std::shared_ptr<Node>> getNodes() const;

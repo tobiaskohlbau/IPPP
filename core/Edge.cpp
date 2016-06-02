@@ -11,6 +11,7 @@ using namespace rmpl;
 *  \date       2016-05-30
 */
 Edge::Edge()
+    : Base("Edge")
 {
 }
 
@@ -21,7 +22,8 @@ Edge::Edge()
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-Edge::Edge(const shared_ptr<Node> &source, const shared_ptr<Node> &target) {
+Edge::Edge(const shared_ptr<Node> &source, const shared_ptr<Node> &target)
+        : Base("Edge") {
     m_source = source;
     m_target = target;
     m_length = m_source->getDist(m_target);

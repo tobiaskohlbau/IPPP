@@ -3,6 +3,11 @@
 using namespace rmpl;
 using std::shared_ptr;
 
+Graph::Graph()
+    : Base("Graph") {
+
+}
+
 /*!
 * \brief      Add Node to the graph
 * \author     Sascha Kaden

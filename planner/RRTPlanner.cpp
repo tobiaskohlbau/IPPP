@@ -8,8 +8,8 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-05-27
 */
-RRTPlanner::RRTPlanner(const unsigned int &dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
-    : Planner(dim, stepSize, trajectory, sampling)
+RRTPlanner::RRTPlanner(const std::string &name, const unsigned int &dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+    : Planner(name, dim, stepSize, trajectory, sampling)
 {
 }
 
@@ -94,12 +94,12 @@ bool RRTPlanner::connectGoalNode(Node goal) {
         m_goalNode = goalNode;
         goalNode->setParent(nearestNode);
         this->m_graph->addNode(goalNode);
-        std::cout << "Goal node is connected" << std::endl;
+        this->sendMessage("Goal node is connected");
         this->m_pathPlanned = true;
         return true;
     }
 
-    std::cout << "Goal node is NOT connected" << std::endl;
+    this->sendMessage("Goal node is NOT connected");
 
     return false;
 }
@@ -121,7 +121,8 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
         nodes.push_back(temp);
         temp = temp->getParent();
     }
-    std::cout << "Path has: " << nodes.size() << " nodes" << std::endl;
+    std::string message = "Path has: " + std::to_string(nodes.size()) + " nodes";
+    this->sendMessage(message);
     return nodes;
 }
 
@@ -134,7 +135,7 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
 std::vector<Vec<float>> RRTPlanner::getPath() {
     std::vector<Vec<float>> path;
     if (!this->m_pathPlanned) {
-        std::cout << "Path is not complete" << std::endl;
+        this->sendMessage("Path is not complete");
         return path;
     }
 
@@ -147,7 +148,8 @@ std::vector<Vec<float>> RRTPlanner::getPath() {
         }
         temp = temp->getParent();
     }
-    std::cout << "Path has: " << path.size() << " points" << std::endl;
+    std::string message = "Path has: " + std::to_string(path.size()) + " points";
+    this->sendMessage(message);
     return path;
 }
 

@@ -2,10 +2,9 @@
 #define NODE_H_
 
 #include <assert.h>
-#include <cstdint>
-#include <memory>
 #include <vector>
 
+#include <core/Base.h>
 #include <core/Vec.hpp>
 #include <core/Edge.h>
 
@@ -17,7 +16,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
-class Node
+class Node : public Base
 {
 public:
     Node();

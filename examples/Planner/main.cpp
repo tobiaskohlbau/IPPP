@@ -60,33 +60,34 @@ void planning2D() {
 
 void planning6D() {
     const unsigned int dim = 6;
-    rmpl::StarRRTPlanner planner(dim, 15.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner(dim, 15.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
     rmpl::Vec<float> minBoundary(0.0,0.0,0.0,0.0,0.0,0.0);
-    rmpl::Vec<float> maxBoundary(360,360,360,360,360,360);
+    rmpl::Vec<float> maxBoundary(360.0,360.0,360.0,360.0,360.0,360.0);
     planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
     planner.setInitNode(rmpl::Node(180.0,180.0,180.0,180.0,180.0,180.0));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(1500);
+    //planner.computeTree(1500);
     clock_t end = std::clock();
 
     rmpl::Node goal(170.0, 280.0, 240.0, 80.0, 100.0, 180.0);
-    bool connected = planner.connectGoalNode(goal);
+    bool connected = false;
+    //connected = planner.connectGoalNode(goal);
 
     if (connected) {
         std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
-        std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
         for (int i = 0; i < pathPoints.size(); ++i) {
             vrep->setPos(pathPoints[i]);
         }
     }
 
-    //rmpl::Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
-    //vrep.setPos(pos);
+    rmpl::Vec<float> pos(90.0,90.0,90.0,90.0,90.0,90.0);
+    vrep->setPos(pos);
 
     //pos = rmpl::Vec<float>(180.0,180.0,180.0,180.0,180.0,180.0);
     //std::cout << vrep.checkCollision(pos) << std::endl;

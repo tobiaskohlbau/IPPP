@@ -4,7 +4,6 @@
 #include <assert.h>
 #include <cstdint>
 #include <math.h>
-#include <iostream>
 
 namespace rmpl{
 

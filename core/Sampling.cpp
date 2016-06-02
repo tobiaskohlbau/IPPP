@@ -8,7 +8,8 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-24
 */
-Sampling::Sampling(const SamplingMethod &method) {
+Sampling::Sampling(const SamplingMethod &method)
+    : Base("Sampling") {
     m_method = method;
     srand(time(NULL));
 }
@@ -45,12 +46,12 @@ Vec<float> Sampling::getSample(const unsigned int &dim, const int index, const i
 */
 void Sampling::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &maxBoundary) {
     if (minBoundary.getDim() != maxBoundary.getDim()) {
-        std::cout << "Boudaries have different dimensions" << std::endl;
+        this->sendMessage("Boudaries have different dimensions");
         return;
     }
     for (unsigned int i = 0; i < minBoundary.getDim(); ++i) {
         if (minBoundary[i] > maxBoundary[i]) {
-            std::cout << "Min boundary is larger than max boundary" << std::endl;
+            this->sendMessage("Min boundary is larger than max boundary");
             return;
         }
     }
@@ -66,7 +67,7 @@ void Sampling::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &ma
 */
 bool Sampling::checkBoudaries() {
     if (m_maxBoundary.empty() || m_minBoundary.empty()) {
-        std::cout << "Boundaries are empty" << std::endl;
+        this->sendMessage("Boundaries are empty");
         return false;
     }
     return true;

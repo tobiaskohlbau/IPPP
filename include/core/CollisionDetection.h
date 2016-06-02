@@ -1,11 +1,10 @@
 #ifndef COLLISIONDETECTION_H_
 #define COLLISIONDETECTION_H_
 
-#include <cstdint>
-#include <memory>
 #include "opencv2/core/core.hpp"
 
 #include <core/Node.h>
+#include <core/Base.h>
 #include <vrep/Helper.h>
 
 namespace rmpl {
@@ -15,7 +14,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class CollisionDetection
+class CollisionDetection : public Base
 {
 public:
     CollisionDetection(std::shared_ptr<Helper> vrep);

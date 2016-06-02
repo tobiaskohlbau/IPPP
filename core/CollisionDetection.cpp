@@ -2,7 +2,8 @@
 
 using namespace rmpl;
 
-CollisionDetection::CollisionDetection(std::shared_ptr<Helper> vrep) {
+CollisionDetection::CollisionDetection(std::shared_ptr<Helper> vrep)
+        : Base("CollisionDetection") {
     m_vrep = vrep;
     m_vrep->start();
 }

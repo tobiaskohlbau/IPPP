@@ -1,8 +1,7 @@
 #ifndef KDTREE_H_
 #define KDTREE_H_
 
-#include <cstdint>
-
+#include <core/Base.h>
 #include <core/KDNode.hpp>
 #include <core/Node.h>
 
@@ -15,9 +14,10 @@ namespace rmpl {
 * \date    2016-05-27
 */
 template<class T>
-class KDTree
+class KDTree : public Base
 {
 public:
+    KDTree();
     void addNode(const Vec<float> &vec, T node);
     T searchNearestNeighbor(const Vec<float> &vec);
     std::vector<T> searchRange(const Vec<float> &vec, const float &range);
@@ -30,6 +30,12 @@ private:
 
     std::shared_ptr<KDNode<T>> m_root;
 };
+
+template<class T>
+KDTree<T>::KDTree()
+    : Base("KD Tree") {
+
+}
 
 /*!
 *  \brief      Add Node to the KDTree

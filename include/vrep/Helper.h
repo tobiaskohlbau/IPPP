@@ -5,11 +5,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <unistd.h>
-#include <string>
-#include <cstdint>
-#include <memory>
-#include <iostream>
 
+#include <core/Base.h>
 #include <core/Vec.hpp>
 
 extern "C" {
@@ -20,7 +17,7 @@ extern "C" {
 
 namespace rmpl {
 
-class Helper
+class Helper : public Base
 {
 public:
     Helper(const unsigned int &dim);

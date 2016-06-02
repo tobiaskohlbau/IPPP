@@ -1,11 +1,11 @@
 #ifndef SAMPLING_H_
 #define SAMPLING_H_
 
-#include <cstdint>
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
 
+#include <core/Base.h>
 #include <core/Node.h>
 #include <core/Vec.hpp>
 
@@ -24,7 +24,7 @@ enum SamplingMethod
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
-class Sampling
+class Sampling : public Base
 {
 public:
     Sampling(const SamplingMethod &method = SamplingMethod::randomly);

@@ -9,7 +9,8 @@ using namespace rmpl;
 *  \param[in]  pointer to ColllisionDetection instance
 *  \date       2016-05-25
 */
-TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod method, std::shared_ptr<CollisionDetection> collision) {
+TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod method, std::shared_ptr<CollisionDetection> collision)
+    : Base("TrajectoryPlanner") {
     m_method = method;
     m_collision = collision;
 }
@@ -38,7 +39,7 @@ bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, c
 */
 bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<float> &target, const float &stepSize) {
     if (source.getDim() != target.getDim()) {
-        std::cout << "TrajectoryPlanner: Nodes/Vecs have different dimensions" << std::endl;
+        this->sendMessage("TrajectoryPlanner: Nodes/Vecs have different dimensions");
         return false;
     }
 
@@ -84,7 +85,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     std::vector<Vec<float>> vecs;
 
     if (source.getDim() != target.getDim()) {
-        std::cout << "TrajectoryPlanner: Nodes/Vecs have different dimensions" << std::endl;
+        this->sendMessage("TrajectoryPlanner: Nodes/Vecs have different dimensions");
         return vecs;
     }
     Vec<float> u = target - source;

@@ -13,7 +13,7 @@ namespace rmpl {
 class RRTPlanner : public Planner
 {
 public:
-    RRTPlanner(const unsigned int &dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
+    RRTPlanner(const std::string &name, const unsigned int &dim, float stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
     bool setInitNode(Node node);
     bool computeTree(const int nbOfNodes);
