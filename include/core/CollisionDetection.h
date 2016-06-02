@@ -17,7 +17,7 @@ namespace rmpl {
 class CollisionDetection : public Base
 {
 public:
-    CollisionDetection(std::shared_ptr<Helper> vrep);
+    CollisionDetection(const std::shared_ptr<Helper> &vrep);
     bool controlCollision(const std::shared_ptr<Node> &node);
     bool controlCollision(const Vec<float> &vec);
     bool controlCollision2D(const float &x, const float &y);

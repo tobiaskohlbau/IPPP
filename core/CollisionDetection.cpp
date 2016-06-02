@@ -2,10 +2,15 @@
 
 using namespace rmpl;
 
-CollisionDetection::CollisionDetection(std::shared_ptr<Helper> vrep)
+/*!
+*  \brief      Constructor of the class CollisionDetection
+*  \author     Sascha Kaden
+*  \param[in]  VREP Helper
+*  \date       2016-06-02
+*/
+CollisionDetection::CollisionDetection(const std::shared_ptr<Helper> &vrep)
         : Base("CollisionDetection") {
     m_vrep = vrep;
-    m_vrep->start();
 }
 
 /*!

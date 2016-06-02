@@ -8,6 +8,12 @@
 
 namespace rmpl{
 
+/*!
+* \brief   Base class of all modules
+* \detail  Will be used to send messages and adds the name of the class
+* \author  Sascha Kaden
+* \date    2016-06-02
+*/
 class Base
 {
 public:

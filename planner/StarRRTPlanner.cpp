@@ -3,6 +3,13 @@
 using namespace rmpl;
 using std::shared_ptr;
 
+/*!
+*  \brief         Computation of the new Node by the RRT* algorithm
+*  \author        Sascha Kaden
+*  \param[in]     random Vec
+*  \param[in,out] new Node
+*  \date          2016-06-02
+*/
 void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
     shared_ptr<Node> nearestNode = this->m_graph->getNearestNode(Node(randVec));
@@ -29,6 +36,14 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
     reWire(newNode, nearestNode, nearNodes);
 }
 
+/*!
+*  \brief         Choose parent algorithm from the RRT* algorithm
+*  \author        Sascha Kaden
+*  \param[in,out] new Node
+*  \param[in,out] nearest Node
+*  \param[in,out] vecotr of nearest nodes
+*  \date          2016-06-02
+*/
 void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &nearestNode, std::vector<shared_ptr<Node>> &nearNodes) {
     // get near nodes to the new node
     nearNodes = this->m_graph->getNearNodes(newNode, this->m_stepSize * 1.5);
@@ -43,6 +58,14 @@ void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &n
     }
 }
 
+/*!
+*  \brief         Rewire algorithm from the RRT* algorithm
+*  \author        Sascha Kaden
+*  \param[in,out] new Node
+*  \param[in,out] parent Node
+*  \param[in,out] vecotr of nearest nodes
+*  \date          2016-06-02
+*/
 void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentNode, std::vector<shared_ptr<Node>> &nearNodes) {
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i] != parentNode && nearNodes[i]->getChilds().size() != 0) {

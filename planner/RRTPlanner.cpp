@@ -31,7 +31,7 @@ bool RRTPlanner::setInitNode(Node node) {
         return false;
 
     m_initNode = initNode;
-    this->m_graph->addNode(initNode);
+    this->m_graph->addNode(m_initNode);
     return true;
 }
 

@@ -3,6 +3,13 @@
 using namespace rmpl;
 using std::shared_ptr;
 
+/*!
+*  \brief         Computation of the new Node by the normal RRT algorithm
+*  \author        Sascha Kaden
+*  \param[in]     random Vec
+*  \param[in,out] new Node
+*  \date          2016-06-02
+*/
 void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
     shared_ptr<Node> nearestNode = this->m_graph->getNearestNode(Node(randVec));

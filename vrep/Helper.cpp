@@ -7,9 +7,13 @@ Helper::Helper(const unsigned int &dim)
     m_dim = dim;
     m_clientId = -1;
     m_jointHandles = Vec<simxInt>(m_dim);
+    m_started = false;
 }
 
 void Helper::start() {
+    if (!m_started)
+        return;
+    m_started = true;
     std::cout << "Program started" << std::endl;
 
     m_clientId=simxStart((simxChar*)"127.0.0.1",19999,true,true,2000,5);

@@ -98,7 +98,7 @@ void planning6D() {
 
 int main(int argc, char** argv)
 {
-    const unsigned int dim = 6;
+    const unsigned int dim = 2;
 
     if (dim == 2)
         planning2D();

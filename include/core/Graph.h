@@ -18,7 +18,7 @@ class Graph : public Base
 {
 public:
     Graph();
-    void addNode(std::shared_ptr<Node> node);
+    void addNode(const std::shared_ptr<Node> &node);
     void removeNode(const int index);
     std::vector<std::shared_ptr<Node>> getNodes() const;
 

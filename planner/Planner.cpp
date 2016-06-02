@@ -15,10 +15,14 @@ Planner::Planner(const std::string &name, const unsigned int &dim, const float &
     m_pathPlanned = false;
     m_dim = dim;
     m_stepSize = stepSize;
+    m_graph = std::shared_ptr<Graph>(new Graph());
     m_sampler = std::shared_ptr<Sampling>(new Sampling(sampling));
     m_vrep = std::shared_ptr<Helper>(new Helper(m_dim));
     m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_vrep));
     m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(trajectory, m_collision));
+
+    if (m_dim != 2)
+        m_vrep->start();
 }
 
 /*!

@@ -4,7 +4,7 @@ using namespace rmpl;
 using std::shared_ptr;
 
 /*!
-*  \brief      Constructor of the class Node
+*  \brief      Default constructor of the class Node
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */

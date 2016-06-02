@@ -31,6 +31,11 @@ private:
     std::shared_ptr<KDNode<T>> m_root;
 };
 
+/*!
+*  \brief      Default constructor of the class KDTree
+*  \author     Sascha Kaden
+*  \date       2016-06-02
+*/
 template<class T>
 KDTree<T>::KDTree()
     : Base("KD Tree") {

@@ -23,9 +23,7 @@ public:
     Helper(const unsigned int &dim);
     void start();
     bool setPos(const Vec<float> &vec);
-
     bool checkCollision(const Vec<float> &jointAngles);
-
 
 private:
     Vec<simxFloat> convertVecToRad(const Vec<float> &vec); // convert to simxFloat array and radiant
@@ -34,8 +32,7 @@ private:
     simxInt m_clientId;
     simxInt m_jacoHandle;
     Vec<simxInt> m_jointHandles;
-    Vec<simxInt> m_linkHandles;
-    Vec<simxInt> m_collisionHandle;
+    bool m_started;
 };
 
 } /* namespace rmpl */

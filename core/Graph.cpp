@@ -3,9 +3,13 @@
 using namespace rmpl;
 using std::shared_ptr;
 
+/*!
+*  \brief      Default constructor of the class Graph
+*  \author     Sascha Kaden
+*  \date       2016-06-02
+*/
 Graph::Graph()
     : Base("Graph") {
-
 }
 
 /*!
@@ -14,7 +18,7 @@ Graph::Graph()
 * \param[in]  Node
 * \date       2016-05-25
 */
-void Graph::addNode(shared_ptr<Node> node) {
+void Graph::addNode(const shared_ptr<Node> &node) {
     m_nodes.push_back(node);
     m_kdTree.addNode(node->getVec(), node);
 }
