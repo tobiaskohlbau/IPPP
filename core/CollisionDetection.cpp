@@ -46,6 +46,27 @@ bool CollisionDetection::controlCollision(const Vec<float> &vec) {
 }
 
 /*!
+*  \brief      Check for collision
+*  \author     Sascha Kaden
+*  \param[in]  vector of points
+*  \param[out] possibility of collision
+*  \date       2016-05-25
+*/
+bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
+    if (vecs.size() == 0)
+        return false;
+
+    if (vecs[0].getDim() == 2)
+        for (int i = 0; i < vecs.size(); ++i)
+            if (controlCollision2D(vecs[i][0], vecs[i][1]))
+                return true;
+    else if (vecs[0].getDim() == 6)
+        return controlCollision6D(vecs);
+    else
+        return false;
+}
+
+/*!
 *  \brief      Check for 2D collision
 *  \author     Sascha Kaden
 *  \param[in]  x
@@ -67,6 +88,11 @@ bool CollisionDetection::controlCollision2D(const float &x, const float &y) {
 bool CollisionDetection::controlCollision6D(const Vec<float> &vec) {
     assert(vec.getDim() == 6);
     return m_vrep->checkCollision(vec);
+}
+
+bool CollisionDetection::controlCollision6D(const std::vector<Vec<float>> &vecs) {
+    assert(vecs[0].getDim() == 6);
+    return m_vrep->checkCollision(vecs);
 }
 
 /*!

@@ -17,8 +17,8 @@ void planning2D() {
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-    rmpl::StarRRTPlanner planner2(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::NormalRRTPlanner planner(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner2(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     // set properties to the planner
     rmpl::Vec<float> minBoundary(0.0,0.0);
@@ -60,7 +60,7 @@ void planning2D() {
 
 void planning6D() {
     const unsigned int dim = 6;
-    rmpl::StarRRTPlanner planner(dim, 20.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
@@ -71,7 +71,7 @@ void planning6D() {
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(2500);
+    planner.computeTree(4500);
     clock_t end = std::clock();
 
     rmpl::Node goal(170.0, 280.0, 240.0, 80.0, 100.0, 180.0);

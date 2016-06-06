@@ -74,6 +74,39 @@ bool Helper::checkCollision(const Vec<float> &jointAngles) {
     return true;
 }
 
+bool Helper::checkCollision(const std::vector<Vec<float>> &jointAngles) {
+    if (m_clientId == -1)
+        return false;
+
+    simxFloat angles[m_dim * jointAngles.size()];
+    simxInt handles[m_dim * jointAngles.size()];
+    for (int i = 0; i < jointAngles.size(); ++i) {
+        const Vec<simxFloat> pos = convertVecToRad(jointAngles[i]);
+        for (unsigned int j = 0; j < m_dim; ++j) {
+            angles[i + j] = pos[j];
+            handles[i + j] = m_jointHandles[j];
+        }
+    }
+    simxInt numResult;
+    simxInt *result;
+    simxInt numDist;
+    simxFloat *distance;
+    simxCallScriptFunction(m_clientId,"Jaco",sim_scripttype_childscript,"checkTrajectory_function",m_dim,handles,m_dim,angles,0,NULL,0,NULL,&numResult,&result,&numDist,&distance,NULL,NULL,NULL,NULL,simx_opmode_blocking);
+
+    if (numResult == 1)
+        if (result[0] == 1)
+            if (distance[0] > 0.01) {
+                this->sendMessage("Distance to objects is: " + std::to_string(distance[0]));
+                return false;
+            }
+            else {
+                this->sendMessage("Roboter is in collision");
+                return true;
+            }
+
+    return true;
+}
+
 Vec<simxFloat> Helper::convertVecToRad(const Vec<float> &vec) {
     Vec<simxFloat> rads(vec.getDim());
     for (unsigned int i = 0; i < m_dim; ++i)

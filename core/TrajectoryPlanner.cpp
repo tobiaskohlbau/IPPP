@@ -46,12 +46,10 @@ bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<fl
 
     std::vector<Vec<float>> vecs = computeTrajectory(source, target, stepSize);
 
-    if (source.getDim() == 2) {
         for (int i = 0; i < vecs.size(); ++i) {
-            if (m_collision->controlCollision(vecs[i]))
+            if (m_collision->controlCollision(vecs))
                 return false;
         }
-    }
 
     return true;
 }

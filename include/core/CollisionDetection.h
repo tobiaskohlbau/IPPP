@@ -20,8 +20,10 @@ public:
     CollisionDetection(const std::shared_ptr<Helper> &vrep);
     bool controlCollision(const std::shared_ptr<Node> &node);
     bool controlCollision(const Vec<float> &vec);
+    bool controlCollision(const std::vector<Vec<float>> &vec);
     bool controlCollision2D(const float &x, const float &y);
     bool controlCollision6D(const Vec<float> &vec);
+    bool controlCollision6D(const std::vector<Vec<float>> &vec);
 
     void set2DWorkspace(cv::Mat &space);
     cv::Mat get2DWorkspace() const;
