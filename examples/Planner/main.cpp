@@ -7,8 +7,11 @@
 #include <ctime>
 #include <planner/NormalRRTPlanner.h>
 #include <planner/StarRRTPlanner.h>
-#include "ui/Drawing.h"
+#include <robot/Jaco.h>
+#include <robot/PointRobot.h>
 #include <vrep/Helper.h>
+
+#include "ui/Drawing.h"
 
 void planning2D() {
     const unsigned int dim = 2;
@@ -17,8 +20,9 @@ void planning2D() {
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-    rmpl::StarRRTPlanner planner(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::NormalRRTPlanner planner2(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    std::shared_ptr<rmpl::PointRobot> robot = std::make_shared<rmpl::PointRobot>();
+    rmpl::StarRRTPlanner planner(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner2(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     // set properties to the planner
     rmpl::Vec<float> minBoundary(0.0,0.0);
@@ -61,8 +65,9 @@ void planning2D() {
 void planning3D() {
     const unsigned int dim = 3;
 
-    rmpl::StarRRTPlanner planner(dim, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::NormalRRTPlanner planner2(dim, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    std::shared_ptr<rmpl::PointRobot> robot = std::make_shared<rmpl::PointRobot>();
+    rmpl::StarRRTPlanner planner(robot, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner2(robot, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     // set properties to the planner
     rmpl::Vec<float> minBoundary(0.0,0.0,0.0);
@@ -94,7 +99,8 @@ void planning3D() {
 
 void planning6D() {
     const unsigned int dim = 6;
-    rmpl::StarRRTPlanner planner(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    std::shared_ptr<rmpl::Jaco> robot = std::make_shared<rmpl::Jaco>();
+    rmpl::StarRRTPlanner planner(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
@@ -124,9 +130,7 @@ void planning6D() {
 
 int main(int argc, char** argv)
 {
-    const unsigned int dim = 3;
-
-    Drawing draw(argc, argv);
+    const unsigned int dim = 2;
 
     if (dim == 2)
         planning2D();

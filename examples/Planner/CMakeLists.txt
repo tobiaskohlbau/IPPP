@@ -17,6 +17,7 @@ find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgpr
 set(RMP_DIR "/home/sascha/projects/robotMotion_build" CACHE PATH "Robot Motion Planner DIR")
 link_directories(${RMP_DIR}/lib)
 include_directories(${RMP_DIR}/include)
+include_directories(${RMP_DIR}/eigen3)
 
 #QT
 #find_package(Qt5Widgets)

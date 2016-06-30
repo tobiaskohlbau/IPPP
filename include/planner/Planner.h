@@ -4,6 +4,7 @@
 #include <core/Base.h>
 #include <core/CollisionDetection.h>
 #include <core/Graph.h>
+#include <robot/RobotBase.h>
 #include <core/Sampling.h>
 #include <core/TrajectoryPlanner.h>
 
@@ -17,7 +18,7 @@ namespace rmpl {
 class Planner : public Base
 {
 public:
-    Planner(const std::string &name, const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
+    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
     void set2DWorkspace(const cv::Mat &space);
     std::vector<std::shared_ptr<Node>> getGraphNodes();
@@ -35,10 +36,10 @@ protected:
     std::shared_ptr<CollisionDetection> m_collision;
     std::shared_ptr<Graph>              m_graph;
     std::shared_ptr<Helper>             m_vrep;
+    std::shared_ptr<RobotBase>          m_robot;
 
     // variables
     bool         m_pathPlanned;
-    unsigned int m_dim;
     float        m_stepSize;
     cv::Mat      m_workspace;
     Vec<float>   m_maxBoundary;

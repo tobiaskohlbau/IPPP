@@ -8,8 +8,7 @@
 
 #include <core/Base.h>
 #include <core/Node.h>
-
-#include <QApplication>
+#include <robot/RobotBase.h>
 
 /*!
 * \brief   Class Drawing for drawing 2D paths with OpenCV
@@ -25,7 +24,6 @@ public:
     static void drawPath(const std::vector<rmpl::Vec<float>> vecs, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge, const int &thickness);
 
 private:
-    std::shared_ptr<QApplication> m_application;
 };
 
 #endif /* DRAWING_H_ */

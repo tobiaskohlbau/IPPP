@@ -8,8 +8,8 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-05-27
 */
-RRTPlanner::RRTPlanner(const std::string &name, const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
-    : Planner(name, dim, stepSize, trajectory, sampling)
+RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+    : Planner(name, robot, stepSize, trajectory, sampling)
 {
 }
 
@@ -22,7 +22,7 @@ RRTPlanner::RRTPlanner(const std::string &name, const unsigned int &dim, const f
 */
 bool RRTPlanner::setInitNode(const Node &node) {
     this->controlConstraints();
-    for (unsigned int i = 0; i < this->m_dim; ++i)
+    for (unsigned int i = 0; i < this->m_robot->getDim(); ++i)
         if (node.getVec()[i] < this->m_minBoundary[i] || node.getVec()[i] > this->m_maxBoundary[i])
             return false;
 
@@ -51,7 +51,7 @@ bool RRTPlanner::computeTree(const int &nbOfNodes)
     {
         shared_ptr<Node> newNode;
         // compute randomly sample
-        Vec<float> randVec = this->m_sampler->getSample(m_dim, i, nbOfNodes);
+        Vec<float> randVec = this->m_sampler->getSample(m_robot->getDim(), i, nbOfNodes);
 
         computeRRTNode(randVec, newNode);
 

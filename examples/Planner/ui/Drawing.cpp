@@ -1,7 +1,5 @@
 #include <ui/Drawing.h>
-#include <QQuickView>
-#include <Qt3DQuickExtras/qt3dquickwindow.h>
-#include "View3dCanvas.h"
+
 #include <fstream>
 
 using namespace rmpl;
@@ -9,16 +7,7 @@ using std::shared_ptr;
 
 Drawing::Drawing(int argc, char** argv)
     : Base("Drawing") {
-    //m_application = std::make_shared<QApplication>(argc, argv);
-    //QGuiApplication app(argc, argv);
-    //Qt3DExtras::Quick::Qt3DQuickWindow view;
-    //view.setSource(QUrl("qrc:/View3dCanvas.qml"));
-    //view.show();
 
-    //m_application->exec();
-    //QApplication qapp(argc, argv);
-    //View3dCanvas view("view");
-    //std::cout << qapp.exec();
 }
 
 /*!

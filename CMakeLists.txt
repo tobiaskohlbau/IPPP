@@ -28,19 +28,22 @@ set(SRCS
     core/Node.cpp
     core/Sampling.cpp
     core/TrajectoryPlanner.cpp
+    include/core/KDNode.hpp
+    include/core/KDTree.hpp
+    include/core/Vec.hpp
     planner/NormalRRTPlanner.cpp
     planner/Planner.cpp
     planner/RRTPlanner.cpp
     planner/StarRRTPlanner.cpp
-    include/core/KDNode.hpp
-    include/core/KDTree.hpp
-    include/core/Vec.hpp
+    robot/Jaco.cpp
+    robot/PointRobot.cpp
+    robot/RobotBase.cpp
     vrep/extApi.c
     vrep/extApiPlatform.c
-    vrep/Helper.cpp
-)
+    vrep/Helper.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${SRCS})
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} pthread)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib)
 install(DIRECTORY include DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+install(DIRECTORY ${EIGEN3_INCLUDE_DIR} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
