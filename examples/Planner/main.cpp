@@ -20,7 +20,7 @@ void planning2D() {
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-    std::shared_ptr<rmpl::PointRobot> robot = std::make_shared<rmpl::PointRobot>();
+    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
     rmpl::StarRRTPlanner planner(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     rmpl::NormalRRTPlanner planner2(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
@@ -65,7 +65,7 @@ void planning2D() {
 void planning3D() {
     const unsigned int dim = 3;
 
-    std::shared_ptr<rmpl::PointRobot> robot = std::make_shared<rmpl::PointRobot>();
+    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
     rmpl::StarRRTPlanner planner(robot, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     rmpl::NormalRRTPlanner planner2(robot, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
@@ -99,7 +99,7 @@ void planning3D() {
 
 void planning6D() {
     const unsigned int dim = 6;
-    std::shared_ptr<rmpl::Jaco> robot = std::make_shared<rmpl::Jaco>();
+    std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
     rmpl::StarRRTPlanner planner(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 

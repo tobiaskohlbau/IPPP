@@ -6,7 +6,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Class for 2D point robot
+* \brief   Class for the 2D point robot
 * \author  Sascha Kaden
 * \date    2016-06-30
 */

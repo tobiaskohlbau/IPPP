@@ -8,20 +8,29 @@
 
 namespace rmpl {
 
+enum RobotType
+{
+    JACO,
+    POINT_ROBOT
+};
+
 /*!
-* \brief   Base class robot
+* \brief   Base class of all robots
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
 class RobotBase : public Base
 {
 public:
-    RobotBase(std::string name, unsigned int dim, unsigned int numberJoints);
+    RobotBase(std::string name, RobotType type, unsigned int dim, unsigned int numberJoints);
     unsigned int getDim() const;
     unsigned int getNbJoints() const;
+    std::string getName() const;
+    RobotType getType() const;
 
 private:
-    std::string m_robotName;
+    std::string  m_robotName;
+    RobotType    m_robotType;
     unsigned int m_nbJoints;
     unsigned int m_dim;
     Eigen::MatrixXd m_matrix;

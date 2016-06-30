@@ -6,7 +6,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Class for jaco robot
+* \brief   Class for the jaco robot
 * \author  Sascha Kaden
 * \date    2016-06-30
 */

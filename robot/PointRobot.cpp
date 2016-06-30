@@ -2,7 +2,12 @@
 
 using namespace rmpl;
 
+/*!
+*  \brief      Constructor of the 2D PointRobot
+*  \author     Sascha Kaden
+*  \date       2016-06-30
+*/
 PointRobot::PointRobot()
-    : RobotBase("PointRobot", 2, 0) {
+    : RobotBase("PointRobot", RobotType::POINT_ROBOT, 2, 0) {
 
 }

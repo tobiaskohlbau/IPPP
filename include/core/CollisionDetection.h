@@ -5,6 +5,7 @@
 
 #include <core/Node.h>
 #include <core/Base.h>
+#include <robot/RobotBase.h>
 #include <vrep/Helper.h>
 
 namespace rmpl {
@@ -17,19 +18,21 @@ namespace rmpl {
 class CollisionDetection : public Base
 {
 public:
-    CollisionDetection(const std::shared_ptr<Helper> &vrep);
+    CollisionDetection(const std::shared_ptr<Helper> &vrep, const std::shared_ptr<RobotBase> &robot);
     bool controlCollision(const std::shared_ptr<Node> &node);
     bool controlCollision(const Vec<float> &vec);
     bool controlCollision(const std::vector<Vec<float>> &vec);
-    bool controlCollision2D(const float &x, const float &y);
-    bool controlCollision6D(const Vec<float> &vec);
-    bool controlCollision6D(const std::vector<Vec<float>> &vec);
+    bool controlCollisionPointRobot(const float &x, const float &y);
+    bool controlCollisionVrep(const Vec<float> &vec);
+    bool controlCollisionVrep(const std::vector<Vec<float>> &vec);
 
     void set2DWorkspace(cv::Mat &space);
     cv::Mat get2DWorkspace() const;
 private:
+    std::shared_ptr<RobotBase> m_robot;
+    std::shared_ptr<Helper>    m_vrep;
     cv::Mat m_workspace;
-    std::shared_ptr<Helper>  m_vrep;
+
 };
 
 } /* namespace rmpl */
