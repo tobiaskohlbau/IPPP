@@ -1,7 +1,25 @@
 #include <ui/Drawing.h>
+#include <QQuickView>
+#include <Qt3DQuickExtras/qt3dquickwindow.h>
+#include "View3dCanvas.h"
+#include <fstream>
 
 using namespace rmpl;
 using std::shared_ptr;
+
+Drawing::Drawing(int argc, char** argv)
+    : Base("Drawing") {
+    //m_application = std::make_shared<QApplication>(argc, argv);
+    //QGuiApplication app(argc, argv);
+    //Qt3DExtras::Quick::Qt3DQuickWindow view;
+    //view.setSource(QUrl("qrc:/View3dCanvas.qml"));
+    //view.show();
+
+    //m_application->exec();
+    //QApplication qapp(argc, argv);
+    //View3dCanvas view("view");
+    //std::cout << qapp.exec();
+}
 
 /*!
 *  \brief         Draw nodes and there edge to the parent Node
@@ -15,14 +33,25 @@ using std::shared_ptr;
 */
 void Drawing::drawTree(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode, const Vec<uint8_t> &colorEdge, const int &thickness)
 {
-    assert(nodes[0]->getDim() == 2);
-    for (auto& elem : nodes) {
-        cv::Point point(elem->getX(), elem->getY());
-        cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 2);
-        if (elem->getParent() != nullptr) {
-            cv::Point point2(elem->getParent()->getX(), elem->getParent()->getY());
-            cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
+    if (nodes[0]->getDim() == 2) {
+        for (auto& elem : nodes) {
+            cv::Point point(elem->getX(), elem->getY());
+            cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 2);
+            if (elem->getParent() != nullptr) {
+                cv::Point point2(elem->getParent()->getX(), elem->getParent()->getY());
+                cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
+            }
         }
+    }
+    else {
+        std::ofstream myfile;
+        myfile.open ("example.ASC");
+        for (auto& elem : nodes) {
+            for (unsigned int i = 0; i < elem->getDim(); ++i)
+                myfile << elem->getVecValue(i) << " ";
+            myfile << std::endl;
+        }
+        myfile.close();
     }
 }
 
@@ -63,10 +92,19 @@ void Drawing::drawPath(const std::vector<Vec<float>> vecs, cv::Mat &image, const
 {
     if (vecs.size() == 0)
         return;
-    assert(vecs[0].getDim() == 2);
 
+    std::ofstream myfile;
+    myfile.open ("example.ASC", std::ios_base::app);
     for (int i = 0; i < vecs.size(); ++i) {
-        cv::Point point(vecs[i][0], vecs[i][1]);
-        cv::circle(image, point, 3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+        if (vecs[0].getDim() == 2) {
+            cv::Point point(vecs[i][0], vecs[i][1]);
+            cv::circle(image, point, 3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+        }
+        else {
+            for (unsigned int j = 0; j < vecs[i].getDim(); ++j)
+                myfile << vecs[i][j] << " ";
+            myfile << std::endl;
+        }
     }
+    myfile.close();
 }

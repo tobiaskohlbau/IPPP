@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.8.10)
 project (RobotMotionPlanning)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_CXX_STANDARD 14)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -16,13 +18,24 @@ set(RMP_DIR "/home/sascha/projects/robotMotion_build" CACHE PATH "Robot Motion P
 link_directories(${RMP_DIR}/lib)
 include_directories(${RMP_DIR}/include)
 
+#QT
+#find_package(Qt5Widgets)
+#find_package(Qt5Core)
+#find_package(Qt5Gui)
+#find_package(Qt5Quick)
+#find_package(Qt5Qml)
+#qt5_add_resources(RESOURCES ${CMAKE_SOURCE_DIR}/ui/qml.qrc)
+
 set(SRCS
-    main.cpp)
+    main.cpp
+    ui/Drawing.cpp)
 
-set(HDRS)
+set(HDRS
+    ui/Drawing.h)
 
-add_executable(planner ${SRCS}) #${HDRS}
+add_executable(planner ${SRCS} ${HDRS} ${RESOURCES})
 target_link_libraries( planner RobotMotionPlanningLib ${OpenCV_LIBS} pthread)
+    #Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Quick Qt5::Qml
 
 # copy the workspace images
 configure_file(${CMAKE_SOURCE_DIR}/spaces/freeWorkspace.png
