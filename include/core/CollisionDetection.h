@@ -19,7 +19,6 @@ class CollisionDetection : public Base
 {
 public:
     CollisionDetection(const std::shared_ptr<Helper> &vrep, const std::shared_ptr<RobotBase> &robot);
-    bool controlCollision(const std::shared_ptr<Node> &node);
     bool controlCollision(const Vec<float> &vec);
     bool controlCollision(const std::vector<Vec<float>> &vec);
     bool controlCollisionPointRobot(const float &x, const float &y);
@@ -32,6 +31,7 @@ private:
     std::shared_ptr<RobotBase> m_robot;
     std::shared_ptr<Helper>    m_vrep;
     Eigen::MatrixXi m_workspace;
+    Eigen::Matrix<int, 1, 1> m_zero;
 };
 
 } /* namespace rmpl */

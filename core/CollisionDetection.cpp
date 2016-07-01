@@ -13,28 +13,7 @@ CollisionDetection::CollisionDetection(const std::shared_ptr<Helper> &vrep, cons
         : Base("CollisionDetection") {
     m_robot = robot;
     m_vrep = vrep;
-}
-
-/*!
-*  \brief      Check for collision
-*  \author     Sascha Kaden
-*  \param[in]  Node
-*  \param[out] possibility of collision
-*  \date       2016-05-25
-*/
-bool CollisionDetection::controlCollision(const std::shared_ptr<Node> &node) {
-    assert(node->getDim() == m_robot->getDim());
-
-    switch (m_robot->getType()) {
-        case RobotType::POINT_ROBOT:
-            return controlCollisionPointRobot(node->getX(), node->getY());
-            break;
-        case RobotType::JACO:
-            return controlCollisionVrep(node->getVec());
-            break;
-        default:
-            return false;
-    }
+    m_zero(0,0) = 0;
 }
 
 /*!
@@ -91,7 +70,7 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
 *  \author     Sascha Kaden
 *  \param[in]  x
 *  \param[in]  y
-*  \param[out] possibility of collision
+*  \param[out] possibility of collision, true if in collision
 *  \date       2016-06-30
 */
 bool CollisionDetection::controlCollisionPointRobot(const float &x, const float &y) {
@@ -100,10 +79,13 @@ bool CollisionDetection::controlCollisionPointRobot(const float &x, const float 
         return false;
     }
 
-    if (m_workspace(y,x) != 0)
-        return false;
-    else
+    if (m_workspace(x,y) < 30) {
         return true;
+    }
+    else {
+        return false;
+    }
+    return false;
 }
 
 /*!

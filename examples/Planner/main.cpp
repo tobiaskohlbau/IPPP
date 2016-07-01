@@ -26,33 +26,41 @@ void planning2D() {
     rmpl::NormalRRTPlanner planner2(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     // set properties to the planner
+    int rows = dst.rows;
+    int cols = dst.cols;
     rmpl::Vec<float> minBoundary(0.0,0.0);
-    rmpl::Vec<float> maxBoundary(1000.0,1000.0);
+    rmpl::Vec<float> maxBoundary(rows, cols);
     planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
 
     cv::Mat dst;
-    threshold( obstacleWorkspace, dst, 1, 255, cv::THRESH_BINARY );
-    dst.convertTo(dst, CV_32SC1);
+    obstacleWorkspace.convertTo(dst, CV_32SC1);
 
-    int *A=(int *)dst.data;
-    Eigen::MatrixXi eigenMat;
-    Eigen::Map<Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> > mappedMat (A, dst.rows, dst.cols);
-  // Eigen handles the conversion from row major to column major
-    eigenMat = mappedMat;
-    
-    planner.set2DWorkspace(eigenMat); // only be used by 2D
+
+    Eigen::MatrixXi mat(rows, cols);
+    std::vector<int> entries;
+    int *temp;
+    for (int i = 0; i < rows; ++i) {
+        temp = dst.ptr<int>(i);
+        for (int j = 0; j < cols; ++j) {
+            entries.push_back(*temp);
+            ++temp;
+        }
+    }
+
+    mat = Eigen::MatrixXi::Map(&entries[0], rows, cols);
+
+    planner.set2DWorkspace(mat); // only be used by 2D
     planner.setInitNode(rmpl::Node(10.0, 10.0));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(2000);
+    planner.computeTree(20000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
 
-    // draw the result, if 2D is used
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
@@ -62,9 +70,6 @@ void planning2D() {
         Drawing::drawTree(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
         std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
         Drawing::drawPath(pathPoints, image, rmpl::Vec<uint8_t>(255,0,0), 3);
-
-        //shared_ptr<Node> goalNode = planner.getGoalNode();
-        //Drawing::drawPath(goalNode, image, Vec<uint8_t>(0,0,255), Vec<uint8_t>(0,255,0), 2);
     }
     else {
         Drawing::drawTree(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);

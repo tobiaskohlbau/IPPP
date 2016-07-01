@@ -18,11 +18,11 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
     Vec<float> newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getVec());
     newNode = shared_ptr<Node>(new Node(newVec));
 
-    if (this->m_collision->controlCollision(newNode)) {
+    if (this->m_collision->controlCollision(newNode->getVec())) {
         newNode = nullptr;
         return;
     }
-    else if (!this->m_planner->controlTrajectory(newNode, nearestNode, 0.01)) {
+    else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec(), 1)) {
         newNode = nullptr;
         return;
     }

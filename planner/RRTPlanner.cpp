@@ -27,7 +27,7 @@ bool RRTPlanner::setInitNode(const Node &node) {
             return false;
 
     shared_ptr<Node> initNode(new Node(node));
-    if (this->m_collision->controlCollision(initNode))
+    if (this->m_collision->controlCollision(initNode->getVec()))
         return false;
 
     m_initNode = initNode;
@@ -74,7 +74,7 @@ bool RRTPlanner::computeTree(const int &nbOfNodes)
 */
 bool RRTPlanner::connectGoalNode(const Node &goal) {
     shared_ptr<Node> goalNode(new Node(goal));
-    if (this->m_collision->controlCollision(goalNode))
+    if (this->m_collision->controlCollision(goalNode->getVec()))
         return false;
 
     std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
@@ -83,7 +83,7 @@ bool RRTPlanner::connectGoalNode(const Node &goal) {
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < minCost) {
-            if (this->m_planner->controlTrajectory(goalNode, nearNodes[i], 0.01)) {
+            if (this->m_planner->controlTrajectory(goalNode->getVec(), nearNodes[i]->getVec(), 1)) {
                 minCost = nearNodes[i]->getCost();
                 nearestNode = nearNodes[i];
             }

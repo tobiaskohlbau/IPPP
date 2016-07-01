@@ -20,11 +20,11 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
     std::vector<shared_ptr<Node>> nearNodes;
     chooseParent(newNode, nearestNode, nearNodes);
 
-    if (this->m_collision->controlCollision(newNode)) {
+    if (this->m_collision->controlCollision(newNode->getVec())) {
         newNode = nullptr;
         return;
     }
-    else if (!this->m_planner->controlTrajectory(newNode, nearestNode, 0.01)) {
+    else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec(), 1)) {
         newNode = nullptr;
         return;
     }
@@ -51,7 +51,7 @@ void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &n
     float nearestNodeCost = nearestNode->getCost();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < nearestNodeCost)
-            if (this->m_planner->controlTrajectory(newNode, nearNodes[i], 0.01)) {
+            if (this->m_planner->controlTrajectory(newNode->getVec(), nearNodes[i]->getVec(), 1)) {
                 nearestNodeCost = nearNodes[i]->getCost();
                 nearestNode = nearNodes[i];
             }
@@ -72,7 +72,7 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
             float oldDist = nearNodes[i]->getCost();
             float newDist = nearNodes[i]->getDist(newNode) + newNode->getCost();
             if (newDist < oldDist) {
-                if (this->m_planner->controlTrajectory(newNode, nearNodes[i], 0.01)) {
+                if (this->m_planner->controlTrajectory(newNode->getVec(), nearNodes[i]->getVec(), 1)) {
                     float cost = nearNodes[i]->getCost() - nearNodes[i]->getDist(nearNodes[i]->getParent());
                     cost += newNode->getDist(nearNodes[i]);
                     nearNodes[i]->setCost(cost);
