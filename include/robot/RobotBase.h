@@ -33,7 +33,7 @@ private:
     RobotType    m_robotType;
     unsigned int m_nbJoints;
     unsigned int m_dim;
-    Eigen::MatrixXd m_matrix;
+    Eigen::MatrixXi m_matrix;
 };
 
 } /* namespace rmpl */

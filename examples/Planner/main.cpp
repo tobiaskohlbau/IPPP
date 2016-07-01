@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "opencv2/core/core.hpp"
+#include <Eigen/Core>
 
 #include <memory>
 #include <ctime>
@@ -28,12 +29,23 @@ void planning2D() {
     rmpl::Vec<float> minBoundary(0.0,0.0);
     rmpl::Vec<float> maxBoundary(1000.0,1000.0);
     planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
-    planner.set2DWorkspace(obstacleWorkspace); // only be used by 2D
+
+    cv::Mat dst;
+    threshold( obstacleWorkspace, dst, 1, 255, cv::THRESH_BINARY );
+    dst.convertTo(dst, CV_32SC1);
+
+    int *A=(int *)dst.data;
+    Eigen::MatrixXi eigenMat;
+    Eigen::Map<Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> > mappedMat (A, dst.rows, dst.cols);
+  // Eigen handles the conversion from row major to column major
+    eigenMat = mappedMat;
+    
+    planner.set2DWorkspace(eigenMat); // only be used by 2D
     planner.setInitNode(rmpl::Node(10.0, 10.0));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(4000);
+    planner.computeTree(2000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;

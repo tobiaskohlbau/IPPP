@@ -13,7 +13,7 @@ else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_calib3d)
+find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 set(RMP_DIR "/home/sascha/projects/robotMotion_build" CACHE PATH "Robot Motion Planner DIR")
 link_directories(${RMP_DIR}/lib)
 include_directories(${RMP_DIR}/include)

@@ -95,11 +95,12 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
 *  \date       2016-06-30
 */
 bool CollisionDetection::controlCollisionPointRobot(const float &x, const float &y) {
-    if (m_workspace.empty())
+    if (m_workspace.rows() == -1 && m_workspace.cols() == -1) {
+        this->sendMessage("Empty workspace!");
         return false;
+    }
 
-    uint8_t value = m_workspace.at<uint8_t>((unsigned int)y, (unsigned int)x);
-    if (value != 0)
+    if (m_workspace(y,x) != 0)
         return false;
     else
         return true;
@@ -135,10 +136,13 @@ bool CollisionDetection::controlCollisionVrep(const std::vector<Vec<float>> &vec
 *  \param[in]  workspace
 *  \date       2016-05-25
 */
-void CollisionDetection::set2DWorkspace(cv::Mat &space) {
-    if (space.empty())
+void CollisionDetection::set2DWorkspace(Eigen::MatrixXi space) {
+    if (this->m_workspace.rows() == -1 || this->m_workspace.cols() == -1) {
+        this->sendMessage("Empty space given!");
         return;
-    m_workspace = space.clone();
+    }
+
+    m_workspace = space;
 }
 
 /*!
@@ -147,6 +151,6 @@ void CollisionDetection::set2DWorkspace(cv::Mat &space) {
 *  \param[out] workspace
 *  \date       2016-05-25
 */
-cv::Mat CollisionDetection::get2DWorkspace() const {
+Eigen::MatrixXi CollisionDetection::get2DWorkspace() const {
     return m_workspace;
 }

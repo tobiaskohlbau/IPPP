@@ -1,7 +1,7 @@
 #ifndef COLLISIONDETECTION_H_
 #define COLLISIONDETECTION_H_
 
-#include "opencv2/core/core.hpp"
+#include <Eigen/Core>
 
 #include <core/Node.h>
 #include <core/Base.h>
@@ -26,13 +26,12 @@ public:
     bool controlCollisionVrep(const Vec<float> &vec);
     bool controlCollisionVrep(const std::vector<Vec<float>> &vec);
 
-    void set2DWorkspace(cv::Mat &space);
-    cv::Mat get2DWorkspace() const;
+    void set2DWorkspace(Eigen::MatrixXi space);
+    Eigen::MatrixXi get2DWorkspace() const;
 private:
     std::shared_ptr<RobotBase> m_robot;
     std::shared_ptr<Helper>    m_vrep;
-    cv::Mat m_workspace;
-
+    Eigen::MatrixXi m_workspace;
 };
 
 } /* namespace rmpl */

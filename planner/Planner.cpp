@@ -31,7 +31,7 @@ Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robo
 *  \param[in]  2D workspace
 *  \date       2016-05-27
 */
-void Planner::set2DWorkspace(const cv::Mat &space) {
+void Planner::set2DWorkspace(Eigen::MatrixXi space) {
     m_workspace = space;
     m_collision->set2DWorkspace(m_workspace);
 }
@@ -95,8 +95,12 @@ bool Planner::controlConstraints() {
         this->sendMessage("Boundaries are Empty!");
         return false;
     }
-    if (m_robot->getDim() == 2 && this->m_workspace.empty())
+
+    if (m_robot->getDim() == 2 && this->m_workspace.rows() == -1 && this->m_workspace.cols() == -1) {
+        this->sendMessage("2D workspace is empty!");
         return false;
-    else
+    }
+    else {
         return true;
+    }
 }
