@@ -2,13 +2,17 @@
 #include <iostream>
 
 #include "opencv2/core/core.hpp"
+#include <Eigen/Core>
 
 #include <memory>
 #include <ctime>
 #include <planner/NormalRRTPlanner.h>
 #include <planner/StarRRTPlanner.h>
-#include "ui/Drawing.h"
+#include <robot/Jaco.h>
+#include <robot/PointRobot.h>
 #include <vrep/Helper.h>
+
+#include "ui/Drawing.h"
 
 void planning2D() {
     const unsigned int dim = 2;
@@ -17,19 +21,31 @@ void planning2D() {
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-    rmpl::StarRRTPlanner planner(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::NormalRRTPlanner planner2(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
+    rmpl::StarRRTPlanner planner(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner2(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     // set properties to the planner
     rmpl::Vec<float> minBoundary(0.0,0.0);
     rmpl::Vec<float> maxBoundary(1000.0,1000.0);
     planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
-    planner.set2DWorkspace(obstacleWorkspace); // only be used by 2D
+
+    cv::Mat dst;
+    threshold( obstacleWorkspace, dst, 1, 255, cv::THRESH_BINARY );
+    dst.convertTo(dst, CV_32SC1);
+
+    int *A=(int *)dst.data;
+    Eigen::MatrixXi eigenMat;
+    Eigen::Map<Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> > mappedMat (A, dst.rows, dst.cols);
+  // Eigen handles the conversion from row major to column major
+    eigenMat = mappedMat;
+    
+    planner.set2DWorkspace(eigenMat); // only be used by 2D
     planner.setInitNode(rmpl::Node(10.0, 10.0));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(4000);
+    planner.computeTree(2000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
@@ -61,8 +77,9 @@ void planning2D() {
 void planning3D() {
     const unsigned int dim = 3;
 
-    rmpl::StarRRTPlanner planner(dim, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::NormalRRTPlanner planner2(dim, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
+    rmpl::StarRRTPlanner planner(robot, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner2(robot, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     // set properties to the planner
     rmpl::Vec<float> minBoundary(0.0,0.0,0.0);
@@ -94,7 +111,8 @@ void planning3D() {
 
 void planning6D() {
     const unsigned int dim = 6;
-    rmpl::StarRRTPlanner planner(dim, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
+    rmpl::StarRRTPlanner planner(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
@@ -124,9 +142,7 @@ void planning6D() {
 
 int main(int argc, char** argv)
 {
-    const unsigned int dim = 3;
-
-    Drawing draw(argc, argv);
+    const unsigned int dim = 2;
 
     if (dim == 2)
         planning2D();

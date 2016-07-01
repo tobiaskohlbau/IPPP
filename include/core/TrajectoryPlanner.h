@@ -1,9 +1,6 @@
 #ifndef TRAJECTORYPLANNER_H_
 #define TRAJECTORYPLANNER_H_
 
-#include "opencv2/core/core.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-
 #include <core/Base.h>
 #include <core/CollisionDetection.h>
 #include <core/Node.h>

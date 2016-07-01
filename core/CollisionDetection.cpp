@@ -6,10 +6,12 @@ using namespace rmpl;
 *  \brief      Constructor of the class CollisionDetection
 *  \author     Sascha Kaden
 *  \param[in]  VREP Helper
-*  \date       2016-06-02
+*  \param[in]  RobotType
+*  \date       2016-06-30
 */
-CollisionDetection::CollisionDetection(const std::shared_ptr<Helper> &vrep)
+CollisionDetection::CollisionDetection(const std::shared_ptr<Helper> &vrep, const std::shared_ptr<RobotBase> &robot)
         : Base("CollisionDetection") {
+    m_robot = robot;
     m_vrep = vrep;
 }
 
@@ -21,12 +23,18 @@ CollisionDetection::CollisionDetection(const std::shared_ptr<Helper> &vrep)
 *  \date       2016-05-25
 */
 bool CollisionDetection::controlCollision(const std::shared_ptr<Node> &node) {
-    if (node->getDim() == 2)
-        return controlCollision2D(node->getX(), node->getY());
-    else if (node->getDim() == 6)
-        return controlCollision6D(node->getVec());
-    else
-        return false;
+    assert(node->getDim() == m_robot->getDim());
+
+    switch (m_robot->getType()) {
+        case RobotType::POINT_ROBOT:
+            return controlCollisionPointRobot(node->getX(), node->getY());
+            break;
+        case RobotType::JACO:
+            return controlCollisionVrep(node->getVec());
+            break;
+        default:
+            return false;
+    }
 }
 
 /*!
@@ -37,12 +45,18 @@ bool CollisionDetection::controlCollision(const std::shared_ptr<Node> &node) {
 *  \date       2016-05-25
 */
 bool CollisionDetection::controlCollision(const Vec<float> &vec) {
-    if (vec.getDim() == 2)
-        return controlCollision2D(vec[0], vec[1]);
-    else if (vec.getDim() == 6)
-        return controlCollision6D(vec);
-    else
-        return false;
+    assert(vec.getDim() == m_robot->getDim());
+
+    switch (m_robot->getType()) {
+        case RobotType::POINT_ROBOT:
+            return controlCollisionPointRobot(vec[0], vec[1]);
+            break;
+        case RobotType::JACO:
+            return controlCollisionVrep(vec);
+            break;
+        default:
+            return false;
+    }
 }
 
 /*!
@@ -56,41 +70,62 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
     if (vecs.size() == 0)
         return false;
 
-    if (vecs[0].getDim() == 2)
-        for (int i = 0; i < vecs.size(); ++i)
-            if (controlCollision2D(vecs[i][0], vecs[i][1]))
-                return true;
-    else if (vecs[0].getDim() == 6)
-        return controlCollision6D(vecs);
-    else
-        return false;
+    assert(vecs[0].getDim() == m_robot->getDim());
+
+    switch (m_robot->getType()) {
+        case RobotType::POINT_ROBOT:
+            for (int i = 0; i < vecs.size(); ++i)
+                if (controlCollisionPointRobot(vecs[i][0], vecs[i][1]))
+                    return true;
+            break;
+        case RobotType::JACO:
+            return controlCollisionVrep(vecs);
+            break;
+        default:
+            return false;
+    }
 }
 
 /*!
-*  \brief      Check for 2D collision
+*  \brief      Check for 2D PointRobot collision
 *  \author     Sascha Kaden
 *  \param[in]  x
 *  \param[in]  y
 *  \param[out] possibility of collision
-*  \date       2016-05-25
+*  \date       2016-06-30
 */
-bool CollisionDetection::controlCollision2D(const float &x, const float &y) {
-    if (m_workspace.empty())
+bool CollisionDetection::controlCollisionPointRobot(const float &x, const float &y) {
+    if (m_workspace.rows() == -1 && m_workspace.cols() == -1) {
+        this->sendMessage("Empty workspace!");
         return false;
+    }
 
-    uint8_t value = m_workspace.at<uint8_t>((unsigned int)y, (unsigned int)x);
-    if (value != 0)
+    if (m_workspace(y,x) != 0)
         return false;
     else
         return true;
 }
 
-bool CollisionDetection::controlCollision6D(const Vec<float> &vec) {
+/*!
+*  \brief      Check for vrep collision
+*  \author     Sascha Kaden
+*  \param[in]  vec
+*  \param[out] possibility of collision
+*  \date       2016-06-30
+*/
+bool CollisionDetection::controlCollisionVrep(const Vec<float> &vec) {
     assert(vec.getDim() == 6);
     return m_vrep->checkCollision(vec);
 }
 
-bool CollisionDetection::controlCollision6D(const std::vector<Vec<float>> &vecs) {
+/*!
+*  \brief      Check for vrep collision
+*  \author     Sascha Kaden
+*  \param[in]  vector of vec
+*  \param[out] possibility of collision
+*  \date       2016-06-30
+*/
+bool CollisionDetection::controlCollisionVrep(const std::vector<Vec<float>> &vecs) {
     assert(vecs[0].getDim() == 6);
     return m_vrep->checkCollision(vecs);
 }
@@ -101,10 +136,13 @@ bool CollisionDetection::controlCollision6D(const std::vector<Vec<float>> &vecs)
 *  \param[in]  workspace
 *  \date       2016-05-25
 */
-void CollisionDetection::set2DWorkspace(cv::Mat &space) {
-    if (space.empty())
+void CollisionDetection::set2DWorkspace(Eigen::MatrixXi space) {
+    if (this->m_workspace.rows() == -1 || this->m_workspace.cols() == -1) {
+        this->sendMessage("Empty space given!");
         return;
-    m_workspace = space.clone();
+    }
+
+    m_workspace = space;
 }
 
 /*!
@@ -113,6 +151,6 @@ void CollisionDetection::set2DWorkspace(cv::Mat &space) {
 *  \param[out] workspace
 *  \date       2016-05-25
 */
-cv::Mat CollisionDetection::get2DWorkspace() const {
+Eigen::MatrixXi CollisionDetection::get2DWorkspace() const {
     return m_workspace;
 }

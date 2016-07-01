@@ -10,18 +10,18 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const unsigned int &dim, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
         : Base(name){
     m_pathPlanned = false;
-    m_dim = dim;
+    m_robot = robot;
     m_stepSize = stepSize;
     m_graph = std::shared_ptr<Graph>(new Graph());
     m_sampler = std::shared_ptr<Sampling>(new Sampling(sampling));
-    m_vrep = std::shared_ptr<Helper>(new Helper(m_dim));
-    m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_vrep));
+    m_vrep = std::shared_ptr<Helper>(new Helper(m_robot->getDim()));
+    m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_vrep, m_robot));
     m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(trajectory, m_collision));
 
-    if (m_dim != 2)
+    if (m_robot->getDim() != 2)
         m_vrep->start();
 }
 
@@ -31,7 +31,7 @@ Planner::Planner(const std::string &name, const unsigned int &dim, const float &
 *  \param[in]  2D workspace
 *  \date       2016-05-27
 */
-void Planner::set2DWorkspace(const cv::Mat &space) {
+void Planner::set2DWorkspace(Eigen::MatrixXi space) {
     m_workspace = space;
     m_collision->set2DWorkspace(m_workspace);
 }
@@ -53,7 +53,7 @@ void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBou
         return;
     }
 
-    for (unsigned int i = 0; i < m_dim; ++i) {
+    for (unsigned int i = 0; i < m_robot->getDim(); ++i) {
         if (minBoundary[i] > maxBoundary[i]) {
             this->sendMessage("Min boundary is larger than max boundary");
             return;
@@ -95,8 +95,12 @@ bool Planner::controlConstraints() {
         this->sendMessage("Boundaries are Empty!");
         return false;
     }
-    if (m_dim == 2 && this->m_workspace.empty())
+
+    if (m_robot->getDim() == 2 && this->m_workspace.rows() == -1 && this->m_workspace.cols() == -1) {
+        this->sendMessage("2D workspace is empty!");
         return false;
-    else
+    }
+    else {
         return true;
+    }
 }
