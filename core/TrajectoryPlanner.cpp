@@ -10,9 +10,10 @@ using std::shared_ptr;
 *  \param[in]  pointer to ColllisionDetection instance
 *  \date       2016-05-25
 */
-TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, const shared_ptr<CollisionDetection> &collision)
+TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, const float &stepSize, const shared_ptr<CollisionDetection> &collision)
     : Base("TrajectoryPlanner") {
     m_method = method;
+    m_stepSize = stepSize;
     m_collision = collision;
 }
 
@@ -25,13 +26,13 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, const share
 *  \param[out] possibility of trajectory, true if possible
 *  \date       2016-05-31
 */
-bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<float> &target, const float &stepSize) {
+bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<float> &target) {
     if (source.getDim() != target.getDim()) {
         this->sendMessage("Nodes/Vecs have different dimensions");
         return false;
     }
 
-    if (m_collision->controlCollision(computeTrajectory(source, target, stepSize)))
+    if (m_collision->controlCollision(computeTrajectory(source, target)))
         return false;
 
     return true;
@@ -46,7 +47,7 @@ bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<fl
 *  \param[out] trajectory
 *  \date       2016-05-31
 */
-std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &source, const Vec<float> &target, const float &stepSize) {
+std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &source, const Vec<float> &target) {
     std::vector<Vec<float>> vecs;
 
     if (source.getDim() != target.getDim()) {
@@ -58,7 +59,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     Vec<float> temp(source);
     while (std::abs(temp.norm() - target.norm()) > 1) {
         vecs.push_back(temp);
-        temp += uNorm * stepSize;
+        temp += uNorm * m_stepSize;
     }
     return vecs;
 }

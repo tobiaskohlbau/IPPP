@@ -22,7 +22,7 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
         newNode = nullptr;
         return;
     }
-    else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec(), 1)) {
+    else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
         newNode = nullptr;
         return;
     }

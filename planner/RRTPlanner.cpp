@@ -8,8 +8,8 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-05-27
 */
-RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
-    : Planner(name, robot, stepSize, trajectory, sampling)
+RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, const float &trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+    : Planner(name, robot, stepSize, trajectoryStepSize, trajectory, sampling)
 {
 }
 
@@ -83,7 +83,7 @@ bool RRTPlanner::connectGoalNode(const Node &goal) {
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < minCost) {
-            if (this->m_planner->controlTrajectory(goalNode->getVec(), nearNodes[i]->getVec(), 1)) {
+            if (this->m_planner->controlTrajectory(goalNode->getVec(), nearNodes[i]->getVec())) {
                 minCost = nearNodes[i]->getCost();
                 nearestNode = nearNodes[i];
             }
@@ -141,7 +141,7 @@ std::vector<Vec<float>> RRTPlanner::getPath() {
     std::vector<std::shared_ptr<Node>> nodes = getPathNodes();
     std::shared_ptr<Node> temp = nodes[0];
     while (temp->getParent() != nullptr) {
-        std::vector<Vec<float>> tempVecs = this->m_planner->computeTrajectory(temp->getVec(), temp->getParent()->getVec(), 0.01);
+        std::vector<Vec<float>> tempVecs = this->m_planner->computeTrajectory(temp->getVec(), temp->getParent()->getVec());
         for (int i = 0; i < tempVecs.size(); ++i) {
             path.push_back(tempVecs[i]);
         }

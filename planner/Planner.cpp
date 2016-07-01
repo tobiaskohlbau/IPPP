@@ -10,7 +10,7 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, const float &trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
         : Base(name){
     m_pathPlanned = false;
     m_robot = robot;
@@ -19,7 +19,7 @@ Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robo
     m_sampler = std::shared_ptr<Sampling>(new Sampling(sampling));
     m_vrep = std::shared_ptr<Helper>(new Helper(m_robot->getDim()));
     m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_vrep, m_robot));
-    m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(trajectory, m_collision));
+    m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(trajectory, trajectoryStepSize, m_collision));
 
     if (m_robot->getDim() != 2)
         m_vrep->start();

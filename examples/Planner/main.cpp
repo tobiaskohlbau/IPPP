@@ -20,22 +20,10 @@ void planning2D() {
     cv::Mat freeWorkspace, obstacleWorkspace;
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-
-    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
-    rmpl::StarRRTPlanner planner(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::NormalRRTPlanner planner2(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-
-    // set properties to the planner
-    int rows = dst.rows;
-    int cols = dst.cols;
-    rmpl::Vec<float> minBoundary(0.0,0.0);
-    rmpl::Vec<float> maxBoundary(rows, cols);
-    planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
-
     cv::Mat dst;
     obstacleWorkspace.convertTo(dst, CV_32SC1);
-
-
+    int rows = dst.rows;
+    int cols = dst.cols;
     Eigen::MatrixXi mat(rows, cols);
     std::vector<int> entries;
     int *temp;
@@ -46,15 +34,22 @@ void planning2D() {
             ++temp;
         }
     }
-
     mat = Eigen::MatrixXi::Map(&entries[0], rows, cols);
 
+    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
+    rmpl::StarRRTPlanner planner(robot, 30.0, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner2(robot, 30.0, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+
+    // set properties to the planner
+    rmpl::Vec<float> minBoundary(0.0,0.0);
+    rmpl::Vec<float> maxBoundary(rows, cols);
+    planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
     planner.set2DWorkspace(mat); // only be used by 2D
     planner.setInitNode(rmpl::Node(10.0, 10.0));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(20000);
+    planner.computeTree(4000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
@@ -83,8 +78,8 @@ void planning3D() {
     const unsigned int dim = 3;
 
     std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
-    rmpl::StarRRTPlanner planner(robot, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::NormalRRTPlanner planner2(robot, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(robot, 0.5, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner2(robot, 0.5, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     // set properties to the planner
     rmpl::Vec<float> minBoundary(0.0,0.0,0.0);
@@ -117,7 +112,7 @@ void planning3D() {
 void planning6D() {
     const unsigned int dim = 6;
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    rmpl::StarRRTPlanner planner(robot, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(robot, 0.5, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
