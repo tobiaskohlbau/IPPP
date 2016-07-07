@@ -14,6 +14,7 @@ class PointRobot : public RobotBase
 {
 public:
     PointRobot();
+    Vec<float> directKinematic(const Vec<float> &angles);
 
 private:
 };

@@ -1,7 +1,7 @@
 #ifndef ROBOTBASE_H_
 #define ROBOTBASE_H_
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 
 #include <core/Base.h>
 #include <core/Vec.hpp>
@@ -23,17 +23,26 @@ class RobotBase : public Base
 {
 public:
     RobotBase(std::string name, RobotType type, unsigned int dim, unsigned int numberJoints);
+
+    virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
+
     unsigned int getDim() const;
     unsigned int getNbJoints() const;
     std::string getName() const;
     RobotType getType() const;
 
-private:
+    Eigen::Matrix4f getTrafo(const float &alpha, const float &a, const float &d, const float q);
+    Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis);
+
+    Vec<float> degToRad(const Vec<float> deg);
+    Eigen::ArrayXf getEigenVec(const Vec<float> vec);
+
+protected:
     std::string  m_robotName;
     RobotType    m_robotType;
     unsigned int m_nbJoints;
     unsigned int m_dim;
-    Eigen::MatrixXi m_matrix;
+    float        m_pi = 3.1416;
 };
 
 } /* namespace rmpl */

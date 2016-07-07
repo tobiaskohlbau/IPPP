@@ -11,3 +11,7 @@ PointRobot::PointRobot()
     : RobotBase("PointRobot", RobotType::POINT_ROBOT, 2, 0) {
 
 }
+
+Vec<float> PointRobot::directKinematic(const Vec<float> &angles) {
+    return angles;
+}
