@@ -15,11 +15,10 @@
 #include "ui/Drawing.h"
 
 void planning2D() {
-    const unsigned int dim = 2;
-
     cv::Mat freeWorkspace, obstacleWorkspace;
     freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+
     cv::Mat dst;
     obstacleWorkspace.convertTo(dst, CV_32SC1);
     int rows = dst.rows;
@@ -61,22 +60,19 @@ void planning2D() {
 
     rmpl::Node goal(650.0,750.0);
     bool connected = planner.connectGoalNode(goal);
+    Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
+
     if (connected) {
-        Drawing::drawTree(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
         std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
-        Drawing::drawPath(pathPoints, image, rmpl::Vec<uint8_t>(255,0,0), 3);
+        Drawing::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255,0,0), 3);
     }
-    else {
-        Drawing::drawTree(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
-    }
+
     cv::namedWindow("planner", CV_WINDOW_AUTOSIZE);
     cv::imshow("planner", image);
     cv::waitKey(0);
 }
 
 void planning3D() {
-    const unsigned int dim = 3;
-
     std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
     rmpl::StarRRTPlanner planner(robot, 0.5, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     rmpl::NormalRRTPlanner planner2(robot, 0.5, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
@@ -95,24 +91,23 @@ void planning3D() {
     std::cout << "computation time: " << elapsed_secs << std::endl;
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
+    std::vector<rmpl::Vec<float>> vecs;
+    for (int i = 0; i < nodes.size(); ++i)
+        vecs.push_back(nodes[i]->getVec());
 
     rmpl::Node goal(650.0,750.0,800.0);
     bool connected = planner.connectGoalNode(goal);
-    cv::Mat image;
+    Drawing::writeVecsToFile(vecs, "example.ASC");
+
     if (connected) {
-        Drawing::drawTree(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
         std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
-        Drawing::drawPath(pathPoints, image, rmpl::Vec<uint8_t>(255,0,0), 3);
-    }
-    else {
-        Drawing::drawTree(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
+        Drawing::appendVecsToFile(pathPoints, "example.ASC");
     }
 }
 
 void planning6D() {
-    const unsigned int dim = 6;
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    rmpl::StarRRTPlanner planner(robot, 0.5, 30.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(robot, 0.5, 80.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
@@ -127,22 +122,29 @@ void planning6D() {
     clock_t end = std::clock();
 
     rmpl::Node goal(170.0, 280.0, 240.0, 80.0, 100.0, 180.0);
-    bool connected = false;
-    connected = planner.connectGoalNode(goal);
+    bool connected = planner.connectGoalNode(goal);
+
+    std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
+    std::vector<rmpl::Vec<float>> graphPoints;
+    for (int i = 0; i < nodes.size(); ++i)
+        graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
+    Drawing::writeVecsToFile(graphPoints, "example.ASC", 10);
 
     if (connected) {
-        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
+        std::vector<rmpl::Vec<float>> pathAngles = planner.getPath();
+        std::vector<rmpl::Vec<float>> pathPoints;
+        for (int i = 0; i < pathAngles.size(); ++i)
+            pathPoints.push_back(robot->directKinematic(pathAngles[i]));
+        Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
 
-        for (int i = 0; i < pathPoints.size(); ++i) {
-            vrep->setPos(pathPoints[i]);
-        }
+        for (int i = 0; i < pathPoints.size(); ++i)
+            vrep->setPos(pathAngles[i]);
     }
-
 }
 
 int main(int argc, char** argv)
 {
-    const unsigned int dim = 2;
+    int dim = 6;
 
     if (dim == 2)
         planning2D();
