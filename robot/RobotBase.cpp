@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#include <Eigen/Geometry>
+
 using namespace rmpl;
 
 /*!
@@ -61,6 +63,16 @@ RobotType RobotBase::getType() const {
     return m_robotType;
 }
 
+/*!
+*  \brief      Create transformation matrix from the given D-H parameter and the joint angle
+*  \author     Sascha Kaden
+*  \param[in]  D-H alpha parameter
+*  \param[in]  D-H a parameter
+*  \param[in]  D-H d parameter
+*  \param[in]  joint angle
+*  \param[out] transformation matrix
+*  \date       2016-07-07
+*/
 Eigen::Matrix4f RobotBase::getTrafo(const float &alpha, const float &a, const float &d, const float q) {
     float sinAlpha = sin(alpha);
     float cosAlpha = cos(alpha);
@@ -83,19 +95,47 @@ Eigen::Matrix4f RobotBase::getTrafo(const float &alpha, const float &a, const fl
     return T;
 }
 
+/*!
+*  \brief      Compute TCP pose from transformation matrizes and the basis pose
+*  \author     Sascha Kaden
+*  \param[in]  transformation matrizes
+*  \param[in]  basis pose
+*  \param[out] TCP pose
+*  \date       2016-07-07
+*/
 Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis) {
-    Eigen::MatrixXf basisEigen = getEigenVec(basis);
+    Eigen::Matrix3f R;
+    R = Eigen::AngleAxisf(basis[3], Eigen::Vector3f::UnitX())
+        * Eigen::AngleAxisf(basis[4], Eigen::Vector3f::UnitY())
+        * Eigen::AngleAxisf(basis[5], Eigen::Vector3f::UnitZ());
+    Eigen::Matrix4f basisToRobot = Eigen::Matrix4f::Zero(4,4);
+    basisToRobot.block<3,3>(0,0) = R;
+    for (int i = 0; i < 3; ++i)
+        basisToRobot(i,3) = basis[i];
+    basisToRobot(3,3) = 1;
 
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
-    Eigen::Matrix4f T;
-    T = trafos[0];
+    Eigen::Matrix4f robotToTcp = trafos[0];
     for (int i = 1; i < 6; ++i)
-        T *= trafos[i];
+        robotToTcp *= trafos[i];
 
-    Eigen::MatrixXf tcp = basisEigen * T;
+    Eigen::MatrixXf basisToTcp = basisToRobot * robotToTcp;
+
+    // create tcp position and orientation vector
+    Eigen::Vector3f euler = basisToTcp.block<3,3>(0,0).eulerAngles(0, 1, 2);
+    Vec<float> tcp(basisToTcp(0,3), basisToTcp(1,3), basisToTcp(2,3));
+    tcp.append(EigenToVec(euler));
+    return tcp;
 }
 
+/*!
+*  \brief      Convert deg angles to rad
+*  \author     Sascha Kaden
+*  \param[in]  Vec of deg angles
+*  \param[out] Vec of rad angles
+*  \date       2016-07-07
+*/
 Vec<float> RobotBase::degToRad(const Vec<float> deg) {
     Vec<float> rad(m_dim);
     for (unsigned int i = 0; i < m_dim; ++i)
@@ -103,10 +143,30 @@ Vec<float> RobotBase::degToRad(const Vec<float> deg) {
     return rad;
 }
 
-
-Eigen::ArrayXf RobotBase::getEigenVec(const Vec<float> vec) {
-    Eigen::ArrayXf eigenVec(m_dim);
-    for (unsigned int i = 0; i < m_dim; ++i)
+/*!
+*  \brief      Convert rmpl Vec to Eigen Array
+*  \author     Sascha Kaden
+*  \param[in]  Vec
+*  \param[out] Eigen Array
+*  \date       2016-07-07
+*/
+Eigen::ArrayXf RobotBase::VecToEigen(const Vec<float> &vec) {
+    Eigen::ArrayXf eigenVec(vec.getDim());
+    for (unsigned int i = 0; i < vec.getDim(); ++i)
         eigenVec(i, 0) = vec[i];
     return eigenVec;
+}
+
+/*!
+*  \brief      Convert Eigen Array to rmpl Vec
+*  \author     Sascha Kaden
+*  \param[in]  Eigen Array
+*  \param[out] Vec
+*  \date       2016-07-07
+*/
+Vec<float> RobotBase::EigenToVec(const Eigen::ArrayXf &eigenVec) {
+    Vec<float> vec((unsigned int)eigenVec.rows());
+    for (unsigned int i = 0; i < vec.getDim(); ++i)
+        vec[i] = eigenVec(i, 0);
+    return vec;
 }

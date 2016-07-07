@@ -28,6 +28,7 @@ public:
     Vec(const Vec<T> &vec);
 
     void setAllTo(const T &value);
+    void append(Vec<T> vec);
 
     unsigned int getDim() const;
     bool empty() const;
@@ -332,6 +333,22 @@ template<typename T>
 void Vec<T>::setAllTo(const T &value) {
     for (unsigned int i = 0; i < m_dim; ++i)
         (*this)[i] = value;
+}
+
+/*!
+*  \brief      Append Vec by the given Vec
+*  \author     Sascha Kaden
+*  \param[in]  Vec
+*  \date       2016-07-07
+*/
+template<typename T>
+void Vec<T>::append(Vec<T> vec) {
+    Vec<T> newVec(m_dim + vec.getDim());
+    for (unsigned int i = 0; i < m_dim; ++i)
+        newVec[i] = (*this)[i];
+    for (unsigned int i = 0; i < vec.getDim(); ++i)
+        newVec[i + m_dim] = vec[i];
+    *this = newVec;
 }
 
 /*!

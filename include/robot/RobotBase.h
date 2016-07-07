@@ -35,7 +35,8 @@ public:
     Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis);
 
     Vec<float> degToRad(const Vec<float> deg);
-    Eigen::ArrayXf getEigenVec(const Vec<float> vec);
+    Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
+    Vec<float> EigenToVec(const Eigen::ArrayXf &eigenVec);
 
 protected:
     std::string  m_robotName;
