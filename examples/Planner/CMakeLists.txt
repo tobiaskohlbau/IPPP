@@ -18,6 +18,7 @@ set(RMP_DIR "/home/sascha/projects/robotMotion_build" CACHE PATH "Robot Motion P
 link_directories(${RMP_DIR}/lib)
 include_directories(${RMP_DIR}/include)
 include_directories(${RMP_DIR}/eigen3)
+include_directories(${RMP_DIR})
 
 #QT
 #find_package(Qt5Widgets)
@@ -38,8 +39,6 @@ add_executable(planner ${SRCS} ${HDRS} ${RESOURCES})
 target_link_libraries( planner RobotMotionPlanningLib ${OpenCV_LIBS} pthread)
     #Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Quick Qt5::Qml
 
-# copy the workspace images
-configure_file(${CMAKE_SOURCE_DIR}/spaces/freeWorkspace.png
-    ${CMAKE_CURRENT_BINARY_DIR}/spaces/freeWorkspace.png COPYONLY)
-configure_file(${CMAKE_SOURCE_DIR}/spaces/obstacleWorkspace.png
-    ${CMAKE_CURRENT_BINARY_DIR}/spaces/obstacleWorkspace.png COPYONLY)
+# copy the workspaces and meshes
+file(COPY ${CMAKE_SOURCE_DIR}/spaces DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/meshes DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
