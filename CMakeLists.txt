@@ -19,8 +19,10 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/include/vrep)
+
 set(PQP_DIR "/home/sascha/projects/pqp" CACHE PATH "PQP DIR")
-include_directories(${PQP_DIR}/include ${PQP_DIR}/lib)
+include_directories(${PQP_DIR}/include)
+link_directories(${PQP_DIR}/lib)
 
 set(SRCS
     core/CollisionDetection.cpp
@@ -37,6 +39,7 @@ set(SRCS
     planner/Planner.cpp
     planner/RRTPlanner.cpp
     planner/StarRRTPlanner.cpp
+    robot/CadFileLoader.cpp
     robot/Jaco.cpp
     robot/PointRobot.cpp
     robot/RobotBase.cpp
@@ -45,7 +48,7 @@ set(SRCS
     vrep/Helper.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread libPQP)
+target_link_libraries(${PROJECT_NAME} pthread PQP)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib)
 install(DIRECTORY include DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

@@ -10,6 +10,8 @@
 #include <planner/StarRRTPlanner.h>
 #include <robot/Jaco.h>
 #include <robot/PointRobot.h>
+#include <robot/CadFileLoader.h>
+
 #include <vrep/Helper.h>
 
 #include "ui/Drawing.h"
@@ -144,7 +146,9 @@ void planning6D() {
 
 int main(int argc, char** argv)
 {
-    int dim = 6;
+    rmpl::CadFileLoader loader;
+    loader.loadFile("/home/sascha/projects/Planner/meshes/link_1_fixed_origin.obj");
+    int dim = 1;
 
     if (dim == 2)
         planning2D();
