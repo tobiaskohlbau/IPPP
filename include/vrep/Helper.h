@@ -1,20 +1,20 @@
 #ifndef HELPER_H_
 #define HELPER_H_
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <unistd.h>
 #include <vector>
-
-#include <core/Base.h>
-#include <core/Vec.hpp>
 
 extern "C" {
     #include <vrep/extApi.h>
     #include <vrep/extApiPlatform.h>
     #include <vrep/v_repConst.h>
 }
+
+#include <core/Base.h>
+#include <core/Vec.hpp>
 
 namespace rmpl {
 

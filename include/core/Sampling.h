@@ -1,9 +1,9 @@
 #ifndef SAMPLING_H_
 #define SAMPLING_H_
 
-#include <time.h>
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include <core/Base.h>
 #include <core/Node.h>

@@ -6,9 +6,9 @@
 #include <core/Base.h>
 #include <core/CollisionDetection.h>
 #include <core/Graph.h>
-#include <robot/RobotBase.h>
 #include <core/Sampling.h>
 #include <core/TrajectoryPlanner.h>
+#include <robot/RobotBase.h>
 
 namespace rmpl {
 

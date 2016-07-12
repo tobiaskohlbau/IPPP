@@ -2,9 +2,10 @@
 #define COLLISIONDETECTION_H_
 
 #include <Eigen/Core>
+#include <PQP/include/PQP.h>
 
-#include <core/Node.h>
 #include <core/Base.h>
+#include <core/Node.h>
 #include <robot/RobotBase.h>
 #include <vrep/Helper.h>
 
@@ -21,17 +22,22 @@ public:
     CollisionDetection(const std::shared_ptr<Helper> &vrep, const std::shared_ptr<RobotBase> &robot);
     bool controlCollision(const Vec<float> &vec);
     bool controlCollision(const std::vector<Vec<float>> &vec);
-    bool controlCollisionPointRobot(const float &x, const float &y);
-    bool controlCollisionVrep(const Vec<float> &vec);
-    bool controlCollisionVrep(const std::vector<Vec<float>> &vec);
+
 
     void set2DWorkspace(Eigen::MatrixXi space);
     Eigen::MatrixXi get2DWorkspace() const;
 private:
+    bool controlCollisionPointRobot(const float &x, const float &y);
+    bool controlCollisionVrep(const Vec<float> &vec);
+    bool controlCollisionVrep(const std::vector<Vec<float>> &vec);
+
+    void readObj(const std::string filename);
+
     std::shared_ptr<RobotBase> m_robot;
     std::shared_ptr<Helper>    m_vrep;
     Eigen::MatrixXi m_workspace;
     Eigen::Matrix<int, 1, 1> m_zero;
+    PQP_Model *b1;
 };
 
 } /* namespace rmpl */

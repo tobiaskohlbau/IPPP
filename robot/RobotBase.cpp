@@ -1,6 +1,6 @@
 #include <robot/RobotBase.h>
 
-#include <math.h>
+#include <cmath>
 
 #include <Eigen/Geometry>
 

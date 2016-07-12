@@ -2,6 +2,7 @@
 #define KDNODE_H_
 
 #include <cstdint>
+
 #include <core/Vec.hpp>
 
 namespace rmpl {
