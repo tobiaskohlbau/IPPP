@@ -5,8 +5,8 @@
 #include <vector>
 
 #include <core/Base.h>
-#include <core/Vec.hpp>
 #include <core/Edge.h>
+#include <core/Vec.hpp>
 
 namespace rmpl {
 
