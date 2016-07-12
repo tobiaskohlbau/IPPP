@@ -20,6 +20,10 @@ include_directories(${RMP_DIR}/include)
 include_directories(${RMP_DIR}/eigen3)
 include_directories(${RMP_DIR})
 
+set(PQP_DIR "/home/sascha/projects/pqp" CACHE PATH "PQP DIR")
+include_directories(${PQP_DIR}/include)
+link_directories(${PQP_DIR}/lib)
+
 #QT
 #find_package(Qt5Widgets)
 #find_package(Qt5Core)
@@ -35,8 +39,8 @@ set(SRCS
 set(HDRS
     ui/Drawing.h)
 
-add_executable(planner ${SRCS} ${HDRS} ${RESOURCES})
-target_link_libraries( planner RobotMotionPlanningLib ${OpenCV_LIBS} pthread)
+add_executable(planner ${SRCS} ${HDRS})
+target_link_libraries( planner RobotMotionPlanningLib ${OpenCV_LIBS} pthread PQP)
     #Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Quick Qt5::Qml
 
 # copy the workspaces and meshes
