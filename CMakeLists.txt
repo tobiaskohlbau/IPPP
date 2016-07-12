@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.8.10)
 project (RobotMotionPlanningLib)
+set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -17,6 +19,8 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/include/vrep)
+set(PQP_DIR "/home/sascha/projects/pqp" CACHE PATH "PQP DIR")
+include_directories(${PQP_DIR}/include ${PQP_DIR}/lib)
 
 set(SRCS
     core/CollisionDetection.cpp
@@ -41,7 +45,8 @@ set(SRCS
     vrep/Helper.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} pthread)
+target_link_libraries(${PROJECT_NAME} pthread libPQP)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib)
 install(DIRECTORY include DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+install(DIRECTORY ${PQP_DIR}/include DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/PQP)
