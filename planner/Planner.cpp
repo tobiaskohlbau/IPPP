@@ -13,16 +13,17 @@ using namespace rmpl;
 Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, const float &trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
         : Base(name){
     m_pathPlanned = false;
-    m_robot = robot;
     m_stepSize = stepSize;
+
+    m_robot = robot;
     m_graph = std::shared_ptr<Graph>(new Graph());
     m_sampler = std::shared_ptr<Sampling>(new Sampling(sampling));
     m_vrep = std::shared_ptr<Helper>(new Helper(m_robot->getDim()));
     m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_vrep, m_robot));
     m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(trajectory, trajectoryStepSize, m_collision));
 
-    if (m_robot->getDim() != 2)
-        m_vrep->start();
+    //if (m_robot->getDim() != 2)
+    //    m_vrep->start();
 }
 
 /*!
