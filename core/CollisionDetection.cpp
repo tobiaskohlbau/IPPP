@@ -16,7 +16,6 @@ CollisionDetection::CollisionDetection(const shared_ptr<Helper> &vrep, const sha
         : Base("CollisionDetection") {
     m_robot = robot;
     m_vrep = vrep;
-    m_zero(0,0) = 0;
 }
 
 /*!
@@ -79,12 +78,12 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
 *  \date       2016-06-30
 */
 bool CollisionDetection::controlCollisionPointRobot(const float &x, const float &y) {
-    if (m_workspace.rows() == -1 && m_workspace.cols() == -1) {
+    if (m_2Dworkspace.rows() == -1 && m_2Dworkspace.cols() == -1) {
         this->sendMessage("Empty workspace!");
         return false;
     }
 
-    if (m_workspace(x,y) < 30) {
+    if (m_2Dworkspace(x,y) < 30) {
         return true;
     }
     else {
@@ -180,12 +179,12 @@ bool CollisionDetection::controlCollisionVrep(const std::vector<Vec<float>> &vec
 *  \date       2016-05-25
 */
 void CollisionDetection::set2DWorkspace(Eigen::MatrixXi space) {
-    if (this->m_workspace.rows() == -1 || this->m_workspace.cols() == -1) {
+    if (this->m_2Dworkspace.rows() == -1 || this->m_2Dworkspace.cols() == -1) {
         this->sendMessage("Empty space given!");
         return;
     }
 
-    m_workspace = space;
+    m_2Dworkspace = space;
 }
 
 /*!
@@ -195,5 +194,5 @@ void CollisionDetection::set2DWorkspace(Eigen::MatrixXi space) {
 *  \date       2016-05-25
 */
 Eigen::MatrixXi CollisionDetection::get2DWorkspace() const {
-    return m_workspace;
+    return m_2Dworkspace;
 }
