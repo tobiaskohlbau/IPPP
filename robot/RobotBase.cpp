@@ -26,46 +26,6 @@ RobotBase::RobotBase(std::string name, RobotType type, unsigned int dim, unsigne
 }
 
 /*!
-*  \brief      Return dimension from the robot
-*  \author     Sascha Kaden
-*  \param[out] dimension
-*  \date       2016-06-30
-*/
-unsigned int RobotBase::getDim() const {
-    return m_dim;
-}
-
-/*!
-*  \brief      Return number of the joints from the robot
-*  \author     Sascha Kaden
-*  \param[out] number of joints
-*  \date       2016-06-30
-*/
-unsigned int RobotBase::getNbJoints() const {
-    return m_nbJoints;
-}
-
-/*!
-*  \brief      Return name from the robot
-*  \author     Sascha Kaden
-*  \param[out] name
-*  \date       2016-06-30
-*/
-std::string RobotBase::getName() const {
-    return m_robotName;
-}
-
-/*!
-*  \brief      Return the type of the robot
-*  \author     Sascha Kaden
-*  \param[out] robot type
-*  \date       2016-06-30
-*/
-RobotType RobotBase::getType() const {
-    return m_robotType;
-}
-
-/*!
 *  \brief      Create transformation matrix from the given D-H parameter and the joint angle
 *  \author     Sascha Kaden
 *  \param[in]  D-H alpha parameter
@@ -122,15 +82,23 @@ Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos,
     for (int i = 1; i < 6; ++i)
         robotToTcp *= trafos[i];
 
-    Eigen::MatrixXf basisToTcp = basisToRobot * robotToTcp;
+    Eigen::Matrix4f basisToTcp = basisToRobot * robotToTcp;
 
     // create tcp position and orientation vector
-    Eigen::Vector3f euler = basisToTcp.block<3,3>(0,0).eulerAngles(0, 1, 2);
     Vec<float> tcp(basisToTcp(0,3), basisToTcp(1,3), basisToTcp(2,3));
+    Eigen::Vector3f euler = basisToTcp.block<3,3>(0,0).eulerAngles(0, 1, 2);
     tcp.append(EigenToVec(euler));
+
     return tcp;
 }
 
+/*!
+*  \brief      Load cad models from given string vector and save them intern
+*  \author     Sascha Kaden
+*  \param[in]  vector of file strings
+*  \param[out] true if loading was feasible
+*  \date       2016-06-30
+*/
 bool RobotBase::setCadModels(const std::vector<std::string> &files) {
     m_cadFiles = files;
 
@@ -140,6 +108,13 @@ bool RobotBase::setCadModels(const std::vector<std::string> &files) {
     return true;
 }
 
+/*!
+*  \brief      Return PQP cad model from index
+*  \author     Sascha Kaden
+*  \param[in]  index
+*  \param[out] PQP cad model
+*  \date       2016-06-30
+*/
 std::shared_ptr<PQP_Model> RobotBase::getCadModel(const unsigned int &index) {
     if (index >= m_cadModels.size()) {
         this->sendMessage("model index is larger than cad models");
@@ -148,6 +123,46 @@ std::shared_ptr<PQP_Model> RobotBase::getCadModel(const unsigned int &index) {
     else {
         return m_cadModels[index];
     }
+}
+
+/*!
+*  \brief      Return dimension from the robot
+*  \author     Sascha Kaden
+*  \param[out] dimension
+*  \date       2016-06-30
+*/
+unsigned int RobotBase::getDim() const {
+    return m_dim;
+}
+
+/*!
+*  \brief      Return number of the joints from the robot
+*  \author     Sascha Kaden
+*  \param[out] number of joints
+*  \date       2016-06-30
+*/
+unsigned int RobotBase::getNbJoints() const {
+    return m_nbJoints;
+}
+
+/*!
+*  \brief      Return name from the robot
+*  \author     Sascha Kaden
+*  \param[out] name
+*  \date       2016-06-30
+*/
+std::string RobotBase::getName() const {
+    return m_robotName;
+}
+
+/*!
+*  \brief      Return the type of the robot
+*  \author     Sascha Kaden
+*  \param[out] robot type
+*  \date       2016-06-30
+*/
+RobotType RobotBase::getType() const {
+    return m_robotType;
 }
 
 /*!
