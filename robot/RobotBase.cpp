@@ -131,6 +131,15 @@ Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos,
     return tcp;
 }
 
+bool RobotBase::setCadModels(const std::vector<std::string> &files) {
+    m_cadFiles = files;
+
+    for (auto file : files)
+        m_cadModels.push_back(m_fileLoader->loadFile(file));
+
+    return true;
+}
+
 std::shared_ptr<PQP_Model> RobotBase::getCadModel(const unsigned int &index) {
     if (index >= m_cadModels.size()) {
         this->sendMessage("model index is larger than cad models");
