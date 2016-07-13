@@ -23,6 +23,9 @@ public:
     Vec(const T &x, const T &y, const T &z, const T &rx);
     Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry);
     Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz);
+    Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx);
+    Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx, const T &wy);
+    Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx, const T &wy, const T &wz);
     Vec(const unsigned int &dim);
     Vec(const unsigned int &dim, const T data[]);
     Vec(const Vec<T> &vec);
@@ -296,6 +299,87 @@ Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const 
     m_data[3] = rx;
     m_data[4] = ry;
     m_data[5] = rz;
+}
+
+/*!
+*  \brief      Constructor of the class Vec (6D)
+*  \author     Sascha Kaden
+*  \param[in]  x
+*  \param[in]  y
+*  \param[in]  z
+*  \param[in]  rx
+*  \param[in]  ry
+*  \param[in]  rz
+*  \param[in]  wx
+*  \date       2016-07-13
+*/
+template<typename T>
+Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx) {
+    m_dim = 7;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
+    m_data[0] = x;
+    m_data[1] = y;
+    m_data[2] = z;
+    m_data[3] = rx;
+    m_data[4] = ry;
+    m_data[5] = rz;
+    m_data[6] = wx;
+}
+
+/*!
+*  \brief      Constructor of the class Vec (6D)
+*  \author     Sascha Kaden
+*  \param[in]  x
+*  \param[in]  y
+*  \param[in]  z
+*  \param[in]  rx
+*  \param[in]  ry
+*  \param[in]  rz
+*  \param[in]  wx
+*  \param[in]  wy
+*  \date       2016-07-13
+*/
+template<typename T>
+Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx, const T &wy) {
+    m_dim = 8;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
+    m_data[0] = x;
+    m_data[1] = y;
+    m_data[2] = z;
+    m_data[3] = rx;
+    m_data[4] = ry;
+    m_data[5] = rz;
+    m_data[6] = wx;
+    m_data[7] = wy;
+}
+
+/*!
+*  \brief      Constructor of the class Vec (6D)
+*  \author     Sascha Kaden
+*  \param[in]  x
+*  \param[in]  y
+*  \param[in]  z
+*  \param[in]  rx
+*  \param[in]  ry
+*  \param[in]  rz
+*  \param[in]  wx
+*  \param[in]  wy
+*  \param[in]  wz
+*  \date       2016-07-13
+*/
+template<typename T>
+Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx, const T &wy, const T &wz) {
+    m_dim = 9;
+    m_data = std::unique_ptr<T[]>(new T[m_dim]);
+    m_data[0] = x;
+    m_data[1] = y;
+    m_data[2] = z;
+    m_data[3] = rx;
+    m_data[4] = ry;
+    m_data[5] = rz;
+    m_data[6] = wx;
+    m_data[7] = wy;
+    m_data[8] = wz;
 }
 
 /*!
