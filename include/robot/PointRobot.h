@@ -15,6 +15,7 @@ class PointRobot : public RobotBase
 public:
     PointRobot();
     Vec<float> directKinematic(const Vec<float> &angles);
+    std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles);
 
 private:
 };
