@@ -20,11 +20,16 @@ a     = [0, D2, 0, 0, 0, 0]
 d     = [D1, 0, -e2, -d4b, -d5b, -d6b]
 q     = sym('q', [1 6]);
 
+% cos(q)  -sin(q)*cos(alpha)   sin(q)*sin(alpha)  a*cos(q)
+% sin(q)   cos(q)*cos(alpha)  -cos(q)*sin(alpha)  a*sin(q)
+%     0           sin(alpha)          cos(alpha)        d
+%     0                   0                   0         1
+%
 
 for i=1:1:6
     sinAlpha = round(sin(alpha(i)),3);
     cosAlpha = round(cos(alpha(i)),3);
-    A(:,:,i) = [cos(q(i)), -sin(q(i))*cosAlpha,  sin(q(i))*cosAlpha a(i)*cos(q(i)); ...
+    A(:,:,i) = [cos(q(i)), -sin(q(i))*cosAlpha,  sin(q(i))*sinAlpha a(i)*cos(q(i)); ...
                 sin(q(i)),  cos(q(i))*cosAlpha, -cos(q(i))*sinAlpha a(i)*sin(q(i)); ...
                 0, sinAlpha, cosAlpha, d(i); ...
                 0, 0, 0, 1];
@@ -39,8 +44,8 @@ for i=1:1:6
                 end
             end
         end
-   end
+    end
 end
-        
+
 T = A(:,:,1) * A(:,:,2) * A(:,:,3) * A(:,:,4) * A(:,:,5) * A(:,:,6);
 simplify(T)
