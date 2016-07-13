@@ -1,6 +1,9 @@
 #include <core/CollisionDetection.h>
 
+#include <Eigen/Geometry>
+
 using namespace rmpl;
+using std::shared_ptr;
 
 /*!
 *  \brief      Constructor of the class CollisionDetection
@@ -9,7 +12,7 @@ using namespace rmpl;
 *  \param[in]  RobotType
 *  \date       2016-06-30
 */
-CollisionDetection::CollisionDetection(const std::shared_ptr<Helper> &vrep, const std::shared_ptr<RobotBase> &robot)
+CollisionDetection::CollisionDetection(const shared_ptr<Helper> &vrep, const shared_ptr<RobotBase> &robot)
         : Base("CollisionDetection") {
     m_robot = robot;
     m_vrep = vrep;
@@ -31,7 +34,7 @@ bool CollisionDetection::controlCollision(const Vec<float> &vec) {
             return controlCollisionPointRobot(vec[0], vec[1]);
             break;
         case RobotType::JACO:
-            return controlCollisionVrep(vec);
+            return controlCollisionPQP(vec);
             break;
         default:
             return false;
@@ -58,7 +61,9 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
                     return true;
             break;
         case RobotType::JACO:
-            return controlCollisionVrep(vecs);
+            for (int i = 0; i < vecs.size(); ++i)
+                if (controlCollisionPQP(vecs[i]))
+                    return true;
             break;
         default:
             return false;
@@ -86,6 +91,62 @@ bool CollisionDetection::controlCollisionPointRobot(const float &x, const float 
         return false;
     }
     return false;
+}
+
+bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
+    std::vector<Eigen::Matrix4f> trafos;
+    trafos = m_robot->getTransformations(vec);
+    std::vector<Eigen::Matrix4f> As;
+    As.push_back(trafos[0]);
+    for (int i = 1; i < trafos.size(); ++i)
+        As.push_back(As[i-1] * trafos[i]);
+
+    Eigen::Matrix3f R1, R2;
+    Eigen::Vector3f t1, t2;
+    for (int i = 0; i < As.size(); ++i) {
+        // get R and t from A for first model
+        R1 = As[i].block<3,3>(0,0);
+        t1 = As[i].block<3,1>(0,3);
+        for (int j = i + 2; j < As.size(); ++j) {
+            // get R and t from A for second model
+            R2 = As[j].block<3,3>(0,0);
+            t2 = As[j].block<3,1>(0,3);
+            if (checkPQP(m_robot->getCadModel(i), m_robot->getCadModel(j), R1, R2, t1, t2)) {
+                this->sendMessage("Collision between link " + std::to_string(i) + " and link " + std::to_string(j));
+                for (int k = 0; k < As.size(); ++k) {
+                    std::cout << "A" << k << ":" << std::endl;
+                    Eigen::Vector3f r = As[k].block<3,3>(0,0).eulerAngles(0, 1, 2);
+                    std::cout << "Euler angles: " << r.transpose() << std::endl;
+                    Eigen::Vector3f t = As[k].block<3,1>(0,3);
+                    std::cout << "translation: " << t.transpose() << std::endl << std::endl;
+                }
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool CollisionDetection::checkPQP(shared_ptr<PQP_Model> model1, shared_ptr<PQP_Model> model2, Eigen::Matrix3f R1, Eigen::Matrix3f R2, Eigen::Vector3f t1, Eigen::Vector3f t2) {
+    PQP_REAL pqpR1[3][3], pqpR2[3][3], pqpT1[3], pqpT2[3];
+
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            pqpR1[i][j] = R1(i,j);
+            pqpR2[i][j] = R2(i,j);
+        }
+        pqpT1[i] = t1(i);
+        pqpT2[i] = t2(i);
+    }
+
+    PQP_CollideResult cres;
+    PQP_Model *m1 = model1.get();
+    PQP_Model *m2 = model2.get();
+    PQP_Collide(&cres, pqpR1, pqpT1, m1, pqpR2, pqpT2, m2, PQP_FIRST_CONTACT);
+    if (cres.NumPairs() > 0)
+        return true;
+    else
+        return false;
 }
 
 /*!
