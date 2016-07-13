@@ -57,8 +57,7 @@ void Drawing::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, con
 }
 
 void Drawing::writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, const float scale) {
-    std::ofstream myfile;
-    myfile.open (filename);
+    std::ofstream myfile(filename);
     for (int i = 0; i < vecs.size(); ++i) {
         for (unsigned int j = 0; j < vecs[i].getDim(); ++j)
             myfile << vecs[i][j] * scale << " ";
