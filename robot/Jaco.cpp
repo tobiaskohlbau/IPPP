@@ -30,17 +30,16 @@ Jaco::Jaco()
     cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
     std::string path(cCurrentPath);
 
-    this->m_cadFiles = {"/home/sascha/projects/Planner/meshes/link_base_fixed_origin.obj",
-                        "/home/sascha/projects/Planner/meshes/link_1_fixed_origin.obj",
-                        "/home/sascha/projects/Planner/meshes/link_2_fixed_origin.obj",
-                        "/home/sascha/projects/Planner/meshes/link_3_fixed_origin.obj",
-                        "/home/sascha/projects/Planner/meshes/link_4_fixed_origin.obj",
-                        "/home/sascha/projects/Planner/meshes/link_5_fixed_origin.obj",
-                        "/home/sascha/projects/Planner/meshes/link_hand_fixed_origin.obj"};
+    std::vector<std::string> cadFiles = {"/home/sascha/projects/Planner/meshes/link_base_fixed_origin.obj",
+                            "/home/sascha/projects/Planner/meshes/link_1_fixed_origin.obj",
+                            "/home/sascha/projects/Planner/meshes/link_2_fixed_origin.obj",
+                            "/home/sascha/projects/Planner/meshes/link_3_fixed_origin.obj",
+                            "/home/sascha/projects/Planner/meshes/link_4_fixed_origin.obj",
+                            "/home/sascha/projects/Planner/meshes/link_5_fixed_origin.obj",
+                            "/home/sascha/projects/Planner/meshes/link_hand_fixed_origin.obj"};
 
     // load cad models
-    for ( auto file : m_cadFiles)
-        m_cadModels.push_back(this->m_fileLoader->loadFile(file));
+    this->setCadModels(cadFiles);
 }
 
 Vec<float> Jaco::directKinematic(const Vec<float> &angles) {

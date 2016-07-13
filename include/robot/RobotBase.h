@@ -40,6 +40,7 @@ public:
     Eigen::Matrix4f getTrafo(const float &alpha, const float &a, const float &d, const float q);
     Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis);
 
+    bool setCadModels(const std::vector<std::string> &files);
     std::shared_ptr<PQP_Model> getCadModel(const unsigned int &index);
 
     Vec<float> degToRad(const Vec<float> deg);
