@@ -84,7 +84,7 @@ Eigen::Matrix4f RobotBase::getTrafo(const float &alpha, const float &a, const fl
     Eigen::Matrix4f T = Eigen::Matrix4f::Zero(4,4);
     T(0,0) = cosQ;
     T(0,1) = -sinQ * cosAlpha;
-    T(0,2) = sinQ * cosAlpha;
+    T(0,2) = sinQ * sinAlpha;
     T(0,3) = a * cosQ;
     T(1,0) = sinQ;
     T(1,1) = cosQ * cosAlpha;
