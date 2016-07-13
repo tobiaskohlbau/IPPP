@@ -15,11 +15,9 @@ class Jaco : public RobotBase
 public:
     Jaco();
     Vec<float> directKinematic(const Vec<float> &angles);
+    std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles);
 
 private:
-    Vec<float> m_alpha;
-    Vec<float> m_a;
-    Vec<float> m_d;
 };
 
 } /* namespace rmpl */

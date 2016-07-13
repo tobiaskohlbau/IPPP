@@ -21,6 +21,8 @@ RobotBase::RobotBase(std::string name, RobotType type, unsigned int dim, unsigne
     m_robotType = type;
     m_dim = dim;
     m_nbJoints = numberJoints;
+
+    m_fileLoader = std::shared_ptr<CadFileLoader>(new CadFileLoader());
 }
 
 /*!
@@ -127,6 +129,16 @@ Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos,
     Vec<float> tcp(basisToTcp(0,3), basisToTcp(1,3), basisToTcp(2,3));
     tcp.append(EigenToVec(euler));
     return tcp;
+}
+
+std::shared_ptr<PQP_Model> RobotBase::getCadModel(const unsigned int &index) {
+    if (index >= m_cadModels.size()) {
+        this->sendMessage("model index is larger than cad models");
+        return nullptr;
+    }
+    else {
+        return m_cadModels[index];
+    }
 }
 
 /*!
