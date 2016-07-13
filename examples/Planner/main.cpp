@@ -74,39 +74,6 @@ void planning2D() {
     cv::waitKey(0);
 }
 
-void planning3D() {
-    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
-    rmpl::StarRRTPlanner planner(robot, 0.5, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::NormalRRTPlanner planner2(robot, 0.5, 50.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-
-    // set properties to the planner
-    rmpl::Vec<float> minBoundary(0.0,0.0,0.0);
-    rmpl::Vec<float> maxBoundary(1000.0,1000.0,1000.0);
-    planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
-    planner.setInitNode(rmpl::Node(10.0, 10.0, 10.0));
-
-    // compute the tree
-    clock_t begin = std::clock();
-    planner.computeTree(3000);
-    clock_t end = std::clock();
-    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-    std::cout << "computation time: " << elapsed_secs << std::endl;
-
-    std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
-    std::vector<rmpl::Vec<float>> vecs;
-    for (int i = 0; i < nodes.size(); ++i)
-        vecs.push_back(nodes[i]->getVec());
-
-    rmpl::Node goal(650.0,750.0,800.0);
-    bool connected = planner.connectGoalNode(goal);
-    Drawing::writeVecsToFile(vecs, "example.ASC");
-
-    if (connected) {
-        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
-        Drawing::appendVecsToFile(pathPoints, "example.ASC");
-    }
-}
-
 void planning6D() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
     rmpl::StarRRTPlanner planner(robot, 0.5, 80.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
@@ -120,14 +87,15 @@ void planning6D() {
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(10000);
+    planner.computeTree(5000);
     clock_t end = std::clock();
 
-    rmpl::Node goal(170.0, 280.0, 240.0, 80.0, 100.0, 180.0);
+    rmpl::Node goal(170.0, 200.0, 20.0, 180.0, 160.0, 180.0);
     bool connected = planner.connectGoalNode(goal);
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
     std::vector<rmpl::Vec<float>> graphPoints;
+    std::cout << "Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
     Drawing::writeVecsToFile(graphPoints, "example.ASC", 10);
@@ -146,14 +114,10 @@ void planning6D() {
 
 int main(int argc, char** argv)
 {
-    rmpl::CadFileLoader loader;
-    loader.loadFile("/home/sascha/projects/Planner/meshes/link_1_fixed_origin.obj");
-    int dim = 1;
+    int dim = 6;
 
     if (dim == 2)
         planning2D();
-    else if (dim == 3)
-        planning3D();
     else if (dim == 6)
         planning6D();
 
