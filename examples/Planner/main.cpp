@@ -76,21 +76,23 @@ void planning2D() {
 
 void planning6D() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    rmpl::StarRRTPlanner planner(robot, 0.5, 80.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::NormalRRTPlanner planner(robot, 0.5, 80.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
-    rmpl::Vec<float> minBoundary(0.0,0.0,0.0,0.0,0.0,0.0);
-    rmpl::Vec<float> maxBoundary(360.0,360.0,360.0,360.0,360.0,360.0);
+    rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
+    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
     planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
-    planner.setInitNode(rmpl::Node(180.0,180.0,180.0,180.0,180.0,180.0));
+    planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(5000);
+    planner.computeTree(50000);
     clock_t end = std::clock();
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    std::cout << "computation time: " << elapsed_secs << std::endl;
 
-    rmpl::Node goal(170.0, 200.0, 20.0, 180.0, 160.0, 180.0);
+    rmpl::Node goal(170.0, 170.0, 200.0, 180.0, 160.0, 180.0);
     bool connected = planner.connectGoalNode(goal);
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
