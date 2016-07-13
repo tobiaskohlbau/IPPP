@@ -23,12 +23,16 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
 bool RRTPlanner::setInitNode(const Node &node) {
     this->controlConstraints();
     for (unsigned int i = 0; i < this->m_robot->getDim(); ++i)
-        if (node.getVec()[i] < this->m_minBoundary[i] || node.getVec()[i] > this->m_maxBoundary[i])
+        if (node.getVec()[i] < this->m_minBoundary[i] || node.getVec()[i] > this->m_maxBoundary[i]) {
+            this->sendMessage("Init node could not be connected");
             return false;
+        }
 
     shared_ptr<Node> initNode(new Node(node));
-    if (this->m_collision->controlCollision(initNode->getVec()))
+    if (this->m_collision->controlCollision(initNode->getVec())) {
+        this->sendMessage("Init node could not be connected");
         return false;
+    }
 
     m_initNode = initNode;
     this->m_graph->addNode(m_initNode);
@@ -46,6 +50,10 @@ bool RRTPlanner::computeTree(const int &nbOfNodes)
 {
     if (!this->controlConstraints())
         return false;
+    if (m_initNode == nullptr) {
+        this->sendMessage("Init node is not connected");
+        return false;
+    }
 
     for (int i = 0; i < nbOfNodes; ++i)
     {
