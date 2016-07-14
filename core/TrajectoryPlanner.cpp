@@ -13,8 +13,15 @@ using std::shared_ptr;
 TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, const float &stepSize, const shared_ptr<CollisionDetection> &collision)
     : Base("TrajectoryPlanner") {
     m_method = method;
-    m_stepSize = stepSize;
     m_collision = collision;
+
+    if (stepSize <= 0) {
+        this->sendMessage("Step size has to be larger than 0!");
+        m_stepSize = -1;
+    }
+    else {
+        m_stepSize = stepSize;
+    }
 }
 
 /*!
@@ -29,6 +36,10 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, const float
 bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<float> &target) {
     if (source.getDim() != target.getDim()) {
         this->sendMessage("Nodes/Vecs have different dimensions");
+        return false;
+    }
+    else if (m_stepSize == -1) {
+        this->sendMessage("Step size is not set!");
         return false;
     }
 
@@ -54,6 +65,11 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
         this->sendMessage("Nodes/Vecs have different dimensions");
         return vecs;
     }
+    else if (m_stepSize == -1) {
+        this->sendMessage("Step size is not set!");
+        return vecs;
+    }
+
     Vec<float> u = target - source;
     Vec<float> uNorm = u / u.norm();
     Vec<float> temp(source);
@@ -62,4 +78,13 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
         temp += uNorm * m_stepSize;
     }
     return vecs;
+}
+
+void TrajectoryPlanner::setStepSize(const float &stepSize) {
+    if (stepSize <= 0) {
+        this->sendMessage("Step size has to be larger than 0!");
+    }
+    else {
+        m_stepSize = stepSize;
+    }
 }
