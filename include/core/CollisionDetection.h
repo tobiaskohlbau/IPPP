@@ -28,7 +28,7 @@ public:
 private:
     bool controlCollisionPQP(const Vec<float> &vec);
     bool checkPQP(std::shared_ptr<PQP_Model> model1, std::shared_ptr<PQP_Model> model2, Eigen::Matrix3f R1, Eigen::Matrix3f R2, Eigen::Vector3f t1, Eigen::Vector3f t2);
-    bool controlCollisionPointRobot(const float &x, const float &y);
+    bool controlCollisionPointRobot(float x, float y);
     bool controlCollisionVrep(const Vec<float> &vec);
     bool controlCollisionVrep(const std::vector<Vec<float>> &vec);
 

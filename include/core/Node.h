@@ -20,15 +20,15 @@ class Node : public Base
 {
 public:
     Node();
-    Node(const float &x);
-    Node(const float &x, const float &y);
-    Node(const float &x, const float &y, const float &z);
-    Node(const float &x, const float &y, const float &z, const float &rx);
-    Node(const float &x, const float &y, const float &z, const float &rx, const float &ry);
-    Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz);
-    Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx);
-    Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx, const float &wy);
-    Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx, const float &wy, const float &wz);
+    Node(float x);
+    Node(float x, float y);
+    Node(float x, float y, float z);
+    Node(float x, float y, float z, float rx);
+    Node(float x, float y, float z, float rx, float ry);
+    Node(float x, float y, float z, float rx, float ry, float rz);
+    Node(float x, float y, float z, float rx, float ry, float rz, float wx);
+    Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy);
+    Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy, float wz);
     Node(const Vec<float> &vec);
 
     float getX() const;
@@ -37,14 +37,14 @@ public:
 
     unsigned int getDim();
     bool empty() const ;
-    void setVecValue(const float &value, const unsigned int &index);
-    float getVecValue(const unsigned int &index);
+    void setVecValue(float value, unsigned int index);
+    float getVecValue(unsigned int index);
     float getDist(const std::shared_ptr<Node> &node) const;
     float getDist(const Node &node) const;
     float getDistToParent() const;
     float norm() const;
 
-    void setCost(const float &cost);
+    void setCost(float cost);
     float getCost() const;
 
     void setParent(const std::shared_ptr<Node> &parent);

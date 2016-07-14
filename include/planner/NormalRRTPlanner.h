@@ -13,7 +13,7 @@ namespace rmpl {
 class NormalRRTPlanner : public RRTPlanner
 {
 public:
-    NormalRRTPlanner(const std::shared_ptr<RobotBase> &robot, const float &stepSize, const float &trajectoryStepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
+    NormalRRTPlanner(const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
     : RRTPlanner("Normal RRT Planner", robot, stepSize, trajectoryStepSize, trajectory, sampling)
     {
     }

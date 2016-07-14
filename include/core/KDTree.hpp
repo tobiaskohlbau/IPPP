@@ -20,13 +20,13 @@ public:
     KDTree();
     void addNode(const Vec<float> &vec, const T &node);
     T searchNearestNeighbor(const Vec<float> &vec);
-    std::vector<T> searchRange(const Vec<float> &vec, const float &range);
+    std::vector<T> searchRange(const Vec<float> &vec, float range);
 
 private:
     std::shared_ptr<KDNode<T>> insert(std::shared_ptr<KDNode<T>> insertNode, std::shared_ptr<KDNode<T>> currentNode, unsigned int depth);
     void NNS(const Vec<float> &point, std::shared_ptr<KDNode<T>> node, std::shared_ptr<KDNode<T>> &refNode, float &bestDist);
     void RS(const Vec<float> &point, std::shared_ptr<KDNode<T>> node, std::vector<std::shared_ptr<KDNode<T>>> &refNodes,
-        const float &sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary);
+        float sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary);
 
     std::shared_ptr<KDNode<T>> m_root;
 };
@@ -114,7 +114,7 @@ T KDTree<T>::searchNearestNeighbor(const Vec<float> &vec) {
 *  \date       2016-05-27
 */
 template<class T>
-std::vector<T> KDTree<T>::searchRange(const Vec<float> &vec, const float &range) {
+std::vector<T> KDTree<T>::searchRange(const Vec<float> &vec, float range) {
     std::vector<T> nodes;
     if (m_root == nullptr)
         return nodes;
@@ -175,7 +175,7 @@ void KDTree<T>::NNS(const Vec<float> &vec, std::shared_ptr<KDNode<T>> node, std:
 */
 template<class T>
 void KDTree<T>::RS(const Vec<float> &vec, std::shared_ptr<KDNode<T>> node, std::vector<std::shared_ptr<KDNode<T>>> &refNodes,
-    const float &sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary) {
+    float sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary) {
     if (node == nullptr) {
         return;
     }

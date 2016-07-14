@@ -8,7 +8,7 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-05-27
 */
-RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, const float &trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
     : Planner(name, robot, stepSize, trajectoryStepSize, trajectory, sampling)
 {
 }
@@ -46,7 +46,7 @@ bool RRTPlanner::setInitNode(const Node &node) {
 *  \param[out] return check of the constraints
 *  \date       2016-05-27
 */
-bool RRTPlanner::computeTree(const int &nbOfNodes)
+bool RRTPlanner::computeTree(int nbOfNodes)
 {
     if (!this->controlConstraints())
         return false;

@@ -28,7 +28,7 @@ class Sampling : public Base
 {
 public:
     Sampling(const SamplingMethod &method = SamplingMethod::randomly);
-    Vec<float> getSample(const unsigned int &dim, const int &index, const int &nbSamples);
+    Vec<float> getSample(unsigned int dim, int index, int nbSamples);
     void setBoundaries(const Vec<float> &maxBoundary, const Vec<float> &minBoundary);
 
 private:

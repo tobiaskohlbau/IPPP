@@ -23,7 +23,7 @@ Sampling::Sampling(const SamplingMethod &method)
 *  \param[out] Vec
 *  \date       2016-05-24
 */
-Vec<float> Sampling::getSample(const unsigned int &dim, const int &index, const int &nbSamples) {
+Vec<float> Sampling::getSample(unsigned int dim, int index, int nbSamples) {
     Vec<float> vec(dim);
     if (!checkBoudaries())
         return vec;

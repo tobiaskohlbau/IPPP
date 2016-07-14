@@ -20,10 +20,10 @@ enum class TrajectoryMethod
 class TrajectoryPlanner : public Base
 {
 public:
-    TrajectoryPlanner(const TrajectoryMethod &method, const float &stepSize, const std::shared_ptr<CollisionDetection> &collision);
+    TrajectoryPlanner(const TrajectoryMethod &method, float stepSize, const std::shared_ptr<CollisionDetection> &collision);
     bool controlTrajectory(const Vec<float> &source, const Vec<float> &target);
     std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target);
-    void setStepSize(const float &stepSize);
+    void setStepSize(float stepSize);
     float getStepSize();
 
 private:
