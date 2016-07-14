@@ -18,6 +18,7 @@ public:
     std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles);
 
 private:
+    Vec<float> convertRealToDH(const Vec<float> &realAngles);
 };
 
 } /* namespace rmpl */
