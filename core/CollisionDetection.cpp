@@ -92,6 +92,13 @@ bool CollisionDetection::controlCollisionPointRobot(float x, float y) {
     return false;
 }
 
+/*!
+*  \brief      Control collision with the PQP library
+*  \author     Sascha Kaden
+*  \param[in]  Vec of angles
+*  \param[out] possibility of collision
+*  \date       2016-07-14
+*/
 bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
     std::vector<Eigen::Matrix4f> trafos;
     trafos = m_robot->getTransformations(vec);
@@ -112,13 +119,17 @@ bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
             t2 = As[j].block<3,1>(0,3);
             if (checkPQP(m_robot->getCadModel(i), m_robot->getCadModel(j), R1, R2, t1, t2)) {
                 this->sendMessage("Collision between link " + std::to_string(i) + " and link " + std::to_string(j));
-                for (int k = 0; k < As.size(); ++k) {
-                    std::cout << "A" << k << ":" << std::endl;
-                    Eigen::Vector3f r = As[k].block<3,3>(0,0).eulerAngles(0, 1, 2);
-                    std::cout << "Euler angles: " << r.transpose() << std::endl;
-                    Eigen::Vector3f t = As[k].block<3,1>(0,3);
-                    std::cout << "translation: " << t.transpose() << std::endl << std::endl;
-                }
+                Eigen::Vector3f r = As[i].block<3,3>(0,0).eulerAngles(0, 1, 2);
+                Eigen::Vector3f t = As[i].block<3,1>(0,3);
+                std::cout << "A" << i << ": ";
+                std::cout << "Euler angles: " << r.transpose() << "   ";
+                std::cout << "Translation: " << t.transpose() << std::endl;
+                r = As[j].block<3,3>(0,0).eulerAngles(0, 1, 2);
+                t = As[j].block<3,1>(0,3);
+                std::cout << "A" << j << ": ";
+                std::cout << "Euler angles: " << r.transpose() << "   ";
+                std::cout << "Translation: " << t.transpose() << std::endl << std::endl;
+
                 return true;
             }
         }
@@ -126,6 +137,18 @@ bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
     return false;
 }
 
+/*!
+*  \brief      Check for collision with PQP library
+*  \author     Sascha Kaden
+*  \param[in]  PQP_Model one
+*  \param[in]  PQP_Model two
+*  \param[in]  rotation matrix one
+*  \param[in]  rotation matrix two
+*  \param[in]  translation vector one
+*  \param[in]  translation vector one
+*  \param[out] possibility of collision
+*  \date       2016-07-14
+*/
 bool CollisionDetection::checkPQP(shared_ptr<PQP_Model> model1, shared_ptr<PQP_Model> model2, Eigen::Matrix3f R1, Eigen::Matrix3f R2, Eigen::Vector3f t1, Eigen::Vector3f t2) {
     PQP_REAL pqpR1[3][3], pqpR2[3][3], pqpT1[3], pqpT2[3];
 
@@ -151,7 +174,7 @@ bool CollisionDetection::checkPQP(shared_ptr<PQP_Model> model1, shared_ptr<PQP_M
 /*!
 *  \brief      Check for vrep collision
 *  \author     Sascha Kaden
-*  \param[in]  vec
+*  \param[in]  Vec of angles
 *  \param[out] possibility of collision
 *  \date       2016-06-30
 */
