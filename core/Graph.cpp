@@ -29,7 +29,7 @@ void Graph::addNode(const shared_ptr<Node> &node) {
 * \param[in]  index
 * \date       2016-05-25
 */
-void Graph::removeNode(const int &index) {
+void Graph::removeNode(int index) {
     if (index < m_nodes.size()) {
         m_nodes.erase(m_nodes.begin() + index);
     }
@@ -75,6 +75,6 @@ shared_ptr<Node> Graph::getNearestNode(const shared_ptr<Node> &node) {
 * \param[out] list of nodes inside the range
 * \date       2016-05-25
 */
-std::vector<shared_ptr<Node>> Graph::getNearNodes(const shared_ptr<Node> node, const float &distance) {
+std::vector<shared_ptr<Node>> Graph::getNearNodes(const shared_ptr<Node> node, float distance) {
     return m_kdTree.searchRange(node->getVec(), distance);
 }

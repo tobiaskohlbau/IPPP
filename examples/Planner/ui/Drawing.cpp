@@ -20,7 +20,7 @@ Drawing::Drawing(int argc, char** argv)
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode, const Vec<uint8_t> &colorEdge, const int &thickness)
+void Drawing::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode, const Vec<uint8_t> &colorEdge, int thickness)
 {
     assert(nodes[0]->getDim() == 2);
 
@@ -43,7 +43,7 @@ void Drawing::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &im
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, const Vec<uint8_t> &colorPoint, const int &thickness)
+void Drawing::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, const Vec<uint8_t> &colorPoint, int thickness)
 {
     if (vecs.size() == 0)
         return;

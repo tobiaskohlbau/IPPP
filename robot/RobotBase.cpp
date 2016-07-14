@@ -35,7 +35,7 @@ RobotBase::RobotBase(std::string name, RobotType type, unsigned int dim, unsigne
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Eigen::Matrix4f RobotBase::getTrafo(const float &alpha, const float &a, const float &d, const float q) {
+Eigen::Matrix4f RobotBase::getTrafo(float alpha, float a, float d, const float q) {
     float sinAlpha = sin(alpha);
     float cosAlpha = cos(alpha);
     float sinQ = sin(q);
@@ -115,7 +115,7 @@ bool RobotBase::setCadModels(const std::vector<std::string> &files) {
 *  \param[out] PQP cad model
 *  \date       2016-06-30
 */
-std::shared_ptr<PQP_Model> RobotBase::getCadModel(const unsigned int &index) {
+std::shared_ptr<PQP_Model> RobotBase::getCadModel(unsigned int index) {
     if (index >= m_cadModels.size()) {
         this->sendMessage("model index is larger than cad models");
         return nullptr;

@@ -10,7 +10,7 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, const float &trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
         : Base(name){
     m_pathPlanned = false;
     m_stepSize = stepSize;

@@ -20,7 +20,7 @@ namespace rmpl {
 class Planner : public Base
 {
 public:
-    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const float &stepSize, const float &trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
+    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
     void set2DWorkspace(Eigen::MatrixXi space);
     std::vector<std::shared_ptr<Node>> getGraphNodes();

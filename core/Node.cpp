@@ -19,7 +19,7 @@ Node::Node()
 *  \param[in]  x
 *  \date       2016-05-24
 */
-Node::Node(const float &x)
+Node::Node(float x)
     : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x);
@@ -32,7 +32,7 @@ Node::Node(const float &x)
 *  \param[in]  y
 *  \date       2016-05-24
 */
-Node::Node(const float &x, const float &y)
+Node::Node(float x, float y)
     : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y);
@@ -46,7 +46,7 @@ Node::Node(const float &x, const float &y)
 *  \param[in]  z
 *  \date       2016-05-24
 */
-Node::Node(const float &x, const float &y, const float &z)
+Node::Node(float x, float y, float z)
     : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z);
@@ -61,7 +61,7 @@ Node::Node(const float &x, const float &y, const float &z)
 *  \param[in]  rx
 *  \date       2016-05-24
 */
-Node::Node(const float &x, const float &y, const float &z, const float &rx)
+Node::Node(float x, float y, float z, float rx)
     : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx);
@@ -77,7 +77,7 @@ Node::Node(const float &x, const float &y, const float &z, const float &rx)
 *  \param[in]  ry
 *  \date       2016-05-24
 */
-Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry)
+Node::Node(float x, float y, float z, float rx, float ry)
     : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry);
@@ -94,7 +94,7 @@ Node::Node(const float &x, const float &y, const float &z, const float &rx, cons
 *  \param[in]  rz
 *  \date       2016-05-24
 */
-Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz)
+Node::Node(float x, float y, float z, float rx, float ry, float rz)
     : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry, rz);
@@ -112,7 +112,7 @@ Node::Node(const float &x, const float &y, const float &z, const float &rx, cons
 *  \param[in]  wx
 *  \date       2016-07-14
 */
-Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx)
+Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx)
     : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry, rz, wx);
@@ -131,7 +131,7 @@ Node::Node(const float &x, const float &y, const float &z, const float &rx, cons
 *  \param[in]  wy
 *  \date       2016-07-14
 */
-Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx, const float &wy)
+Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy)
     : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry, rz, wx, wy);
@@ -151,7 +151,7 @@ Node::Node(const float &x, const float &y, const float &z, const float &rx, cons
 *  \param[in]  wz
 *  \date       2016-07-14
 */
-Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx, const float &wy, const float &wz)
+Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy, float wz)
     : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry, rz, wx, wy, wz);
@@ -226,7 +226,7 @@ bool Node::empty() const {
 *  \param[in]  index
 *  \date       2016-05-24
 */
-void Node::setVecValue(const float &value, const unsigned int &index) {
+void Node::setVecValue(float value, unsigned int index) {
     m_vec[index] = value;
 }
 
@@ -237,7 +237,7 @@ void Node::setVecValue(const float &value, const unsigned int &index) {
 *  \param[out] value
 *  \date       2016-05-24
 */
-float Node::getVecValue(const unsigned int &index) {
+float Node::getVecValue(unsigned int index) {
     return m_vec[index];
 }
 
@@ -296,7 +296,7 @@ float Node::getDistToParent() const {
 *  \param[in]  cost
 *  \date       2016-05-24
 */
-void Node::setCost(const float &cost) {
+void Node::setCost(float cost) {
     if (cost > 0)
         m_cost = cost;
 }

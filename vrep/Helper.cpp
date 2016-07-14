@@ -2,7 +2,7 @@
 
 using namespace rmpl;
 
-Helper::Helper(const unsigned int &dim)
+Helper::Helper(unsigned int dim)
         : Base("VREP Helper") {
     m_dim = dim;
     m_clientId = -1;

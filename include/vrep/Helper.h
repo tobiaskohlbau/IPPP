@@ -21,7 +21,7 @@ namespace rmpl {
 class Helper : public Base
 {
 public:
-    Helper(const unsigned int &dim);
+    Helper(unsigned int dim);
     void start();
     bool setPos(const Vec<float> &vec);
     bool checkCollision(const Vec<float> &jointAngles);

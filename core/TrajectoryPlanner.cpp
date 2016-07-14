@@ -10,7 +10,7 @@ using std::shared_ptr;
 *  \param[in]  pointer to ColllisionDetection instance
 *  \date       2016-05-25
 */
-TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, const float &stepSize, const shared_ptr<CollisionDetection> &collision)
+TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, float stepSize, const shared_ptr<CollisionDetection> &collision)
     : Base("TrajectoryPlanner") {
     m_method = method;
     m_collision = collision;
@@ -86,7 +86,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
 *  \param[in]  step size
 *  \date       2016-07-14
 */
-void TrajectoryPlanner::setStepSize(const float &stepSize) {
+void TrajectoryPlanner::setStepSize(float stepSize) {
     if (stepSize <= 0)
         this->sendMessage("Step size has to be larger than 0!", Message::info);
     else

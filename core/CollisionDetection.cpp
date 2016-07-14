@@ -77,7 +77,7 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
 *  \param[out] possibility of collision, true if in collision
 *  \date       2016-06-30
 */
-bool CollisionDetection::controlCollisionPointRobot(const float &x, const float &y) {
+bool CollisionDetection::controlCollisionPointRobot(float x, float y) {
     if (m_2Dworkspace.rows() == -1 && m_2Dworkspace.cols() == -1) {
         this->sendMessage("Empty workspace!");
         return false;
