@@ -8,6 +8,13 @@
 
 namespace rmpl{
 
+enum class Message
+{
+    info,
+    warning,
+    error
+};
+
 /*!
 * \brief   Base class of all modules
 * \detail  Will be used to send messages and adds the name of the class
@@ -19,7 +26,7 @@ class Base
 public:
     Base(const std::string &name);
     std::string getName();
-    void sendMessage(const std::string &message);
+    void sendMessage(const std::string &message, Message type = Message::info);
 
 protected:
     std::string m_name;
