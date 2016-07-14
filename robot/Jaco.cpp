@@ -49,15 +49,16 @@ Vec<float> Jaco::directKinematic(const Vec<float> &angles) {
     return getTcpPosition(trafos, basis);
 }
 
+/*!
+*  \brief      Get vector of Jaco transformation matrizes
+*  \author     Sascha Kaden
+*  \param[in]  real angles
+*  \param[out] vector of transformation matrizes
+*  \date       2016-07-14
+*/
 std::vector<Eigen::Matrix4f> Jaco::getTransformations(const Vec<float> &angles) {
     // transform form jaco physical angles to dh angles
-    Vec<float> dhAngles(angles);
-    dhAngles[0] = -angles[0];
-    dhAngles[1] = angles[1] - 90;
-    dhAngles[2] = angles[2] + 90;
-    dhAngles[4] = angles[4] - 180;
-    dhAngles[5] = angles[5] + 100;
-
+    Vec<float> dhAngles = convertRealToDH(angles);
     Vec<float> rads = this->degToRad(dhAngles);
 
     std::vector<Eigen::Matrix4f> trafos;
@@ -72,4 +73,23 @@ std::vector<Eigen::Matrix4f> Jaco::getTransformations(const Vec<float> &angles) 
         trafos.push_back(A);
     }
     return trafos;
+}
+
+/*!
+*  \brief      Convert real angles to D-H Angles
+*  \detail     This conversation is a kinova jaco own issue
+*  \author     Sascha Kaden
+*  \param[in]  real angles
+*  \param[out] D-H angles
+*  \date       2016-07-14
+*/
+Vec<float> Jaco::convertRealToDH(const Vec<float> &realAngles) {
+    Vec<float> dhAngles(realAngles);
+    dhAngles[0] = -realAngles[0];
+    dhAngles[1] = realAngles[1] - 90;
+    dhAngles[2] = realAngles[2] + 90;
+    dhAngles[4] = realAngles[4] - 180;
+    dhAngles[5] = realAngles[5] + 100;
+
+    return dhAngles;
 }
