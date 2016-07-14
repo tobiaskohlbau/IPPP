@@ -23,6 +23,8 @@ public:
     TrajectoryPlanner(const TrajectoryMethod &method, const float &stepSize, const std::shared_ptr<CollisionDetection> &collision);
     bool controlTrajectory(const Vec<float> &source, const Vec<float> &target);
     std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target);
+    void setStepSize(const float &stepSize);
+    float getStepSize();
 
 private:
     TrajectoryMethod m_method;
