@@ -101,6 +101,63 @@ Node::Node(const float &x, const float &y, const float &z, const float &rx, cons
 }
 
 /*!
+*  \brief      Constructor of the class Node (6D)
+*  \author     Sascha Kaden
+*  \param[in]  x
+*  \param[in]  y
+*  \param[in]  z
+*  \param[in]  rx
+*  \param[in]  ry
+*  \param[in]  rz
+*  \param[in]  wx
+*  \date       2016-07-14
+*/
+Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx)
+    : Base("Node") {
+    m_cost = 0;
+    m_vec = Vec<float>(x, y, z, rx, ry, rz, wx);
+}
+
+/*!
+*  \brief      Constructor of the class Node (6D)
+*  \author     Sascha Kaden
+*  \param[in]  x
+*  \param[in]  y
+*  \param[in]  z
+*  \param[in]  rx
+*  \param[in]  ry
+*  \param[in]  rz
+*  \param[in]  wx
+*  \param[in]  wy
+*  \date       2016-07-14
+*/
+Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx, const float &wy)
+    : Base("Node") {
+    m_cost = 0;
+    m_vec = Vec<float>(x, y, z, rx, ry, rz, wx, wy);
+}
+
+/*!
+*  \brief      Constructor of the class Node (6D)
+*  \author     Sascha Kaden
+*  \param[in]  x
+*  \param[in]  y
+*  \param[in]  z
+*  \param[in]  rx
+*  \param[in]  ry
+*  \param[in]  rz
+*  \param[in]  wx
+*  \param[in]  wy
+*  \param[in]  wz
+*  \date       2016-07-14
+*/
+Node::Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx, const float &wy, const float &wz)
+    : Base("Node") {
+    m_cost = 0;
+    m_vec = Vec<float>(x, y, z, rx, ry, rz, wx, wy, wz);
+}
+
+/*!
 *  \brief      Constructor of the class Node
 *  \author     Sascha Kaden
 *  \param[in]  Vector

@@ -26,6 +26,9 @@ public:
     Node(const float &x, const float &y, const float &z, const float &rx);
     Node(const float &x, const float &y, const float &z, const float &rx, const float &ry);
     Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz);
+    Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx);
+    Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx, const float &wy);
+    Node(const float &x, const float &y, const float &z, const float &rx, const float &ry, const float &rz, const float &wx, const float &wy, const float &wz);
     Node(const Vec<float> &vec);
 
     float getX() const;
