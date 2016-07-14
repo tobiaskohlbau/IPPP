@@ -17,20 +17,20 @@ class Vec
 {
 public:
     Vec();
-    Vec(const T &x);
-    Vec(const T &x, const T &y);
-    Vec(const T &x, const T &y, const T &z);
-    Vec(const T &x, const T &y, const T &z, const T &rx);
-    Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry);
-    Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz);
-    Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx);
-    Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx, const T &wy);
-    Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx, const T &wy, const T &wz);
-    Vec(const unsigned int &dim);
-    Vec(const unsigned int &dim, const T data[]);
+    Vec(T x);
+    Vec(T x, T y);
+    Vec(T x, T y, T z);
+    Vec(T x, T y, T z, T rx);
+    Vec(T x, T y, T z, T rx, T ry);
+    Vec(T x, T y, T z, T rx, T ry, T rz);
+    Vec(T x, T y, T z, T rx, T ry, T rz, T wx);
+    Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy);
+    Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy, T wz);
+    Vec(unsigned int dim);
+    Vec(unsigned int dim, const T data[]);
     Vec(const Vec<T> &vec);
 
-    void setAllTo(const T &value);
+    void setAllTo(T value);
     void append(Vec<T> vec);
 
     unsigned int getDim() const;
@@ -41,12 +41,12 @@ public:
     T getSqDist(const Vec<T> &vec) const;
     void print();
 
-    inline T& operator [] (const unsigned int index) {
+    inline T& operator [] (unsigned int index) {
         assert (index < m_dim);
         return m_data[index];
     }
 
-    inline const T& operator [] (const unsigned int index) const {
+    inline const T& operator [] (unsigned int index) const {
         assert (index < m_dim);
         return m_data[index];
     }
@@ -69,7 +69,7 @@ public:
         return *this;
     }
 
-    Vec<T>& operator += (const T scalar) {
+    Vec<T>& operator += (T scalar) {
         for (unsigned int i = 0; i < m_dim; ++i)
             m_data[i] += scalar;
         return *this;
@@ -90,7 +90,7 @@ public:
         return *this;
     }
 
-    Vec& operator -= (const T scalar) {
+    Vec& operator -= (T scalar) {
         for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] -= scalar;
         return *this;
@@ -104,27 +104,27 @@ public:
         return result;
     }
 
-    Vec operator + (const T &s) const {
+    Vec operator + (T s) const {
         Vec<T> result(*this);
         for (unsigned int i = 0; i < m_dim; ++i)
             result[i] += s;
         return result;
     }
 
-    Vec operator - (const T &s) const {
+    Vec operator - (T s) const {
         Vec<T> result(*this);
         for (unsigned int i = 0; i < m_dim; ++i)
             result[i] -= s;
         return result;
     }
 
-    Vec& operator *= (const T s) {
+    Vec& operator *= (T s) {
         for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] *= s;
         return *this;
     }
 
-    Vec operator * (const T &s) const {
+    Vec operator * (T s) const {
         Vec result = Vec<T>::zeros(m_dim);
         for (unsigned int i = 0; i < m_dim; ++i)
             result[i] = (*this)[i] * s;
@@ -139,13 +139,13 @@ public:
         return result;
     }
 
-    Vec& operator /= (const T &s) {
+    Vec& operator /= (T s) {
         for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] /= s;
         return *this;
     }
 
-    Vec operator / (const T &s) const {
+    Vec operator / (T s) const {
         Vec result = Vec<T>::zeros(m_dim);
         for (unsigned int i = 0; i < m_dim; ++i)
             result[i] = (*this)[i] / s;
@@ -186,7 +186,7 @@ Vec<T>::Vec() {
 *  \date       2016-05-24
 */
 template<typename T>
-Vec<T>::Vec(const unsigned int &dim) {
+Vec<T>::Vec(unsigned int dim) {
     m_dim = dim;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     for (unsigned int i = 0; i < m_dim; ++i)
@@ -200,7 +200,7 @@ Vec<T>::Vec(const unsigned int &dim) {
 *  \date       2016-05-24
 */
 template<typename T>
-Vec<T>::Vec(const T &x) {
+Vec<T>::Vec(T x) {
     m_dim = 1;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
@@ -214,7 +214,7 @@ Vec<T>::Vec(const T &x) {
 *  \date       2016-05-24
 */
 template<typename T>
-Vec<T>::Vec(const T &x, const T &y) {
+Vec<T>::Vec(T x, T y) {
     m_dim = 2;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
@@ -230,7 +230,7 @@ Vec<T>::Vec(const T &x, const T &y) {
 *  \date       2016-05-24
 */
 template<typename T>
-Vec<T>::Vec(const T &x, const T &y, const T &z) {
+Vec<T>::Vec(T x, T y, T z) {
     m_dim = 3;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
@@ -248,7 +248,7 @@ Vec<T>::Vec(const T &x, const T &y, const T &z) {
 *  \date       2016-05-24
 */
 template<typename T>
-Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx) {
+Vec<T>::Vec(T x, T y, T z, T rx) {
     m_dim = 4;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
@@ -268,7 +268,7 @@ Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx) {
 *  \date       2016-05-24
 */
 template<typename T>
-Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry) {
+Vec<T>::Vec(T x, T y, T z, T rx, T ry) {
     m_dim = 5;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
@@ -290,7 +290,7 @@ Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry) {
 *  \date       2016-05-24
 */
 template<typename T>
-Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz) {
+Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz) {
     m_dim = 6;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
@@ -314,7 +314,7 @@ Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const 
 *  \date       2016-07-13
 */
 template<typename T>
-Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx) {
+Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx) {
     m_dim = 7;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
@@ -340,7 +340,7 @@ Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const 
 *  \date       2016-07-13
 */
 template<typename T>
-Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx, const T &wy) {
+Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy) {
     m_dim = 8;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
@@ -368,7 +368,7 @@ Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const 
 *  \date       2016-07-13
 */
 template<typename T>
-Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const T &rz, const T &wx, const T &wy, const T &wz) {
+Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy, T wz) {
     m_dim = 9;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
     m_data[0] = x;
@@ -390,7 +390,7 @@ Vec<T>::Vec(const T &x, const T &y, const T &z, const T &rx, const T &ry, const 
 *  \date       2016-05-24
 */
 template<typename T>
-Vec<T>::Vec(const unsigned int &dim, const T data[]) {
+Vec<T>::Vec(unsigned int dim, const T data[]) {
     m_dim = m_dim;
     for (unsigned int i = 0; i < m_dim; ++i)
         (*this)[i] = data[i];
@@ -414,7 +414,7 @@ Vec<T>::Vec(const Vec<T> &vec) {
 *  \date       2016-05-24
 */
 template<typename T>
-void Vec<T>::setAllTo(const T &value) {
+void Vec<T>::setAllTo(T value) {
     for (unsigned int i = 0; i < m_dim; ++i)
         (*this)[i] = value;
 }
