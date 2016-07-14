@@ -87,7 +87,7 @@ void planning6D() {
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(50000);
+    planner.computeTree(5000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;

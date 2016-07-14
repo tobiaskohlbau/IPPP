@@ -1,7 +1,6 @@
 #ifndef CADFILELOADER_H_
 #define CADFILELOADER_H_
 
-#include <string>
 #include <vector>
 
 #include <PQP/include/PQP.h>
