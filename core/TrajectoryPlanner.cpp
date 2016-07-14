@@ -16,7 +16,7 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, const float
     m_collision = collision;
 
     if (stepSize <= 0) {
-        this->sendMessage("Step size has to be larger than 0!");
+        this->sendMessage("Step size has to be larger than 0!", Message::info);
         m_stepSize = -1;
     }
     else {
@@ -39,7 +39,7 @@ bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<fl
         return false;
     }
     else if (m_stepSize == -1) {
-        this->sendMessage("Step size is not set!");
+        this->sendMessage("Step size is not set!", Message::error);
         return false;
     }
 
@@ -62,11 +62,11 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     std::vector<Vec<float>> vecs;
 
     if (source.getDim() != target.getDim()) {
-        this->sendMessage("Nodes/Vecs have different dimensions");
+        this->sendMessage("Nodes/Vecs have different dimensions", Message::error);
         return vecs;
     }
     else if (m_stepSize == -1) {
-        this->sendMessage("Step size is not set!");
+        this->sendMessage("Step size is not set!", Message::error);
         return vecs;
     }
 
@@ -80,11 +80,25 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     return vecs;
 }
 
+/*!
+*  \brief      Set step size, if it is larger than zero
+*  \author     Sascha Kaden
+*  \param[in]  step size
+*  \date       2016-07-14
+*/
 void TrajectoryPlanner::setStepSize(const float &stepSize) {
-    if (stepSize <= 0) {
-        this->sendMessage("Step size has to be larger than 0!");
-    }
-    else {
+    if (stepSize <= 0)
+        this->sendMessage("Step size has to be larger than 0!", Message::info);
+    else
         m_stepSize = stepSize;
-    }
+}
+
+/*!
+*  \brief      Return step size
+*  \author     Sascha Kaden
+*  \param[out] step size
+*  \date       2016-07-14
+*/
+float TrajectoryPlanner::getStepSize() {
+    return m_stepSize;
 }
