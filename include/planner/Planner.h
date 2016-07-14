@@ -43,7 +43,6 @@ protected:
     // variables
     bool         m_pathPlanned;
     float        m_stepSize;
-    Eigen::MatrixXi m_workspace;
     Vec<float>   m_maxBoundary;
     Vec<float>   m_minBoundary;
 };

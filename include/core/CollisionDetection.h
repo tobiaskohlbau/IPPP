@@ -23,8 +23,6 @@ public:
     bool controlCollision(const Vec<float> &vec);
     bool controlCollision(const std::vector<Vec<float>> &vec);
 
-    void set2DWorkspace(Eigen::MatrixXi space);
-    Eigen::MatrixXi get2DWorkspace() const;
 private:
     bool controlCollisionPQP(const Vec<float> &vec);
     bool checkPQP(std::shared_ptr<PQP_Model> model1, std::shared_ptr<PQP_Model> model2, Eigen::Matrix3f R1, Eigen::Matrix3f R2, Eigen::Vector3f t1, Eigen::Vector3f t2);
@@ -34,7 +32,7 @@ private:
 
     std::shared_ptr<RobotBase> m_robot;
     std::shared_ptr<Helper>    m_vrep;
-    Eigen::MatrixXi m_2Dworkspace;
+    Eigen::MatrixXi m_2DWorkspace;
 };
 
 } /* namespace rmpl */

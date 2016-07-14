@@ -58,6 +58,7 @@ bool RRTPlanner::computeTree(int nbOfNodes)
     for (int i = 0; i < nbOfNodes; ++i)
     {
         shared_ptr<Node> newNode;
+
         // compute randomly sample
         Vec<float> randVec = this->m_sampler->getSample(m_robot->getDim(), i, nbOfNodes);
 

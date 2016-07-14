@@ -27,17 +27,6 @@ Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robo
 }
 
 /*!
-*  \brief      Set 2D workspace to Planner and CollisionDetection
-*  \author     Sascha Kaden
-*  \param[in]  2D workspace
-*  \date       2016-05-27
-*/
-void Planner::set2DWorkspace(Eigen::MatrixXi space) {
-    m_workspace = space;
-    m_collision->set2DWorkspace(m_workspace);
-}
-
-/*!
 *  \brief      Set configuration space boundaries
 *  \author     Sascha Kaden
 *  \param[in]  minimum Boudaries
@@ -94,11 +83,6 @@ std::shared_ptr<Helper> Planner::getVrep() const {
 bool Planner::controlConstraints() {
     if (m_minBoundary.empty() || m_maxBoundary.empty()) {\
         this->sendMessage("Boundaries are Empty!");
-        return false;
-    }
-
-    if (m_robot->getDim() == 2 && this->m_workspace.rows() == -1 && this->m_workspace.cols() == -1) {
-        this->sendMessage("2D workspace is empty!");
         return false;
     }
     else {

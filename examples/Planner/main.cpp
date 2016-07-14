@@ -18,11 +18,12 @@
 
 void planning2D() {
     cv::Mat freeWorkspace, obstacleWorkspace;
-    freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    freeWorkspace = cv::imread("/home/sascha/projects/Planner/spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    obstacleWorkspace = cv::imread("/home/sascha/projects/Planner/spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
     cv::Mat dst;
     obstacleWorkspace.convertTo(dst, CV_32SC1);
+
     int rows = dst.rows;
     int cols = dst.cols;
     Eigen::MatrixXi mat(rows, cols);
@@ -38,6 +39,7 @@ void planning2D() {
     mat = Eigen::MatrixXi::Map(&entries[0], rows, cols);
 
     std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
+    robot->set2DWorkspace(mat);
     rmpl::StarRRTPlanner planner(robot, 30.0, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     rmpl::NormalRRTPlanner planner2(robot, 30.0, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
@@ -45,12 +47,11 @@ void planning2D() {
     rmpl::Vec<float> minBoundary(0.0,0.0);
     rmpl::Vec<float> maxBoundary(rows, cols);
     planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
-    planner.set2DWorkspace(mat); // only be used by 2D
     planner.setInitNode(rmpl::Node(10.0, 10.0));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(4000);
+    planner.computeTree(10000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
@@ -87,7 +88,7 @@ void planning6D() {
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(5000);
+    planner.computeTree(10000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;
