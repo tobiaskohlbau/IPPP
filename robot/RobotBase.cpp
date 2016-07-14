@@ -5,6 +5,7 @@
 #include <Eigen/Geometry>
 
 using namespace rmpl;
+using std::shared_ptr;
 
 /*!
 *  \brief      Constructor of the class RobotBase
@@ -35,7 +36,7 @@ RobotBase::RobotBase(std::string name, RobotType type, unsigned int dim, unsigne
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Eigen::Matrix4f RobotBase::getTrafo(float alpha, float a, float d, const float q) {
+Eigen::Matrix4f RobotBase::getTrafo(float alpha, float a, float d, float q) {
     float sinAlpha = sin(alpha);
     float cosAlpha = cos(alpha);
     float sinQ = sin(q);
@@ -101,9 +102,16 @@ Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos,
 */
 bool RobotBase::setCadModels(const std::vector<std::string> &files) {
     m_cadFiles = files;
+    m_cadModels.clear();
 
-    for (auto file : files)
-        m_cadModels.push_back(m_fileLoader->loadFile(file));
+    std::shared_ptr<PQP_Model> model;
+    for (auto file : files) {
+        model = m_fileLoader->loadFile(file);
+        if (model == nullptr)
+            return false;
+        else
+            m_cadModels.push_back(model);
+    }
 
     return true;
 }
@@ -123,6 +131,59 @@ std::shared_ptr<PQP_Model> RobotBase::getCadModel(unsigned int index) {
     else {
         return m_cadModels[index];
     }
+}
+
+/*!
+*  \brief      Set workspace to robot
+*  \author     Sascha Kaden
+*  \param[in]  file of workspace cad
+*  \date       2016-07-14
+*/
+bool RobotBase::setWorkspace(const std::string &workspaceFile) {
+    shared_ptr<PQP_Model> model = m_fileLoader->loadFile(workspaceFile);
+    if (model == nullptr)
+        return false;
+
+    m_workspaceFile = workspaceFile;
+    m_workspaceCad = model;
+    return true;
+}
+
+/*!
+*  \brief      Return workspace of robot
+*  \author     Sascha Kaden
+*  \param[out] pointer to PQP_Model
+*  \date       2016-07-14
+*/
+shared_ptr<PQP_Model> RobotBase::getWorkspace() {
+    if (m_workspaceCad != nullptr) {
+        this->sendMessage("workspace is not set!", Message::error);
+        return m_workspaceCad;
+    }
+    else {
+        return nullptr;
+    }
+}
+
+/*!
+*  \brief      Set 2D workspace to robot
+*  \author     Sascha Kaden
+*  \param[in]  2D workspace
+*  \date       2016-07-14
+*/
+bool RobotBase::set2DWorkspace(const Eigen::MatrixXi &workspace) {
+    m_2DWorkspace = workspace;
+    return true;
+}
+
+/*!
+*  \brief      Return 2D workspace of robot
+*  \author     Sascha Kaden
+*  \param[out] 2D workspace
+*  \date       2016-07-14
+*/
+Eigen::MatrixXi& RobotBase::get2DWorkspace() {
+    return m_2DWorkspace;
 }
 
 /*!

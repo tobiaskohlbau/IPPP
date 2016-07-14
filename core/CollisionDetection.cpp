@@ -16,6 +16,9 @@ CollisionDetection::CollisionDetection(const shared_ptr<Helper> &vrep, const sha
         : Base("CollisionDetection") {
     m_robot = robot;
     m_vrep = vrep;
+
+    if (m_robot->getType() == RobotType::POINT_ROBOT)
+        m_2DWorkspace = m_robot->get2DWorkspace();
 }
 
 /*!
@@ -78,12 +81,12 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
 *  \date       2016-06-30
 */
 bool CollisionDetection::controlCollisionPointRobot(float x, float y) {
-    if (m_2Dworkspace.rows() == -1 && m_2Dworkspace.cols() == -1) {
+    if (m_2DWorkspace.rows() == -1) {
         this->sendMessage("Empty workspace!");
         return false;
     }
 
-    if (m_2Dworkspace(x,y) < 30) {
+    if (m_2DWorkspace(x,y) < 30) {
         return true;
     }
     else {
@@ -109,10 +112,12 @@ bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
 
     Eigen::Matrix3f R1, R2;
     Eigen::Vector3f t1, t2;
+    // control collision of the robot with itself
     for (int i = 0; i < As.size(); ++i) {
         // get R and t from A for first model
         R1 = As[i].block<3,3>(0,0);
         t1 = As[i].block<3,1>(0,3);
+
         for (int j = i + 2; j < As.size(); ++j) {
             // get R and t from A for second model
             R2 = As[j].block<3,3>(0,0);
@@ -134,6 +139,25 @@ bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
             }
         }
     }
+
+    // control collision with workspace
+    shared_ptr<PQP_Model> workspace = m_robot->getWorkspace();
+    if (workspace != nullptr) {
+        R2 = Eigen::Matrix3f::Zero(3,3);
+        for (int i = 0; i < 3; ++i) {
+            R2(i,i) = 1;
+            t2(i) = 0;
+        }
+
+        for (int i = 0; i < As.size(); ++i) {
+            // get R and t from A for first model
+            R1 = As[i].block<3,3>(0,0);
+            t1 = As[i].block<3,1>(0,3);
+            if (checkPQP(m_robot->getCadModel(i), workspace, R1, R2, t1, t2))
+                return true;
+        }
+    }
+
     return false;
 }
 
@@ -193,29 +217,4 @@ bool CollisionDetection::controlCollisionVrep(const Vec<float> &vec) {
 bool CollisionDetection::controlCollisionVrep(const std::vector<Vec<float>> &vecs) {
     assert(vecs[0].getDim() == 6);
     return m_vrep->checkCollision(vecs);
-}
-
-/*!
-*  \brief      Set workspace for 2D collision check
-*  \author     Sascha Kaden
-*  \param[in]  workspace
-*  \date       2016-05-25
-*/
-void CollisionDetection::set2DWorkspace(Eigen::MatrixXi space) {
-    if (this->m_2Dworkspace.rows() == -1 || this->m_2Dworkspace.cols() == -1) {
-        this->sendMessage("Empty space given!");
-        return;
-    }
-
-    m_2Dworkspace = space;
-}
-
-/*!
-*  \brief      Return workspace for 2D collision
-*  \author     Sascha Kaden
-*  \param[out] workspace
-*  \date       2016-05-25
-*/
-Eigen::MatrixXi CollisionDetection::get2DWorkspace() const {
-    return m_2Dworkspace;
 }
