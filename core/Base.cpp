@@ -26,9 +26,17 @@ std::string Base::getName() {
 *  \brief      Send message to the console with the name
 *  \author     Sasch Kaden
 *  \param[in]  message
-*  \date       2016-05-30
+*  \param[in]  message type
+*  \date       2016-07-14
 */
-void Base::sendMessage(const std::string &message) {
+void Base::sendMessage(const std::string &message, Message type) {
+    if (type == Message::warning)
+        std::cout << "Warning - ";
+    else if (type == Message::error)
+        std::cout << "Error - ";
+    else
+        std::cout << "Info - ";
+
     std::cout << m_name << ": ";
     std::cout << message << std::endl;
 }
