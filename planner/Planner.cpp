@@ -17,41 +17,13 @@ Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robo
 
     m_robot = robot;
     m_graph = std::shared_ptr<Graph>(new Graph());
-    m_sampler = std::shared_ptr<Sampling>(new Sampling(sampling));
+    m_sampler = std::shared_ptr<Sampling>(new Sampling(m_robot, sampling));
     m_vrep = std::shared_ptr<Helper>(new Helper(m_robot->getDim()));
     m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_vrep, m_robot));
     m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(trajectory, trajectoryStepSize, m_collision));
 
     //if (m_robot->getDim() != 2)
     //    m_vrep->start();
-}
-
-/*!
-*  \brief      Set configuration space boundaries
-*  \author     Sascha Kaden
-*  \param[in]  minimum Boudaries
-*  \param[in]  maximum Boudaries
-*  \date       2016-05-27
-*/
-void Planner::setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary) {
-    if (minBoundary.empty() || maxBoundary.empty()) {
-        this->sendMessage("No boundaries set");
-        return;
-    }
-    else if (minBoundary.getDim() != maxBoundary.getDim()) {
-        this->sendMessage("Boudaries have different dimensions");
-        return;
-    }
-
-    for (unsigned int i = 0; i < m_robot->getDim(); ++i) {
-        if (minBoundary[i] > maxBoundary[i]) {
-            this->sendMessage("Min boundary is larger than max boundary");
-            return;
-        }
-    }
-    m_maxBoundary = maxBoundary;
-    m_minBoundary = minBoundary;
-    m_sampler->setBoundaries(minBoundary, maxBoundary);
 }
 
 /*!
@@ -81,11 +53,5 @@ std::shared_ptr<Helper> Planner::getVrep() {
 *  \date       2016-05-27
 */
 bool Planner::controlConstraints() {
-    if (m_minBoundary.empty() || m_maxBoundary.empty()) {\
-        this->sendMessage("Boundaries are Empty!");
-        return false;
-    }
-    else {
-        return true;
-    }
+    return true;
 }

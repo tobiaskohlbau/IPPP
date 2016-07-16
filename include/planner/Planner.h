@@ -22,11 +22,9 @@ class Planner : public Base
 public:
     Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
-    void set2DWorkspace(Eigen::MatrixXi space);
     std::vector<std::shared_ptr<Node>> getGraphNodes();
     virtual std::vector<Vec<float>> getPath() = 0;
     virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
-    void setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary);
     std::shared_ptr<Helper> getVrep();
 
 protected:
@@ -43,8 +41,6 @@ protected:
     // variables
     bool         m_pathPlanned;
     float        m_stepSize;
-    Vec<float>   m_maxBoundary;
-    Vec<float>   m_minBoundary;
 };
 
 } /* namespace rmpl */

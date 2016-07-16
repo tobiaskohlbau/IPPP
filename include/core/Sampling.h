@@ -6,8 +6,8 @@
 #include <time.h>
 
 #include <core/Base.h>
-#include <core/Node.h>
 #include <core/Vec.hpp>
+#include <robot/RobotBase.h>
 
 namespace rmpl{
 
@@ -27,16 +27,16 @@ enum SamplingMethod
 class Sampling : public Base
 {
 public:
-    Sampling(const SamplingMethod &method = SamplingMethod::randomly);
+    Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
     Vec<float> getSample(unsigned int dim, int index, int nbSamples);
-    void setBoundaries(const Vec<float> &maxBoundary, const Vec<float> &minBoundary);
 
 private:
     bool checkBoudaries();
 
-    Vec<float> m_maxBoundary;
     Vec<float> m_minBoundary;
+    Vec<float> m_maxBoundary;
     SamplingMethod m_method;
+    std::shared_ptr<RobotBase> m_robot;
 };
 
 } /* namespace rmpl */
