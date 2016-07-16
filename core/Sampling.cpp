@@ -5,12 +5,18 @@ using namespace rmpl;
 /*!
 *  \brief      Constructor of the class Sampling
 *  \author     Sascha Kaden
+*  \param[in]  robot
 *  \param[in]  SamplingMethod
 *  \date       2016-05-24
 */
-Sampling::Sampling(const SamplingMethod &method)
+Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
     : Base("Sampling") {
     m_method = method;
+    m_robot = robot;
+
+    m_minBoundary = m_robot->getMinBoundary();
+    m_maxBoundary = m_robot->getMaxBoundary();
+
     srand(time(NULL));
 }
 
@@ -38,36 +44,14 @@ Vec<float> Sampling::getSample(unsigned int dim, int index, int nbSamples) {
 }
 
 /*!
-*  \brief      Set minimum and maximum boundaries of configuration space
-*  \author     Sascha Kaden
-*  \param[in]  minimum boundaries
-*  \param[in]  maximum boundaries
-*  \date       2016-05-24
-*/
-void Sampling::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &maxBoundary) {
-    if (minBoundary.getDim() != maxBoundary.getDim()) {
-        this->sendMessage("Boudaries have different dimensions");
-        return;
-    }
-    for (unsigned int i = 0; i < minBoundary.getDim(); ++i) {
-        if (minBoundary[i] > maxBoundary[i]) {
-            this->sendMessage("Min boundary is larger than max boundary");
-            return;
-        }
-    }
-    m_maxBoundary = maxBoundary;
-    m_minBoundary = minBoundary;
-}
-
-/*!
 *  \brief      Check boundary existence
 *  \author     Sascha Kaden
 *  \param[out] result of check
 *  \date       2016-05-24
 */
 bool Sampling::checkBoudaries() {
-    if (m_maxBoundary.empty() || m_minBoundary.empty()) {
-        this->sendMessage("Boundaries are empty");
+    if (m_minBoundary.empty() || m_maxBoundary.empty()) {
+        this->sendMessage("Boundaries are empty", Message::error);
         return false;
     }
     return true;

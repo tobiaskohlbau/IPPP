@@ -31,14 +31,12 @@ public:
 
     virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
     virtual std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles) = 0;
-
-    unsigned int getDim();
-    unsigned int getNbJoints();
-    std::string getName();
-    RobotType getType();
-
     Eigen::Matrix4f getTrafo(float alpha, float a, float d, float q);
     Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis);
+
+    void setBoundaries(const Vec<float> &minBoundary, const Vec<float> &maxBoundary);
+    Vec<float> getMinBoundary();
+    Vec<float> getMaxBoundary();
 
     bool setCadModels(const std::vector<std::string> &files);
     std::shared_ptr<PQP_Model> getCadModel(unsigned int index);
@@ -46,6 +44,11 @@ public:
     std::shared_ptr<PQP_Model> getWorkspace();
     bool set2DWorkspace(const Eigen::MatrixXi &space);
     Eigen::MatrixXi& get2DWorkspace();
+
+    unsigned int getDim();
+    unsigned int getNbJoints();
+    std::string getName();
+    RobotType getType();
 
     Vec<float> degToRad(const Vec<float> deg);
     Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
@@ -59,6 +62,8 @@ protected:
     unsigned int m_nbJoints;
     unsigned int m_dim;
 
+    Vec<float> m_minBoundary;
+    Vec<float> m_maxBoundary;
     Vec<float> m_alpha;
     Vec<float> m_a;
     Vec<float> m_d;

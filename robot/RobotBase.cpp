@@ -94,6 +94,54 @@ Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos,
 }
 
 /*!
+*  \brief      Set boundaries of the robot
+*  \author     Sascha Kaden
+*  \param[in]  minimum Boudaries
+*  \param[in]  maximum Boudaries
+*  \date       2016-07-15
+*/
+void RobotBase::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &maxBoundary) {
+    if (minBoundary.empty() || maxBoundary.empty()) {
+        this->sendMessage("Boundaries are empty", Message::warning);
+        return;
+    }
+    else if (minBoundary.getDim() != m_dim || maxBoundary.getDim() != m_dim) {
+        this->sendMessage("Boudaries have different dimensions from the robot!", Message::warning);
+        return;
+    }
+
+    for (unsigned int i = 0; i < m_dim; ++i) {
+        if (minBoundary[i] > maxBoundary[i]) {
+            this->sendMessage("Min boundary is larger than max boundary!", Message::warning);
+            return;
+        }
+    }
+
+    m_maxBoundary = maxBoundary;
+    m_minBoundary = minBoundary;
+}
+
+/*!
+*  \brief      Get minimum boundary of the robot
+*  \author     Sascha Kaden
+*  \param[out] minimum Boudaries
+*  \date       2016-07-15
+*/
+Vec<float> RobotBase::getMinBoundary() {
+    return m_minBoundary;
+}
+
+/*!
+*  \brief      Get maximum boundary of the robot
+*  \author     Sascha Kaden
+*  \param[out] maximum Boudaries
+*  \date       2016-07-15
+*/
+Vec<float> RobotBase::getMaxBoundary() {
+    return m_maxBoundary;
+}
+
+/*!
 *  \brief      Load cad models from given string vector and save them intern
 *  \author     Sascha Kaden
 *  \param[in]  vector of file strings

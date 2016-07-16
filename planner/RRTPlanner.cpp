@@ -22,15 +22,10 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
 */
 bool RRTPlanner::setInitNode(const Node &node) {
     this->controlConstraints();
-    for (unsigned int i = 0; i < this->m_robot->getDim(); ++i)
-        if (node.getVec()[i] < this->m_minBoundary[i] || node.getVec()[i] > this->m_maxBoundary[i]) {
-            this->sendMessage("Init node could not be connected");
-            return false;
-        }
 
     shared_ptr<Node> initNode(new Node(node));
     if (this->m_collision->controlCollision(initNode->getVec())) {
-        this->sendMessage("Init node could not be connected");
+        this->sendMessage("Init node could not be connected", Message::warning);
         return false;
     }
 
@@ -51,7 +46,7 @@ bool RRTPlanner::computeTree(int nbOfNodes)
     if (!this->controlConstraints())
         return false;
     if (m_initNode == nullptr) {
-        this->sendMessage("Init node is not connected");
+        this->sendMessage("Init node is not connected", Message::warning);
         return false;
     }
 
@@ -103,12 +98,12 @@ bool RRTPlanner::connectGoalNode(const Node &goal) {
         m_goalNode = goalNode;
         goalNode->setParent(nearestNode);
         this->m_graph->addNode(goalNode);
-        this->sendMessage("Goal Node is connected");
+        this->sendMessage("Goal Node is connected", Message::info);
         this->m_pathPlanned = true;
         return true;
     }
 
-    this->sendMessage("Goal Node is NOT connected");
+    this->sendMessage("Goal Node is NOT connected", Message::warning);
 
     return false;
 }
@@ -130,7 +125,7 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
         nodes.push_back(temp);
         temp = temp->getParent();
     }
-    this->sendMessage("Path has: " + std::to_string(nodes.size()) + " nodes");
+    this->sendMessage("Path has: " + std::to_string(nodes.size()) + " nodes", Message::info);
     return nodes;
 }
 
@@ -143,7 +138,7 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
 std::vector<Vec<float>> RRTPlanner::getPath() {
     std::vector<Vec<float>> path;
     if (!this->m_pathPlanned) {
-        this->sendMessage("Path is not complete");
+        this->sendMessage("Path is not complete", Message::warning);
         return path;
     }
 
@@ -156,7 +151,7 @@ std::vector<Vec<float>> RRTPlanner::getPath() {
         }
         temp = temp->getParent();
     }
-    this->sendMessage("Path has: " + std::to_string(path.size()) + " points");
+    this->sendMessage("Path has: " + std::to_string(path.size()) + " points", Message::info);
     return path;
 }
 

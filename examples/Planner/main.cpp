@@ -40,17 +40,16 @@ void planning2D() {
 
     std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
     robot->set2DWorkspace(mat);
+    rmpl::Vec<float> minBoundary(0.0,0.0);
+    rmpl::Vec<float> maxBoundary(rows, cols);
+    robot->setBoundaries(minBoundary, maxBoundary);
+
     rmpl::StarRRTPlanner planner(robot, 30.0, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     rmpl::NormalRRTPlanner planner2(robot, 30.0, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
-    // set properties to the planner
-    rmpl::Vec<float> minBoundary(0.0,0.0);
-    rmpl::Vec<float> maxBoundary(rows, cols);
-    planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
-    planner.setInitNode(rmpl::Node(10.0, 10.0));
-
     // compute the tree
     clock_t begin = std::clock();
+    planner.setInitNode(rmpl::Node(10.0, 10.0));
     planner.computeTree(10000);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
@@ -77,13 +76,15 @@ void planning2D() {
 
 void planning6D() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
+    rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
+    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
+    robot->setBoundaries(minBoundary, maxBoundary);
+
+
     rmpl::NormalRRTPlanner planner(robot, 0.5, 80.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
-    rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
-    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
-    planner.setWorkspaceBoundaries(minBoundary, maxBoundary);
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 
     // compute the tree
