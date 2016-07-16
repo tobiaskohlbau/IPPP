@@ -32,10 +32,10 @@ public:
     virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
     virtual std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles) = 0;
 
-    unsigned int getDim() const;
-    unsigned int getNbJoints() const;
-    std::string getName() const;
-    RobotType getType() const;
+    unsigned int getDim();
+    unsigned int getNbJoints();
+    std::string getName();
+    RobotType getType();
 
     Eigen::Matrix4f getTrafo(float alpha, float a, float d, float q);
     Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis);

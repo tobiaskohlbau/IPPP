@@ -34,7 +34,7 @@ Edge::Edge(const shared_ptr<Node> &source, const shared_ptr<Node> &target)
 *  \param[out] length of the Edge
 *  \date       2016-05-25
 */
-float Edge::getLength() const {
+float Edge::getLength() {
     return 0;//return m_source->getDist(m_target);
 }
 
@@ -66,7 +66,7 @@ void Edge::setTarget(const shared_ptr<Node> &target) {
 *  \param[out] source Node
 *  \date       2016-05-25
 */
-shared_ptr<Node> Edge::getSource() const {
+shared_ptr<Node> Edge::getSource() {
     return m_source;
 }
 
@@ -76,6 +76,6 @@ shared_ptr<Node> Edge::getSource() const {
 *  \param[out] target Node
 *  \date       2016-05-25
 */
-shared_ptr<Node> Edge::getTarget() const {
+shared_ptr<Node> Edge::getTarget() {
     return m_target;
 }

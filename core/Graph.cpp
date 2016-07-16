@@ -41,7 +41,7 @@ void Graph::removeNode(int index) {
 * \param[out] list of nodes
 * \date       2016-05-25
 */
-std::vector<shared_ptr<Node>> Graph::getNodes() const{
+std::vector<shared_ptr<Node>> Graph::getNodes() {
     return m_nodes;
 }
 

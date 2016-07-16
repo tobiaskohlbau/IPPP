@@ -31,21 +31,21 @@ public:
     Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy, float wz);
     Node(const Vec<float> &vec);
 
-    float getX() const;
-    float getY() const;
-    float getZ() const;
+    float getX();
+    float getY();
+    float getZ();
 
     unsigned int getDim();
     bool empty() const ;
     void setVecValue(float value, unsigned int index);
     float getVecValue(unsigned int index);
-    float getDist(const std::shared_ptr<Node> &node) const;
-    float getDist(const Node &node) const;
-    float getDistToParent() const;
-    float norm() const;
+    float getDist(const std::shared_ptr<Node> &node);
+    float getDist(const Node &node);
+    float getDistToParent();
+    float norm();
 
     void setCost(float cost);
-    float getCost() const;
+    float getCost();
 
     void setParent(const std::shared_ptr<Node> &parent);
     std::shared_ptr<Node> getParent();

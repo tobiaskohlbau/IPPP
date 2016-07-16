@@ -174,7 +174,7 @@ Node::Node(const Vec<float> &vec)
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-float Node::getX() const {
+float Node::getX() {
     assert(m_vec.getDim() > 0);
     return m_vec[0];
 }
@@ -184,7 +184,7 @@ float Node::getX() const {
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-float Node::getY() const {
+float Node::getY() {
     assert(m_vec.getDim() > 1);
     return m_vec[1];
 }
@@ -194,7 +194,7 @@ float Node::getY() const {
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-float Node::getZ() const {
+float Node::getZ() {
     assert(m_vec.getDim() > 2);
     return m_vec[2];
 }
@@ -247,7 +247,7 @@ float Node::getVecValue(unsigned int index) {
 *  \param[out] norm 2
 *  \date       2016-05-24
 */
-float Node::norm() const {
+float Node::norm() {
     return m_vec.norm();
 }
 
@@ -258,7 +258,7 @@ float Node::norm() const {
 *  \param[out] distance
 *  \date       2016-05-24
 */
-float Node::getDist(const shared_ptr<Node> &node) const {
+float Node::getDist(const shared_ptr<Node> &node) {
     if (node == nullptr)
         return -1;
     return getDist(*node);
@@ -271,7 +271,7 @@ float Node::getDist(const shared_ptr<Node> &node) const {
 *  \param[out] distance
 *  \date       2016-05-24
 */
-float Node::getDist(const Node &node) const {
+float Node::getDist(const Node &node) {
     if (node.empty() || empty())
         return -1;
     return m_vec.getDist(node.getVec());
@@ -283,7 +283,7 @@ float Node::getDist(const Node &node) const {
 *  \param[out] distance
 *  \date       2016-05-24
 */
-float Node::getDistToParent() const {
+float Node::getDistToParent() {
     if (m_parent == nullptr)
         return -1;
     else
@@ -307,7 +307,7 @@ void Node::setCost(float cost) {
 *  \param[out] cost
 *  \date       2016-05-24
 */
-float Node::getCost() const {
+float Node::getCost() {
     return m_cost;
 }
 
