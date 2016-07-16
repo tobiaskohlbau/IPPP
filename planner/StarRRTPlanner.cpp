@@ -68,7 +68,7 @@ void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &n
 */
 void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentNode, std::vector<shared_ptr<Node>> &nearNodes) {
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (nearNodes[i] != parentNode && nearNodes[i]->getChilds().size() != 0) {
+        if (nearNodes[i] != parentNode && nearNodes[i]->getChildEdges().size() != 0) {
             float oldDist = nearNodes[i]->getCost();
             float newDist = nearNodes[i]->getDist(newNode) + newNode->getCost();
             if (newDist < oldDist) {

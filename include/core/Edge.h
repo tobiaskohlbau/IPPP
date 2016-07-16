@@ -16,18 +16,14 @@ class Edge : public Base
 {
 public:
     Edge();
-    Edge(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target);
+    Edge(const std::shared_ptr<Node> &target, float length);
 
     float getLength();
 
-    void setSource(const std::shared_ptr<Node> &source);
-    void setTarget (const std::shared_ptr<Node> &target);
-
-    std::shared_ptr<Node> getSource();
+    void setTarget (const std::shared_ptr<Node> &target, float length);
     std::shared_ptr<Node> getTarget();
 
 private:
-    std::shared_ptr<Node> m_source;
     std::shared_ptr<Node> m_target;
     float m_length;
 };
