@@ -192,7 +192,7 @@ Eigen::MatrixXi& RobotBase::get2DWorkspace() {
 *  \param[out] dimension
 *  \date       2016-06-30
 */
-unsigned int RobotBase::getDim() const {
+unsigned int RobotBase::getDim() {
     return m_dim;
 }
 
@@ -202,7 +202,7 @@ unsigned int RobotBase::getDim() const {
 *  \param[out] number of joints
 *  \date       2016-06-30
 */
-unsigned int RobotBase::getNbJoints() const {
+unsigned int RobotBase::getNbJoints() {
     return m_nbJoints;
 }
 
@@ -212,7 +212,7 @@ unsigned int RobotBase::getNbJoints() const {
 *  \param[out] name
 *  \date       2016-06-30
 */
-std::string RobotBase::getName() const {
+std::string RobotBase::getName() {
     return m_robotName;
 }
 
@@ -222,7 +222,7 @@ std::string RobotBase::getName() const {
 *  \param[out] robot type
 *  \date       2016-06-30
 */
-RobotType RobotBase::getType() const {
+RobotType RobotBase::getType() {
     return m_robotType;
 }
 

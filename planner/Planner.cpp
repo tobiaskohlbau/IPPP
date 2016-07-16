@@ -70,7 +70,7 @@ std::vector<std::shared_ptr<Node>> Planner::getGraphNodes() {
 *  \param[out] pointer to VREP Helper
 *  \date       2016-05-27
 */
-std::shared_ptr<Helper> Planner::getVrep() const {
+std::shared_ptr<Helper> Planner::getVrep() {
     return m_vrep;
 }
 

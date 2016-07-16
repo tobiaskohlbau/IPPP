@@ -27,7 +27,7 @@ public:
     virtual std::vector<Vec<float>> getPath() = 0;
     virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
     void setWorkspaceBoundaries(Vec<float> &minBoundary, Vec<float> &maxBoundary);
-    std::shared_ptr<Helper> getVrep() const;
+    std::shared_ptr<Helper> getVrep();
 
 protected:
     bool controlConstraints();
