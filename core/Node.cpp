@@ -284,10 +284,7 @@ float Node::getDist(const Node &node) {
 *  \date       2016-05-24
 */
 float Node::getDistToParent() {
-    if (m_parent == nullptr)
-        return -1;
-    else
-        return getDist(m_parent);
+    return m_parent.getLength();
 }
 
 /*!
@@ -315,55 +312,69 @@ float Node::getCost() {
 *  \brief      Set parent of Node
 *  \author     Sascha Kaden
 *  \param[in]  shared_ptr parent Node
-*  \date       2016-05-24
+*  \date       2016-07-15
 */
 void Node::setParent(const shared_ptr<Node> &parent) {
-    m_parent = parent;
+    m_parent = Edge(parent, getDist(parent));
 }
 
 /*!
 *  \brief      Return parent of Node
 *  \author     Sascha Kaden
 *  \param[out] shared_ptr parent Node
-*  \date       2016-05-24
+*  \date       2016-07-15
 */
 shared_ptr<Node> Node::getParent() {
-    return m_parent;
+    return m_parent.getTarget();
 }
 
 /*!
-*  \brief      Set parent Node to nullptr
+*  \brief      Set the parent Edge as standard constructor
 *  \author     Sascha Kaden
-*  \date       2016-05-24
+*  \date       2016-07-15
 */
 void Node::clearParent() {
-    m_parent = nullptr;
+    m_parent = Edge();
 }
 
 /*!
 *  \brief      Add a child Node to child list
 *  \author     Sascha Kaden
 *  \param[in]  shared_ptr child Node
-*  \date       2016-05-24
+*  \date       2016-07-15
 */
 void Node::addChild(const shared_ptr<Node> &child) {
-    m_childs.push_back(child);
+    m_childs.push_back(Edge(child, getDist(child)));
 }
 
 /*!
 *  \brief      Return list of child nodes
 *  \author     Sascha Kaden
 *  \param[out] list of child nodes
-*  \date       2016-05-24
+*  \date       2016-07-15
 */
-std::vector<shared_ptr<Node>> Node::getChilds() {
+std::vector<shared_ptr<Node>> Node::getChildNodes() {
+    std::vector<shared_ptr<Node>> childNodes;
+    for (auto child : m_childs) {
+        childNodes.push_back(child.getTarget());
+    }
+    return childNodes;
+}
+
+/*!
+*  \brief      Return list of child edges
+*  \author     Sascha Kaden
+*  \param[out] list of child edges
+*  \date       2016-07-15
+*/
+std::vector<Edge> Node::getChildEdges() {
     return m_childs;
 }
 
 /*!
 *  \brief      Clear list of child nodes
 *  \author     Sascha Kaden
-*  \date       2016-05-24
+*  \date       2016-07-15
 */
 void Node::clearChilds() {
     m_childs.clear();

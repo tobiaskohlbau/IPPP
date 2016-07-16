@@ -51,17 +51,17 @@ public:
     std::shared_ptr<Node> getParent();
     void clearParent();
     void addChild(const std::shared_ptr<Node> &child);
-    std::vector<std::shared_ptr<Node>> getChilds();
+    std::vector<std::shared_ptr<Node>> getChildNodes();
+    std::vector<Edge> getChildEdges();
     void clearChilds();
 
     Vec<float> getVec() const;
 
 private:
-    float        m_cost;
-    Vec<float>   m_vec;
-    std::shared_ptr<Node>              m_parent;
-    std::vector<std::shared_ptr<Node>> m_childs;
-    Edge m_edge;
+    float             m_cost;
+    Vec<float>        m_vec;
+    Edge              m_parent;
+    std::vector<Edge> m_childs;
 };
 
 } /* namespace rmpl */

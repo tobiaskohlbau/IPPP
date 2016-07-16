@@ -10,8 +10,7 @@ using namespace rmpl;
 *  \date       2016-05-30
 */
 Edge::Edge()
-    : Base("Edge")
-{
+    : Base("Edge") {
 }
 
 /*!
@@ -21,11 +20,10 @@ Edge::Edge()
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-Edge::Edge(const shared_ptr<Node> &source, const shared_ptr<Node> &target)
+Edge::Edge(const shared_ptr<Node> &target, float length)
         : Base("Edge") {
-    m_source = source;
     m_target = target;
-    m_length = m_source->getDist(m_target);
+    m_length = length;
 }
 
 /*!
@@ -35,18 +33,7 @@ Edge::Edge(const shared_ptr<Node> &source, const shared_ptr<Node> &target)
 *  \date       2016-05-25
 */
 float Edge::getLength() {
-    return 0;//return m_source->getDist(m_target);
-}
-
-/*!
-*  \brief      Set source Node of the Edge
-*  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \date       2016-05-25
-*/
-void Edge::setSource(const shared_ptr<Node> &source) {
-    m_source = source;
-    m_length = m_source->getDist(m_target);
+    return m_length;
 }
 
 /*!
@@ -55,19 +42,8 @@ void Edge::setSource(const shared_ptr<Node> &source) {
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-void Edge::setTarget(const shared_ptr<Node> &target) {
+void Edge::setTarget(const shared_ptr<Node> &target, float length) {
     m_target = target;
-    m_length = m_source->getDist(m_target);
-}
-
-/*!
-*  \brief      Return source Node of the Edge
-*  \author     Sascha Kaden
-*  \param[out] source Node
-*  \date       2016-05-25
-*/
-shared_ptr<Node> Edge::getSource() {
-    return m_source;
 }
 
 /*!
