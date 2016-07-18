@@ -18,12 +18,13 @@ class KDTree : public Base
 {
 public:
     KDTree();
+    KDTree(std::vector<std::shared_ptr<Node>> &vec);
     void addNode(const Vec<float> &vec, const T &node);
     T searchNearestNeighbor(const Vec<float> &vec);
     std::vector<T> searchRange(const Vec<float> &vec, float range);
 
 
-    void rebuildTree(std::vector<std::shared_ptr<Node>> &vec);
+    void buildTree();
     std::shared_ptr<KDNode<T>> sort(std::vector<std::shared_ptr<Node>> &vec, unsigned int dim);
     void quickSort(std::vector<std::shared_ptr<Node>>& A, int left, int right, int dim);
     int partition(std::vector<std::shared_ptr<Node>>& A, int left, int right, int dim);
@@ -46,7 +47,26 @@ private:
 template<class T>
 KDTree<T>::KDTree()
     : Base("KD Tree") {
+}
 
+/*!
+*  \brief      Cconstructor of the class KDTree, builds tree from given nodes
+*  \author     Sascha Kaden
+*  \param[in]  vector of nodes
+*  \date       2016-07-18
+*/
+template<class T>
+KDTree<T>::KDTree(std::vector<std::shared_ptr<Node>> &vec)
+    : Base("KD Tree") {
+    quickSort(vec, 0, vec.size()-1, 0);
+    m_root = std::shared_ptr<KDNode<T>> (new KDNode<T>(vec[vec.size()/2]->getVec(), vec[vec.size()/2]));
+    m_root->axis = 0;
+    m_root->value = m_root->vec[0];
+
+    std::vector<std::shared_ptr<Node>> vecLeft(vec.begin(), vec.begin() + (vec.size()/2)-1);
+    std::vector<std::shared_ptr<Node>> vecRight(vec.begin() + (vec.size()/2) + 1, vec.end());
+    m_root->left = sort(vecLeft, 1);
+    m_root->right = sort(vecRight, 1);
 }
 
 /*!
@@ -199,19 +219,6 @@ void KDTree<T>::RS(const Vec<float> &vec, std::shared_ptr<KDNode<T>> node, std::
         RS(vec, node->left, refNodes, sqRange, maxBoundary, minBoundary);
         RS(vec, node->right, refNodes, sqRange, maxBoundary, minBoundary);
     }
-}
-
-template<class T>
-void KDTree<T>::rebuildTree(std::vector<std::shared_ptr<Node>> &vec) {
-    quickSort(vec, 0, vec.size()-1, 0);
-    m_root = std::shared_ptr<KDNode<T>> (new KDNode<T>(vec[vec.size()/2]->getVec(), vec[vec.size()/2]));
-    m_root->axis = 0;
-    m_root->value = m_root->vec[0];
-
-    std::vector<std::shared_ptr<Node>> vecLeft(vec.begin(), vec.begin() + (vec.size()/2)-1);
-    std::vector<std::shared_ptr<Node>> vecRight(vec.begin() + (vec.size()/2) + 1, vec.end());
-    m_root->left = sort(vecLeft, 1);
-    m_root->right = sort(vecRight, 1);
 }
 
 template<class T>
