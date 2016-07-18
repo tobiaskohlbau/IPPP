@@ -1,5 +1,7 @@
 #include <core/Graph.h>
 
+#include <math.h>
+
 using namespace rmpl;
 using std::shared_ptr;
 
@@ -10,6 +12,7 @@ using std::shared_ptr;
 */
 Graph::Graph()
     : Base("Graph") {
+    m_treeSorted = false;
 }
 
 /*!
@@ -21,6 +24,12 @@ Graph::Graph()
 void Graph::addNode(const shared_ptr<Node> &node) {
     m_nodes.push_back(node);
     m_kdTree.addNode(node->getVec(), node);
+    if (m_nodes.size() > 20000 && !m_treeSorted) {
+        m_treeSorted = true;
+        m_kdTree = KDTree<std::shared_ptr<Node>>();
+        m_kdTree.rebuildTree(m_nodes);
+        this->sendMessage("KD Tree has been sorted", Message::info);
+    }
 }
 
 /*!

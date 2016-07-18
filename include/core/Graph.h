@@ -29,6 +29,7 @@ public:
 private:
     std::vector<std::shared_ptr<Node>> m_nodes;
     KDTree<std::shared_ptr<Node>> m_kdTree;
+    bool m_treeSorted;
 };
 
 } /* namespace rmpl */
