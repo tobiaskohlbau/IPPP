@@ -26,9 +26,8 @@ void Graph::addNode(const shared_ptr<Node> &node) {
     m_kdTree.addNode(node->getVec(), node);
     if (m_nodes.size() > 20000 && !m_treeSorted) {
         m_treeSorted = true;
-        m_kdTree = KDTree<std::shared_ptr<Node>>();
-        m_kdTree.rebuildTree(m_nodes);
-        this->sendMessage("KD Tree has been sorted", Message::info);
+        m_kdTree = KDTree<std::shared_ptr<Node>>(m_nodes);
+        this->sendMessage("KD Tree has been rebuilded and is now sorted", Message::info);
     }
 }
 
