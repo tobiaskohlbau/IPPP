@@ -12,7 +12,8 @@ enum class Message
 {
     info,
     warning,
-    error
+    error,
+    debug
 };
 
 /*!

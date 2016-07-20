@@ -1,5 +1,7 @@
 #include <core/Base.h>
 
+#define DEBUG 0
+
 using namespace rmpl;
 
 /*!
@@ -30,10 +32,20 @@ std::string Base::getName() {
 *  \date       2016-07-14
 */
 void Base::sendMessage(const std::string &message, Message type) {
-    if (type == Message::warning)
+    if (type == Message::warning) {
         std::cout << "Warning - ";
-    else if (type == Message::error)
+    }
+    else if (type == Message::error) {
         std::cout << "Error - ";
+    }
+    else if (type == Message::debug) {
+        if (DEBUG) {
+            std::cout << "Debug - ";
+        }
+        else {
+            return;
+        }
+    }
     else
         std::cout << "Info - ";
 
