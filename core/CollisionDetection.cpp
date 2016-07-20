@@ -123,17 +123,17 @@ bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
             R2 = As[j].block<3,3>(0,0);
             t2 = As[j].block<3,1>(0,3);
             if (checkPQP(m_robot->getCadModel(i), m_robot->getCadModel(j), R1, R2, t1, t2)) {
-                this->sendMessage("Collision between link " + std::to_string(i) + " and link " + std::to_string(j));
-                Eigen::Vector3f r = As[i].block<3,3>(0,0).eulerAngles(0, 1, 2);
-                Eigen::Vector3f t = As[i].block<3,1>(0,3);
-                std::cout << "A" << i << ": ";
-                std::cout << "Euler angles: " << r.transpose() << "   ";
-                std::cout << "Translation: " << t.transpose() << std::endl;
-                r = As[j].block<3,3>(0,0).eulerAngles(0, 1, 2);
-                t = As[j].block<3,1>(0,3);
-                std::cout << "A" << j << ": ";
-                std::cout << "Euler angles: " << r.transpose() << "   ";
-                std::cout << "Translation: " << t.transpose() << std::endl << std::endl;
+                this->sendMessage("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), Message::debug);
+                //Eigen::Vector3f r = As[i].block<3,3>(0,0).eulerAngles(0, 1, 2);
+                //Eigen::Vector3f t = As[i].block<3,1>(0,3);
+                //std::cout << "A" << i << ": ";
+                //std::cout << "Euler angles: " << r.transpose() << "   ";
+                //std::cout << "Translation: " << t.transpose() << std::endl;
+                //r = As[j].block<3,3>(0,0).eulerAngles(0, 1, 2);
+                //t = As[j].block<3,1>(0,3);
+                //std::cout << "A" << j << ": ";
+                //std::cout << "Euler angles: " << r.transpose() << "   ";
+                //std::cout << "Translation: " << t.transpose() << std::endl << std::endl;
 
                 return true;
             }

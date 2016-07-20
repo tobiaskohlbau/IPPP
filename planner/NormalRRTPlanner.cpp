@@ -28,5 +28,8 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
     }
 
     newNode->setParent(nearestNode);
+
+    m_mutex.lock();
     nearestNode->addChild(newNode);
+    m_mutex.unlock();
 }

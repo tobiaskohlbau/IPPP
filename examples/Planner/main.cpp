@@ -10,7 +10,6 @@
 #include <planner/StarRRTPlanner.h>
 #include <robot/Jaco.h>
 #include <robot/PointRobot.h>
-#include <robot/CadFileLoader.h>
 
 #include <vrep/Helper.h>
 
@@ -81,7 +80,7 @@ void planning6D() {
     robot->setBoundaries(minBoundary, maxBoundary);
 
 
-    rmpl::NormalRRTPlanner planner(robot, 0.5, 80.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(robot, 0.5, 80.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the planner
@@ -89,7 +88,7 @@ void planning6D() {
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(10000);
+    planner.computeTree(30000,2);
     clock_t end = std::clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "computation time: " << elapsed_secs << std::endl;

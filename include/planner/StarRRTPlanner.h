@@ -1,6 +1,8 @@
 #ifndef STARRRTPLANNER_H_
 #define STARRRTPLANNER_H_
 
+#include <mutex>
+
 #include "RRTPlanner.h"
 
 namespace rmpl {
@@ -22,6 +24,9 @@ protected:
     void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
     void chooseParent(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode, std::vector<std::shared_ptr<Node>> &nearNodes);
     void reWire(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode, std::vector<std::shared_ptr<Node>> &nearNodes);
+
+private:
+    std::mutex m_mutex;
 };
 
 } /* namespace rmpl */
