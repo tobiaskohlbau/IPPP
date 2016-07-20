@@ -15,15 +15,16 @@ class RRTPlanner : public Planner
 public:
     RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
-    bool setInitNode(const Node &node);
-    bool computeTree(int nbOfNodes);
-    bool connectGoalNode(const Node &goalNode);
+    bool setInitNode(Node node);
+    bool computeTree(int nbOfNodes, int nbOfThreades = 1);
+    bool connectGoalNode(Node goalNode);
     std::vector<std::shared_ptr<Node>> getPathNodes();
     std::vector<Vec<float>> getPath();
     std::shared_ptr<Node> getInitNode();
     std::shared_ptr<Node> getGoalNode();
 
 protected:
+    void computeTreeThread(int nbOfNodes);
     virtual void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode) = 0;
     Vec<float> computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode);
 

@@ -1,6 +1,8 @@
 #ifndef NORMALRRTPLANNER_H_
 #define NORMALRRTPLANNER_H_
 
+#include <mutex>
+
 #include "RRTPlanner.h"
 
 namespace rmpl {
@@ -20,6 +22,9 @@ public:
 
 protected:
     void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
+
+private:
+    std::mutex m_mutex;
 };
 
 } /* namespace rmpl */

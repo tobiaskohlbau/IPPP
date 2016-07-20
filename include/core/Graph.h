@@ -2,6 +2,7 @@
 #define GRAPH_H_
 
 #include <algorithm>
+#include <mutex>
 
 #include <core/Base.h>
 #include <core/KDTree.hpp>
@@ -29,7 +30,7 @@ public:
 private:
     std::vector<std::shared_ptr<Node>> m_nodes;
     KDTree<std::shared_ptr<Node>> m_kdTree;
-    bool m_treeSorted;
+    std::mutex  m_mutexAddNode;
 };
 
 } /* namespace rmpl */

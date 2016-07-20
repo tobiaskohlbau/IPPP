@@ -31,7 +31,9 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
 
     newNode->setCost(newNode->getDist(*nearestNode) + nearestNode->getCost());
     newNode->setParent(nearestNode);
+    m_mutex.lock();
     nearestNode->addChild(newNode);
+    m_mutex.unlock();
 
     reWire(newNode, nearestNode, nearNodes);
 }
@@ -50,11 +52,12 @@ void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &n
 
     float nearestNodeCost = nearestNode->getCost();
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (nearNodes[i]->getCost() < nearestNodeCost)
+        if (nearNodes[i]->getCost() < nearestNodeCost) {
             if (this->m_planner->controlTrajectory(newNode->getVec(), nearNodes[i]->getVec())) {
                 nearestNodeCost = nearNodes[i]->getCost();
                 nearestNode = nearNodes[i];
             }
+        }
     }
 }
 
@@ -67,16 +70,18 @@ void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &n
 *  \date          2016-06-02
 */
 void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentNode, std::vector<shared_ptr<Node>> &nearNodes) {
-    for (int i = 0; i < nearNodes.size(); ++i) {
-        if (nearNodes[i] != parentNode && nearNodes[i]->getChildEdges().size() != 0) {
-            float oldDist = nearNodes[i]->getCost();
-            float newDist = nearNodes[i]->getDist(newNode) + newNode->getCost();
+    for (auto nearNode : nearNodes) {
+        if (nearNode != parentNode && nearNode->getChildEdges().size() != 0) {
+            float oldDist = nearNode->getCost();
+            float newDist = nearNode->getDist(newNode) + newNode->getCost();
             if (newDist < oldDist) {
-                if (this->m_planner->controlTrajectory(newNode->getVec(), nearNodes[i]->getVec())) {
-                    float cost = nearNodes[i]->getCost() - nearNodes[i]->getDist(nearNodes[i]->getParent());
-                    cost += newNode->getDist(nearNodes[i]);
-                    nearNodes[i]->setCost(cost);
-                    nearNodes[i]->setParent(newNode);
+                if (this->m_planner->controlTrajectory(newNode->getVec(), nearNode->getVec())) {
+                    float cost = nearNode->getCost() - nearNode->getDist(nearNode->getParent());
+                    cost += newNode->getDist(nearNode);
+                    m_mutex.lock();
+                    nearNode->setCost(cost);
+                    nearNode->setParent(newNode);
+                    m_mutex.unlock();
                 }
             }
         }

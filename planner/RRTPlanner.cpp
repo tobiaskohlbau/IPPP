@@ -1,5 +1,7 @@
 #include <planner/RRTPlanner.h>
 
+#include <thread>
+
 using namespace rmpl;
 using std::shared_ptr;
 
@@ -20,7 +22,7 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
 *  \param[out] true, if set was possible
 *  \date       2016-05-27
 */
-bool RRTPlanner::setInitNode(const Node &node) {
+bool RRTPlanner::setInitNode(Node node) {
     this->controlConstraints();
 
     shared_ptr<Node> initNode(new Node(node));
@@ -41,7 +43,7 @@ bool RRTPlanner::setInitNode(const Node &node) {
 *  \param[out] return check of the constraints
 *  \date       2016-05-27
 */
-bool RRTPlanner::computeTree(int nbOfNodes)
+bool RRTPlanner::computeTree(int nbOfNodes, int nbOfThreades)
 {
     if (!this->controlConstraints())
         return false;
@@ -50,6 +52,25 @@ bool RRTPlanner::computeTree(int nbOfNodes)
         return false;
     }
 
+    if (nbOfThreades == 1) {
+        computeTreeThread(nbOfNodes);
+    }
+    else {
+        nbOfNodes /= nbOfThreades;
+        std::vector<std::thread> threads;
+
+        for (int i = 0; i < nbOfThreades; ++i) {
+            threads.push_back(std::thread(&RRTPlanner::computeTreeThread, this, nbOfNodes));
+        }
+
+        for (int i = 0; i < nbOfThreades; ++i)
+            threads[i].join();
+    }
+
+    return true;
+}
+
+void RRTPlanner::computeTreeThread(int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i)
     {
         shared_ptr<Node> newNode;
@@ -65,8 +86,6 @@ bool RRTPlanner::computeTree(int nbOfNodes)
         //newNode->getVec().print();
         this->m_graph->addNode(newNode);
     }
-
-    return true;
 }
 
 /*!
@@ -76,7 +95,7 @@ bool RRTPlanner::computeTree(int nbOfNodes)
 *  \param[out] true, if the connection was possible
 *  \date       2016-05-27
 */
-bool RRTPlanner::connectGoalNode(const Node &goal) {
+bool RRTPlanner::connectGoalNode(Node goal) {
     shared_ptr<Node> goalNode(new Node(goal));
     if (this->m_collision->controlCollision(goalNode->getVec()))
         return false;

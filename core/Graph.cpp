@@ -12,7 +12,6 @@ using std::shared_ptr;
 */
 Graph::Graph()
     : Base("Graph") {
-    m_treeSorted = false;
 }
 
 /*!
@@ -22,12 +21,12 @@ Graph::Graph()
 * \date       2016-05-25
 */
 void Graph::addNode(const shared_ptr<Node> &node) {
+    std::lock_guard<std::mutex> lock(m_mutexAddNode);
     m_nodes.push_back(node);
     m_kdTree.addNode(node->getVec(), node);
-    if (m_nodes.size() > 20000 && !m_treeSorted) {
-        m_treeSorted = true;
+    if (m_nodes.size() % 5000 == 0) {
         m_kdTree = KDTree<std::shared_ptr<Node>>(m_nodes);
-        this->sendMessage("KD Tree has been rebuilded and is now sorted", Message::info);
+        this->sendMessage("KD Tree has been rebuilded and an have now:" + std::to_string(m_nodes.size()) + " Nodes", Message::info);
     }
 }
 
