@@ -20,6 +20,8 @@ public:
     {
     }
 
+    bool connectGoalNode(Node goal);
+
 protected:
     void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
 

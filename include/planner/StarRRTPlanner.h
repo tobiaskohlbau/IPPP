@@ -19,6 +19,7 @@ public:
     : RRTPlanner("RRT* Planner", robot, stepSize, trajectoryStepSize, trajectory, sampling) // Argumente an Basisklassenkonstruktor weiterleiten
     {
     }
+    bool connectGoalNode(Node goal);
 
 protected:
     void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
