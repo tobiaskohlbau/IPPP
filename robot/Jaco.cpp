@@ -17,7 +17,7 @@ using namespace rmpl;
 *  \date       2016-06-30
 */
 Jaco::Jaco()
-    : RobotBase("Jaco", RobotType::JACO, 6, 6) {
+    : RobotBase("Jaco", CollisionType::pqp, 6, 6) {
     this->m_alpha = Vec<float>(this->m_pi/2, this->m_pi, this->m_pi/2, 0.95993, 0.95993, this->m_pi);
     this->m_a = Vec<float>(0, 410, 0, 0, 0, 0);
     this->m_d = Vec<float>(275.5, 0, -9.8, -249.18224, -83.76448, -210.58224);

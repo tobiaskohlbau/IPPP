@@ -8,7 +8,7 @@ using namespace rmpl;
 *  \date       2016-06-30
 */
 PointRobot::PointRobot()
-    : RobotBase("PointRobot", RobotType::POINT_ROBOT, 2, 0) {
+    : RobotBase("PointRobot", CollisionType::twoD, 2, 0) {
 
 }
 
