@@ -15,6 +15,11 @@
 
 #include "ui/Drawing.h"
 
+void printTime(clock_t begin, clock_t end) {
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    std::cout << "computation time: " << elapsed_secs << std::endl;
+}
+
 void planning2D() {
     cv::Mat freeWorkspace, obstacleWorkspace;
     freeWorkspace = cv::imread("/home/sascha/projects/Planner/spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
@@ -73,56 +78,125 @@ void planning2D() {
     cv::waitKey(0);
 }
 
-void planning6D() {
+void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
     rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
     rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
     robot->setBoundaries(minBoundary, maxBoundary);
 
+    rmpl::StarRRTPlanner planner(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    //std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
-    rmpl::StarRRTPlanner planner(robot, 0.5, 80.0, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
-
-    // set properties to the planner
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(30000,2);
+    planner.computeTree(50000,2);
     clock_t end = std::clock();
-    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-    std::cout << "computation time: " << elapsed_secs << std::endl;
+    printTime(begin, end);
 
-    rmpl::Node goal(170.0, 170.0, 200.0, 180.0, 160.0, 180.0);
-    bool connected = planner.connectGoalNode(goal);
+    bool connected = planner.connectGoalNode(rmpl::Node(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
     std::vector<rmpl::Vec<float>> graphPoints;
-    std::cout << "Graph has: " << nodes.size() << "nodes" << std::endl;
+    std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
     Drawing::writeVecsToFile(graphPoints, "example.ASC", 10);
 
     if (connected) {
+        std::cout << "Init and goal could be connected!" << std::endl;
         std::vector<rmpl::Vec<float>> pathAngles = planner.getPath();
+
         std::vector<rmpl::Vec<float>> pathPoints;
         for (int i = 0; i < pathAngles.size(); ++i)
             pathPoints.push_back(robot->directKinematic(pathAngles[i]));
         Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
 
-        for (int i = 0; i < pathPoints.size(); ++i)
-            vrep->setPos(pathAngles[i]);
+        //for (int i = 0; i < pathPoints.size(); ++i)
+        //    vrep->setPos(pathAngles[i]);
+    }
+}
+
+void treeConnection() {
+    std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
+    rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
+    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
+    robot->setBoundaries(minBoundary, maxBoundary);
+
+    // create two trees from init and from goal
+    rmpl::StarRRTPlanner plannerInitNode(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner plannerGoalNode(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    //std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
+
+    // set properties to the plannerss
+    plannerInitNode.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
+    plannerGoalNode.setInitNode(rmpl::Node(275, 167.5, 57.4, 241, 82.7, 75.5));
+
+    // compute the tree
+    clock_t begin = std::clock();
+    plannerInitNode.computeTree(20000,2);
+    plannerGoalNode.computeTree(20000,2);
+    clock_t end = std::clock();
+    printTime(begin, end);
+
+    // get random sample from the first planner and try to connect to both planners
+    rmpl::Node goal;
+    bool connected = false;
+    float minCost = std::numeric_limits<float>::max();
+    for (int i = 0; i < 10000; ++i){
+        rmpl::Vec<float> sample = plannerInitNode.getSamplePoint();
+        //sample.print();
+        rmpl::Node node(sample);
+        bool planner1Connected = plannerInitNode.connectGoalNode(node);
+        bool planner2Connected = plannerGoalNode.connectGoalNode(node);
+        if (planner1Connected && planner2Connected) {
+            float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
+            if (cost < minCost) {
+                goal = node;
+                connected = true;
+            }
+        }
+    }
+
+    std::vector<std::shared_ptr<rmpl::Node>> nodes = plannerInitNode.getGraphNodes();
+    std::vector<rmpl::Vec<float>> graphPoints;
+    std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
+    for (int i = 0; i < nodes.size(); ++i)
+        graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
+    Drawing::writeVecsToFile(graphPoints, "example.ASC", 10);
+
+    nodes = plannerGoalNode.getGraphNodes();
+    std::cout << "Goal Graph has: " << nodes.size() << "nodes" << std::endl;
+    for (int i = 0; i < nodes.size(); ++i)
+        graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
+    Drawing::appendVecsToFile(graphPoints, "example.ASC", 10);
+
+    if (connected) {
+        std::cout << "Init and goal could be connected!" << std::endl;
+        plannerInitNode.connectGoalNode(goal);
+        plannerGoalNode.connectGoalNode(goal);
+
+        std::vector<rmpl::Vec<float>> pathAngles = plannerInitNode.getPath();
+        std::vector<rmpl::Vec<float>> temp = plannerGoalNode.getPath();
+        pathAngles.insert(pathAngles.end(), temp.begin(), temp.end());
+
+        std::vector<rmpl::Vec<float>> pathPoints;
+        for (int i = 0; i < pathAngles.size(); ++i)
+            pathPoints.push_back(robot->directKinematic(pathAngles[i]));
+        Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
+
+        //for (int i = 0; i < pathPoints.size(); ++i)
+        //    vrep->setPos(pathAngles[i]);
     }
 }
 
 int main(int argc, char** argv)
 {
-    int dim = 6;
 
-    if (dim == 2)
-        planning2D();
-    else if (dim == 6)
-        planning6D();
+    //planning2D();
+    //treeConnection();
+    simpleRRT();
 
     return 0;
 }
