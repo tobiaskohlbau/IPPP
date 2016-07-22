@@ -89,45 +89,6 @@ void RRTPlanner::computeTreeThread(int nbOfNodes) {
 }
 
 /*!
-*  \brief      Connect goal Node
-*  \author     Sascha Kaden
-*  \param[in]  goal Node
-*  \param[out] true, if the connection was possible
-*  \date       2016-05-27
-*/
-bool RRTPlanner::connectGoalNode(Node goal) {
-    shared_ptr<Node> goalNode(new Node(goal));
-    if (this->m_collision->controlCollision(goalNode->getVec()))
-        return false;
-
-    std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
-
-    shared_ptr<Node> nearestNode;
-    float minCost = std::numeric_limits<float>::max();
-    for (int i = 0; i < nearNodes.size(); ++i) {
-        if (nearNodes[i]->getCost() < minCost) {
-            if (this->m_planner->controlTrajectory(goalNode->getVec(), nearNodes[i]->getVec())) {
-                minCost = nearNodes[i]->getCost();
-                nearestNode = nearNodes[i];
-            }
-        }
-    }
-
-    if (minCost < std::numeric_limits<float>::max()) {
-        m_goalNode = goalNode;
-        goalNode->setParent(nearestNode);
-        this->m_graph->addNode(goalNode);
-        this->sendMessage("Goal Node is connected", Message::info);
-        this->m_pathPlanned = true;
-        return true;
-    }
-
-    this->sendMessage("Goal Node is NOT connected", Message::warning);
-
-    return false;
-}
-
-/*!
 *  \brief      Return all nodes of the final path
 *  \author     Sascha Kaden
 *  \param[out] nodes of the path
@@ -209,8 +170,18 @@ std::shared_ptr<Node> RRTPlanner::getInitNode() {
 *  \brief      Return the goal Node of the RRTPlanner
 *  \author     Sascha Kaden
 *  \param[out] goal Node
-* \date        s2016-06-01
+* \date        2016-06-01
 */
 std::shared_ptr<Node> RRTPlanner::getGoalNode() {
     return m_goalNode;
+}
+
+/*!
+*  \brief      Return sample point of the RRTPlanner
+*  \author     Sascha Kaden
+*  \param[out] sample Vec
+* \date        2016-07-22
+*/
+Vec<float> RRTPlanner::getSamplePoint() {
+    return this->m_sampler->getSample(m_robot->getDim(), 0, 100);
 }

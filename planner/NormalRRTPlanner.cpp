@@ -33,3 +33,40 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
     nearestNode->addChild(newNode);
     m_mutex.unlock();
 }
+
+/*!
+*  \brief      Connect goal Node
+*  \author     Sascha Kaden
+*  \param[in]  goal Node
+*  \param[out] true, if the connection was possible
+*  \date       2016-05-27
+*/
+bool NormalRRTPlanner::connectGoalNode(Node goal) {
+    if (this->m_collision->controlCollision(goal.getVec()))
+        return false;
+
+    shared_ptr<Node> goalNode(new Node(goal));
+    std::vector<shared_ptr<Node>> nearNodes;
+    nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
+
+    shared_ptr<Node> nearestNode = nullptr;
+    for (auto node : nearNodes) {
+        if (this->m_planner->controlTrajectory(goal.getVec(), node->getVec())) {
+            nearestNode = node;
+            break;
+        }
+    }
+
+    if (nearestNode != nullptr) {
+        goalNode->setParent(nearestNode);
+        this->m_goalNode = goalNode;
+        this->m_graph->addNode(goalNode);
+        //this->sendMessage("Goal Node is connected", Message::info);
+        this->m_pathPlanned = true;
+        return true;
+    }
+
+    //this->sendMessage("Goal Node is NOT connected", Message::warning);
+
+    return false;
+}

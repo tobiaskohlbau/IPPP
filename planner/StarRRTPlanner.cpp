@@ -87,3 +87,42 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
         }
     }
 }
+
+/*!
+*  \brief      Connect goal Node
+*  \author     Sascha Kaden
+*  \param[in]  goal Node
+*  \param[out] true, if the connection was possible
+*  \date       2016-05-27
+*/
+bool StarRRTPlanner::connectGoalNode(Node goal) {
+    if (this->m_collision->controlCollision(goal.getVec()))
+        return false;
+
+    shared_ptr<Node> goalNode(new Node(goal));
+    std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
+
+    shared_ptr<Node> nearestNode = nullptr;
+    float minCost = std::numeric_limits<float>::max();
+    for (int i = 0; i < nearNodes.size(); ++i) {
+        if (nearNodes[i]->getCost() < minCost) {
+            if (this->m_planner->controlTrajectory(goalNode->getVec(), nearNodes[i]->getVec())) {
+                minCost = nearNodes[i]->getCost();
+                nearestNode = nearNodes[i];
+            }
+        }
+    }
+
+    if (nearestNode != nullptr) {
+        goalNode->setParent(nearestNode);
+        this->m_goalNode = goalNode;
+        this->m_goalNode->setCost(m_goalNode->getDist(*nearestNode) + nearestNode->getCost());
+        //this->sendMessage("Goal Node is connected", Message::info);
+        this->m_pathPlanned = true;
+        return true;
+    }
+
+    //this->sendMessage("Goal Node is NOT connected", Message::warning);
+
+    return false;
+}
