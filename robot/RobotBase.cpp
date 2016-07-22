@@ -16,10 +16,10 @@ using std::shared_ptr;
 *  \param[in]  number of joints of the robot
 *  \date       2016-06-30
 */
-RobotBase::RobotBase(std::string name, RobotType type, unsigned int dim, unsigned int numberJoints)
+RobotBase::RobotBase(std::string name, CollisionType type, unsigned int dim, unsigned int numberJoints)
     : Base(name) {
     m_robotName = name;
-    m_robotType = type;
+    m_collisionType = type;
     m_dim = dim;
     m_nbJoints = numberJoints;
 
@@ -270,8 +270,8 @@ std::string RobotBase::getName() {
 *  \param[out] robot type
 *  \date       2016-06-30
 */
-RobotType RobotBase::getType() {
-    return m_robotType;
+CollisionType RobotBase::getCollisionType() {
+    return m_collisionType;
 }
 
 /*!

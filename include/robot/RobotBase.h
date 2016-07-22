@@ -13,10 +13,11 @@
 
 namespace rmpl {
 
-enum RobotType
+enum CollisionType
 {
-    JACO,
-    POINT_ROBOT
+    vrep,
+    pqp,
+    twoD
 };
 
 /*!
@@ -27,7 +28,7 @@ enum RobotType
 class RobotBase : public Base
 {
 public:
-    RobotBase(std::string name, RobotType type, unsigned int dim, unsigned int numberJoints);
+    RobotBase(std::string name, CollisionType type, unsigned int dim, unsigned int numberJoints);
 
     virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
     virtual std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles) = 0;
@@ -48,7 +49,7 @@ public:
     unsigned int getDim();
     unsigned int getNbJoints();
     std::string getName();
-    RobotType getType();
+    CollisionType getCollisionType();
 
     Vec<float> degToRad(const Vec<float> deg);
     Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
@@ -57,10 +58,10 @@ public:
 protected:
     std::shared_ptr<CadFileLoader> m_fileLoader;
 
-    std::string  m_robotName;
-    RobotType    m_robotType;
-    unsigned int m_nbJoints;
-    unsigned int m_dim;
+    std::string   m_robotName;
+    CollisionType m_collisionType;
+    unsigned int  m_nbJoints;
+    unsigned int  m_dim;
 
     Vec<float> m_minBoundary;
     Vec<float> m_maxBoundary;

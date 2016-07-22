@@ -17,7 +17,7 @@ CollisionDetection::CollisionDetection(const shared_ptr<Helper> &vrep, const sha
     m_robot = robot;
     m_vrep = vrep;
 
-    if (m_robot->getType() == RobotType::POINT_ROBOT)
+    if (m_robot->getCollisionType() == CollisionType::twoD)
         m_2DWorkspace = m_robot->get2DWorkspace();
 }
 
@@ -31,13 +31,13 @@ CollisionDetection::CollisionDetection(const shared_ptr<Helper> &vrep, const sha
 bool CollisionDetection::controlCollision(const Vec<float> &vec) {
     assert(vec.getDim() == m_robot->getDim());
 
-    switch (m_robot->getType()) {
-        case RobotType::POINT_ROBOT:
+    switch (m_robot->getCollisionType()) {
+        case CollisionType::twoD:
             return controlCollisionPointRobot(vec[0], vec[1]);
-            break;
-        case RobotType::JACO:
+        case CollisionType::pqp:
             return controlCollisionPQP(vec);
-            break;
+        case CollisionType::vrep:
+            return controlCollisionVrep(vec);
         default:
             return false;
     }
@@ -56,17 +56,19 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
 
     assert(vecs[0].getDim() == m_robot->getDim());
 
-    switch (m_robot->getType()) {
-        case RobotType::POINT_ROBOT:
+    switch (m_robot->getCollisionType()) {
+        case CollisionType::twoD:
             for (int i = 0; i < vecs.size(); ++i)
                 if (controlCollisionPointRobot(vecs[i][0], vecs[i][1]))
                     return true;
             break;
-        case RobotType::JACO:
+        case CollisionType::pqp:
             for (int i = 0; i < vecs.size(); ++i)
                 if (controlCollisionPQP(vecs[i]))
                     return true;
             break;
+        case CollisionType::vrep:
+            return controlCollisionVrep(vecs);
         default:
             return false;
     }
