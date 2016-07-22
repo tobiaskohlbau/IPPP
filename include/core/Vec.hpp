@@ -528,7 +528,7 @@ template<typename T>
 void Vec<T>::print() {
     std::cout << "Dim: " << m_dim << " | ";
     for (unsigned int i = 0; i < m_dim; ++i)
-        std::cout << "Value" << i << ": " << (*this)[i] << "  ";
+        std::cout << "v" << i << ": " << (*this)[i] << "  ";
     std::cout << std::endl;
 }
 
