@@ -21,10 +21,8 @@ before_script:
   - cmake ..
   - sudo make install
   - cd ../..
-  
-script:
   - mkdir build
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=${TRAVIS_BUILD_TYPE} ..
-
+  
 script: make
