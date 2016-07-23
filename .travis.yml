@@ -1,10 +1,16 @@
+dist: trusty
+
 language: cpp
+
 compiler:
   - gcc
   - clang
   
 sudo: required
-dist: trusty
+
+install:
+  # Install the latest version of Eigen
+  - hg clone https://bitbucket.org/eigen/eigen /tmp/eigen && cd /tmp/eigen && hg pull && hg update 3.2.6 && cd - && mkdir /tmp/eigen-build && cd /tmp/eigen-build && cmake /tmp/eigen && make && sudo make install && cd -; fi
 
 before_script:
   - mkdir build
