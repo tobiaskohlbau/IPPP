@@ -1,8 +1,0 @@
-Include order:
-first: c++/c libraries
-second: extern libraries
-third: intern files
-
-Using of const and reference
- use allways const, when possible
- pass small objects not by reference or const
