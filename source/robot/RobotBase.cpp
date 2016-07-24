@@ -168,7 +168,7 @@ Vec<float> RobotBase::getMaxBoundary() {
 *  \date       2016-07-24
 */
 void RobotBase::setPose(const Vec<float> &pose) {
-    if if (pose.getDim() != 6) {
+    if (pose.getDim() != 6) {
         this->sendMessage("Pose vector has wrong dimension, must have 6!", Message::warning);
         return;
     }
@@ -322,6 +322,21 @@ unsigned int RobotBase::getNbJoints() {
 */
 std::string RobotBase::getName() {
     return m_robotName;
+}
+
+/*!
+*  \brief      Set the collision type of the robot
+*  \author     Sascha Kaden
+*  \param[in]  CollisionType
+*  \date       2016-07-24
+*/
+void RobotBase::setCollisionType(CollisionType type) {
+    if (type == CollisionType::twoD && m_dim != 2) {
+        this->sendMessage("CollisionType twoD unequal to dimension", Message::warning);
+    }
+    else {
+        m_collisionType = type;
+    }
 }
 
 /*!
