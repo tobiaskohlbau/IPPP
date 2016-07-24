@@ -35,7 +35,6 @@ class Vec
 {
 public:
     Vec();
-    Vec(T x);
     Vec(T x, T y);
     Vec(T x, T y, T z);
     Vec(T x, T y, T z, T rx);
@@ -195,33 +194,7 @@ private:
 template<typename T>
 Vec<T>::Vec() {
     m_dim = 0;
-}
-
-/*!
-*  \brief      Constructor of the class Vec
-*  \author     Sascha Kaden
-*  \param[in]  dimension of the Vec
-*  \date       2016-05-24
-*/
-template<typename T>
-Vec<T>::Vec(unsigned int dim) {
-    m_dim = dim;
-    m_data = std::unique_ptr<T[]>(new T[m_dim]);
-    for (unsigned int i = 0; i < m_dim; ++i)
-        (*this)[i] = NAN;
-}
-
-/*!
-*  \brief      Constructor of the class Vec (1D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \date       2016-05-24
-*/
-template<typename T>
-Vec<T>::Vec(T x) {
-    m_dim = 1;
-    m_data = std::unique_ptr<T[]>(new T[m_dim]);
-    m_data[0] = x;
+    m_data = nullptr;
 }
 
 /*!
@@ -401,6 +374,28 @@ Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy, T wz) {
 }
 
 /*!
+*  \brief      Constructor of the class Vec
+*  \author     Sascha Kaden
+*  \param[in]  dimension of the Vec
+*  \date       2016-05-24
+*/
+template<typename T>
+Vec<T>::Vec(unsigned int dim) {
+    if (dim < 0)
+        throw 1;
+    m_dim = dim;
+
+    if (m_dim == 0) {
+        m_data = nullptr;
+    }
+    else {
+        m_data = std::unique_ptr<T[]>(new T[m_dim]);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            (*this)[i] = NAN;
+    }
+}
+
+/*!
 *  \brief      Constructor of the class Vec (6D)
 *  \author     Sascha Kaden
 *  \param[in]  dimension
@@ -474,8 +469,11 @@ template<typename T>
 bool Vec<T>::empty() const{
     if (m_dim == 0)
         return true;
+    if (m_data == nullptr)
+        return true;
+
     for (unsigned int i = 0; i < m_dim; ++i)
-        if ((*this)[i] == NAN)
+        if ((*this)[i] != (*this)[i])
             return true;
     return false;
 }
