@@ -33,7 +33,7 @@ CadFileLoader::CadFileLoader()
 }
 
 /*!
-*  \brief      Load cad file from given path and return pointer to PQP_Model
+*  \brief      Load cad file from passed path and return pointer to PQP_Model
 *  \author     Sascha Kaden
 *  \param[in]  path to cad file
 *  \param[out] shared pointer to PQP_Model, nullptr by incorrect path
@@ -51,7 +51,7 @@ std::shared_ptr<PQP_Model> CadFileLoader::loadFile(const std::string filename) {
 }
 
 /*!
-*  \brief      Load .obj file from given path and return pointer to PQP_Model
+*  \brief      Load .obj file from passed path and return pointer to PQP_Model
 *  \author     Sascha Kaden
 *  \param[in]  path to cad file
 *  \param[out] shared pointer to PQP_Model, nullptr by incorrect path

@@ -428,7 +428,7 @@ Vec<T>::Vec(const Vec<T> &vec) {
 }
 
 /*!
-*  \brief      Set all elements to a given value
+*  \brief      Set all elements to the passed value
 *  \author     Sascha Kaden
 *  \param[in]  value
 *  \date       2016-05-24
@@ -440,7 +440,7 @@ void Vec<T>::setAllTo(T value) {
 }
 
 /*!
-*  \brief      Append Vec by the given Vec
+*  \brief      Append passed Vec
 *  \author     Sascha Kaden
 *  \param[in]  Vec
 *  \date       2016-07-07
@@ -515,7 +515,7 @@ Vec<T> Vec<T>::abs() const {
 }
 
 /*!
-*  \brief      Return distance to given Vec
+*  \brief      Return distance to passed Vec
 *  \author     Sascha Kaden
 *  \param[in]  Vec
 *  \param[out] distance
@@ -528,7 +528,7 @@ T Vec<T>::getDist(const Vec<T> &vec) const{
 }
 
 /*!
-*  \brief      Return squared distance to given Vec
+*  \brief      Return squared distance to passed Vec
 *  \author     Sascha Kaden
 *  \param[in]  Vec
 *  \param[out] squared distance

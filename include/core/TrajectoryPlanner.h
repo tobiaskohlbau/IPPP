@@ -31,7 +31,7 @@ enum class TrajectoryMethod
 };
 
 /*!
-* \brief   Class TrajectoryPlanner plans edges/paths to given nodes
+* \brief   Class TrajectoryPlanner plans between the passed nodes/vecs
 * \author  Sascha Kaden
 * \date    2016-05-25
 */

@@ -96,7 +96,7 @@ shared_ptr<Node> Graph::getNearestNode(const shared_ptr<Node> &node) {
 * \brief      Search range
 * \author     Sascha Kaden
 * \param[in]  Node for the search
-* \param[in]  distance around the given Node
+* \param[in]  distance around the passed Node
 * \param[out] list of nodes inside the range
 * \date       2016-05-25
 */

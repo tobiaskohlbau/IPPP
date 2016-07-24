@@ -47,7 +47,7 @@ RobotBase::RobotBase(std::string name, CollisionType type, unsigned int dim, uns
 }
 
 /*!
-*  \brief      Create transformation matrix from the given D-H parameter and the joint angle
+*  \brief      Create transformation matrix from the passed D-H parameter and the joint angle
 *  \author     Sascha Kaden
 *  \param[in]  D-H alpha parameter
 *  \param[in]  D-H a parameter
@@ -191,7 +191,7 @@ Vec<float> RobotBase::getPose() {
 }
 
 /*!
-*  \brief      Load cad models from given string vector and save them intern
+*  \brief      Load cad models from passed vector of strings and save them intern
 *  \author     Sascha Kaden
 *  \param[in]  vector of file strings
 *  \param[out] true if loading was feasible
