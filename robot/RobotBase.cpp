@@ -265,9 +265,9 @@ std::string RobotBase::getName() {
 }
 
 /*!
-*  \brief      Return the type of the robot
+*  \brief      Return the collision type of the robot
 *  \author     Sascha Kaden
-*  \param[out] robot type
+*  \param[out] CollisionType
 *  \date       2016-06-30
 */
 CollisionType RobotBase::getCollisionType() {
