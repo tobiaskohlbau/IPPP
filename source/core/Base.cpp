@@ -29,6 +29,8 @@ using namespace rmpl;
 *  \date       2016-05-30
 */
 Base::Base(const std::string &name) {
+    if (name.empty())
+        sendMessage("Name is empty", Message::warning);
     m_name = name;
 }
 
