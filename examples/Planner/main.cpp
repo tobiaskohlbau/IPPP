@@ -84,14 +84,14 @@ void simpleRRT() {
     rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
     robot->setBoundaries(minBoundary, maxBoundary);
 
-    rmpl::StarRRTPlanner planner(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     //std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(50000,2);
+    planner.computeTree(30000,2);
     clock_t end = std::clock();
     printTime(begin, end);
 
@@ -125,8 +125,8 @@ void treeConnection() {
     robot->setBoundaries(minBoundary, maxBoundary);
 
     // create two trees from init and from goal
-    rmpl::StarRRTPlanner plannerInitNode(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::StarRRTPlanner plannerGoalNode(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner plannerInitNode(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner plannerGoalNode(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     //std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
 
     // set properties to the plannerss
@@ -194,9 +194,9 @@ void treeConnection() {
 int main(int argc, char** argv)
 {
 
-    //planning2D();
+    planning2D();
     //treeConnection();
-    simpleRRT();
+    //simpleRRT();
 
     return 0;
 }
