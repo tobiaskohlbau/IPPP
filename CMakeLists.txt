@@ -38,32 +38,29 @@ find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/include/vrep)
 
-set(PQP_DIR "/home/sascha/projects/pqp" CACHE PATH "PQP DIR")
-IF(NOT EXISTS PQP_DIR)
-    set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/pqp-1.3/PQP_v1.3 CACHE PATH "PQP DIR")
-ENDIF()
+set(PQP_DIR "Path to PQP" CACHE PATH "PQP DIR")
 include_directories(${PQP_DIR}/include)
 link_directories(${PQP_DIR}/lib)
 
 set(SRCS
-    core/CollisionDetection.cpp
-    core/Base.cpp
-    core/Edge.cpp
-    core/Graph.cpp
-    core/Node.cpp
-    core/Sampling.cpp
-    core/TrajectoryPlanner.cpp
+    source/core/CollisionDetection.cpp
+    source/core/Base.cpp
+    source/core/Edge.cpp
+    source/core/Graph.cpp
+    source/core/Node.cpp
+    source/core/Sampling.cpp
+    source/core/TrajectoryPlanner.cpp
     include/core/KDNode.hpp
     include/core/KDTree.hpp
     include/core/Vec.hpp
-    planner/NormalRRTPlanner.cpp
-    planner/Planner.cpp
-    planner/RRTPlanner.cpp
-    planner/StarRRTPlanner.cpp
-    robot/CadFileLoader.cpp
-    robot/Jaco.cpp
-    robot/PointRobot.cpp
-    robot/RobotBase.cpp
+    source/planner/NormalRRTPlanner.cpp
+    source/planner/Planner.cpp
+    source/planner/RRTPlanner.cpp
+    source/planner/StarRRTPlanner.cpp
+    source/robot/CadFileLoader.cpp
+    source/robot/Jaco.cpp
+    source/robot/PointRobot.cpp
+    source/robot/RobotBase.cpp
     vrep/extApi.c
     vrep/extApiPlatform.c
     vrep/Helper.cpp)
