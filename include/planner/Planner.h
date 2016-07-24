@@ -28,9 +28,6 @@ public:
     std::shared_ptr<Helper> getVrep();
 
 protected:
-    bool controlConstraints();
-
-    // modules
     std::shared_ptr<TrajectoryPlanner>  m_planner;
     std::shared_ptr<Sampling>           m_sampler;
     std::shared_ptr<CollisionDetection> m_collision;

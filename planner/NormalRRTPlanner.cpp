@@ -35,7 +35,7 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
 }
 
 /*!
-*  \brief      Connect goal Node
+*  \brief      Connects goal Node to tree, if connection is possible
 *  \author     Sascha Kaden
 *  \param[in]  goal Node
 *  \param[out] true, if the connection was possible

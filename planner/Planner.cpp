@@ -45,13 +45,3 @@ std::vector<std::shared_ptr<Node>> Planner::getGraphNodes() {
 std::shared_ptr<Helper> Planner::getVrep() {
     return m_vrep;
 }
-
-/*!
-*  \brief      Control all constraints of the Planner
-*  \author     Sascha Kaden
-*  \param[out] check flag
-*  \date       2016-05-27
-*/
-bool Planner::controlConstraints() {
-    return true;
-}
