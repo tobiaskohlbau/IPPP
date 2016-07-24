@@ -58,6 +58,7 @@ set(SRCS
     source/planner/RRTPlanner.cpp
     source/planner/StarRRTPlanner.cpp
     source/robot/CadFileLoader.cpp
+    source/robot/GenericRobot.cpp
     source/robot/Jaco.cpp
     source/robot/PointRobot.cpp
     source/robot/RobotBase.cpp
