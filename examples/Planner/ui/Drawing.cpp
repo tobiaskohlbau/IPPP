@@ -35,7 +35,7 @@ void Drawing::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &im
 }
 
 /*!
-*  \brief         Draw a path by the given points in an image
+*  \brief         Draw a path with the passed points in an image
 *  \author        Sascha Kaden
 *  \param[in]     vector of points
 *  \param[in,out] image

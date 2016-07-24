@@ -270,7 +270,7 @@ float Node::norm() {
 }
 
 /*!
-*  \brief      Return distance to given Node
+*  \brief      Return distance to passed Node
 *  \author     Sascha Kaden
 *  \param[in]  shared_ptr to Node
 *  \param[out] distance
@@ -283,7 +283,7 @@ float Node::getDist(const shared_ptr<Node> &node) {
 }
 
 /*!
-*  \brief      Return distance to given Node
+*  \brief      Return distance to passed Node
 *  \author     Sascha Kaden
 *  \param[in]  Node
 *  \param[out] distance

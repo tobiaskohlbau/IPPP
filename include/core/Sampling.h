@@ -38,7 +38,7 @@ enum SamplingMethod
 };
 
 /*!
-* \brief   Class Sampling creates samples of new vectors by a given method
+* \brief   Class Sampling creates sample vecs with the passed method
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
