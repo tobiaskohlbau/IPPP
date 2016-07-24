@@ -381,17 +381,16 @@ Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy, T wz) {
 */
 template<typename T>
 Vec<T>::Vec(unsigned int dim) {
-    if (dim < 0)
-        throw 1;
-    m_dim = dim;
+    assert(dim >= 0);
 
+    m_dim = dim;
     if (m_dim == 0) {
         m_data = nullptr;
     }
     else {
         m_data = std::unique_ptr<T[]>(new T[m_dim]);
         for (unsigned int i = 0; i < m_dim; ++i)
-            (*this)[i] = NAN;
+            (*this)[i] = NAN; // if T is int, NAN is not possible
     }
 }
 
@@ -404,9 +403,17 @@ Vec<T>::Vec(unsigned int dim) {
 */
 template<typename T>
 Vec<T>::Vec(unsigned int dim, const T data[]) {
-    m_dim = m_dim;
-    for (unsigned int i = 0; i < m_dim; ++i)
-        (*this)[i] = data[i];
+    assert(dim >= 0);
+
+    m_dim = dim;
+    if (m_dim == 0) {
+        m_data = nullptr;
+    }
+    else {
+        m_data = std::unique_ptr<T[]>(new T[m_dim]);
+        for (unsigned int i = 0; i < m_dim; ++i)
+            (*this)[i] = data[i];
+    }
 }
 
 /*!
@@ -461,6 +468,7 @@ unsigned int Vec<T>::getDim() const {
 
 /*!
 *  \brief      Return true, if Vec is empty
+*  \detail     Check can only used by float and double
 *  \author     Sascha Kaden
 *  \param[out] state
 *  \date       2016-05-24
@@ -473,7 +481,7 @@ bool Vec<T>::empty() const{
         return true;
 
     for (unsigned int i = 0; i < m_dim; ++i)
-        if ((*this)[i] != (*this)[i])
+        if ((*this)[i] != (*this)[i]) // check is not possible by T = int
             return true;
     return false;
 }
