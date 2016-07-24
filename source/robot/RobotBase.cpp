@@ -168,12 +168,12 @@ Vec<float> RobotBase::getMaxBoundary() {
 *  \date       2016-07-24
 */
 void RobotBase::setPose(const Vec<float> &pose) {
-    if (pose.empty()) {
-        this->sendMessage("Empty pose vector!", Message::warning);
+    if if (pose.getDim() != 6) {
+        this->sendMessage("Pose vector has wrong dimension, must have 6!", Message::warning);
         return;
     }
-    else if (pose.getDim() != 6) {
-        this->sendMessage("Pose vector has wrong dimension, must have 6!", Message::warning);
+    else if (pose.empty()) {
+        this->sendMessage("Empty pose vector!", Message::warning);
         return;
     }
 
@@ -198,6 +198,13 @@ Vec<float> RobotBase::getPose() {
 *  \date       2016-06-30
 */
 bool RobotBase::setCadModels(const std::vector<std::string> &files) {
+    for (auto file : files) {
+        if (file.empty()) {
+            this->sendMessage("Empty filepath passed!", Message::warning);
+            return false;
+        }
+    }
+
     m_cadFiles = files;
     m_cadModels.clear();
 
@@ -225,9 +232,11 @@ std::shared_ptr<PQP_Model> RobotBase::getCadModel(unsigned int index) {
         this->sendMessage("model index is larger than cad models");
         return nullptr;
     }
-    else {
-        return m_cadModels[index];
-    }
+
+    if (m_cadModels[index] == nullptr)
+        this->sendMessage("Cad model is not set", Message::info);
+
+    return m_cadModels[index];
 }
 
 /*!
@@ -237,6 +246,11 @@ std::shared_ptr<PQP_Model> RobotBase::getCadModel(unsigned int index) {
 *  \date       2016-07-14
 */
 bool RobotBase::setWorkspace(const std::string &workspaceFile) {
+    if (workspaceFile.empty()) {
+        this->sendMessage("Empty filepath of workspace passed!", Message::warning);
+        return false;
+    }
+
     shared_ptr<PQP_Model> model = m_fileLoader->loadFile(workspaceFile);
     if (model == nullptr)
         return false;
@@ -253,13 +267,10 @@ bool RobotBase::setWorkspace(const std::string &workspaceFile) {
 *  \date       2016-07-14
 */
 shared_ptr<PQP_Model> RobotBase::getWorkspace() {
-    if (m_workspaceCad != nullptr) {
-        this->sendMessage("workspace is not set!", Message::error);
-        return m_workspaceCad;
-    }
-    else {
-        return nullptr;
-    }
+    if (m_workspaceCad == nullptr)
+        this->sendMessage("workspace is not set!", Message::info);
+
+    return m_workspaceCad;
 }
 
 /*!
