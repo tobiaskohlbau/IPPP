@@ -11,8 +11,9 @@ using std::shared_ptr;
 *  \date       2016-05-27
 */
 RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
-    : Planner(name, robot, stepSize, trajectoryStepSize, trajectory, sampling)
-{
+    : Planner(name, robot, stepSize, trajectoryStepSize, trajectory, sampling) {
+    m_initNode = nullptr;
+    m_goalNode = nullptr;
 }
 
 /*!
@@ -23,8 +24,6 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
 *  \date       2016-05-27
 */
 bool RRTPlanner::setInitNode(Node node) {
-    this->controlConstraints();
-
     shared_ptr<Node> initNode(new Node(node));
     if (this->m_collision->controlCollision(initNode->getVec())) {
         this->sendMessage("Init node could not be connected", Message::warning);
@@ -40,17 +39,14 @@ bool RRTPlanner::setInitNode(Node node) {
 *  \brief      Compute tree of the RRTPlanner
 *  \author     Sascha Kaden
 *  \param[in]  number of samples
+*  \param[in]  number of threads
 *  \param[out] return check of the constraints
 *  \date       2016-05-27
 */
 bool RRTPlanner::computeTree(int nbOfNodes, int nbOfThreades)
 {
-    if (!this->controlConstraints())
+    if (!controlConstraints())
         return false;
-    if (m_initNode == nullptr) {
-        this->sendMessage("Init node is not connected", Message::warning);
-        return false;
-    }
 
     if (nbOfThreades == 1) {
         computeTreeThread(nbOfNodes);
@@ -70,20 +66,21 @@ bool RRTPlanner::computeTree(int nbOfNodes, int nbOfThreades)
     return true;
 }
 
+/*!
+*  \brief      Compute tree of the RRTPlanner, threaded function
+*  \author     Sascha Kaden
+*  \param[in]  number of samples
+*  \date       2016-05-27
+*/
 void RRTPlanner::computeTreeThread(int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i)
     {
-        shared_ptr<Node> newNode;
-
-        // compute randomly sample
         Vec<float> randVec = this->m_sampler->getSample(m_robot->getDim(), i, nbOfNodes);
-
+        shared_ptr<Node> newNode;
         computeRRTNode(randVec, newNode);
 
         if (newNode == nullptr)
             continue;
-
-        //newNode->getVec().print();
         this->m_graph->addNode(newNode);
     }
 }
@@ -184,4 +181,21 @@ std::shared_ptr<Node> RRTPlanner::getGoalNode() {
 */
 Vec<float> RRTPlanner::getSamplePoint() {
     return this->m_sampler->getSample(m_robot->getDim(), 0, 100);
+}
+
+
+/*!
+*  \brief      Control all constraints of the RRTPlanner
+*  \author     Sascha Kaden
+*  \param[out] check flag
+*  \date       2016-05-27
+*/
+bool RRTPlanner::controlConstraints() {
+    if (m_initNode == nullptr) {
+        this->sendMessage("Init node is not connected", Message::warning);
+        return false;
+    }
+    else {
+        return true;
+    }
 }

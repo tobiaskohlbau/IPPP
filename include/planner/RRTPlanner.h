@@ -25,6 +25,7 @@ public:
     Vec<float> getSamplePoint();
 
 protected:
+    bool controlConstraints();
     void computeTreeThread(int nbOfNodes);
     virtual void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode) = 0;
     Vec<float> computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode);

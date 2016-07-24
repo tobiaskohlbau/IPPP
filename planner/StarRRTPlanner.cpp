@@ -89,7 +89,7 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
 }
 
 /*!
-*  \brief      Connect goal Node
+*  \brief      Connects goal Node to tree, if connection is possible
 *  \author     Sascha Kaden
 *  \param[in]  goal Node
 *  \param[out] true, if the connection was possible
