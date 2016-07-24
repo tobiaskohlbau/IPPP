@@ -57,8 +57,12 @@ public:
     Vec<float> getMinBoundary();
     Vec<float> getMaxBoundary();
 
+    void setPose(const Vec<float> &pose);
+    Vec<float> getPose();
+
     bool setCadModels(const std::vector<std::string> &files);
     std::shared_ptr<PQP_Model> getCadModel(unsigned int index);
+
     bool setWorkspace(const std::string &workspaceFile);
     std::shared_ptr<PQP_Model> getWorkspace();
     bool set2DWorkspace(const Eigen::MatrixXi &space);
@@ -86,6 +90,7 @@ protected:
     Vec<float> m_alpha;
     Vec<float> m_a;
     Vec<float> m_d;
+    Vec<float> m_pose;
 
     std::vector<std::string> m_cadFiles;
     std::vector<std::shared_ptr<PQP_Model>> m_cadModels;
