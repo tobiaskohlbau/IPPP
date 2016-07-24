@@ -40,7 +40,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/include/vrep
 
 set(PQP_DIR "/home/sascha/projects/pqp" CACHE PATH "PQP DIR")
 IF(NOT EXISTS PQP_DIR)
-    set(PQP_DIR ${CMAKE_SOURCE_DIR}"/thirdParty/pqp-1.3/PQP_v1.3" CACHE PATH "PQP DIR")
+    set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/pqp-1.3/PQP_v1.3 CACHE PATH "PQP DIR")
 ENDIF()
 include_directories(${PQP_DIR}/include)
 link_directories(${PQP_DIR}/lib)
