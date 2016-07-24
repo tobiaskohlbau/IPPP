@@ -72,6 +72,7 @@ public:
     unsigned int getNbJoints();
     std::string getName();
     CollisionType getCollisionType();
+    void setCollisionType(CollisionType type);
 
     Vec<float> degToRad(const Vec<float> deg);
     Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
