@@ -50,7 +50,7 @@ KDTree<T>::KDTree()
 }
 
 /*!
-*  \brief      Cconstructor of the class KDTree, builds tree from given nodes
+*  \brief      Cconstructor of the class KDTree, builds a sorted tree from given nodes
 *  \author     Sascha Kaden
 *  \param[in]  vector of nodes
 *  \date       2016-07-18
