@@ -41,6 +41,8 @@ RobotBase::RobotBase(std::string name, CollisionType type, unsigned int dim, uns
     m_dim = dim;
     m_nbJoints = numberJoints;
 
+    m_pose = Vec<float>(0,0,0,0,0,0);
+
     m_fileLoader = std::shared_ptr<CadFileLoader>(new CadFileLoader());
 }
 
@@ -157,6 +159,35 @@ Vec<float> RobotBase::getMinBoundary() {
 */
 Vec<float> RobotBase::getMaxBoundary() {
     return m_maxBoundary;
+}
+
+/*!
+*  \brief      Set pose of robot, translation and rotation (x,y,z,rx,ry,rz)
+*  \author     Sascha Kaden
+*  \param[in]  pose Vec
+*  \date       2016-07-24
+*/
+void RobotBase::setPose(const Vec<float> &pose) {
+    if (pose.empty()) {
+        this->sendMessage("Empty pose vector!", Message::warning);
+        return;
+    }
+    else if (pose.getDim() != 6) {
+        this->sendMessage("Pose vector has wrong dimension, must have 6!", Message::warning);
+        return;
+    }
+
+    m_pose = pose;
+}
+
+/*!
+*  \brief      Get pose of robot, translation and rotation (x,y,z,rx,ry,rz)
+*  \author     Sascha Kaden
+*  \param[out] pose Vec
+*  \date       2016-07-24
+*/
+Vec<float> RobotBase::getPose() {
+    return m_pose;
 }
 
 /*!

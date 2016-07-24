@@ -63,8 +63,7 @@ Jaco::Jaco()
 Vec<float> Jaco::directKinematic(const Vec<float> &angles) {
     std::vector<Eigen::Matrix4f> trafos = getTransformations(angles);
 
-    Vec<float> basis(0,0,0,0,0,0);
-    return getTcpPosition(trafos, basis);
+    return getTcpPosition(trafos, this->m_pose);
 }
 
 /*!
