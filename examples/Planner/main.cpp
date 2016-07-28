@@ -43,8 +43,8 @@ void planning2D() {
 
     std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
     robot->set2DWorkspace(mat);
-    rmpl::Vec<rmpl::REAL> minBoundary(0.0,0.0);
-    rmpl::Vec<rmpl::REAL> maxBoundary(rows, cols);
+    rmpl::Vec<float> minBoundary(0.0,0.0);
+    rmpl::Vec<float> maxBoundary(rows, cols);
     robot->setBoundaries(minBoundary, maxBoundary);
 
     rmpl::StarRRTPlanner planner(robot, 30.0, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
@@ -67,7 +67,7 @@ void planning2D() {
     Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
 
     if (connected) {
-        std::vector<rmpl::Vec<rmpl::REAL>> pathPoints = planner.getPath();
+        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
         Drawing::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255,0,0), 3);
     }
 
@@ -78,8 +78,8 @@ void planning2D() {
 
 void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    rmpl::Vec<rmpl::REAL> minBoundary(0, 42, 17, 0, 0, 0);
-    rmpl::Vec<rmpl::REAL> maxBoundary(360, 318, 343, 360, 360 ,360);
+    rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
+    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
     robot->setBoundaries(minBoundary, maxBoundary);
 
     rmpl::StarRRTPlanner planner(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
@@ -96,7 +96,7 @@ void simpleRRT() {
     bool connected = planner.connectGoalNode(rmpl::Node(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
-    std::vector<rmpl::Vec<rmpl::REAL>> graphPoints;
+    std::vector<rmpl::Vec<float>> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
@@ -104,9 +104,9 @@ void simpleRRT() {
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
-        std::vector<rmpl::Vec<rmpl::REAL>> pathAngles = planner.getPath();
+        std::vector<rmpl::Vec<float>> pathAngles = planner.getPath();
 
-        std::vector<rmpl::Vec<rmpl::REAL>> pathPoints;
+        std::vector<rmpl::Vec<float>> pathPoints;
         for (int i = 0; i < pathAngles.size(); ++i)
             pathPoints.push_back(robot->directKinematic(pathAngles[i]));
         Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
@@ -118,8 +118,8 @@ void simpleRRT() {
 
 void treeConnection() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    rmpl::Vec<rmpl::REAL> minBoundary(0, 42, 17, 0, 0, 0);
-    rmpl::Vec<rmpl::REAL> maxBoundary(360, 318, 343, 360, 360 ,360);
+    rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
+    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
     robot->setBoundaries(minBoundary, maxBoundary);
 
     // create two trees from init and from goal
@@ -141,15 +141,15 @@ void treeConnection() {
     // get random sample from the first planner and try to connect to both planners
     rmpl::Node goal;
     bool connected = false;
-    rmpl::REAL minCost = std::numeric_limits<rmpl::REAL>::max();
+    float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < 10000; ++i){
-        rmpl::Vec<rmpl::REAL> sample = plannerInitNode.getSamplePoint();
+        rmpl::Vec<float> sample = plannerInitNode.getSamplePoint();
         //sample.print();
         rmpl::Node node(sample);
         bool planner1Connected = plannerInitNode.connectGoalNode(node);
         bool planner2Connected = plannerGoalNode.connectGoalNode(node);
         if (planner1Connected && planner2Connected) {
-            rmpl::REAL cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
+            float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
             if (cost < minCost) {
                 goal = node;
                 connected = true;
@@ -158,7 +158,7 @@ void treeConnection() {
     }
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = plannerInitNode.getGraphNodes();
-    std::vector<rmpl::Vec<rmpl::REAL>> graphPoints;
+    std::vector<rmpl::Vec<float>> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
@@ -175,11 +175,11 @@ void treeConnection() {
         plannerInitNode.connectGoalNode(goal);
         plannerGoalNode.connectGoalNode(goal);
 
-        std::vector<rmpl::Vec<rmpl::REAL>> pathAngles = plannerInitNode.getPath();
-        std::vector<rmpl::Vec<rmpl::REAL>> temp = plannerGoalNode.getPath();
+        std::vector<rmpl::Vec<float>> pathAngles = plannerInitNode.getPath();
+        std::vector<rmpl::Vec<float>> temp = plannerGoalNode.getPath();
         pathAngles.insert(pathAngles.end(), temp.begin(), temp.end());
 
-        std::vector<rmpl::Vec<rmpl::REAL>> pathPoints;
+        std::vector<rmpl::Vec<float>> pathPoints;
         for (int i = 0; i < pathAngles.size(); ++i)
             pathPoints.push_back(robot->directKinematic(pathAngles[i]));
         Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
@@ -192,7 +192,7 @@ void treeConnection() {
 int main(int argc, char** argv)
 {
 
-    //planning2D();
+    planning2D();
     //treeConnection();
     simpleRRT();
 
