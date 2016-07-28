@@ -36,9 +36,9 @@ using namespace rmpl;
 */
 Jaco::Jaco()
     : RobotBase("Jaco", CollisionType::pqp, 6, 6) {
-    this->m_alpha = Vec<float>(this->m_pi/2, this->m_pi, this->m_pi/2, 0.95993, 0.95993, this->m_pi);
-    this->m_a = Vec<float>(0, 410, 0, 0, 0, 0);
-    this->m_d = Vec<float>(275.5, 0, -9.8, -249.18224, -83.76448, -210.58224);
+    this->m_alpha = Vec<REAL>(this->m_pi/2, this->m_pi, this->m_pi/2, 0.95993, 0.95993, this->m_pi);
+    this->m_a = Vec<REAL>(0, 410, 0, 0, 0, 0);
+    this->m_d = Vec<REAL>(275.5, 0, -9.8, -249.18224, -83.76448, -210.58224);
 
     char cCurrentPath[FILENAME_MAX];
     if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath))) {
@@ -60,7 +60,7 @@ Jaco::Jaco()
     this->setCadModels(cadFiles);
 }
 
-Vec<float> Jaco::directKinematic(const Vec<float> &angles) {
+Vec<REAL> Jaco::directKinematic(const Vec<REAL> &angles) {
     std::vector<Eigen::Matrix4f> trafos = getTransformations(angles);
 
     return getTcpPosition(trafos, this->m_pose);
@@ -73,10 +73,10 @@ Vec<float> Jaco::directKinematic(const Vec<float> &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-14
 */
-std::vector<Eigen::Matrix4f> Jaco::getTransformations(const Vec<float> &angles) {
+std::vector<Eigen::Matrix4f> Jaco::getTransformations(const Vec<REAL> &angles) {
     // transform form jaco physical angles to dh angles
-    Vec<float> dhAngles = convertRealToDH(angles);
-    Vec<float> rads = this->degToRad(dhAngles);
+    Vec<REAL> dhAngles = convertRealToDH(angles);
+    Vec<REAL> rads = this->degToRad(dhAngles);
 
     std::vector<Eigen::Matrix4f> trafos;
     Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4,4);
@@ -100,8 +100,8 @@ std::vector<Eigen::Matrix4f> Jaco::getTransformations(const Vec<float> &angles) 
 *  \param[out] D-H angles
 *  \date       2016-07-14
 */
-Vec<float> Jaco::convertRealToDH(const Vec<float> &realAngles) {
-    Vec<float> dhAngles(realAngles);
+Vec<REAL> Jaco::convertRealToDH(const Vec<REAL> &realAngles) {
+    Vec<REAL> dhAngles(realAngles);
     dhAngles[0] = -realAngles[0];
     dhAngles[1] = realAngles[1] - 90;
     dhAngles[2] = realAngles[2] + 90;

@@ -32,10 +32,10 @@ class GenericRobot : public RobotBase
 {
 public:
     GenericRobot(std::string name, unsigned int dimension, unsigned int numberOfJoints,
-        const Vec<float> &alphaParams, const Vec<float> &aParams, const Vec<float> dParams);
+        const Vec<REAL> &alphaParams, const Vec<REAL> &aParams, const Vec<REAL> dParams);
 
-    Vec<float> directKinematic(const Vec<float> &angles);
-    std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles);
+    Vec<REAL> directKinematic(const Vec<REAL> &angles);
+    std::vector<Eigen::Matrix4f> getTransformations(const Vec<REAL> &angles);
 
 private:
 };

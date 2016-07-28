@@ -33,14 +33,14 @@ namespace rmpl {
 class StarRRTPlanner : public RRTPlanner
 {
 public:
-    StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, const TrajectoryMethod trajectory = TrajectoryMethod::linear, const SamplingMethod sampling = SamplingMethod::randomly)
+    StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, REAL stepSize, REAL trajectoryStepSize, const TrajectoryMethod trajectory = TrajectoryMethod::linear, const SamplingMethod sampling = SamplingMethod::randomly)
     : RRTPlanner("RRT* Planner", robot, stepSize, trajectoryStepSize, trajectory, sampling) // Argumente an Basisklassenkonstruktor weiterleiten
     {
     }
     bool connectGoalNode(Node goal);
 
 protected:
-    void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
+    void computeRRTNode(const Vec<REAL> &randVec, std::shared_ptr<Node> &newNode);
     void chooseParent(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode, std::vector<std::shared_ptr<Node>> &nearNodes);
     void reWire(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode, std::vector<std::shared_ptr<Node>> &nearNodes);
 
