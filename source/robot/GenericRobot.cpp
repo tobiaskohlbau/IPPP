@@ -26,7 +26,7 @@ using namespace rmpl;
 *  \date       2016-07-24
 */
 GenericRobot::GenericRobot(std::string name, unsigned int dimension, unsigned int numberOfJoints,
-    const Vec<REAL> &alphaParams, const Vec<REAL> &aParams, const Vec<REAL> dParams)
+    const Vec<float> &alphaParams, const Vec<float> &aParams, const Vec<float> dParams)
     : RobotBase(name, CollisionType::pqp, dimension, numberOfJoints) {
 
     // check consistency of parameters
@@ -40,7 +40,7 @@ GenericRobot::GenericRobot(std::string name, unsigned int dimension, unsigned in
 
 }
 
-Vec<REAL> GenericRobot::directKinematic(const Vec<REAL> &angles) {
+Vec<float> GenericRobot::directKinematic(const Vec<float> &angles) {
     std::vector<Eigen::Matrix4f> trafos = getTransformations(angles);
 
     return getTcpPosition(trafos, this->m_pose);
@@ -53,8 +53,8 @@ Vec<REAL> GenericRobot::directKinematic(const Vec<REAL> &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-24
 */
-std::vector<Eigen::Matrix4f> GenericRobot::getTransformations(const Vec<REAL> &angles) {
-    Vec<REAL> rads = this->degToRad(angles);
+std::vector<Eigen::Matrix4f> GenericRobot::getTransformations(const Vec<float> &angles) {
+    Vec<float> rads = this->degToRad(angles);
 
     std::vector<Eigen::Matrix4f> trafos;
     Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4,4);

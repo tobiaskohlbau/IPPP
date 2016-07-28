@@ -32,7 +32,7 @@ void Helper::start() {
     errorcode[5]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint6",&m_jointHandles[5],simx_opmode_oneshot_wait);
 }
 
-bool Helper::setPos(const Vec<REAL> &vec) {
+bool Helper::setPos(const Vec<float> &vec) {
     if (m_clientId == -1)
         return false;
 
@@ -43,7 +43,7 @@ bool Helper::setPos(const Vec<REAL> &vec) {
     return true;
 }
 
-bool Helper::checkCollision(const Vec<REAL> &jointAngles) {
+bool Helper::checkCollision(const Vec<float> &jointAngles) {
     if (m_clientId == -1)
         return false;
 
@@ -74,7 +74,7 @@ bool Helper::checkCollision(const Vec<REAL> &jointAngles) {
     return true;
 }
 
-bool Helper::checkCollision(const std::vector<Vec<REAL>> &jointAngles) {
+bool Helper::checkCollision(const std::vector<Vec<float>> &jointAngles) {
     if (m_clientId == -1)
         return false;
 
@@ -107,7 +107,7 @@ bool Helper::checkCollision(const std::vector<Vec<REAL>> &jointAngles) {
     return true;
 }
 
-Vec<simxFloat> Helper::convertVecToRad(const Vec<REAL> &vec) {
+Vec<simxFloat> Helper::convertVecToRad(const Vec<float> &vec) {
     Vec<simxFloat> rads(vec.getDim());
     for (unsigned int i = 0; i < m_dim; ++i)
         rads[i] = vec[i]*M_PI/180;

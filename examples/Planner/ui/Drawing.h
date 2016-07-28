@@ -17,10 +17,10 @@ class Drawing : public rmpl::Base
 public:
     Drawing(int argc, char** argv);
     static void drawTree2D(const std::vector<std::shared_ptr<rmpl::Node>> &nodes, cv::Mat &image, const rmpl::Vec<uint8_t> &colorNode, const rmpl::Vec<uint8_t> &colorEdge, int thickness);
-    static void drawPath2D(const std::vector<rmpl::Vec<rmpl::REAL>> vecs, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge, int thickness);
+    static void drawPath2D(const std::vector<rmpl::Vec<float>> vecs, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge, int thickness);
 
-    static void writeVecsToFile(const std::vector<rmpl::Vec<rmpl::REAL>> &vecs, const std::string &filename, const rmpl::REAL scale = 1);
-    static void appendVecsToFile(const std::vector<rmpl::Vec<rmpl::REAL>> &vecs, const std::string &filename, const rmpl::REAL scale = 1);
+    static void writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, const float scale = 1);
+    static void appendVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, const float scale = 1);
 
 private:
 };

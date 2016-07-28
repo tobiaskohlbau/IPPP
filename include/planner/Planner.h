@@ -38,10 +38,10 @@ namespace rmpl {
 class Planner : public Base
 {
 public:
-    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, REAL stepSize, REAL trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
+    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
 
     std::vector<std::shared_ptr<Node>> getGraphNodes();
-    virtual std::vector<Vec<REAL>> getPath() = 0;
+    virtual std::vector<Vec<float>> getPath() = 0;
     virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
     std::shared_ptr<Helper> getVrep();
 
@@ -55,7 +55,7 @@ protected:
 
     // variables
     bool         m_pathPlanned;
-    REAL        m_stepSize;
+    float        m_stepSize;
 };
 
 } /* namespace rmpl */

@@ -32,11 +32,11 @@ class Jaco : public RobotBase
 {
 public:
     Jaco();
-    Vec<REAL> directKinematic(const Vec<REAL> &angles);
-    std::vector<Eigen::Matrix4f> getTransformations(const Vec<REAL> &angles);
+    Vec<float> directKinematic(const Vec<float> &angles);
+    std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles);
 
 private:
-    Vec<REAL> convertRealToDH(const Vec<REAL> &realAngles);
+    Vec<float> convertRealToDH(const Vec<float> &realAngles);
 };
 
 } /* namespace rmpl */

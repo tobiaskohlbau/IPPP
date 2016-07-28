@@ -30,10 +30,10 @@ PointRobot::PointRobot()
 
 }
 
-Vec<REAL> PointRobot::directKinematic(const Vec<REAL> &angles) {
+Vec<float> PointRobot::directKinematic(const Vec<float> &angles) {
     return angles;
 }
 
-std::vector<Eigen::Matrix4f> PointRobot::getTransformations(const Vec<REAL> &angles) {
+std::vector<Eigen::Matrix4f> PointRobot::getTransformations(const Vec<float> &angles) {
     return std::vector<Eigen::Matrix4f>();
 }

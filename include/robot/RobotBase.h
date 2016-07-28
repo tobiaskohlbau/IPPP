@@ -48,17 +48,17 @@ class RobotBase : public Base
 public:
     RobotBase(std::string name, CollisionType type, unsigned int dim, unsigned int numberJoints);
 
-    virtual Vec<REAL> directKinematic(const Vec<REAL> &angles) = 0;
-    virtual std::vector<Eigen::Matrix4f> getTransformations(const Vec<REAL> &angles) = 0;
-    Eigen::Matrix4f getTrafo(REAL alpha, REAL a, REAL d, REAL q);
-    Vec<REAL> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<REAL> basis);
+    virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
+    virtual std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles) = 0;
+    Eigen::Matrix4f getTrafo(float alpha, float a, float d, float q);
+    Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis);
 
-    void setBoundaries(const Vec<REAL> &minBoundary, const Vec<REAL> &maxBoundary);
-    Vec<REAL> getMinBoundary();
-    Vec<REAL> getMaxBoundary();
+    void setBoundaries(const Vec<float> &minBoundary, const Vec<float> &maxBoundary);
+    Vec<float> getMinBoundary();
+    Vec<float> getMaxBoundary();
 
-    void setPose(const Vec<REAL> &pose);
-    Vec<REAL> getPose();
+    void setPose(const Vec<float> &pose);
+    Vec<float> getPose();
 
     bool setCadModels(const std::vector<std::string> &files);
     std::shared_ptr<PQP_Model> getCadModel(unsigned int index);
@@ -74,9 +74,9 @@ public:
     CollisionType getCollisionType();
     void setCollisionType(CollisionType type);
 
-    Vec<REAL> degToRad(const Vec<REAL> deg);
-    Eigen::ArrayXf VecToEigen(const Vec<REAL> &vec);
-    Vec<REAL> EigenToVec(const Eigen::ArrayXf &eigenVec);
+    Vec<float> degToRad(const Vec<float> deg);
+    Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
+    Vec<float> EigenToVec(const Eigen::ArrayXf &eigenVec);
 
 protected:
     std::shared_ptr<CadFileLoader> m_fileLoader;
@@ -86,12 +86,12 @@ protected:
     unsigned int  m_nbJoints;
     unsigned int  m_dim;
 
-    Vec<REAL> m_minBoundary;
-    Vec<REAL> m_maxBoundary;
-    Vec<REAL> m_alpha;
-    Vec<REAL> m_a;
-    Vec<REAL> m_d;
-    Vec<REAL> m_pose;
+    Vec<float> m_minBoundary;
+    Vec<float> m_maxBoundary;
+    Vec<float> m_alpha;
+    Vec<float> m_a;
+    Vec<float> m_d;
+    Vec<float> m_pose;
 
     std::vector<std::string> m_cadFiles;
     std::vector<std::shared_ptr<PQP_Model>> m_cadModels;
@@ -99,7 +99,7 @@ protected:
     std::shared_ptr<PQP_Model> m_workspaceCad;
     Eigen::MatrixXi m_2DWorkspace;
 
-    REAL m_pi = 3.1416;
+    float m_pi = 3.1416;
 };
 
 } /* namespace rmpl */
