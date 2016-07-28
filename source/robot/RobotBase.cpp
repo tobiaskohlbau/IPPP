@@ -267,8 +267,8 @@ bool RobotBase::setWorkspace(const std::string &workspaceFile) {
 *  \date       2016-07-14
 */
 shared_ptr<PQP_Model> RobotBase::getWorkspace() {
-    if (m_workspaceCad == nullptr)
-        this->sendMessage("workspace is not set!", Message::info);
+    //if (m_workspaceCad == nullptr)
+    //    this->sendMessage("workspace is not set!", Message::info);
 
     return m_workspaceCad;
 }
