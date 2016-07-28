@@ -21,7 +21,7 @@
 
 #include <vector>
 
-#include <PQP/include/PQP.h>
+#include <PQP.h>
 
 #include <core/Base.h>
 

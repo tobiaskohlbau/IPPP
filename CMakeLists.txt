@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------//
 
 cmake_minimum_required (VERSION 2.8.10)
-project (RobotMotionPlanningLib)
+project (RobotMotionPlanning)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -66,9 +66,14 @@ set(SRCS
     vrep/extApiPlatform.c
     vrep/Helper.cpp)
 
+add_custom_target(myInstall
+        make install)
+
 add_library(${PROJECT_NAME} STATIC ${SRCS})
 target_link_libraries(${PROJECT_NAME} pthread PQP)
-install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib)
-install(DIRECTORY include DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-install(DIRECTORY ${EIGEN3_INCLUDE_DIR} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-install(DIRECTORY ${PQP_DIR}/include DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/PQP)
+#install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL}/lib)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
+install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
+install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
+
+

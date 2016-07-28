@@ -20,7 +20,7 @@
 #define COLLISIONDETECTION_H_
 
 #include <Eigen/Core>
-#include <PQP/include/PQP.h>
+#include <PQP.h>
 
 #include <core/Base.h>
 #include <core/Node.h>

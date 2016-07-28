@@ -15,10 +15,10 @@ endif()
 
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 set(RMP_DIR "/home/sascha/projects/robotMotion_build" CACHE PATH "Robot Motion Planner DIR")
-link_directories(${RMP_DIR}/lib)
+link_directories(${RMP_DIR}/Release)#/Debug
 include_directories(${RMP_DIR}/include)
-include_directories(${RMP_DIR}/eigen3)
 include_directories(${RMP_DIR})
+include_directories(${RMP_DIR}/PQP)
 
 set(PQP_DIR "/home/sascha/projects/pqp" CACHE PATH "PQP DIR")
 include_directories(${PQP_DIR}/include)
@@ -40,9 +40,9 @@ set(HDRS
     ui/Drawing.h)
 
 add_executable(planner ${SRCS} ${HDRS})
-target_link_libraries( planner RobotMotionPlanningLib ${OpenCV_LIBS} pthread PQP)
+target_link_libraries( planner RobotMotionPlanning ${OpenCV_LIBS} pthread PQP)
     #Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Quick Qt5::Qml
 
 # copy the workspaces and meshes
-file(COPY ${CMAKE_SOURCE_DIR}/spaces DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY ${CMAKE_SOURCE_DIR}/meshes DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/spaces/ DESTINATION spaces)
+file(COPY ${CMAKE_SOURCE_DIR}/meshes/ DESTINATION meshes)
