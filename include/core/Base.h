@@ -26,6 +26,8 @@
 
 namespace rmpl{
 
+typedef float REAL;
+
 enum class Message
 {
     info,

@@ -41,7 +41,7 @@ RobotBase::RobotBase(std::string name, CollisionType type, unsigned int dim, uns
     m_dim = dim;
     m_nbJoints = numberJoints;
 
-    m_pose = Vec<float>(0,0,0,0,0,0);
+    m_pose = Vec<REAL>(0,0,0,0,0,0);
 
     m_fileLoader = std::shared_ptr<CadFileLoader>(new CadFileLoader());
 }
@@ -56,11 +56,11 @@ RobotBase::RobotBase(std::string name, CollisionType type, unsigned int dim, uns
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Eigen::Matrix4f RobotBase::getTrafo(float alpha, float a, float d, float q) {
-    float sinAlpha = sin(alpha);
-    float cosAlpha = cos(alpha);
-    float sinQ = sin(q);
-    float cosQ = cos(q);
+Eigen::Matrix4f RobotBase::getTrafo(REAL alpha, REAL a, REAL d, REAL q) {
+    REAL sinAlpha = sin(alpha);
+    REAL cosAlpha = cos(alpha);
+    REAL sinQ = sin(q);
+    REAL cosQ = cos(q);
 
     Eigen::Matrix4f T = Eigen::Matrix4f::Zero(4,4);
     T(0,0) = cosQ;
@@ -86,7 +86,7 @@ Eigen::Matrix4f RobotBase::getTrafo(float alpha, float a, float d, float q) {
 *  \param[out] TCP pose
 *  \date       2016-07-07
 */
-Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis) {
+Vec<REAL> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<REAL> basis) {
     Eigen::Matrix3f R;
     R = Eigen::AngleAxisf(basis[3], Eigen::Vector3f::UnitX())
         * Eigen::AngleAxisf(basis[4], Eigen::Vector3f::UnitY())
@@ -106,7 +106,7 @@ Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos,
     Eigen::Matrix4f basisToTcp = basisToRobot * robotToTcp;
 
     // create tcp position and orientation vector
-    Vec<float> tcp(basisToTcp(0,3), basisToTcp(1,3), basisToTcp(2,3));
+    Vec<REAL> tcp(basisToTcp(0,3), basisToTcp(1,3), basisToTcp(2,3));
     Eigen::Vector3f euler = basisToTcp.block<3,3>(0,0).eulerAngles(0, 1, 2);
     tcp.append(EigenToVec(euler));
 
@@ -120,7 +120,7 @@ Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos,
 *  \param[in]  maximum Boudaries
 *  \date       2016-07-15
 */
-void RobotBase::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &maxBoundary) {
+void RobotBase::setBoundaries(const Vec<REAL> &minBoundary, const Vec<REAL> &maxBoundary) {
     if (minBoundary.empty() || maxBoundary.empty()) {
         this->sendMessage("Boundaries are empty", Message::warning);
         return;
@@ -147,7 +147,7 @@ void RobotBase::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &m
 *  \param[out] minimum Boudaries
 *  \date       2016-07-15
 */
-Vec<float> RobotBase::getMinBoundary() {
+Vec<REAL> RobotBase::getMinBoundary() {
     return m_minBoundary;
 }
 
@@ -157,7 +157,7 @@ Vec<float> RobotBase::getMinBoundary() {
 *  \param[out] maximum Boudaries
 *  \date       2016-07-15
 */
-Vec<float> RobotBase::getMaxBoundary() {
+Vec<REAL> RobotBase::getMaxBoundary() {
     return m_maxBoundary;
 }
 
@@ -167,7 +167,7 @@ Vec<float> RobotBase::getMaxBoundary() {
 *  \param[in]  pose Vec
 *  \date       2016-07-24
 */
-void RobotBase::setPose(const Vec<float> &pose) {
+void RobotBase::setPose(const Vec<REAL> &pose) {
     if (pose.getDim() != 6) {
         this->sendMessage("Pose vector has wrong dimension, must have 6!", Message::warning);
         return;
@@ -186,7 +186,7 @@ void RobotBase::setPose(const Vec<float> &pose) {
 *  \param[out] pose Vec
 *  \date       2016-07-24
 */
-Vec<float> RobotBase::getPose() {
+Vec<REAL> RobotBase::getPose() {
     return m_pose;
 }
 
@@ -356,8 +356,8 @@ CollisionType RobotBase::getCollisionType() {
 *  \param[out] Vec of rad angles
 *  \date       2016-07-07
 */
-Vec<float> RobotBase::degToRad(const Vec<float> deg) {
-    Vec<float> rad(m_dim);
+Vec<REAL> RobotBase::degToRad(const Vec<REAL> deg) {
+    Vec<REAL> rad(m_dim);
     for (unsigned int i = 0; i < m_dim; ++i)
         rad[i] = deg[i] / 360 * m_pi;
     return rad;
@@ -370,7 +370,7 @@ Vec<float> RobotBase::degToRad(const Vec<float> deg) {
 *  \param[out] Eigen Array
 *  \date       2016-07-07
 */
-Eigen::ArrayXf RobotBase::VecToEigen(const Vec<float> &vec) {
+Eigen::ArrayXf RobotBase::VecToEigen(const Vec<REAL> &vec) {
     Eigen::ArrayXf eigenVec(vec.getDim());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         eigenVec(i, 0) = vec[i];
@@ -384,8 +384,8 @@ Eigen::ArrayXf RobotBase::VecToEigen(const Vec<float> &vec) {
 *  \param[out] Vec
 *  \date       2016-07-07
 */
-Vec<float> RobotBase::EigenToVec(const Eigen::ArrayXf &eigenVec) {
-    Vec<float> vec((unsigned int)eigenVec.rows());
+Vec<REAL> RobotBase::EigenToVec(const Eigen::ArrayXf &eigenVec) {
+    Vec<REAL> vec((unsigned int)eigenVec.rows());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         vec[i] = eigenVec(i, 0);
     return vec;

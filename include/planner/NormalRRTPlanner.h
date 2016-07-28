@@ -33,7 +33,7 @@ namespace rmpl {
 class NormalRRTPlanner : public RRTPlanner
 {
 public:
-    NormalRRTPlanner(const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
+    NormalRRTPlanner(const std::shared_ptr<RobotBase> &robot, REAL stepSize, REAL trajectoryStepSize, TrajectoryMethod trajectory = TrajectoryMethod::linear, SamplingMethod sampling = SamplingMethod::randomly)
     : RRTPlanner("Normal RRT Planner", robot, stepSize, trajectoryStepSize, trajectory, sampling)
     {
     }
@@ -41,7 +41,7 @@ public:
     bool connectGoalNode(Node goal);
 
 protected:
-    void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
+    void computeRRTNode(const Vec<REAL> &randVec, std::shared_ptr<Node> &newNode);
 
 private:
     std::mutex m_mutex;
