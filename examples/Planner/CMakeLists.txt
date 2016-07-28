@@ -1,48 +1,35 @@
-cmake_minimum_required (VERSION 2.8.10)
-project (RobotMotionPlanning)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_CXX_STANDARD 14)
+#-------------------------------------------------------------------------//
+#
+# Copyright 2016 Sascha Kaden
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#-------------------------------------------------------------------------//
 
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-        message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
+set(EXAMPLE_PLANNER_DIR ${CMAKE_SOURCE_DIR}/examples/Planner)
 
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
-set(RMP_DIR "/home/sascha/projects/robotMotion_build" CACHE PATH "Robot Motion Planner DIR")
-link_directories(${RMP_DIR}/Release)#/Debug
-include_directories(${RMP_DIR}/include)
-include_directories(${RMP_DIR})
-include_directories(${RMP_DIR}/PQP)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/examples/Planner)
 
-set(PQP_DIR "/home/sascha/projects/pqp" CACHE PATH "PQP DIR")
-include_directories(${PQP_DIR}/include)
-link_directories(${PQP_DIR}/lib)
+set(source
+    ${EXAMPLE_PLANNER_DIR}/main.cpp
+    ${EXAMPLE_PLANNER_DIR}/ui/Drawing.cpp
+    ${EXAMPLE_PLANNER_DIR}/ui/Drawing.cpp)
 
-#QT
-#find_package(Qt5Widgets)
-#find_package(Qt5Core)
-#find_package(Qt5Gui)
-#find_package(Qt5Quick)
-#find_package(Qt5Qml)
-#qt5_add_resources(RESOURCES ${CMAKE_SOURCE_DIR}/ui/qml.qrc)
+ADD_EXECUTABLE(Planner ${source})
+TARGET_LINK_LIBRARIES(Planner RobotMotionPlanning PQP ${OpenCV_LIBS})
 
-set(SRCS
-    main.cpp
-    ui/Drawing.cpp)
-
-set(HDRS
-    ui/Drawing.h)
-
-add_executable(planner ${SRCS} ${HDRS})
-target_link_libraries( planner RobotMotionPlanning ${OpenCV_LIBS} pthread PQP)
-    #Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Quick Qt5::Qml
-
-# copy the workspaces and meshes
-file(COPY ${CMAKE_SOURCE_DIR}/spaces/ DESTINATION spaces)
-file(COPY ${CMAKE_SOURCE_DIR}/meshes/ DESTINATION meshes)
+install(DIRECTORY ${EXAMPLE_PLANNER_DIR}/spaces/ DESTINATION Release/spaces)
+install(DIRECTORY ${EXAMPLE_PLANNER_DIR}/meshes/ DESTINATION Release/meshes)
+install(DIRECTORY ${EXAMPLE_PLANNER_DIR}/spaces/ DESTINATION Debug/spaces)
+install(DIRECTORY ${EXAMPLE_PLANNER_DIR}/meshes/ DESTINATION Debug/meshes)

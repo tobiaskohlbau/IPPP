@@ -21,7 +21,6 @@ project (RobotMotionPlanning)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
@@ -31,6 +30,9 @@ else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write-strings")
+
+OPTION(BUILD_EXAMPLES "Build the examples")
+
 
 # external libaries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
@@ -53,10 +55,10 @@ set(SRCS
     include/core/KDNode.hpp
     include/core/KDTree.hpp
     include/core/Vec.hpp
-    source/planner/NormalRRTPlanner.cpp
-    source/planner/Planner.cpp
-    source/planner/RRTPlanner.cpp
-    source/planner/StarRRTPlanner.cpp
+    source/pathPlanner/NormalRRTPlanner.cpp
+    source/pathPlanner/Planner.cpp
+    source/pathPlanner/RRTPlanner.cpp
+    source/pathPlanner/StarRRTPlanner.cpp
     source/robot/CadFileLoader.cpp
     source/robot/GenericRobot.cpp
     source/robot/Jaco.cpp
@@ -75,5 +77,9 @@ target_link_libraries(${PROJECT_NAME} pthread PQP)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
+
+IF (${BUILD_EXAMPLES})
+    ADD_SUBDIRECTORY(examples/Planner)
+ENDIF()
 
 
