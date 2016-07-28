@@ -37,6 +37,8 @@ CollisionDetection::CollisionDetection(const shared_ptr<Helper> &vrep, const sha
 
     if (m_robot->getCollisionType() == CollisionType::twoD)
         m_2DWorkspace = m_robot->get2DWorkspace();
+    if (m_robot->getCollisionType() == CollisionType::pqp)
+        m_pqpWorkspace = m_robot->getWorkspace();
 }
 
 /*!
@@ -161,8 +163,8 @@ bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
     }
 
     // control collision with workspace
-    shared_ptr<PQP_Model> workspace = m_robot->getWorkspace();
-    if (workspace != nullptr) {
+    // shared_ptr<PQP_Model> workspace = m_robot->getWorkspace();
+    if (m_pqpWorkspace != nullptr) {
         R2 = Eigen::Matrix3f::Zero(3,3);
         for (int i = 0; i < 3; ++i) {
             R2(i,i) = 1;
@@ -173,7 +175,7 @@ bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
             // get R and t from A for first model
             R1 = As[i].block<3,3>(0,0);
             t1 = As[i].block<3,1>(0,3);
-            if (checkPQP(m_robot->getCadModel(i), workspace, R1, R2, t1, t2))
+            if (checkPQP(m_robot->getCadModel(i), m_pqpWorkspace, R1, R2, t1, t2))
                 return true;
         }
     }

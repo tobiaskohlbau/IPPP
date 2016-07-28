@@ -51,6 +51,7 @@ private:
     std::shared_ptr<RobotBase> m_robot;
     std::shared_ptr<Helper>    m_vrep;
     Eigen::MatrixXi m_2DWorkspace;
+    std::shared_ptr<PQP_Model> m_pqpWorkspace;
 };
 
 } /* namespace rmpl */
