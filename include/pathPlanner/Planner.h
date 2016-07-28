@@ -31,7 +31,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Super class of all planners
+* \brief   Super class of all path planners
 * \author  Sascha Kaden
 * \date    2016-05-27
 */

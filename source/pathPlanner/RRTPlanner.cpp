@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <planner/RRTPlanner.h>
+#include <pathPlanner/RRTPlanner.h>
 
 #include <thread>
 

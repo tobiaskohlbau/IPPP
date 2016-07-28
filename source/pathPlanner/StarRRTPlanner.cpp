@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <planner/StarRRTPlanner.h>
+#include <pathPlanner/StarRRTPlanner.h>
 
 using namespace rmpl;
 using std::shared_ptr;

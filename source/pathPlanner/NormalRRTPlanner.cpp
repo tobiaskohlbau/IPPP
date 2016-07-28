@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <planner/NormalRRTPlanner.h>
+#include <pathPlanner/NormalRRTPlanner.h>
 
 using namespace rmpl;
 using std::shared_ptr;
