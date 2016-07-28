@@ -70,7 +70,6 @@ public:
 
     unsigned int getDim();
     unsigned int getNbJoints();
-    std::string getName();
     CollisionType getCollisionType();
     void setCollisionType(CollisionType type);
 
