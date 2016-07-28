@@ -313,16 +313,6 @@ unsigned int RobotBase::getNbJoints() {
 }
 
 /*!
-*  \brief      Return name from the robot
-*  \author     Sascha Kaden
-*  \param[out] name
-*  \date       2016-06-30
-*/
-std::string RobotBase::getName() {
-    return m_robotName;
-}
-
-/*!
 *  \brief      Set the collision type of the robot
 *  \author     Sascha Kaden
 *  \param[in]  CollisionType
