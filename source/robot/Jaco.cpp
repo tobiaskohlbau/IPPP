@@ -38,7 +38,7 @@ Jaco::Jaco()
     : RobotBase("Jaco", CollisionType::pqp, 6, 6) {
     this->m_alpha = Vec<float>(this->m_pi/2, this->m_pi, this->m_pi/2, 0.95993, 0.95993, this->m_pi);
     this->m_a = Vec<float>(0, 410, 0, 0, 0, 0);
-    this->m_d = Vec<float>(275.5f, 0f, -9.8f, -249.18224f, -83.76448f, -210.58224f);
+    this->m_d = Vec<float>(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
     char cCurrentPath[FILENAME_MAX];
     if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath))) {
@@ -48,13 +48,13 @@ Jaco::Jaco()
     cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
     std::string path(cCurrentPath);
 
-    std::vector<std::string> cadFiles = {"/home/sascha/projects/Planner/meshes/link_base_fixed_origin.obj",
-                            "/home/sascha/projects/Planner/meshes/link_1_fixed_origin.obj",
-                            "/home/sascha/projects/Planner/meshes/link_2_fixed_origin.obj",
-                            "/home/sascha/projects/Planner/meshes/link_3_fixed_origin.obj",
-                            "/home/sascha/projects/Planner/meshes/link_4_fixed_origin.obj",
-                            "/home/sascha/projects/Planner/meshes/link_5_fixed_origin.obj",
-                            "/home/sascha/projects/Planner/meshes/link_hand_fixed_origin.obj"};
+    std::vector<std::string> cadFiles = {"meshes/link_base_fixed_origin.obj",
+                            "meshes/link_1_fixed_origin.obj",
+                            "meshes/link_2_fixed_origin.obj",
+                            "meshes/link_3_fixed_origin.obj",
+                            "meshes/link_4_fixed_origin.obj",
+                            "meshes/link_5_fixed_origin.obj",
+                            "meshes/link_hand_fixed_origin.obj"};
 
     // load cad models
     this->setCadModels(cadFiles);

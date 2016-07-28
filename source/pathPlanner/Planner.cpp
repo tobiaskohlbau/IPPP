@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <planner/Planner.h>
+#include <pathPlanner/Planner.h>
 
 using namespace rmpl;
 

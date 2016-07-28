@@ -5,8 +5,8 @@
 #include "opencv2/core/core.hpp"
 #include <Eigen/Core>
 
-#include <planner/NormalRRTPlanner.h>
-#include <planner/StarRRTPlanner.h>
+#include <pathPlanner/NormalRRTPlanner.h>
+#include <pathPlanner/StarRRTPlanner.h>
 #include <robot/Jaco.h>
 #include <robot/PointRobot.h>
 
@@ -21,8 +21,8 @@ void printTime(clock_t begin, clock_t end) {
 
 void planning2D() {
     cv::Mat freeWorkspace, obstacleWorkspace;
-    freeWorkspace = cv::imread("/home/sascha/projects/Planner/spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    obstacleWorkspace = cv::imread("/home/sascha/projects/Planner/spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
     cv::Mat dst;
     obstacleWorkspace.convertTo(dst, CV_32SC1);
@@ -53,7 +53,7 @@ void planning2D() {
     // compute the tree
     clock_t begin = std::clock();
     planner.setInitNode(rmpl::Node(10.0, 10.0));
-    planner.computeTree(10000);
+    planner.computeTree(4000);
     clock_t end = std::clock();
     printTime(begin, end);
 
@@ -71,8 +71,8 @@ void planning2D() {
         Drawing::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255,0,0), 3);
     }
 
-    cv::namedWindow("planner", CV_WINDOW_AUTOSIZE);
-    cv::imshow("planner", image);
+    cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
+    cv::imshow("pathPlanner", image);
     cv::waitKey(0);
 }
 
@@ -82,14 +82,14 @@ void simpleRRT() {
     rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
     robot->setBoundaries(minBoundary, maxBoundary);
 
-    rmpl::StarRRTPlanner planner(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    //std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
+    rmpl::StarRRTPlanner planner(robot, 20, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    //std::shared_ptr<rmpl::Helper> vrep = pathPlanner.getVrep();
 
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(30000,2);
+    planner.computeTree(20000,2);
     clock_t end = std::clock();
     printTime(begin, end);
 
@@ -125,7 +125,7 @@ void treeConnection() {
     // create two trees from init and from goal
     rmpl::StarRRTPlanner plannerInitNode(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     rmpl::StarRRTPlanner plannerGoalNode(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    //std::shared_ptr<rmpl::Helper> vrep = planner.getVrep();
+    //std::shared_ptr<rmpl::Helper> vrep = pathPlanner.getVrep();
 
     // set properties to the plannerss
     plannerInitNode.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
@@ -138,7 +138,7 @@ void treeConnection() {
     clock_t end = std::clock();
     printTime(begin, end);
 
-    // get random sample from the first planner and try to connect to both planners
+    // get random sample from the first pathPlanner and try to connect to both planners
     rmpl::Node goal;
     bool connected = false;
     float minCost = std::numeric_limits<float>::max();
