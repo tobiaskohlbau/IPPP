@@ -52,18 +52,15 @@ std::string Base::getName() {
 void Base::sendMessage(const std::string &message, Message type) {
     if (type == Message::warning) {
         std::cout << "Warning - ";
-    }
-    else if (type == Message::error) {
+    } else if (type == Message::error) {
         std::cout << "Error - ";
-    }
-    else if (type == Message::debug) {
+    } else if (type == Message::debug) {
 #ifdef DEBUG_OUTPUT
         std::cout << "Debug - ";
 #else
         return;
 #endif
-    }
-    else {
+    } else {
         std::cout << "Info - ";
     }
 

@@ -28,8 +28,9 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
-        : Base(name){
+Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize,
+                 TrajectoryMethod trajectory, SamplingMethod sampling)
+    : Base(name) {
     m_pathPlanned = false;
     m_stepSize = stepSize;
 
@@ -49,4 +50,3 @@ Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robo
 std::vector<std::shared_ptr<Node>> Planner::getGraphNodes() {
     return m_graph->getNodes();
 }
-

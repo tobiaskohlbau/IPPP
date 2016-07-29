@@ -28,8 +28,7 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-07-12
 */
-CadFileLoader::CadFileLoader()
-    : Base("CadFileLoader") {
+CadFileLoader::CadFileLoader() : Base("CadFileLoader") {
 }
 
 /*!
@@ -67,8 +66,7 @@ std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
 
     try {
         std::ifstream input(filename);
-        for (std::string line; getline(input, line); )
-        {
+        for (std::string line; getline(input, line);) {
             if (line.at(0) == 'v') {
                 line = line.substr(2);
                 std::stringstream iss(line);
@@ -79,14 +77,13 @@ std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
                 }
 
                 vertices.push_back(vertice);
-            }
-            else if (line.at(0) == 'f') {
+            } else if (line.at(0) == 'f') {
                 line = line.substr(2);
                 std::stringstream iss(line);
                 face.clear();
                 for (int i = 0; i < 3; ++i) {
                     iss >> num;
-                    face.push_back(num-1);
+                    face.push_back(num - 1);
                 }
                 faces.push_back(face);
             }
@@ -104,7 +101,6 @@ std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
                 for (int k = 0; k < 3; ++k) {
                     p[j][k] = vertices[vert][k];
                 }
-
             }
             model->AddTri(p[0], p[1], p[2], i);
         }
@@ -112,7 +108,7 @@ std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
         model->MemUsage(1);
 
         return model;
-    } catch( const std::exception &e) {
+    } catch (const std::exception& e) {
         this->sendMessage("Could not load cad file!", Message::error);
         return nullptr;
     }
@@ -129,11 +125,11 @@ std::string CadFileLoader::getFileExt(const std::string& s) {
     size_t i = s.rfind('.', s.length());
 
     if (i != std::string::npos) {
-        std::string ext = s.substr(i+1, s.length() - i);
+        std::string ext = s.substr(i + 1, s.length() - i);
         for (std::basic_string<char>::iterator p = ext.begin(); p != ext.end(); ++p)
-           *p = tolower(*p);
+            *p = tolower(*p);
         return ext;
     }
 
-    return("");
+    return ("");
 }

@@ -41,8 +41,7 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
     if (this->m_collision->controlCollision(newNode->getVec())) {
         newNode = nullptr;
         return;
-    }
-    else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
+    } else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
         newNode = nullptr;
         return;
     }
@@ -64,7 +63,8 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
 *  \param[in,out] vecotr of nearest nodes
 *  \date          2016-06-02
 */
-void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &nearestNode, std::vector<shared_ptr<Node>> &nearNodes) {
+void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &nearestNode,
+                                  std::vector<shared_ptr<Node>> &nearNodes) {
     // get near nodes to the new node
     nearNodes = this->m_graph->getNearNodes(newNode, this->m_stepSize);
 
@@ -135,12 +135,12 @@ bool StarRRTPlanner::connectGoalNode(Node goal) {
         goalNode->setParent(nearestNode);
         this->m_goalNode = goalNode;
         this->m_goalNode->setCost(m_goalNode->getDist(*nearestNode) + nearestNode->getCost());
-        //this->sendMessage("Goal Node is connected", Message::info);
+        // this->sendMessage("Goal Node is connected", Message::info);
         this->m_pathPlanned = true;
         return true;
     }
 
-    //this->sendMessage("Goal Node is NOT connected", Message::warning);
+    // this->sendMessage("Goal Node is NOT connected", Message::warning);
 
     return false;
 }

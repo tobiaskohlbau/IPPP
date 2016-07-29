@@ -26,8 +26,7 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-Node::Node()
-    : Base("Node") {
+Node::Node() : Base("Node") {
     m_cost = 0;
 }
 
@@ -37,8 +36,7 @@ Node::Node()
 *  \param[in]  x
 *  \date       2016-05-24
 */
-Node::Node(float x)
-    : Base("Node") {
+Node::Node(float x) : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x);
 }
@@ -50,8 +48,7 @@ Node::Node(float x)
 *  \param[in]  y
 *  \date       2016-05-24
 */
-Node::Node(float x, float y)
-    : Base("Node") {
+Node::Node(float x, float y) : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y);
 }
@@ -64,8 +61,7 @@ Node::Node(float x, float y)
 *  \param[in]  z
 *  \date       2016-05-24
 */
-Node::Node(float x, float y, float z)
-    : Base("Node") {
+Node::Node(float x, float y, float z) : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z);
 }
@@ -79,8 +75,7 @@ Node::Node(float x, float y, float z)
 *  \param[in]  rx
 *  \date       2016-05-24
 */
-Node::Node(float x, float y, float z, float rx)
-    : Base("Node") {
+Node::Node(float x, float y, float z, float rx) : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx);
 }
@@ -95,8 +90,7 @@ Node::Node(float x, float y, float z, float rx)
 *  \param[in]  ry
 *  \date       2016-05-24
 */
-Node::Node(float x, float y, float z, float rx, float ry)
-    : Base("Node") {
+Node::Node(float x, float y, float z, float rx, float ry) : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry);
 }
@@ -112,8 +106,7 @@ Node::Node(float x, float y, float z, float rx, float ry)
 *  \param[in]  rz
 *  \date       2016-05-24
 */
-Node::Node(float x, float y, float z, float rx, float ry, float rz)
-    : Base("Node") {
+Node::Node(float x, float y, float z, float rx, float ry, float rz) : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry, rz);
 }
@@ -130,8 +123,7 @@ Node::Node(float x, float y, float z, float rx, float ry, float rz)
 *  \param[in]  wx
 *  \date       2016-07-14
 */
-Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx)
-    : Base("Node") {
+Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx) : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry, rz, wx);
 }
@@ -149,8 +141,7 @@ Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx)
 *  \param[in]  wy
 *  \date       2016-07-14
 */
-Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy)
-    : Base("Node") {
+Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy) : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry, rz, wx, wy);
 }
@@ -169,8 +160,7 @@ Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, fl
 *  \param[in]  wz
 *  \date       2016-07-14
 */
-Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy, float wz)
-    : Base("Node") {
+Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy, float wz) : Base("Node") {
     m_cost = 0;
     m_vec = Vec<float>(x, y, z, rx, ry, rz, wx, wy, wz);
 }
@@ -181,8 +171,7 @@ Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, fl
 *  \param[in]  Vector
 *  \date       2016-05-24
 */
-Node::Node(const Vec<float> &vec)
-    : Base("Node") {
+Node::Node(const Vec<float> &vec) : Base("Node") {
     m_vec = vec;
     m_cost = 0;
 }

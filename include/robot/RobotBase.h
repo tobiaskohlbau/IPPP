@@ -19,8 +19,8 @@
 #ifndef ROBOTBASE_H_
 #define ROBOTBASE_H_
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <Eigen/Core>
 #include <PQP.h>
@@ -31,21 +31,15 @@
 
 namespace rmpl {
 
-enum CollisionType
-{
-    vrep,
-    pqp,
-    twoD
-};
+enum CollisionType { vrep, pqp, twoD };
 
 /*!
 * \brief   Base class of all robots
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
-class RobotBase : public Base
-{
-public:
+class RobotBase : public Base {
+  public:
     RobotBase(std::string name, CollisionType type, unsigned int dim, unsigned int numberJoints);
 
     virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
@@ -66,7 +60,7 @@ public:
     bool setWorkspace(const std::string &workspaceFile);
     std::shared_ptr<PQP_Model> getWorkspace();
     bool set2DWorkspace(const Eigen::MatrixXi &space);
-    Eigen::MatrixXi& get2DWorkspace();
+    Eigen::MatrixXi &get2DWorkspace();
 
     unsigned int getDim();
     unsigned int getNbJoints();
@@ -77,13 +71,13 @@ public:
     Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
     Vec<float> EigenToVec(const Eigen::ArrayXf &eigenVec);
 
-protected:
+  protected:
     std::shared_ptr<CadFileLoader> m_fileLoader;
 
-    std::string   m_robotName;
+    std::string m_robotName;
     CollisionType m_collisionType;
-    unsigned int  m_nbJoints;
-    unsigned int  m_dim;
+    unsigned int m_nbJoints;
+    unsigned int m_dim;
 
     Vec<float> m_minBoundary;
     Vec<float> m_maxBoundary;

@@ -23,17 +23,16 @@
 #include <cstdint>
 #include <math.h>
 
-namespace rmpl{
+namespace rmpl {
 
 /*!
 * \brief   Class Vec present a normal vector
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
-template<typename T>
-class Vec
-{
-public:
+template <typename T>
+class Vec {
+  public:
     Vec();
     Vec(T x, T y);
     Vec(T x, T y, T z);
@@ -58,19 +57,19 @@ public:
     T getSqDist(const Vec<T> &vec) const;
     void print();
 
-    inline T& operator [] (unsigned int index) {
-        assert (index < m_dim);
+    inline T &operator[](unsigned int index) {
+        assert(index < m_dim);
         return m_data[index];
     }
 
-    inline const T& operator [] (unsigned int index) const {
-        assert (index < m_dim);
+    inline const T &operator[](unsigned int index) const {
+        assert(index < m_dim);
         return m_data[index];
     }
 
-    Vec<T> &operator = (const Vec<T> &vec) {
-        if (this == &vec)      // Same object?
-              return *this;
+    Vec<T> &operator=(const Vec<T> &vec) {
+        if (this == &vec)    // Same object?
+            return *this;
         m_dim = vec.getDim();
         this->m_data = std::unique_ptr<T[]>(new T[m_dim]);
         for (unsigned int i = 0; i < m_dim; ++i) {
@@ -79,20 +78,20 @@ public:
         return *this;
     }
 
-    Vec<T>& operator += (const Vec<T> &vec) {
+    Vec<T> &operator+=(const Vec<T> &vec) {
         assert(m_dim == vec.getDim());
         for (unsigned int i = 0; i < m_dim; ++i)
             m_data[i] += vec[i];
         return *this;
     }
 
-    Vec<T>& operator += (T scalar) {
+    Vec<T> &operator+=(T scalar) {
         for (unsigned int i = 0; i < m_dim; ++i)
             m_data[i] += scalar;
         return *this;
     }
 
-    Vec operator + (const Vec<T> &vec) const {
+    Vec operator+(const Vec<T> &vec) const {
         assert(m_dim == vec.getDim());
         Vec result = Vec<T>::zeros(m_dim);
         for (unsigned int i = 0; i < m_dim; ++i)
@@ -100,20 +99,20 @@ public:
         return result;
     }
 
-    Vec& operator -= (const Vec<T> &vec) {
+    Vec &operator-=(const Vec<T> &vec) {
         assert(m_dim == vec.getDim());
         for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] -= vec[i];
         return *this;
     }
 
-    Vec& operator -= (T scalar) {
+    Vec &operator-=(T scalar) {
         for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] -= scalar;
         return *this;
     }
 
-    Vec operator - (const Vec<T> &vec) const {
+    Vec operator-(const Vec<T> &vec) const {
         assert(m_dim == vec.getDim());
         Vec result = Vec<T>::zeros(m_dim);
         for (unsigned int i = 0; i < m_dim; ++i)
@@ -121,34 +120,34 @@ public:
         return result;
     }
 
-    Vec operator + (T s) const {
+    Vec operator+(T s) const {
         Vec<T> result(*this);
         for (unsigned int i = 0; i < m_dim; ++i)
             result[i] += s;
         return result;
     }
 
-    Vec operator - (T s) const {
+    Vec operator-(T s) const {
         Vec<T> result(*this);
         for (unsigned int i = 0; i < m_dim; ++i)
             result[i] -= s;
         return result;
     }
 
-    Vec& operator *= (T s) {
+    Vec &operator*=(T s) {
         for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] *= s;
         return *this;
     }
 
-    Vec operator * (T s) const {
+    Vec operator*(T s) const {
         Vec result = Vec<T>::zeros(m_dim);
         for (unsigned int i = 0; i < m_dim; ++i)
             result[i] = (*this)[i] * s;
         return result;
     }
 
-    T operator * (const Vec<T> &vec) const {
+    T operator*(const Vec<T> &vec) const {
         assert(m_dim == vec.getDim());
         T result = 0;
         for (unsigned int i = 0; i < m_dim; ++i)
@@ -156,13 +155,13 @@ public:
         return result;
     }
 
-    Vec& operator /= (T s) {
+    Vec &operator/=(T s) {
         for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] /= s;
         return *this;
     }
 
-    Vec operator / (T s) const {
+    Vec operator/(T s) const {
         Vec result = Vec<T>::zeros(m_dim);
         for (unsigned int i = 0; i < m_dim; ++i)
             result[i] = (*this)[i] / s;
@@ -181,7 +180,7 @@ public:
         return vec;
     }
 
-private:
+  private:
     std::unique_ptr<T[]> m_data;
     unsigned int m_dim;
 };
@@ -191,7 +190,7 @@ private:
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec() {
     m_dim = 0;
     m_data = nullptr;
@@ -204,7 +203,7 @@ Vec<T>::Vec() {
 *  \param[in]  y
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(T x, T y) {
     m_dim = 2;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
@@ -220,7 +219,7 @@ Vec<T>::Vec(T x, T y) {
 *  \param[in]  z
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(T x, T y, T z) {
     m_dim = 3;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
@@ -238,7 +237,7 @@ Vec<T>::Vec(T x, T y, T z) {
 *  \param[in]  rx
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(T x, T y, T z, T rx) {
     m_dim = 4;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
@@ -258,7 +257,7 @@ Vec<T>::Vec(T x, T y, T z, T rx) {
 *  \param[in]  ry
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(T x, T y, T z, T rx, T ry) {
     m_dim = 5;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
@@ -280,7 +279,7 @@ Vec<T>::Vec(T x, T y, T z, T rx, T ry) {
 *  \param[in]  rz
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz) {
     m_dim = 6;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
@@ -304,7 +303,7 @@ Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz) {
 *  \param[in]  wx
 *  \date       2016-07-13
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx) {
     m_dim = 7;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
@@ -330,7 +329,7 @@ Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx) {
 *  \param[in]  wy
 *  \date       2016-07-13
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy) {
     m_dim = 8;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
@@ -358,7 +357,7 @@ Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy) {
 *  \param[in]  wz
 *  \date       2016-07-13
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy, T wz) {
     m_dim = 9;
     m_data = std::unique_ptr<T[]>(new T[m_dim]);
@@ -379,18 +378,17 @@ Vec<T>::Vec(T x, T y, T z, T rx, T ry, T rz, T wx, T wy, T wz) {
 *  \param[in]  dimension of the Vec
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(unsigned int dim) {
     assert(dim >= 0);
 
     m_dim = dim;
     if (m_dim == 0) {
         m_data = nullptr;
-    }
-    else {
+    } else {
         m_data = std::unique_ptr<T[]>(new T[m_dim]);
         for (unsigned int i = 0; i < m_dim; ++i)
-            (*this)[i] = NAN; // if T is int, NAN is not possible
+            (*this)[i] = NAN;    // if T is int, NAN is not possible
     }
 }
 
@@ -401,15 +399,14 @@ Vec<T>::Vec(unsigned int dim) {
 *  \param[in]  data array
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(unsigned int dim, const T data[]) {
     assert(dim >= 0);
 
     m_dim = dim;
     if (m_dim == 0) {
         m_data = nullptr;
-    }
-    else {
+    } else {
         m_data = std::unique_ptr<T[]>(new T[m_dim]);
         for (unsigned int i = 0; i < m_dim; ++i)
             (*this)[i] = data[i];
@@ -422,7 +419,7 @@ Vec<T>::Vec(unsigned int dim, const T data[]) {
 *  \param[in]  Vec
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T>::Vec(const Vec<T> &vec) {
     *this = vec;
 }
@@ -433,7 +430,7 @@ Vec<T>::Vec(const Vec<T> &vec) {
 *  \param[in]  value
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 void Vec<T>::setAllTo(T value) {
     for (unsigned int i = 0; i < m_dim; ++i)
         (*this)[i] = value;
@@ -445,7 +442,7 @@ void Vec<T>::setAllTo(T value) {
 *  \param[in]  Vec
 *  \date       2016-07-07
 */
-template<typename T>
+template <typename T>
 void Vec<T>::append(Vec<T> vec) {
     Vec<T> newVec(m_dim + vec.getDim());
     for (unsigned int i = 0; i < m_dim; ++i)
@@ -461,7 +458,7 @@ void Vec<T>::append(Vec<T> vec) {
 *  \param[out] dimension
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 unsigned int Vec<T>::getDim() const {
     return m_dim;
 }
@@ -473,15 +470,15 @@ unsigned int Vec<T>::getDim() const {
 *  \param[out] state
 *  \date       2016-05-24
 */
-template<typename T>
-bool Vec<T>::empty() const{
+template <typename T>
+bool Vec<T>::empty() const {
     if (m_dim == 0)
         return true;
     if (m_data == nullptr)
         return true;
 
     for (unsigned int i = 0; i < m_dim; ++i)
-        if ((*this)[i] != (*this)[i]) // check is not possible by T = int
+        if ((*this)[i] != (*this)[i])    // check is not possible by T = int
             return true;
     return false;
 }
@@ -492,7 +489,7 @@ bool Vec<T>::empty() const{
 *  \param[out] norm 2
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 T Vec<T>::norm() const {
     T norm = 0;
     for (unsigned int i = 0; i < m_dim; ++i)
@@ -506,7 +503,7 @@ T Vec<T>::norm() const {
 *  \param[out] absolute Vec
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 Vec<T> Vec<T>::abs() const {
     Vec<T> result;
     for (unsigned int i = 0; i < m_dim; ++i)
@@ -521,8 +518,8 @@ Vec<T> Vec<T>::abs() const {
 *  \param[out] distance
 *  \date       2016-05-24
 */
-template<typename T>
-T Vec<T>::getDist(const Vec<T> &vec) const{
+template <typename T>
+T Vec<T>::getDist(const Vec<T> &vec) const {
     assert(m_dim == vec.getDim());
     return sqrtf(getSqDist(vec));
 }
@@ -534,8 +531,8 @@ T Vec<T>::getDist(const Vec<T> &vec) const{
 *  \param[out] squared distance
 *  \date       2016-05-24
 */
-template<typename T>
-T Vec<T>::getSqDist(const Vec<T> &vec) const{
+template <typename T>
+T Vec<T>::getSqDist(const Vec<T> &vec) const {
     assert(m_dim == vec.getDim());
     T dist = 0;
     for (unsigned int i = 0; i < m_dim; ++i)
@@ -548,7 +545,7 @@ T Vec<T>::getSqDist(const Vec<T> &vec) const{
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-template<typename T>
+template <typename T>
 void Vec<T>::print() {
     std::cout << "Dim: " << m_dim << " | ";
     for (unsigned int i = 0; i < m_dim; ++i)

@@ -25,9 +25,7 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-PointRobot::PointRobot()
-    : RobotBase("PointRobot", CollisionType::twoD, 2, 0) {
-
+PointRobot::PointRobot() : RobotBase("PointRobot", CollisionType::twoD, 2, 0) {
 }
 
 Vec<float> PointRobot::directKinematic(const Vec<float> &angles) {

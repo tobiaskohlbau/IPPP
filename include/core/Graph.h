@@ -26,16 +26,15 @@
 #include <core/KDTree.hpp>
 #include <core/Node.h>
 
-namespace rmpl{
+namespace rmpl {
 
 /*!
 * \brief   Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through a KDTree
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class Graph : public Base
-{
-public:
+class Graph : public Base {
+  public:
     Graph();
     void addNode(const std::shared_ptr<Node> &node);
     void removeNode(int index);
@@ -45,10 +44,10 @@ public:
     std::shared_ptr<Node> getNearestNode(const std::shared_ptr<Node> &node);
     std::vector<std::shared_ptr<Node>> getNearNodes(const std::shared_ptr<Node> node, float distance);
 
-private:
+  private:
     std::vector<std::shared_ptr<Node>> m_nodes;
     KDTree<std::shared_ptr<Node>> m_kdTree;
-    std::mutex  m_mutexAddNode;
+    std::mutex m_mutexAddNode;
 };
 
 } /* namespace rmpl */

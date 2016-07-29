@@ -24,15 +24,9 @@
 #include <memory>
 #include <string>
 
-namespace rmpl{
+namespace rmpl {
 
-enum class Message
-{
-    info,
-    warning,
-    error,
-    debug
-};
+enum class Message { info, warning, error, debug };
 
 /*!
 * \brief   Base class of all modules
@@ -40,14 +34,13 @@ enum class Message
 * \author  Sascha Kaden
 * \date    2016-06-02
 */
-class Base
-{
-public:
+class Base {
+  public:
     Base(const std::string &name);
     std::string getName();
     void sendMessage(const std::string &message, Message type = Message::info);
 
-protected:
+  protected:
     std::string m_name;
 };
 

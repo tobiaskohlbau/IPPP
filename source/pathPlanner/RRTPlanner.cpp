@@ -28,7 +28,8 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-05-27
 */
-RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling)
+RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize,
+                       TrajectoryMethod trajectory, SamplingMethod sampling)
     : Planner(name, robot, stepSize, trajectoryStepSize, trajectory, sampling) {
     m_initNode = nullptr;
     m_goalNode = nullptr;
@@ -61,15 +62,13 @@ bool RRTPlanner::setInitNode(Node node) {
 *  \param[out] return check of the constraints
 *  \date       2016-05-27
 */
-bool RRTPlanner::computeTree(int nbOfNodes, int nbOfThreades)
-{
+bool RRTPlanner::computeTree(int nbOfNodes, int nbOfThreades) {
     if (!controlConstraints())
         return false;
 
     if (nbOfThreades == 1) {
         computeTreeThread(nbOfNodes);
-    }
-    else {
+    } else {
         nbOfNodes /= nbOfThreades;
         std::vector<std::thread> threads;
 
@@ -91,8 +90,7 @@ bool RRTPlanner::computeTree(int nbOfNodes, int nbOfThreades)
 *  \date       2016-05-27
 */
 void RRTPlanner::computeTreeThread(int nbOfNodes) {
-    for (int i = 0; i < nbOfNodes; ++i)
-    {
+    for (int i = 0; i < nbOfNodes; ++i) {
         Vec<float> randVec = this->m_sampler->getSample(m_robot->getDim(), i, nbOfNodes);
         shared_ptr<Node> newNode;
         computeRRTNode(randVec, newNode);
@@ -116,7 +114,7 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
 
     nodes.push_back(m_goalNode);
     shared_ptr<Node> temp = m_goalNode->getParent();
-    while(temp != nullptr) {
+    while (temp != nullptr) {
         nodes.push_back(temp);
         temp = temp->getParent();
     }
@@ -140,7 +138,8 @@ std::vector<Vec<float>> RRTPlanner::getPath(float trajectoryStepSize) {
     std::vector<std::shared_ptr<Node>> nodes = getPathNodes();
     std::shared_ptr<Node> temp = nodes[0];
     while (temp->getParent() != nullptr) {
-        std::vector<Vec<float>> tempVecs = this->m_planner->computeTrajectory(temp->getVec(), temp->getParent()->getVec(), trajectoryStepSize);
+        std::vector<Vec<float>> tempVecs =
+            this->m_planner->computeTrajectory(temp->getVec(), temp->getParent()->getVec(), trajectoryStepSize);
         for (auto vec : tempVecs)
             path.push_back(vec);
 
@@ -201,7 +200,6 @@ Vec<float> RRTPlanner::getSamplePoint() {
     return this->m_sampler->getSample(m_robot->getDim(), 0, 100);
 }
 
-
 /*!
 *  \brief      Control all constraints of the RRTPlanner
 *  \author     Sascha Kaden
@@ -212,8 +210,7 @@ bool RRTPlanner::controlConstraints() {
     if (m_initNode == nullptr) {
         this->sendMessage("Init node is not connected", Message::warning);
         return false;
-    }
-    else {
+    } else {
         return true;
     }
 }

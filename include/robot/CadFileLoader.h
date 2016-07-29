@@ -32,13 +32,12 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-07-12
 */
-class CadFileLoader : public Base
-{
-public:
+class CadFileLoader : public Base {
+  public:
     CadFileLoader();
     std::shared_ptr<PQP_Model> loadFile(const std::string filename);
 
-protected:
+  protected:
     std::shared_ptr<PQP_Model> readObj(const std::string filename);
     std::string getFileExt(const std::string& s);
 };

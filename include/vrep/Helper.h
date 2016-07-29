@@ -8,9 +8,9 @@
 #include <vector>
 
 extern "C" {
-    #include <vrep/extApi.h>
-    #include <vrep/extApiPlatform.h>
-    #include <vrep/v_repConst.h>
+#include <vrep/extApi.h>
+#include <vrep/extApiPlatform.h>
+#include <vrep/v_repConst.h>
 }
 
 #include <core/Base.h>
@@ -18,17 +18,16 @@ extern "C" {
 
 namespace rmpl {
 
-class Helper : public Base
-{
-public:
+class Helper : public Base {
+  public:
     Helper(unsigned int dim);
     void start();
     bool setPos(const Vec<float> &vec);
     bool checkCollision(const Vec<float> &jointAngles);
     bool checkCollision(const std::vector<Vec<float>> &jointAngles);
 
-private:
-    Vec<simxFloat> convertVecToRad(const Vec<float> &vec); // convert to simxFloat array and radiant
+  private:
+    Vec<simxFloat> convertVecToRad(const Vec<float> &vec);    // convert to simxFloat array and radiant
 
     unsigned int m_dim;
     simxInt m_clientId;

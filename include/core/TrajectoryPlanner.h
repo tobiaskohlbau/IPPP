@@ -22,10 +22,9 @@
 #include <core/Base.h>
 #include <core/CollisionDetection.h>
 
-namespace rmpl{
+namespace rmpl {
 
-enum class TrajectoryMethod
-{
+enum class TrajectoryMethod {
     linear,
     spline,
 };
@@ -35,16 +34,15 @@ enum class TrajectoryMethod
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class TrajectoryPlanner : public Base
-{
-public:
+class TrajectoryPlanner : public Base {
+  public:
     TrajectoryPlanner(const TrajectoryMethod &method, float stepSize, const std::shared_ptr<CollisionDetection> &collision);
     bool controlTrajectory(const Vec<float> &source, const Vec<float> &target);
     std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target, float stepSize = 0);
     void setStepSize(float stepSize);
     float getStepSize();
 
-private:
+  private:
     TrajectoryMethod m_method;
     float m_stepSize;
     std::shared_ptr<CollisionDetection> m_collision;

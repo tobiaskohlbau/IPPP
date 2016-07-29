@@ -34,9 +34,8 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
-class Node : public Base
-{
-public:
+class Node : public Base {
+  public:
     Node();
     Node(float x);
     Node(float x, float y);
@@ -54,7 +53,7 @@ public:
     float getZ();
 
     unsigned int getDim();
-    bool empty() const ;
+    bool empty() const;
     void setVecValue(float value, unsigned int index);
     float getVecValue(unsigned int index);
     float getDist(const std::shared_ptr<Node> &node);
@@ -75,10 +74,10 @@ public:
 
     Vec<float> getVec() const;
 
-private:
-    float             m_cost;
-    Vec<float>        m_vec;
-    Edge              m_parent;
+  private:
+    float m_cost;
+    Vec<float> m_vec;
+    Edge m_parent;
     std::vector<Edge> m_childs;
 };
 

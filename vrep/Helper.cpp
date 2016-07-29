@@ -2,8 +2,7 @@
 
 using namespace rmpl;
 
-Helper::Helper(unsigned int dim)
-        : Base("VREP Helper") {
+Helper::Helper(unsigned int dim) : Base("VREP Helper") {
     m_dim = dim;
     m_clientId = -1;
     m_jointHandles = Vec<simxInt>(m_dim);
@@ -16,7 +15,7 @@ void Helper::start() {
     m_started = true;
     this->sendMessage("Program started");
 
-    m_clientId=simxStart((simxChar*)"127.0.0.1",19999,true,true,2000,5);
+    m_clientId = simxStart((simxChar *)"127.0.0.1", 19999, true, true, 2000, 5);
     if (m_clientId == -1) {
         this->sendMessage("Could not connect to server");
         return;
@@ -24,12 +23,12 @@ void Helper::start() {
 
     this->sendMessage("Connected to remote API");
     simxInt errorcode[m_dim];
-    errorcode[0]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint1",&m_jointHandles[0],simx_opmode_oneshot_wait);
-    errorcode[1]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint2",&m_jointHandles[1],simx_opmode_oneshot_wait);
-    errorcode[2]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint3",&m_jointHandles[2],simx_opmode_oneshot_wait);
-    errorcode[3]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint4",&m_jointHandles[3],simx_opmode_oneshot_wait);
-    errorcode[4]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint5",&m_jointHandles[4],simx_opmode_oneshot_wait);
-    errorcode[5]=simxGetObjectHandle(m_clientId,(simxChar*)"Jaco_joint6",&m_jointHandles[5],simx_opmode_oneshot_wait);
+    errorcode[0] = simxGetObjectHandle(m_clientId, (simxChar *)"Jaco_joint1", &m_jointHandles[0], simx_opmode_oneshot_wait);
+    errorcode[1] = simxGetObjectHandle(m_clientId, (simxChar *)"Jaco_joint2", &m_jointHandles[1], simx_opmode_oneshot_wait);
+    errorcode[2] = simxGetObjectHandle(m_clientId, (simxChar *)"Jaco_joint3", &m_jointHandles[2], simx_opmode_oneshot_wait);
+    errorcode[3] = simxGetObjectHandle(m_clientId, (simxChar *)"Jaco_joint4", &m_jointHandles[3], simx_opmode_oneshot_wait);
+    errorcode[4] = simxGetObjectHandle(m_clientId, (simxChar *)"Jaco_joint5", &m_jointHandles[4], simx_opmode_oneshot_wait);
+    errorcode[5] = simxGetObjectHandle(m_clientId, (simxChar *)"Jaco_joint6", &m_jointHandles[5], simx_opmode_oneshot_wait);
 }
 
 bool Helper::setPos(const Vec<float> &vec) {
@@ -38,8 +37,8 @@ bool Helper::setPos(const Vec<float> &vec) {
 
     Vec<simxFloat> pos = convertVecToRad(vec);
     for (unsigned int i = 0; i < m_dim; ++i)
-        simxSetJointTargetPosition(m_clientId,m_jointHandles[i],pos[i],simx_opmode_oneshot_wait);
-    //usleep(1);
+        simxSetJointTargetPosition(m_clientId, m_jointHandles[i], pos[i], simx_opmode_oneshot_wait);
+    // usleep(1);
     return true;
 }
 
@@ -58,15 +57,16 @@ bool Helper::checkCollision(const Vec<float> &jointAngles) {
     simxInt *result;
     simxInt numDist;
     simxFloat *distance;
-    simxCallScriptFunction(m_clientId,"Jaco",sim_scripttype_childscript,"checkCollision_function",m_dim,handles,m_dim,angles,0,NULL,0,NULL,&numResult,&result,&numDist,&distance,NULL,NULL,NULL,NULL,simx_opmode_blocking);
+    simxCallScriptFunction(m_clientId, "Jaco", sim_scripttype_childscript, "checkCollision_function", m_dim, handles, m_dim,
+                           angles, 0, NULL, 0, NULL, &numResult, &result, &numDist, &distance, NULL, NULL, NULL, NULL,
+                           simx_opmode_blocking);
 
     if (numResult == 1)
         if (result[0] == 1)
             if (distance[0] > 0.01) {
                 this->sendMessage("Distance to objects is: " + std::to_string(distance[0]));
                 return false;
-            }
-            else {
+            } else {
                 this->sendMessage("Roboter is in collision");
                 return true;
             }
@@ -91,15 +91,16 @@ bool Helper::checkCollision(const std::vector<Vec<float>> &jointAngles) {
     simxInt *result;
     simxInt numDist;
     simxFloat *distance;
-    simxCallScriptFunction(m_clientId,"Jaco",sim_scripttype_childscript,"checkTrajectory_function",m_dim,handles,m_dim,angles,0,NULL,0,NULL,&numResult,&result,&numDist,&distance,NULL,NULL,NULL,NULL,simx_opmode_blocking);
+    simxCallScriptFunction(m_clientId, "Jaco", sim_scripttype_childscript, "checkTrajectory_function", m_dim, handles, m_dim,
+                           angles, 0, NULL, 0, NULL, &numResult, &result, &numDist, &distance, NULL, NULL, NULL, NULL,
+                           simx_opmode_blocking);
 
     if (numResult == 1)
         if (result[0] == 1)
             if (distance[0] > 0.01) {
                 this->sendMessage("Distance to objects is: " + std::to_string(distance[0]));
                 return false;
-            }
-            else {
+            } else {
                 this->sendMessage("Roboter is in collision");
                 return true;
             }
@@ -110,6 +111,6 @@ bool Helper::checkCollision(const std::vector<Vec<float>> &jointAngles) {
 Vec<simxFloat> Helper::convertVecToRad(const Vec<float> &vec) {
     Vec<simxFloat> rads(vec.getDim());
     for (unsigned int i = 0; i < m_dim; ++i)
-        rads[i] = vec[i]*M_PI/180;
+        rads[i] = vec[i] * M_PI / 180;
     return rads;
 }

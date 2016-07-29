@@ -28,14 +28,13 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
-class Jaco : public RobotBase
-{
-public:
+class Jaco : public RobotBase {
+  public:
     Jaco();
     Vec<float> directKinematic(const Vec<float> &angles);
     std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles);
 
-private:
+  private:
     Vec<float> convertRealToDH(const Vec<float> &realAngles);
 };
 
