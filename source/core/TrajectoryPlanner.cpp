@@ -76,7 +76,7 @@ bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<fl
 *  \param[out] trajectory
 *  \date       2016-05-31
 */
-std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &source, const Vec<float> &target) {
+std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &source, const Vec<float> &target, float stepSize) {
     std::vector<Vec<float>> vecs;
 
     if (source.getDim() != target.getDim()) {
@@ -88,12 +88,15 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
         return vecs;
     }
 
+    if (stepSize == 0)
+        stepSize = m_stepSize;
+
     Vec<float> u = target - source;
     Vec<float> uNorm = u / u.norm();
     Vec<float> temp(source);
     while (std::abs(temp.norm() - target.norm()) > 1) {
         vecs.push_back(temp);
-        temp += uNorm * m_stepSize;
+        temp += uNorm * stepSize;
     }
     return vecs;
 }

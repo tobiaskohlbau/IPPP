@@ -130,7 +130,7 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
 *  \param[out] vecs of the path
 *  \date       2016-05-31
 */
-std::vector<Vec<float>> RRTPlanner::getPath() {
+std::vector<Vec<float>> RRTPlanner::getPath(float trajectoryStepSize) {
     std::vector<Vec<float>> path;
     if (!this->m_pathPlanned) {
         this->sendMessage("Path is not complete", Message::warning);
@@ -140,10 +140,10 @@ std::vector<Vec<float>> RRTPlanner::getPath() {
     std::vector<std::shared_ptr<Node>> nodes = getPathNodes();
     std::shared_ptr<Node> temp = nodes[0];
     while (temp->getParent() != nullptr) {
-        std::vector<Vec<float>> tempVecs = this->m_planner->computeTrajectory(temp->getVec(), temp->getParent()->getVec());
-        for (int i = 0; i < tempVecs.size(); ++i) {
-            path.push_back(tempVecs[i]);
-        }
+        std::vector<Vec<float>> tempVecs = this->m_planner->computeTrajectory(temp->getVec(), temp->getParent()->getVec(), trajectoryStepSize);
+        for (auto vec : tempVecs)
+            path.push_back(vec);
+
         temp = temp->getParent();
     }
     this->sendMessage("Path has: " + std::to_string(path.size()) + " points", Message::info);
