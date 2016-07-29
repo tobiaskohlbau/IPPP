@@ -28,10 +28,10 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-27
 */
-class RRTPlanner : public Planner
-{
-public:
-    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize, TrajectoryMethod trajectory, SamplingMethod sampling);
+class RRTPlanner : public Planner {
+  public:
+    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize,
+               TrajectoryMethod trajectory, SamplingMethod sampling);
 
     bool setInitNode(Node node);
     bool computeTree(int nbOfNodes, int nbOfThreades = 1);
@@ -42,15 +42,15 @@ public:
     std::shared_ptr<Node> getGoalNode();
     Vec<float> getSamplePoint();
 
-protected:
+  protected:
     bool controlConstraints();
     void computeTreeThread(int nbOfNodes);
     virtual void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode) = 0;
     Vec<float> computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode);
 
     // variables
-    std::shared_ptr<Node>  m_initNode;
-    std::shared_ptr<Node>  m_goalNode;
+    std::shared_ptr<Node> m_initNode;
+    std::shared_ptr<Node> m_goalNode;
 };
 
 } /* namespace rmpl */

@@ -32,14 +32,13 @@ using std::shared_ptr;
 *  \param[in]  number of joints of the robot
 *  \date       2016-06-30
 */
-RobotBase::RobotBase(std::string name, CollisionType type, unsigned int dim, unsigned int numberJoints)
-    : Base(name) {
+RobotBase::RobotBase(std::string name, CollisionType type, unsigned int dim, unsigned int numberJoints) : Base(name) {
     m_robotName = name;
     m_collisionType = type;
     m_dim = dim;
     m_nbJoints = numberJoints;
 
-    m_pose = Vec<float>(0,0,0,0,0,0);
+    m_pose = Vec<float>(0, 0, 0, 0, 0, 0);
 
     m_fileLoader = std::shared_ptr<CadFileLoader>(new CadFileLoader());
 }
@@ -60,19 +59,19 @@ Eigen::Matrix4f RobotBase::getTrafo(float alpha, float a, float d, float q) {
     float sinQ = sin(q);
     float cosQ = cos(q);
 
-    Eigen::Matrix4f T = Eigen::Matrix4f::Zero(4,4);
-    T(0,0) = cosQ;
-    T(0,1) = -sinQ * cosAlpha;
-    T(0,2) = sinQ * sinAlpha;
-    T(0,3) = a * cosQ;
-    T(1,0) = sinQ;
-    T(1,1) = cosQ * cosAlpha;
-    T(1,2) = -cosQ * sinAlpha;
-    T(1,3) = a * sinQ;
-    T(2,1) = sinAlpha;
-    T(2,2) = cosAlpha;
-    T(2,3) = d;
-    T(3,3) = 1;
+    Eigen::Matrix4f T = Eigen::Matrix4f::Zero(4, 4);
+    T(0, 0) = cosQ;
+    T(0, 1) = -sinQ * cosAlpha;
+    T(0, 2) = sinQ * sinAlpha;
+    T(0, 3) = a * cosQ;
+    T(1, 0) = sinQ;
+    T(1, 1) = cosQ * cosAlpha;
+    T(1, 2) = -cosQ * sinAlpha;
+    T(1, 3) = a * sinQ;
+    T(2, 1) = sinAlpha;
+    T(2, 2) = cosAlpha;
+    T(2, 3) = d;
+    T(3, 3) = 1;
     return T;
 }
 
@@ -86,14 +85,13 @@ Eigen::Matrix4f RobotBase::getTrafo(float alpha, float a, float d, float q) {
 */
 Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis) {
     Eigen::Matrix3f R;
-    R = Eigen::AngleAxisf(basis[3], Eigen::Vector3f::UnitX())
-        * Eigen::AngleAxisf(basis[4], Eigen::Vector3f::UnitY())
-        * Eigen::AngleAxisf(basis[5], Eigen::Vector3f::UnitZ());
-    Eigen::Matrix4f basisToRobot = Eigen::Matrix4f::Zero(4,4);
-    basisToRobot.block<3,3>(0,0) = R;
+    R = Eigen::AngleAxisf(basis[3], Eigen::Vector3f::UnitX()) * Eigen::AngleAxisf(basis[4], Eigen::Vector3f::UnitY()) *
+        Eigen::AngleAxisf(basis[5], Eigen::Vector3f::UnitZ());
+    Eigen::Matrix4f basisToRobot = Eigen::Matrix4f::Zero(4, 4);
+    basisToRobot.block<3, 3>(0, 0) = R;
     for (int i = 0; i < 3; ++i)
-        basisToRobot(i,3) = basis[i];
-    basisToRobot(3,3) = 1;
+        basisToRobot(i, 3) = basis[i];
+    basisToRobot(3, 3) = 1;
 
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
@@ -104,8 +102,8 @@ Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos,
     Eigen::Matrix4f basisToTcp = basisToRobot * robotToTcp;
 
     // create tcp position and orientation vector
-    Vec<float> tcp(basisToTcp(0,3), basisToTcp(1,3), basisToTcp(2,3));
-    Eigen::Vector3f euler = basisToTcp.block<3,3>(0,0).eulerAngles(0, 1, 2);
+    Vec<float> tcp(basisToTcp(0, 3), basisToTcp(1, 3), basisToTcp(2, 3));
+    Eigen::Vector3f euler = basisToTcp.block<3, 3>(0, 0).eulerAngles(0, 1, 2);
     tcp.append(EigenToVec(euler));
 
     return tcp;
@@ -122,8 +120,7 @@ void RobotBase::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &m
     if (minBoundary.empty() || maxBoundary.empty()) {
         this->sendMessage("Boundaries are empty", Message::warning);
         return;
-    }
-    else if (minBoundary.getDim() != m_dim || maxBoundary.getDim() != m_dim) {
+    } else if (minBoundary.getDim() != m_dim || maxBoundary.getDim() != m_dim) {
         this->sendMessage("Boudaries have different dimensions from the robot!", Message::warning);
         return;
     }
@@ -169,8 +166,7 @@ void RobotBase::setPose(const Vec<float> &pose) {
     if (pose.getDim() != 6) {
         this->sendMessage("Pose vector has wrong dimension, must have 6!", Message::warning);
         return;
-    }
-    else if (pose.empty()) {
+    } else if (pose.empty()) {
         this->sendMessage("Empty pose vector!", Message::warning);
         return;
     }
@@ -265,7 +261,7 @@ bool RobotBase::setWorkspace(const std::string &workspaceFile) {
 *  \date       2016-07-14
 */
 shared_ptr<PQP_Model> RobotBase::getWorkspace() {
-    //if (m_workspaceCad == nullptr)
+    // if (m_workspaceCad == nullptr)
     //    this->sendMessage("workspace is not set!", Message::info);
 
     return m_workspaceCad;
@@ -288,7 +284,7 @@ bool RobotBase::set2DWorkspace(const Eigen::MatrixXi &workspace) {
 *  \param[out] 2D workspace
 *  \date       2016-07-14
 */
-Eigen::MatrixXi& RobotBase::get2DWorkspace() {
+Eigen::MatrixXi &RobotBase::get2DWorkspace() {
     return m_2DWorkspace;
 }
 
@@ -321,8 +317,7 @@ unsigned int RobotBase::getNbJoints() {
 void RobotBase::setCollisionType(CollisionType type) {
     if (type == CollisionType::twoD && m_dim != 2) {
         this->sendMessage("CollisionType twoD unequal to dimension", Message::warning);
-    }
-    else {
+    } else {
         m_collisionType = type;
     }
 }

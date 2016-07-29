@@ -27,8 +27,7 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-24
 */
-Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
-    : Base("Sampling") {
+Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method) : Base("Sampling") {
     m_method = method;
     m_robot = robot;
 
@@ -52,10 +51,10 @@ Vec<float> Sampling::getSample(unsigned int dim, int index, int nbSamples) {
     if (!checkBoudaries())
         return vec;
 
-    if (true)//m_method == SamplingMethod::randomly)
+    if (true)    // m_method == SamplingMethod::randomly)
     {
         for (unsigned int i = 0; i < dim; ++i)
-            vec[i] = m_minBoundary[i] + (float)(rand() % (int)(m_maxBoundary[i]-m_minBoundary[i]));
+            vec[i] = m_minBoundary[i] + (float)(rand() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
         return vec;
     }
     return vec;

@@ -28,16 +28,15 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-07-24
 */
-class GenericRobot : public RobotBase
-{
-public:
-    GenericRobot(std::string name, unsigned int dimension, unsigned int numberOfJoints,
-        const Vec<float> &alphaParams, const Vec<float> &aParams, const Vec<float> dParams);
+class GenericRobot : public RobotBase {
+  public:
+    GenericRobot(std::string name, unsigned int dimension, unsigned int numberOfJoints, const Vec<float> &alphaParams,
+                 const Vec<float> &aParams, const Vec<float> dParams);
 
     Vec<float> directKinematic(const Vec<float> &angles);
     std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles);
 
-private:
+  private:
 };
 
 } /* namespace rmpl */

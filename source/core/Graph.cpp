@@ -28,8 +28,7 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-06-02
 */
-Graph::Graph()
-    : Base("Graph") {
+Graph::Graph() : Base("Graph") {
 }
 
 /*!

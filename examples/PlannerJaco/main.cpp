@@ -1,5 +1,5 @@
-#include <iostream>
 #include <ctime>
+#include <iostream>
 #include <memory>
 
 #include <Eigen/Core>
@@ -19,7 +19,7 @@ void printTime(clock_t begin, clock_t end) {
 void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
     rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
-    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
+    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360, 360);
     robot->setBoundaries(minBoundary, maxBoundary);
 
     rmpl::StarRRTPlanner planner(robot, 20, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
@@ -28,7 +28,7 @@ void simpleRRT() {
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(50000,2);
+    planner.computeTree(20000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
 
@@ -60,7 +60,7 @@ void simpleRRT() {
 void treeConnection() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
     rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
-    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360 ,360);
+    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360, 360);
     robot->setBoundaries(minBoundary, maxBoundary);
 
     // create two trees from init and from goal
@@ -73,8 +73,8 @@ void treeConnection() {
 
     // compute the tree
     clock_t begin = std::clock();
-    plannerInitNode.computeTree(20000,2);
-    plannerGoalNode.computeTree(20000,2);
+    plannerInitNode.computeTree(20000, 2);
+    plannerGoalNode.computeTree(20000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
 
@@ -82,9 +82,9 @@ void treeConnection() {
     rmpl::Node goal;
     bool connected = false;
     float minCost = std::numeric_limits<float>::max();
-    for (int i = 0; i < 10000; ++i){
+    for (int i = 0; i < 10000; ++i) {
         rmpl::Vec<float> sample = plannerInitNode.getSamplePoint();
-        //sample.print();
+        // sample.print();
         rmpl::Node node(sample);
         bool planner1Connected = plannerInitNode.connectGoalNode(node);
         bool planner2Connected = plannerGoalNode.connectGoalNode(node);
@@ -124,14 +124,13 @@ void treeConnection() {
             pathPoints.push_back(robot->directKinematic(angles));
         Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
 
-        //for (int i = 0; i < pathPoints.size(); ++i)
+        // for (int i = 0; i < pathPoints.size(); ++i)
         //    vrep->setPos(pathAngles[i]);
     }
 }
 
-int main(int argc, char** argv)
-{
-    //treeConnection();
+int main(int argc, char** argv) {
+    // treeConnection();
     simpleRRT();
 
     return 0;

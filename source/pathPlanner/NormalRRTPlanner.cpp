@@ -39,8 +39,7 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
     if (this->m_collision->controlCollision(newNode->getVec())) {
         newNode = nullptr;
         return;
-    }
-    else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
+    } else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
         newNode = nullptr;
         return;
     }
@@ -79,12 +78,12 @@ bool NormalRRTPlanner::connectGoalNode(Node goal) {
         goalNode->setParent(nearestNode);
         this->m_goalNode = goalNode;
         this->m_graph->addNode(goalNode);
-        //this->sendMessage("Goal Node is connected", Message::info);
+        // this->sendMessage("Goal Node is connected", Message::info);
         this->m_pathPlanned = true;
         return true;
     }
 
-    //this->sendMessage("Goal Node is NOT connected", Message::warning);
+    // this->sendMessage("Goal Node is NOT connected", Message::warning);
 
     return false;
 }

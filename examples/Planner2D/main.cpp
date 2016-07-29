@@ -1,5 +1,5 @@
-#include <iostream>
 #include <ctime>
+#include <iostream>
 #include <memory>
 
 #include "opencv2/core/core.hpp"
@@ -18,7 +18,7 @@ void printTime(clock_t begin, clock_t end) {
 
 int main(int argc, char** argv) {
     cv::Mat freeWorkspace, obstacleWorkspace;
-    //freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    // freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
     cv::Mat dst;
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     int cols = dst.cols;
     Eigen::MatrixXi mat(rows, cols);
     std::vector<int> entries;
-    int *temp;
+    int* temp;
     for (int i = 0; i < rows; ++i) {
         temp = dst.ptr<int>(i);
         for (int j = 0; j < cols; ++j) {
@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
 
     std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
     robot->set2DWorkspace(mat);
-    rmpl::Vec<float> minBoundary(0.0,0.0);
+    rmpl::Vec<float> minBoundary(0.0, 0.0);
     rmpl::Vec<float> maxBoundary(rows, cols);
     robot->setBoundaries(minBoundary, maxBoundary);
 
@@ -59,13 +59,13 @@ int main(int argc, char** argv) {
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    rmpl::Node goal(650.0,750.0);
+    rmpl::Node goal(650.0, 750.0);
     bool connected = planner.connectGoalNode(goal);
-    Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
+    Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
 
     if (connected) {
         std::vector<rmpl::Vec<float>> pathPoints = planner.getPath(1);
-        Drawing::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255,0,0), 3);
+        Drawing::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255, 0, 0), 3);
     }
 
     cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);

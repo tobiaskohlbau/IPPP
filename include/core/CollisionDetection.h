@@ -33,16 +33,16 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class CollisionDetection : public Base
-{
-public:
+class CollisionDetection : public Base {
+  public:
     CollisionDetection(const std::shared_ptr<RobotBase> &robot);
     bool controlCollision(const Vec<float> &vec);
     bool controlCollision(const std::vector<Vec<float>> &vec);
 
-private:
+  private:
     bool controlCollisionPQP(const Vec<float> &vec);
-    bool checkPQP(std::shared_ptr<PQP_Model> model1, std::shared_ptr<PQP_Model> model2, Eigen::Matrix3f R1, Eigen::Matrix3f R2, Eigen::Vector3f t1, Eigen::Vector3f t2);
+    bool checkPQP(std::shared_ptr<PQP_Model> model1, std::shared_ptr<PQP_Model> model2, Eigen::Matrix3f R1, Eigen::Matrix3f R2,
+                  Eigen::Vector3f t1, Eigen::Vector3f t2);
     bool controlCollisionPointRobot(float x, float y);
 
     std::shared_ptr<RobotBase> m_robot;

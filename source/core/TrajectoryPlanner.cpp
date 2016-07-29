@@ -28,7 +28,8 @@ using std::shared_ptr;
 *  \param[in]  pointer to ColllisionDetection instance
 *  \date       2016-05-25
 */
-TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, float stepSize, const shared_ptr<CollisionDetection> &collision)
+TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, float stepSize,
+                                     const shared_ptr<CollisionDetection> &collision)
     : Base("TrajectoryPlanner") {
     m_method = method;
     m_collision = collision;
@@ -36,8 +37,7 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, float stepS
     if (stepSize <= 0) {
         this->sendMessage("Step size has to be larger than 0!", Message::info);
         m_stepSize = -1;
-    }
-    else {
+    } else {
         m_stepSize = stepSize;
     }
 }
@@ -55,8 +55,7 @@ bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<fl
     if (source.getDim() != target.getDim()) {
         this->sendMessage("Nodes/Vecs have different dimensions");
         return false;
-    }
-    else if (m_stepSize == -1) {
+    } else if (m_stepSize == -1) {
         this->sendMessage("Step size is not set!", Message::error);
         return false;
     }
@@ -82,8 +81,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     if (source.getDim() != target.getDim()) {
         this->sendMessage("Nodes/Vecs have different dimensions", Message::error);
         return vecs;
-    }
-    else if (m_stepSize == -1) {
+    } else if (m_stepSize == -1) {
         this->sendMessage("Step size is not set!", Message::error);
         return vecs;
     }

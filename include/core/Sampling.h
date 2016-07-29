@@ -27,28 +27,21 @@
 #include <core/Vec.hpp>
 #include <robot/RobotBase.h>
 
-namespace rmpl{
+namespace rmpl {
 
-enum SamplingMethod
-{
-    randomly,
-    uniform,
-    hammersley,
-    halton
-};
+enum SamplingMethod { randomly, uniform, hammersley, halton };
 
 /*!
 * \brief   Class Sampling creates sample vecs with the passed method
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
-class Sampling : public Base
-{
-public:
+class Sampling : public Base {
+  public:
     Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
     Vec<float> getSample(unsigned int dim, int index, int nbSamples);
 
-private:
+  private:
     bool checkBoudaries();
 
     Vec<float> m_minBoundary;

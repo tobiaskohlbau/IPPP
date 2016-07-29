@@ -20,23 +20,22 @@
 
 using namespace rmpl;
 
-#include <stdio.h>  /* defines FILENAME_MAX */
+#include <stdio.h> /* defines FILENAME_MAX */
 #ifdef WINDOWS
-    #include <direct.h>
-    #define GetCurrentDir _getcwd
+#include <direct.h>
+#define GetCurrentDir _getcwd
 #else
-    #include <unistd.h>
-    #define GetCurrentDir getcwd
- #endif
+#include <unistd.h>
+#define GetCurrentDir getcwd
+#endif
 
 /*!
 *  \brief      Constructor of the Jaco robot
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco()
-    : RobotBase("Jaco", CollisionType::pqp, 6, 6) {
-    this->m_alpha = Vec<float>(this->m_pi/2, this->m_pi, this->m_pi/2, 0.95993, 0.95993, this->m_pi);
+Jaco::Jaco() : RobotBase("Jaco", CollisionType::pqp, 6, 6) {
+    this->m_alpha = Vec<float>(this->m_pi / 2, this->m_pi, this->m_pi / 2, 0.95993, 0.95993, this->m_pi);
     this->m_a = Vec<float>(0, 410, 0, 0, 0, 0);
     this->m_d = Vec<float>(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
@@ -48,13 +47,10 @@ Jaco::Jaco()
     cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
     std::string path(cCurrentPath);
 
-    std::vector<std::string> cadFiles = {"meshes/link_base_fixed_origin.obj",
-                            "meshes/link_1_fixed_origin.obj",
-                            "meshes/link_2_fixed_origin.obj",
-                            "meshes/link_3_fixed_origin.obj",
-                            "meshes/link_4_fixed_origin.obj",
-                            "meshes/link_5_fixed_origin.obj",
-                            "meshes/link_hand_fixed_origin.obj"};
+    std::vector<std::string> cadFiles = {"meshes/link_base_fixed_origin.obj", "meshes/link_1_fixed_origin.obj",
+                                         "meshes/link_2_fixed_origin.obj",    "meshes/link_3_fixed_origin.obj",
+                                         "meshes/link_4_fixed_origin.obj",    "meshes/link_5_fixed_origin.obj",
+                                         "meshes/link_hand_fixed_origin.obj"};
 
     // load cad models
     this->setCadModels(cadFiles);
@@ -79,9 +75,9 @@ std::vector<Eigen::Matrix4f> Jaco::getTransformations(const Vec<float> &angles) 
     Vec<float> rads = this->degToRad(dhAngles);
 
     std::vector<Eigen::Matrix4f> trafos;
-    Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4,4);
+    Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4, 4);
     for (int i = 0; i < 4; ++i)
-        A(i,i) = 1;
+        A(i, i) = 1;
     trafos.push_back(A);
 
     // create transformation matrizes

@@ -25,19 +25,16 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-07-24
 */
-GenericRobot::GenericRobot(std::string name, unsigned int dimension, unsigned int numberOfJoints,
-    const Vec<float> &alphaParams, const Vec<float> &aParams, const Vec<float> dParams)
+GenericRobot::GenericRobot(std::string name, unsigned int dimension, unsigned int numberOfJoints, const Vec<float> &alphaParams,
+                           const Vec<float> &aParams, const Vec<float> dParams)
     : RobotBase(name, CollisionType::pqp, dimension, numberOfJoints) {
-
     // check consistency of parameters
-    if (alphaParams.getDim() != numberOfJoints || aParams.getDim() != numberOfJoints || dParams.getDim() != numberOfJoints){
+    if (alphaParams.getDim() != numberOfJoints || aParams.getDim() != numberOfJoints || dParams.getDim() != numberOfJoints) {
         this->sendMessage("DH parameter have wrong dimensions, unequal to joint count!", Message::error);
     }
     if (dimension < numberOfJoints) {
         this->sendMessage("Dimension is larger than joint count!", Message::error);
     }
-
-
 }
 
 Vec<float> GenericRobot::directKinematic(const Vec<float> &angles) {
@@ -57,9 +54,9 @@ std::vector<Eigen::Matrix4f> GenericRobot::getTransformations(const Vec<float> &
     Vec<float> rads = this->degToRad(angles);
 
     std::vector<Eigen::Matrix4f> trafos;
-    Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4,4);
+    Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4, 4);
     for (int i = 0; i < 4; ++i)
-        A(i,i) = 1;
+        A(i, i) = 1;
     trafos.push_back(A);
 
     // create transformation matrizes
