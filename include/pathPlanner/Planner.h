@@ -43,14 +43,12 @@ public:
     std::vector<std::shared_ptr<Node>> getGraphNodes();
     virtual std::vector<Vec<float>> getPath() = 0;
     virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
-    std::shared_ptr<Helper> getVrep();
 
 protected:
     std::shared_ptr<TrajectoryPlanner>  m_planner;
     std::shared_ptr<Sampling>           m_sampler;
     std::shared_ptr<CollisionDetection> m_collision;
     std::shared_ptr<Graph>              m_graph;
-    std::shared_ptr<Helper>             m_vrep;
     std::shared_ptr<RobotBase>          m_robot;
 
     // variables

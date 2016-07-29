@@ -30,10 +30,9 @@ using std::shared_ptr;
 *  \param[in]  RobotType
 *  \date       2016-06-30
 */
-CollisionDetection::CollisionDetection(const shared_ptr<Helper> &vrep, const shared_ptr<RobotBase> &robot)
+CollisionDetection::CollisionDetection(const shared_ptr<RobotBase> &robot)
         : Base("CollisionDetection") {
     m_robot = robot;
-    m_vrep = vrep;
 
     if (m_robot->getCollisionType() == CollisionType::twoD)
         m_2DWorkspace = m_robot->get2DWorkspace();
@@ -56,8 +55,6 @@ bool CollisionDetection::controlCollision(const Vec<float> &vec) {
             return controlCollisionPointRobot(vec[0], vec[1]);
         case CollisionType::pqp:
             return controlCollisionPQP(vec);
-        case CollisionType::vrep:
-            return controlCollisionVrep(vec);
         default:
             return false;
     }
@@ -87,8 +84,6 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
                 if (controlCollisionPQP(vecs[i]))
                     return true;
             break;
-        case CollisionType::vrep:
-            return controlCollisionVrep(vecs);
         default:
             return false;
     }
@@ -114,7 +109,6 @@ bool CollisionDetection::controlCollisionPointRobot(float x, float y) {
     else {
         return false;
     }
-    return false;
 }
 
 /*!
@@ -218,28 +212,4 @@ bool CollisionDetection::checkPQP(shared_ptr<PQP_Model> model1, shared_ptr<PQP_M
         return true;
     else
         return false;
-}
-
-/*!
-*  \brief      Check for vrep collision
-*  \author     Sascha Kaden
-*  \param[in]  Vec of angles
-*  \param[out] possibility of collision
-*  \date       2016-06-30
-*/
-bool CollisionDetection::controlCollisionVrep(const Vec<float> &vec) {
-    assert(vec.getDim() == 6);
-    return m_vrep->checkCollision(vec);
-}
-
-/*!
-*  \brief      Check for vrep collision
-*  \author     Sascha Kaden
-*  \param[in]  vector of vec
-*  \param[out] possibility of collision
-*  \date       2016-06-30
-*/
-bool CollisionDetection::controlCollisionVrep(const std::vector<Vec<float>> &vecs) {
-    assert(vecs[0].getDim() == 6);
-    return m_vrep->checkCollision(vecs);
 }
