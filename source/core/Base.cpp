@@ -18,8 +18,6 @@
 
 #include <core/Base.h>
 
-#define DEBUG 0
-
 using namespace rmpl;
 
 /*!
@@ -59,15 +57,15 @@ void Base::sendMessage(const std::string &message, Message type) {
         std::cout << "Error - ";
     }
     else if (type == Message::debug) {
-        if (DEBUG) {
-            std::cout << "Debug - ";
-        }
-        else {
-            return;
-        }
+#ifdef DEBUG_OUTPUT
+        std::cout << "Debug - ";
+#else
+        return;
+#endif
     }
-    else
+    else {
         std::cout << "Info - ";
+    }
 
     std::cout << m_name << ": ";
     std::cout << message << std::endl;
