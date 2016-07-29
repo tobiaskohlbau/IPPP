@@ -32,7 +32,7 @@ endif()
 set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write-strings")
 
 OPTION(BUILD_EXAMPLES "Build the examples")
-
+OPTION(DEBUG_OUTPUT "Display debug output")
 
 # external libaries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
@@ -67,6 +67,10 @@ set(SRCS
     vrep/extApi.c
     vrep/extApiPlatform.c
     vrep/Helper.cpp)
+
+IF (${DEBUG_OUTPUT})
+    add_definitions(-DDEBUG_OUTPUT)
+ENDIF()
 
 add_custom_target(myInstall
         make install)
