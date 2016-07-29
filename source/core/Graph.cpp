@@ -42,7 +42,7 @@ void Graph::addNode(const shared_ptr<Node> &node) {
     std::lock_guard<std::mutex> lock(m_mutexAddNode);
     m_nodes.push_back(node);
     m_kdTree.addNode(node->getVec(), node);
-    if (m_nodes.size() % 5000 == 0) {
+    if (m_nodes.size() % 2500 == 0) {
         m_kdTree = KDTree<std::shared_ptr<Node>>(m_nodes);
         this->sendMessage("KD Tree has been rebuilded and has now:" + std::to_string(m_nodes.size()) + " Nodes", Message::info);
     }
