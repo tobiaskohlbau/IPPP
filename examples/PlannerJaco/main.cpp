@@ -12,7 +12,7 @@
 
 #include <vrep/Helper.h>
 
-#include "ui/Drawing.h"
+#include <ui/Drawing.h>
 
 void printTime(clock_t begin, clock_t end) {
     float elapsed_secs = float(end - begin) / CLOCKS_PER_SEC;
@@ -21,7 +21,7 @@ void printTime(clock_t begin, clock_t end) {
 
 void planning2D() {
     cv::Mat freeWorkspace, obstacleWorkspace;
-    freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    //freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
     cv::Mat dst;
@@ -67,7 +67,7 @@ void planning2D() {
     Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0,0,255), rmpl::Vec<uint8_t>(0,0,0), 1);
 
     if (connected) {
-        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath();
+        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath(1);
         Drawing::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255,0,0), 3);
     }
 
@@ -83,13 +83,12 @@ void simpleRRT() {
     robot->setBoundaries(minBoundary, maxBoundary);
 
     rmpl::StarRRTPlanner planner(robot, 20, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    //std::shared_ptr<rmpl::Helper> vrep = pathPlanner.getVrep();
 
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(20000,2);
+    planner.computeTree(50000,2);
     clock_t end = std::clock();
     printTime(begin, end);
 
@@ -104,15 +103,17 @@ void simpleRRT() {
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
-        std::vector<rmpl::Vec<float>> pathAngles = planner.getPath();
+        std::vector<rmpl::Vec<float>> pathAngles = planner.getPath(5);
 
         std::vector<rmpl::Vec<float>> pathPoints;
-        for (int i = 0; i < pathAngles.size(); ++i)
-            pathPoints.push_back(robot->directKinematic(pathAngles[i]));
+        for (auto angles : pathAngles)
+            pathPoints.push_back(robot->directKinematic(angles));
         Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
 
-        //for (int i = 0; i < pathPoints.size(); ++i)
-        //    vrep->setPos(pathAngles[i]);
+        rmpl::Helper vrep(6);
+        vrep.start();
+        for (auto angles : pathAngles)
+            vrep.setPos(angles);
     }
 }
 
@@ -125,7 +126,6 @@ void treeConnection() {
     // create two trees from init and from goal
     rmpl::StarRRTPlanner plannerInitNode(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
     rmpl::StarRRTPlanner plannerGoalNode(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    //std::shared_ptr<rmpl::Helper> vrep = pathPlanner.getVrep();
 
     // set properties to the plannerss
     plannerInitNode.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
@@ -175,13 +175,13 @@ void treeConnection() {
         plannerInitNode.connectGoalNode(goal);
         plannerGoalNode.connectGoalNode(goal);
 
-        std::vector<rmpl::Vec<float>> pathAngles = plannerInitNode.getPath();
-        std::vector<rmpl::Vec<float>> temp = plannerGoalNode.getPath();
+        std::vector<rmpl::Vec<float>> pathAngles = plannerInitNode.getPath(1);
+        std::vector<rmpl::Vec<float>> temp = plannerGoalNode.getPath(5);
         pathAngles.insert(pathAngles.end(), temp.begin(), temp.end());
 
         std::vector<rmpl::Vec<float>> pathPoints;
-        for (int i = 0; i < pathAngles.size(); ++i)
-            pathPoints.push_back(robot->directKinematic(pathAngles[i]));
+        for (auto angles : pathAngles)
+            pathPoints.push_back(robot->directKinematic(angles));
         Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
 
         //for (int i = 0; i < pathPoints.size(); ++i)
@@ -192,7 +192,7 @@ void treeConnection() {
 int main(int argc, char** argv)
 {
 
-    planning2D();
+    //planning2D();
     //treeConnection();
     simpleRRT();
 

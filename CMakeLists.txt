@@ -83,7 +83,7 @@ install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
 
 IF (${BUILD_EXAMPLES})
-    ADD_SUBDIRECTORY(examples/Planner)
+    ADD_SUBDIRECTORY(examples)
 ENDIF()
 
 

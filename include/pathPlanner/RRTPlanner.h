@@ -37,7 +37,7 @@ public:
     bool computeTree(int nbOfNodes, int nbOfThreades = 1);
     virtual bool connectGoalNode(Node goalNode) = 0;
     std::vector<std::shared_ptr<Node>> getPathNodes();
-    std::vector<Vec<float>> getPath();
+    std::vector<Vec<float>> getPath(float trajectoryStepSize);
     std::shared_ptr<Node> getInitNode();
     std::shared_ptr<Node> getGoalNode();
     Vec<float> getSamplePoint();
