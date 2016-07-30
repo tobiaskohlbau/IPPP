@@ -50,3 +50,30 @@ Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robo
 std::vector<std::shared_ptr<Node>> Planner::getGraphNodes() {
     return m_graph->getNodes();
 }
+
+std::vector<Vec<float>> getPathfromNodes(std::vector<std::shared_ptr<Node>> &nodes, float trajectoryStepSize) {
+    nodes = smoothPath(nodes);
+    
+    std::vector<Vec<float>> path;
+    for (int i = 0; i < nodes.size() - 1; ++i) {
+        std::vector<Vec<float>> tempVecs =
+            m_planner->computeTrajectory(temp->getVec(), temp->getParent()->getVec(), trajectoryStepSize);
+        for (auto vec : tempVecs)
+            path.push_back(vec);
+    }
+    
+    return path;
+}
+
+std::vector<std::shared_ptr<Node>> Planner::smoothPath(std::vector<std::shared_ptr<Node>> &nodes) {
+    int i = 0;
+    while (i < nodes.size()) {
+        for (int j = i + 2; j < nodes.size(); ++j) {
+            if (m_planner.checkTrajectory(nodes[i], nodes[j])) {
+                nodes.remove(nodes.begin(), i + 1);
+            }  
+        }
+      ++i;
+    }
+    return nodes;
+}  
