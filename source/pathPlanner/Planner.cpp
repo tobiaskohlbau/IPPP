@@ -19,6 +19,7 @@
 #include <pathPlanner/Planner.h>
 
 using namespace rmpl;
+using std::shared_ptr;
 
 /*!
 *  \brief      Constructor of the class Planner
@@ -28,17 +29,17 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize,
+Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize,
                  TrajectoryMethod trajectory, SamplingMethod sampling)
     : Base(name) {
     m_pathPlanned = false;
     m_stepSize = stepSize;
 
     m_robot = robot;
-    m_graph = std::shared_ptr<Graph>(new Graph());
-    m_sampler = std::shared_ptr<Sampling>(new Sampling(m_robot, sampling));
-    m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_robot));
-    m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(trajectory, trajectoryStepSize, m_collision));
+    m_graph = shared_ptr<Graph>(new Graph());
+    m_sampler = shared_ptr<Sampling>(new Sampling(m_robot, sampling));
+    m_collision = shared_ptr<CollisionDetection>(new CollisionDetection(m_robot));
+    m_planner = shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(trajectory, trajectoryStepSize, m_collision));
 }
 
 /*!
@@ -47,6 +48,39 @@ Planner::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robo
 *  \param[out] list of all nodes
 *  \date       2016-05-27
 */
-std::vector<std::shared_ptr<Node>> Planner::getGraphNodes() {
+std::vector<shared_ptr<Node>> Planner::getGraphNodes() {
     return m_graph->getNodes();
+}
+
+std::vector<Vec<float>> Planner::getPathFromNodes(const std::vector<shared_ptr<Node>> &nodes, float trajectoryStepSize,
+                                                  bool smoothing) {
+    std::vector<shared_ptr<Node>> smoothedNodes;
+    if (smoothing)
+        smoothedNodes = smoothPath(nodes);
+    else
+        smoothedNodes = nodes;
+
+    this->sendMessage("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", Message::info);
+
+    std::vector<Vec<float>> path;
+    for (int i = 0; i < smoothedNodes.size() - 1; ++i) {
+        std::vector<Vec<float>> tempVecs =
+            m_planner->computeTrajectory(smoothedNodes[i]->getVec(), smoothedNodes[i + 1]->getVec(), trajectoryStepSize);
+        for (auto vec : tempVecs)
+            path.push_back(vec);
+    }
+    return path;
+}
+
+std::vector<shared_ptr<Node>> Planner::smoothPath(std::vector<shared_ptr<Node>> nodes) {
+    unsigned int i = 0;
+    unsigned int countNodes = nodes.size() - 2;
+    while (i < countNodes) {
+        while (i < countNodes && m_planner->controlTrajectory(nodes[i]->getVec(), nodes[i + 2]->getVec())) {
+            nodes.erase(nodes.begin() + i + 1);
+            --countNodes;
+        }
+        ++i;
+    }
+    return nodes;
 }
