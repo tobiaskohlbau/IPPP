@@ -41,7 +41,7 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/include/vrep)
 
-set(PQP_DIR "Path to PQP" CACHE PATH "PQP DIR")
+set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
 include_directories(${PQP_DIR}/include)
 link_directories(${PQP_DIR}/lib)
 
