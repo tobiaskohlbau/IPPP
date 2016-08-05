@@ -22,13 +22,13 @@ void simpleRRT() {
     rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360, 360);
     robot->setBoundaries(minBoundary, maxBoundary);
 
-    rmpl::StarRRTPlanner planner(robot, 20, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    rmpl::StarRRTPlanner planner(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(20000, 2);
+    planner.computeTree(15000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
 
@@ -43,7 +43,7 @@ void simpleRRT() {
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
-        std::vector<rmpl::Vec<float>> pathAngles = planner.getPath(5);
+        std::vector<rmpl::Vec<float>> pathAngles = planner.getPath(5, true);
 
         std::vector<rmpl::Vec<float>> pathPoints;
         for (auto angles : pathAngles)
@@ -115,8 +115,8 @@ void treeConnection() {
         plannerInitNode.connectGoalNode(goal);
         plannerGoalNode.connectGoalNode(goal);
 
-        std::vector<rmpl::Vec<float>> pathAngles = plannerInitNode.getPath(1);
-        std::vector<rmpl::Vec<float>> temp = plannerGoalNode.getPath(5);
+        std::vector<rmpl::Vec<float>> pathAngles = plannerInitNode.getPath(1, true);
+        std::vector<rmpl::Vec<float>> temp = plannerGoalNode.getPath(5, true);
         pathAngles.insert(pathAngles.end(), temp.begin(), temp.end());
 
         std::vector<rmpl::Vec<float>> pathPoints;

@@ -37,7 +37,7 @@ class RRTPlanner : public Planner {
     bool computeTree(int nbOfNodes, int nbOfThreades = 1);
     virtual bool connectGoalNode(Node goalNode) = 0;
     std::vector<std::shared_ptr<Node>> getPathNodes();
-    std::vector<Vec<float>> getPath(float trajectoryStepSize);
+    std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing);
     std::shared_ptr<Node> getInitNode();
     std::shared_ptr<Node> getGoalNode();
     Vec<float> getSamplePoint();

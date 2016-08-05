@@ -41,13 +41,13 @@ class Planner : public Base {
             TrajectoryMethod trajectory, SamplingMethod sampling);
 
     std::vector<std::shared_ptr<Node>> getGraphNodes();
-    virtual std::vector<Vec<float>> getPath(float trajectoryStepSize) = 0;
+    virtual std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing) = 0;
     virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
-    std::vector<Vec<float>> getPathFromNodes(const std::vector<std::shared_ptr<Node>> &nodes, bool smoothing);
+    std::vector<Vec<float>> getPathFromNodes(const std::vector<std::shared_ptr<Node>> &nodes, float trajectoryStepSize, bool smoothing);
 
   protected:
-    std::vector<std::shared_ptr<Node>> smoothPath(std::vector<std::shared_ptr<Node>> &nodes);
-  
+    std::vector<std::shared_ptr<Node>> smoothPath(std::vector<std::shared_ptr<Node>> nodes);
+
     std::shared_ptr<TrajectoryPlanner> m_planner;
     std::shared_ptr<Sampling> m_sampler;
     std::shared_ptr<CollisionDetection> m_collision;
