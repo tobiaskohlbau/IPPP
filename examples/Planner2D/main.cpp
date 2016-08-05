@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
     Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
 
     if (connected) {
-        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath(1);
+        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath(1, true);
         Drawing::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255, 0, 0), 3);
     }
 
