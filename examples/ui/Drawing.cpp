@@ -33,6 +33,32 @@ void Drawing::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &im
 }
 
 /*!
+*  \brief         Draw nodes and there edge to the parent Node
+*  \author        Sascha Kaden
+*  \param[in]     vector of nodes
+*  \param[in,out] image
+*  \param[in]     color of the nodes
+*  \param[in]     color of the edges
+*  \param[in]     thickness of the points
+*  \date          2016-05-25
+*/
+void Drawing::drawGraph2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode,
+                         const Vec<uint8_t> &colorEdge, int thickness) {
+    assert(nodes[0]->getDim() == 2);
+
+    for (auto &elem : nodes) {
+        cv::Point point(elem->getX(), elem->getY());
+        cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
+        for (auto &child : elem->getChildNodes()) {
+            if (child != nullptr) {
+                cv::Point point2(child->getX(), child->getY());
+                cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
+            }
+        }
+    }
+}
+
+/*!
 *  \brief         Draw a path with the passed points in an image
 *  \author        Sascha Kaden
 *  \param[in]     vector of points
