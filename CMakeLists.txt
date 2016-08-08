@@ -58,6 +58,7 @@ set(SRCS
     include/core/Vec.hpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
+    source/pathPlanner/PRMPlanner.cpp
     source/pathPlanner/RRTPlanner.cpp
     source/pathPlanner/StarRRTPlanner.cpp
     source/robot/CadFileLoader.cpp
@@ -67,7 +68,7 @@ set(SRCS
     source/robot/RobotBase.cpp
     vrep/extApi.c
     vrep/extApiPlatform.c
-    vrep/Helper.cpp)
+    vrep/Helper.cpp source/pathPlanner/AStarList.cpp)
 
 IF (${DEBUG_OUTPUT})
     add_definitions(-DDEBUG_OUTPUT)

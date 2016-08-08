@@ -37,7 +37,7 @@ Edge::Edge() : Base("Edge") {
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-Edge::Edge(const shared_ptr<Node> &target, float length) : Base("Edge") {
+Edge::Edge(shared_ptr<Node> &target, float length) : Base("Edge") {
     m_target = target;
     m_length = length;
 }
@@ -58,7 +58,7 @@ float Edge::getLength() {
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-void Edge::setTarget(const shared_ptr<Node> &target, float length) {
+void Edge::setTarget(shared_ptr<Node> &target, float length) {
     m_target = target;
 }
 

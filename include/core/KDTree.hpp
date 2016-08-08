@@ -164,8 +164,11 @@ std::vector<T> KDTree<T>::searchRange(const Vec<float> &vec, float range) {
     Vec<float> minBoundary = vec - range;
     RS(vec, m_root, kdNodes, sqRange, maxBoundary, minBoundary);
 
-    for (int i = 0; i < kdNodes.size(); ++i)
-        nodes.push_back(kdNodes[i]->node);
+    for (auto kdNode : kdNodes) {
+        if (kdNode->vec != vec) {
+            nodes.push_back(kdNode->node);
+        }
+    }
     return nodes;
 }
 
