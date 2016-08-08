@@ -41,7 +41,7 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
     if (this->m_collision->controlCollision(newNode->getVec())) {
         newNode = nullptr;
         return;
-    } else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
+    } else if (!this->m_planner->controlTrajectory(newNode, nearestNode)) {
         newNode = nullptr;
         return;
     }
@@ -71,7 +71,7 @@ void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &n
     float nearestNodeCost = nearestNode->getCost();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < nearestNodeCost) {
-            if (this->m_planner->controlTrajectory(newNode->getVec(), nearNodes[i]->getVec())) {
+            if (this->m_planner->controlTrajectory(newNode, nearNodes[i])) {
                 nearestNodeCost = nearNodes[i]->getCost();
                 nearestNode = nearNodes[i];
             }
@@ -93,7 +93,7 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
             float oldDist = nearNode->getCost();
             float newDist = nearNode->getDist(newNode) + newNode->getCost();
             if (newDist < oldDist) {
-                if (this->m_planner->controlTrajectory(newNode->getVec(), nearNode->getVec())) {
+                if (this->m_planner->controlTrajectory(newNode, nearNode)) {
                     float cost = nearNode->getCost() - nearNode->getDist(nearNode->getParent());
                     cost += newNode->getDist(nearNode);
                     m_mutex.lock();
@@ -123,11 +123,9 @@ bool StarRRTPlanner::connectGoalNode(Node goal) {
     shared_ptr<Node> nearestNode = nullptr;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (nearNodes[i]->getCost() < minCost) {
-            if (this->m_planner->controlTrajectory(goalNode->getVec(), nearNodes[i]->getVec())) {
-                minCost = nearNodes[i]->getCost();
-                nearestNode = nearNodes[i];
-            }
+        if (nearNodes[i]->getCost() < minCost && this->m_planner->controlTrajectory(goalNode, nearNodes[i])) {
+            minCost = nearNodes[i]->getCost();
+            nearestNode = nearNodes[i];
         }
     }
 

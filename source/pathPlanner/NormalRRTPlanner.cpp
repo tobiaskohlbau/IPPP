@@ -63,8 +63,7 @@ bool NormalRRTPlanner::connectGoalNode(Node goal) {
         return false;
 
     shared_ptr<Node> goalNode(new Node(goal));
-    std::vector<shared_ptr<Node>> nearNodes;
-    nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
+    std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
 
     shared_ptr<Node> nearestNode = nullptr;
     for (auto node : nearNodes) {

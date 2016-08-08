@@ -16,35 +16,29 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef EDGE_H_
-#define EDGE_H_
+#ifndef ASTARLIST_H_
+#define ASTARLIST_H_
 
 #include <core/Base.h>
+#include <core/Node.h>
 
 namespace rmpl {
 
-class Node;
+class AStarList : public Base {
+public:
+    AStarList();
+    void addNode(std::shared_ptr<Node> node);
+    void removeNode(std::shared_ptr<Node> node);
+    std::shared_ptr<Node> removeMin();
+    bool empty();
+    bool contains(std::shared_ptr<Node> node);
 
-/*!
-* \brief   Class Edge contains the two nodes of the Edge and different parameters
-* \author  Sascha Kaden
-* \date    2016-05-25
-*/
-class Edge : public Base {
-  public:
-    Edge();
-    Edge(std::shared_ptr<Node> &target, float length);
+private:
+    std::vector<std::shared_ptr<Node>> m_list;
 
-    float getLength();
-
-    void setTarget(std::shared_ptr<Node> &target, float length);
-    std::shared_ptr<Node> getTarget();
-
-  private:
-    std::shared_ptr<Node> m_target;
-    float m_length;
 };
+
 
 } /* namespace rmpl */
 
-#endif /* EDGE_H_ */
+#endif //ASTARLIST_H_

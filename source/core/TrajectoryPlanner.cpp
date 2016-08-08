@@ -45,9 +45,32 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, float stepS
 /*!
 *  \brief      Control the trajectory and return if possible or not
 *  \author     Sascha Kaden
-*  \param[in]  first Vec
-*  \param[in]  second Vec
-*  \param[in]  step size
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] possibility of trajectory, true if possible
+*  \date       2016-05-31
+*/
+bool TrajectoryPlanner::controlTrajectory(const Node &source, const Node &target) {
+    return controlTrajectory(source.getVec(), target.getVec());
+}
+
+/*!
+*  \brief      Control the trajectory and return if possible or not
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] possibility of trajectory, true if possible
+*  \date       2016-05-31
+*/
+bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target) {
+    return controlTrajectory(source->getVec(), target->getVec());
+}
+
+/*!
+*  \brief      Control the trajectory and return if possible or not
+*  \author     Sascha Kaden
+*  \param[in]  source Vec
+*  \param[in]  target Vec
 *  \param[out] possibility of trajectory, true if possible
 *  \date       2016-05-31
 */

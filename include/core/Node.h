@@ -64,12 +64,13 @@ class Node : public Base {
     void setCost(float cost);
     float getCost();
 
-    void setParent(const std::shared_ptr<Node> &parent);
+    void setParent(std::shared_ptr<Node> &parent);
     std::shared_ptr<Node> getParent();
     void clearParent();
-    void addChild(const std::shared_ptr<Node> &child);
+    void addChild(std::shared_ptr<Node> &child);
     std::vector<std::shared_ptr<Node>> getChildNodes();
     std::vector<Edge> getChildEdges();
+    std::shared_ptr<Node> getNearestChild();
     void clearChilds();
 
     Vec<float> getVec() const;

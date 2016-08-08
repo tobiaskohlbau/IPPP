@@ -30,7 +30,8 @@ using std::shared_ptr;
 */
 RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize,
                        TrajectoryMethod trajectory, SamplingMethod sampling)
-    : Planner(name, robot, stepSize, trajectoryStepSize, trajectory, sampling) {
+    : Planner(name, robot, trajectoryStepSize, trajectory, sampling) {
+    m_stepSize = stepSize;
     m_initNode = nullptr;
     m_goalNode = nullptr;
 }
@@ -62,21 +63,21 @@ bool RRTPlanner::setInitNode(Node node) {
 *  \param[out] return check of the constraints
 *  \date       2016-05-27
 */
-bool RRTPlanner::computeTree(int nbOfNodes, int nbOfThreades) {
+bool RRTPlanner::computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads) {
     if (!controlConstraints())
         return false;
 
-    if (nbOfThreades == 1) {
+    if (nbOfThreads == 1) {
         computeTreeThread(nbOfNodes);
     } else {
-        nbOfNodes /= nbOfThreades;
+        nbOfNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (int i = 0; i < nbOfThreades; ++i) {
+        for (int i = 0; i < nbOfThreads; ++i) {
             threads.push_back(std::thread(&RRTPlanner::computeTreeThread, this, nbOfNodes));
         }
 
-        for (int i = 0; i < nbOfThreades; ++i)
+        for (int i = 0; i < nbOfThreads; ++i)
             threads[i].join();
     }
 
@@ -89,7 +90,7 @@ bool RRTPlanner::computeTree(int nbOfNodes, int nbOfThreades) {
 *  \param[in]  number of samples
 *  \date       2016-05-27
 */
-void RRTPlanner::computeTreeThread(int nbOfNodes) {
+void RRTPlanner::computeTreeThread(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
         Vec<float> randVec = this->m_sampler->getSample(m_robot->getDim(), i, nbOfNodes);
         shared_ptr<Node> newNode;
