@@ -233,6 +233,14 @@ void KDTree<T>::RS(const Vec<float> &vec, std::shared_ptr<KDNode<T>> node, std::
     }
 }
 
+/*!
+*  \brief      Sorts the passed vector of Nodes and add the KDNode to the KDTree (recursive function)
+*  \author     Sascha Kaden
+*  \param[in]  vector of Node pointer
+*  \param[in]  split dimension
+*  \param[out] pointer of KDNode
+*  \date       2016-08-09
+*/
 template <class T>
 std::shared_ptr<KDNode<T>> KDTree<T>::sort(std::vector<std::shared_ptr<Node>> &vec, unsigned int dim) {
     if (vec.size() < 1) {
@@ -267,6 +275,15 @@ std::shared_ptr<KDNode<T>> KDTree<T>::sort(std::vector<std::shared_ptr<Node>> &v
     }
 }
 
+/*!
+*  \brief      quick sort algorithm (recursive function)
+*  \author     Sascha Kaden
+*  \param[in]  vector of Node pointer
+*  \param[in]  left start index for the vector
+*  \param[in]  right end index for the vector
+*  \param[in]  split dimension
+*  \date       2016-08-09
+*/
 template <class T>
 void KDTree<T>::quickSort(std::vector<std::shared_ptr<Node>> &A, int left, int right, int dim) {
     int r;
@@ -277,6 +294,16 @@ void KDTree<T>::quickSort(std::vector<std::shared_ptr<Node>> &A, int left, int r
     }
 }
 
+/*!
+*  \brief      Partition of the vector and return pivot element
+*  \author     Sascha Kaden
+*  \param[in]  vector of Node pointer
+*  \param[in]  left start index for the vector
+*  \param[in]  right end index for the vector
+*  \param[in]  split dimension
+*  \param[out] index for splitting (pivot element)
+*  \date       2016-08-09
+*/
 template <class T>
 int KDTree<T>::partition(std::vector<std::shared_ptr<Node>> &A, int left, int right, int dim) {
     float x = A[left]->getVecValue(dim);

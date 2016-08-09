@@ -46,14 +46,14 @@ int main(int argc, char** argv) {
     rmpl::PRMPlanner planner(robot, 40.0, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     clock_t begin = std::clock();
-    planner.startQueryPhase(5000, 2);
+    planner.startSamplingPhase(5000, 2);
     planner.startPlannerPhase(2);
     clock_t end = std::clock();
     printTime(begin, end);
 
     rmpl::Node init(10, 10);
     rmpl::Node goal(650.0, 750.0);
-    bool connected = planner.computePath(init, goal);
+    bool connected = planner.queryPath(init, goal);
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
 

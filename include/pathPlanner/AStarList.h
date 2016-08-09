@@ -24,8 +24,13 @@
 
 namespace rmpl {
 
+/*!
+* \brief   Class AStarList offers a list for the A* algorithm
+* \author  Sascha Kaden
+* \date    2016-08-09
+*/
 class AStarList : public Base {
-public:
+  public:
     AStarList();
     void addNode(std::shared_ptr<Node> node);
     void removeNode(std::shared_ptr<Node> node);
@@ -33,12 +38,10 @@ public:
     bool empty();
     bool contains(std::shared_ptr<Node> node);
 
-private:
+  private:
     std::vector<std::shared_ptr<Node>> m_list;
-
 };
-
 
 } /* namespace rmpl */
 
-#endif //ASTARLIST_H_
+#endif    // ASTARLIST_H_

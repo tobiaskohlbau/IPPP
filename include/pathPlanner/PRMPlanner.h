@@ -19,30 +19,33 @@
 #ifndef PRMPLANNER_H_
 #define PRMPLANNER_H_
 
-#include <core/Edge.h>
 #include <pathPlanner/AStarList.h>
 #include <pathPlanner/Planner.h>
 
-
 namespace rmpl {
 
+/*!
+* \brief   Class PRMPlanner
+* \author  Sascha Kaden
+* \date    2016-08-09
+*/
 class PRMPlanner : public Planner {
   public:
     PRMPlanner(const std::shared_ptr<RobotBase> &robot, float rangeSize, float trajectoryStepSize, TrajectoryMethod trajectory,
                SamplingMethod sampling);
 
-    void startQueryPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
+    void startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     void startPlannerPhase(unsigned int nbOfThreads = 1);
 
-    bool computePath(Node startNode, Node goalNode);
+    bool queryPath(Node startNode, Node goalNode);
     bool aStar(std::shared_ptr<Node> sourceNode, std::shared_ptr<Node> targetNode);
     void expandNode(std::shared_ptr<Node> currentNode);
 
     std::vector<std::shared_ptr<Node>> getPathNodes();
     std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing = true);
 
-protected:
-    void queryPhase(unsigned int nbOfNodes);
+  protected:
+    void samplingPhase(unsigned int nbOfNodes);
     void plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex);
     std::shared_ptr<Node> connectNode(Node &node);
 
