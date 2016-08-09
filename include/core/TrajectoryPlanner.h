@@ -37,8 +37,12 @@ enum class TrajectoryMethod {
 class TrajectoryPlanner : public Base {
   public:
     TrajectoryPlanner(const TrajectoryMethod &method, float stepSize, const std::shared_ptr<CollisionDetection> &collision);
+
+    bool controlTrajectory(const Node &source, const Node &target);
+    bool controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target);
     bool controlTrajectory(const Vec<float> &source, const Vec<float> &target);
     std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target, float stepSize = 0);
+
     void setStepSize(float stepSize);
     float getStepSize();
 

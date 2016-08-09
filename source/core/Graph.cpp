@@ -99,6 +99,28 @@ shared_ptr<Node> Graph::getNearestNode(const shared_ptr<Node> &node) {
 * \param[out] list of nodes inside the range
 * \date       2016-05-25
 */
-std::vector<shared_ptr<Node>> Graph::getNearNodes(const shared_ptr<Node> node, float distance) {
-    return m_kdTree.searchRange(node->getVec(), distance);
+std::vector<shared_ptr<Node>> Graph::getNearNodes(const Node &node, float range) {
+    return m_kdTree.searchRange(node.getVec(), range);
+}
+
+/*!
+* \brief      Search range
+* \author     Sascha Kaden
+* \param[in]  Node for the search
+* \param[in]  distance around the passed Node
+* \param[out] list of nodes inside the range
+* \date       2016-05-25
+*/
+std::vector<shared_ptr<Node>> Graph::getNearNodes(const shared_ptr<Node> node, float range) {
+    return m_kdTree.searchRange(node->getVec(), range);
+}
+
+/*!
+* \brief      Return size of the graph
+* \author     Sascha Kaden
+* \param[out] size of Node vector
+* \date       2016-08-09
+*/
+unsigned int Graph::size() {
+    return m_nodes.size();
 }

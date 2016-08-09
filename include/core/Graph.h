@@ -42,7 +42,10 @@ class Graph : public Base {
 
     std::shared_ptr<Node> getNearestNode(const Node &node);
     std::shared_ptr<Node> getNearestNode(const std::shared_ptr<Node> &node);
+    std::vector<std::shared_ptr<Node>> getNearNodes(const Node &node, float distance);
     std::vector<std::shared_ptr<Node>> getNearNodes(const std::shared_ptr<Node> node, float distance);
+
+    unsigned int size();
 
   private:
     std::vector<std::shared_ptr<Node>> m_nodes;

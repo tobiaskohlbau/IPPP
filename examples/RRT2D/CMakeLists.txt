@@ -21,7 +21,7 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.h
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp)
 
-ADD_RMPL_EXAMPLE(PlannerJaco "${source}")
+ADD_RMPL_EXAMPLE(RRT2D "${source}")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Release/meshes)
