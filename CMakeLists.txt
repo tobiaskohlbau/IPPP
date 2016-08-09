@@ -38,9 +38,10 @@ OPTION(DEBUG_OUTPUT "Display debug output")
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
-include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/include/vrep)
+include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include/vrep)
 
-set(PQP_DIR "Path to PQP" CACHE PATH "PQP DIR")
+set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
 include_directories(${PQP_DIR}/include)
 link_directories(${PQP_DIR}/lib)
 
@@ -57,6 +58,7 @@ set(SRCS
     include/core/Vec.hpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
+    source/pathPlanner/PRMPlanner.cpp
     source/pathPlanner/RRTPlanner.cpp
     source/pathPlanner/StarRRTPlanner.cpp
     source/robot/CadFileLoader.cpp
@@ -66,7 +68,7 @@ set(SRCS
     source/robot/RobotBase.cpp
     vrep/extApi.c
     vrep/extApiPlatform.c
-    vrep/Helper.cpp)
+    vrep/Helper.cpp source/pathPlanner/AStarList.cpp)
 
 IF (${DEBUG_OUTPUT})
     add_definitions(-DDEBUG_OUTPUT)

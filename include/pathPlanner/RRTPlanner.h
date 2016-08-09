@@ -34,21 +34,22 @@ class RRTPlanner : public Planner {
                TrajectoryMethod trajectory, SamplingMethod sampling);
 
     bool setInitNode(Node node);
-    bool computeTree(int nbOfNodes, int nbOfThreades = 1);
+    bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     virtual bool connectGoalNode(Node goalNode) = 0;
     std::vector<std::shared_ptr<Node>> getPathNodes();
-    std::vector<Vec<float>> getPath(float trajectoryStepSize);
+    std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing = true);
     std::shared_ptr<Node> getInitNode();
     std::shared_ptr<Node> getGoalNode();
     Vec<float> getSamplePoint();
 
   protected:
     bool controlConstraints();
-    void computeTreeThread(int nbOfNodes);
+    void computeTreeThread(unsigned int nbOfNodes);
     virtual void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode) = 0;
     Vec<float> computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode);
 
     // variables
+    float m_stepSize;
     std::shared_ptr<Node> m_initNode;
     std::shared_ptr<Node> m_goalNode;
 };

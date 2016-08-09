@@ -17,6 +17,7 @@
 //-------------------------------------------------------------------------//
 
 #include <core/Node.h>
+#include <limits>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -321,7 +322,7 @@ float Node::getCost() {
 *  \param[in]  shared_ptr parent Node
 *  \date       2016-07-15
 */
-void Node::setParent(const shared_ptr<Node> &parent) {
+void Node::setParent(shared_ptr<Node> &parent) {
     m_parent = Edge(parent, getDist(parent));
 }
 
@@ -350,7 +351,7 @@ void Node::clearParent() {
 *  \param[in]  shared_ptr child Node
 *  \date       2016-07-15
 */
-void Node::addChild(const shared_ptr<Node> &child) {
+void Node::addChild(shared_ptr<Node> &child) {
     m_childs.push_back(Edge(child, getDist(child)));
 }
 
