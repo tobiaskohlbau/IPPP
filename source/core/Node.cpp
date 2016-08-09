@@ -379,18 +379,6 @@ std::vector<Edge> Node::getChildEdges() {
     return m_childs;
 }
 
-shared_ptr<Node> Node::getNearestChild() {
-    float minDist = std::numeric_limits<float>::max();
-    shared_ptr<Node> nearestChild = nullptr;
-    for (auto child : m_childs){
-        if (child.getLength() < minDist) {
-            minDist = child.getLength();
-            nearestChild = child.getTarget();
-        }
-    }
-    return nearestChild;
-}
-
 /*!
 *  \brief      Clear list of child nodes
 *  \author     Sascha Kaden
