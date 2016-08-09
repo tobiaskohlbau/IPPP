@@ -17,19 +17,17 @@ void printTime(clock_t begin, clock_t end) {
 
 int main(int argc, char** argv) {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
-    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360, 360);
-    robot->setBoundaries(minBoundary, maxBoundary);
 
     rmpl::PRMPlanner planner(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
     clock_t begin = std::clock();
-    planner.startQueryPhase(61000, 2);
+    planner.startSamplingPhase(61000, 2);
     planner.startPlannerPhase(2);
     clock_t end = std::clock();
     printTime(begin, end);
 
-    bool connected = planner.computePath(rmpl::Node(180, 180, 180, 180, 180, 180), rmpl::Node(275, 167.5, 57.4, 241, 82.7, 75.5));
+    bool connected = planner.queryPath(rmpl::Node(180, 180, 180, 180, 180, 180),
+                                       rmpl::Node(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
     std::vector<rmpl::Vec<float>> graphPoints;
