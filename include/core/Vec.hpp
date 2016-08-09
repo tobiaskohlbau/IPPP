@@ -78,6 +78,26 @@ class Vec {
         return *this;
     }
 
+    bool operator==(const Vec<T> &vec) {
+        for (unsigned int i = 0; i < m_dim; ++i)
+            if (m_data[i] != vec[i])
+                return false;
+
+        return true;
+    }
+
+    bool operator==(Vec<T> &vec) {
+        for (unsigned int i = 0; i < m_dim; ++i)
+            if (m_data[i] != vec[i])
+                return false;
+
+        return true;
+    }
+
+    bool operator!=(const Vec<T> &vec) {
+        return !((*this) == vec);
+    }
+
     Vec<T> &operator+=(const Vec<T> &vec) {
         assert(m_dim == vec.getDim());
         for (unsigned int i = 0; i < m_dim; ++i)

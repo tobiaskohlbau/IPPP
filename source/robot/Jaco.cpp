@@ -39,13 +39,7 @@ Jaco::Jaco() : RobotBase("Jaco", CollisionType::pqp, 6, 6) {
     this->m_a = Vec<float>(0, 410, 0, 0, 0, 0);
     this->m_d = Vec<float>(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
-    char cCurrentPath[FILENAME_MAX];
-    if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath))) {
-        this->sendMessage("could not load cad files, wrong path");
-        return;
-    }
-    cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
-    std::string path(cCurrentPath);
+    setBoundaries(Vec<float>(0, 42, 17, 0, 0, 0), Vec<float>(360, 318, 343, 360, 360, 360));
 
     std::vector<std::string> cadFiles = {"meshes/link_base_fixed_origin.obj", "meshes/link_1_fixed_origin.obj",
                                          "meshes/link_2_fixed_origin.obj",    "meshes/link_3_fixed_origin.obj",
