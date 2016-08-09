@@ -5,9 +5,6 @@
 using namespace rmpl;
 using std::shared_ptr;
 
-Drawing::Drawing(int argc, char **argv) : Base("Drawing") {
-}
-
 /*!
 *  \brief         Draw nodes and there edge to the parent Node
 *  \author        Sascha Kaden
@@ -33,7 +30,7 @@ void Drawing::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &im
 }
 
 /*!
-*  \brief         Draw nodes and there edge to the parent Node
+*  \brief         Draw nodes and there edge to the child Nodes
 *  \author        Sascha Kaden
 *  \param[in]     vector of nodes
 *  \param[in,out] image
