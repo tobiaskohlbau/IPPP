@@ -115,6 +115,12 @@ std::vector<shared_ptr<Node>> Graph::getNearNodes(const shared_ptr<Node> node, f
     return m_kdTree.searchRange(node->getVec(), range);
 }
 
-unsigned int Graph::getNodeCount() {
+/*!
+* \brief      Return size of the graph
+* \author     Sascha Kaden
+* \param[out] size of Node vector
+* \date       2016-08-09
+*/
+unsigned int Graph::size() {
     return m_nodes.size();
 }
