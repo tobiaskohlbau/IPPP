@@ -23,29 +23,51 @@
 using namespace rmpl;
 using std::shared_ptr;
 
-PRMPlanner::PRMPlanner(const shared_ptr<RobotBase> &robot, float rangeSize, float trajectoryStepSize,
-                       TrajectoryMethod trajectory, SamplingMethod sampling)
+/*!
+*  \brief      Standard constructor of the class PRMPlanner
+*  \author     Sascha Kaden
+*  \param[in]  robot
+*  \param[in]  rangeSize for the nearest neighbor search from the local planner
+*  \param[in]  trajectoryStepSize
+*  \param[in]  TrajectoryMethod
+*  \param[in]  SamplingMethod
+*  \date       2016-08-09
+*/
+PRMPlanner::PRMPlanner(const shared_ptr<RobotBase> &robot, float rangeSize, float trajectoryStepSize, TrajectoryMethod trajectory,
+                       SamplingMethod sampling)
     : Planner("PRMPlanner", robot, trajectoryStepSize, trajectory, sampling) {
     m_rangeSize = rangeSize;
 }
 
-void PRMPlanner::startQueryPhase(unsigned int nbOfNodes, unsigned int nbOfThreads) {
+/*!
+*  \brief      Sampling phase of the PRMPlanner
+*  \author     Sascha Kaden
+*  \param[in]  number of Nodes to be sampled
+*  \param[in]  number of threads
+*  \date       2016-08-09
+*/
+void PRMPlanner::startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads) {
     if (nbOfThreads == 1) {
-        queryPhase(nbOfNodes);
+        samplingPhase(nbOfNodes);
     } else {
         nbOfNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (int i = 0; i < nbOfThreads; ++i) {
-            threads.push_back(std::thread(&PRMPlanner::queryPhase, this, nbOfNodes));
-        }
+        for (int i = 0; i < nbOfThreads; ++i)
+            threads.push_back(std::thread(&PRMPlanner::samplingPhase, this, nbOfNodes));
 
         for (int i = 0; i < nbOfThreads; ++i)
             threads[i].join();
     }
 }
 
-void PRMPlanner::queryPhase(unsigned int nbOfNodes) {
+/*!
+*  \brief      Sampling thread function
+*  \author     Sascha Kaden
+*  \param[in]  number of Nodes to be sampled
+*  \date       2016-08-09
+*/
+void PRMPlanner::samplingPhase(unsigned int nbOfNodes) {
     unsigned int dim = this->m_robot->getDim();
     for (int i = 0; i < nbOfNodes; ++i) {
         Vec<float> sample = this->m_sampler->getSample(dim, i, nbOfNodes);
@@ -55,8 +77,15 @@ void PRMPlanner::queryPhase(unsigned int nbOfNodes) {
     }
 }
 
+/*!
+*  \brief      Local planning phase of the PRMPlanner.
+*  \details    Add the nearest neighbors of a Node as childs.
+*  \author     Sascha Kaden
+*  \param[in]  number threads
+*  \date       2016-08-09
+*/
 void PRMPlanner::startPlannerPhase(unsigned int nbOfThreads) {
-    unsigned int nodeCount = this->m_graph->getNodeCount();
+    unsigned int nodeCount = this->m_graph->size();
     if (nbOfThreads == 1) {
         plannerPhase(0, nodeCount);
     } else {
@@ -72,6 +101,14 @@ void PRMPlanner::startPlannerPhase(unsigned int nbOfThreads) {
     }
 }
 
+/*!
+*  \brief      Local planning thread function
+*  \details    Searchs the nearest neighbors between the given indexes and adds them as childs
+*  \author     Sascha Kaden
+*  \param[in]  start index
+*  \param[in]  end index
+*  \date       2016-08-09
+*/
 void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex) {
     if (startNodeIndex > endNodeIndex) {
         sendMessage("Start index is larger than end index", Message::error);
@@ -94,7 +131,16 @@ void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeI
     }
 }
 
-bool PRMPlanner::computePath(Node startNode, Node goalNode) {
+/*!
+*  \brief      Searchs a between start and goal Node
+*  \details    Uses internal the A* algorithm to find the best path. It saves the path Nodes internal.
+*  \author     Sascha Kaden
+*  \param[in]  start Node
+*  \param[in]  goal Node
+*  \param[out] result of query
+*  \date       2016-08-09
+*/
+bool PRMPlanner::queryPath(Node startNode, Node goalNode) {
     if (startNode.empty() || goalNode.empty()) {
         sendMessage("Start or goal node is empty", Message::warning);
         return false;
@@ -120,12 +166,18 @@ bool PRMPlanner::computePath(Node startNode, Node goalNode) {
             temp = temp->getParent();
         }
         m_nodePath.push_back(shared_ptr<Node>(new Node(startNode)));
-    }
-    else {
+    } else {
         this->sendMessage("Path could NOT be planned", Message::warning);
     }
 }
 
+/*!
+*  \brief      Try to find nearest Node of the graph to the passed Node
+*  \author     Sascha Kaden
+*  \param[in]  Node
+*  \param[in]  nearest Node
+*  \date       2016-08-09
+*/
 shared_ptr<Node> PRMPlanner::connectNode(Node &node) {
     std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(shared_ptr<Node>(new Node(node)), m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
@@ -140,6 +192,15 @@ shared_ptr<Node> PRMPlanner::connectNode(Node &node) {
     return nearestNode;
 }
 
+/*!
+*  \brief      A* algorithm to find best path
+*  \author     Sascha Kaden
+*  \param[in]  start index
+*  \param[in]  source Node (start)
+*  \param[in]  target Node (goal)
+*  \param[out] result of algorithm
+*  \date       2016-08-09
+*/
 bool PRMPlanner::aStar(shared_ptr<Node> sourceNode, shared_ptr<Node> targetNode) {
     std::vector<Edge> edges = sourceNode->getChildEdges();
     for (int i = 0; i < edges.size(); ++i) {
@@ -149,7 +210,7 @@ bool PRMPlanner::aStar(shared_ptr<Node> sourceNode, shared_ptr<Node> targetNode)
     }
     m_closedList.addNode(sourceNode);
 
-    int count  = 0;
+    int count = 0;
     shared_ptr<Node> currentNode;
     while (!m_openList.empty()) {
         currentNode = m_openList.removeMin();
@@ -164,11 +225,18 @@ bool PRMPlanner::aStar(shared_ptr<Node> sourceNode, shared_ptr<Node> targetNode)
 
         expandNode(currentNode);
     }
-    std::cout << "closed list has: " << count  << std::endl;
+    std::cout << "closed list has: " << count << std::endl;
 
     return false;
 }
 
+/*!
+*  \brief      Expands the openList of the A* algorithm from the childs of the passed Node
+*  \author     Sascha Kaden
+*  \param[in]  start index
+*  \param[in]  end index
+*  \date       2016-08-09
+*/
 void PRMPlanner::expandNode(shared_ptr<Node> currentNode) {
     for (auto successor : currentNode->getChildNodes()) {
         if (m_closedList.contains(successor))
