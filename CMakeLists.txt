@@ -33,6 +33,7 @@ set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write
 
 OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(DEBUG_OUTPUT "Display debug output")
+OPTION(TEST "add tests")
 
 # external libaries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
@@ -88,4 +89,7 @@ IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)
 ENDIF()
 
+IF (${TEST})
+    ADD_SUBDIRECTORY(unitTest)
+ENDIF()
 
