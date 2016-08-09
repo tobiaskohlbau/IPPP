@@ -70,7 +70,6 @@ class Node : public Base {
     void addChild(std::shared_ptr<Node> &child);
     std::vector<std::shared_ptr<Node>> getChildNodes();
     std::vector<Edge> getChildEdges();
-    std::shared_ptr<Node> getNearestChild();
     void clearChilds();
 
     Vec<float> getVec() const;
