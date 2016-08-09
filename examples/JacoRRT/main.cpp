@@ -18,9 +18,6 @@ void printTime(clock_t begin, clock_t end) {
 
 void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
-    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360, 360);
-    robot->setBoundaries(minBoundary, maxBoundary);
 
     rmpl::StarRRTPlanner planner(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
 
@@ -59,9 +56,6 @@ void simpleRRT() {
 
 void treeConnection() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    rmpl::Vec<float> minBoundary(0, 42, 17, 0, 0, 0);
-    rmpl::Vec<float> maxBoundary(360, 318, 343, 360, 360, 360);
-    robot->setBoundaries(minBoundary, maxBoundary);
 
     // create two trees from init and from goal
     rmpl::StarRRTPlanner plannerInitNode(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);

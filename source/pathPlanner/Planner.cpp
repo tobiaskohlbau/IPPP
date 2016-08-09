@@ -29,11 +29,10 @@ using std::shared_ptr;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize,
+Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, float trajectoryStepSize,
                  TrajectoryMethod trajectory, SamplingMethod sampling)
     : Base(name) {
     m_pathPlanned = false;
-    m_stepSize = stepSize;
 
     m_robot = robot;
     m_graph = shared_ptr<Graph>(new Graph());

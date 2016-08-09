@@ -16,35 +16,32 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef EDGE_H_
-#define EDGE_H_
+#ifndef ASTARLIST_H_
+#define ASTARLIST_H_
 
 #include <core/Base.h>
+#include <core/Node.h>
 
 namespace rmpl {
 
-class Node;
-
 /*!
-* \brief   Class Edge contains the two nodes of the Edge and different parameters
+* \brief   Class AStarList offers a list for the A* algorithm
 * \author  Sascha Kaden
-* \date    2016-05-25
+* \date    2016-08-09
 */
-class Edge : public Base {
+class AStarList : public Base {
   public:
-    Edge();
-    Edge(std::shared_ptr<Node> &target, float length);
-
-    float getLength();
-
-    void setTarget(std::shared_ptr<Node> &target, float length);
-    std::shared_ptr<Node> getTarget();
+    AStarList();
+    void addNode(std::shared_ptr<Node> node);
+    void removeNode(std::shared_ptr<Node> node);
+    std::shared_ptr<Node> removeMin();
+    bool empty();
+    bool contains(std::shared_ptr<Node> node);
 
   private:
-    std::shared_ptr<Node> m_target;
-    float m_length;
+    std::vector<std::shared_ptr<Node>> m_list;
 };
 
 } /* namespace rmpl */
 
-#endif /* EDGE_H_ */
+#endif    // ASTARLIST_H_

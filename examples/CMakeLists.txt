@@ -38,7 +38,6 @@ ENDMACRO()
 
 SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 list(REMOVE_ITEM SUBDIRS "ui")
-message(WARNING ${SUBDIRS})
 
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 
