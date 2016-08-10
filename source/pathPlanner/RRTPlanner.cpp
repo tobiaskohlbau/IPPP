@@ -20,6 +20,8 @@
 
 #include <thread>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 using std::shared_ptr;
 
@@ -46,7 +48,7 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
 bool RRTPlanner::setInitNode(Node node) {
     shared_ptr<Node> initNode(new Node(node));
     if (this->m_collision->controlCollision(initNode->getVec())) {
-        this->sendMessage("Init node could not be connected", Message::warning);
+        Logging::warning("Init node could not be connected", this);
         return false;
     }
 
@@ -119,7 +121,7 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
         nodes.push_back(temp);
         temp = temp->getParent();
     }
-    this->sendMessage("Path has: " + std::to_string(nodes.size()) + " nodes", Message::info);
+    Logging::info("Path has: " + std::to_string(nodes.size()) + " nodes", this);
     return nodes;
 }
 
@@ -132,14 +134,14 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
 std::vector<Vec<float>> RRTPlanner::getPath(float trajectoryStepSize, bool smoothing) {
     std::vector<Vec<float>> path;
     if (!this->m_pathPlanned) {
-        this->sendMessage("Path is not complete", Message::warning);
+        Logging::warning("Path is not complete", this);
         return path;
     }
 
     std::vector<std::shared_ptr<Node>> nodes = getPathNodes();
     path = this->getPathFromNodes(nodes, trajectoryStepSize, smoothing);
 
-    this->sendMessage("Path has: " + std::to_string(path.size()) + " points", Message::info);
+    Logging::info("Path has: " + std::to_string(path.size()) + " points", this);
     return path;
 }
 
@@ -202,7 +204,7 @@ Vec<float> RRTPlanner::getSamplePoint() {
 */
 bool RRTPlanner::controlConstraints() {
     if (m_initNode == nullptr) {
-        this->sendMessage("Init node is not connected", Message::warning);
+        Logging::warning("Init node is not connected", this);
         return false;
     } else {
         return true;

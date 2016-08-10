@@ -17,6 +17,7 @@
 //-------------------------------------------------------------------------//
 
 #include <pathPlanner/Planner.h>
+#include <core/Logging.h>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -59,7 +60,7 @@ std::vector<Vec<float>> Planner::getPathFromNodes(const std::vector<shared_ptr<N
     else
         smoothedNodes = nodes;
 
-    this->sendMessage("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", Message::info);
+    Logging::info("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", this);
 
     std::vector<Vec<float>> path;
     for (int i = 0; i < smoothedNodes.size() - 1; ++i) {

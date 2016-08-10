@@ -20,6 +20,8 @@
 
 #include <Eigen/Geometry>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 using std::shared_ptr;
 
@@ -98,7 +100,7 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
 */
 bool CollisionDetection::controlCollisionPointRobot(float x, float y) {
     if (m_2DWorkspace.rows() == -1) {
-        this->sendMessage("Empty workspace!");
+        Logging::warning("Empty workspace!", this);
         return false;
     }
 
@@ -138,8 +140,7 @@ bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
             t2 = As[j].block<3, 1>(0, 3);
             if (checkPQP(m_robot->getCadModel(i), m_robot->getCadModel(j), R1, R2, t1, t2)) {
 #ifdef DEBUG_OUTPUT
-                this->sendMessage("Collision between link " + std::to_string(i) + " and link " + std::to_string(j),
-                                  Message::debug);
+                Logging::debug("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), this);
                 Eigen::Vector3f r = As[i].block<3, 3>(0, 0).eulerAngles(0, 1, 2);
                 Eigen::Vector3f t = As[i].block<3, 1>(0, 3);
                 std::cout << "A" << i << ": ";
@@ -170,7 +171,7 @@ bool CollisionDetection::controlCollisionPQP(const Vec<float> &vec) {
             R1 = As[i].block<3, 3>(0, 0);
             t1 = As[i].block<3, 1>(0, 3);
             if (checkPQP(m_robot->getCadModel(i), m_pqpWorkspace, R1, R2, t1, t2)) {
-                this->sendMessage("Collision between workspace and link " + std::to_string(i), Message::debug);
+                Logging::debug("Collision between workspace and link " + std::to_string(i), this);
                 return true;
             }
         }

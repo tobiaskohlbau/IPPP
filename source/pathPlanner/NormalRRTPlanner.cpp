@@ -77,12 +77,12 @@ bool NormalRRTPlanner::connectGoalNode(Node goal) {
         goalNode->setParent(nearestNode);
         this->m_goalNode = goalNode;
         this->m_graph->addNode(goalNode);
-        // this->sendMessage("Goal Node is connected", Message::info);
+        // Logging::info("Goal Node is connected", this);
         this->m_pathPlanned = true;
         return true;
     }
 
-    // this->sendMessage("Goal Node is NOT connected", Message::warning);
+    // Logging::warning("Goal Node is NOT connected", this);
 
     return false;
 }

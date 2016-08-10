@@ -18,6 +18,8 @@
 
 #include <core/TrajectoryPlanner.h>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 using std::shared_ptr;
 
@@ -35,7 +37,7 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, float stepS
     m_collision = collision;
 
     if (stepSize <= 0) {
-        this->sendMessage("Step size has to be larger than 0!", Message::info);
+        Logging::warning("Step size has to be larger than 0!", this);
         m_stepSize = -1;
     } else {
         m_stepSize = stepSize;
@@ -76,10 +78,10 @@ bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, c
 */
 bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<float> &target) {
     if (source.getDim() != target.getDim()) {
-        this->sendMessage("Nodes/Vecs have different dimensions");
+        Logging::error("Nodes/Vecs have different dimensions", this);
         return false;
     } else if (m_stepSize == -1) {
-        this->sendMessage("Step size is not set!", Message::error);
+        Logging::error("Step size is not set!", this);
         return false;
     }
 
@@ -102,10 +104,10 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     std::vector<Vec<float>> vecs;
 
     if (source.getDim() != target.getDim()) {
-        this->sendMessage("Nodes/Vecs have different dimensions", Message::error);
+        Logging::error("Nodes/Vecs have different dimensions", this);
         return vecs;
     } else if (m_stepSize == -1) {
-        this->sendMessage("Step size is not set!", Message::error);
+        Logging::error("Step size is not set!", this);
         return vecs;
     }
 
@@ -130,7 +132,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
 */
 void TrajectoryPlanner::setStepSize(float stepSize) {
     if (stepSize <= 0)
-        this->sendMessage("Step size has to be larger than 0!", Message::info);
+        Logging::warning("Step size has to be larger than 0!", this);
     else
         m_stepSize = stepSize;
 }

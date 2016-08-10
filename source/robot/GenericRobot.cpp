@@ -18,6 +18,8 @@
 
 #include <robot/GenericRobot.h>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 
 /*!
@@ -30,10 +32,10 @@ GenericRobot::GenericRobot(std::string name, unsigned int dimension, unsigned in
     : RobotBase(name, CollisionType::pqp, dimension, numberOfJoints) {
     // check consistency of parameters
     if (alphaParams.getDim() != numberOfJoints || aParams.getDim() != numberOfJoints || dParams.getDim() != numberOfJoints) {
-        this->sendMessage("DH parameter have wrong dimensions, unequal to joint count!", Message::error);
+        Logging::error("DH parameter have wrong dimensions, unequal to joint count!", this);
     }
     if (dimension < numberOfJoints) {
-        this->sendMessage("Dimension is larger than joint count!", Message::error);
+        Logging::error("Dimension is larger than joint count!", this);
     }
 }
 

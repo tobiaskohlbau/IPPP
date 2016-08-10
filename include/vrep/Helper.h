@@ -23,8 +23,6 @@ class Helper : public Base {
     Helper(unsigned int dim);
     void start();
     bool setPos(const Vec<float> &vec);
-    bool checkCollision(const Vec<float> &jointAngles);
-    bool checkCollision(const std::vector<Vec<float>> &jointAngles);
 
   private:
     Vec<simxFloat> convertVecToRad(const Vec<float> &vec);    // convert to simxFloat array and radiant

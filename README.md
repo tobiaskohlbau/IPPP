@@ -18,7 +18,7 @@ Currently available algorithms:
 * RRT*
 * PRM
 
-## Depencies
+## Dependencies
 For matrix manipulation the [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) library is included.
 Collision detection between triangle meshes by the [PQP](http://gamma.cs.unc.edu/SSV/) library. 
 To show 2D results, the [OpenCV](http://opencv.org/) library is included. 
