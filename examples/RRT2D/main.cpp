@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
     // compute the tree
     clock_t begin = std::clock();
     planner.setInitNode(rmpl::Node(10.0, 10.0));
-    planner.computeTree(4000);
+    planner.computeTree(8000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
 
