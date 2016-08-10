@@ -2,19 +2,28 @@
 
 [![Build Status](https://travis-ci.org/SaschaKaden/RobotMotionPlanner.svg?branch=master)](https://travis-ci.org/SaschaKaden/RobotMotionPlanner)
 
-RMPL has the target to provide a coherent interface for path plannig with a serial robot.
-For this the user can set up his own roboter or use a existing serial robot (e.g. Jaco).
+RMPL has the target to provide a coherent interface for path planning with a serial robot.
 
+## Robots
 Currently available robots:
 * [Kinova Jaco](http://www.kinovarobotics.com/service-robotics/products/robot-arms/)
 * 2D Point Robot, for test cases
 
+The user can set up his own robot too, he has only to pass the D-H parameter and the triangle meshes (.obj).
 
-For path planning the normal RRT and RRT* algorith is implemented.
 
-The libary uses the extern libary Eigen for matrix manipulation.
+## Planning algorithm
+Currently available algorithms:
+* RRT
+* RRT*
+* PRM
 
-For drawing the results the OpenCV libary is included.
+## Depencies
+For matrix manipulation the [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) library is included.
+Collision detection between triangle meshes by the [PQP](http://gamma.cs.unc.edu/SSV/) library. 
+To show 2D results, the [OpenCV](http://opencv.org/) library is included. 
+The results from serial robots can be tested by the [vrep](http://www.coppeliarobotics.com/) simulation (an interface for the Jaco robot is written).
+
 
 ## License
 Copyright © 2016 Sascha Kaden
