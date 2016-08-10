@@ -19,11 +19,15 @@
 #ifndef KDTREE_H_
 #define KDTREE_H_
 
+#include <mutex>
+
 #include <core/Base.h>
 #include <core/KDNode.hpp>
 #include <core/Node.h>
 
 namespace rmpl {
+
+enum Direction { left, right };
 
 /*!
 * \brief   Class KDTree for a fast binary search
@@ -35,12 +39,11 @@ template <class T>
 class KDTree : public Base {
   public:
     KDTree();
-    KDTree(std::vector<std::shared_ptr<Node>> &vec);
+    KDTree(std::vector<std::shared_ptr<Node>> &nodes);
     void addNode(const Vec<float> &vec, const T &node);
     T searchNearestNeighbor(const Vec<float> &vec);
     std::vector<T> searchRange(const Vec<float> &vec, float range);
 
-    void buildTree();
     std::shared_ptr<KDNode<T>> sort(std::vector<std::shared_ptr<Node>> &vec, unsigned int dim);
     void quickSort(std::vector<std::shared_ptr<Node>> &A, int left, int right, int dim);
     int partition(std::vector<std::shared_ptr<Node>> &A, int left, int right, int dim);
@@ -53,6 +56,7 @@ class KDTree : public Base {
             float sqRange, const Vec<float> &maxBoundary, const Vec<float> &minBoundary);
 
     std::shared_ptr<KDNode<T>> m_root;
+    std::mutex m_mutex;
 };
 
 /*!
@@ -71,14 +75,14 @@ KDTree<T>::KDTree() : Base("KD Tree") {
 *  \date       2016-07-18
 */
 template <class T>
-KDTree<T>::KDTree(std::vector<std::shared_ptr<Node>> &vec) : Base("KD Tree") {
-    quickSort(vec, 0, vec.size() - 1, 0);
-    m_root = std::shared_ptr<KDNode<T>>(new KDNode<T>(vec[vec.size() / 2]->getVec(), vec[vec.size() / 2]));
+KDTree<T>::KDTree(std::vector<std::shared_ptr<Node>> &nodes) : Base("KD Tree") {
+    quickSort(nodes, 0, nodes.size() - 1, 0);
+    m_root = std::shared_ptr<KDNode<T>>(new KDNode<T>(nodes[nodes.size() / 2]->getVec(), nodes[nodes.size() / 2]));
     m_root->axis = 0;
     m_root->value = m_root->vec[0];
 
-    std::vector<std::shared_ptr<Node>> vecLeft(vec.begin(), vec.begin() + (vec.size() / 2) - 1);
-    std::vector<std::shared_ptr<Node>> vecRight(vec.begin() + (vec.size() / 2) + 1, vec.end());
+    std::vector<std::shared_ptr<Node>> vecLeft(nodes.begin(), nodes.begin() + (nodes.size() / 2) - 1);
+    std::vector<std::shared_ptr<Node>> vecRight(nodes.begin() + (nodes.size() / 2) + 1, nodes.end());
     m_root->left = sort(vecLeft, 1);
     m_root->right = sort(vecRight, 1);
 }
@@ -97,7 +101,42 @@ void KDTree<T>::addNode(const Vec<float> &vec, const T &node) {
         m_root = shrKDNode;
         return;
     }
-    insert(shrKDNode, m_root, 0);
+    // insert(shrKDNode, m_root, 0);
+
+    std::shared_ptr<KDNode<T>> leaf, last;
+    last = m_root;
+    Direction dir;
+    if (shrKDNode->vec[0] < m_root->vec[0]) {
+        leaf = m_root->left;
+        dir = left;
+    } else {
+        leaf = m_root->right;
+        dir = right;
+    }
+
+    unsigned int cd = 1;
+    unsigned int dim = m_root->getDim();
+    while (leaf != nullptr) {
+        last = leaf;
+        if (shrKDNode->vec[cd] < leaf->vec[cd]) {
+            leaf = leaf->left;
+            dir = left;
+        } else {
+            leaf = leaf->right;
+            dir = right;
+        }
+        cd = (cd + 1) % dim;
+    }
+
+    // TODO: add control for mutex, if leaf is no nullptr
+    shrKDNode->axis = cd;
+    shrKDNode->value = shrKDNode->vec[cd];
+    m_mutex.lock();
+    if (dir == left)
+        last->left = shrKDNode;
+    else
+        last->right = shrKDNode;
+    m_mutex.unlock();
 }
 
 /*!
