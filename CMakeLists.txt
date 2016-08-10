@@ -23,11 +23,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 if(COMPILER_SUPPORTS_CXX11)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 else()
-        message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write-strings")
 
@@ -57,6 +56,7 @@ set(SRCS
     include/core/KDNode.hpp
     include/core/KDTree.hpp
     include/core/Vec.hpp
+    source/pathPlanner/AStarList.cpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
     source/pathPlanner/PRMPlanner.cpp
@@ -69,7 +69,7 @@ set(SRCS
     source/robot/RobotBase.cpp
     vrep/extApi.c
     vrep/extApiPlatform.c
-    vrep/Helper.cpp source/pathPlanner/AStarList.cpp)
+    vrep/Helper.cpp)
 
 IF (${DEBUG_OUTPUT})
     add_definitions(-DDEBUG_OUTPUT)
