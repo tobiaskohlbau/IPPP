@@ -21,6 +21,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 
 /*!
@@ -44,7 +46,7 @@ std::shared_ptr<PQP_Model> CadFileLoader::loadFile(const std::string filename) {
     if (extension == "obj")
         return readObj(filename);
     else
-        this->sendMessage("File type is not supported", Message::warning);
+        Logging::error("File type is not supported", this);
 
     return nullptr;
 }
@@ -109,7 +111,7 @@ std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
 
         return model;
     } catch (const std::exception& e) {
-        this->sendMessage("Could not load cad file!", Message::error);
+        Logging::error("Could not load cad file!", this);
         return nullptr;
     }
 }

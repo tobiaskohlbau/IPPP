@@ -16,35 +16,21 @@
 //
 //-------------------------------------------------------------------------//
 
+#ifndef LOGGING_H_
+#define LOGGING_H_
+
 #include <core/Base.h>
 
-using namespace rmpl;
+namespace rmpl {
 
-/*!
-*  \brief      Standard constructor of the class Base
-*  \author     Sasch Kaden
-*  \date       2016-05-30
-*/
-Base::Base() {
-    m_name = "Unknown";
-}
+class Logging {
+  public:
+    static void info(std::string message, Base *module = nullptr);
+    static void warning(std::string message, Base *module = nullptr);
+    static void error(std::string message, Base *module = nullptr);
+    static void debug(std::string message, Base *module = nullptr);
+};
 
-/*!
-*  \brief      Constructor of the class Base
-*  \author     Sasch Kaden
-*  \param[in]  name
-*  \date       2016-05-30
-*/
-Base::Base(const std::string &name) {
-    m_name = name;
-}
+} /* namespace rmpl */
 
-/*!
-*  \brief      Return name
-*  \author     Sasch Kaden
-*  \param[out] name
-*  \date       2016-05-30
-*/
-std::string Base::getName() {
-    return m_name;
-}
+#endif    // LOGGING_H_

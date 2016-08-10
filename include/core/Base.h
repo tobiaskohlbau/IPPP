@@ -36,9 +36,9 @@ enum class Message { info, warning, error, debug };
 */
 class Base {
   public:
+    Base();
     Base(const std::string &name);
     std::string getName();
-    void sendMessage(const std::string &message, Message type = Message::info);
 
   protected:
     std::string m_name;

@@ -19,6 +19,7 @@
 #include <pathPlanner/PRMPlanner.h>
 
 #include <thread>
+#include <include/core/Logging.h>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -111,13 +112,13 @@ void PRMPlanner::startPlannerPhase(unsigned int nbOfThreads) {
 */
 void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex) {
     if (startNodeIndex > endNodeIndex) {
-        sendMessage("Start index is larger than end index", Message::error);
+        Logging::error("Start index is larger than end index", this);
         return;
     }
 
     std::vector<shared_ptr<Node>> nodes = this->m_graph->getNodes();
     if (endNodeIndex > nodes.size()) {
-        sendMessage("End index is larger than node size", Message::error);
+        Logging::error("End index is larger than node size", this);
         return;
     }
 
@@ -142,21 +143,21 @@ void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeI
 */
 bool PRMPlanner::queryPath(Node startNode, Node goalNode) {
     if (startNode.empty() || goalNode.empty()) {
-        sendMessage("Start or goal node is empty", Message::warning);
+        Logging::warning("Start or goal node is empty", this);
         return false;
     }
 
     shared_ptr<Node> sourceNode = connectNode(startNode);
     shared_ptr<Node> targetNode = connectNode(goalNode);
     if (sourceNode == nullptr || targetNode == nullptr) {
-        sendMessage("Start or goal Node could not be connected", Message::warning);
+        Logging::info("Start or goal Node could not be connected", this);
         return false;
     }
 
     bool pathPlanned = aStar(sourceNode, targetNode);
 
     if (pathPlanned) {
-        this->sendMessage("Path could be planned", Message::info);
+        Logging::info("Path could be planned", this);
         m_nodePath.push_back(shared_ptr<Node>(new Node(goalNode)));
         shared_ptr<Node> temp = targetNode;
         int count = 0;
@@ -167,7 +168,7 @@ bool PRMPlanner::queryPath(Node startNode, Node goalNode) {
         }
         m_nodePath.push_back(shared_ptr<Node>(new Node(startNode)));
     } else {
-        this->sendMessage("Path could NOT be planned", Message::warning);
+        Logging::warning("Path could NOT be planned", this);
     }
 }
 

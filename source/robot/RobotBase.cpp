@@ -20,6 +20,8 @@
 
 #include <Eigen/Geometry>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 using std::shared_ptr;
 
@@ -118,16 +120,16 @@ Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos,
 */
 void RobotBase::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &maxBoundary) {
     if (minBoundary.empty() || maxBoundary.empty()) {
-        this->sendMessage("Boundaries are empty", Message::warning);
+        Logging::warning("Boundaries are empty", this);
         return;
     } else if (minBoundary.getDim() != m_dim || maxBoundary.getDim() != m_dim) {
-        this->sendMessage("Boudaries have different dimensions from the robot!", Message::warning);
+        Logging::warning("Boudaries have different dimensions from the robot!", this);
         return;
     }
 
     for (unsigned int i = 0; i < m_dim; ++i) {
         if (minBoundary[i] > maxBoundary[i]) {
-            this->sendMessage("Min boundary is larger than max boundary!", Message::warning);
+            Logging::warning("Min boundary is larger than max boundary!", this);
             return;
         }
     }
@@ -164,10 +166,10 @@ Vec<float> RobotBase::getMaxBoundary() {
 */
 void RobotBase::setPose(const Vec<float> &pose) {
     if (pose.getDim() != 6) {
-        this->sendMessage("Pose vector has wrong dimension, must have 6!", Message::warning);
+        Logging::warning("Pose vector has wrong dimension, must have 6!", this);
         return;
     } else if (pose.empty()) {
-        this->sendMessage("Empty pose vector!", Message::warning);
+        Logging::warning("Empty pose vector!", this);
         return;
     }
 
@@ -194,7 +196,7 @@ Vec<float> RobotBase::getPose() {
 bool RobotBase::setCadModels(const std::vector<std::string> &files) {
     for (auto file : files) {
         if (file.empty()) {
-            this->sendMessage("Empty filepath passed!", Message::warning);
+            Logging::warning("Empty filepath passed!", this);
             return false;
         }
     }
@@ -223,12 +225,12 @@ bool RobotBase::setCadModels(const std::vector<std::string> &files) {
 */
 std::shared_ptr<PQP_Model> RobotBase::getCadModel(unsigned int index) {
     if (index >= m_cadModels.size()) {
-        this->sendMessage("model index is larger than cad models");
+        Logging::warning("model index is larger than cad models", this);
         return nullptr;
     }
 
     if (m_cadModels[index] == nullptr)
-        this->sendMessage("Cad model is not set", Message::info);
+        Logging::info("Cad model is not set", this);
 
     return m_cadModels[index];
 }
@@ -241,7 +243,7 @@ std::shared_ptr<PQP_Model> RobotBase::getCadModel(unsigned int index) {
 */
 bool RobotBase::setWorkspace(const std::string &workspaceFile) {
     if (workspaceFile.empty()) {
-        this->sendMessage("Empty filepath of workspace passed!", Message::warning);
+        Logging::warning("Empty filepath of workspace passed!", this);
         return false;
     }
 
@@ -316,7 +318,7 @@ unsigned int RobotBase::getNbJoints() {
 */
 void RobotBase::setCollisionType(CollisionType type) {
     if (type == CollisionType::twoD && m_dim != 2) {
-        this->sendMessage("CollisionType twoD unequal to dimension", Message::warning);
+        Logging::warning("CollisionType twoD unequal to dimension", this);
     } else {
         m_collisionType = type;
     }

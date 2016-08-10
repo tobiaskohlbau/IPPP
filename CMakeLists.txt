@@ -50,6 +50,7 @@ set(SRCS
     source/core/Base.cpp
     source/core/Edge.cpp
     source/core/Graph.cpp
+    source/core/Logging.cpp
     source/core/Node.cpp
     source/core/Sampling.cpp
     source/core/TrajectoryPlanner.cpp

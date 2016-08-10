@@ -18,6 +18,8 @@
 
 #include <core/Sampling.h>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 
 /*!
@@ -68,7 +70,7 @@ Vec<float> Sampling::getSample(unsigned int dim, int index, int nbSamples) {
 */
 bool Sampling::checkBoudaries() {
     if (m_minBoundary.empty() || m_maxBoundary.empty()) {
-        this->sendMessage("Boundaries are empty", Message::error);
+        Logging::warning("Boundaries are empty", this);
         return false;
     }
     return true;
