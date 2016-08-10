@@ -49,8 +49,8 @@ class Graph : public Base {
 
   private:
     std::vector<std::shared_ptr<Node>> m_nodes;
-    KDTree<std::shared_ptr<Node>> m_kdTree;
-    std::mutex m_mutexAddNode;
+    std::shared_ptr<KDTree<std::shared_ptr<Node>>> m_kdTree;
+    std::mutex m_mutex;
 };
 
 } /* namespace rmpl */
