@@ -60,7 +60,9 @@ set(SRCS
     source/pathPlanner/Planner.cpp
     source/pathPlanner/PlannerOptions.cpp
     source/pathPlanner/PRMPlanner.cpp
+    source/pathPlanner/PRMOptions.cpp
     source/pathPlanner/RRTPlanner.cpp
+    source/pathPlanner/RRTOptions.cpp
     source/pathPlanner/StarRRTPlanner.cpp
     source/robot/CadFileLoader.cpp
     source/robot/GenericRobot.cpp
