@@ -25,7 +25,7 @@ void simpleRRT() {
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(15000, 2);
+    planner.computeTree(25000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
 
