@@ -8,21 +8,6 @@ compiler:
 env:
   - TRAVIS_BUILD_TYPE=Debug
   - TRAVIS_BUILD_TYPE=Release
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "wQgX5j+14lYgeMvzNA2MXtuhghFl2Hb06vSER+INRquY5H9umAoa16+r/kxprAcrFOfEVZXOvKncsjaWdH63dQw1BLnGAtvbeAG8eVxWRWyzLw+SLIEn2sxl4aqb0vqgLM60gvjyAgPGPHcqpCn1Sl+r/b9eYd6enfHRub52LlLPU+N1lzw1IR36A+g07QoTXZ4UuquzQwwlGqtWoySkpd7KfqrhA9Z15ertfKl1B2r20vKHF3isAsI0RSGe/+SndqcLMox0iTAYX2l9Ab9IdT8J34uPqPDOf2Mw+Ogg43Qfr0YHdlqvIUl6NpqrJU5oeEfTlunBmKxBgFQlb9I/tvZkJK3x5BhipkSFdX9K3FR9m09+e44W/MGCB9YCCwScOwXSxgr00DPU5ygC2S85qdrClME/Hqd3b2CSwp1bWw7CGE7+A83Stz7D3lXTQv+kSDNkVAahcUW7pCQCfhFnpYKvDaxfx59+gRshhi+IfEcMgLAitjcMDs0dF1751dNgqfZZyRFDyiKYjMl5t0nYfn+xY8qPAFxrZdd6KICvkaPf8YndbCV+qmd0Ggia+wRY0NWHzY4s/oTzsOK5f5vbRQtZNmbJrGbBfqUHWOX0SFLsdu3mQq2aAciNXj9/akH/bC3a2n+q088C5vxNNcLbLik7b5JZuIBC/UURaLeu7bE="
-
-addons:
-  coverity_scan:
-    project:
-      name: "SaschaKaden/RobotMotionPlanner"
-      description: "Build submitted via Travis CI"
-    notification_email: kaden.sascha@googlemail.com
-    build_command_prepend: ""
-    build_command: "make"
-    branch_pattern: coverity_scan
-
 
 sudo: required
 
@@ -43,3 +28,18 @@ before_script:
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then make ; fi
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "wQgX5j+14lYgeMvzNA2MXtuhghFl2Hb06vSER+INRquY5H9umAoa16+r/kxprAcrFOfEVZXOvKncsjaWdH63dQw1BLnGAtvbeAG8eVxWRWyzLw+SLIEn2sxl4aqb0vqgLM60gvjyAgPGPHcqpCn1Sl+r/b9eYd6enfHRub52LlLPU+N1lzw1IR36A+g07QoTXZ4UuquzQwwlGqtWoySkpd7KfqrhA9Z15ertfKl1B2r20vKHF3isAsI0RSGe/+SndqcLMox0iTAYX2l9Ab9IdT8J34uPqPDOf2Mw+Ogg43Qfr0YHdlqvIUl6NpqrJU5oeEfTlunBmKxBgFQlb9I/tvZkJK3x5BhipkSFdX9K3FR9m09+e44W/MGCB9YCCwScOwXSxgr00DPU5ygC2S85qdrClME/Hqd3b2CSwp1bWw7CGE7+A83Stz7D3lXTQv+kSDNkVAahcUW7pCQCfhFnpYKvDaxfx59+gRshhi+IfEcMgLAitjcMDs0dF1751dNgqfZZyRFDyiKYjMl5t0nYfn+xY8qPAFxrZdd6KICvkaPf8YndbCV+qmd0Ggia+wRY0NWHzY4s/oTzsOK5f5vbRQtZNmbJrGbBfqUHWOX0SFLsdu3mQq2aAciNXj9/akH/bC3a2n+q088C5vxNNcLbLik7b5JZuIBC/UURaLeu7bE="
+
+addons:
+  coverity_scan:
+    project:
+      name: "SaschaKaden/RobotMotionPlanner"
+      description: "Build submitted via Travis CI"
+    notification_email: kaden.sascha@googlemail.com
+    build_command_prepend: "./configure; make clean"
+    build_command:   "make -j 4"
+    branch_pattern: coverity_scan
