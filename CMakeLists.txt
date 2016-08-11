@@ -60,6 +60,7 @@ set(SRCS
     source/pathPlanner/AStarList.cpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
+    source/pathPlanner/PlannerOptions.cpp
     source/pathPlanner/PRMPlanner.cpp
     source/pathPlanner/RRTPlanner.cpp
     source/pathPlanner/StarRRTPlanner.cpp
@@ -70,7 +71,7 @@ set(SRCS
     source/robot/RobotBase.cpp
     vrep/extApi.c
     vrep/extApiPlatform.c
-    vrep/Helper.cpp)
+    vrep/Helper.cpp )
 
 IF (${DEBUG_OUTPUT})
     add_definitions(-DDEBUG_OUTPUT)

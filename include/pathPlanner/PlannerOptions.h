@@ -16,35 +16,32 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef NORMALRRTPLANNER_H_
-#define NORMALRRTPLANNER_H_
+#ifndef PLANNEROPTIONS_H_
+#define PLANNEROPTIONS_H_
 
-#include <mutex>
-
-#include "RRTPlanner.h"
+#include <core/Base.h>
+#include <core/Sampling.h>
+#include <core/TrajectoryPlanner.h>
 
 namespace rmpl {
 
-/*!
-* \brief   Class of the NormalRRTPlanner
-* \author  Sascha Kaden
-* \date    2016-05-27
-*/
-class NormalRRTPlanner : public RRTPlanner {
+class PlannerOptions : public Base {
   public:
-    NormalRRTPlanner(const std::shared_ptr<RobotBase> &robot, float stepSize, std::shared_ptr<PlannerOptions> options)
-        : RRTPlanner("Normal RRT Planner", robot, stepSize, options) {
-    }
+    PlannerOptions(float trajectoryStepSize, TrajectoryMethod trajectoryMethod, SamplingMethod samplingMethod);
 
-    bool connectGoalNode(Node goal);
+    void setTrajectoryStepSize(float stepSize);
+    float getTrajectoryStepSize();
+    void setTrajectoryMethod(TrajectoryMethod method);
+    TrajectoryMethod getTrajectoryMethod();
+    void setSamplingMethod(SamplingMethod method);
+    SamplingMethod getSamplingMethod();
 
   protected:
-    void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
-
-  private:
-    std::mutex m_mutex;
+    float m_trajectoryStepSize;
+    TrajectoryMethod m_trajectoryMethod;
+    SamplingMethod m_samplingMethod;
 };
 
 } /* namespace rmpl */
 
-#endif /* NORMALRRTPLANNER_H_ */
+#endif    // PLANNEROPTIONS_H_

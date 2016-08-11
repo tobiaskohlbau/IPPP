@@ -30,8 +30,7 @@ namespace rmpl {
 */
 class RRTPlanner : public Planner {
   public:
-    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, float trajectoryStepSize,
-               TrajectoryMethod trajectory, SamplingMethod sampling);
+    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float stepSize, std::shared_ptr<PlannerOptions> options);
 
     bool setInitNode(Node node);
     bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);

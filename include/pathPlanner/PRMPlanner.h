@@ -31,8 +31,7 @@ namespace rmpl {
 */
 class PRMPlanner : public Planner {
   public:
-    PRMPlanner(const std::shared_ptr<RobotBase> &robot, float rangeSize, float trajectoryStepSize, TrajectoryMethod trajectory,
-               SamplingMethod sampling);
+    PRMPlanner(const std::shared_ptr<RobotBase> &robot, float rangeSize, std::shared_ptr<PlannerOptions> options);
 
     void startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     void startPlannerPhase(unsigned int nbOfThreads = 1);

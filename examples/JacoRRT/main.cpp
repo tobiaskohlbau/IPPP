@@ -19,7 +19,8 @@ void printTime(clock_t begin, clock_t end) {
 void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
 
-    rmpl::StarRRTPlanner planner(robot, 30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    std::shared_ptr<rmpl::PlannerOptions> options(new rmpl::PlannerOptions(0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    rmpl::StarRRTPlanner planner(robot, 30, options);
 
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 

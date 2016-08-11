@@ -26,6 +26,7 @@
 #include <core/Graph.h>
 #include <core/Sampling.h>
 #include <core/TrajectoryPlanner.h>
+#include <pathPlanner/PlannerOptions.h>
 #include <robot/RobotBase.h>
 
 namespace rmpl {
@@ -37,8 +38,7 @@ namespace rmpl {
 */
 class Planner : public Base {
   public:
-    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, float trajectoryStepSize,
-            TrajectoryMethod trajectory, SamplingMethod sampling);
+    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, std::shared_ptr<PlannerOptions> options);
 
     std::vector<std::shared_ptr<Node>> getGraphNodes();
     virtual std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing) = 0;
