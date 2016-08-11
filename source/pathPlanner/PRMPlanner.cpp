@@ -18,8 +18,8 @@
 
 #include <pathPlanner/PRMPlanner.h>
 
-#include <thread>
 #include <include/core/Logging.h>
+#include <thread>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -34,9 +34,8 @@ using std::shared_ptr;
 *  \param[in]  SamplingMethod
 *  \date       2016-08-09
 */
-PRMPlanner::PRMPlanner(const shared_ptr<RobotBase> &robot, float rangeSize, float trajectoryStepSize, TrajectoryMethod trajectory,
-                       SamplingMethod sampling)
-    : Planner("PRMPlanner", robot, trajectoryStepSize, trajectory, sampling) {
+PRMPlanner::PRMPlanner(const shared_ptr<RobotBase> &robot, float rangeSize, std::shared_ptr<PlannerOptions> options)
+    : Planner("PRMPlanner", robot, options) {
     m_rangeSize = rangeSize;
 }
 
