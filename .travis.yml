@@ -24,7 +24,7 @@ before_script:
   # cmake
   - mkdir build
   - cd build
-  - cmake #-DCMAKE_BUILD_TYPE=${TRAVIS_BUILD_TYPE} ..
+  - cmake .. #-DCMAKE_BUILD_TYPE=${TRAVIS_BUILD_TYPE} ..
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then make ; fi
 
