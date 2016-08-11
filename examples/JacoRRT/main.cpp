@@ -7,7 +7,7 @@
 #include <pathPlanner/NormalRRTPlanner.h>
 #include <pathPlanner/StarRRTPlanner.h>
 #include <robot/Jaco.h>
-#include <vrep/Helper.h>
+#include <ui/vrep/Helper.h>
 
 #include <ui/Drawing.h>
 
@@ -59,8 +59,9 @@ void treeConnection() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
 
     // create two trees from init and from goal
-    rmpl::StarRRTPlanner plannerInitNode(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
-    rmpl::StarRRTPlanner plannerGoalNode(robot, 10, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly);
+    std::shared_ptr<rmpl::PlannerOptions> options(new rmpl::PlannerOptions(0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    rmpl::StarRRTPlanner plannerInitNode(robot, 10, options);
+    rmpl::StarRRTPlanner plannerGoalNode(robot, 10, options);
 
     // set properties to the plannerss
     plannerInitNode.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));

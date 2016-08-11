@@ -28,7 +28,6 @@ if(COMPILER_SUPPORTS_CXX11)
 else()
     message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
-set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write-strings")
 
 OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(DEBUG_OUTPUT "Display debug output")
@@ -39,7 +38,6 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/include/vrep)
 
 set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
 include_directories(${PQP_DIR}/include)
@@ -68,24 +66,11 @@ set(SRCS
     source/robot/GenericRobot.cpp
     source/robot/Jaco.cpp
     source/robot/PointRobot.cpp
-    source/robot/RobotBase.cpp
-    vrep/extApi.c
-    vrep/extApiPlatform.c
-    vrep/Helper.cpp )
+    source/robot/RobotBase.cpp)
 
 IF (${DEBUG_OUTPUT})
     add_definitions(-DDEBUG_OUTPUT)
 ENDIF()
-
-add_custom_target(myInstall
-        make install)
-
-add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP)
-#install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL}/lib)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
-install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
-install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
 
 IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)
@@ -95,3 +80,10 @@ IF (${TEST})
     ADD_SUBDIRECTORY(unitTest)
 ENDIF()
 
+add_custom_target(myInstall make install)
+
+add_library(${PROJECT_NAME} STATIC ${SRCS})
+target_link_libraries(${PROJECT_NAME} pthread PQP)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
+install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
+install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
