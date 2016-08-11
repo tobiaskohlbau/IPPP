@@ -24,7 +24,7 @@ before_script:
   # cmake
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=${TRAVIS_BUILD_TYPE} ..
+  - cmake #-DCMAKE_BUILD_TYPE=${TRAVIS_BUILD_TYPE} ..
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then make ; fi
 
@@ -41,7 +41,7 @@ addons:
       name: "SaschaKaden/RobotMotionPlanner"
       description: "Build submitted via Travis CI"
     notification_email: kaden.sascha@googlemail.com
-    build_command_prepend: "./configure; make clean"
+    build_command_prepend: "make clean"
     build_command:   "make -j 4"
     branch_pattern: coverity_scan
 
