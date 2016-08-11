@@ -6,7 +6,7 @@
 
 #include <pathPlanner/PRMPlanner.h>
 #include <robot/Jaco.h>
-#include <vrep/Helper.h>
+#include <ui/vrep/Helper.h>
 
 #include <ui/Drawing.h>
 

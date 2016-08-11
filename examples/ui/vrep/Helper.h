@@ -8,9 +8,9 @@
 #include <vector>
 
 extern "C" {
-#include <vrep/extApi.h>
-#include <vrep/extApiPlatform.h>
-#include <vrep/v_repConst.h>
+#include "extApi.h"
+#include "extApiPlatform.h"
+#include "v_repConst.h"
 }
 
 #include <core/Base.h>
