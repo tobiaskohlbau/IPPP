@@ -43,8 +43,8 @@ int main(int argc, char** argv) {
     rmpl::Vec<float> maxBoundary(rows, cols);
     robot->setBoundaries(minBoundary, maxBoundary);
 
-    std::shared_ptr<rmpl::PlannerOptions> options(new rmpl::PlannerOptions(0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
-    rmpl::PRMPlanner planner(robot, 40.0, options);
+    std::shared_ptr<rmpl::PRMOptions> options(new rmpl::PRMOptions(40, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    rmpl::PRMPlanner planner(robot, options);
 
     clock_t begin = std::clock();
     planner.startSamplingPhase(5000, 2);

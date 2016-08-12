@@ -44,9 +44,9 @@ int main(int argc, char** argv) {
     rmpl::Vec<float> maxBoundary(rows, cols);
     robot->setBoundaries(minBoundary, maxBoundary);
 
-    std::shared_ptr<rmpl::PlannerOptions> options(new rmpl::PlannerOptions(0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
-    rmpl::StarRRTPlanner planner(robot, 30.0, options);
-    rmpl::NormalRRTPlanner planner2(robot, 30.0, options);
+    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    rmpl::StarRRTPlanner planner(robot, options);
+    rmpl::NormalRRTPlanner planner2(robot, options);
 
     // compute the tree
     clock_t begin = std::clock();

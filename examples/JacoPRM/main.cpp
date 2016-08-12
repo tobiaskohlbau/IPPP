@@ -18,11 +18,11 @@ void printTime(clock_t begin, clock_t end) {
 int main(int argc, char** argv) {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
 
-    std::shared_ptr<rmpl::PlannerOptions> options(new rmpl::PlannerOptions(0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
-    rmpl::PRMPlanner planner(robot, 30, options);
+    std::shared_ptr<rmpl::PRMOptions> options(new rmpl::PRMOptions(30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    rmpl::PRMPlanner planner(robot, options);
 
     clock_t begin = std::clock();
-    planner.startSamplingPhase(61000, 2);
+    planner.startSamplingPhase(21000, 2);
     planner.startPlannerPhase(2);
     clock_t end = std::clock();
     printTime(begin, end);
