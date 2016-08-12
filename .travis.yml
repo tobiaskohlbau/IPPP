@@ -34,7 +34,6 @@ env:
    #   via the "travis encrypt" command using the project repo's public key
    - secure: "fNKvpdrlBcq6ixwkxQbDlj6Ojvju9FdkFvHmQqVxoHP1EH+n4RnOzr1oglqXLRYlTe/v4cCxNNzXGKgzLU3xLcZ1avkhKQptj3+sQWxN3lf9FFN6pgcEn94Ct4Dv+29gEy9y43uC5+f0kDRHUL+qj0VwjKj6RJMMftJ86BjBZRX1FQV6b4y91n3R6I96uydeU3rJCk9yBdE4agFF22FEfjjKlDzFoEo61qOez0S7LV4bQUW1GtjBmgGh9pLNTcd7neFLTVjQYxp0tr5mPfEwjXJSwIWCLSoQMX0pQXMYSmpE20mcIT8h1IV++2wzoYdhr+6pM+/+axjWiF9y17Mxq9Ad1tGFDCMCRzMTHpjjGne0BOweErYvUon89YN1Rq6YwlfVS/KnK/cH3hn9CS1m7R3q8T41dLc+KxG7RP2oV781jbBew+97l+9avkRyKNYytlqI2MO8vG+W77xHGLp6W9W4Oi//bkehhuTtI8aOPeAlRarlVuzJPCoi/XuRd645T7kuz5xrqIKwoosbM98CIL00oVSVp9oFW+uSnymuQyiDZG/Ssrd6ZqGuaGaSMCFViqBVuCDQ4Q2fEmz4oqsOIm0rul7BcUqgUX5T95D07jpOAdkfSvCdHu9Im9ers6D1BYuDBLMxVw2cwfphBpWkkBpWTfI6RqBpKYVCwx1k62g="
 
-
 addons:
   coverity_scan:
     project:
