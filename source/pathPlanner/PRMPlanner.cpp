@@ -168,6 +168,7 @@ bool PRMPlanner::queryPath(Node startNode, Node goalNode) {
         m_nodePath.push_back(shared_ptr<Node>(new Node(startNode)));
     } else {
         Logging::warning("Path could NOT be planned", this);
+        return false;
     }
 }
 

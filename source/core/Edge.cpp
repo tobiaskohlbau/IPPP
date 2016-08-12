@@ -28,6 +28,7 @@ using namespace rmpl;
 *  \date       2016-05-30
 */
 Edge::Edge() : Base("Edge") {
+    m_length = -1;
 }
 
 /*!
