@@ -29,7 +29,6 @@ class Helper : public Base {
 
     unsigned int m_dim;
     simxInt m_clientId;
-    simxInt m_jacoHandle;
     Vec<simxInt> m_jointHandles;
     bool m_started;
 };

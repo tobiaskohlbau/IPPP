@@ -57,7 +57,6 @@ class Planner : public Base {
 
     // variables
     bool m_pathPlanned;
-    float m_stepSize;
 };
 
 } /* namespace rmpl */
