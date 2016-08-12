@@ -1,6 +1,7 @@
 # Robot Motion Planner Library
 
 [![Build Status](https://travis-ci.org/SaschaKaden/RobotMotionPlanner.svg?branch=master)](https://travis-ci.org/SaschaKaden/RobotMotionPlanner)
+[![Coverity Status](https://scan.coverity.com/projects/9839/badge.svg)](https://scan.coverity.com/projects/saschakaden-robotmotionplanner)
 
 RMPL has the target to provide a coherent interface for path planning with a serial robot.
 
