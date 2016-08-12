@@ -23,12 +23,12 @@
 using namespace rmpl;
 
 PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, TrajectoryMethod trajectoryMethod,
-                       SamplingMethod samplingMethod) : PlannerOptions(trajectoryStepSize, trajectoryMethod, samplingMethod) {
+                       SamplingMethod samplingMethod)
+    : PlannerOptions(trajectoryStepSize, trajectoryMethod, samplingMethod) {
     if (rangeSize <= 0) {
         Logging::warning("Step size was smaller than 0 and was set to 1", this);
         m_rangeSize = 1;
-    }
-    else {
+    } else {
         m_rangeSize = rangeSize;
     }
 }
@@ -37,8 +37,7 @@ void PRMOptions::setRangeSize(float rangeSize) {
     if (rangeSize <= 0) {
         Logging::warning("Step size was smaller than 0 and was set to 1", this);
         m_rangeSize = 1;
-    }
-    else {
+    } else {
         m_rangeSize = rangeSize;
     }
 }

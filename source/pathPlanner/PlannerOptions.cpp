@@ -16,18 +16,17 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <pathPlanner/PlannerOptions.h>
 #include <core/Logging.h>
+#include <pathPlanner/PlannerOptions.h>
 
 using namespace rmpl;
 
-PlannerOptions::PlannerOptions(float trajectoryStepSize, TrajectoryMethod trajectoryMethod,
-                               SamplingMethod samplingMethod) : Base("Planner options"){
+PlannerOptions::PlannerOptions(float trajectoryStepSize, TrajectoryMethod trajectoryMethod, SamplingMethod samplingMethod)
+    : Base("Planner options") {
     if (trajectoryStepSize <= 0) {
         Logging::warning("Trajectory step size was smaller than 0 and was set to 1", this);
         m_trajectoryStepSize = 1;
-    }
-    else {
+    } else {
         m_trajectoryStepSize = trajectoryStepSize;
     }
     m_trajectoryMethod = trajectoryMethod;
@@ -38,8 +37,7 @@ void PlannerOptions::setTrajectoryStepSize(float stepSize) {
     if (stepSize <= 0) {
         Logging::warning("Trajectory step size was smaller than 0 and was set to 1", this);
         m_trajectoryStepSize = 1;
-    }
-    else {
+    } else {
         m_trajectoryStepSize = stepSize;
     }
 }

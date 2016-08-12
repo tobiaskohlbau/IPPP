@@ -32,8 +32,8 @@ namespace rmpl {
 */
 class StarRRTPlanner : public RRTPlanner {
   public:
-    StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, float stepSize, std::shared_ptr<PlannerOptions> options)
-        : RRTPlanner("RRT* Planner", robot, stepSize, options) {
+    StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, std::shared_ptr<RRTOptions> options)
+        : RRTPlanner("RRT* Planner", robot, options) {
     }
     bool connectGoalNode(Node goal);
 

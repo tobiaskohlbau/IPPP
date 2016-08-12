@@ -19,8 +19,8 @@ void printTime(clock_t begin, clock_t end) {
 void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
 
-    std::shared_ptr<rmpl::PlannerOptions> options(new rmpl::PlannerOptions(0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
-    rmpl::StarRRTPlanner planner(robot, 30, options);
+    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    rmpl::StarRRTPlanner planner(robot, options);
 
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 
@@ -59,9 +59,9 @@ void treeConnection() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
 
     // create two trees from init and from goal
-    std::shared_ptr<rmpl::PlannerOptions> options(new rmpl::PlannerOptions(0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
-    rmpl::StarRRTPlanner plannerInitNode(robot, 10, options);
-    rmpl::StarRRTPlanner plannerGoalNode(robot, 10, options);
+    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(20, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    rmpl::StarRRTPlanner plannerGoalNode(robot, options);
+    rmpl::StarRRTPlanner plannerInitNode(robot, options);
 
     // set properties to the plannerss
     plannerInitNode.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));

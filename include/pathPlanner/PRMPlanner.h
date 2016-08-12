@@ -20,6 +20,7 @@
 #define PRMPLANNER_H_
 
 #include <pathPlanner/AStarList.h>
+#include <pathPlanner/PRMOptions.h>
 #include <pathPlanner/Planner.h>
 
 namespace rmpl {
@@ -31,7 +32,7 @@ namespace rmpl {
 */
 class PRMPlanner : public Planner {
   public:
-    PRMPlanner(const std::shared_ptr<RobotBase> &robot, float rangeSize, std::shared_ptr<PlannerOptions> options);
+    PRMPlanner(const std::shared_ptr<RobotBase> &robot, std::shared_ptr<PRMOptions> options);
 
     void startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     void startPlannerPhase(unsigned int nbOfThreads = 1);
