@@ -17,7 +17,7 @@
 //-------------------------------------------------------------------------//
 
 #include <algorithm>
-#include <pathPlanner/AStarList.h>
+#include <pathPlanner/List.h>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -27,7 +27,7 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-08-09
 */
-AStarList::AStarList() : Base("AStarList") {
+List::List() : Base("List") {
 }
 
 /*!
@@ -36,7 +36,7 @@ AStarList::AStarList() : Base("AStarList") {
 *  \param[in]  pointer of Node
 *  \date       2016-08-09
 */
-void AStarList::addNode(std::shared_ptr<Node> node) {
+void List::addNode(std::shared_ptr<Node> node) {
     m_list.push_back(node);
 }
 
@@ -46,7 +46,7 @@ void AStarList::addNode(std::shared_ptr<Node> node) {
 *  \param[in]  pointer of Node
 *  \date       2016-08-09
 */
-void AStarList::removeNode(std::shared_ptr<Node> node) {
+void List::removeNode(std::shared_ptr<Node> node) {
     m_list.erase(std::remove(m_list.begin(), m_list.end(), node), m_list.end());
 }
 
@@ -56,7 +56,7 @@ void AStarList::removeNode(std::shared_ptr<Node> node) {
 *  \param[out] Node with lowest cost
 *  \date       2016-08-09
 */
-std::shared_ptr<Node> AStarList::removeMin() {
+std::shared_ptr<Node> List::removeMin() {
     float min = std::numeric_limits<float>::max();
     std::shared_ptr<Node> minNode = nullptr;
     for (int i = 0; i < m_list.size(); ++i) {
@@ -77,7 +77,7 @@ std::shared_ptr<Node> AStarList::removeMin() {
 *  \param[out] empty state
 *  \date       2016-08-09
 */
-bool AStarList::empty() {
+bool List::empty() {
     return m_list.empty();
 }
 
@@ -88,7 +88,7 @@ bool AStarList::empty() {
 *  \param[out] true, if list contains passed Node
 *  \date       2016-08-09
 */
-bool AStarList::contains(std::shared_ptr<Node> node) {
+bool List::contains(std::shared_ptr<Node> node) {
     if (std::find(m_list.begin(), m_list.end(), node) != m_list.end())
         return true;
     else
