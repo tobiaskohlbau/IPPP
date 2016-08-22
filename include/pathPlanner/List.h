@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef ASTARLIST_H_
-#define ASTARLIST_H_
+#ifndef LIST_H_
+#define LIST_H_
 
 #include <core/Base.h>
 #include <core/Node.h>
@@ -29,9 +29,9 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-08-09
 */
-class AStarList : public Base {
+class List : public Base {
   public:
-    AStarList();
+    List();
     void addNode(std::shared_ptr<Node> node);
     void removeNode(std::shared_ptr<Node> node);
     std::shared_ptr<Node> removeMin();
@@ -44,4 +44,4 @@ class AStarList : public Base {
 
 } /* namespace rmpl */
 
-#endif    // ASTARLIST_H_
+#endif    // LIST_H_

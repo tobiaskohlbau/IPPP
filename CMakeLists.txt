@@ -55,7 +55,7 @@ set(SRCS
     include/core/KDNode.hpp
     include/core/KDTree.hpp
     include/core/Vec.hpp
-    source/pathPlanner/AStarList.cpp
+        source/pathPlanner/List.cpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
     source/pathPlanner/PlannerOptions.cpp
