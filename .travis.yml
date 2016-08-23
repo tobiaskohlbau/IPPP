@@ -27,9 +27,13 @@ before_script:
   - mkdir build
   - cd build
   - cmake ..
-  - make
+  - make -j4
   - sudo make install
   - cd ../..
+  # libccd
+  - git clone https://github.com/danfis/libccd.git libccd
+  - cd libccd
+  - make -C src
   # cmake
   - mkdir build
   - cd build
@@ -38,6 +42,8 @@ before_script:
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then make ; fi
 
 env:
+  - USE_SINGLE=yes
+  - USE_DOUBLE=yes
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
