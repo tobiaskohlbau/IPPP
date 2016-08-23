@@ -18,10 +18,8 @@
 
 #include <robot/CadFileLoader.h>
 
-#include <fstream>
-#include <sstream>
-
 #include <core/Logging.h>
+#include <include/core/Vec.hpp>
 
 using namespace rmpl;
 
@@ -59,61 +57,59 @@ std::shared_ptr<PQP_Model> CadFileLoader::loadFile(const std::string filename) {
 *  \date       2016-07-14
 */
 std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
-    PQP_REAL value;
-    std::vector<PQP_REAL> vertice;
-    std::vector<std::vector<PQP_REAL>> vertices;
-    int num;
+    Vec<PQP_REAL> vertice;
+    std::vector<Vec<PQP_REAL>> vertices;
     std::vector<int> face;
     std::vector<std::vector<int>> faces;
 
-    try {
-        std::ifstream input(filename);
-        for (std::string line; getline(input, line);) {
-            if (line.at(0) == 'v') {
-                line = line.substr(2);
-                std::stringstream iss(line);
-                vertice.clear();
-                for (int i = 0; i < 3; ++i) {
-                    iss >> value;
-                    vertice.push_back(value);
-                }
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(filename, aiProcessPreset_TargetRealtime_MaxQuality);
+    if (!scene) {
+        Logging::error("Mesh could not be loaded", this);
+        return nullptr;
+    }
 
-                vertices.push_back(vertice);
-            } else if (line.at(0) == 'f') {
-                line = line.substr(2);
-                std::stringstream iss(line);
-                face.clear();
-                for (int i = 0; i < 3; ++i) {
-                    iss >> num;
-                    face.push_back(num - 1);
-                }
+    int numMeshes = scene->mNumMeshes;
+    Logging::info("Scene has: " + std::to_string(numMeshes) + " meshes", this);
+
+    for (int i = 0; i < numMeshes; ++i) {
+        const aiMesh* mesh = scene->mMeshes[i];
+
+        for (int j = 0; j < mesh->mNumVertices; ++j) {
+            vertice = Vec<PQP_REAL>(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
+            vertices.push_back(vertice);
+        }
+
+        for (int j = 0; j < mesh->mNumFaces; ++j) {
+            face.clear();
+            for (int k = 0; k < mesh->mFaces[j].mNumIndices; ++k) {
+                face.push_back(mesh->mFaces[j].mIndices[k]);
+                face.push_back(mesh->mFaces[j].mIndices[k]);
+                face.push_back(mesh->mFaces[j].mIndices[k]);
                 faces.push_back(face);
             }
         }
-
-        std::shared_ptr<PQP_Model> model(new PQP_Model());
-        model->BeginModel();
-        // create pqp triangles
-        PQP_REAL p[3][3];
-        for (int i = 0; i < faces.size(); ++i) {
-            // go through faces
-            for (int j = 0; j < 3; ++j) {
-                // go through face
-                int vert = faces[i][j];
-                for (int k = 0; k < 3; ++k) {
-                    p[j][k] = vertices[vert][k];
-                }
-            }
-            model->AddTri(p[0], p[1], p[2], i);
-        }
-        model->EndModel();
-        model->MemUsage(1);
-
-        return model;
-    } catch (const std::exception& e) {
-        Logging::error("Could not load cad file!", this);
-        return nullptr;
     }
+
+    std::shared_ptr<PQP_Model> model(new PQP_Model());
+    model->BeginModel();
+    // create pqp triangles
+    PQP_REAL p[3][3];
+    for (int i = 0; i < faces.size(); ++i) {
+        // go through faces
+        for (int j = 0; j < 3; ++j) {
+            // go through face
+            int vert = faces[i][j];
+            for (int k = 0; k < 3; ++k) {
+                p[j][k] = vertices[vert][k];
+            }
+        }
+        model->AddTri(p[0], p[1], p[2], i);
+    }
+    model->EndModel();
+    model->MemUsage(1);
+
+    return model;
 }
 
 /*!
