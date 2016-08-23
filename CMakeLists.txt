@@ -33,15 +33,23 @@ OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(DEBUG_OUTPUT "Display debug output")
 OPTION(TEST "add tests")
 
-# external libaries
+# Eigen
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
-include_directories(${CMAKE_SOURCE_DIR}/include)
 
+# PQP
 set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
 include_directories(${PQP_DIR}/include)
 link_directories(${PQP_DIR}/lib)
+
+# Assimp
+set(Assimp_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../assimp CACHE PATH "Assimp source DIR")
+set(Assimp_BINARY_DIR /usr/local CACHE PATH "Assimp binary DIR")
+INCLUDE_DIRECTORIES(${Assimp_SOURCE_DIR}/include ${Assimp_SOURCE_DIR}/code)
+LINK_DIRECTORIES(${Assimp_BINARY_DIR} ${Assimp_BINARY_DIR}/lib)
+
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 set(SRCS
     source/core/CollisionDetection.cpp
@@ -85,7 +93,7 @@ ENDIF()
 add_custom_target(myInstall make install)
 
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP)
+target_link_libraries(${PROJECT_NAME} pthread PQP assimp)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
