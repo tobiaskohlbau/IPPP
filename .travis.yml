@@ -26,13 +26,23 @@ before_script:
   - sudo apt-get -qq update
   - sudo apt-get -qq --yes --force-yes install libeigen3-dev
   - sudo apt-get -qq --yes --force-yes install libccd-dev
+  # octomap
+  - git clone https://github.com/OctoMap/octomap
+  - cd octomap
+  - git checkout tags/v1.8.0
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - sudo make install
+  - cd ../..
   # fcl
   - git clone https://github.com/flexible-collision-library/fcl.git fcl
   - cd fcl
   - mkdir build
   - cd build
-  - cmake ..
-  - make
+  - cmake -DFCL_BUILD_TESTS=OFF ..
+  - make -j4
   - sudo make install
   - cd ../..
   # assimp
@@ -40,7 +50,7 @@ before_script:
   - cd assimp
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake -DASSIMP_BUILD_TESTS=OFF ..
   - make -j4
   - sudo make install
   - cd ../..
