@@ -24,27 +24,27 @@ void Logging::info(std::string message, Base *module) {
     if (module == nullptr)
         std::cout << "Info "
                   << "Unknown"
-                  << " : " << message << std::endl;
+                  << ": " << message << std::endl;
     else
-        std::cout << "Info " << module->getName() << " : " << message << std::endl;
+        std::cout << "Info " << module->getName() << ": " << message << std::endl;
 }
 
 void Logging::warning(std::string message, Base *module) {
     if (module == nullptr)
         std::cout << "Warning "
                   << "Unknown"
-                  << " : " << message << std::endl;
+                  << ": " << message << std::endl;
     else
-        std::cout << "Warning " << module->getName() << " : " << message << std::endl;
+        std::cout << "Warning " << module->getName() << ": " << message << std::endl;
 }
 
 void Logging::error(std::string message, Base *module) {
     if (module == nullptr)
         std::cout << "Error "
                   << "Unknown"
-                  << " : " << message << std::endl;
+                  << ": " << message << std::endl;
     else
-        std::cout << "Error " << module->getName() << " : " << message << std::endl;
+        std::cout << "Error " << module->getName() << ": " << message << std::endl;
 }
 
 void Logging::debug(std::string message, Base *module) {
@@ -52,8 +52,8 @@ void Logging::debug(std::string message, Base *module) {
     if (module == nullptr)
         std::cout << "Debug "
                   << "Unknown"
-                  << " : " << message << std::endl;
+                  << ": " << message << std::endl;
     else
-        std::cout << "Debug " << module->getName() << " : " << message << std::endl;
+        std::cout << "Debug " << module->getName() << ": " << message << std::endl;
 #endif
 }
