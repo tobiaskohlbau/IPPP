@@ -48,6 +48,7 @@ class Vec {
 
     void setAllTo(T value);
     void append(Vec<T> vec);
+    void append(T scalar);
 
     unsigned int getDim() const;
     bool empty() const;
@@ -469,6 +470,21 @@ void Vec<T>::append(Vec<T> vec) {
         newVec[i] = (*this)[i];
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         newVec[i + m_dim] = vec[i];
+    *this = newVec;
+}
+
+/*!
+*  \brief      Append scalar to Vec
+*  \author     Sascha Kaden
+*  \param[in]  scalar
+*  \date       2016-07-07
+*/
+template <typename T>
+void Vec<T>::append(T scalar) {
+    Vec<T> newVec(m_dim + 1);
+    for (unsigned int i = 0; i < m_dim; ++i)
+        newVec[i] = (*this)[i];
+    newVec[m_dim] = scalar;
     *this = newVec;
 }
 
