@@ -16,37 +16,45 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <robot/CadFileLoader.h>
+#include <robot/MeshContainer.h>
 
 #include <core/Logging.h>
-#include <include/core/Vec.hpp>
 
 using namespace rmpl;
 
 /*!
-*  \brief      Constructor of the class CadFileLoader
+*  \brief      Standard contructor of the MeshContainer class
 *  \author     Sascha Kaden
-*  \date       2016-07-12
+*  \date       2016-08-25
 */
-CadFileLoader::CadFileLoader() : Base("CadFileLoader") {
+MeshContainer::MeshContainer() : Base("MeshContainer") {
+    m_fclModel = nullptr;
+    m_pqpModel = nullptr;
 }
 
 /*!
-*  \brief      Load cad file from passed path and return pointer to PQP_Model
+*  \brief      Contructor of the MeshContainer class, loads the mesh files from the passed file path
+*  \param[in]  filePath
 *  \author     Sascha Kaden
-*  \param[in]  path to cad file
-*  \param[out] shared pointer to PQP_Model, nullptr by incorrect path
-*  \date       2016-07-14
+*  \date       2016-08-25
 */
-std::shared_ptr<PQP_Model> CadFileLoader::loadFile(const std::string filename) {
-    std::string extension = getFileExt(filename);
+MeshContainer::MeshContainer(std::string filePath) : Base("MeshContainer") {
+    m_fclModel = nullptr;
+    m_pqpModel = nullptr;
+    loadFile(filePath);
+}
 
-    if (extension == "obj")
-        return readObj(filename);
-    else
-        Logging::error("File type is not supported", this);
-
-    return nullptr;
+/*!
+*  \brief      Contructor of the MeshContainer class
+*  \param[in]  fcl model
+*  \param[in]  pqp model
+*  \author     Sascha Kaden
+*  \date       2016-08-25
+*/
+MeshContainer::MeshContainer(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>& fclModel, std::shared_ptr<PQP_Model>& pqpModel)
+    : Base("MeshContainer") {
+    m_fclModel = fclModel;
+    m_pqpModel = pqpModel;
 }
 
 /*!
@@ -56,17 +64,17 @@ std::shared_ptr<PQP_Model> CadFileLoader::loadFile(const std::string filename) {
 *  \param[out] shared pointer to PQP_Model, nullptr by incorrect path
 *  \date       2016-07-14
 */
-std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
+bool MeshContainer::loadFile(const std::string filePath) {
     Vec<PQP_REAL> vertice;
     std::vector<Vec<PQP_REAL>> vertices;
     std::vector<int> face;
     std::vector<std::vector<int>> faces;
 
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(filename, aiProcessPreset_TargetRealtime_MaxQuality);
+    const aiScene* scene = importer.ReadFile(filePath, aiProcessPreset_TargetRealtime_MaxQuality);
     if (!scene) {
         Logging::error("Mesh could not be loaded", this);
-        return nullptr;
+        return false;
     }
 
     int numMeshes = scene->mNumMeshes;
@@ -80,6 +88,7 @@ std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
             vertices.push_back(vertice);
         }
 
+
         for (int j = 0; j < mesh->mNumFaces; ++j) {
             face.clear();
             for (int k = 0; k < mesh->mFaces[j].mNumIndices; ++k) {
@@ -91,8 +100,20 @@ std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
         }
     }
 
-    std::shared_ptr<PQP_Model> model(new PQP_Model());
-    model->BeginModel();
+
+    m_fclModel = std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>(new fcl::BVHModel<fcl::OBBRSS<float>>());
+    std::vector<fcl::Vector3f> verts;
+    std::vector<fcl::Triangle> triangles;
+    for (auto vert : vertices)
+        verts.push_back(fcl::Vector3f(vert[0], vert[1], vert[2]));
+    for (auto tmp : faces)
+        triangles.push_back(fcl::Triangle(tmp[0], tmp[1], tmp[2]));
+    m_fclModel->beginModel();
+    m_fclModel->addSubModel(verts, triangles);
+    m_fclModel->endModel();
+
+    m_pqpModel = std::shared_ptr<PQP_Model>(new PQP_Model());
+    m_pqpModel->BeginModel();
     // create pqp triangles
     PQP_REAL p[3][3];
     for (int i = 0; i < faces.size(); ++i) {
@@ -104,30 +125,30 @@ std::shared_ptr<PQP_Model> CadFileLoader::readObj(const std::string filename) {
                 p[j][k] = vertices[vert][k];
             }
         }
-        model->AddTri(p[0], p[1], p[2], i);
+        m_pqpModel->AddTri(p[0], p[1], p[2], i);
     }
-    model->EndModel();
-    model->MemUsage(1);
-
-    return model;
+    m_pqpModel->EndModel();
+    //m_pqpModel->MemUsage(1);
 }
 
 /*!
-*  \brief      Return file extension from input path
+*  \brief      Return pointer to the fcl model
+*  \param[out] fcl model
 *  \author     Sascha Kaden
-*  \param[in]  path
-*  \param[out] file extension
-*  \date       2016-07-14
+*  \date       2016-08-25
 */
-std::string CadFileLoader::getFileExt(const std::string& s) {
-    size_t i = s.rfind('.', s.length());
+std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> MeshContainer::getFcl() {
+    return m_fclModel;
+}
 
-    if (i != std::string::npos) {
-        std::string ext = s.substr(i + 1, s.length() - i);
-        for (std::basic_string<char>::iterator p = ext.begin(); p != ext.end(); ++p)
-            *p = tolower(*p);
-        return ext;
-    }
-
-    return ("");
+/*!
+*  \brief      Return pointer to the pqp model
+*  \param[out] pqp model
+*  \author     Sascha Kaden
+*  \date       2016-08-25
+*/
+std::shared_ptr<PQP_Model> MeshContainer::getPqp() {
+    if (m_pqpModel == nullptr)
+        Logging::warning("PQP model is empty", this);
+    return m_pqpModel;
 }

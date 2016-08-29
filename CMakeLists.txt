@@ -49,6 +49,10 @@ set(Assimp_BINARY_DIR /usr/local CACHE PATH "Assimp binary DIR")
 INCLUDE_DIRECTORIES(${Assimp_SOURCE_DIR}/include ${Assimp_SOURCE_DIR}/code)
 LINK_DIRECTORIES(${Assimp_BINARY_DIR} ${Assimp_BINARY_DIR}/lib)
 
+# fcl
+find_package(fcl REQUIRED)
+include_directories(${FCL_INCLUDE_DIRS})
+
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 set(SRCS
@@ -97,7 +101,7 @@ ENDIF()
 add_custom_target(myInstall make install)
 
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP assimp)
+target_link_libraries(${PROJECT_NAME} pthread PQP assimp ${fcl_LIBRARIES} ccd)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)

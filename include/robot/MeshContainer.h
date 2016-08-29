@@ -16,36 +16,45 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef CADFILELOADER_H_
-#define CADFILELOADER_H_
+#ifndef MESHCONTAINER_H_
+#define MESHCONTAINER_H_
 
+#include <memory>
 #include <vector>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include <Eigen/Core>
 #include <PQP.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+#include <fcl/fcl.h>
 
 #include <core/Base.h>
-
+#include <core/Vec.hpp>
 
 namespace rmpl {
 
 /*!
-* \brief   Class for loading of cad files
+* \brief   Class MeshContainer
+* \details Contains all mesh models for the collision detection
 * \author  Sascha Kaden
-* \date    2016-07-12
+* \date    2016-08-25
 */
-class CadFileLoader : public Base {
+class MeshContainer : Base {
   public:
-    CadFileLoader();
-    std::shared_ptr<PQP_Model> loadFile(const std::string filename);
+    MeshContainer();
+    MeshContainer(std::string filepath);
+    MeshContainer(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &fclModel, std::shared_ptr<PQP_Model> &pqpModel);
+    bool loadFile(const std::string filePath);
 
-  protected:
-    std::shared_ptr<PQP_Model> readObj(const std::string filename);
-    std::string getFileExt(const std::string& s);
+    std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> getFcl();
+    std::shared_ptr<PQP_Model> getPqp();
+
+  private:
+    std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> m_fclModel;
+    std::shared_ptr<PQP_Model> m_pqpModel;
 };
 
 } /* namespace rmpl */
 
-#endif /* CADFILELOADER_H_ */
+#endif    // MESHCONTAINER_H_
