@@ -21,15 +21,20 @@
 
 #include <Eigen/Core>
 #include <PQP.h>
+#include <fcl/fcl.h>
+#include <fcl/narrowphase/collision.h>
 
 #include <core/Base.h>
 #include <core/Node.h>
 #include <robot/RobotBase.h>
+#include <robot/MeshContainer.h>
+#include <robot/MobileRobot.h>
+#include <robot/SerialRobot.h>
 
 namespace rmpl {
 
 /*!
-* \brief   Class CollisionDetection checks the configuration on collision and return boolean value
+* \brief   Class CollisionDetection checks the configuration on collision and return binary value
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
@@ -40,15 +45,24 @@ class CollisionDetection : public Base {
     bool controlCollision(const std::vector<Vec<float>> &vec);
 
   private:
-    bool controlCollisionPQP(const Vec<float> &vec);
-    bool checkPQP(std::shared_ptr<PQP_Model> model1, std::shared_ptr<PQP_Model> model2, Eigen::Matrix3f R1, Eigen::Matrix3f R2,
-                  Eigen::Vector3f t1, Eigen::Vector3f t2);
+    bool checkPqpSerialRobot(const Vec<float> &vec);
+    bool checkPqpMobileRobot(const Vec<float> &vec);
+    bool checkFclSerialRobot(const Vec<float> &vec);
+    bool checkFclMobileRobot(const Vec<float> &vec);
+
+    bool controlCollisionPqp(const Vec<float> &vec);
+    bool controlCollisionFcl(const Vec<float> &vec);
+    bool checkPQP(std::shared_ptr<PQP_Model> &model1, std::shared_ptr<PQP_Model> &model2, Eigen::Matrix3f &R1, Eigen::Matrix3f &R2,
+                  Eigen::Vector3f &t1, Eigen::Vector3f &t2);
+    bool checkFcl(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &model1,
+                  std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &model2, Eigen::Matrix3f &R1, Eigen::Matrix3f &R2,
+                  Eigen::Vector3f &t1, Eigen::Vector3f &t2);
     bool controlCollisionPointRobot(float x, float y);
 
     std::shared_ptr<RobotBase> m_robot;
 
     Eigen::MatrixXi m_2DWorkspace;
-    std::shared_ptr<PQP_Model> m_pqpWorkspace;
+    std::shared_ptr<MeshContainer> m_workspace;
 };
 
 } /* namespace rmpl */
