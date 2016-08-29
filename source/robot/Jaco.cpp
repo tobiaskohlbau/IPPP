@@ -18,31 +18,54 @@
 
 #include <robot/Jaco.h>
 
+#include <core/Utilities.h>
+
 using namespace rmpl;
 
 /*!
 *  \brief      Constructor of the Jaco robot
+*  \details    Sets all parameter from the Jaco serial robot and loads the mesh models.
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco() : RobotBase("Jaco", CollisionType::pqp, 6, 6) {
-    this->m_alpha = Vec<float>(this->m_pi / 2, this->m_pi, this->m_pi / 2, 0.95993, 0.95993, this->m_pi);
-    this->m_a = Vec<float>(0, 410, 0, 0, 0, 0);
-    this->m_d = Vec<float>(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
+Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
+    m_alpha = Vec<float>(Utilities::pi() / 2, Utilities::pi(), Utilities::pi() / 2, 0.95993, 0.95993, Utilities::pi());
+    m_a = Vec<float>(0, 410, 0, 0, 0, 0);
+    m_d = Vec<float>(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
-    setBoundaries(Vec<float>(0, 42, 17, 0, 0, 0), Vec<float>(360, 318, 343, 360, 360, 360));
+    m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_base_fixed_origin.obj"));
 
-    std::vector<std::string> cadFiles = {"meshes/link_base_fixed_origin.obj", "meshes/link_1_fixed_origin.obj",
-                                         "meshes/link_2_fixed_origin.obj",    "meshes/link_3_fixed_origin.obj",
-                                         "meshes/link_4_fixed_origin.obj",    "meshes/link_5_fixed_origin.obj",
-                                         "meshes/link_hand_fixed_origin.obj"};
-
-    // load cad models
-    this->setCadModels(cadFiles);
+    std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/link_1_fixed_origin.obj"));
+    Joint joint(0, 360, mesh);
+    m_joints.push_back(joint);
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_2_fixed_origin.obj"));
+    joint = Joint(42, 318, mesh);
+    m_joints.push_back(joint);
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_3_fixed_origin.obj"));
+    joint = Joint(17, 343, mesh);
+    m_joints.push_back(joint);
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_4_fixed_origin.obj"));
+    joint = Joint(0, 360, mesh);
+    m_joints.push_back(joint);
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_5_fixed_origin.obj"));
+    joint = Joint(0, 360, mesh);
+    m_joints.push_back(joint);
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_hand_fixed_origin.obj"));
+    joint = Joint(0, 360, mesh);
+    m_joints.push_back(joint);
+    m_minBoundary = Vec<float>(0, 42, 17, 0, 0, 0);
+    m_maxBoundary = Vec<float>(360, 318, 343, 360, 360, 360);
 }
 
+/*!
+*  \brief      Computes the euclidean tcp position from the passed robot angles.
+*  \author     Sascha Kaden
+*  \param[in]  real angles
+*  \param[out] euclidean position Vec
+*  \date       2016-08-25
+*/
 Vec<float> Jaco::directKinematic(const Vec<float> &angles) {
-    std::vector<Eigen::Matrix4f> trafos = getTransformations(angles);
+    std::vector<Eigen::Matrix4f> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos, this->m_pose);
 }
@@ -54,20 +77,16 @@ Vec<float> Jaco::directKinematic(const Vec<float> &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-14
 */
-std::vector<Eigen::Matrix4f> Jaco::getTransformations(const Vec<float> &angles) {
+std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Vec<float> &angles) {
     // transform form jaco physical angles to dh angles
     Vec<float> dhAngles = convertRealToDH(angles);
-    Vec<float> rads = this->degToRad(dhAngles);
+    Vec<float> rads = Utilities::degToRad(dhAngles);
 
     std::vector<Eigen::Matrix4f> trafos;
-    Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4, 4);
-    for (int i = 0; i < 4; ++i)
-        A(i, i) = 1;
-    trafos.push_back(A);
-
+    Eigen::Matrix4f A;
     // create transformation matrizes
     for (int i = 0; i < 6; ++i) {
-        A = this->getTrafo(this->m_alpha[i], this->m_a[i], m_d[i], rads[i]);
+        A = getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]);
         trafos.push_back(A);
     }
     return trafos;

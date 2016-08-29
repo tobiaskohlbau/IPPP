@@ -19,6 +19,7 @@
 #include <robot/GenericRobot.h>
 
 #include <core/Logging.h>
+#include <core/Utilities.h>
 
 using namespace rmpl;
 
@@ -27,20 +28,18 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-07-24
 */
-GenericRobot::GenericRobot(std::string name, unsigned int dimension, unsigned int numberOfJoints, const Vec<float> &alphaParams,
+GenericRobot::GenericRobot(std::string name, unsigned int dimension, const Vec<float> &alphaParams,
                            const Vec<float> &aParams, const Vec<float> dParams)
-    : RobotBase(name, CollisionType::pqp, dimension, numberOfJoints) {
+    : SerialRobot(name, CollisionType::pqp, dimension) {
     // check consistency of parameters
-    if (alphaParams.getDim() != numberOfJoints || aParams.getDim() != numberOfJoints || dParams.getDim() != numberOfJoints) {
+    if (alphaParams.getDim() != dimension || aParams.getDim() != dimension || dParams.getDim() != dimension) {
         Logging::error("DH parameter have wrong dimensions, unequal to joint count!", this);
     }
-    if (dimension < numberOfJoints) {
-        Logging::error("Dimension is larger than joint count!", this);
-    }
+
 }
 
 Vec<float> GenericRobot::directKinematic(const Vec<float> &angles) {
-    std::vector<Eigen::Matrix4f> trafos = getTransformations(angles);
+    std::vector<Eigen::Matrix4f> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos, this->m_pose);
 }
@@ -52,8 +51,8 @@ Vec<float> GenericRobot::directKinematic(const Vec<float> &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-24
 */
-std::vector<Eigen::Matrix4f> GenericRobot::getTransformations(const Vec<float> &angles) {
-    Vec<float> rads = this->degToRad(angles);
+std::vector<Eigen::Matrix4f> GenericRobot::getJointTrafos(const Vec<float> &angles) {
+    Vec<float> rads = Utilities::degToRad(angles);
 
     std::vector<Eigen::Matrix4f> trafos;
     Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4, 4);
@@ -62,8 +61,8 @@ std::vector<Eigen::Matrix4f> GenericRobot::getTransformations(const Vec<float> &
     trafos.push_back(A);
 
     // create transformation matrizes
-    for (int i = 0; i < this->m_nbJoints; ++i) {
-        A = this->getTrafo(this->m_alpha[i], this->m_a[i], m_d[i], rads[i]);
+    for (int i = 0; i < m_joints.size(); ++i) {
+        A = this->getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]);
         trafos.push_back(A);
     }
     return trafos;
