@@ -18,8 +18,8 @@ void printTime(clock_t begin, clock_t end) {
 
 int main(int argc, char** argv) {
     cv::Mat freeWorkspace, obstacleWorkspace;
-    // freeWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    obstacleWorkspace = cv::imread("spaces/labyrinth.png", CV_LOAD_IMAGE_GRAYSCALE);
+    //obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
 
     cv::Mat dst;
     obstacleWorkspace.convertTo(dst, CV_32SC1);
@@ -29,9 +29,9 @@ int main(int argc, char** argv) {
     Eigen::MatrixXi mat(rows, cols);
     std::vector<int> entries;
     int* temp;
-    for (int i = 0; i < rows; ++i) {
+    for (int i = 0; i < cols; ++i) {
         temp = dst.ptr<int>(i);
-        for (int j = 0; j < cols; ++j) {
+        for (int j = 0; j < rows; ++j) {
             entries.push_back(*temp);
             ++temp;
         }
@@ -45,12 +45,12 @@ int main(int argc, char** argv) {
 
     std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
     rmpl::StarRRTPlanner planner(robot, options);
-    rmpl::NormalRRTPlanner planner2(robot, options);
+    rmpl::NormalRRTPlanner planner12(robot, options);
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.setInitNode(rmpl::Node(10.0, 10.0));
-    planner.computeTree(8000, 2);
+    planner.setInitNode(rmpl::Node(50.0, 30.0));
+    planner.computeTree(11000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
 
@@ -59,12 +59,12 @@ int main(int argc, char** argv) {
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    rmpl::Node goal(650.0, 750.0);
+    rmpl::Node goal(870.0, 870.0);
     bool connected = planner.connectGoalNode(goal);
     Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
 
     if (connected) {
-        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath(1, true);
+        std::vector<rmpl::Vec<float>> pathPoints = planner.getPath(0.5, true);
         Drawing::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255, 0, 0), 3);
     }
 
