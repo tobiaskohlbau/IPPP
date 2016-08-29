@@ -346,5 +346,8 @@ bool CollisionDetection::checkFcl(shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> 
     fcl::CollisionResult<float> result;
     collide(o1, o2, request, result);
 
+    delete o1;
+    delete o2;
+
     return result.isCollision();
 }
