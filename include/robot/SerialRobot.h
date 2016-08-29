@@ -36,7 +36,7 @@ public:
     virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
     virtual std::vector<Eigen::Matrix4f> getJointTrafos(const Vec<float> &angles) = 0;
     Eigen::Matrix4f getTrafo(float alpha, float a, float d, float q);
-    Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis);
+    Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos);
 
     void setJoints(std::vector<Joint> joints);
     std::shared_ptr<MeshContainer> getMeshFromJoint(unsigned int jointIndex);
