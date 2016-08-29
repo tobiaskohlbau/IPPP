@@ -23,6 +23,11 @@
 
 namespace rmpl{
 
+/*!
+* \brief   Class PRMOptions determines special options for the PRMPlanner
+* \author  Sascha Kaden
+* \date    2016-08-29
+*/
 class PRMOptions : public PlannerOptions {
 public:
     PRMOptions(float rangeSize, float trajectoryStepSize, TrajectoryMethod trajectoryMethod, SamplingMethod samplingMethod);

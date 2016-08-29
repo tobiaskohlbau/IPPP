@@ -22,26 +22,47 @@
 
 using namespace rmpl;
 
+/*!
+*  \brief      Standard constructor of the class PRMOptions
+*  \param[in]  rangeSize
+*  \param[in]  trajectoryStepSize
+*  \param[in]  trajectoryMethod
+*  \param[in]  samplingMethod
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, TrajectoryMethod trajectoryMethod,
                        SamplingMethod samplingMethod)
     : PlannerOptions(trajectoryStepSize, trajectoryMethod, samplingMethod) {
     if (rangeSize <= 0) {
-        Logging::warning("Step size was smaller than 0 and was set to 1", this);
+        Logging::warning("Step size was equal or smaller than 0 and is set to 1", this);
         m_rangeSize = 1;
     } else {
         m_rangeSize = rangeSize;
     }
 }
 
+/*!
+*  \brief      Sets the range size of the local planner from the PRMPlanner
+*  \param[in]  rangeSize
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 void PRMOptions::setRangeSize(float rangeSize) {
     if (rangeSize <= 0) {
-        Logging::warning("Step size was smaller than 0 and was set to 1", this);
+        Logging::warning("Step size was equal or smaller than 0 and is set to 1", this);
         m_rangeSize = 1;
     } else {
         m_rangeSize = rangeSize;
     }
 }
 
+/*!
+*  \brief      Returns the range size of the local planner from the PRMPlanner
+*  \param[out] rangeSize
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 float PRMOptions::getRangeSize() {
     return m_rangeSize;
 }

@@ -21,8 +21,16 @@
 
 using namespace rmpl;
 
+/*!
+*  \brief      Standard constructor of the class PlannerOptions
+*  \param[in]  trajectoryStepSize
+*  \param[in]  trajectoryMethod
+*  \param[in]  samplingMethod
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 PlannerOptions::PlannerOptions(float trajectoryStepSize, TrajectoryMethod trajectoryMethod, SamplingMethod samplingMethod)
-    : Base("Planner options") {
+    : Base("PlannerOptions") {
     if (trajectoryStepSize <= 0) {
         Logging::warning("Trajectory step size was smaller than 0 and was set to 1", this);
         m_trajectoryStepSize = 1;
@@ -33,6 +41,12 @@ PlannerOptions::PlannerOptions(float trajectoryStepSize, TrajectoryMethod trajec
     m_samplingMethod = samplingMethod;
 }
 
+/*!
+*  \brief      Sets the trajectory step size
+*  \param[in]  stepSize
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 void PlannerOptions::setTrajectoryStepSize(float stepSize) {
     if (stepSize <= 0) {
         Logging::warning("Trajectory step size was smaller than 0 and was set to 1", this);
@@ -42,22 +56,52 @@ void PlannerOptions::setTrajectoryStepSize(float stepSize) {
     }
 }
 
+/*!
+*  \brief      Returns the trajectory step size
+*  \param[out] stepSize
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 float PlannerOptions::getTrajectoryStepSize() {
     return m_trajectoryStepSize;
 }
 
+/*!
+*  \brief      Sets the trajectory method
+*  \param[in]  method
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 void PlannerOptions::setTrajectoryMethod(TrajectoryMethod method) {
     m_trajectoryMethod = method;
 }
 
+/*!
+*  \brief      Returns the trajectory method
+*  \param[out] method
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 TrajectoryMethod PlannerOptions::getTrajectoryMethod() {
     return m_trajectoryMethod;
 }
 
+/*!
+*  \brief      Sets the sampling method
+*  \param[in]  method
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 void PlannerOptions::setSamplingMethod(SamplingMethod method) {
     m_samplingMethod = method;
 }
 
+/*!
+*  \brief      Returns the sampling method
+*  \param[out] method
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 SamplingMethod PlannerOptions::getSamplingMethod() {
     return m_samplingMethod;
 }

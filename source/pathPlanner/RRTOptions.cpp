@@ -22,6 +22,15 @@
 
 using namespace rmpl;
 
+/*!
+*  \brief      Standard constructor of the class RRTOptions
+*  \param[in]  RRT step size
+*  \param[in]  trajectoryStepSize
+*  \param[in]  trajectoryMethod
+*  \param[in]  samplingMethod
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, TrajectoryMethod trajectoryMethod,
                        SamplingMethod samplingMethod) : PlannerOptions(trajectoryStepSize, trajectoryMethod, samplingMethod) {
     if (stepSize <= 0) {
@@ -33,6 +42,12 @@ RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, TrajectoryMetho
     }
 }
 
+/*!
+*  \brief      Sets the step size of the RRTPlanner
+*  \param[in]  stepSize
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 void RRTOptions::setStepSize(float stepSize) {
     if (stepSize <= 0) {
         Logging::warning("Step size was smaller than 0 and was set to 1", this);
@@ -43,6 +58,12 @@ void RRTOptions::setStepSize(float stepSize) {
     }
 }
 
+/*!
+*  \brief      Returns the step size of the RRTPlanner
+*  \param[out] stepSize
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
 float RRTOptions::getStepSize() {
     return m_stepSize;
 }
