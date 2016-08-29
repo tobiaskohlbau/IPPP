@@ -21,8 +21,8 @@ class Drawing : public rmpl::Base {
     static void drawPath2D(const std::vector<rmpl::Vec<float>> vecs, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge,
                            int thickness);
 
-    static void writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, const float scale = 1);
-    static void appendVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, const float scale = 1);
+    static void writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale = 1);
+    static void appendVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale = 1);
 
   private:
 };

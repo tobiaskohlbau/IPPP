@@ -76,7 +76,7 @@ void Drawing::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, con
     }
 }
 
-void Drawing::writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, const float scale) {
+void Drawing::writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale) {
     std::ofstream myfile(filename);
     for (int i = 0; i < vecs.size(); ++i) {
         for (unsigned int j = 0; j < vecs[i].getDim(); ++j)
@@ -86,7 +86,7 @@ void Drawing::writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const s
     myfile.close();
 }
 
-void Drawing::appendVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, const float scale) {
+void Drawing::appendVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);
     for (int i = 0; i < vecs.size(); ++i) {
