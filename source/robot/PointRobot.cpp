@@ -18,6 +18,8 @@
 
 #include <robot/PointRobot.h>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 
 /*!
@@ -25,13 +27,6 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-PointRobot::PointRobot() : RobotBase("PointRobot", CollisionType::twoD, 2, 0) {
-}
-
-Vec<float> PointRobot::directKinematic(const Vec<float> &angles) {
-    return angles;
-}
-
-std::vector<Eigen::Matrix4f> PointRobot::getTransformations(const Vec<float> &angles) {
-    return std::vector<Eigen::Matrix4f>();
+PointRobot::PointRobot(Vec<float> minBoundary, Vec<float> maxBoundary)
+    : MobileRobot("PointRobot", CollisionType::twoD, 2, minBoundary, maxBoundary) {
 }
