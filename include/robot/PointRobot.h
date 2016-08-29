@@ -19,7 +19,7 @@
 #ifndef POINTROBOT_H_
 #define POINTROBOT_H_
 
-#include <robot/RobotBase.h>
+#include <robot/MobileRobot.h>
 
 namespace rmpl {
 
@@ -28,11 +28,9 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
-class PointRobot : public RobotBase {
+class PointRobot : public MobileRobot {
   public:
-    PointRobot();
-    Vec<float> directKinematic(const Vec<float> &angles);
-    std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles);
+    PointRobot(Vec<float> minBoundary, Vec<float> maxBoundary);
 
   private:
 };

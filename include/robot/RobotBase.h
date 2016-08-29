@@ -27,11 +27,13 @@
 
 #include <core/Base.h>
 #include <core/Vec.hpp>
-#include <robot/CadFileLoader.h>
+#include <robot/MeshContainer.h>
 
 namespace rmpl {
 
-enum CollisionType { vrep, pqp, twoD };
+enum CollisionType { fcl, pqp, twoD };
+
+enum RobotType { serial, mobile };
 
 /*!
 * \brief   Base class of all robots
@@ -40,59 +42,41 @@ enum CollisionType { vrep, pqp, twoD };
 */
 class RobotBase : public Base {
   public:
-    RobotBase(std::string name, CollisionType type, unsigned int dim, unsigned int numberJoints);
+    RobotBase(std::string name, CollisionType collisionType, RobotType robotType, unsigned int dim);
 
-    virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
-    virtual std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles) = 0;
-    Eigen::Matrix4f getTrafo(float alpha, float a, float d, float q);
-    Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis);
-
-    void setBoundaries(const Vec<float> &minBoundary, const Vec<float> &maxBoundary);
     Vec<float> getMinBoundary();
     Vec<float> getMaxBoundary();
 
     void setPose(const Vec<float> &pose);
     Vec<float> getPose();
+    Eigen::Matrix4f getPoseMat();
 
-    bool setCadModels(const std::vector<std::string> &files);
-    std::shared_ptr<PQP_Model> getCadModel(unsigned int index);
+    void setBase(const std::shared_ptr<MeshContainer> &base);
+    std::shared_ptr<MeshContainer> getBase();
 
-    bool setWorkspace(const std::string &workspaceFile);
-    std::shared_ptr<PQP_Model> getWorkspace();
+    bool setWorkspace(const std::shared_ptr<MeshContainer> &mesh);
+    std::shared_ptr<MeshContainer> getWorkspace();
     bool set2DWorkspace(const Eigen::MatrixXi &space);
     Eigen::MatrixXi &get2DWorkspace();
 
     unsigned int getDim();
-    unsigned int getNbJoints();
+    RobotType getRobotType();
+
     CollisionType getCollisionType();
     void setCollisionType(CollisionType type);
 
-    Vec<float> degToRad(const Vec<float> deg);
-    Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
-    Vec<float> EigenToVec(const Eigen::ArrayXf &eigenVec);
-
   protected:
-    std::shared_ptr<CadFileLoader> m_fileLoader;
-
-    std::string m_robotName;
     CollisionType m_collisionType;
-    unsigned int m_nbJoints;
+    RobotType m_robotType;
     unsigned int m_dim;
 
     Vec<float> m_minBoundary;
     Vec<float> m_maxBoundary;
-    Vec<float> m_alpha;
-    Vec<float> m_a;
-    Vec<float> m_d;
     Vec<float> m_pose;
 
-    std::vector<std::string> m_cadFiles;
-    std::vector<std::shared_ptr<PQP_Model>> m_cadModels;
-    std::string m_workspaceFile;
-    std::shared_ptr<PQP_Model> m_workspaceCad;
+    std::shared_ptr<MeshContainer> m_baseMesh;
+    std::shared_ptr<MeshContainer> m_workspaceMesh;
     Eigen::MatrixXi m_2DWorkspace;
-
-    float m_pi = 3.1416;
 };
 
 } /* namespace rmpl */

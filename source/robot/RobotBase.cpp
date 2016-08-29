@@ -34,108 +34,14 @@ using std::shared_ptr;
 *  \param[in]  number of joints of the robot
 *  \date       2016-06-30
 */
-RobotBase::RobotBase(std::string name, CollisionType type, unsigned int dim, unsigned int numberJoints) : Base(name) {
-    m_robotName = name;
-    m_collisionType = type;
+RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType robotType, unsigned int dim) : Base(name) {
+    m_collisionType = collisionType;
+    m_robotType = robotType;
     m_dim = dim;
-    m_nbJoints = numberJoints;
 
     m_pose = Vec<float>(0, 0, 0, 0, 0, 0);
-
-    m_fileLoader = std::shared_ptr<CadFileLoader>(new CadFileLoader());
-}
-
-/*!
-*  \brief      Create transformation matrix from the passed D-H parameter and the joint angle
-*  \author     Sascha Kaden
-*  \param[in]  D-H alpha parameter
-*  \param[in]  D-H a parameter
-*  \param[in]  D-H d parameter
-*  \param[in]  joint angle
-*  \param[out] transformation matrix
-*  \date       2016-07-07
-*/
-Eigen::Matrix4f RobotBase::getTrafo(float alpha, float a, float d, float q) {
-    float sinAlpha = sin(alpha);
-    float cosAlpha = cos(alpha);
-    float sinQ = sin(q);
-    float cosQ = cos(q);
-
-    Eigen::Matrix4f T = Eigen::Matrix4f::Zero(4, 4);
-    T(0, 0) = cosQ;
-    T(0, 1) = -sinQ * cosAlpha;
-    T(0, 2) = sinQ * sinAlpha;
-    T(0, 3) = a * cosQ;
-    T(1, 0) = sinQ;
-    T(1, 1) = cosQ * cosAlpha;
-    T(1, 2) = -cosQ * sinAlpha;
-    T(1, 3) = a * sinQ;
-    T(2, 1) = sinAlpha;
-    T(2, 2) = cosAlpha;
-    T(2, 3) = d;
-    T(3, 3) = 1;
-    return T;
-}
-
-/*!
-*  \brief      Compute TCP pose from transformation matrizes and the basis pose
-*  \author     Sascha Kaden
-*  \param[in]  transformation matrizes
-*  \param[in]  basis pose
-*  \param[out] TCP pose
-*  \date       2016-07-07
-*/
-Vec<float> RobotBase::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis) {
-    Eigen::Matrix3f R;
-    R = Eigen::AngleAxisf(basis[3], Eigen::Vector3f::UnitX()) * Eigen::AngleAxisf(basis[4], Eigen::Vector3f::UnitY()) *
-        Eigen::AngleAxisf(basis[5], Eigen::Vector3f::UnitZ());
-    Eigen::Matrix4f basisToRobot = Eigen::Matrix4f::Zero(4, 4);
-    basisToRobot.block<3, 3>(0, 0) = R;
-    for (int i = 0; i < 3; ++i)
-        basisToRobot(i, 3) = basis[i];
-    basisToRobot(3, 3) = 1;
-
-    // multiply these matrizes together, to get the complete transformation
-    // T = A1 * A2 * A3 * A4 * A5 * A6
-    Eigen::Matrix4f robotToTcp = trafos[0];
-    for (int i = 1; i < 6; ++i)
-        robotToTcp *= trafos[i];
-
-    Eigen::Matrix4f basisToTcp = basisToRobot * robotToTcp;
-
-    // create tcp position and orientation vector
-    Vec<float> tcp(basisToTcp(0, 3), basisToTcp(1, 3), basisToTcp(2, 3));
-    Eigen::Vector3f euler = basisToTcp.block<3, 3>(0, 0).eulerAngles(0, 1, 2);
-    tcp.append(EigenToVec(euler));
-
-    return tcp;
-}
-
-/*!
-*  \brief      Set boundaries of the robot
-*  \author     Sascha Kaden
-*  \param[in]  minimum Boudaries
-*  \param[in]  maximum Boudaries
-*  \date       2016-07-15
-*/
-void RobotBase::setBoundaries(const Vec<float> &minBoundary, const Vec<float> &maxBoundary) {
-    if (minBoundary.empty() || maxBoundary.empty()) {
-        Logging::warning("Boundaries are empty", this);
-        return;
-    } else if (minBoundary.getDim() != m_dim || maxBoundary.getDim() != m_dim) {
-        Logging::warning("Boudaries have different dimensions from the robot!", this);
-        return;
-    }
-
-    for (unsigned int i = 0; i < m_dim; ++i) {
-        if (minBoundary[i] > maxBoundary[i]) {
-            Logging::warning("Min boundary is larger than max boundary!", this);
-            return;
-        }
-    }
-
-    m_maxBoundary = maxBoundary;
-    m_minBoundary = minBoundary;
+    m_baseMesh = nullptr;
+    m_workspaceMesh = nullptr;
 }
 
 /*!
@@ -187,33 +93,34 @@ Vec<float> RobotBase::getPose() {
 }
 
 /*!
+*  \brief      Get pose transformation matrix
+*  \author     Sascha Kaden
+*  \param[out] pose matrix
+*  \date       2016-07-24
+*/
+Eigen::Matrix4f RobotBase::getPoseMat() {
+    Eigen::Matrix3f R;
+    R = Eigen::AngleAxisf(m_pose[0], Eigen::Vector3f::UnitZ()) * Eigen::AngleAxisf(m_pose[1], Eigen::Vector3f::UnitX()) *
+          Eigen::AngleAxisf(m_pose[2], Eigen::Vector3f::UnitZ());
+
+    Eigen::Matrix4f T = Eigen::Matrix4f::Zero(4, 4);
+    T.block<3,3>(0,0) = R;
+    T(0,3) = m_pose[3];
+    T(1,3) = m_pose[4];
+    T(2,3) = m_pose[5];
+    T(3,3) = 1;
+    return T;
+}
+
+/*!
 *  \brief      Load cad models from passed vector of strings and save them intern
 *  \author     Sascha Kaden
 *  \param[in]  vector of file strings
 *  \param[out] true if loading was feasible
 *  \date       2016-06-30
 */
-bool RobotBase::setCadModels(const std::vector<std::string> &files) {
-    for (auto file : files) {
-        if (file.empty()) {
-            Logging::warning("Empty filepath passed!", this);
-            return false;
-        }
-    }
-
-    m_cadFiles = files;
-    m_cadModels.clear();
-
-    std::shared_ptr<PQP_Model> model;
-    for (auto file : files) {
-        model = m_fileLoader->loadFile(file);
-        if (model == nullptr)
-            return false;
-        else
-            m_cadModels.push_back(model);
-    }
-
-    return true;
+void RobotBase::setBase(const std::shared_ptr<MeshContainer> &mesh) {
+    m_baseMesh = mesh;
 }
 
 /*!
@@ -223,16 +130,8 @@ bool RobotBase::setCadModels(const std::vector<std::string> &files) {
 *  \param[out] PQP cad model
 *  \date       2016-06-30
 */
-std::shared_ptr<PQP_Model> RobotBase::getCadModel(unsigned int index) {
-    if (index >= m_cadModels.size()) {
-        Logging::warning("model index is larger than cad models", this);
-        return nullptr;
-    }
-
-    if (m_cadModels[index] == nullptr)
-        Logging::info("Cad model is not set", this);
-
-    return m_cadModels[index];
+std::shared_ptr<MeshContainer> RobotBase::getBase() {
+    return m_baseMesh;
 }
 
 /*!
@@ -241,19 +140,8 @@ std::shared_ptr<PQP_Model> RobotBase::getCadModel(unsigned int index) {
 *  \param[in]  file of workspace cad
 *  \date       2016-07-14
 */
-bool RobotBase::setWorkspace(const std::string &workspaceFile) {
-    if (workspaceFile.empty()) {
-        Logging::warning("Empty filepath of workspace passed!", this);
-        return false;
-    }
-
-    shared_ptr<PQP_Model> model = m_fileLoader->loadFile(workspaceFile);
-    if (model == nullptr)
-        return false;
-
-    m_workspaceFile = workspaceFile;
-    m_workspaceCad = model;
-    return true;
+bool RobotBase::setWorkspace(const std::shared_ptr<MeshContainer> &mesh) {
+    m_workspaceMesh = mesh;
 }
 
 /*!
@@ -262,11 +150,8 @@ bool RobotBase::setWorkspace(const std::string &workspaceFile) {
 *  \param[out] pointer to PQP_Model
 *  \date       2016-07-14
 */
-shared_ptr<PQP_Model> RobotBase::getWorkspace() {
-    // if (m_workspaceCad == nullptr)
-    //    this->sendMessage("workspace is not set!", Message::info);
-
-    return m_workspaceCad;
+shared_ptr<MeshContainer> RobotBase::getWorkspace() {
+    return m_workspaceMesh;
 }
 
 /*!
@@ -301,13 +186,13 @@ unsigned int RobotBase::getDim() {
 }
 
 /*!
-*  \brief      Return number of the joints from the robot
+*  \brief      Return the RobotType
 *  \author     Sascha Kaden
-*  \param[out] number of joints
-*  \date       2016-06-30
+*  \param[out] RobotType
+*  \date       2016-08-25
 */
-unsigned int RobotBase::getNbJoints() {
-    return m_nbJoints;
+RobotType RobotBase::getRobotType() {
+    return m_robotType;
 }
 
 /*!
@@ -332,46 +217,4 @@ void RobotBase::setCollisionType(CollisionType type) {
 */
 CollisionType RobotBase::getCollisionType() {
     return m_collisionType;
-}
-
-/*!
-*  \brief      Convert deg angles to rad
-*  \author     Sascha Kaden
-*  \param[in]  Vec of deg angles
-*  \param[out] Vec of rad angles
-*  \date       2016-07-07
-*/
-Vec<float> RobotBase::degToRad(const Vec<float> deg) {
-    Vec<float> rad(m_dim);
-    for (unsigned int i = 0; i < m_dim; ++i)
-        rad[i] = deg[i] / 360 * m_pi;
-    return rad;
-}
-
-/*!
-*  \brief      Convert rmpl Vec to Eigen Array
-*  \author     Sascha Kaden
-*  \param[in]  Vec
-*  \param[out] Eigen Array
-*  \date       2016-07-07
-*/
-Eigen::ArrayXf RobotBase::VecToEigen(const Vec<float> &vec) {
-    Eigen::ArrayXf eigenVec(vec.getDim());
-    for (unsigned int i = 0; i < vec.getDim(); ++i)
-        eigenVec(i, 0) = vec[i];
-    return eigenVec;
-}
-
-/*!
-*  \brief      Convert Eigen Array to rmpl Vec
-*  \author     Sascha Kaden
-*  \param[in]  Eigen Array
-*  \param[out] Vec
-*  \date       2016-07-07
-*/
-Vec<float> RobotBase::EigenToVec(const Eigen::ArrayXf &eigenVec) {
-    Vec<float> vec((unsigned int)eigenVec.rows());
-    for (unsigned int i = 0; i < vec.getDim(); ++i)
-        vec[i] = eigenVec(i, 0);
-    return vec;
 }

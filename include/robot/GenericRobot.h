@@ -19,7 +19,7 @@
 #ifndef GENERICROBOT_H_
 #define GENERICROBOT_H_
 
-#include <robot/RobotBase.h>
+#include <robot/SerialRobot.h>
 
 namespace rmpl {
 
@@ -28,13 +28,13 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-07-24
 */
-class GenericRobot : public RobotBase {
+class GenericRobot : public SerialRobot {
   public:
-    GenericRobot(std::string name, unsigned int dimension, unsigned int numberOfJoints, const Vec<float> &alphaParams,
+    GenericRobot(std::string name, unsigned int dimension, const Vec<float> &alphaParams,
                  const Vec<float> &aParams, const Vec<float> dParams);
 
     Vec<float> directKinematic(const Vec<float> &angles);
-    std::vector<Eigen::Matrix4f> getTransformations(const Vec<float> &angles);
+    std::vector<Eigen::Matrix4f> getJointTrafos(const Vec<float> &angles);
 
   private:
 };
