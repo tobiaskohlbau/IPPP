@@ -60,10 +60,11 @@ set(SRCS
     source/core/Node.cpp
     source/core/Sampling.cpp
     source/core/TrajectoryPlanner.cpp
+    source/core/Utilities.cpp
     include/core/KDNode.hpp
     include/core/KDTree.hpp
     include/core/Vec.hpp
-        source/pathPlanner/List.cpp
+    source/core/List.cpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
     source/pathPlanner/PlannerOptions.cpp
@@ -72,11 +73,14 @@ set(SRCS
     source/pathPlanner/RRTPlanner.cpp
     source/pathPlanner/RRTOptions.cpp
     source/pathPlanner/StarRRTPlanner.cpp
-    source/robot/CadFileLoader.cpp
     source/robot/GenericRobot.cpp
     source/robot/Jaco.cpp
+    source/robot/Joint.cpp
+    source/robot/MeshContainer.cpp
+    source/robot/MobileRobot.cpp
     source/robot/PointRobot.cpp
-    source/robot/RobotBase.cpp)
+    source/robot/RobotBase.cpp
+    source/robot/SerialRobot.cpp)
 
 IF (${DEBUG_OUTPUT})
     add_definitions(-DDEBUG_OUTPUT)
