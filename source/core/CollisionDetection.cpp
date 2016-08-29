@@ -108,7 +108,7 @@ bool CollisionDetection::controlCollisionPointRobot(float x, float y) {
         return false;
     }
 
-    if (m_2DWorkspace(x, y) < 30) {
+    if (m_2DWorkspace(x, y) < 80) {
         return true;
     } else {
         return false;
