@@ -54,9 +54,9 @@ class RobotBase : public Base {
     void setBase(const std::shared_ptr<MeshContainer> &base);
     std::shared_ptr<MeshContainer> getBase();
 
-    bool setWorkspace(const std::shared_ptr<MeshContainer> &mesh);
+    void setWorkspace(const std::shared_ptr<MeshContainer> &mesh);
     std::shared_ptr<MeshContainer> getWorkspace();
-    bool set2DWorkspace(const Eigen::MatrixXi &space);
+    void set2DWorkspace(const Eigen::MatrixXi &space);
     Eigen::MatrixXi &get2DWorkspace();
 
     unsigned int getDim();

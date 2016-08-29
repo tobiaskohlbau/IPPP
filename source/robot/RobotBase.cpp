@@ -140,7 +140,7 @@ std::shared_ptr<MeshContainer> RobotBase::getBase() {
 *  \param[in]  file of workspace cad
 *  \date       2016-07-14
 */
-bool RobotBase::setWorkspace(const std::shared_ptr<MeshContainer> &mesh) {
+void RobotBase::setWorkspace(const std::shared_ptr<MeshContainer> &mesh) {
     m_workspaceMesh = mesh;
 }
 
@@ -160,9 +160,8 @@ shared_ptr<MeshContainer> RobotBase::getWorkspace() {
 *  \param[in]  2D workspace
 *  \date       2016-07-14
 */
-bool RobotBase::set2DWorkspace(const Eigen::MatrixXi &workspace) {
+void RobotBase::set2DWorkspace(const Eigen::MatrixXi &workspace) {
     m_2DWorkspace = workspace;
-    return true;
 }
 
 /*!
