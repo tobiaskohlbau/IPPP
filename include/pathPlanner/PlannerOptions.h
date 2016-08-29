@@ -25,6 +25,11 @@
 
 namespace rmpl {
 
+/*!
+* \brief   Class PlannerOptions determines all base options for the path planner
+* \author  Sascha Kaden
+* \date    2016-08-29
+*/
 class PlannerOptions : public Base {
   public:
     PlannerOptions(float trajectoryStepSize, TrajectoryMethod trajectoryMethod, SamplingMethod samplingMethod);

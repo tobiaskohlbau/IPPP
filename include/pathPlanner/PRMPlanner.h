@@ -19,7 +19,7 @@
 #ifndef PRMPLANNER_H_
 #define PRMPLANNER_H_
 
-#include <pathPlanner/List.h>
+#include <include/core/List.h>
 #include <pathPlanner/PRMOptions.h>
 #include <pathPlanner/Planner.h>
 

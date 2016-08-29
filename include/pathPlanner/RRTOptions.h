@@ -23,6 +23,11 @@
 
 namespace rmpl{
 
+/*!
+* \brief   Class RRTOptions determines special options for the RRTPlanner
+* \author  Sascha Kaden
+* \date    2016-08-29
+*/
 class RRTOptions : public PlannerOptions {
 public:
     RRTOptions(float stepSize, float trajectoryStepSize, TrajectoryMethod trajectoryMethod, SamplingMethod samplingMethod);
