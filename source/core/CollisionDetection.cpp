@@ -18,8 +18,6 @@
 
 #include <core/CollisionDetection.h>
 
-#include <Eigen/Geometry>
-
 #include <core/Logging.h>
 #include <core/Utilities.h>
 

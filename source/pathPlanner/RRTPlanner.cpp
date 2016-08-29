@@ -50,7 +50,6 @@ bool RRTPlanner::setInitNode(Node node) {
         Logging::warning("Init node could not be connected", this);
         return false;
     }
-    std::cout << "init" <<std::endl;
 
     m_initNode = initNode;
     this->m_graph->addNode(m_initNode);

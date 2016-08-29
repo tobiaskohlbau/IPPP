@@ -18,6 +18,8 @@
 
 #include <core/Utilities.h>
 
+#include <Eigen/Geometry>
+
 using namespace rmpl;
 
 /*!
@@ -34,6 +36,43 @@ void Utilities::decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector
 }
 
 /*!
+*  \brief      Convert pose Vec to transformation matrix
+*  \author     Sascha Kaden
+*  \param[in]  pose Vec
+*  \param[out] transformation matrix
+*  \date       2016-07-07
+*/
+Eigen::Matrix4f Utilities::poseVecToMat(const Vec<float> &pose) {
+    Eigen::Matrix3f R;
+    R = Eigen::AngleAxisf(pose[3] / 360 * pi(), Eigen::Vector3f::UnitX()) *
+        Eigen::AngleAxisf(pose[4] / 360 * pi(), Eigen::Vector3f::UnitY()) *
+        Eigen::AngleAxisf(pose[5] / 360 * pi(), Eigen::Vector3f::UnitZ());
+    Eigen::Matrix4f mat = Eigen::Matrix4f::Zero(4, 4);
+    mat.block<3, 3>(0, 0) = R;
+    for (int i = 0; i < 3; ++i)
+        mat(i, 3) = pose[i];
+    mat(3, 3) = 1;
+    return mat;
+}
+
+/*!
+*  \brief      Convert transformation matrix into poseVec
+*  \author     Sascha Kaden
+*  \param[in]  transformation matrix
+*  \param[out] pose Vec (angles)
+*  \date       2016-07-07
+*/
+Vec<float> Utilities::poseMatToVec(const Eigen::Matrix4f &pose) {
+    Vec<float> vec(pose(0, 3), pose(1, 3), pose(2, 3));
+    Eigen::Vector3f euler = pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2);
+    euler(0, 0) *= 360 / pi();
+    euler(1, 0) *= 360 / pi();
+    euler(2, 0) *= 360 / pi();
+    vec.append(EigenToVec(euler));
+    return vec;
+}
+
+/*!
 *  \brief      Convert deg angles to rad
 *  \author     Sascha Kaden
 *  \param[in]  Vec of deg angles
@@ -43,10 +82,9 @@ void Utilities::decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector
 Vec<float> Utilities::degToRad(const Vec<float> deg) {
     Vec<float> rad(deg.getDim());
     for (unsigned int i = 0; i < deg.getDim(); ++i)
-        rad[i] = deg[i] / 360 * pi();
+        rad[i] = deg[i] / 180 * pi();
     return rad;
 }
-
 
 /*!
 *  \brief      Convert rmpl Vec to Eigen Array

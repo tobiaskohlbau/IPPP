@@ -26,9 +26,9 @@
 
 #include <core/Base.h>
 #include <core/Node.h>
-#include <robot/RobotBase.h>
 #include <robot/MeshContainer.h>
 #include <robot/MobileRobot.h>
+#include <robot/RobotBase.h>
 #include <robot/SerialRobot.h>
 
 namespace rmpl {

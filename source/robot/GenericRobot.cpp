@@ -41,7 +41,7 @@ GenericRobot::GenericRobot(std::string name, unsigned int dimension, const Vec<f
 Vec<float> GenericRobot::directKinematic(const Vec<float> &angles) {
     std::vector<Eigen::Matrix4f> trafos = getJointTrafos(angles);
 
-    return getTcpPosition(trafos, this->m_pose);
+    return getTcpPosition(trafos);
 }
 
 /*!
