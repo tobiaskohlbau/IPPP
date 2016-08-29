@@ -129,6 +129,7 @@ bool MeshContainer::loadFile(const std::string filePath) {
     }
     m_pqpModel->EndModel();
     //m_pqpModel->MemUsage(1);
+    return true;
 }
 
 /*!
