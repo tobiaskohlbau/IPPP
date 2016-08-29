@@ -18,15 +18,13 @@ void printTime(clock_t begin, clock_t end) {
 
 void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-
     std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
     rmpl::StarRRTPlanner planner(robot, options);
-
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
-
     // compute the tree
+    std::cout <<"hello" <<std::endl;
     clock_t begin = std::clock();
-    planner.computeTree(25000, 2);
+    planner.computeTree(15000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
 

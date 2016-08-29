@@ -37,11 +37,10 @@ int main(int argc, char** argv) {
     }
     mat = Eigen::MatrixXi::Map(&entries[0], rows, cols);
 
-    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot());
-    robot->set2DWorkspace(mat);
     rmpl::Vec<float> minBoundary(0.0, 0.0);
     rmpl::Vec<float> maxBoundary(rows, cols);
-    robot->setBoundaries(minBoundary, maxBoundary);
+    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot(minBoundary, maxBoundary));
+    robot->set2DWorkspace(mat);
 
     std::shared_ptr<rmpl::PRMOptions> options(new rmpl::PRMOptions(40, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
     rmpl::PRMPlanner planner(robot, options);
