@@ -22,6 +22,8 @@
 #include <assert.h>
 #include <cstdint>
 #include <math.h>
+#include <memory>
+#include <iostream>
 
 namespace rmpl {
 
