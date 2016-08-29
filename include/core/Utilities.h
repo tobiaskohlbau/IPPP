@@ -31,6 +31,8 @@ class Utilities {
         return std::atan(1) * 4;
     }
     static void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector3f &t);
+    static Eigen::Matrix4f poseVecToMat(const Vec<float> &pose);
+    static Vec<float> poseMatToVec(const Eigen::Matrix4f &pose);
     static Vec<float> degToRad(const Vec<float> deg);
     static Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
     static Vec<float> EigenToVec(const Eigen::ArrayXf &eigenVec);

@@ -88,7 +88,6 @@ bool MeshContainer::loadFile(const std::string filePath) {
             vertices.push_back(vertice);
         }
 
-
         for (int j = 0; j < mesh->mNumFaces; ++j) {
             face.clear();
             for (int k = 0; k < mesh->mFaces[j].mNumIndices; ++k) {
@@ -99,7 +98,8 @@ bool MeshContainer::loadFile(const std::string filePath) {
             }
         }
     }
-
+    std::cout << "Vertices size:" << vertices.size() << std::endl;
+    std::cout << "Faces size:" << faces.size() << std::endl;
 
     m_fclModel = std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>(new fcl::BVHModel<fcl::OBBRSS<float>>());
     std::vector<fcl::Vector3f> verts;
@@ -128,7 +128,7 @@ bool MeshContainer::loadFile(const std::string filePath) {
         m_pqpModel->AddTri(p[0], p[1], p[2], i);
     }
     m_pqpModel->EndModel();
-    //m_pqpModel->MemUsage(1);
+    m_pqpModel->MemUsage(1);
     return true;
 }
 
