@@ -17,7 +17,7 @@
 //-------------------------------------------------------------------------//
 
 #include <algorithm>
-#include <pathPlanner/List.h>
+#include <include/core/List.h>
 
 using namespace rmpl;
 using std::shared_ptr;
