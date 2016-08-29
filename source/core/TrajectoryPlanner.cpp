@@ -37,8 +37,8 @@ TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, float stepS
     m_collision = collision;
 
     if (stepSize <= 0) {
-        Logging::warning("Step size has to be larger than 0!", this);
-        m_stepSize = -1;
+        Logging::warning("Step size has to be larger than 0, it has set to 0.1!", this);
+        m_stepSize = 0.1;
     } else {
         m_stepSize = stepSize;
     }
@@ -117,7 +117,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     Vec<float> u = target - source;
     Vec<float> uNorm = u / u.norm();
     Vec<float> temp(source);
-    while (std::abs(temp.norm() - target.norm()) > 1) {
+    while ((temp - target).sqNorm() > 0.2) {
         vecs.push_back(temp);
         temp += uNorm * stepSize;
     }
@@ -131,10 +131,12 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
 *  \date       2016-07-14
 */
 void TrajectoryPlanner::setStepSize(float stepSize) {
-    if (stepSize <= 0)
-        Logging::warning("Step size has to be larger than 0!", this);
-    else
-        m_stepSize = stepSize;
+    if (stepSize <= 0) {
+        m_stepSize = 0.1;
+        Logging::warning("Step size has to be larger than 0, it has set to 0.1!", this);
+    }
+    else {
+        m_stepSize = stepSize;}
 }
 
 /*!
