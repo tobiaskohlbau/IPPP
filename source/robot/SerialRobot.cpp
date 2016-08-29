@@ -22,6 +22,7 @@
 #include <core/Utilities.h>
 
 using namespace rmpl;
+using std::shared_ptr;
 
 /*!
 *  \brief      Constructor of the class RobotBase
@@ -75,30 +76,16 @@ Eigen::Matrix4f SerialRobot::getTrafo(float alpha, float a, float d, float q) {
 *  \param[out] TCP pose
 *  \date       2016-07-07
 */
-Vec<float> SerialRobot::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos, const Vec<float> basis) {
-    Eigen::Matrix3f R;
-    R = Eigen::AngleAxisf(basis[3], Eigen::Vector3f::UnitX()) * Eigen::AngleAxisf(basis[4], Eigen::Vector3f::UnitY()) *
-        Eigen::AngleAxisf(basis[5], Eigen::Vector3f::UnitZ());
-    Eigen::Matrix4f basisToRobot = Eigen::Matrix4f::Zero(4, 4);
-    basisToRobot.block<3, 3>(0, 0) = R;
-    for (int i = 0; i < 3; ++i)
-        basisToRobot(i, 3) = basis[i];
-    basisToRobot(3, 3) = 1;
-
+Vec<float> SerialRobot::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos) {
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
     Eigen::Matrix4f robotToTcp = trafos[0];
     for (int i = 1; i < 6; ++i)
         robotToTcp *= trafos[i];
 
-    Eigen::Matrix4f basisToTcp = basisToRobot * robotToTcp;
+    Eigen::Matrix4f basisToTcp = m_poseMat * robotToTcp;
 
-    // create tcp position and orientation vector
-    Vec<float> tcp(basisToTcp(0, 3), basisToTcp(1, 3), basisToTcp(2, 3));
-    Eigen::Vector3f euler = basisToTcp.block<3, 3>(0, 0).eulerAngles(0, 1, 2);
-    tcp.append(Utilities::EigenToVec(euler));
-
-    return tcp;
+    return Utilities::poseMatToVec(basisToTcp);
 }
 
 /*!
@@ -108,7 +95,7 @@ Vec<float> SerialRobot::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafo
 *  \param[out] MeshContainer
 *  \date       2016-08-25
 */
-std::shared_ptr<MeshContainer> SerialRobot::getMeshFromJoint(unsigned int jointIndex) {
+shared_ptr<MeshContainer> SerialRobot::getMeshFromJoint(unsigned int jointIndex) {
     if (jointIndex < m_joints.size()) {
         return m_joints[jointIndex].getMesh();
     } else {
@@ -123,8 +110,8 @@ std::shared_ptr<MeshContainer> SerialRobot::getMeshFromJoint(unsigned int jointI
 *  \param[out] vector of pqp models
 *  \date       2016-08-25
 */
-std::vector<std::shared_ptr<PQP_Model>> SerialRobot::getJointPqpModels() {
-    std::vector<std::shared_ptr<PQP_Model>> models;
+std::vector<shared_ptr<PQP_Model>> SerialRobot::getJointPqpModels() {
+    std::vector<shared_ptr<PQP_Model>> models;
     for (auto joint : m_joints)
         models.push_back(joint.getMesh()->getPqp());
     return models;
@@ -136,8 +123,8 @@ std::vector<std::shared_ptr<PQP_Model>> SerialRobot::getJointPqpModels() {
 *  \param[out] vector of fcl models
 *  \date       2016-08-25
 */
-std::vector<std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> SerialRobot::getJointFclModels() {
-    std::vector<std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> models;
+std::vector<shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> SerialRobot::getJointFclModels() {
+    std::vector<shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> models;
     for (auto joint : m_joints)
         models.push_back(joint.getMesh()->getFcl());
     return models;

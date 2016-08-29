@@ -18,9 +18,8 @@
 
 #include <robot/RobotBase.h>
 
-#include <Eigen/Geometry>
-
 #include <core/Logging.h>
+#include <core/Utilities.h>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -40,6 +39,7 @@ RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType ro
     m_dim = dim;
 
     m_pose = Vec<float>(0, 0, 0, 0, 0, 0);
+    m_poseMat = Utilities::poseVecToMat(m_pose);
     m_baseMesh = nullptr;
     m_workspaceMesh = nullptr;
 }
@@ -80,6 +80,7 @@ void RobotBase::setPose(const Vec<float> &pose) {
     }
 
     m_pose = pose;
+    m_poseMat = Utilities::poseVecToMat(pose);
 }
 
 /*!
@@ -99,17 +100,7 @@ Vec<float> RobotBase::getPose() {
 *  \date       2016-07-24
 */
 Eigen::Matrix4f RobotBase::getPoseMat() {
-    Eigen::Matrix3f R;
-    R = Eigen::AngleAxisf(m_pose[0], Eigen::Vector3f::UnitZ()) * Eigen::AngleAxisf(m_pose[1], Eigen::Vector3f::UnitX()) *
-          Eigen::AngleAxisf(m_pose[2], Eigen::Vector3f::UnitZ());
-
-    Eigen::Matrix4f T = Eigen::Matrix4f::Zero(4, 4);
-    T.block<3,3>(0,0) = R;
-    T(0,3) = m_pose[3];
-    T(1,3) = m_pose[4];
-    T(2,3) = m_pose[5];
-    T(3,3) = 1;
-    return T;
+    return m_poseMat;
 }
 
 /*!

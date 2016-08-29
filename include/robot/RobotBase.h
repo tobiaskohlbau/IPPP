@@ -73,6 +73,7 @@ class RobotBase : public Base {
     Vec<float> m_minBoundary;
     Vec<float> m_maxBoundary;
     Vec<float> m_pose;
+    Eigen::Matrix4f m_poseMat;
 
     std::shared_ptr<MeshContainer> m_baseMesh;
     std::shared_ptr<MeshContainer> m_workspaceMesh;
