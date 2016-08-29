@@ -54,7 +54,8 @@ class Vec {
 
     unsigned int getDim() const;
     bool empty() const;
-    T norm() const;
+    T norm();
+    T sqNorm();
     Vec<T> abs() const;
     T getDist(const Vec<T> &vec) const;
     T getSqDist(const Vec<T> &vec) const;
@@ -522,17 +523,31 @@ bool Vec<T>::empty() const {
 }
 
 /*!
-*  \brief      Return norm 2 of Vec
+*  \brief      Return norm L2 of Vec
 *  \author     Sascha Kaden
-*  \param[out] norm 2
+*  \param[out] norm L2
 *  \date       2016-05-24
 */
 template <typename T>
-T Vec<T>::norm() const {
+T Vec<T>::norm() {
     T norm = 0;
     for (unsigned int i = 0; i < m_dim; ++i)
         norm += (*this)[i] * (*this)[i];
     return sqrtf(norm);
+}
+
+/*!
+*  \brief      Return squared norm L2 of Vec
+*  \author     Sascha Kaden
+*  \param[out] squared norm L2
+*  \date       2016-05-24
+*/
+template <typename T>
+T Vec<T>::sqNorm() {
+    T norm = 0;
+    for (unsigned int i = 0; i < m_dim; ++i)
+        norm += (*this)[i] * (*this)[i];
+    return norm;
 }
 
 /*!
