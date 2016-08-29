@@ -20,7 +20,7 @@ MACRO(ADD_RMPL_EXAMPLE ex_name sources)
 
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/examples ${CMAKE_CURRENT_SOURCE_DIR})
     ADD_EXECUTABLE(${ex_name} ${sources})
-    TARGET_LINK_LIBRARIES(${ex_name} RobotMotionPlanning PQP ${OpenCV_LIBS})
+    TARGET_LINK_LIBRARIES(${ex_name} RobotMotionPlanning PQP ${fcl_LIBRARIES} assimp ${OpenCV_LIBS})
 
 ENDMACRO()
 
