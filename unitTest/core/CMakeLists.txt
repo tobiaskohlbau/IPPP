@@ -18,6 +18,8 @@
 
 set(MODULE "core")
 add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
-ADD_RMPL_TEST(vec)
+
 ADD_RMPL_TEST(node)
+ADD_RMPL_TEST(trajectoryPlanner)
 ADD_RMPL_TEST(utilities)
+ADD_RMPL_TEST(vec)
