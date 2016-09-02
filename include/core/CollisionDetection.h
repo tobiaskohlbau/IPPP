@@ -24,7 +24,7 @@
 #include <fcl/fcl.h>
 #include <fcl/narrowphase/collision.h>
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/Node.h>
 #include <robot/MeshContainer.h>
 #include <robot/MobileRobot.h>
@@ -38,7 +38,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class CollisionDetection : public Base {
+class CollisionDetection : public ModuleBase {
   public:
     CollisionDetection(const std::shared_ptr<RobotBase> &robot);
     bool controlVec(const Vec<float> &vec);

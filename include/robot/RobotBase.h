@@ -25,7 +25,7 @@
 #include <Eigen/Core>
 #include <PQP.h>
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/Vec.hpp>
 #include <robot/MeshContainer.h>
 
@@ -40,7 +40,7 @@ enum RobotType { serial, mobile };
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
-class RobotBase : public Base {
+class RobotBase : public ModuleBase {
   public:
     RobotBase(std::string name, CollisionType collisionType, RobotType robotType, unsigned int dim);
 

@@ -31,7 +31,7 @@ using std::shared_ptr;
 *  \param[in]  RobotType
 *  \date       2016-06-30
 */
-CollisionDetection::CollisionDetection(const shared_ptr<RobotBase> &robot) : Base("CollisionDetection") {
+CollisionDetection::CollisionDetection(const shared_ptr<RobotBase> &robot) : ModuleBase("CollisionDetection") {
     m_robot = robot;
 
     if (m_robot->getCollisionType() == CollisionType::twoD)

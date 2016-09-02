@@ -20,7 +20,7 @@
 
 using namespace rmpl;
 
-void Logging::info(std::string message, Base *module) {
+void Logging::info(std::string message, ModuleBase *module) {
     if (module == nullptr)
         std::cout << "Info "
                   << "Unknown"
@@ -29,7 +29,7 @@ void Logging::info(std::string message, Base *module) {
         std::cout << "Info " << module->getName() << ": " << message << std::endl;
 }
 
-void Logging::warning(std::string message, Base *module) {
+void Logging::warning(std::string message, ModuleBase *module) {
     if (module == nullptr)
         std::cout << "Warning "
                   << "Unknown"
@@ -38,7 +38,7 @@ void Logging::warning(std::string message, Base *module) {
         std::cout << "Warning " << module->getName() << ": " << message << std::endl;
 }
 
-void Logging::error(std::string message, Base *module) {
+void Logging::error(std::string message, ModuleBase *module) {
     if (module == nullptr)
         std::cout << "Error "
                   << "Unknown"
@@ -47,7 +47,7 @@ void Logging::error(std::string message, Base *module) {
         std::cout << "Error " << module->getName() << ": " << message << std::endl;
 }
 
-void Logging::debug(std::string message, Base *module) {
+void Logging::debug(std::string message, ModuleBase *module) {
 #ifdef DEBUG_OUTPUT
     if (module == nullptr)
         std::cout << "Debug "

@@ -19,7 +19,6 @@
 #ifndef LIST_H_
 #define LIST_H_
 
-#include <core/Base.h>
 #include <core/Node.h>
 
 namespace rmpl {
@@ -29,7 +28,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-08-09
 */
-class List : public Base {
+class List {
   public:
     List();
     void addNode(std::shared_ptr<Node> node);

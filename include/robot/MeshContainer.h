@@ -29,7 +29,7 @@
 #include <assimp/scene.h>
 #include <fcl/fcl.h>
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/Vec.hpp>
 
 namespace rmpl {
@@ -40,7 +40,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-08-25
 */
-class MeshContainer : Base {
+class MeshContainer {
   public:
     MeshContainer();
     MeshContainer(std::string filepath);

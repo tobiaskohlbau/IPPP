@@ -21,7 +21,7 @@
 
 #include <Eigen/Core>
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/CollisionDetection.h>
 #include <core/Graph.h>
 #include <core/Sampling.h>
@@ -36,7 +36,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-27
 */
-class Planner : public Base {
+class Planner : public ModuleBase {
   public:
     Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, std::shared_ptr<PlannerOptions> options);
 

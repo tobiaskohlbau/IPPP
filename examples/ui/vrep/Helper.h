@@ -13,12 +13,12 @@ extern "C" {
 #include "v_repConst.h"
 }
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/Vec.hpp>
 
 namespace rmpl {
 
-class Helper : public Base {
+class Helper : public ModuleBase {
   public:
     Helper(unsigned int dim);
     void start();

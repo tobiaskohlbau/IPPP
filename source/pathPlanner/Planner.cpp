@@ -30,7 +30,7 @@ using std::shared_ptr;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, shared_ptr<PlannerOptions> options) : Base(name) {
+Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, shared_ptr<PlannerOptions> options) : ModuleBase(name) {
     m_pathPlanned = false;
 
     m_robot = robot;

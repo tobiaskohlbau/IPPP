@@ -21,7 +21,7 @@
 
 #include <mutex>
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/KDNode.hpp>
 #include <core/Node.h>
 
@@ -36,7 +36,7 @@ enum Direction { left, right };
 * \date    2016-05-27
 */
 template <class T>
-class KDTree : public Base {
+class KDTree : public ModuleBase {
   public:
     KDTree();
     KDTree(std::vector<std::shared_ptr<Node>> &nodes);
@@ -65,7 +65,7 @@ class KDTree : public Base {
 *  \date       2016-06-02
 */
 template <class T>
-KDTree<T>::KDTree() : Base("KD Tree") {
+KDTree<T>::KDTree() : ModuleBase("KD Tree") {
 }
 
 /*!
@@ -75,7 +75,7 @@ KDTree<T>::KDTree() : Base("KD Tree") {
 *  \date       2016-07-18
 */
 template <class T>
-KDTree<T>::KDTree(std::vector<std::shared_ptr<Node>> &nodes) : Base("KD Tree") {
+KDTree<T>::KDTree(std::vector<std::shared_ptr<Node>> &nodes) : ModuleBase("KD Tree") {
     quickSort(nodes, 0, nodes.size() - 1, 0);
     m_root = std::shared_ptr<KDNode<T>>(new KDNode<T>(nodes[nodes.size() / 2]->getVec(), nodes[nodes.size() / 2]));
     m_root->axis = 0;

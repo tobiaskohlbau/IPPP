@@ -19,7 +19,7 @@
 #ifndef PLANNEROPTIONS_H_
 #define PLANNEROPTIONS_H_
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/Sampling.h>
 #include <core/TrajectoryPlanner.h>
 
@@ -30,7 +30,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-08-29
 */
-class PlannerOptions : public Base {
+class PlannerOptions : public ModuleBase {
   public:
     PlannerOptions(float trajectoryStepSize, TrajectoryMethod trajectoryMethod, SamplingMethod samplingMethod);
 

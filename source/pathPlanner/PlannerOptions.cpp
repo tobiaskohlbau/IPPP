@@ -30,7 +30,7 @@ using namespace rmpl;
 *  \date       2016-08-29
 */
 PlannerOptions::PlannerOptions(float trajectoryStepSize, TrajectoryMethod trajectoryMethod, SamplingMethod samplingMethod)
-    : Base("PlannerOptions") {
+    : ModuleBase("PlannerOptions") {
     if (trajectoryStepSize <= 0) {
         Logging::warning("Trajectory step size was smaller than 0 and was set to 1", this);
         m_trajectoryStepSize = 1;

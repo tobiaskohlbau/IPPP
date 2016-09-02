@@ -22,7 +22,7 @@
 #include <assert.h>
 #include <vector>
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/Edge.h>
 #include <core/Vec.hpp>
 
@@ -34,7 +34,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
-class Node : public Base {
+class Node : public ModuleBase {
   public:
     Node();
     Node(float x);

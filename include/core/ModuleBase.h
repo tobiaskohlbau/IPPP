@@ -16,35 +16,34 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/Base.h>
+#ifndef MODULEBASE_H_
+#define MODULEBASE_H_
 
-using namespace rmpl;
+#include <cstdint>
+#include <iostream>
+#include <memory>
+#include <string>
 
-/*!
-*  \brief      Standard constructor of the class Base
-*  \author     Sasch Kaden
-*  \date       2016-05-30
-*/
-Base::Base() {
-    m_name = "Unknown";
-}
+namespace rmpl {
 
-/*!
-*  \brief      Constructor of the class Base
-*  \author     Sasch Kaden
-*  \param[in]  name
-*  \date       2016-05-30
-*/
-Base::Base(const std::string &name) {
-    m_name = name;
-}
+enum class Message { info, warning, error, debug };
 
 /*!
-*  \brief      Return name
-*  \author     Sasch Kaden
-*  \param[out] name
-*  \date       2016-05-30
+* \brief   Base class of all modules
+* \detail  Will be used to send messages and adds the name of the class
+* \author  Sascha Kaden
+* \date    2016-06-02
 */
-std::string Base::getName() {
-    return m_name;
-}
+class ModuleBase {
+  public:
+    ModuleBase();
+    ModuleBase(const std::string &name);
+    std::string getName();
+
+  protected:
+    std::string m_name;
+};
+
+} /* namespace rmpl */
+
+#endif /* BASE_H_ */
