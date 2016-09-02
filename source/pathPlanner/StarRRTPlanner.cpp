@@ -38,7 +38,7 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
     std::vector<shared_ptr<Node>> nearNodes;
     chooseParent(newNode, nearestNode, nearNodes);
 
-    if (this->m_collision->controlCollision(newNode->getVec())) {
+    if (this->m_collision->controlVec(newNode->getVec())) {
         newNode = nullptr;
         return;
     } else if (!this->m_planner->controlTrajectory(newNode, nearestNode)) {
@@ -114,7 +114,7 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
 *  \date       2016-05-27
 */
 bool StarRRTPlanner::connectGoalNode(Node goal) {
-    if (this->m_collision->controlCollision(goal.getVec()))
+    if (this->m_collision->controlVec(goal.getVec()))
         return false;
 
     shared_ptr<Node> goalNode(new Node(goal));

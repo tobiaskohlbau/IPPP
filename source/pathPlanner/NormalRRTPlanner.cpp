@@ -36,7 +36,7 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
     Vec<float> newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getVec());
     newNode = shared_ptr<Node>(new Node(newVec));
 
-    if (this->m_collision->controlCollision(newNode->getVec())) {
+    if (this->m_collision->controlVec(newNode->getVec())) {
         newNode = nullptr;
         return;
     } else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
@@ -59,7 +59,7 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
 *  \date       2016-05-27
 */
 bool NormalRRTPlanner::connectGoalNode(Node goal) {
-    if (this->m_collision->controlCollision(goal.getVec()))
+    if (this->m_collision->controlVec(goal.getVec()))
         return false;
 
     shared_ptr<Node> goalNode(new Node(goal));
