@@ -19,7 +19,7 @@
 #ifndef TRAJECTORYPLANNER_H_
 #define TRAJECTORYPLANNER_H_
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/CollisionDetection.h>
 
 namespace rmpl {
@@ -34,7 +34,7 @@ enum class TrajectoryMethod {
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class TrajectoryPlanner : public Base {
+class TrajectoryPlanner : public ModuleBase {
   public:
     TrajectoryPlanner(const TrajectoryMethod &method, float stepSize, const std::shared_ptr<CollisionDetection> &collision);
 

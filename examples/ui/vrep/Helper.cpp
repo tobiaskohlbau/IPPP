@@ -4,7 +4,7 @@
 
 using namespace rmpl;
 
-Helper::Helper(unsigned int dim) : Base("VREP Helper") {
+Helper::Helper(unsigned int dim) : ModuleBase("VREP Helper") {
     m_dim = dim;
     m_clientId = -1;
     m_jointHandles = Vec<simxInt>(m_dim);

@@ -19,16 +19,16 @@
 #ifndef LOGGING_H_
 #define LOGGING_H_
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 
 namespace rmpl {
 
 class Logging {
   public:
-    static void info(std::string message, Base *module = nullptr);
-    static void warning(std::string message, Base *module = nullptr);
-    static void error(std::string message, Base *module = nullptr);
-    static void debug(std::string message, Base *module = nullptr);
+    static void info(std::string message, ModuleBase *module = nullptr);
+    static void warning(std::string message, ModuleBase *module = nullptr);
+    static void error(std::string message, ModuleBase *module = nullptr);
+    static void debug(std::string message, ModuleBase *module = nullptr);
 };
 
 } /* namespace rmpl */

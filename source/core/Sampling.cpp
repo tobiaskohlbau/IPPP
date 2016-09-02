@@ -29,7 +29,7 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-24
 */
-Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method) : Base("Sampling") {
+Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method) : ModuleBase("Sampling") {
     m_method = method;
     m_robot = robot;
 

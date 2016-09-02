@@ -4,7 +4,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/Node.h>
 
 /*!
@@ -12,7 +12,7 @@
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class Drawing : public rmpl::Base {
+class Drawing : public rmpl::ModuleBase {
   public:
     static void drawTree2D(const std::vector<std::shared_ptr<rmpl::Node>> &nodes, cv::Mat &image,
                            const rmpl::Vec<uint8_t> &colorNode, const rmpl::Vec<uint8_t> &colorEdge, int thickness);

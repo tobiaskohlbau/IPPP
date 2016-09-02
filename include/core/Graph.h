@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <mutex>
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/KDTree.hpp>
 #include <core/Node.h>
 
@@ -33,7 +33,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class Graph : public Base {
+class Graph : public ModuleBase {
   public:
     Graph();
     void addNode(const std::shared_ptr<Node> &node);

@@ -27,7 +27,7 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-08-09
 */
-List::List() : Base("List") {
+List::List() {
 }
 
 /*!

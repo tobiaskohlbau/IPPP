@@ -32,7 +32,7 @@ using std::shared_ptr;
 */
 TrajectoryPlanner::TrajectoryPlanner(const TrajectoryMethod &method, float stepSize,
                                      const shared_ptr<CollisionDetection> &collision)
-    : Base("TrajectoryPlanner") {
+    : ModuleBase("TrajectoryPlanner") {
     m_method = method;
     m_collision = collision;
 

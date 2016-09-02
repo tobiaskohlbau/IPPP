@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <core/Base.h>
+#include <core/ModuleBase.h>
 #include <core/Vec.hpp>
 #include <robot/RobotBase.h>
 
@@ -36,7 +36,7 @@ enum SamplingMethod { randomly, uniform, hammersley, halton };
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
-class Sampling : public Base {
+class Sampling : public ModuleBase {
   public:
     Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
     Vec<float> getSample(unsigned int dim, int index, int nbSamples);

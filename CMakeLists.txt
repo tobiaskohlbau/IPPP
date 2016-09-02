@@ -57,7 +57,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 set(SRCS
     source/core/CollisionDetection.cpp
-    source/core/Base.cpp
+    source/core/ModuleBase.cpp
     source/core/Edge.cpp
     source/core/Graph.cpp
     source/core/Logging.cpp

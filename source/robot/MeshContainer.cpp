@@ -27,7 +27,7 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-MeshContainer::MeshContainer() : Base("MeshContainer") {
+MeshContainer::MeshContainer() {
     m_fclModel = nullptr;
     m_pqpModel = nullptr;
 }
@@ -38,7 +38,7 @@ MeshContainer::MeshContainer() : Base("MeshContainer") {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-MeshContainer::MeshContainer(std::string filePath) : Base("MeshContainer") {
+MeshContainer::MeshContainer(std::string filePath) {
     m_fclModel = nullptr;
     m_pqpModel = nullptr;
     loadFile(filePath);
@@ -51,8 +51,7 @@ MeshContainer::MeshContainer(std::string filePath) : Base("MeshContainer") {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-MeshContainer::MeshContainer(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>& fclModel, std::shared_ptr<PQP_Model>& pqpModel)
-    : Base("MeshContainer") {
+MeshContainer::MeshContainer(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>& fclModel, std::shared_ptr<PQP_Model>& pqpModel) {
     m_fclModel = fclModel;
     m_pqpModel = pqpModel;
 }
@@ -73,12 +72,12 @@ bool MeshContainer::loadFile(const std::string filePath) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filePath, aiProcessPreset_TargetRealtime_MaxQuality);
     if (!scene) {
-        Logging::error("Mesh could not be loaded", this);
+        Logging::error("Mesh could not be loaded");
         return false;
     }
 
     int numMeshes = scene->mNumMeshes;
-    Logging::info("Scene has: " + std::to_string(numMeshes) + " meshes", this);
+    Logging::info("Scene has: " + std::to_string(numMeshes) + " meshes");
 
     for (int i = 0; i < numMeshes; ++i) {
         const aiMesh* mesh = scene->mMeshes[i];
@@ -150,6 +149,6 @@ std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> MeshContainer::getFcl() {
 */
 std::shared_ptr<PQP_Model> MeshContainer::getPqp() {
     if (m_pqpModel == nullptr)
-        Logging::warning("PQP model is empty", this);
+        Logging::warning("PQP model is empty");
     return m_pqpModel;
 }

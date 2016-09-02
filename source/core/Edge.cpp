@@ -27,7 +27,7 @@ using namespace rmpl;
 *  \author     Sasch Kaden
 *  \date       2016-05-30
 */
-Edge::Edge() : Base("Edge") {
+Edge::Edge() : ModuleBase("Edge") {
     m_length = -1;
 }
 
@@ -38,7 +38,7 @@ Edge::Edge() : Base("Edge") {
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-Edge::Edge(shared_ptr<Node> &target, float length) : Base("Edge") {
+Edge::Edge(shared_ptr<Node> &target, float length) : ModuleBase("Edge") {
     m_target = target;
     m_length = length;
 }
