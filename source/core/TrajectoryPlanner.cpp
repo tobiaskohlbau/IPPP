@@ -85,7 +85,8 @@ bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<fl
         return false;
     }
 
-    if (m_collision->controlCollision(computeTrajectory(source, target)))
+    std::vector<Vec<float>> path = computeTrajectory(source, target);
+    if (m_collision->controlTrajectory(path))
         return false;
 
     return true;

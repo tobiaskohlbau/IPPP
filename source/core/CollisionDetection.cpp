@@ -47,12 +47,12 @@ CollisionDetection::CollisionDetection(const shared_ptr<RobotBase> &robot) : Bas
 *  \param[out] binary result of collision
 *  \date       2016-05-25
 */
-bool CollisionDetection::controlCollision(const Vec<float> &vec) {
+bool CollisionDetection::controlVec(const Vec<float> &vec) {
     assert(vec.getDim() == m_robot->getDim());
 
     switch (m_robot->getCollisionType()) {
         case CollisionType::twoD:
-            return controlCollisionPointRobot(vec[0], vec[1]);
+            return checkPointRobot(vec[0], vec[1]);
         case CollisionType::pqp:
             return controlCollisionPqp(vec);
         case CollisionType::fcl:
@@ -68,7 +68,7 @@ bool CollisionDetection::controlCollision(const Vec<float> &vec) {
 *  \param[out] binary result of collision
 *  \date       2016-05-25
 */
-bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
+bool CollisionDetection::controlTrajectory(std::vector<Vec<float>> &vecs) {
     if (vecs.size() == 0)
         return false;
 
@@ -77,7 +77,7 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
     switch (m_robot->getCollisionType()) {
         case CollisionType::twoD:
             for (int i = 0; i < vecs.size(); ++i)
-                if (controlCollisionPointRobot(vecs[i][0], vecs[i][1]))
+                if (checkPointRobot(vecs[i][0], vecs[i][1]))
                     return true;
             break;
         case CollisionType::pqp:
@@ -102,7 +102,7 @@ bool CollisionDetection::controlCollision(const std::vector<Vec<float>> &vecs) {
 *  \param[out] binary result of collision
 *  \date       2016-06-30
 */
-bool CollisionDetection::controlCollisionPointRobot(float x, float y) {
+bool CollisionDetection::checkPointRobot(float x, float y) {
     if (m_2DWorkspace.rows() == -1) {
         Logging::warning("Empty workspace!", this);
         return false;

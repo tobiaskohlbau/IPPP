@@ -46,7 +46,7 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
 */
 bool RRTPlanner::setInitNode(Node node) {
     shared_ptr<Node> initNode(new Node(node));
-    if (this->m_collision->controlCollision(initNode->getVec())) {
+    if (this->m_collision->controlVec(initNode->getVec())) {
         Logging::warning("Init node could not be connected", this);
         return false;
     }

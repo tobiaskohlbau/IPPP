@@ -41,8 +41,8 @@ namespace rmpl {
 class CollisionDetection : public Base {
   public:
     CollisionDetection(const std::shared_ptr<RobotBase> &robot);
-    bool controlCollision(const Vec<float> &vec);
-    bool controlCollision(const std::vector<Vec<float>> &vec);
+    bool controlVec(const Vec<float> &vec);
+    bool controlTrajectory(std::vector<Vec<float>> &vec);
 
   private:
     bool checkPqpSerialRobot(const Vec<float> &vec);
@@ -57,7 +57,7 @@ class CollisionDetection : public Base {
     bool checkFcl(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &model1,
                   std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &model2, Eigen::Matrix3f &R1, Eigen::Matrix3f &R2,
                   Eigen::Vector3f &t1, Eigen::Vector3f &t2);
-    bool controlCollisionPointRobot(float x, float y);
+    bool checkPointRobot(float x, float y);
 
     std::shared_ptr<RobotBase> m_robot;
 
