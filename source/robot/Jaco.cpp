@@ -28,7 +28,7 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco() : SerialRobot("Jaco", CollisionType::fcl, 6) {
+Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
     m_alpha = Vec<float>(Utilities::pi() / 2, Utilities::pi(), Utilities::pi() / 2, 0.95993, 0.95993, Utilities::pi());
     m_a = Vec<float>(0, 410, 0, 0, 0, 0);
     m_d = Vec<float>(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
