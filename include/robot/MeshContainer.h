@@ -50,7 +50,7 @@ class MeshContainer {
     std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> getFcl();
     std::shared_ptr<PQP_Model> getPqp();
 
-  private:
+
     std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> m_fclModel;
     std::shared_ptr<PQP_Model> m_pqpModel;
 };
