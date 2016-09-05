@@ -45,24 +45,34 @@ class CollisionDetection : public ModuleBase {
     bool controlTrajectory(std::vector<Vec<float>> &vec);
 
   private:
-    bool checkPqpSerialRobot(const Vec<float> &vec);
-    bool checkPqpMobileRobot(const Vec<float> &vec);
-    bool checkFclSerialRobot(const Vec<float> &vec);
-    bool checkFclMobileRobot(const Vec<float> &vec);
+    bool controlCollisionMesh(const Vec<float> &vec);
+    bool checkSerialRobot(const Vec<float> &vec);
+    bool checkMobileRobot(const Vec<float> &vec);
+    bool checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &base, Eigen::Matrix3f R[],
+                   Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT);
+    bool checkMesh(std::vector<std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> &models,
+                   std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> & base, Eigen::Matrix3f R[], Eigen::Matrix3f &poseR,
+                   Eigen::Vector3f t[], Eigen::Vector3f &poseT);
 
-    bool controlCollisionPqp(const Vec<float> &vec);
-    bool controlCollisionFcl(const Vec<float> &vec);
-    bool checkPQP(std::shared_ptr<PQP_Model> &model1, std::shared_ptr<PQP_Model> &model2, Eigen::Matrix3f &R1, Eigen::Matrix3f &R2,
-                  Eigen::Vector3f &t1, Eigen::Vector3f &t2);
-    bool checkFcl(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &model1,
+    bool checkPQP(std::shared_ptr<PQP_Model> &model1, std::shared_ptr<PQP_Model> &model2, Eigen::Matrix3f &R1,
+                  Eigen::Matrix3f &R2, Eigen::Vector3f &t1, Eigen::Vector3f &t2);
+    bool checkFCL(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &model1,
                   std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &model2, Eigen::Matrix3f &R1, Eigen::Matrix3f &R2,
                   Eigen::Vector3f &t1, Eigen::Vector3f &t2);
+
     bool checkPointRobot(float x, float y);
 
     std::shared_ptr<RobotBase> m_robot;
 
     Eigen::MatrixXi m_2DWorkspace;
     std::shared_ptr<MeshContainer> m_workspace;
+
+    // models for collision detection
+    fcl::CollisionObject<float> *o1;
+    fcl::CollisionObject<float> *o2;
+    // identity matrix for origin rotation and zero translation vector for the workspace
+    Eigen::Matrix3f m_zeroR;
+    Eigen::Vector3f m_zeroT;
 };
 
 } /* namespace rmpl */
