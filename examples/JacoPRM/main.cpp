@@ -18,7 +18,7 @@ void printTime(clock_t begin, clock_t end) {
 int main(int argc, char** argv) {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
 
-    std::shared_ptr<rmpl::PRMOptions> options(new rmpl::PRMOptions(30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    std::shared_ptr<rmpl::PRMOptions> options(new rmpl::PRMOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
     rmpl::PRMPlanner planner(robot, options);
 
     clock_t begin = std::clock();
