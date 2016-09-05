@@ -118,7 +118,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     Vec<float> u = target - source;
     Vec<float> uNorm = u / u.norm();
     Vec<float> temp(source);
-    while ((temp - target).sqNorm() > 0.2) {
+    while ((temp - target).sqNorm() > 0.5) {
         vecs.push_back(temp);
         temp += uNorm * stepSize;
     }
