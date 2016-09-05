@@ -18,13 +18,13 @@ void printTime(clock_t begin, clock_t end) {
 
 void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
-    rmpl::StarRRTPlanner planner(robot, options);
+    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    rmpl::NormalRRTPlanner planner(robot, options);
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(15000, 2);
+    planner.computeTree(25000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
 
@@ -57,11 +57,11 @@ void treeConnection() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
 
     // create two trees from init and from goal
-    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(20, 0.2, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(20, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
     rmpl::StarRRTPlanner plannerGoalNode(robot, options);
     rmpl::StarRRTPlanner plannerInitNode(robot, options);
 
-    // set properties to the plannerss
+    // set properties to the planners
     plannerInitNode.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
     plannerGoalNode.setInitNode(rmpl::Node(275, 167.5, 57.4, 241, 82.7, 75.5));
 
@@ -109,7 +109,7 @@ void treeConnection() {
         plannerInitNode.connectGoalNode(goal);
         plannerGoalNode.connectGoalNode(goal);
 
-        std::vector<rmpl::Vec<float>> pathAngles = plannerInitNode.getPath(1, true);
+        std::vector<rmpl::Vec<float>> pathAngles = plannerInitNode.getPath(5, true);
         std::vector<rmpl::Vec<float>> temp = plannerGoalNode.getPath(5, true);
         pathAngles.insert(pathAngles.end(), temp.begin(), temp.end());
 
