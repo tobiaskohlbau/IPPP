@@ -105,7 +105,20 @@ shared_ptr<MeshContainer> SerialRobot::getMeshFromJoint(unsigned int jointIndex)
 }
 
 /*!
-*  \brief      Return pqp mode vector from joints
+*  \brief      Return MeshContainer vector from joints
+*  \author     Sascha Kaden
+*  \param[out] vector of MeshContainer
+*  \date       2016-08-25
+*/
+std::vector<shared_ptr<MeshContainer>> SerialRobot::getJointModels() {
+    std::vector<shared_ptr<MeshContainer>> models;
+    for (auto joint : m_joints)
+        models.push_back(joint.getMesh());
+    return models;
+}
+
+/*!
+*  \brief      Return pqp model vector from joints
 *  \author     Sascha Kaden
 *  \param[out] vector of pqp models
 *  \date       2016-08-25

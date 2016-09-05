@@ -40,6 +40,7 @@ public:
 
     void setJoints(std::vector<Joint> joints);
     std::shared_ptr<MeshContainer> getMeshFromJoint(unsigned int jointIndex);
+    std::vector<std::shared_ptr<MeshContainer>> getJointModels();
     std::vector<std::shared_ptr<PQP_Model>> getJointPqpModels();
     std::vector<std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> getJointFclModels();
     unsigned int getNbJoints();
