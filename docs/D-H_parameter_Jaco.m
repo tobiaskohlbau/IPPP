@@ -15,10 +15,19 @@ d4b = D3 + sa/s2a * D4;
 d5b = sa/s2a * D4 + sa/s2a * D5;
 d6b = sa/s2a * D5 + D6;
 
-alpha = [pi/2, pi, pi/2, 2*aa, 2*aa, pi]
-a     = [0, D2, 0, 0, 0, 0]
-d     = [D1, 0, -e2, -d4b, -d5b, -d6b]
-q     = sym('q', [1 6]);
+alpha = [pi/2, pi, pi/2, 2*aa, 2*aa, pi];
+a     = [0, D2, 0, 0, 0, 0];
+d     = [D1, 0, -e2, -d4b, -d5b, -d6b];
+%q     = sym('q', [1 6]);
+q     = [180, 180, 180, 180, 180, 180];
+q(1) = -q(1);
+q(2) = q(2) - 90;
+q(3) = q(3) + 90;
+q(5) = q(5) - 180;
+q(6) = q(6) + 180;
+for i=1:1:6
+    q(i) = q(i) * pi / 180;
+end
 
 % cos(q)  -sin(q)*cos(alpha)   sin(q)*sin(alpha)  a*cos(q)
 % sin(q)   cos(q)*cos(alpha)  -cos(q)*sin(alpha)  a*sin(q)
@@ -27,25 +36,32 @@ q     = sym('q', [1 6]);
 %
 
 for i=1:1:6
-    sinAlpha = round(sin(alpha(i)),3);
-    cosAlpha = round(cos(alpha(i)),3);
+    sinAlpha = sin(alpha(i));
+    cosAlpha = cos(alpha(i));
     A(:,:,i) = [cos(q(i)), -sin(q(i))*cosAlpha,  sin(q(i))*sinAlpha a(i)*cos(q(i)); ...
                 sin(q(i)),  cos(q(i))*cosAlpha, -cos(q(i))*sinAlpha a(i)*sin(q(i)); ...
                 0, sinAlpha, cosAlpha, d(i); ...
                 0, 0, 0, 1];
 end
 
-for i=1:1:6
-    for j=1:1:4
-        for k=1:1:4
-            if ~(isa((A(k,j,i)),'sym'))
-                if (A(k,j,i) < 0.001)
-                    A(k,j,i) = 0;
-                end
-            end
-        end
-    end
-end
+%for i=1:1:6
+%    for j=1:1:4
+%        for k=1:1:4
+%            if ~(isa((A(k,j,i)),'sym'))
+%                if (A(k,j,i) < 0.001)
+%                    A(k,j,i) = 0;
+%                end
+%            end
+%        end
+%    end
+%end
+
+A1 = A(:,:,1);
+A2 = A1 * A(:,:,2);
+A3 = A2 * A(:,:,3);
+A4 = A3 * A(:,:,4);
+A5 = A4 * A(:,:,5);
+A6 = A5 * A(:,:,6);
 
 T = A(:,:,1) * A(:,:,2) * A(:,:,3) * A(:,:,4) * A(:,:,5) * A(:,:,6);
-simplify(T)
+%simplify(T)
