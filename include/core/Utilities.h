@@ -20,6 +20,7 @@
 #define UTILITIES_H_
 
 #include <Eigen/Core>
+#include <PQP.h>
 
 #include <core/Vec.hpp>
 
@@ -35,6 +36,7 @@ class Utilities {
     static Vec<float> poseMatToVec(const Eigen::Matrix4f &pose);
     static Vec<float> degToRad(const Vec<float> deg);
     static Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
+    static Eigen::ArrayXf VecToEigen(const Vec<PQP_REAL> &vec);
     static Vec<float> EigenToVec(const Eigen::ArrayXf &eigenVec);
 };
 
