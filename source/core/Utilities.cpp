@@ -82,7 +82,8 @@ Vec<float> Utilities::poseMatToVec(const Eigen::Matrix4f &pose) {
 Vec<float> Utilities::degToRad(const Vec<float> deg) {
     Vec<float> rad(deg.getDim());
     for (unsigned int i = 0; i < deg.getDim(); ++i)
-        rad[i] = deg[i] / 180 * pi();
+        rad[i] = deg[i] * pi() / 360;
+    // TODO: control conversation between rad and deg
     return rad;
 }
 
@@ -94,6 +95,20 @@ Vec<float> Utilities::degToRad(const Vec<float> deg) {
 *  \date       2016-07-07
 */
 Eigen::ArrayXf Utilities::VecToEigen(const Vec<float> &vec) {
+    Eigen::ArrayXf eigenVec(vec.getDim());
+    for (unsigned int i = 0; i < vec.getDim(); ++i)
+        eigenVec(i, 0) = vec[i];
+    return eigenVec;
+}
+
+/*!
+*  \brief      Convert rmpl Vec to Eigen Array
+*  \author     Sascha Kaden
+*  \param[in]  Vec
+*  \param[out] Eigen Array
+*  \date       2016-07-07
+*/
+Eigen::ArrayXf Utilities::VecToEigen(const Vec<PQP_REAL> &vec) {
     Eigen::ArrayXf eigenVec(vec.getDim());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         eigenVec(i, 0) = vec[i];
