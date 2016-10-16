@@ -18,7 +18,12 @@
 
 #include <robot/MeshContainer.h>
 
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
 #include <core/Logging.h>
+#include <core/Utilities.h>
 
 using namespace rmpl;
 
@@ -66,37 +71,64 @@ MeshContainer::MeshContainer(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>&
 bool MeshContainer::loadFile(const std::string filePath) {
     Vec<PQP_REAL> vertice;
     std::vector<Vec<PQP_REAL>> vertices;
+    int num;
     std::vector<int> face;
     std::vector<std::vector<int>> faces;
 
-    Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(filePath, aiProcessPreset_TargetRealtime_MaxQuality);
-    if (!scene) {
-        Logging::error("Mesh could not be loaded");
-        return false;
-    }
-
-    int numMeshes = scene->mNumMeshes;
-    Logging::info("Scene has: " + std::to_string(numMeshes) + " meshes");
-
-    for (int i = 0; i < numMeshes; ++i) {
-        const aiMesh* mesh = scene->mMeshes[i];
-
-        for (int j = 0; j < mesh->mNumVertices; ++j) {
-            vertice = Vec<PQP_REAL>(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
-            vertices.push_back(vertice);
-        }
-
-        for (int j = 0; j < mesh->mNumFaces; ++j) {
-            face.clear();
-            for (int k = 0; k < mesh->mFaces[j].mNumIndices; ++k) {
-                face.push_back(mesh->mFaces[j].mIndices[k]);
-                face.push_back(mesh->mFaces[j].mIndices[k]);
-                face.push_back(mesh->mFaces[j].mIndices[k]);
+    if (true) {
+        std::ifstream input(filePath);
+        for (std::string line; getline(input, line);) {
+            if (line.at(0) == 'v') {
+                line = line.substr(2);
+                std::stringstream iss(line);
+                vertice = Vec<PQP_REAL>((unsigned int)3);
+                for (int i = 0; i < 3; ++i) {
+                    iss >> vertice[i];
+                }
+                vertices.push_back(vertice);
+            } else if (line.at(0) == 'f') {
+                line = line.substr(2);
+                std::stringstream iss(line);
+                face.clear();
+                for (int i = 0; i < 3; ++i) {
+                    iss >> num;
+                    face.push_back(num - 1);
+                }
                 faces.push_back(face);
             }
         }
+    } else {
+        Assimp::Importer importer;
+        const aiScene* scene = importer.ReadFile(filePath, aiProcessPreset_TargetRealtime_MaxQuality);
+        if (!scene) {
+            Logging::error("Mesh could not be loaded");
+            return false;
+        }
+
+        int numMeshes = scene->mNumMeshes;
+        Logging::info("Scene has: " + std::to_string(numMeshes) + " meshes");
+
+        for (int i = 0; i < numMeshes; ++i) {
+            const aiMesh* mesh = scene->mMeshes[i];
+
+            for (int j = 0; j < mesh->mNumVertices; ++j) {
+                vertice = Vec<PQP_REAL>(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
+                vertices.push_back(vertice);
+            }
+
+            for (int j = 0; j < mesh->mNumFaces; ++j) {
+                face.clear();
+                for (int k = 0; k < mesh->mFaces[j].mNumIndices; ++k) {
+                    face.push_back(mesh->mFaces[j].mIndices[k]);
+                    face.push_back(mesh->mFaces[j].mIndices[k]);
+                    face.push_back(mesh->mFaces[j].mIndices[k]);
+                    faces.push_back(face);
+                }
+            }
+        }
     }
+    m_vertices = vertices;
+    m_faces = faces;
     std::cout << "Vertices size:" << vertices.size() << std::endl;
     std::cout << "Faces size:" << faces.size() << std::endl;
 
@@ -129,6 +161,28 @@ bool MeshContainer::loadFile(const std::string filePath) {
     m_pqpModel->EndModel();
     m_pqpModel->MemUsage(1);
     return true;
+}
+
+bool MeshContainer::saveObj(const std::string path, Eigen::Matrix3f R, Eigen::Vector3f t) {
+    std::vector<Vec<float>> verts;
+    for (auto vertice : m_vertices) {
+        Eigen::Vector3f temp = Utilities::VecToEigen(vertice);
+        temp = R * temp + t;
+        verts.push_back(Vec<float>(temp(0, 0), temp(1, 0), temp(2, 0)));
+    }
+
+    std::ofstream myfile;
+    myfile.open(path);
+    for (auto vertice : verts) {
+        myfile << "v " << vertice[0] << " " << vertice[1] << " " << vertice[2];
+        myfile << std::endl;
+    }
+    for (auto face : m_faces) {
+        myfile << "f " << face[0] + 1 << " " << face[1] + 1 << " " << face[2] + 1;
+        myfile << std::endl;
+    }
+    myfile.close();
+    return 0;
 }
 
 /*!
