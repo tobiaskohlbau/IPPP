@@ -31,6 +31,8 @@ class Utilities {
     static constexpr double pi() {
         return std::atan(1) * 4;
     }
+
+    static Eigen::Matrix4f createT(Eigen::Matrix3f &R, Eigen::Vector3f &t);
     static void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector3f &t);
     static Eigen::Matrix4f poseVecToMat(const Vec<float> &pose);
     static Vec<float> poseMatToVec(const Eigen::Matrix4f &pose);
