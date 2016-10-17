@@ -42,11 +42,11 @@ int main(int argc, char** argv) {
     std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot(minBoundary, maxBoundary));
     robot->set2DWorkspace(mat);
 
-    std::shared_ptr<rmpl::PRMOptions> options(new rmpl::PRMOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    std::shared_ptr<rmpl::PRMOptions> options(new rmpl::PRMOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::uniform));
     rmpl::PRMPlanner planner(robot, options);
 
     clock_t begin = std::clock();
-    planner.startSamplingPhase(7000, 2);
+    planner.startSamplingPhase(4000, 2);
     planner.startPlannerPhase(2);
     clock_t end = std::clock();
     printTime(begin, end);
@@ -60,8 +60,8 @@ int main(int argc, char** argv) {
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    //Drawing::drawGraph2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
-    Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
+    Drawing::drawGraph2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
+    //Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
 
     if (connected) {
         std::vector<rmpl::Vec<float>> pathPoints = planner.getPath(0.5, true);
