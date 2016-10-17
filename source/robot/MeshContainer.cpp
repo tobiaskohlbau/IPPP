@@ -118,12 +118,9 @@ bool MeshContainer::loadFile(const std::string filePath) {
 
             for (int j = 0; j < mesh->mNumFaces; ++j) {
                 face.clear();
-                for (int k = 0; k < mesh->mFaces[j].mNumIndices; ++k) {
+                for (int k = 0; k < mesh->mFaces[j].mNumIndices; ++k)
                     face.push_back(mesh->mFaces[j].mIndices[k]);
-                    face.push_back(mesh->mFaces[j].mIndices[k]);
-                    face.push_back(mesh->mFaces[j].mIndices[k]);
-                    faces.push_back(face);
-                }
+                faces.push_back(face);
             }
         }
     }
@@ -163,11 +160,20 @@ bool MeshContainer::loadFile(const std::string filePath) {
     return true;
 }
 
-bool MeshContainer::saveObj(const std::string path, Eigen::Matrix3f R, Eigen::Vector3f t) {
+/*!
+*  \brief      Save transformed mesh by the passed T to passed path as obj file
+*  \author     Sascha Kaden
+*  \param[in]  path for obj file
+*  \param[in]  transformations matrix for mesh
+*  \param[out] binary result
+*  \date       2016-07-14
+*/
+bool MeshContainer::saveObj(const std::string path, Eigen::Matrix4f T) {
     std::vector<Vec<float>> verts;
     for (auto vertice : m_vertices) {
-        Eigen::Vector3f temp = Utilities::VecToEigen(vertice);
-        temp = R * temp + t;
+        vertice.append(1);
+        Eigen::Vector4f temp = Utilities::VecToEigen(vertice);
+        temp = T * temp;
         verts.push_back(Vec<float>(temp(0, 0), temp(1, 0), temp(2, 0)));
     }
 

@@ -46,11 +46,10 @@ class MeshContainer {
     MeshContainer(std::string filepath);
     MeshContainer(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &fclModel, std::shared_ptr<PQP_Model> &pqpModel);
     bool loadFile(const std::string filePath);
-    bool saveObj(const std::string path, Eigen::Matrix3f R, Eigen::Vector3f t);
+    bool saveObj(const std::string path, Eigen::Matrix4f T);
 
     std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> getFcl();
     std::shared_ptr<PQP_Model> getPqp();
-
 
     std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> m_fclModel;
     std::shared_ptr<PQP_Model> m_pqpModel;

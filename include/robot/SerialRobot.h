@@ -39,11 +39,14 @@ public:
     Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos);
 
     void setJoints(std::vector<Joint> joints);
+    unsigned int getNbJoints();
+
     std::shared_ptr<MeshContainer> getMeshFromJoint(unsigned int jointIndex);
-    std::vector<std::shared_ptr<MeshContainer>> getJointModels();
+    std::vector<std::shared_ptr<MeshContainer>> getJointMeshs();
     std::vector<std::shared_ptr<PQP_Model>> getJointPqpModels();
     std::vector<std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> getJointFclModels();
-    unsigned int getNbJoints();
+
+    void saveConfiguration(Eigen::Matrix4f As[]);
 protected:
     std::vector<Joint> m_joints;
     Vec<float> m_alpha;

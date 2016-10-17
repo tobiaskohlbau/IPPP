@@ -110,7 +110,7 @@ Eigen::Matrix4f RobotBase::getPoseMat() {
 *  \param[out] true if loading was feasible
 *  \date       2016-06-30
 */
-void RobotBase::setBase(const std::shared_ptr<MeshContainer> &mesh) {
+void RobotBase::setBaseMesh(const std::shared_ptr<MeshContainer> &mesh) {
     m_baseMesh = mesh;
 }
 
@@ -121,7 +121,7 @@ void RobotBase::setBase(const std::shared_ptr<MeshContainer> &mesh) {
 *  \param[out] PQP cad model
 *  \date       2016-06-30
 */
-std::shared_ptr<MeshContainer> RobotBase::getBase() {
+std::shared_ptr<MeshContainer> RobotBase::getBaseMesh() {
     return m_baseMesh;
 }
 
