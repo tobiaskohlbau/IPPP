@@ -51,8 +51,8 @@ class RobotBase : public ModuleBase {
     Vec<float> getPose();
     Eigen::Matrix4f getPoseMat();
 
-    void setBase(const std::shared_ptr<MeshContainer> &base);
-    std::shared_ptr<MeshContainer> getBase();
+    void setBaseMesh(const std::shared_ptr<MeshContainer> &baseMesh);
+    std::shared_ptr<MeshContainer> getBaseMesh();
 
     void setWorkspace(const std::shared_ptr<MeshContainer> &mesh);
     std::shared_ptr<MeshContainer> getWorkspace();

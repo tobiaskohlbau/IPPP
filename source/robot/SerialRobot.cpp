@@ -110,7 +110,7 @@ shared_ptr<MeshContainer> SerialRobot::getMeshFromJoint(unsigned int jointIndex)
 *  \param[out] vector of MeshContainer
 *  \date       2016-08-25
 */
-std::vector<shared_ptr<MeshContainer>> SerialRobot::getJointModels() {
+std::vector<shared_ptr<MeshContainer>> SerialRobot::getJointMeshs() {
     std::vector<shared_ptr<MeshContainer>> models;
     for (auto joint : m_joints)
         models.push_back(joint.getMesh());
@@ -151,4 +151,20 @@ std::vector<shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> SerialRobot::getJoint
 */
 unsigned int SerialRobot::getNbJoints() {
     return m_joints.size();
+}
+
+/*!
+*  \brief      Saves the configuration of the robot by obj files in the working directory
+*  \author     Sascha Kaden
+*  \param[in]  transformation matrizes
+*  \date       2016-06-30
+*/
+void SerialRobot::saveConfiguration(Eigen::Matrix4f As[]) {
+//    if (m_baseMesh != nullptr)
+//        m_baseMesh->saveObj("base.obj", poseR);
+
+    for (int i = 0; i < getDim(); ++i) {
+        getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", As[i]);
+        std::cout<< As[i] << std::endl <<std::endl;
+    }
 }
