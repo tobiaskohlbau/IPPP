@@ -20,6 +20,7 @@
 #define SAMPLING_H_
 
 #include <math.h>
+#include <random>
 #include <stdlib.h>
 #include <time.h>
 
@@ -29,7 +30,7 @@
 
 namespace rmpl {
 
-enum SamplingMethod { randomly, uniform, hammersley, halton };
+enum SamplingMethod { randomly, uniform, standardDistribution, poisson };
 
 /*!
 * \brief   Class Sampling creates sample vecs with the passed method
@@ -41,6 +42,8 @@ class Sampling : public ModuleBase {
     Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
     Vec<float> getSample(unsigned int dim, int index, int nbSamples);
 
+    bool setMeanOfDistribution(const Vec<float> &mean);
+
   private:
     bool checkBoudaries();
 
@@ -48,6 +51,11 @@ class Sampling : public ModuleBase {
     Vec<float> m_maxBoundary;
     SamplingMethod m_method;
     std::shared_ptr<RobotBase> m_robot;
+
+    std::random_device rd;
+    std::mt19937 m_generator;
+    std::vector<std::normal_distribution<float>> m_distNormal;
+    std::vector<std::uniform_real_distribution<float>> m_distUniform;
 };
 
 } /* namespace rmpl */
