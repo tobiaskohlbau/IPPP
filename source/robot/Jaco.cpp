@@ -34,10 +34,13 @@ Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
     m_d = Vec<float>(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
     m_pose = Vec<float>(0,0,0,0,0,0);
-    m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_base_fixed_origin.obj"));
-
-    std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/link_1_fixed_origin.obj"));
+    //m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_base_fixed_origin.obj"));
+    std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/link_base_fixed_origin.obj"));
     Joint joint(0, 360, mesh);
+    m_joints.push_back(joint);
+
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_1_fixed_origin.obj"));
+    joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
     mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_2_fixed_origin.obj"));
     joint = Joint(42, 318, mesh);
@@ -51,9 +54,9 @@ Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
     mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_5_fixed_origin.obj"));
     joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_hand_fixed_origin.obj"));
-    joint = Joint(0, 360, mesh);
-    m_joints.push_back(joint);
+    //mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_hand_fixed_origin.obj"));
+    //joint = Joint(0, 360, mesh);
+    //m_joints.push_back(joint);
     m_minBoundary = Vec<float>(0, 42, 17, 0, 0, 0);
     m_maxBoundary = Vec<float>(360, 318, 343, 360, 360, 360);
 }
@@ -85,7 +88,7 @@ std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Vec<float> &angles) {
 
     std::vector<Eigen::Matrix4f> trafos;
     // create transformation matrizes
-    for (int i = 0; i < 6; ++i)
+    for (int i = 0; i < getDim(); ++i)
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));
 
     return trafos;
