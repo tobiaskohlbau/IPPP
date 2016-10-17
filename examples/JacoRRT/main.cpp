@@ -20,8 +20,9 @@ void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
     std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
     rmpl::NormalRRTPlanner planner(robot, options);
+    //planner.setInitNode(rmpl::Node(0, 0, 0, 0, 0, 0));
     planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
-
+    return;
     // compute the tree
     clock_t begin = std::clock();
     planner.computeTree(25000, 2);

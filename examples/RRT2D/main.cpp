@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
 #include <Eigen/Core>
 
 #include <pathPlanner/NormalRRTPlanner.h>
@@ -18,9 +19,9 @@ void printTime(clock_t begin, clock_t end) {
 
 int main(int argc, char** argv) {
     cv::Mat freeWorkspace, obstacleWorkspace;
-    obstacleWorkspace = cv::imread("spaces/labyrinth.png", CV_LOAD_IMAGE_GRAYSCALE);
-    //obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-
+    // obstacleWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    // obstacleWorkspace = cv::imread("spaces/labyrinth.png", CV_LOAD_IMAGE_GRAYSCALE);
+    obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     cv::Mat dst;
     obstacleWorkspace.convertTo(dst, CV_32SC1);
 
@@ -42,23 +43,20 @@ int main(int argc, char** argv) {
     rmpl::Vec<float> maxBoundary(rows, cols);
     std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot(minBoundary, maxBoundary));
     robot->set2DWorkspace(mat);
-
-    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+    std::shared_ptr<rmpl::RRTOptions> options(
+        new rmpl::RRTOptions(50, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
     rmpl::StarRRTPlanner planner(robot, options);
-    rmpl::NormalRRTPlanner planner12(robot, options);
-
+    rmpl::NormalRRTPlanner planner1(robot, options);
     // compute the tree
     clock_t begin = std::clock();
     planner.setInitNode(rmpl::Node(50.0, 30.0));
-    planner.computeTree(11000, 2);
+    planner.computeTree(4000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
-
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
 
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
-
     rmpl::Node goal(870.0, 870.0);
     bool connected = planner.connectGoalNode(goal);
     Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
@@ -70,5 +68,6 @@ int main(int argc, char** argv) {
 
     cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
     cv::imshow("pathPlanner", image);
+    cv::imwrite("result.png", image);
     cv::waitKey(0);
 }
