@@ -51,6 +51,7 @@ bool RRTPlanner::setInitNode(Node node) {
         return false;
     }
 
+    m_sampler->setMeanOfDistribution(node.getVec());
     m_initNode = initNode;
     this->m_graph->addNode(m_initNode);
     return true;

@@ -37,6 +37,15 @@ Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod metho
     m_maxBoundary = m_robot->getMaxBoundary();
 
     srand(time(NULL));
+
+    m_generator = std::mt19937(rd());
+    for (unsigned int i = 0; i < m_robot->getDim(); ++i) {
+        std::normal_distribution<float> dist1(0, 500);
+        m_distNormal.push_back(dist1);
+
+        std::uniform_real_distribution<float> dist2(m_minBoundary[i], m_maxBoundary[i]);
+        m_distUniform.push_back(dist2);
+    }
 }
 
 /*!
@@ -53,13 +62,38 @@ Vec<float> Sampling::getSample(unsigned int dim, int index, int nbSamples) {
     if (!checkBoudaries())
         return vec;
 
-    if (true)    // m_method == SamplingMethod::randomly)
-    {
+    if (m_method == SamplingMethod::standardDistribution) {
+        float number;
+        for (unsigned int i = 0; i < dim; ++i) {
+            do {
+                number = m_distNormal[i](m_generator);
+            } while ((number <= m_minBoundary[i]) || (number >= m_maxBoundary[i]));
+            vec[i] = number;
+        }
+        return vec;
+    } else if (m_method == SamplingMethod::uniform) {
+        for (unsigned int i = 0; i < dim; ++i)
+            vec[i] = m_distUniform[i](m_generator);
+        return vec;
+    } else {
         for (unsigned int i = 0; i < dim; ++i)
             vec[i] = m_minBoundary[i] + (float)(rand() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
         return vec;
     }
-    return vec;
+}
+
+bool Sampling::setMeanOfDistribution(const Vec<float> &mean) {
+    if (mean.getDim() != m_robot->getDim()) {
+        Logging::warning("Wrong dimension of mean vector", this);
+        return false;
+    }
+
+    m_distNormal.clear();
+    for (unsigned int i = 0; i < m_robot->getDim(); ++i) {
+        std::normal_distribution<float> distribution(mean[i], m_maxBoundary[i] - m_minBoundary[i]);
+        m_distNormal.push_back(distribution);
+    }
+    return true;
 }
 
 /*!
