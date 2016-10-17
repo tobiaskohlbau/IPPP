@@ -127,9 +127,9 @@ bool CollisionDetection::checkSerialRobot(const Vec<float> &vec) {
     std::vector<Eigen::Matrix4f> jointTrafos = robot->getJointTrafos(vec);
     Eigen::Matrix4f pose = robot->getPoseMat();
     Eigen::Matrix4f As[jointTrafos.size()];
-    As[0] = (jointTrafos[0]);
+    As[0] = pose * jointTrafos[0];
     for (int i = 1; i < jointTrafos.size(); ++i)
-        As[i] = (As[i - 1] * jointTrafos[i]);
+        As[i] = As[i - 1] * jointTrafos[i];
 
     Eigen::Matrix3f poseR;
     Eigen::Vector3f poseT;
@@ -141,13 +141,20 @@ bool CollisionDetection::checkSerialRobot(const Vec<float> &vec) {
         Utilities::decomposeT(As[i], rot[i], trans[i]);
 
     if (m_robot->getCollisionType() == CollisionType::pqp) {
-        shared_ptr<PQP_Model> baseMesh = robot->getBase()->m_pqpModel;
-        std::vector<shared_ptr<PQP_Model>> models = robot->getJointPqpModels();
-        return checkMesh(models, baseMesh, rot, poseR, trans, poseT);
+        shared_ptr<PQP_Model> baseMesh = nullptr;
+        if (robot->getBaseMesh() != nullptr)
+            baseMesh = robot->getBaseMesh()->m_pqpModel;
+        std::vector<shared_ptr<PQP_Model>> jointMeshes = robot->getJointPqpModels();
+
+        robot->saveConfiguration(As);
+
+        return checkMesh(jointMeshes, baseMesh, rot, poseR, trans, poseT);
     } else {
-        shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> baseMesh = robot->getBase()->m_fclModel;
-        std::vector<shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> models = robot->getJointFclModels();
-        return checkMesh(models, baseMesh, rot, poseR, trans, poseT);
+        shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> baseMesh = nullptr;
+        if (robot->getBaseMesh() != nullptr)
+            baseMesh = robot->getBaseMesh()->m_fclModel;
+        std::vector<shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> jointMeshes = robot->getJointFclModels();
+        return checkMesh(jointMeshes, baseMesh, rot, poseR, trans, poseT);
     }
     return false;
 }
@@ -171,9 +178,11 @@ bool CollisionDetection::checkMobileRobot(const Vec<float> &vec) {
 bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &base,
                                    Eigen::Matrix3f R[], Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT) {
     // control collision between base and joints
-    for (int i = 1; i < m_robot->getDim(); ++i) {
-        if (checkPQP(base, models[i], poseR, R[i], poseT, t[i]))
-            return true;
+    if (base != nullptr) {
+        for (int i = 1; i < m_robot->getDim(); ++i) {
+            if (checkPQP(base, models[i], poseR, R[i], poseT, t[i]))
+                return true;
+        }
     }
 
     // control collision of the robot joints with themselves
@@ -187,12 +196,12 @@ bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<PQP_Model>> &mode
                 std::cout << "A" << i << ": ";
                 std::cout << "Euler angles: " << std::endl << R[i] << std::endl;
                 std::cout << "Translation: " << t[i].transpose() << std::endl;
-                robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", R[i], t[i]);
+                robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", Utilities::createT(R[i], t[i]));
                 r = R[j].eulerAngles(0, 1, 2);
                 std::cout << "A" << j << ": ";
                 std::cout << "Euler angles: " << std::endl << R[j] << std::endl;
                 std::cout << "Translation: " << t[j].transpose() << std::endl << std::endl;
-                robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", R[j], t[j]);
+                robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", Utilities::createT(R[i], t[i]));
 #endif
                 return true;
             }
@@ -232,9 +241,11 @@ bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<fcl::BVHModel<fcl
                                    std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &base, Eigen::Matrix3f R[],
                                    Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT) {
     // control collision between base and joints
-    for (int i = 1; i < m_robot->getDim(); ++i) {
-        if (checkFCL(base, models[i], poseR, R[i], poseT, t[i]))
-            return true;
+    if (base != nullptr) {
+        for (int i = 1; i < m_robot->getDim(); ++i) {
+            if (checkFCL(base, models[i], poseR, R[i], poseT, t[i]))
+                return true;
+        }
     }
 
     // control collision of the robot joints with themself
