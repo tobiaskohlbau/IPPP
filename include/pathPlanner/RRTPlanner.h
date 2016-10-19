@@ -33,7 +33,7 @@ class RRTPlanner : public Planner {
   public:
     RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, std::shared_ptr<RRTOptions> options);
 
-    bool computePath(Vec<float> &start, Vec<float> &goal, unsigned int numNodes, unsigned int numThreads);
+    bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads);
 
     bool setInitNode(Vec<float> start);
     bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);

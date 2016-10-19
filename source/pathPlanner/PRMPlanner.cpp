@@ -39,6 +39,13 @@ PRMPlanner::PRMPlanner(const shared_ptr<RobotBase> &robot, std::shared_ptr<PRMOp
     m_rangeSize = options->getRangeSize();
 }
 
+bool PRMPlanner::computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads) {
+    startSamplingPhase(numNodes, numThreads);
+    startPlannerPhase(numThreads);
+
+    return queryPath(start, goal);
+}
+
 /*!
 *  \brief      Sampling phase of the PRMPlanner
 *  \author     Sascha Kaden

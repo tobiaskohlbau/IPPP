@@ -34,6 +34,8 @@ class PRMPlanner : public Planner {
   public:
     PRMPlanner(const std::shared_ptr<RobotBase> &robot, std::shared_ptr<PRMOptions> options);
 
+    bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads);
+
     void startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     void startPlannerPhase(unsigned int nbOfThreads = 1);
 
