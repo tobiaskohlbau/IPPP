@@ -44,12 +44,13 @@ int main(int argc, char** argv) {
     std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot(minBoundary, maxBoundary));
     robot->set2DWorkspace(mat);
     std::shared_ptr<rmpl::RRTOptions> options(
-        new rmpl::RRTOptions(50, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::uniform));
+        new rmpl::RRTOptions(50, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::standardDistribution));
     rmpl::StarRRTPlanner planner(robot, options);
     rmpl::NormalRRTPlanner planner1(robot, options);
     // compute the tree
     clock_t begin = std::clock();
-    planner.setInitNode(rmpl::Node(50.0, 30.0));
+    rmpl::Vec<float> start(50.0, 30.0);
+    planner.setInitNode(start);
     planner.computeTree(4000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
@@ -57,7 +58,7 @@ int main(int argc, char** argv) {
 
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
-    rmpl::Node goal(870.0, 870.0);
+    rmpl::Vec<float> goal(870.0, 870.0);
     bool connected = planner.connectGoalNode(goal);
     Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
 

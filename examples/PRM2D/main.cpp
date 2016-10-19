@@ -51,8 +51,8 @@ int main(int argc, char** argv) {
     clock_t end = std::clock();
     printTime(begin, end);
 
-    rmpl::Node init(50, 30);
-    rmpl::Node goal(870.0, 870.0);
+    rmpl::Vec<float> init(50, 30);
+    rmpl::Vec<float> goal(870.0, 870.0);
     bool connected = planner.queryPath(init, goal);
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();

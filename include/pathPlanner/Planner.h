@@ -21,9 +21,9 @@
 
 #include <Eigen/Core>
 
-#include <core/ModuleBase.h>
 #include <core/CollisionDetection.h>
 #include <core/Graph.h>
+#include <core/ModuleBase.h>
 #include <core/Sampling.h>
 #include <core/TrajectoryPlanner.h>
 #include <pathPlanner/PlannerOptions.h>
@@ -39,6 +39,8 @@ namespace rmpl {
 class Planner : public ModuleBase {
   public:
     Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, std::shared_ptr<PlannerOptions> options);
+
+    //virtual bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads) = 0;
 
     std::vector<std::shared_ptr<Node>> getGraphNodes();
     virtual std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing) = 0;

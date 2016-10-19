@@ -20,8 +20,9 @@ void simpleRRT() {
     std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
     std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
     rmpl::NormalRRTPlanner planner(robot, options);
+    rmpl::Vec<float> start(180, 180, 180, 180, 180, 180);
     //planner.setInitNode(rmpl::Node(0, 0, 0, 0, 0, 0));
-    planner.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
+    planner.setInitNode(start);
     return;
     // compute the tree
     clock_t begin = std::clock();
@@ -29,7 +30,7 @@ void simpleRRT() {
     clock_t end = std::clock();
     printTime(begin, end);
 
-    bool connected = planner.connectGoalNode(rmpl::Node(275, 167.5, 57.4, 241, 82.7, 75.5));
+    bool connected = planner.connectGoalNode(rmpl::Vec<float>(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
     std::vector<rmpl::Vec<float>> graphPoints;
@@ -63,8 +64,8 @@ void treeConnection() {
     rmpl::StarRRTPlanner plannerInitNode(robot, options);
 
     // set properties to the planners
-    plannerInitNode.setInitNode(rmpl::Node(180, 180, 180, 180, 180, 180));
-    plannerGoalNode.setInitNode(rmpl::Node(275, 167.5, 57.4, 241, 82.7, 75.5));
+    plannerInitNode.setInitNode(rmpl::Vec<float>(180, 180, 180, 180, 180, 180));
+    plannerGoalNode.setInitNode(rmpl::Vec<float>(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     // compute the tree
     clock_t begin = std::clock();
@@ -74,19 +75,18 @@ void treeConnection() {
     printTime(begin, end);
 
     // get random sample from the first pathPlanner and try to connect to both planners
-    rmpl::Node goal;
+    rmpl::Vec<float> goal;
     bool connected = false;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < 10000; ++i) {
         rmpl::Vec<float> sample = plannerInitNode.getSamplePoint();
-        // sample.print();
-        rmpl::Node node(sample);
-        bool planner1Connected = plannerInitNode.connectGoalNode(node);
-        bool planner2Connected = plannerGoalNode.connectGoalNode(node);
+
+        bool planner1Connected = plannerInitNode.connectGoalNode(sample);
+        bool planner2Connected = plannerGoalNode.connectGoalNode(sample);
         if (planner1Connected && planner2Connected) {
             float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
             if (cost < minCost) {
-                goal = node;
+                goal = sample;
                 connected = true;
             }
         }

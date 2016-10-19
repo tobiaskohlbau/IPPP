@@ -113,8 +113,8 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
 *  \param[out] true, if the connection was possible
 *  \date       2016-05-27
 */
-bool StarRRTPlanner::connectGoalNode(Node goal) {
-    if (this->m_collision->controlVec(goal.getVec()))
+bool StarRRTPlanner::connectGoalNode(Vec<float> goal) {
+    if (this->m_collision->controlVec(goal))
         return false;
 
     shared_ptr<Node> goalNode(new Node(goal));

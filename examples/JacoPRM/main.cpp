@@ -27,8 +27,8 @@ int main(int argc, char** argv) {
     clock_t end = std::clock();
     printTime(begin, end);
 
-    bool connected = planner.queryPath(rmpl::Node(180, 180, 180, 180, 180, 180),
-                                       rmpl::Node(275, 167.5, 57.4, 241, 82.7, 75.5));
+    bool connected = planner.queryPath(rmpl::Vec<float>(180, 180, 180, 180, 180, 180),
+                                       rmpl::Vec<float>(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
     std::vector<rmpl::Vec<float>> graphPoints;

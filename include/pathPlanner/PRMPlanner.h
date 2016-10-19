@@ -37,7 +37,7 @@ class PRMPlanner : public Planner {
     void startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     void startPlannerPhase(unsigned int nbOfThreads = 1);
 
-    bool queryPath(Node startNode, Node goalNode);
+    bool queryPath(Vec<float> start, Vec<float> goal);
     bool aStar(std::shared_ptr<Node> sourceNode, std::shared_ptr<Node> targetNode);
     void expandNode(std::shared_ptr<Node> currentNode);
 
@@ -47,7 +47,7 @@ class PRMPlanner : public Planner {
   protected:
     void samplingPhase(unsigned int nbOfNodes);
     void plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex);
-    std::shared_ptr<Node> connectNode(Node &node);
+    std::shared_ptr<Node> connectNode(Vec<float> &node);
 
     float m_rangeSize;
     std::vector<std::shared_ptr<Node>> m_nodePath;
