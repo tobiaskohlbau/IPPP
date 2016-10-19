@@ -50,16 +50,18 @@ int main(int argc, char** argv) {
     // compute the tree
     clock_t begin = std::clock();
     rmpl::Vec<float> start(50.0, 30.0);
-    planner.setInitNode(start);
-    planner.computeTree(4000, 2);
+    rmpl::Vec<float> goal(870.0, 870.0);
+    // planner.setInitNode(start);
+    // planner.computeTree(4000, 2);
+    // bool connected = planner.connectGoalNode(goal);
+    bool connected = planner.computePath(start, goal, 4000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
     std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
 
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
-    rmpl::Vec<float> goal(870.0, 870.0);
-    bool connected = planner.connectGoalNode(goal);
+
     Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
 
     if (connected) {

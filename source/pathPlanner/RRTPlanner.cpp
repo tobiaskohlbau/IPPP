@@ -37,8 +37,13 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
     m_goalNode = nullptr;
 }
 
-bool RRTPlanner::computePath(Vec<float> &start, Vec<float> &goal, unsigned int numNodes, unsigned int numThreads) {
-    if (setInitNode(start));
+bool RRTPlanner::computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads) {
+    if (!setInitNode(start))
+        return false;
+
+    computeTree(numNodes, numThreads);
+
+    return connectGoalNode(goal);
 }
 
 /*!
