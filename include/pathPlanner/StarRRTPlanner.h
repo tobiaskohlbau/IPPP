@@ -35,7 +35,7 @@ class StarRRTPlanner : public RRTPlanner {
     StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, std::shared_ptr<RRTOptions> options)
         : RRTPlanner("RRT* Planner", robot, options) {
     }
-    bool connectGoalNode(Node goal);
+    bool connectGoalNode(Vec<float> goal);
 
   protected:
     void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);

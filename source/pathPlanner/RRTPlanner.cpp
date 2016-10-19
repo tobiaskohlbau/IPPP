@@ -37,6 +37,10 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
     m_goalNode = nullptr;
 }
 
+bool RRTPlanner::computePath(Vec<float> &start, Vec<float> &goal, unsigned int numNodes, unsigned int numThreads) {
+    if (setInitNode(start));
+}
+
 /*!
 *  \brief      Set init Node of the RRTPlanner
 *  \author     Sascha Kaden
@@ -44,14 +48,14 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
 *  \param[out] true, if set was possible
 *  \date       2016-05-27
 */
-bool RRTPlanner::setInitNode(Node node) {
-    shared_ptr<Node> initNode(new Node(node));
-    if (this->m_collision->controlVec(initNode->getVec())) {
+bool RRTPlanner::setInitNode(Vec<float> start) {
+    if (this->m_collision->controlVec(start)) {
         Logging::warning("Init node could not be connected", this);
         return false;
     }
 
-    m_sampler->setMeanOfDistribution(node.getVec());
+    shared_ptr<Node> initNode(new Node(start));
+    m_sampler->setMeanOfDistribution(start);
     m_initNode = initNode;
     this->m_graph->addNode(m_initNode);
     return true;

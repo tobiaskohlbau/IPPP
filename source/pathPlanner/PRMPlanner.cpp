@@ -140,14 +140,14 @@ void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeI
 *  \param[out] result of query
 *  \date       2016-08-09
 */
-bool PRMPlanner::queryPath(Node startNode, Node goalNode) {
-    if (startNode.empty() || goalNode.empty()) {
+bool PRMPlanner::queryPath(Vec<float> start, Vec<float> goal) {
+    if (start.empty() || goal.empty()) {
         Logging::warning("Start or goal node is empty", this);
         return false;
     }
 
-    shared_ptr<Node> sourceNode = connectNode(startNode);
-    shared_ptr<Node> targetNode = connectNode(goalNode);
+    shared_ptr<Node> sourceNode = connectNode(start);
+    shared_ptr<Node> targetNode = connectNode(goal);
     if (sourceNode == nullptr || targetNode == nullptr) {
         Logging::info("Start or goal Node could not be connected", this);
         return false;
@@ -157,7 +157,7 @@ bool PRMPlanner::queryPath(Node startNode, Node goalNode) {
 
     if (pathPlanned) {
         Logging::info("Path could be planned", this);
-        m_nodePath.push_back(shared_ptr<Node>(new Node(goalNode)));
+        m_nodePath.push_back(shared_ptr<Node>(new Node(goal)));
         shared_ptr<Node> temp = targetNode;
         int count = 0;
         while (temp != nullptr) {
@@ -165,7 +165,7 @@ bool PRMPlanner::queryPath(Node startNode, Node goalNode) {
             m_nodePath.push_back(temp);
             temp = temp->getParent();
         }
-        m_nodePath.push_back(shared_ptr<Node>(new Node(startNode)));
+        m_nodePath.push_back(shared_ptr<Node>(new Node(start)));
         return true;
     } else {
         Logging::warning("Path could NOT be planned", this);
@@ -180,13 +180,13 @@ bool PRMPlanner::queryPath(Node startNode, Node goalNode) {
 *  \param[in]  nearest Node
 *  \date       2016-08-09
 */
-shared_ptr<Node> PRMPlanner::connectNode(Node &node) {
+shared_ptr<Node> PRMPlanner::connectNode(Vec<float> &node) {
     std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(shared_ptr<Node>(new Node(node)), m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
     shared_ptr<Node> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (this->m_planner->controlTrajectory(node, *nearNodes[i]) && node.getDist(nearNodes[i]) < dist) {
-            dist = node.getDist(nearNodes[i]);
+        if (this->m_planner->controlTrajectory(node, *nearNodes[i]) && node.getDist(nearNodes[i]->getVec()) < dist) {
+            dist = node.getDist(nearNodes[i]->getVec());
             nearestNode = nearNodes[i];
         }
     }
