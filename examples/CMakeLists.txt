@@ -24,6 +24,15 @@ MACRO(ADD_RMPL_EXAMPLE ex_name sources)
 
 ENDMACRO()
 
+MACRO(ADD_RMPL_QT_EXAMPLE ex_name sources UIS_HDRS)
+
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/examples ${CMAKE_CURRENT_SOURCE_DIR})
+    ADD_EXECUTABLE(${ex_name} ${sources} ${UIS_HDRS})
+    TARGET_LINK_LIBRARIES(${ex_name} RobotMotionPlanning PQP ${fcl_LIBRARIES} assimp ${OpenCV_LIBS})
+    qt5_use_modules(${ex_name} Widgets Gui)
+
+ENDMACRO()
+
 # from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
 MACRO(SUBDIRLIST result curdir)
     FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
@@ -40,6 +49,9 @@ SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 list(REMOVE_ITEM SUBDIRS "ui")
 
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+find_package(Qt5Widgets)
+find_package(Qt5Core)
+find_package(Qt5Gui)
 
 FOREACH(subdir ${SUBDIRS})
     ADD_SUBDIRECTORY(${subdir})
