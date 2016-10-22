@@ -19,10 +19,10 @@
 #ifndef SERIALROBOT_H_
 #define SERIALROBOT_H_
 
-#include <robot/RobotBase.h>
 #include <robot/Joint.h>
+#include <robot/RobotBase.h>
 
-namespace rmpl{
+namespace rmpl {
 
 /*!
 * \brief   Base class of all serial robots
@@ -30,7 +30,7 @@ namespace rmpl{
 * \date    2016-08-25
 */
 class SerialRobot : public RobotBase {
-public:
+  public:
     SerialRobot(std::string name, CollisionType type, unsigned int dim);
 
     virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
@@ -46,8 +46,10 @@ public:
     std::vector<std::shared_ptr<PQP_Model>> getJointPqpModels();
     std::vector<std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> getJointFclModels();
 
-    void saveConfiguration(Eigen::Matrix4f As[]);
-protected:
+    void saveMeshConfig(Vec<float> angles);
+    void saveMeshConfig(Eigen::Matrix4f *As);
+
+  protected:
     std::vector<Joint> m_joints;
     Vec<float> m_alpha;
     Vec<float> m_a;
@@ -56,4 +58,4 @@ protected:
 
 } /* namespace rmpl */
 
-#endif //SERIALROBOT_H_
+#endif    // SERIALROBOT_H_

@@ -75,7 +75,7 @@ bool MeshContainer::loadFile(const std::string filePath) {
     std::vector<int> face;
     std::vector<std::vector<int>> faces;
 
-    if (true) {
+    if (false) {
         std::ifstream input(filePath);
         for (std::string line; getline(input, line);) {
             if (line.at(0) == 'v') {
@@ -99,7 +99,7 @@ bool MeshContainer::loadFile(const std::string filePath) {
         }
     } else {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(filePath, aiProcessPreset_TargetRealtime_MaxQuality);
+        const aiScene* scene = importer.ReadFile(filePath, aiProcess_SortByPType);
         if (!scene) {
             Logging::error("Mesh could not be loaded");
             return false;

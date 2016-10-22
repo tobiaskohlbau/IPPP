@@ -65,7 +65,22 @@ Eigen::Matrix4f SerialRobot::getTrafo(float alpha, float a, float d, float q) {
     T(2, 2) = cosAlpha;
     T(2, 3) = d;
     T(3, 3) = 1;
+
     return T;
+    // secont method for transformation matrix
+//    T(0, 0) = cosQ;
+//    T(0, 1) = -sinQ;
+//    T(0, 2) = 0;
+//    T(0, 3) = a;
+//    T(1, 0) = sinQ * cosAlpha;
+//    T(1, 1) = cosQ * cosAlpha;
+//    T(1, 2) = -sinAlpha;
+//    T(1, 3) = -sinAlpha * d;
+//    T(2,0) = sinQ * sinAlpha;
+//    T(2, 1) = cosQ * sinAlpha;
+//    T(2, 2) = cosAlpha;
+//    T(2, 3) = cosAlpha * d;
+//    T(3, 3) = 1;
 }
 
 /*!
@@ -156,15 +171,31 @@ unsigned int SerialRobot::getNbJoints() {
 /*!
 *  \brief      Saves the configuration of the robot by obj files in the working directory
 *  \author     Sascha Kaden
-*  \param[in]  transformation matrizes
-*  \date       2016-06-30
+*  \param[in]  joint angles
+*  \date       2016-10-22
 */
-void SerialRobot::saveConfiguration(Eigen::Matrix4f As[]) {
-//    if (m_baseMesh != nullptr)
-//        m_baseMesh->saveObj("base.obj", poseR);
+void SerialRobot::saveMeshConfig(Vec<float> angles) {
+    std::vector<Eigen::Matrix4f> jointTrafos = getJointTrafos(angles);
+    Eigen::Matrix4f As[jointTrafos.size()];
+    As[0] = m_poseMat * jointTrafos[0];
+    for (int i = 1; i < jointTrafos.size(); ++i)
+        As[i] = As[i - 1] * jointTrafos[i];
+
+    saveMeshConfig(As);
+}
+
+/*!
+*  \brief      Saves the configuration of the robot by obj files in the working directory
+*  \author     Sascha Kaden
+*  \param[in]  transformation matrizes
+*  \date       2016-10-22
+*/
+void SerialRobot::saveMeshConfig(Eigen::Matrix4f *As) {
+    if (m_baseMesh != nullptr)
+        m_baseMesh->saveObj("base.obj", m_poseMat);
 
     for (int i = 0; i < getDim(); ++i) {
-        getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", As[i]);
-        std::cout<< As[i] << std::endl <<std::endl;
+        getMeshFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
+        //std::cout<< As[i] << std::endl <<std::endl;
     }
 }

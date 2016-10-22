@@ -146,7 +146,9 @@ bool CollisionDetection::checkSerialRobot(const Vec<float> &vec) {
             baseMesh = robot->getBaseMesh()->m_pqpModel;
         std::vector<shared_ptr<PQP_Model>> jointMeshes = robot->getJointPqpModels();
 
-        robot->saveConfiguration(As);
+//        for (auto tmp : jointTrafos)
+//            std::cout << tmp <<std::endl;
+//        robot->saveMeshConfig(As);
 
         return checkMesh(jointMeshes, baseMesh, rot, poseR, trans, poseT);
     } else {
