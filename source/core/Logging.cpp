@@ -20,40 +20,104 @@
 
 using namespace rmpl;
 
+/*!
+*  \brief      Info logging with module for identificaion
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
 void Logging::info(std::string message, ModuleBase *module) {
     if (module == nullptr)
-        std::cout << "Info "
-                  << "Unknown"
-                  << ": " << message << std::endl;
+        info(message, "Unknown");
     else
-        std::cout << "Info " << module->getName() << ": " << message << std::endl;
+        info(message, module->getName());
 }
 
+/*!
+*  \brief      Warning logging with module for identificaion
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
 void Logging::warning(std::string message, ModuleBase *module) {
     if (module == nullptr)
-        std::cout << "Warning "
-                  << "Unknown"
-                  << ": " << message << std::endl;
+        warning(message, "Unknown");
     else
-        std::cout << "Warning " << module->getName() << ": " << message << std::endl;
+        warning(message, module->getName());
 }
 
+/*!
+*  \brief      Error logging with module for identificaion
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
 void Logging::error(std::string message, ModuleBase *module) {
     if (module == nullptr)
-        std::cout << "Error "
-                  << "Unknown"
-                  << ": " << message << std::endl;
+        error(message, "Unknown");
     else
-        std::cout << "Error " << module->getName() << ": " << message << std::endl;
+        error(message, module->getName());
 }
 
+/*!
+*  \brief      Debug logging with module for identificaion
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
 void Logging::debug(std::string message, ModuleBase *module) {
-#ifdef DEBUG_OUTPUT
     if (module == nullptr)
-        std::cout << "Debug "
-                  << "Unknown"
-                  << ": " << message << std::endl;
+        debug(message, "Unknown");
     else
-        std::cout << "Debug " << module->getName() << ": " << message << std::endl;
+        debug(message, module->getName());
+}
+
+/*!
+*  \brief      Info logging with module name for identificaion
+*  \param[in]  message
+*  \param[in]  module name
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
+void Logging::info(std::string message, std::string moduleName) {
+    std::cout << "Info " << moduleName << ": " << message << std::endl;
+}
+
+/*!
+*  \brief      Warning logging with module name for identificaion
+*  \param[in]  message
+*  \param[in]  module name
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
+void Logging::warning(std::string message, std::string moduleName) {
+    std::cout << "Warning " << moduleName << ": " << message << std::endl;
+}
+
+/*!
+*  \brief      Error logging with module name for identificaion
+*  \param[in]  message
+*  \param[in]  module name
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
+void Logging::error(std::string message, std::string moduleName) {
+    std::cout << "ERROR " << moduleName << ": " << message << std::endl;
+}
+
+/*!
+*  \brief      Debug logging with module name for identificaion
+*  \param[in]  message
+*  \param[in]  module name
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
+void Logging::debug(std::string message, std::string moduleName) {
+#ifdef DEBUG_OUTPUT
+    std::cout << "Debug " << moduleName << ": " << message << std::endl;
 #endif
 }

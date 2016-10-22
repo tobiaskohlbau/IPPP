@@ -23,12 +23,23 @@
 
 namespace rmpl {
 
+/*!
+* \brief   Logging class for the complete framework
+* \detail  At the time the output will be send by iostream
+* \author  Sascha Kaden
+* \date    2016-10-22
+*/
 class Logging {
   public:
     static void info(std::string message, ModuleBase *module = nullptr);
     static void warning(std::string message, ModuleBase *module = nullptr);
     static void error(std::string message, ModuleBase *module = nullptr);
     static void debug(std::string message, ModuleBase *module = nullptr);
+
+    static void info(std::string message, std::string moduleName);
+    static void warning(std::string message, std::string moduleName);
+    static void error(std::string message, std::string moduleName);
+    static void debug(std::string message, std::string moduleName);
 };
 
 } /* namespace rmpl */
