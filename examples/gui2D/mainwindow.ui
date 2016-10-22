@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>348</height>
+    <width>1109</width>
+    <height>735</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>0</x>
       <y>10</y>
-      <width>131</width>
-      <height>231</height>
+      <width>101</width>
+      <height>111</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -50,8 +50,8 @@
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>10</y>
+      <x>0</x>
+      <y>130</y>
       <width>171</width>
       <height>252</height>
      </rect>
@@ -180,9 +180,9 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>20</y>
-      <width>191</width>
+      <x>170</x>
+      <y>10</y>
+      <width>161</width>
       <height>251</height>
      </rect>
     </property>
@@ -257,13 +257,23 @@
      </item>
     </layout>
    </widget>
+   <widget class="QGraphicsView" name="mainImage">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>0</y>
+      <width>771</width>
+      <height>681</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
+     <width>1109</width>
      <height>20</height>
     </rect>
    </property>
@@ -288,8 +298,8 @@
    <slot>loadImage()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>37</x>
-     <y>97</y>
+     <x>38</x>
+     <y>77</y>
     </hint>
     <hint type="destinationlabel">
      <x>83</x>
@@ -304,8 +314,8 @@
    <slot>computePath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>162</y>
+     <x>48</x>
+     <y>113</y>
     </hint>
     <hint type="destinationlabel">
      <x>73</x>
@@ -320,8 +330,8 @@
    <slot>viewPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>56</x>
-     <y>227</y>
+     <x>57</x>
+     <y>149</y>
     </hint>
     <hint type="destinationlabel">
      <x>69</x>
@@ -330,30 +340,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>boxThreads</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>updateStartY(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>255</x>
-     <y>85</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>319</x>
-     <y>103</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>boxNodes</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateThreads(int)</slot>
+   <slot>updateNodes(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>272</x>
-     <y>131</y>
+     <x>133</x>
+     <y>263</y>
     </hint>
     <hint type="destinationlabel">
      <x>318</x>
@@ -368,8 +362,8 @@
    <slot>updatePlannerType(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>273</x>
-     <y>188</y>
+     <x>134</x>
+     <y>313</y>
     </hint>
     <hint type="destinationlabel">
      <x>323</x>
@@ -381,11 +375,11 @@
    <sender>boxStartX</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateGoalX(int)</slot>
+   <slot>updateStartX(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>202</x>
-     <y>240</y>
+     <x>64</x>
+     <y>365</y>
     </hint>
     <hint type="destinationlabel">
      <x>228</x>
@@ -397,11 +391,11 @@
    <sender>boxStartY</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateStartX(int)</slot>
+   <slot>updateStartY(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>283</x>
-     <y>236</y>
+     <x>168</x>
+     <y>365</y>
     </hint>
     <hint type="destinationlabel">
      <x>319</x>
@@ -416,8 +410,8 @@
    <slot>updateGoalX(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>201</x>
-     <y>289</y>
+     <x>63</x>
+     <y>416</y>
     </hint>
     <hint type="destinationlabel">
      <x>211</x>
@@ -432,8 +426,8 @@
    <slot>updateGoalY(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>287</x>
-     <y>294</y>
+     <x>168</x>
+     <y>416</y>
     </hint>
     <hint type="destinationlabel">
      <x>324</x>
@@ -448,8 +442,8 @@
    <slot>updateTrajectoryStepSize(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>493</x>
-     <y>107</y>
+     <x>324</x>
+     <y>105</y>
     </hint>
     <hint type="destinationlabel">
      <x>543</x>
@@ -464,8 +458,8 @@
    <slot>updateSamplingType(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>499</x>
-     <y>178</y>
+     <x>329</x>
+     <y>168</y>
     </hint>
     <hint type="destinationlabel">
      <x>562</x>
@@ -480,8 +474,8 @@
    <slot>updatePRMDistance(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>496</x>
-     <y>234</y>
+     <x>327</x>
+     <y>232</y>
     </hint>
     <hint type="destinationlabel">
      <x>564</x>
@@ -496,12 +490,28 @@
    <slot>updateRRTStepSize(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>503</x>
-     <y>300</y>
+     <x>329</x>
+     <y>296</y>
     </hint>
     <hint type="destinationlabel">
      <x>550</x>
      <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxThreads</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateThreads(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>28</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>42</x>
+     <y>217</y>
     </hint>
    </hints>
   </connection>
