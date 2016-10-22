@@ -54,6 +54,7 @@ class MeshContainer {
     std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> m_fclModel;
     std::shared_ptr<PQP_Model> m_pqpModel;
 
+  private:
     std::vector<Vec<PQP_REAL>> m_vertices;
     std::vector<std::vector<int>> m_faces;
 };
