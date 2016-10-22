@@ -18,6 +18,8 @@
 
 #include <pathPlanner/NormalRRTPlanner.h>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 using std::shared_ptr;
 
@@ -82,7 +84,7 @@ bool NormalRRTPlanner::connectGoalNode(Vec<float> goal) {
         return true;
     }
 
-    // Logging::warning("Goal Node is NOT connected", this);
+    Logging::warning("Goal could NOT connected", this);
 
     return false;
 }
