@@ -22,8 +22,8 @@ void Drawing::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &im
     for (auto &elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
         cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
-        if (elem->getParent() != nullptr) {
-            cv::Point point2(elem->getParent()->getX(), elem->getParent()->getY());
+        if (elem->getParentNode() != nullptr) {
+            cv::Point point2(elem->getParentNode()->getX(), elem->getParentNode()->getY());
             cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
         }
     }

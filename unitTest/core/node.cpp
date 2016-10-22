@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(elementContructor) {
         for (int j = 0; j < nodes[i].getDim(); ++j) {
             BOOST_CHECK(nodes[i].getVecValue(j) == j);
         }
-        BOOST_CHECK(nodes[i].getParent() == nullptr);
+        BOOST_CHECK(nodes[i].getParentNode() == nullptr);
         BOOST_CHECK(nodes[i].getChildNodes().size() == 0);
         BOOST_CHECK(nodes[i].getCost() == 0);
     }

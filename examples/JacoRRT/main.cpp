@@ -79,17 +79,17 @@ void treeConnection() {
     bool connected = false;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < 10000; ++i) {
-        rmpl::Vec<float> sample = plannerInitNode.getSamplePoint();
-
-        bool planner1Connected = plannerInitNode.connectGoalNode(sample);
-        bool planner2Connected = plannerGoalNode.connectGoalNode(sample);
-        if (planner1Connected && planner2Connected) {
-            float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
-            if (cost < minCost) {
-                goal = sample;
-                connected = true;
-            }
-        }
+//        rmpl::Vec<float> sample = plannerInitNode.getSamplePoint();
+//
+//        bool planner1Connected = plannerInitNode.connectGoalNode(sample);
+//        bool planner2Connected = plannerGoalNode.connectGoalNode(sample);
+//        if (planner1Connected && planner2Connected) {
+//            float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
+//            if (cost < minCost) {
+//                goal = sample;
+//                connected = true;
+//            }
+//        }
     }
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = plannerInitNode.getGraphNodes();

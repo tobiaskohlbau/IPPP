@@ -62,8 +62,8 @@ before_script:
   - cmake -DBUILD_TESTS=ON .. #-DCMAKE_BUILD_TYPE=${TRAVIS_BUILD_TYPE} ..
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
-          make
-          make test;
+          make || travis_terminate 1;
+          make test || travis_terminate 1;
           fi
 
 env:

@@ -302,8 +302,19 @@ float Node::getDistToParent() {
 *  \date       2016-05-24
 */
 void Node::setCost(float cost) {
-    if (cost > 0)
+    if (cost >= 0)
         m_cost = cost;
+}
+
+/*!
+*  \brief      Add cost to Node
+*  \author     Sascha Kaden
+*  \param[in]  cost
+*  \date       2016-10-22
+*/
+void Node::addCost(float cost) {
+    if (cost >= 0)
+        m_cost += cost;
 }
 
 /*!
@@ -323,17 +334,28 @@ float Node::getCost() {
 *  \date       2016-07-15
 */
 void Node::setParent(shared_ptr<Node> &parent) {
-    m_parent = Edge(parent, getDist(parent));
+    if (!parent->empty())
+        m_parent = Edge(parent, getDist(parent));
 }
 
 /*!
-*  \brief      Return parent of Node
+*  \brief      Return parent Node
 *  \author     Sascha Kaden
 *  \param[out] shared_ptr parent Node
 *  \date       2016-07-15
 */
-shared_ptr<Node> Node::getParent() {
+shared_ptr<Node> Node::getParentNode() {
     return m_parent.getTarget();
+}
+
+/*!
+*  \brief      Return parent Edge
+*  \author     Sascha Kaden
+*  \param[out] Edge
+*  \date       2016-10-22
+*/
+Edge Node::getParentEdge() {
+    return m_parent;
 }
 
 /*!
@@ -352,7 +374,8 @@ void Node::clearParent() {
 *  \date       2016-07-15
 */
 void Node::addChild(shared_ptr<Node> &child) {
-    m_childs.push_back(Edge(child, getDist(child)));
+    if (!child->empty())
+        m_childs.push_back(Edge(child, getDist(child)));
 }
 
 /*!

@@ -21,7 +21,7 @@
 using namespace rmpl;
 
 /*!
-*  \brief      Standard constructor of the class Base
+*  \brief      Standard constructor of the ModuleBase
 *  \author     Sasch Kaden
 *  \date       2016-05-30
 */
@@ -30,9 +30,9 @@ ModuleBase::ModuleBase() {
 }
 
 /*!
-*  \brief      Constructor of the class Base
+*  \brief      Constructor of the ModuleBase
 *  \author     Sasch Kaden
-*  \param[in]  name
+*  \param[in]  module name
 *  \date       2016-05-30
 */
 ModuleBase::ModuleBase(const std::string &name) {
