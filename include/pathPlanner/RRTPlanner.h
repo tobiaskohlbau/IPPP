@@ -34,15 +34,14 @@ class RRTPlanner : public Planner {
     RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, std::shared_ptr<RRTOptions> options);
 
     bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads);
-
     bool setInitNode(Vec<float> start);
     bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     virtual bool connectGoalNode(Vec<float> goal) = 0;
+
     std::vector<std::shared_ptr<Node>> getPathNodes();
     std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing = true);
     std::shared_ptr<Node> getInitNode();
     std::shared_ptr<Node> getGoalNode();
-    Vec<float> getSamplePoint();
 
   protected:
     bool controlConstraints();

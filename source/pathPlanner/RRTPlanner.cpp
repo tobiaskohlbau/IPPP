@@ -196,16 +196,6 @@ std::shared_ptr<Node> RRTPlanner::getGoalNode() {
 }
 
 /*!
-*  \brief      Return sample point of the RRTPlanner
-*  \author     Sascha Kaden
-*  \param[out] sample Vec
-* \date        2016-07-22
-*/
-Vec<float> RRTPlanner::getSamplePoint() {
-    return this->m_sampler->getSample(m_robot->getDim(), 0, 100);
-}
-
-/*!
 *  \brief      Control all constraints of the RRTPlanner
 *  \author     Sascha Kaden
 *  \param[out] check flag
