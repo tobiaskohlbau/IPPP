@@ -18,6 +18,8 @@
 
 #include <pathPlanner/StarRRTPlanner.h>
 
+#include <core/Logging.h>
+
 using namespace rmpl;
 using std::shared_ptr;
 
@@ -138,7 +140,7 @@ bool StarRRTPlanner::connectGoalNode(Vec<float> goal) {
         return true;
     }
 
-    // this->sendMessage("Goal Node is NOT connected", Message::warning);
+    Logging::warning("Goal could NOT connected", this);
 
     return false;
 }
