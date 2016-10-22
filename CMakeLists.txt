@@ -31,7 +31,7 @@ endif()
 
 OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(DEBUG_OUTPUT "Display debug output")
-OPTION(TEST "add tests")
+OPTION(BUILD_TESTS "Build tests")
 
 # Eigen
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
@@ -95,7 +95,7 @@ IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)
 ENDIF()
 
-IF (${TEST})
+IF (${BUILD_TESTS})
     ADD_SUBDIRECTORY(unitTest)
 ENDIF()
 
