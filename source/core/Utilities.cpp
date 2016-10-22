@@ -31,10 +31,9 @@ using namespace rmpl;
 *  \date       2016-08-25
 */
 Eigen::Matrix4f Utilities::createT(Eigen::Matrix3f &R, Eigen::Vector3f &t) {
-    Eigen::Matrix4f T = Eigen::Matrix4f::Zero(0,0);
+    Eigen::Matrix4f T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
     T.block<3, 1>(0, 3) = t;
-    T(3,3) = 1;
     return T;
 }
 
