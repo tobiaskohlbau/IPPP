@@ -61,6 +61,7 @@ float Edge::getLength() {
 */
 void Edge::setTarget(shared_ptr<Node> &target, float length) {
     m_target = target;
+    m_length = length;
 }
 
 /*!
