@@ -16,34 +16,25 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef UTILITIES_H_
-#define UTILITIES_H_
+#ifndef KUKAKR5_H_
+#define KUKAKR5_H_
 
-#include <Eigen/Core>
-#include <PQP.h>
-
-#include <core/Vec.hpp>
+#include <robot/SerialRobot.h>
 
 namespace rmpl {
 
-class Utilities {
+/*!
+* \brief   Class for the Kuka KR5 robot
+* \author  Sascha Kaden
+* \date    2016-10-22
+*/
+class KukaKR5 : public SerialRobot {
   public:
-    static constexpr double pi() {
-        return std::atan(1) * 4;
-    }
-
-    static Eigen::Matrix4f createT(Eigen::Matrix3f &R, Eigen::Vector3f &t);
-    static void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector3f &t);
-
-    static Eigen::Matrix4f poseVecToMat(const Vec<float> &pose);
-    static Vec<float> poseMatToVec(const Eigen::Matrix4f &pose);
-    static Vec<float> degToRad(const Vec<float> deg);
-
-    static Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
-    static Eigen::ArrayXf VecToEigen(const Vec<PQP_REAL> &vec);
-    static Vec<float> EigenToVec(const Eigen::ArrayXf &eigenVec);
+    KukaKR5();
+    Vec<float> directKinematic(const Vec<float> &angles);
+    std::vector<Eigen::Matrix4f> getJointTrafos(const Vec<float> &angles);
 };
 
 } /* namespace rmpl */
 
-#endif    // UTILITIES_H_
+#endif /* KUKAKR5_H_ */
