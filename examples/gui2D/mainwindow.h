@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsScene>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -30,21 +31,23 @@ public slots:
     void loadImage();
     void computePath();
     void viewPath();
-    void updateThreads(int num) {m_numThreads = num;}
-    void updateNodes(int num) {m_numNodes = num;}
-    void updatePlannerType(int type) {m_plannerType = type;}
-    void updateStartX(int value) {m_startX = value;}
-    void updateStartY(int value) {m_startY = value;}
-    void updateGoalX(int value) {m_goalX = value;}
-    void updateGoalY(int value) {m_goalX = value;}
-    void updateTrajectoryStepSize(double value) {m_trajectoryStepSize = value;}
-    void updateSamplingType(int type) {m_samplingType = type;}
-    void updatePRMDistance(double value) {m_prmDistance = value;}
-    void updateRRTStepSize(double value) {m_rrtStepsize = value;}
-
+    void updateThreads(int num);
+    void updateNodes(int num) ;
+    void updatePlannerType(int type);
+    void updateStartX(int value) ;
+    void updateStartY(int value);
+    void updateGoalX(int value);
+    void updateGoalY(int value);
+    void updateTrajectoryStepSize(double value);
+    void updateSamplingType(int type);
+    void updatePRMDistance(double value);
+    void updateRRTStepSize(double value);
 
 private:
+    QImage convertCvMat(cv::Mat image);
+
     Ui::MainWindow *ui;
+    QGraphicsScene *scene;
 
     unsigned int m_numThreads = 2;
     unsigned int m_numNodes = 5000;
@@ -58,7 +61,7 @@ private:
     double m_prmDistance = 50;
     double m_rrtStepsize = 50;
 
-    rmpl::Planner *m_planner;
+    std::shared_ptr<rmpl::Planner> m_planner;
     cv::Mat m_image;
     Eigen::MatrixXi m_workspace;
     bool m_connected = false;
