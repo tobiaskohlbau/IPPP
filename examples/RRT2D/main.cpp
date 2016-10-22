@@ -6,6 +6,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include <Eigen/Core>
 
+#include <pathPlanner/PRMPlanner.h>
 #include <pathPlanner/NormalRRTPlanner.h>
 #include <pathPlanner/StarRRTPlanner.h>
 #include <robot/PointRobot.h>
