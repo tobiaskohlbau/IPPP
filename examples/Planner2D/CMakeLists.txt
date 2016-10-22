@@ -21,7 +21,12 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.h
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp)
 
-ADD_RMPL_EXAMPLE(RRT2D "${source}")
+find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+
+set(libs
+    ${OpenCV_LIBS})
+
+ADD_RMPL_EXAMPLE(Planner2D "${source}" "${libs}")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Debug/spaces)
