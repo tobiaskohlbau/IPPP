@@ -56,19 +56,19 @@ include_directories(${FCL_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 set(SRCS
+    include/core/KDNode.hpp
+    include/core/KDTree.hpp
+    include/core/Vec.hpp
     source/core/CollisionDetection.cpp
-    source/core/ModuleBase.cpp
     source/core/Edge.cpp
     source/core/Graph.cpp
+    source/core/List.cpp
     source/core/Logging.cpp
+    source/core/ModuleBase.cpp
     source/core/Node.cpp
     source/core/Sampling.cpp
     source/core/TrajectoryPlanner.cpp
     source/core/Utilities.cpp
-    include/core/KDNode.hpp
-    include/core/KDTree.hpp
-    include/core/Vec.hpp
-    source/core/List.cpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
     source/pathPlanner/PlannerOptions.cpp
@@ -80,6 +80,7 @@ set(SRCS
     source/robot/GenericRobot.cpp
     source/robot/Jaco.cpp
     source/robot/Joint.cpp
+    source/robot/KukaKR5.cpp
     source/robot/MeshContainer.cpp
     source/robot/MobileRobot.cpp
     source/robot/PointRobot.cpp
