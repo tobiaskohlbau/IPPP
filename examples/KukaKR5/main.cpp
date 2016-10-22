@@ -26,7 +26,6 @@ int main(int argc, char** argv) {
     rmpl::Vec<float> start(0, 90, 0, 0, 270, -180);
     rmpl::Vec<float> goal(150, -60, 90, 0, 82.7, 75.5);
 
-    // compute the tree
     clock_t begin = std::clock();
     bool connected = planner.computePath(start, goal, 25000, 2);
     clock_t end = std::clock();
