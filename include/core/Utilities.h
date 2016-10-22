@@ -26,6 +26,11 @@
 
 namespace rmpl {
 
+/*!
+* \brief   Offers basical functions for matrix composition and conversation
+* \author  Sascha Kaden
+* \date    2016-07-07
+*/
 class Utilities {
   public:
     static constexpr double pi() {

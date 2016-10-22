@@ -135,9 +135,9 @@ void TrajectoryPlanner::setStepSize(float stepSize) {
     if (stepSize <= 0) {
         m_stepSize = 0.1;
         Logging::warning("Step size has to be larger than 0, it has set to 0.1!", this);
+    } else {
+        m_stepSize = stepSize;
     }
-    else {
-        m_stepSize = stepSize;}
 }
 
 /*!

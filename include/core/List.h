@@ -24,7 +24,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Class AStarList offers a list for the A* algorithm
+* \brief   Class List offers a list for the A* algorithm
 * \author  Sascha Kaden
 * \date    2016-08-09
 */
