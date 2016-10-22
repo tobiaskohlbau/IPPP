@@ -77,7 +77,7 @@ Vec<float> Sampling::getSample(unsigned int dim, int index, int nbSamples) {
         return vec;
     } else {
         for (unsigned int i = 0; i < dim; ++i)
-            vec[i] = m_minBoundary[i] + (float)(rand() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
+            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
         return vec;
     }
 }
