@@ -57,13 +57,12 @@ before_script:
   # cmake
   - mkdir build
   - cd build
-  - cmake -DRobotMotionPlanning_BUILD_TESTS=ON .. #-DCMAKE_BUILD_TYPE=${TRAVIS_BUILD_TYPE} ..
-  - ./Test_core_node
-  - ./Test_core_vec
-  - ./Test_core_utilities
-  - ./Test_core_Test_core_trajectoryPlanner
+  - cmake -DBUILD_TESTS=ON .. #-DCMAKE_BUILD_TYPE=${TRAVIS_BUILD_TYPE} ..
 
-script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then make ; fi
+script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
+          make
+          make test;
+          fi
 
 env:
   global:

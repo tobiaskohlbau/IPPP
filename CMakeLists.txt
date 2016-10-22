@@ -96,6 +96,7 @@ IF (${BUILD_EXAMPLES})
 ENDIF()
 
 IF (${BUILD_TESTS})
+    enable_testing ()
     ADD_SUBDIRECTORY(unitTest)
 ENDIF()
 
