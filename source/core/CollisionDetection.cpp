@@ -33,15 +33,12 @@ using std::shared_ptr;
 */
 CollisionDetection::CollisionDetection(const shared_ptr<RobotBase> &robot) : ModuleBase("CollisionDetection") {
     m_robot = robot;
-    m_zeroR = Eigen::Matrix3f::Zero(3, 3);
-    for (int i = 0; i < 3; ++i) {
-        m_zeroR(i, i) = 1;
-        m_zeroT(i) = 0;
-    }
+    m_identity = Eigen::Matrix3f::Identity(3, 3);
+    m_zeroVec = Eigen::Vector3f::Zero(3, 1);
 
     if (m_robot->getCollisionType() == CollisionType::twoD)
         m_2DWorkspace = m_robot->get2DWorkspace();
-    if (m_robot->getCollisionType() != CollisionType::twoD)
+    else
         m_workspace = m_robot->getWorkspace();
 }
 
@@ -58,7 +55,7 @@ bool CollisionDetection::controlVec(const Vec<float> &vec) {
     if (m_robot->getCollisionType() == CollisionType::twoD)
         return checkPointRobot(vec[0], vec[1]);
     else
-        controlCollisionMesh(vec);
+        return controlCollisionMesh(vec);
 }
 
 bool CollisionDetection::controlCollisionMesh(const Vec<float> &vec) {
@@ -146,9 +143,9 @@ bool CollisionDetection::checkSerialRobot(const Vec<float> &vec) {
             baseMesh = robot->getBaseMesh()->m_pqpModel;
         std::vector<shared_ptr<PQP_Model>> jointMeshes = robot->getJointPqpModels();
 
-//        for (auto tmp : jointTrafos)
-//            std::cout << tmp <<std::endl;
-//        robot->saveMeshConfig(As);
+        //        for (auto tmp : jointTrafos)
+        //            std::cout << tmp <<std::endl;
+        //        robot->saveMeshConfig(As);
 
         return checkMesh(jointMeshes, baseMesh, rot, poseR, trans, poseT);
     } else {
@@ -177,12 +174,12 @@ bool CollisionDetection::checkMobileRobot(const Vec<float> &vec) {
 *  \param[out] binary result of collision
 *  \date       2016-07-14
 */
-bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &base,
+bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &baseModel,
                                    Eigen::Matrix3f R[], Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT) {
-    // control collision between base and joints
-    if (base != nullptr) {
+    // control collision between baseModel and joints
+    if (baseModel != nullptr) {
         for (int i = 1; i < m_robot->getDim(); ++i) {
-            if (checkPQP(base, models[i], poseR, R[i], poseT, t[i]))
+            if (checkPQP(baseModel, models[i], poseR, R[i], poseT, t[i]))
                 return true;
         }
     }
@@ -214,11 +211,11 @@ bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<PQP_Model>> &mode
     if (m_robot->getWorkspace() != nullptr) {
         shared_ptr<PQP_Model> workspace = m_robot->getWorkspace()->getPqp();
 
-        if (checkPQP(workspace, base, m_zeroR, poseR, m_zeroT, poseT))
+        if (checkPQP(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT))
             return true;
 
         for (int i = 0; i < m_robot->getDim(); ++i) {
-            if (checkPQP(workspace, models[i], m_zeroR, R[i], m_zeroT, t[i])) {
+            if (checkPQP(workspace, models[i], m_identity, R[i], m_zeroVec, t[i])) {
                 Logging::debug("Collision between workspace and link " + std::to_string(i), this);
                 return true;
             }
@@ -240,12 +237,12 @@ bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<PQP_Model>> &mode
 *  \date       2016-07-14
 */
 bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> &models,
-                                   std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &base, Eigen::Matrix3f R[],
+                                   std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &baseModel, Eigen::Matrix3f R[],
                                    Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT) {
-    // control collision between base and joints
-    if (base != nullptr) {
+    // control collision between baseModel and joints
+    if (baseModel != nullptr) {
         for (int i = 1; i < m_robot->getDim(); ++i) {
-            if (checkFCL(base, models[i], poseR, R[i], poseT, t[i]))
+            if (checkFCL(baseModel, models[i], poseR, R[i], poseT, t[i]))
                 return true;
         }
     }
@@ -274,12 +271,11 @@ bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<fcl::BVHModel<fcl
     if (m_robot->getWorkspace() != nullptr) {
         shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> workspace = m_robot->getWorkspace()->getFcl();
 
-        if (checkFCL(workspace, base, m_zeroR, poseR, m_zeroT, poseT))
+        if (checkFCL(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT))
             return true;
 
         for (int i = 0; i < m_robot->getDim(); ++i) {
-            // get R and t from A for first model
-            if (checkFCL(workspace, models[i], m_zeroR, R[i], m_zeroT, t[i])) {
+            if (checkFCL(workspace, models[i], m_identity, R[i], m_zeroVec, t[i])) {
                 Logging::debug("Collision between workspace and link " + std::to_string(i), this);
                 return true;
             }

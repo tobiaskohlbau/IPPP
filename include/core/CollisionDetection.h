@@ -65,14 +65,14 @@ class CollisionDetection : public ModuleBase {
     std::shared_ptr<RobotBase> m_robot;
 
     Eigen::MatrixXi m_2DWorkspace;
-    std::shared_ptr<MeshContainer> m_workspace;
+    std::shared_ptr<MeshContainer> m_workspace = nullptr;
 
     // models for collision detection
     fcl::CollisionObject<float> *o1;
     fcl::CollisionObject<float> *o2;
-    // identity matrix for origin rotation and zero translation vector for the workspace
-    Eigen::Matrix3f m_zeroR;
-    Eigen::Vector3f m_zeroT;
+
+    Eigen::Matrix3f m_identity;
+    Eigen::Vector3f m_zeroVec;
 };
 
 } /* namespace rmpl */
