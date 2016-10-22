@@ -23,7 +23,12 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.h
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp)
 
-ADD_RMPL_EXAMPLE(KukaKR5 "${source}")
+find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+
+set(libs
+    ${OpenCV_LIBS})
+
+ADD_RMPL_EXAMPLE(KukaKR5 "${source}" "${libs}")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Release/meshes)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Debug/meshes)

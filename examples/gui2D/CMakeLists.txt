@@ -16,6 +16,11 @@
 #
 #-------------------------------------------------------------------------//
 
+find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+find_package(Qt5Widgets)
+find_package(Qt5Core)
+find_package(Qt5Gui)
+
 QT5_WRAP_UI(UIS_HDRS
         ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.ui)
 
@@ -24,9 +29,14 @@ set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.h
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp)
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp
+    ${UIS_HDRS})
 
-ADD_RMPL_QT_EXAMPLE(Gui2D "${source}" "${UIS_HDRS}")
+set(libs
+    ${OpenCV_LIBS})
+
+ADD_RMPL_EXAMPLE(Gui2D "${source}" "${libs}")
+qt5_use_modules(Gui2D Widgets Gui)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Debug/spaces)
