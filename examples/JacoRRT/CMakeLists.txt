@@ -32,7 +32,12 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApiPlatform.c
     ${CMAKE_SOURCE_DIR}/examples/ui/vrep/Helper.cpp)
 
-ADD_RMPL_EXAMPLE(JacoRRT "${source}")
+find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+
+set(libs
+    ${OpenCV_LIBS})
+
+ADD_RMPL_EXAMPLE(JacoRRT "${source}" "${libs}")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Release/meshes)
