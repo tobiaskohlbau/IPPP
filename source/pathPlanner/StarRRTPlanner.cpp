@@ -96,7 +96,7 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
             float newDist = nearNode->getDist(newNode) + newNode->getCost();
             if (newDist < oldDist) {
                 if (this->m_planner->controlTrajectory(newNode, nearNode)) {
-                    float cost = nearNode->getCost() - nearNode->getDist(nearNode->getParent());
+                    float cost = nearNode->getCost() - nearNode->getDist(nearNode->getParentNode());
                     cost += newNode->getDist(nearNode);
                     m_mutex.lock();
                     nearNode->setCost(cost);
