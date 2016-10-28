@@ -35,8 +35,10 @@ namespace rmpl {
 */
 class Joint {
 public:
+    Joint();
     Joint(float minBound, float maxBound);
     Joint(float minBound, float maxBound, std::shared_ptr<MeshContainer> &mesh);
+
     void setMesh(std::shared_ptr<MeshContainer> &mesh);
     std::shared_ptr<MeshContainer> getMesh();
 
