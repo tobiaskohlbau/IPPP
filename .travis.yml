@@ -7,14 +7,6 @@ sudo: required
 before_script:
    #eigen 3.2 support
   - sudo apt-get install libeigen3-dev
-#  - hg clone https://bitbucket.org/eigen/eigen/
-#  - cd eigen
-#  - hg checkout 3.2.0
-#  - mkdir build
-#  - cd build
-#  - cmake ..
-#  - sudo make install
-#  - cd ../..
   # boost
   - sudo apt-get install libboost-all-dev
   # libccd
@@ -23,15 +15,6 @@ before_script:
   - sudo apt-get -qq --yes --force-yes install libeigen3-dev
   - sudo apt-get -qq --yes --force-yes install libccd-dev
   # octomap
-#  - git clone https://github.com/OctoMap/octomap
-#  - cd octomap
-#  - git checkout tags/v1.8.0
-#  - mkdir build
-#  - cd build
-#  - cmake ..
-#  - make
-#  - sudo make install
-#  - cd ../..
   # fcl
   - git clone https://github.com/flexible-collision-library/fcl.git fcl
   - cd fcl
@@ -43,22 +26,14 @@ before_script:
   - cd ../..
   # assimp
   - sudo apt-get install libassimp-dev
-#  - git clone https://github.com/assimp/assimp.git assimp
-#  - cd assimp
-#  - mkdir build
-#  - cd build
-#  - cmake -DASSIMP_BUILD_TESTS=OFF ..
-#  - make -j4
-#  - sudo make install
-#  - cd ../..
   # cmake
   - mkdir build
   - cd build
   - cmake -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${CONFIGURATION} ..
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
-          make ; #|| travis_terminate 1;
-          #make test || travis_terminate 1;
+          make || travis_terminate 1;
+          make test || travis_terminate 1;
           fi
 
 env:
