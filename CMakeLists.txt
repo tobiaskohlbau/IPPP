@@ -100,10 +100,10 @@ IF (${BUILD_TESTS})
     ADD_SUBDIRECTORY(unitTest)
 ENDIF()
 
-add_custom_target(myInstall make install)
+add_custom_target(unitTest make test)
 
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP assimp ${fcl_LIBRARIES} ccd)
+target_link_libraries(${PROJECT_NAME} pthread PQP assimp fcl ccd)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
