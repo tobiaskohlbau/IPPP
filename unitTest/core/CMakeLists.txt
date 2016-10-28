@@ -21,7 +21,7 @@ add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
 
 SET(ADDITIONAL_LIBRARIES
     ccd
-    ${fcl_LIBRARIES})
+    fcl)
 
 ADD_RMPL_TEST(node "")
 ADD_RMPL_TEST(trajectoryPlanner "${ADDITIONAL_LIBRARIES}")

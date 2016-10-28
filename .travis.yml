@@ -15,6 +15,7 @@ before_script:
   # fcl
   - git clone https://github.com/flexible-collision-library/fcl.git fcl
   - cd fcl
+  - git checkout 79b4530cfc3addba11dc1e165883404850e7a564
   - mkdir build
   - cd build
   - cmake -DFCL_BUILD_TESTS=OFF ..
@@ -27,7 +28,7 @@ before_script:
   - cmake -DCMAKE_BUILD_TYPE=${CONFIGURATION} ..
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
-          make || travis_terminate 1;
+          make -j4 || travis_terminate 1;
           make test || travis_terminate 1;
           fi
 
