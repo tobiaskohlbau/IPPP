@@ -16,10 +16,16 @@
 #
 #-------------------------------------------------------------------------//
 
-MACRO(ADD_RMPL_EXAMPLE ex_name sources libs)
+SET(LIBRARIES
+    RobotMotionPlanning
+    PQP
+    ${fcl_LIBRARIES}
+    assimp)
+
+MACRO(ADD_RMPL_EXAMPLE ex_name sources ADDITIONAL_LIBRARIES)
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/examples ${CMAKE_CURRENT_SOURCE_DIR})
     ADD_EXECUTABLE(${ex_name} ${sources})
-    TARGET_LINK_LIBRARIES(${ex_name} RobotMotionPlanning PQP ${fcl_LIBRARIES} assimp ${libs})
+    TARGET_LINK_LIBRARIES(${ex_name} ${LIBRARIES} ${ADDITIONAL_LIBRARIES})
 ENDMACRO()
 
 # from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory

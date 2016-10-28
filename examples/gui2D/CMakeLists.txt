@@ -32,10 +32,10 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp
     ${UIS_HDRS})
 
-set(libs
+set(ADDITIONAL_LIBRARIES
     ${OpenCV_LIBS})
 
-ADD_RMPL_EXAMPLE(Gui2D "${source}" "${libs}")
+ADD_RMPL_EXAMPLE(Gui2D "${source}" "${ADDITIONAL_LIBRARIES}")
 qt5_use_modules(Gui2D Widgets Gui)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)

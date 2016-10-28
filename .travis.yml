@@ -5,16 +5,13 @@ language: cpp
 sudo: required
 
 before_script:
-   #eigen 3.2 support
   - sudo apt-get install libeigen3-dev
-  # boost
   - sudo apt-get install libboost-all-dev
+  - sudo apt-get install libassimp-dev
   # libccd
   - sudo add-apt-repository --yes ppa:libccd-debs/ppa
   - sudo apt-get -qq update
-  - sudo apt-get -qq --yes --force-yes install libeigen3-dev
   - sudo apt-get -qq --yes --force-yes install libccd-dev
-  # octomap
   # fcl
   - git clone https://github.com/flexible-collision-library/fcl.git fcl
   - cd fcl
@@ -24,12 +21,10 @@ before_script:
   - make -j4
   - sudo make install
   - cd ../..
-  # assimp
-  - sudo apt-get install libassimp-dev
   # cmake
   - mkdir build
   - cd build
-  - cmake -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${CONFIGURATION} ..
+  - cmake -DCMAKE_BUILD_TYPE=${CONFIGURATION} ..
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
           make || travis_terminate 1;
