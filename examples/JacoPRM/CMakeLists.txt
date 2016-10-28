@@ -34,10 +34,10 @@ set(source
 
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 
-set(libs
+set(ADDITIONAL_LIBRARIES
     ${OpenCV_LIBS})
 
-ADD_RMPL_EXAMPLE(JacoPRM "${source}" "${libs}")
+ADD_RMPL_EXAMPLE(JacoPRM "${source}" "${ADDITIONAL_LIBRARIES}")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Release/meshes)

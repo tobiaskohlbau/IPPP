@@ -31,7 +31,7 @@ endif()
 
 OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(DEBUG_OUTPUT "Display debug output")
-OPTION(BUILD_TESTS "Build tests")
+OPTION(BUILD_TESTS "Build tests" ON)
 
 # Eigen
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})

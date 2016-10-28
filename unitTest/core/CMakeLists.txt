@@ -20,6 +20,7 @@ set(MODULE "core")
 add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
 
 SET(ADDITIONAL_LIBRARIES
+    ccd
     ${fcl_LIBRARIES})
 
 ADD_RMPL_TEST(node "")
