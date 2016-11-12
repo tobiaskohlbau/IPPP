@@ -170,7 +170,7 @@ bool PRMPlanner::queryPath(Vec<float> start, Vec<float> goal) {
         while (temp != nullptr) {
             ++count;
             m_nodePath.push_back(temp);
-            temp = temp->getParent();
+            temp = temp->getParentNode();
         }
         m_nodePath.push_back(shared_ptr<Node>(new Node(start)));
         return true;

@@ -22,24 +22,29 @@ using namespace rmpl;
 
 /*!
 *  \brief      Standard contructor of the Joint class
+*  \author     Sascha Kaden
+*  \date       2016-10-25
+*/
+Joint::Joint() {
+    m_maxBound = 0;
+    m_minBound = 0;
+    m_mesh = nullptr;
+}
+
+/*!
+*  \brief      Contructor of the Joint class
 *  \param[in]  minimum Boundary
 *  \param[in]  maximum Boundary
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
 Joint::Joint(float minBound, float maxBound) {
-    if (minBound > maxBound) {
-        m_maxBound = minBound;
-        m_minBound = maxBound;
-    } else {
-        m_minBound = minBound;
-        m_maxBound = maxBound;
-    }
+    setBoundaries(minBound, maxBound);
     m_mesh = nullptr;
 }
 
 /*!
-*  \brief      contructor of the Joint class
+*  \brief      Contructor of the Joint class
 *  \param[in]  minimum Boundary
 *  \param[in]  maximum Boundary
 *  \param[in]  MeshContainer
@@ -47,13 +52,7 @@ Joint::Joint(float minBound, float maxBound) {
 *  \date       2016-08-25
 */
 Joint::Joint(float minBound, float maxBound, std::shared_ptr<MeshContainer> &mesh) {
-    if (minBound > maxBound) {
-        m_maxBound = minBound;
-        m_minBound = maxBound;
-    } else {
-        m_minBound = minBound;
-        m_maxBound = maxBound;
-    }
+    setBoundaries(minBound, maxBound);
     m_mesh = mesh;
 }
 

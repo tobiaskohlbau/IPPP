@@ -18,15 +18,15 @@
 
 set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp)
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.h
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.cpp)
 
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 
-set(libs
+set(ADDITIONAL_LIBRARIES
     ${OpenCV_LIBS})
 
-ADD_RMPL_EXAMPLE(Planner2D "${source}" "${libs}")
+ADD_RMPL_EXAMPLE(Planner2D "${source}" "${ADDITIONAL_LIBRARIES}")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Debug/spaces)

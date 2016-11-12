@@ -62,10 +62,12 @@ class Node : public ModuleBase {
     float norm();
 
     void setCost(float cost);
+    void addCost(float cost);
     float getCost();
 
     void setParent(std::shared_ptr<Node> &parent);
-    std::shared_ptr<Node> getParent();
+    std::shared_ptr<Node> getParentNode();
+    Edge getParentEdge();
     void clearParent();
     void addChild(std::shared_ptr<Node> &child);
     std::vector<std::shared_ptr<Node>> getChildNodes();
@@ -75,8 +77,9 @@ class Node : public ModuleBase {
     Vec<float> getVec() const;
 
   private:
-    float m_cost;
     Vec<float> m_vec;
+    float m_cost;
+
     Edge m_parent;
     std::vector<Edge> m_childs;
 };

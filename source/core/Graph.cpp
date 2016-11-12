@@ -42,7 +42,7 @@ void Graph::addNode(const shared_ptr<Node> &node) {
     m_kdTree->addNode(node->getVec(), node);
     m_mutex.lock();
     m_nodes.push_back(node);
-    if (m_nodes.size() % 2500 == 0) {
+    if (m_nodes.size() % 4000 == 0) {
         m_kdTree = shared_ptr<KDTree<shared_ptr<Node>>>(new KDTree<shared_ptr<Node>>(m_nodes));
         Logging::info("KD Tree has been sorted and have: " + std::to_string(m_nodes.size()) + " Nodes", this);
     }

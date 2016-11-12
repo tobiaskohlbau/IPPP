@@ -20,40 +20,26 @@ cmake_minimum_required (VERSION 2.8.10)
 project (RobotMotionPlanning)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -pthread")
 
 OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(DEBUG_OUTPUT "Display debug output")
-OPTION(TEST "add tests")
+OPTION(BUILD_TESTS "Build tests" ON)
 
-# Eigen
+# external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-
-# PQP
-set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
-include_directories(${PQP_DIR}/include)
-link_directories(${PQP_DIR}/lib)
-
-# Assimp
-set(Assimp_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../assimp CACHE PATH "Assimp source DIR")
-set(Assimp_BINARY_DIR /usr/local CACHE PATH "Assimp binary DIR")
-INCLUDE_DIRECTORIES(${Assimp_SOURCE_DIR}/include ${Assimp_SOURCE_DIR}/code)
-LINK_DIRECTORIES(${Assimp_BINARY_DIR} ${Assimp_BINARY_DIR}/lib)
-
-# fcl
+find_package(assimp)
 find_package(fcl REQUIRED)
-include_directories(${FCL_INCLUDE_DIRS})
+set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include
+        ${EIGEN3_INCLUDE_DIR}
+        ${ASSIMP_INCLUDE_DIR}
+        ${FCL_INCLUDE_DIRS}
+        ${PQP_DIR}/include)
+link_directories(${ASSIMP_LIBRARIES}
+        ${PQP_DIR}/lib)
 
 set(SRCS
     include/core/KDNode.hpp
@@ -95,14 +81,13 @@ IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)
 ENDIF()
 
-IF (${TEST})
+IF (${BUILD_TESTS})
+    enable_testing ()
     ADD_SUBDIRECTORY(unitTest)
 ENDIF()
 
-add_custom_target(myInstall make install)
-
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP assimp ${fcl_LIBRARIES} ccd)
+target_link_libraries(${PROJECT_NAME} pthread PQP assimp fcl)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)

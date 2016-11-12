@@ -36,8 +36,6 @@ Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod metho
     m_minBoundary = m_robot->getMinBoundary();
     m_maxBoundary = m_robot->getMaxBoundary();
 
-    srand(time(NULL));
-
     m_generator = std::mt19937(rd());
     for (unsigned int i = 0; i < m_robot->getDim(); ++i) {
         std::normal_distribution<float> dist1(0, 500);

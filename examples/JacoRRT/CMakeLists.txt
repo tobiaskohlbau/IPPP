@@ -20,8 +20,8 @@ set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write
 
 set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp
+    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.h
+    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.cpp
 
     ${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApi.h
     ${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApiPlatform.h
@@ -32,12 +32,7 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApiPlatform.c
     ${CMAKE_SOURCE_DIR}/examples/ui/vrep/Helper.cpp)
 
-find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
-
-set(libs
-    ${OpenCV_LIBS})
-
-ADD_RMPL_EXAMPLE(JacoRRT "${source}" "${libs}")
+ADD_RMPL_EXAMPLE(JacoRRT "${source}" "")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Release/meshes)

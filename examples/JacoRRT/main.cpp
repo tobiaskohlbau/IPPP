@@ -9,7 +9,7 @@
 #include <robot/Jaco.h>
 #include <ui/vrep/Helper.h>
 
-#include <ui/Drawing.h>
+#include <ui/Writer.h>
 
 void printTime(clock_t begin, clock_t end) {
     float elapsed_secs = float(end - begin) / CLOCKS_PER_SEC;
@@ -37,7 +37,7 @@ void simpleRRT() {
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
-    Drawing::writeVecsToFile(graphPoints, "example.ASC", 10);
+    Writer::writeVecsToFile(graphPoints, "example.ASC", 10);
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
@@ -46,7 +46,7 @@ void simpleRRT() {
         std::vector<rmpl::Vec<float>> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
-        Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
+        Writer::appendVecsToFile(pathPoints, "example.ASC", 10);
 
         rmpl::Helper vrep(6);
         vrep.start();
@@ -79,17 +79,17 @@ void treeConnection() {
     bool connected = false;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < 10000; ++i) {
-        rmpl::Vec<float> sample = plannerInitNode.getSamplePoint();
-
-        bool planner1Connected = plannerInitNode.connectGoalNode(sample);
-        bool planner2Connected = plannerGoalNode.connectGoalNode(sample);
-        if (planner1Connected && planner2Connected) {
-            float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
-            if (cost < minCost) {
-                goal = sample;
-                connected = true;
-            }
-        }
+//        rmpl::Vec<float> sample = plannerInitNode.getSamplePoint();
+//
+//        bool planner1Connected = plannerInitNode.connectGoalNode(sample);
+//        bool planner2Connected = plannerGoalNode.connectGoalNode(sample);
+//        if (planner1Connected && planner2Connected) {
+//            float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
+//            if (cost < minCost) {
+//                goal = sample;
+//                connected = true;
+//            }
+//        }
     }
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = plannerInitNode.getGraphNodes();
@@ -97,13 +97,13 @@ void treeConnection() {
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
-    Drawing::writeVecsToFile(graphPoints, "example.ASC", 10);
+    Drawing2D::writeVecsToFile(graphPoints, "example.ASC", 10);
 
     nodes = plannerGoalNode.getGraphNodes();
     std::cout << "Goal Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
-    Drawing::appendVecsToFile(graphPoints, "example.ASC", 10);
+    Writer::appendVecsToFile(graphPoints, "example.ASC", 10);
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
@@ -117,7 +117,7 @@ void treeConnection() {
         std::vector<rmpl::Vec<float>> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
-        Drawing::appendVecsToFile(pathPoints, "example.ASC", 10);
+        Writer::appendVecsToFile(pathPoints, "example.ASC", 10);
 
         // for (int i = 0; i < pathPoints.size(); ++i)
         //    vrep->setPos(pathAngles[i]);
