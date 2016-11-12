@@ -20,15 +20,10 @@ set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write
 
 set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp)
+    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.h
+    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.cpp)
 
-find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
-
-set(ADDITIONAL_LIBRARIES
-    ${OpenCV_LIBS})
-
-ADD_RMPL_EXAMPLE(KukaKR5 "${source}" "${ADDITIONAL_LIBRARIES}")
+ADD_RMPL_EXAMPLE(KukaKR5 "${source}" "")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Release/meshes)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Debug/meshes)

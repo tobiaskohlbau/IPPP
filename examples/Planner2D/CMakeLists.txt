@@ -18,8 +18,8 @@
 
 set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp)
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.h
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.cpp)
 
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 
