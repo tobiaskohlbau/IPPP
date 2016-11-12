@@ -18,6 +18,8 @@
 
 #include <core/Logging.h>
 
+#include <easylogging++.h>
+
 using namespace rmpl;
 
 /*!

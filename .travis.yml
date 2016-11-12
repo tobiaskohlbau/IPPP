@@ -22,6 +22,14 @@ before_script:
   - make -j4
   - sudo make install
   - cd ../..
+  # easylogging
+  - git clone https://github.com/easylogging/easyloggingpp.git --branch 9.84 --single-branch
+  - cd easyloggingpp
+  - mkdir build
+  - cd build
+  - cmkae ..
+  - sudo make install
+  - cd ../..
   # cmake
   - mkdir build
   - cd build
