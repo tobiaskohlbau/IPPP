@@ -75,9 +75,9 @@ class Vec {
         if (this == &vec)    // Same object?
             return *this;
         m_dim = vec.getDim();
-        this->m_data = std::unique_ptr<T[]>(new T[m_dim]);
+        m_data = std::unique_ptr<T[]>(new T[m_dim]);
         for (unsigned int i = 0; i < m_dim; ++i) {
-            this->m_data[i] = vec[i];
+            m_data[i] = vec[i];
         }
         return *this;
     }

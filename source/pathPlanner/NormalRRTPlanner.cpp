@@ -32,16 +32,16 @@ using std::shared_ptr;
 */
 void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
-    shared_ptr<Node> nearestNode = this->m_graph->getNearestNode(Node(randVec));
+    shared_ptr<Node> nearestNode = m_graph->getNearestNode(Node(randVec));
 
     // compute node new with fixed step size
     Vec<float> newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getVec());
     newNode = shared_ptr<Node>(new Node(newVec));
 
-    if (this->m_collision->controlVec(newNode->getVec())) {
+    if (m_collision->controlVec(newNode->getVec())) {
         newNode = nullptr;
         return;
-    } else if (!this->m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
+    } else if (!m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
         newNode = nullptr;
         return;
     }
@@ -61,15 +61,15 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
 *  \date       2016-05-27
 */
 bool NormalRRTPlanner::connectGoalNode(Vec<float> goal) {
-    if (this->m_collision->controlVec(goal))
+    if (m_collision->controlVec(goal))
         return false;
 
     shared_ptr<Node> goalNode(new Node(goal));
-    std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
+    std::vector<shared_ptr<Node>> nearNodes = m_graph->getNearNodes(goalNode, m_stepSize * 3);
 
     shared_ptr<Node> nearestNode = nullptr;
     for (auto node : nearNodes) {
-        if (this->m_planner->controlTrajectory(goal, node->getVec())) {
+        if (m_planner->controlTrajectory(goal, node->getVec())) {
             nearestNode = node;
             break;
         }
@@ -77,10 +77,10 @@ bool NormalRRTPlanner::connectGoalNode(Vec<float> goal) {
 
     if (nearestNode != nullptr) {
         goalNode->setParent(nearestNode);
-        this->m_goalNode = goalNode;
-        this->m_graph->addNode(goalNode);
+        m_goalNode = goalNode;
+        m_graph->addNode(goalNode);
         // Logging::info("Goal Node is connected", this);
-        this->m_pathPlanned = true;
+        m_pathPlanned = true;
         return true;
     }
 
