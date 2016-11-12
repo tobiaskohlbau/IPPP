@@ -17,6 +17,7 @@
 #-------------------------------------------------------------------------//
 
 SET(LIBRARIES
+    pthread
     RobotMotionPlanning
     PQP
     fcl

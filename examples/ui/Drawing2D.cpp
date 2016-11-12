@@ -1,4 +1,4 @@
-#include <ui/Drawing.h>
+#include <ui/Drawing2D.h>
 
 #include <fstream>
 
@@ -15,7 +15,7 @@ using std::shared_ptr;
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode,
+void Drawing2D::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode,
                          const Vec<uint8_t> &colorEdge, int thickness) {
     assert(nodes[0]->getDim() == 2);
 
@@ -39,7 +39,7 @@ void Drawing::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &im
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing::drawGraph2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode,
+void Drawing2D::drawGraph2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode,
                          const Vec<uint8_t> &colorEdge, int thickness) {
     assert(nodes[0]->getDim() == 2);
 
@@ -64,7 +64,7 @@ void Drawing::drawGraph2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &i
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, const Vec<uint8_t> &colorPoint, int thickness) {
+void Drawing2D::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, const Vec<uint8_t> &colorPoint, int thickness) {
     if (vecs.size() == 0)
         return;
 
@@ -76,23 +76,4 @@ void Drawing::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, con
     }
 }
 
-void Drawing::writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale) {
-    std::ofstream myfile(filename);
-    for (int i = 0; i < vecs.size(); ++i) {
-        for (unsigned int j = 0; j < vecs[i].getDim(); ++j)
-            myfile << vecs[i][j] * scale << " ";
-        myfile << std::endl;
-    }
-    myfile.close();
-}
 
-void Drawing::appendVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale) {
-    std::ofstream myfile;
-    myfile.open(filename, std::ios_base::app);
-    for (int i = 0; i < vecs.size(); ++i) {
-        for (unsigned int j = 0; j < vecs[i].getDim(); ++j)
-            myfile << vecs[i][j] * scale << " ";
-        myfile << std::endl;
-    }
-    myfile.close();
-}
