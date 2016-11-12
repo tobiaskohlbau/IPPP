@@ -28,14 +28,14 @@ set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing.cpp
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.h
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.cpp
     ${UIS_HDRS})
 
-set(libs
+set(ADDITIONAL_LIBRARIES
     ${OpenCV_LIBS})
 
-ADD_RMPL_EXAMPLE(Gui2D "${source}" "${libs}")
+ADD_RMPL_EXAMPLE(Gui2D "${source}" "${ADDITIONAL_LIBRARIES}")
 qt5_use_modules(Gui2D Widgets Gui)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)

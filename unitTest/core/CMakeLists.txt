@@ -19,7 +19,11 @@
 set(MODULE "core")
 add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
 
-ADD_RMPL_TEST(node)
-ADD_RMPL_TEST(trajectoryPlanner)
-ADD_RMPL_TEST(utilities)
-ADD_RMPL_TEST(vec)
+SET(ADDITIONAL_LIBRARIES
+    ccd
+    fcl)
+
+ADD_RMPL_TEST(node "")
+ADD_RMPL_TEST(trajectoryPlanner "${ADDITIONAL_LIBRARIES}")
+ADD_RMPL_TEST(utilities "")
+ADD_RMPL_TEST(vec "")

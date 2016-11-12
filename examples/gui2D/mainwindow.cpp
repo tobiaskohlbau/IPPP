@@ -77,10 +77,10 @@ void MainWindow::viewPath() {
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
     std::vector<std::shared_ptr<rmpl::Node>> nodes = m_planner->getGraphNodes();
-    Drawing::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
+    Drawing2D::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
     if (m_connected) {
         std::vector<rmpl::Vec<float>> pathPoints = m_planner->getPath(0.5, true);
-        Drawing::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255, 0, 0), 3);
+        Drawing2D::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255, 0, 0), 3);
     }
 
     QImage qImage = convertCvMat(image);

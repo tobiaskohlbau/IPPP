@@ -16,35 +16,17 @@
 //
 //-------------------------------------------------------------------------//
 
+#ifndef WRITER_H
+#define WRITER_H
+
 #include <core/ModuleBase.h>
+#include <core/Node.h>
 
-using namespace rmpl;
+class Writer : public rmpl::ModuleBase {
+  public:
+    static void writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale = 1);
+    static void appendVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale = 1);
+    static void writeTrafosToFile(const std::vector<std::vector<rmpl::Vec<float>>> &vecs, const std::string &filenames);
+};
 
-/*!
-*  \brief      Standard constructor of the ModuleBase
-*  \author     Sasch Kaden
-*  \date       2016-05-30
-*/
-ModuleBase::ModuleBase() {
-    m_name = "Unknown";
-}
-
-/*!
-*  \brief      Constructor of the ModuleBase
-*  \author     Sasch Kaden
-*  \param[in]  module name
-*  \date       2016-05-30
-*/
-ModuleBase::ModuleBase(const std::string &name) {
-    m_name = name;
-}
-
-/*!
-*  \brief      Return name
-*  \author     Sasch Kaden
-*  \param[out] name
-*  \date       2016-05-30
-*/
-std::string ModuleBase::getName() {
-    return m_name;
-}
+#endif    // WRITER_H

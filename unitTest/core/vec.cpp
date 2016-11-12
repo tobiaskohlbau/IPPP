@@ -18,7 +18,6 @@
 
 #include <boost/mpl/list.hpp>
 #include <boost/test/test_case_template.hpp>
-#include <boost/test/unit_test.hpp>
 
 #include <core/Vec.hpp>
 
@@ -31,6 +30,27 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(standardConstructor, T, testTypes) {
     Vec<T> obj;
     BOOST_CHECK(obj.getDim() == 0);
     BOOST_CHECK_EQUAL(obj.empty(), true);
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(directConstructor, T, testTypes) {
+    std::vector<Vec<T>> vecs;
+
+    vecs.push_back(Vec<T>(0, 1));
+    vecs.push_back(Vec<T>(0, 1, 2));
+    vecs.push_back(Vec<T>(0, 1, 2, 3));
+    vecs.push_back(Vec<T>(0, 1, 2, 3, 4));
+    vecs.push_back(Vec<T>(0, 1, 2, 3, 4, 5));
+    vecs.push_back(Vec<T>(0, 1, 2, 3, 4, 5, 6));
+    vecs.push_back(Vec<T>(0, 1, 2, 3, 4, 5, 6, 7));
+    vecs.push_back(Vec<T>(0, 1, 2, 3, 4, 5, 6, 7, 8));
+
+    for (int i = 0; i < 8; ++i) {
+        BOOST_CHECK_EQUAL(vecs[i].getDim(), i + 2);
+        BOOST_CHECK_EQUAL(vecs[i].empty(), false);
+        for (int j = 0; j < i + 2; ++j) {
+            BOOST_CHECK_EQUAL(vecs[i][j], j);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(dimensionConstructor, T, testTypes) {
@@ -53,12 +73,15 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(arrayConstructor, T, testTypes) {
 BOOST_AUTO_TEST_CASE_TEMPLATE(setAllTo, T, testTypes) {
     T array[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     Vec<T> obj(10, array);
-    obj.setAllTo(0);
-    for (unsigned int i = 0; i < 10; ++i)
-        BOOST_CHECK_EQUAL(obj[i], 0);
+    for (int i = -100; i < 100; i+=5) {
+        obj.setAllTo(i);
+        for (unsigned int j = 0; j < 10; ++j) {
+            BOOST_CHECK_EQUAL(obj[j], i);
+        }
+    }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(append, T, testTypes) {
+BOOST_AUTO_TEST_CASE_TEMPLATE(appendVec, T, testTypes) {
     T array1[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     T array2[6] = {10, 11, 12, 13, 14, 15};
     Vec<T> obj1(10, array1);
@@ -69,6 +92,25 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(append, T, testTypes) {
     obj1.append(Vec<T>());    // append empty Vec
     for (unsigned int i = 0; i < obj1.getDim(); ++i)
         BOOST_CHECK_EQUAL(obj1[i], i);
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(appendScalar, T, testTypes) {
+    T array1[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    Vec<T> obj(10, array1);
+    obj.append(10);
+    obj.append(11);
+    obj.append(12);
+    BOOST_CHECK_EQUAL(obj.getDim(), 13);
+    for (unsigned int i = 0; i < obj.getDim(); ++i)
+        BOOST_CHECK_EQUAL(obj[i], i);
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(norm, T, testTypes) {
+    std::vector<Vec<T>> vecs;
+
+    vecs.push_back(Vec<T>(0,1,2,3,4,5));
+
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

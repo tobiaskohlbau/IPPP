@@ -125,10 +125,10 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
         return nodes;
 
     nodes.push_back(m_goalNode);
-    shared_ptr<Node> temp = m_goalNode->getParent();
+    shared_ptr<Node> temp = m_goalNode->getParentNode();
     while (temp != nullptr) {
         nodes.push_back(temp);
-        temp = temp->getParent();
+        temp = temp->getParentNode();
     }
     Logging::info("Path has: " + std::to_string(nodes.size()) + " nodes", this);
     return nodes;
