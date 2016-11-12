@@ -75,11 +75,11 @@ void PRMPlanner::startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThr
 *  \date       2016-08-09
 */
 void PRMPlanner::samplingPhase(unsigned int nbOfNodes) {
-    unsigned int dim = this->m_robot->getDim();
+    unsigned int dim = m_robot->getDim();
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vec<float> sample = this->m_sampler->getSample(dim, i, nbOfNodes);
-        if (!this->m_collision->controlVec(sample)) {
-            this->m_graph->addNode(shared_ptr<Node>(new Node(sample)));
+        Vec<float> sample = m_sampler->getSample(dim);
+        if (!m_collision->controlVec(sample)) {
+            m_graph->addNode(shared_ptr<Node>(new Node(sample)));
         }
     }
 }
@@ -92,7 +92,7 @@ void PRMPlanner::samplingPhase(unsigned int nbOfNodes) {
 *  \date       2016-08-09
 */
 void PRMPlanner::startPlannerPhase(unsigned int nbOfThreads) {
-    unsigned int nodeCount = this->m_graph->size();
+    unsigned int nodeCount = m_graph->size();
     if (nbOfThreads == 1) {
         plannerPhase(0, nodeCount);
     } else {
@@ -122,7 +122,7 @@ void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeI
         return;
     }
 
-    std::vector<shared_ptr<Node>> nodes = this->m_graph->getNodes();
+    std::vector<shared_ptr<Node>> nodes = m_graph->getNodes();
     if (endNodeIndex > nodes.size()) {
         Logging::error("End index is larger than node size", this);
         return;
@@ -130,9 +130,9 @@ void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeI
 
     for (std::vector<shared_ptr<Node>>::iterator node = nodes.begin() + startNodeIndex; node != nodes.begin() + endNodeIndex;
          ++node) {
-        std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(*node, m_rangeSize);
+        std::vector<shared_ptr<Node>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
-            if (this->m_planner->controlTrajectory((*node)->getVec(), nearNode->getVec()))
+            if (m_planner->controlTrajectory((*node)->getVec(), nearNode->getVec()))
                 (*node)->addChild(nearNode);
         }
     }
@@ -188,11 +188,11 @@ bool PRMPlanner::queryPath(Vec<float> start, Vec<float> goal) {
 *  \date       2016-08-09
 */
 shared_ptr<Node> PRMPlanner::connectNode(Vec<float> &node) {
-    std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(shared_ptr<Node>(new Node(node)), m_rangeSize * 3);
+    std::vector<shared_ptr<Node>> nearNodes = m_graph->getNearNodes(shared_ptr<Node>(new Node(node)), m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
     shared_ptr<Node> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (this->m_planner->controlTrajectory(node, *nearNodes[i]) && node.getDist(nearNodes[i]->getVec()) < dist) {
+        if (m_planner->controlTrajectory(node, *nearNodes[i]) && node.getDist(nearNodes[i]->getVec()) < dist) {
             dist = node.getDist(nearNodes[i]->getVec());
             nearestNode = nearNodes[i];
         }

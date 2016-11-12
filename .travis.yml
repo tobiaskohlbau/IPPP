@@ -27,7 +27,7 @@ before_script:
   - cd easyloggingpp
   - mkdir build
   - cd build
-  - cmkae ..
+  - cmake ..
   - sudo make install
   - cd ../..
   # cmake

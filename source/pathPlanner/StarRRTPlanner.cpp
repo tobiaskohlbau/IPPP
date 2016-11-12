@@ -32,7 +32,7 @@ using std::shared_ptr;
 */
 void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
-    shared_ptr<Node> nearestNode = this->m_graph->getNearestNode(Node(randVec));
+    shared_ptr<Node> nearestNode = m_graph->getNearestNode(Node(randVec));
     // set node new fix fixed step size of 10
     Vec<float> newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getVec());
     newNode = shared_ptr<Node>(new Node(newVec));
@@ -40,10 +40,10 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
     std::vector<shared_ptr<Node>> nearNodes;
     chooseParent(newNode, nearestNode, nearNodes);
 
-    if (this->m_collision->controlVec(newNode->getVec())) {
+    if (m_collision->controlVec(newNode->getVec())) {
         newNode = nullptr;
         return;
-    } else if (!this->m_planner->controlTrajectory(newNode, nearestNode)) {
+    } else if (!m_planner->controlTrajectory(newNode, nearestNode)) {
         newNode = nullptr;
         return;
     }
@@ -68,12 +68,12 @@ void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> 
 void StarRRTPlanner::chooseParent(shared_ptr<Node> &newNode, shared_ptr<Node> &nearestNode,
                                   std::vector<shared_ptr<Node>> &nearNodes) {
     // get near nodes to the new node
-    nearNodes = this->m_graph->getNearNodes(newNode, this->m_stepSize);
+    nearNodes = m_graph->getNearNodes(newNode, m_stepSize);
 
     float nearestNodeCost = nearestNode->getCost();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < nearestNodeCost) {
-            if (this->m_planner->controlTrajectory(newNode, nearNodes[i])) {
+            if (m_planner->controlTrajectory(newNode, nearNodes[i])) {
                 nearestNodeCost = nearNodes[i]->getCost();
                 nearestNode = nearNodes[i];
             }
@@ -95,7 +95,7 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
             float oldDist = nearNode->getCost();
             float newDist = nearNode->getDist(newNode) + newNode->getCost();
             if (newDist < oldDist) {
-                if (this->m_planner->controlTrajectory(newNode, nearNode)) {
+                if (m_planner->controlTrajectory(newNode, nearNode)) {
                     float cost = nearNode->getCost() - nearNode->getDist(nearNode->getParentNode());
                     cost += newNode->getDist(nearNode);
                     m_mutex.lock();
@@ -116,16 +116,16 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
 *  \date       2016-05-27
 */
 bool StarRRTPlanner::connectGoalNode(Vec<float> goal) {
-    if (this->m_collision->controlVec(goal))
+    if (m_collision->controlVec(goal))
         return false;
 
     shared_ptr<Node> goalNode(new Node(goal));
-    std::vector<shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
+    std::vector<shared_ptr<Node>> nearNodes = m_graph->getNearNodes(goalNode, m_stepSize * 3);
 
     shared_ptr<Node> nearestNode = nullptr;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (nearNodes[i]->getCost() < minCost && this->m_planner->controlTrajectory(goalNode, nearNodes[i])) {
+        if (nearNodes[i]->getCost() < minCost && m_planner->controlTrajectory(goalNode, nearNodes[i])) {
             minCost = nearNodes[i]->getCost();
             nearestNode = nearNodes[i];
         }
@@ -133,10 +133,10 @@ bool StarRRTPlanner::connectGoalNode(Vec<float> goal) {
 
     if (nearestNode != nullptr) {
         goalNode->setParent(nearestNode);
-        this->m_goalNode = goalNode;
-        this->m_goalNode->setCost(m_goalNode->getDist(*nearestNode) + nearestNode->getCost());
-        // this->sendMessage("Goal Node is connected", Message::info);
-        this->m_pathPlanned = true;
+        m_goalNode = goalNode;
+        m_goalNode->setCost(m_goalNode->getDist(*nearestNode) + nearestNode->getCost());
+        // Logging::info("Goal Node is connected", this);
+        m_pathPlanned = true;
         return true;
     }
 

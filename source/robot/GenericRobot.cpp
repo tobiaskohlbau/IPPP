@@ -62,7 +62,7 @@ std::vector<Eigen::Matrix4f> GenericRobot::getJointTrafos(const Vec<float> &angl
 
     // create transformation matrizes
     for (int i = 0; i < m_joints.size(); ++i) {
-        A = this->getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]);
+        A = getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]);
         trafos.push_back(A);
     }
     return trafos;

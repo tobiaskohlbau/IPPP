@@ -54,7 +54,7 @@ bool RRTPlanner::computePath(Vec<float> start, Vec<float> goal, unsigned int num
 *  \date       2016-05-27
 */
 bool RRTPlanner::setInitNode(Vec<float> start) {
-    if (this->m_collision->controlVec(start)) {
+    if (m_collision->controlVec(start)) {
         Logging::warning("Init node could not be connected", this);
         return false;
     }
@@ -62,7 +62,7 @@ bool RRTPlanner::setInitNode(Vec<float> start) {
     shared_ptr<Node> initNode(new Node(start));
     m_sampler->setMeanOfDistribution(start);
     m_initNode = initNode;
-    this->m_graph->addNode(m_initNode);
+    m_graph->addNode(m_initNode);
     return true;
 }
 
@@ -103,13 +103,13 @@ bool RRTPlanner::computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads) {
 */
 void RRTPlanner::computeTreeThread(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vec<float> randVec = this->m_sampler->getSample(m_robot->getDim(), i, nbOfNodes);
+        Vec<float> randVec = m_sampler->getSample(m_robot->getDim());
         shared_ptr<Node> newNode;
         computeRRTNode(randVec, newNode);
 
         if (newNode == nullptr)
             continue;
-        this->m_graph->addNode(newNode);
+        m_graph->addNode(newNode);
     }
 }
 
@@ -121,7 +121,7 @@ void RRTPlanner::computeTreeThread(unsigned int nbOfNodes) {
 */
 std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
     std::vector<shared_ptr<Node>> nodes;
-    if (!this->m_pathPlanned)
+    if (!m_pathPlanned)
         return nodes;
 
     nodes.push_back(m_goalNode);
@@ -142,13 +142,13 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
 */
 std::vector<Vec<float>> RRTPlanner::getPath(float trajectoryStepSize, bool smoothing) {
     std::vector<Vec<float>> path;
-    if (!this->m_pathPlanned) {
+    if (!m_pathPlanned) {
         Logging::warning("Path is not complete", this);
         return path;
     }
 
     std::vector<std::shared_ptr<Node>> nodes = getPathNodes();
-    path = this->getPathFromNodes(nodes, trajectoryStepSize, smoothing);
+    path = getPathFromNodes(nodes, trajectoryStepSize, smoothing);
 
     Logging::info("Path has: " + std::to_string(path.size()) + " points", this);
     return path;
@@ -163,14 +163,14 @@ std::vector<Vec<float>> RRTPlanner::getPath(float trajectoryStepSize, bool smoot
 *  \date       2016-05-27
 */
 Vec<float> RRTPlanner::computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode) {
-    if (randNode.getDist(nearestNode) < this->m_stepSize)
+    if (randNode.getDist(nearestNode) < m_stepSize)
         return randNode;
 
     // p = a + k * (b-a)
     // ||u|| = ||b - a||
     // k = stepSize / ||u||
     Vec<float> u = randNode - nearestNode;
-    u *= this->m_stepSize / u.norm();
+    u *= m_stepSize / u.norm();
     u += nearestNode;
     return u;
 }
