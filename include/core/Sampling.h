@@ -30,7 +30,7 @@
 
 namespace rmpl {
 
-enum SamplingMethod { randomly, uniform, standardDistribution, poisson };
+enum SamplingMethod { randomly, uniform, standardDistribution, nearObstacles };
 
 /*!
 * \brief   Class Sampling creates sample vecs with the passed method
@@ -40,12 +40,15 @@ enum SamplingMethod { randomly, uniform, standardDistribution, poisson };
 class Sampling : public ModuleBase {
   public:
     Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
-    Vec<float> getSample(unsigned int dim, int index, int nbSamples);
+    Vec<float> getSample(unsigned int dim);
 
     bool setMeanOfDistribution(const Vec<float> &mean);
 
   private:
     bool checkBoudaries();
+    Vec<float> sampleStandardDist(unsigned int dim);
+    Vec<float> sampleUniform(unsigned int dim);
+    Vec<float> sampleRandom(unsigned int dim);
 
     Vec<float> m_minBoundary;
     Vec<float> m_maxBoundary;

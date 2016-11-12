@@ -55,28 +55,17 @@ Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod metho
 *  \param[out] Vec
 *  \date       2016-05-24
 */
-Vec<float> Sampling::getSample(unsigned int dim, int index, int nbSamples) {
-    Vec<float> vec(dim);
+Vec<float> Sampling::getSample(unsigned int dim) {
     if (!checkBoudaries())
-        return vec;
+        return Vec<float>();
 
-    if (m_method == SamplingMethod::standardDistribution) {
-        float number;
-        for (unsigned int i = 0; i < dim; ++i) {
-            do {
-                number = m_distNormal[i](m_generator);
-            } while ((number <= m_minBoundary[i]) || (number >= m_maxBoundary[i]));
-            vec[i] = number;
-        }
-        return vec;
-    } else if (m_method == SamplingMethod::uniform) {
-        for (unsigned int i = 0; i < dim; ++i)
-            vec[i] = m_distUniform[i](m_generator);
-        return vec;
-    } else {
-        for (unsigned int i = 0; i < dim; ++i)
-            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
-        return vec;
+    switch (m_method) {
+        case SamplingMethod::standardDistribution :
+            return sampleStandardDist(dim);
+        case SamplingMethod::uniform :
+            return sampleUniform(dim);
+        default :
+            return sampleRandom(dim);
     }
 }
 
@@ -92,6 +81,32 @@ bool Sampling::setMeanOfDistribution(const Vec<float> &mean) {
         m_distNormal.push_back(distribution);
     }
     return true;
+}
+
+Vec<float> Sampling::sampleStandardDist(unsigned int dim) {
+    Vec<float> vec(dim);
+    float number;
+    for (unsigned int i = 0; i < dim; ++i) {
+        do {
+            number = m_distNormal[i](m_generator);
+        } while ((number <= m_minBoundary[i]) || (number >= m_maxBoundary[i]));
+        vec[i] = number;
+    }
+    return vec;
+}
+
+Vec<float> Sampling::sampleUniform(unsigned int dim) {
+    Vec<float> vec(dim);
+    for (unsigned int i = 0; i < dim; ++i)
+        vec[i] = m_distUniform[i](m_generator);
+    return vec;
+}
+
+Vec<float> Sampling::sampleRandom(unsigned int dim) {
+    Vec<float> vec(dim);
+    for (unsigned int i = 0; i < dim; ++i)
+        vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
+    return vec;
 }
 
 /*!
