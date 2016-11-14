@@ -22,6 +22,14 @@
 
 using namespace rmpl;
 
+/*!
+*  \brief      Write vecs to defined file, clear file
+*  \param[in]  vector of Vec
+*  \param[in]  filename
+*  \param[in]  scale
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
 void Writer::writeVecsToFile(const std::vector<Vec<float>> &vecs, const std::string &filename, float scale) {
     std::ofstream myfile(filename);
     for (int i = 0; i < vecs.size(); ++i) {
@@ -32,6 +40,14 @@ void Writer::writeVecsToFile(const std::vector<Vec<float>> &vecs, const std::str
     myfile.close();
 }
 
+/*!
+*  \brief      Append vecs to defined file
+*  \param[in]  vector of Vec
+*  \param[in]  filename
+*  \param[in]  scale
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
 void Writer::appendVecsToFile(const std::vector<Vec<float>> &vecs, const std::string &filename, float scale) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);
@@ -43,6 +59,13 @@ void Writer::appendVecsToFile(const std::vector<Vec<float>> &vecs, const std::st
     myfile.close();
 }
 
+/*!
+*  \brief      Write transformation vectors to defined file
+*  \param[in]  vector of vector of Vec
+*  \param[in]  filename
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
 void Writer::writeTrafosToFile(const std::vector<std::vector<Vec<float>>> &vecs, const std::string &filename) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);

@@ -8,7 +8,7 @@
 #include <core/Node.h>
 
 /*!
-* \brief   Class Drawing for drawing 2D paths with OpenCV
+* \brief   Provides methods of drawing form 2D paths with OpenCV
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
