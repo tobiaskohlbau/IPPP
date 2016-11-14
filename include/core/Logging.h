@@ -19,9 +19,14 @@
 #ifndef LOGGING_H_
 #define LOGGING_H_
 
+#include <mutex>
+
 #include <core/ModuleBase.h>
 
 namespace rmpl {
+
+enum LogLevel { none, debug, all };
+enum LogOutput { terminal, file, terminlAndFile };
 
 /*!
 * \brief   Logging class for the complete framework
@@ -31,6 +36,13 @@ namespace rmpl {
 */
 class Logging {
   public:
+    static void setLogLevel(LogLevel level);
+    static LogLevel getLogLevel();
+    static void setLogOutput(LogOutput output);
+    static LogOutput getLogOutput();
+    static void setOutputFile(const std::string file);
+    static std::string getOutputFile();
+
     static void info(std::string message, ModuleBase *module = nullptr);
     static void warning(std::string message, ModuleBase *module = nullptr);
     static void error(std::string message, ModuleBase *module = nullptr);
@@ -40,6 +52,17 @@ class Logging {
     static void warning(std::string message, std::string moduleName);
     static void error(std::string message, std::string moduleName);
     static void debug(std::string message, std::string moduleName);
+
+    static void printToTerminal(std::string message);
+    static void writeToFile(std::string message);
+
+  private:
+    static void sendString(std::string message);
+
+    static LogLevel m_level;
+    static LogOutput m_output;
+    static std::string m_file;
+    static std::mutex m_mutex;
 };
 
 } /* namespace rmpl */

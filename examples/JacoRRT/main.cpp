@@ -22,8 +22,7 @@ void simpleRRT() {
     rmpl::NormalRRTPlanner planner(robot, options);
     rmpl::Vec<float> start(180, 180, 180, 180, 180, 180);
     //planner.setInitNode(rmpl::Node(0, 0, 0, 0, 0, 0));
-    planner.setInitNode(start);
-    return;
+
     // compute the tree
     clock_t begin = std::clock();
     planner.computeTree(25000, 2);
@@ -97,7 +96,7 @@ void treeConnection() {
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
-    Drawing2D::writeVecsToFile(graphPoints, "example.ASC", 10);
+    Writer::writeVecsToFile(graphPoints, "example.ASC", 10);
 
     nodes = plannerGoalNode.getGraphNodes();
     std::cout << "Goal Graph has: " << nodes.size() << "nodes" << std::endl;

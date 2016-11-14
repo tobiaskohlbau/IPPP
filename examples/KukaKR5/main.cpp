@@ -15,6 +15,9 @@
 using namespace rmpl;
 
 int main(int argc, char** argv) {
+    Logging::setOutputFile("output.txt");
+    Logging::setLogOutput(LogOutput::terminlAndFile);
+
     std::shared_ptr<rmpl::KukaKR5> robot(new rmpl::KukaKR5());
     std::shared_ptr<rmpl::RRTOptions> options(
         new rmpl::RRTOptions(40, 1, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));

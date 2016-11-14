@@ -18,9 +18,76 @@
 
 #include <core/Logging.h>
 
-#include <easylogging++.h>
+#include <fstream>
 
 using namespace rmpl;
+
+LogLevel Logging::m_level = LogLevel::all;
+LogOutput Logging::m_output = LogOutput::terminal;
+std::string Logging::m_file = "";
+std::mutex Logging::m_mutex;
+
+/*!
+*  \brief      Set global log level
+*  \param[in]  LogLevel
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
+void Logging::setLogLevel(LogLevel level) {
+    m_level = level;
+}
+
+/*!
+*  \brief      Return global log level
+*  \param[out] LogLevel
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
+LogLevel Logging::getLogLevel() {
+    return m_level;
+}
+
+/*!
+*  \brief      Set Logging output
+*  \param[in]  LogOutput
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
+void Logging::setLogOutput(LogOutput output) {
+    m_output = output;
+}
+
+/*!
+*  \brief      Return Logging output
+*  \param[out] LogOutput
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
+LogOutput Logging::getLogOutput() {
+    return m_output;
+}
+
+/*!
+*  \brief      Set output file
+*  \param[in]  output file
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
+void Logging::setOutputFile(const std::string file) {
+    if (file == "")
+        return;
+    m_file = file;
+}
+
+/*!
+*  \brief      Return output file
+*  \param[out] output file
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
+std::string Logging::getOutputFile() {
+    return m_file;
+}
 
 /*!
 *  \brief      Info logging with module for identificaion
@@ -72,6 +139,9 @@ void Logging::error(std::string message, ModuleBase *module) {
 *  \date       2016-10-22
 */
 void Logging::debug(std::string message, ModuleBase *module) {
+    if (m_level != LogLevel::debug)
+        return;
+
     if (module == nullptr)
         debug(message, "Unknown");
     else
@@ -86,7 +156,7 @@ void Logging::debug(std::string message, ModuleBase *module) {
 *  \date       2016-10-22
 */
 void Logging::info(std::string message, std::string moduleName) {
-    std::cout << "Info " << moduleName << ": " << message << std::endl;
+    sendString("Info " + moduleName + ": " + message);
 }
 
 /*!
@@ -97,7 +167,7 @@ void Logging::info(std::string message, std::string moduleName) {
 *  \date       2016-10-22
 */
 void Logging::warning(std::string message, std::string moduleName) {
-    std::cout << "Warning " << moduleName << ": " << message << std::endl;
+    sendString("Warning " + moduleName + ": " + message);
 }
 
 /*!
@@ -108,7 +178,7 @@ void Logging::warning(std::string message, std::string moduleName) {
 *  \date       2016-10-22
 */
 void Logging::error(std::string message, std::string moduleName) {
-    std::cout << "ERROR " << moduleName << ": " << message << std::endl;
+    sendString("Error " + moduleName + ": " + message);
 }
 
 /*!
@@ -119,7 +189,54 @@ void Logging::error(std::string message, std::string moduleName) {
 *  \date       2016-10-22
 */
 void Logging::debug(std::string message, std::string moduleName) {
-#ifdef DEBUG_OUTPUT
-    std::cout << "Debug " << moduleName << ": " << message << std::endl;
-#endif
+    if (m_level == LogLevel::debug)
+        sendString("Debug " + moduleName + ": " + message);
+}
+
+/*!
+*  \brief      Send message by defined LogOutput method, satisfy thread safety
+*  \param[in]  message
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
+void Logging::sendString(std::string message) {
+    if (!m_level)
+        return;
+    m_mutex.lock();
+    if (m_output == LogOutput::file) {
+        writeToFile(message);
+    } else if (m_output == LogOutput::terminlAndFile) {
+        printToTerminal(message);
+        writeToFile(message);
+    } else {
+        printToTerminal(message);
+    }
+    m_mutex.unlock();
+}
+
+/*!
+*  \brief      Send message to the terminal
+*  \param[in]  message
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
+void Logging::printToTerminal(std::string message) {
+    std::cout << message << std::endl;
+}
+
+/*!
+*  \brief      Append message to the defined output file
+*  \param[in]  message
+*  \author     Sasch Kaden
+*  \date       2016-11-14
+*/
+void Logging::writeToFile(std::string message) {
+    if (m_file == "")
+        return;
+    std::ofstream myfile;
+    myfile.open(m_file, std::ios_base::app);
+    if (myfile.is_open()) {
+        myfile << message << std::endl;
+        myfile.close();
+    }
 }
