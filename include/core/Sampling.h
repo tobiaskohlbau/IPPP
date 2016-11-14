@@ -30,7 +30,9 @@
 
 namespace rmpl {
 
-enum SamplingMethod { randomly, uniform, standardDistribution, nearObstacles };
+enum SamplingMethod { randomly, uniform, standardDistribution };
+
+enum SamplingStrategy { normal, nearObstacles };
 
 /*!
 * \brief   Class Sampling creates sample vecs with the passed method
