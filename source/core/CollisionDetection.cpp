@@ -188,20 +188,20 @@ bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<PQP_Model>> &mode
     for (int i = 0; i < m_robot->getDim(); ++i) {
         for (int j = i + 2; j < m_robot->getDim(); ++j) {
             if (checkPQP(models[i], models[j], R[i], R[j], t[i], t[j])) {
-#ifdef DEBUG_OUTPUT
-                shared_ptr<SerialRobot> robot(std::static_pointer_cast<SerialRobot>(m_robot));
-                Logging::debug("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), this);
-                Eigen::Vector3f r = R[i].eulerAngles(0, 1, 2);
-                std::cout << "A" << i << ": ";
-                std::cout << "Euler angles: " << std::endl << R[i] << std::endl;
-                std::cout << "Translation: " << t[i].transpose() << std::endl;
-                robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", Utilities::createT(R[i], t[i]));
-                r = R[j].eulerAngles(0, 1, 2);
-                std::cout << "A" << j << ": ";
-                std::cout << "Euler angles: " << std::endl << R[j] << std::endl;
-                std::cout << "Translation: " << t[j].transpose() << std::endl << std::endl;
-                robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", Utilities::createT(R[i], t[i]));
-#endif
+                if (Logging::getLogLevel() == LogLevel::debug) {
+                    shared_ptr<SerialRobot> robot(std::static_pointer_cast<SerialRobot>(m_robot));
+                    Logging::debug("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), this);
+                    Eigen::Vector3f r = R[i].eulerAngles(0, 1, 2);
+                    std::cout << "A" << i << ": ";
+                    std::cout << "Euler angles: " << std::endl << R[i] << std::endl;
+                    std::cout << "Translation: " << t[i].transpose() << std::endl;
+                    robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", Utilities::createT(R[i], t[i]));
+                    r = R[j].eulerAngles(0, 1, 2);
+                    std::cout << "A" << j << ": ";
+                    std::cout << "Euler angles: " << std::endl << R[j] << std::endl;
+                    std::cout << "Translation: " << t[j].transpose() << std::endl << std::endl;
+                    robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", Utilities::createT(R[i], t[i]));
+                }
                 return true;
             }
         }
@@ -251,17 +251,17 @@ bool CollisionDetection::checkMesh(std::vector<std::shared_ptr<fcl::BVHModel<fcl
     for (int i = 0; i < m_robot->getDim(); ++i) {
         for (int j = i + 2; j < m_robot->getDim(); ++j) {
             if (checkFCL(models[i], models[j], R[i], R[j], t[i], t[j])) {
-#ifdef DEBUG_OUTPUT
-                Logging::debug("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), this);
-                Eigen::Vector3f r = R[i].eulerAngles(0, 1, 2);
-                std::cout << "A" << i << ": ";
-                std::cout << "Euler angles: " << r.transpose() << "\t";
-                std::cout << "Translation: " << t[i].transpose() << std::endl;
-                r = R[j].eulerAngles(0, 1, 2);
-                std::cout << "A" << j << ": ";
-                std::cout << "Euler angles: " << r.transpose() << "\t";
-                std::cout << "Translation: " << t[j].transpose() << std::endl << std::endl;
-#endif
+                if (Logging::getLogLevel() == LogLevel::debug) {
+                    Logging::debug("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), this);
+                    Eigen::Vector3f r = R[i].eulerAngles(0, 1, 2);
+                    std::cout << "A" << i << ": ";
+                    std::cout << "Euler angles: " << r.transpose() << "\t";
+                    std::cout << "Translation: " << t[i].transpose() << std::endl;
+                    r = R[j].eulerAngles(0, 1, 2);
+                    std::cout << "A" << j << ": ";
+                    std::cout << "Euler angles: " << r.transpose() << "\t";
+                    std::cout << "Translation: " << t[j].transpose() << std::endl << std::endl;
+                }
                 return true;
             }
         }
