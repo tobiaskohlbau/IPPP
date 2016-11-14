@@ -50,9 +50,7 @@ Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod metho
 *  \brief      Return sample
 *  \author     Sascha Kaden
 *  \param[in]  dimension
-*  \param[in]  index from loop of samples
-*  \param[in]  absolute number of samples, which will be created
-*  \param[out] Vec
+*  \param[out] sample Vec
 *  \date       2016-05-24
 */
 Vec<float> Sampling::getSample(unsigned int dim) {
@@ -60,15 +58,22 @@ Vec<float> Sampling::getSample(unsigned int dim) {
         return Vec<float>();
 
     switch (m_method) {
-        case SamplingMethod::standardDistribution :
+        case SamplingMethod::standardDistribution:
             return sampleStandardDist(dim);
-        case SamplingMethod::uniform :
+        case SamplingMethod::uniform:
             return sampleUniform(dim);
-        default :
+        default:
             return sampleRandom(dim);
     }
 }
 
+/*!
+*  \brief      Set the mean of the standard distribution
+*  \author     Sascha Kaden
+*  \param[in]  mean of distribution
+*  \param[out] binary result
+*  \date       2016-11-14
+*/
 bool Sampling::setMeanOfDistribution(const Vec<float> &mean) {
     if (mean.getDim() != m_robot->getDim()) {
         Logging::warning("Wrong dimension of mean vector", this);
@@ -83,6 +88,13 @@ bool Sampling::setMeanOfDistribution(const Vec<float> &mean) {
     return true;
 }
 
+/*!
+*  \brief      Create a sample by the standard distribution and the set mean value
+*  \author     Sascha Kaden
+*  \param[in]  dimension
+*  \param[out] sample Vec
+*  \date       2016-11-14
+*/
 Vec<float> Sampling::sampleStandardDist(unsigned int dim) {
     Vec<float> vec(dim);
     float number;
@@ -95,6 +107,13 @@ Vec<float> Sampling::sampleStandardDist(unsigned int dim) {
     return vec;
 }
 
+/*!
+*  \brief      Create a sample by a uniform distribution
+*  \author     Sascha Kaden
+*  \param[in]  dimension
+*  \param[out] sample Vec
+*  \date       2016-11-14
+*/
 Vec<float> Sampling::sampleUniform(unsigned int dim) {
     Vec<float> vec(dim);
     for (unsigned int i = 0; i < dim; ++i)
@@ -102,6 +121,13 @@ Vec<float> Sampling::sampleUniform(unsigned int dim) {
     return vec;
 }
 
+/*!
+*  \brief      Create a random sample
+*  \author     Sascha Kaden
+*  \param[in]  dimension
+*  \param[out] sample Vec
+*  \date       2016-11-14
+*/
 Vec<float> Sampling::sampleRandom(unsigned int dim) {
     Vec<float> vec(dim);
     for (unsigned int i = 0; i < dim; ++i)
