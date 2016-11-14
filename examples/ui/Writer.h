@@ -19,9 +19,16 @@
 #ifndef WRITER_H
 #define WRITER_H
 
-#include <core/ModuleBase.h>
-#include <core/Node.h>
+#include <vector>
 
+#include <core/ModuleBase.h>
+#include <core/Vec.hpp>
+
+/*!
+* \brief   Provides methods for writing Vec lists to passed files
+* \author  Sascha Kaden
+* \date    2016-05-25
+*/
 class Writer : public rmpl::ModuleBase {
   public:
     static void writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale = 1);
