@@ -31,14 +31,12 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 find_package(Eigen3 REQUIRED)
 find_package(assimp)
 find_package(fcl REQUIRED)
-find_package(Easyloggingpp)
 set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
 
 include_directories(${CMAKE_SOURCE_DIR}/include
         ${EIGEN3_INCLUDE_DIR}
         ${ASSIMP_INCLUDE_DIR}
         ${FCL_INCLUDE_DIRS}
-        ${EASYLOGGINGPP_INCLUDE_DIR}
         ${PQP_DIR}/include)
 link_directories(${ASSIMP_LIBRARIES}
         ${PQP_DIR}/lib)
