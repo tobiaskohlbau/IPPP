@@ -105,7 +105,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     std::vector<Vec<float>> vecs;
 
     if (source.getDim() != target.getDim()) {
-        Logging::error("Nodes/Vecs have different dimensions", this);
+        Logging::error("Vecs have different dimensions", this);
         return vecs;
     } else if (m_stepSize == -1) {
         Logging::error("Step size is not set!", this);
@@ -118,7 +118,7 @@ std::vector<Vec<float>> TrajectoryPlanner::computeTrajectory(const Vec<float> &s
     Vec<float> u = target - source;
     Vec<float> uNorm = u / u.norm();
     Vec<float> temp(source);
-    while ((temp - target).sqNorm() > 0.5) {
+    while ((temp - target).sqNorm() > 1) {
         vecs.push_back(temp);
         temp += uNorm * stepSize;
     }
