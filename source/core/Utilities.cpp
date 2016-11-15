@@ -101,6 +101,9 @@ Vec<float> Utilities::degToRad(const Vec<float> deg) {
     return rad;
 }
 
+float Utilities::degToRad(float deg) {
+    return deg * pi() / 180;
+}
 /*!
 *  \brief      Convert rmpl Vec to Eigen Array
 *  \author     Sascha Kaden
@@ -108,7 +111,7 @@ Vec<float> Utilities::degToRad(const Vec<float> deg) {
 *  \param[out] Eigen Array
 *  \date       2016-07-07
 */
-Eigen::ArrayXf Utilities::VecToEigen(const Vec<float> &vec) {
+Eigen::VectorXf Utilities::VecToEigen(const Vec<float> &vec) {
     Eigen::ArrayXf eigenVec(vec.getDim());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         eigenVec(i, 0) = vec[i];
@@ -122,7 +125,7 @@ Eigen::ArrayXf Utilities::VecToEigen(const Vec<float> &vec) {
 *  \param[out] Eigen Array
 *  \date       2016-07-07
 */
-Eigen::ArrayXf Utilities::VecToEigen(const Vec<PQP_REAL> &vec) {
+Eigen::VectorXf Utilities::VecToEigen(const Vec<PQP_REAL> &vec) {
     Eigen::ArrayXf eigenVec(vec.getDim());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         eigenVec(i, 0) = vec[i];
@@ -136,7 +139,7 @@ Eigen::ArrayXf Utilities::VecToEigen(const Vec<PQP_REAL> &vec) {
 *  \param[out] Vec
 *  \date       2016-07-07
 */
-Vec<float> Utilities::EigenToVec(const Eigen::ArrayXf &eigenVec) {
+Vec<float> Utilities::EigenToVec(const Eigen::VectorXf &eigenVec) {
     Vec<float> vec((unsigned int)eigenVec.rows());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         vec[i] = eigenVec(i, 0);
