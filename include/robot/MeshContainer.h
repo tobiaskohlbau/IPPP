@@ -34,6 +34,8 @@
 
 namespace rmpl {
 
+typedef fcl::BVHModel<fcl::OBB<float>> FCLModel;
+
 /*!
 * \brief   Class MeshContainer
 * \details Contains all mesh models for the collision detection
@@ -44,14 +46,14 @@ class MeshContainer {
   public:
     MeshContainer();
     MeshContainer(std::string filepath);
-    MeshContainer(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> &fclModel, std::shared_ptr<PQP_Model> &pqpModel);
+    MeshContainer(std::shared_ptr<FCLModel> &fclModel, std::shared_ptr<PQP_Model> &pqpModel);
     bool loadFile(const std::string filePath);
     bool saveObj(const std::string path, Eigen::Matrix4f T);
 
-    std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> getFcl();
+    std::shared_ptr<FCLModel> getFcl();
     std::shared_ptr<PQP_Model> getPqp();
 
-    std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> m_fclModel;
+    std::shared_ptr<FCLModel> m_fclModel;
     std::shared_ptr<PQP_Model> m_pqpModel;
 
   private:

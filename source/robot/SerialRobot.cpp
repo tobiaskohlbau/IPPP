@@ -151,8 +151,8 @@ std::vector<shared_ptr<PQP_Model>> SerialRobot::getJointPqpModels() {
 *  \param[out] vector of fcl models
 *  \date       2016-08-25
 */
-std::vector<shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> SerialRobot::getJointFclModels() {
-    std::vector<shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> models;
+std::vector<shared_ptr<FCLModel>> SerialRobot::getJointFclModels() {
+    std::vector<shared_ptr<FCLModel>> models;
     for (auto joint : m_joints)
         models.push_back(joint.getMesh()->getFcl());
     return models;

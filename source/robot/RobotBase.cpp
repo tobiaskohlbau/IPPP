@@ -192,7 +192,7 @@ RobotType RobotBase::getRobotType() {
 *  \date       2016-07-24
 */
 void RobotBase::setCollisionType(CollisionType type) {
-    if (type == CollisionType::twoD && m_dim != 2) {
+    if (type == CollisionType::point2D && m_dim != 2) {
         Logging::warning("CollisionType twoD unequal to dimension", this);
     } else {
         m_collisionType = type;
