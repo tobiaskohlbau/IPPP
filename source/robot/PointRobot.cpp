@@ -28,5 +28,5 @@ using namespace rmpl;
 *  \date       2016-06-30
 */
 PointRobot::PointRobot(Vec<float> minBoundary, Vec<float> maxBoundary)
-    : MobileRobot("PointRobot", CollisionType::twoD, 2, minBoundary, maxBoundary) {
+    : MobileRobot("PointRobot", CollisionType::point2D, 2, minBoundary, maxBoundary) {
 }
