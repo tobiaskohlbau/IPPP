@@ -1,6 +1,6 @@
 #include <ui/Drawing2D.h>
 
-#include <fstream>
+#include <core/Logging.h>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -76,4 +76,36 @@ void Drawing2D::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, c
     }
 }
 
+/*!
+*  \brief         Draw a path with the passed points in an image
+*  \author        Sascha Kaden
+*  \param[in]     vector of points
+*  \param[in,out] image
+*  \param[in]     color of the points
+*  \param[in]     thickness of the points
+*  \date          2016-05-25
+*/
+void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector<Triangle> triangles, cv::Mat &image,
+                                 const Vec<uint8_t> &colorPoint, int thickness) {
+    if (vecs.size() == 0)
+        return;
+
+    assert(vecs[0].getDim() == 2);
+    assert(triangles[0].getP1().getDim() == 2);
+
+    Logging::info("start drawing of triangles", "Drawing2D");
+
+    cv::Point2i pt1, pt2, pt3;
+    for (auto vec : vecs) {
+        for (auto triangle : triangles) {
+            triangle.transform(vec);
+            pt1 = cv::Point2i(triangle.getP1()[0], triangle.getP1()[1]);
+            pt2 = cv::Point2i(triangle.getP2()[0], triangle.getP2()[1]);
+            pt3 = cv::Point2i(triangle.getP3()[0], triangle.getP3()[1]);
+            cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+            cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+            cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+        }
+    }
+}
 
