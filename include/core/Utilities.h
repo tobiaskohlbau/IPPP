@@ -43,10 +43,11 @@ class Utilities {
     static Eigen::Matrix4f poseVecToMat(const Vec<float> &pose);
     static Vec<float> poseMatToVec(const Eigen::Matrix4f &pose);
     static Vec<float> degToRad(const Vec<float> deg);
+    static float degToRad(float deg);
 
-    static Eigen::ArrayXf VecToEigen(const Vec<float> &vec);
-    static Eigen::ArrayXf VecToEigen(const Vec<PQP_REAL> &vec);
-    static Vec<float> EigenToVec(const Eigen::ArrayXf &eigenVec);
+    static Eigen::VectorXf VecToEigen(const Vec<float> &vec);
+    static Eigen::VectorXf VecToEigen(const Vec<PQP_REAL> &vec);
+    static Vec<float> EigenToVec(const Eigen::VectorXf &eigenVec);
 };
 
 } /* namespace rmpl */
