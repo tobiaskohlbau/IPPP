@@ -54,6 +54,7 @@ set(SRCS
     source/core/Node.cpp
     source/core/Sampling.cpp
     source/core/TrajectoryPlanner.cpp
+    source/core/Triangle.cpp
     source/core/Utilities.cpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
@@ -71,7 +72,8 @@ set(SRCS
     source/robot/MobileRobot.cpp
     source/robot/PointRobot.cpp
     source/robot/RobotBase.cpp
-    source/robot/SerialRobot.cpp)
+    source/robot/SerialRobot.cpp
+    source/robot/TriangleRobot.cpp)
 
 IF (${DEBUG_OUTPUT})
     add_definitions(-DDEBUG_OUTPUT)
