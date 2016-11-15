@@ -56,7 +56,7 @@ MeshContainer::MeshContainer(std::string filePath) {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-MeshContainer::MeshContainer(std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>& fclModel, std::shared_ptr<PQP_Model>& pqpModel) {
+MeshContainer::MeshContainer(std::shared_ptr<FCLModel>& fclModel, std::shared_ptr<PQP_Model>& pqpModel) {
     m_fclModel = fclModel;
     m_pqpModel = pqpModel;
 }
@@ -129,7 +129,7 @@ bool MeshContainer::loadFile(const std::string filePath) {
     std::cout << "Vertices size:" << vertices.size() << std::endl;
     std::cout << "Faces size:" << faces.size() << std::endl;
 
-    m_fclModel = std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>(new fcl::BVHModel<fcl::OBBRSS<float>>());
+    m_fclModel = std::shared_ptr<FCLModel>(new FCLModel());
     std::vector<fcl::Vector3f> verts;
     std::vector<fcl::Triangle> triangles;
     for (auto vert : vertices)
@@ -197,7 +197,7 @@ bool MeshContainer::saveObj(const std::string path, Eigen::Matrix4f T) {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>> MeshContainer::getFcl() {
+std::shared_ptr<FCLModel> MeshContainer::getFcl() {
     return m_fclModel;
 }
 

@@ -44,7 +44,7 @@ class SerialRobot : public RobotBase {
     std::shared_ptr<MeshContainer> getMeshFromJoint(unsigned int jointIndex);
     std::vector<std::shared_ptr<MeshContainer>> getJointMeshs();
     std::vector<std::shared_ptr<PQP_Model>> getJointPqpModels();
-    std::vector<std::shared_ptr<fcl::BVHModel<fcl::OBBRSS<float>>>> getJointFclModels();
+    std::vector<std::shared_ptr<FCLModel>> getJointFclModels();
 
     void saveMeshConfig(Vec<float> angles);
     void saveMeshConfig(Eigen::Matrix4f *As);

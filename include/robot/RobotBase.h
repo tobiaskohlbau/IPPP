@@ -31,7 +31,7 @@
 
 namespace rmpl {
 
-enum CollisionType { fcl, pqp, twoD };
+enum CollisionType { fcl, pqp, point2D, triangle2D };
 
 enum RobotType { serial, mobile };
 
