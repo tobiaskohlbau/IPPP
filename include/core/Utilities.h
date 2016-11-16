@@ -33,13 +33,26 @@ namespace rmpl {
 */
 class Utilities {
   public:
-    static constexpr double pi() {
+    static constexpr float pi() {
         return std::atan(1) * 4;
+    }
+
+    static constexpr float toRad() {
+        return (std::atan(1) * 4) / 180;
+    }
+
+    static constexpr float toDeg() {
+        return 180 / (std::atan(1) * 4);
     }
 
     static Eigen::Matrix4f createT(Eigen::Matrix3f &R, Eigen::Vector3f &t);
     static void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector3f &t);
 
+    static Eigen::Matrix2f getRotMat2D(float deg);
+    static Eigen::Matrix3f getRotMat3D(float degX, float degY, float degZ);
+
+    static void poseVecToRandT(const Vec<float> &pose, Eigen::Matrix3f &R, Eigen::Vector3f &t);
+    static void poseVecToRandT(const Vec<float> &pose, Eigen::Matrix2f &R, Eigen::Vector2f &t);
     static Eigen::Matrix4f poseVecToMat(const Vec<float> &pose);
     static Vec<float> poseMatToVec(const Eigen::Matrix4f &pose);
     static Vec<float> degToRad(const Vec<float> deg);
