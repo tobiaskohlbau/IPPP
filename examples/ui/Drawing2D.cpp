@@ -77,12 +77,13 @@ void Drawing2D::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, c
 }
 
 /*!
-*  \brief         Draw a path with the passed points in an image
+*  \brief         Draw a triangle path with the passed triangles and posses in an image
 *  \author        Sascha Kaden
-*  \param[in]     vector of points
+*  \param[in]     vector of transformations
+*  \param[in]     vector of triangles
 *  \param[in,out] image
-*  \param[in]     color of the points
-*  \param[in]     thickness of the points
+*  \param[in]     color of the triangle lines
+*  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
 void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector<Triangle> triangles, cv::Mat &image,
