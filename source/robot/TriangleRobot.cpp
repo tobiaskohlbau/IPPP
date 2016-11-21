@@ -23,18 +23,30 @@
 using namespace rmpl;
 
 /*!
-*  \brief      Constructor of the 2D TriangleRobot
+*  \brief      Standard constructor of the 2D TriangleRobot
 *  \author     Sascha Kaden
-*  \date       2016-06-30
+*  \date       2016-11-15
 */
 TriangleRobot::TriangleRobot(Vec<float> minBoundary, Vec<float> maxBoundary)
     : MobileRobot("TriangleRobot", CollisionType::triangle2D, 3, minBoundary, maxBoundary) {
 }
 
+/*!
+*  \brief      Set vector of the triangles
+*  \param[in]  vector of triangles
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 void TriangleRobot::setTriangles(std::vector<Triangle> triangles) {
     m_triangles = triangles;
 }
 
+/*!
+*  \brief      Return vector of the triangles
+*  \param[out] vector of triangles
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 std::vector<Triangle> TriangleRobot::getTriangles() {
     return m_triangles;
 }

@@ -23,10 +23,35 @@
 
 using namespace rmpl;
 
+/*!
+*  \brief      Standard constructor of the Triangle
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 Triangle::Triangle() {
 }
 
+/*!
+*  \brief      Constructor of the Triangle
+*  \param[in]  point 1
+*  \param[in]  point 2
+*  \param[in]  point 3
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 Triangle::Triangle(Vec<float> p1, Vec<float> p2, Vec<float> p3) {
+    setPoints(p1, p2, p3);
+}
+
+/*!
+*  \brief      Set points of the Triangle
+*  \param[in]  point 1
+*  \param[in]  point 2
+*  \param[in]  point 3
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
+void Triangle::setPoints(Vec<float> &p1, Vec<float> &p2, Vec<float> &p3) {
     if (p1.getDim() != p2.getDim() || p1.getDim() != p3.getDim()) {
         Logging::warning("Points have different dimensions", "Triangle");
         return;
@@ -36,33 +61,89 @@ Triangle::Triangle(Vec<float> p1, Vec<float> p2, Vec<float> p3) {
     m_p3 = p3;
 }
 
+/*!
+*  \brief      Set point 1 of Triangle
+*  \param[in]  point 1
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 void Triangle::setP1(Vec<float> &pt) {
     m_p1 = pt;
 }
 
+/*!
+*  \brief      Set point 2 of Triangle
+*  \param[in]  point 2
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 void Triangle::setP2(Vec<float> &pt) {
     m_p2 = pt;
 }
 
+/*!
+*  \brief      Set point 3 of Triangle
+*  \param[in]  point 3
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 void Triangle::setP3(Vec<float> &pt) {
     m_p3 = pt;
 }
 
+/*!
+*  \brief      Return points of the Triangle
+*  \param[out] point 1
+*  \param[out] point 2
+*  \param[out] point 3
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
+void Triangle::getPoints(Vec<float> &p1, Vec<float> &p2, Vec<float> &p3) {
+    p1 = m_p1;
+    p2 = m_p2;
+    p3 = m_p3;
+}
+
+/*!
+*  \brief      Return point 1 of Triangle
+*  \param[out] point 1
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 Vec<float> Triangle::getP1() {
     return m_p1;
 }
 
+/*!
+*  \brief      Return point 2 of Triangle
+*  \param[out] point 2
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 Vec<float> Triangle::getP2() {
     return m_p2;
 }
 
+/*!
+*  \brief      Return point 3 of Triangle
+*  \param[out] point 3
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 Vec<float> Triangle::getP3() {
     return m_p3;
 }
 
-void Triangle::transform(Eigen::MatrixXf rot, Eigen::VectorXf t) {
-    // control dimensions
-    if (rot.cols() != m_p1.getDim() || t.rows() != m_p1.getDim()) {
+/*!
+*  \brief      Transform Triangle by passed rotation matrix and translation vector
+*  \param[in]  rotation matrix R
+*  \param[in]  translation vector t
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
+void Triangle::transform(Eigen::MatrixXf R, Eigen::VectorXf t) {
+    if (R.cols() != m_p1.getDim() || t.rows() != m_p1.getDim()) {
         Logging::warning("Different dimensions by transformation", "Triangle");
         return;
     }
@@ -71,29 +152,50 @@ void Triangle::transform(Eigen::MatrixXf rot, Eigen::VectorXf t) {
     Eigen::VectorXf p2 = Utilities::VecToEigen(m_p2);
     Eigen::VectorXf p3 = Utilities::VecToEigen(m_p3);
 
-    p1 = rot * p1 + t;
-    p2 = rot * p2 + t;
-    p3 = rot * p3 + t;
+    p1 = R * p1 + t;
+    p2 = R * p2 + t;
+    p3 = R * p3 + t;
 
     m_p1 = Utilities::EigenToVec(p1);
     m_p2 = Utilities::EigenToVec(p2);
     m_p3 = Utilities::EigenToVec(p3);
 }
 
+/*!
+*  \brief      Transform Triangle by passed pose vector (2D)
+*  \param[in]  pose vector with translation and rotation
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 void Triangle::transform(Vec<float> vec) {
-    assert(vec.getDim() == m_p1.getDim()+1);
+    if (vec.getDim() == 3) {
+        assert(m_p1.getDim() == 2);
 
-    Eigen::Matrix2f rot;
-    rot(0,0) = std::cos(Utilities::degToRad(vec[2]));
-    rot(1,0) = std::sin(Utilities::degToRad(vec[2]));
-    rot(0,1) = -std::sin(Utilities::degToRad(vec[2]));
-    rot(1,1) = std::cos(Utilities::degToRad(vec[2]));
-    Eigen::Vector2f t;
-    t(0) = vec[0];
-    t(1) = vec[1];
-    transform(rot, t);
+        Eigen::Matrix2f R;
+        Eigen::Vector2f t;
+        Utilities::poseVecToRandT(vec, R, t);
+        transform(R, t);
+    }
+    else if (vec.getDim() == 6) {
+        assert(m_p1.getDim() == 3);
+
+        Eigen::Matrix3f R;
+        Eigen::Vector3f t;
+        Utilities::poseVecToRandT(vec, R, t);
+        transform(R, t);
+    }
+    else {
+        Logging::error("Pose dim is not compatible to triangle dim", "Triangle");
+    }
 }
 
+/*!
+*  \brief      Return bounding box of Triangle by minimal and maximum point
+*  \param[out] minimum point
+*  \param[out] maximum point
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
 void Triangle::getBoundingBox(Vec<float> &min, Vec<float> &max) {
     min = Vec<float>(m_p1.getDim());
     max = Vec<float>(m_p1.getDim());
@@ -102,4 +204,3 @@ void Triangle::getBoundingBox(Vec<float> &min, Vec<float> &max) {
         max[i] = std::max(std::max(m_p1[i], m_p2[i]), m_p3[i]);
     }
 }
-

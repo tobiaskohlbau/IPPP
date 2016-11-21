@@ -51,6 +51,15 @@ std::vector<shared_ptr<Node>> Planner::getGraphNodes() {
     return m_graph->getNodes();
 }
 
+/*!
+*  \brief      Return path points from passed path nodes, using optional smoothing
+*  \author     Sascha Kaden
+*  \param[in]
+*  \param[in]
+*  \param[in]
+*  \param[out] list of all nodes
+*  \date       2016-05-27
+*/
 std::vector<Vec<float>> Planner::getPathFromNodes(const std::vector<shared_ptr<Node>> &nodes, float trajectoryStepSize,
                                                   bool smoothing) {
     std::vector<shared_ptr<Node>> smoothedNodes;
