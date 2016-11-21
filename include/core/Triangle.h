@@ -24,14 +24,21 @@
 
 namespace rmpl {
 
+/*!
+* \brief   Base class of Triangle, consists of three points and the manipulation of them
+* \author  Sascha Kaden
+* \date    2016-11-15
+*/
 class Triangle {
   public:
     Triangle();
     Triangle(Vec<float> p1, Vec<float> p2, Vec<float> p3);
 
+    void setPoints(Vec<float> &pt1, Vec<float> &pt2, Vec<float> &pt3);
     void setP1(Vec<float> &pt);
     void setP2(Vec<float> &pt);
     void setP3(Vec<float> &pt);
+    void getPoints(Vec<float> &pt1, Vec<float> &pt2, Vec<float> &pt3);
     Vec<float> getP1();
     Vec<float> getP2();
     Vec<float> getP3();
@@ -46,4 +53,4 @@ class Triangle {
 
 } /* namespace rmpl */
 
-#endif // TRIANGLE_H
+#endif    // TRIANGLE_H

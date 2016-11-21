@@ -19,15 +19,12 @@
 #ifndef TRAJECTORYPLANNER_H_
 #define TRAJECTORYPLANNER_H_
 
-#include <core/ModuleBase.h>
 #include <core/CollisionDetection.h>
+#include <core/ModuleBase.h>
 
 namespace rmpl {
 
-enum class TrajectoryMethod {
-    linear,
-    spline,
-};
+enum TrajectoryMethod { linear, spline };
 
 /*!
 * \brief   Class TrajectoryPlanner plans between the passed nodes/vecs
@@ -36,12 +33,13 @@ enum class TrajectoryMethod {
 */
 class TrajectoryPlanner : public ModuleBase {
   public:
-    TrajectoryPlanner(const TrajectoryMethod &method, float stepSize, const std::shared_ptr<CollisionDetection> &collision);
+    TrajectoryPlanner(TrajectoryMethod method, float stepSize, const std::shared_ptr<CollisionDetection> &collision);
 
     bool controlTrajectory(const Node &source, const Node &target);
     bool controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target);
     bool controlTrajectory(const Vec<float> &source, const Vec<float> &target);
-    std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target, float stepSize = 0);
+    std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target);
+    std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target, float stepSize);
 
     void setStepSize(float stepSize);
     float getStepSize();
