@@ -19,7 +19,7 @@
 #ifndef EDGE_H_
 #define EDGE_H_
 
-#include <core/ModuleBase.h>
+#include <memory>
 
 namespace rmpl {
 
@@ -30,7 +30,7 @@ class Node;
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
-class Edge : public ModuleBase {
+class Edge {
   public:
     Edge();
     Edge(std::shared_ptr<Node> &target, float length);
