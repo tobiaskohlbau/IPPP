@@ -54,12 +54,12 @@ class Vec {
 
     unsigned int getDim() const;
     bool empty() const;
-    T norm();
-    T sqNorm();
+    T norm() const;
+    T sqNorm() const;
     Vec<T> abs() const;
     T getDist(const Vec<T> &vec) const;
     T getSqDist(const Vec<T> &vec) const;
-    void print();
+    void print() const;
 
     inline T &operator[](unsigned int index) {
         assert(index < m_dim);
@@ -529,7 +529,7 @@ bool Vec<T>::empty() const {
 *  \date       2016-05-24
 */
 template <typename T>
-T Vec<T>::norm() {
+T Vec<T>::norm() const {
     T norm = 0;
     for (unsigned int i = 0; i < m_dim; ++i)
         norm += (*this)[i] * (*this)[i];
@@ -543,7 +543,7 @@ T Vec<T>::norm() {
 *  \date       2016-05-24
 */
 template <typename T>
-T Vec<T>::sqNorm() {
+T Vec<T>::sqNorm() const {
     T norm = 0;
     for (unsigned int i = 0; i < m_dim; ++i)
         norm += (*this)[i] * (*this)[i];
@@ -599,7 +599,7 @@ T Vec<T>::getSqDist(const Vec<T> &vec) const {
 *  \date       2016-05-24
 */
 template <typename T>
-void Vec<T>::print() {
+void Vec<T>::print() const {
     std::cout << "Dim: " << m_dim << " | ";
     for (unsigned int i = 0; i < m_dim; ++i)
         std::cout << "v" << i << ": " << (*this)[i] << "  ";
