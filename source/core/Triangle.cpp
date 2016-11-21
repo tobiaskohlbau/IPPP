@@ -159,10 +159,10 @@ bool Triangle::empty() {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-void Triangle::transform(Eigen::MatrixXf R, Eigen::VectorXf t) {
+bool Triangle::transform(Eigen::MatrixXf R, Eigen::VectorXf t) {
     if (R.cols() != m_p1.getDim() || t.rows() != m_p1.getDim()) {
-        Logging::warning("Different dimensions by transformation", "Triangle");
-        return;
+        Logging::warning("Different dimensions transformation to Triangle", "Triangle");
+        return false;
     }
 
     Eigen::VectorXf p1 = Utilities::VecToEigen(m_p1);
@@ -176,15 +176,16 @@ void Triangle::transform(Eigen::MatrixXf R, Eigen::VectorXf t) {
     m_p1 = Utilities::EigenToVec(p1);
     m_p2 = Utilities::EigenToVec(p2);
     m_p3 = Utilities::EigenToVec(p3);
+    return true;
 }
 
 /*!
-*  \brief      Transform Triangle by passed pose vector (2D)
+*  \brief      Transform Triangle by passed pose vector (2D and 3D)
 *  \param[in]  pose vector with translation and rotation
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-void Triangle::transform(Vec<float> vec) {
+bool Triangle::transform(Vec<float> vec) {
     if (vec.getDim() == 3) {
         assert(m_p1.getDim() == 2);
 
@@ -192,16 +193,14 @@ void Triangle::transform(Vec<float> vec) {
         Eigen::Vector2f t;
         Utilities::poseVecToRandT(vec, R, t);
         transform(R, t);
-    }
-    else if (vec.getDim() == 6) {
+    } else if (vec.getDim() == 6) {
         assert(m_p1.getDim() == 3);
 
         Eigen::Matrix3f R;
         Eigen::Vector3f t;
         Utilities::poseVecToRandT(vec, R, t);
         transform(R, t);
-    }
-    else {
+    } else {
         Logging::error("Pose dim is not compatible to triangle dim", "Triangle");
     }
 }
