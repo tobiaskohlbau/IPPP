@@ -136,6 +136,23 @@ Vec<float> Triangle::getP3() {
 }
 
 /*!
+*  \brief      Return true if one point of the triangle is empty
+*  \param[out] binary result
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
+bool Triangle::empty() {
+    if (m_p1.empty())
+        return true;
+    else if (m_p2.empty())
+        return true;
+    else if (m_p3.empty())
+        return true;
+    else
+        return false;
+}
+
+/*!
 *  \brief      Transform Triangle by passed rotation matrix and translation vector
 *  \param[in]  rotation matrix R
 *  \param[in]  translation vector t

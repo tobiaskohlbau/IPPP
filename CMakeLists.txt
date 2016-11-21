@@ -73,7 +73,7 @@ set(SRCS
     source/robot/PointRobot.cpp
     source/robot/RobotBase.cpp
     source/robot/SerialRobot.cpp
-    source/robot/TriangleRobot.cpp)
+        source/robot/TriangleRobot2D.cpp)
 
 IF (${DEBUG_OUTPUT})
     add_definitions(-DDEBUG_OUTPUT)

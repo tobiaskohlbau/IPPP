@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef TRIANGLEROBOT_H_
-#define TRIANGLEROBOT_H_
+#ifndef TRIANGLEROBOT2D_H_
+#define TRIANGLEROBOT2D_H_
 
 #include <core/Triangle.h>
 #include <robot/MobileRobot.h>
@@ -29,10 +29,12 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-11-14
 */
-class TriangleRobot : public MobileRobot {
+class TriangleRobot2D : public MobileRobot {
   public:
-    TriangleRobot(Vec<float> minBoundary, Vec<float> maxBoundary);
-    void setTriangles(std::vector<Triangle> triangles);
+    TriangleRobot2D(std::vector<Triangle> triangles, Vec<float> minBoundary, Vec<float> maxBoundary);
+
+    bool setTriangles(std::vector<Triangle> &triangles);
+    bool addTriangle(Triangle &triangle);
     std::vector<Triangle> getTriangles();
 
   private:
@@ -42,4 +44,4 @@ class TriangleRobot : public MobileRobot {
 
 } /* namespace rmpl */
 
-#endif /* TRIANGLEROBOT_H_ */
+#endif /* TRIANGLEROBOT2D_H_ */

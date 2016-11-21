@@ -127,7 +127,7 @@ bool CollisionDetection::checkPoint2D(float x, float y) {
 *  \date       2016-06-30
 */
 bool CollisionDetection::checkTriangleRobot(const Vec<float> &vec) {
-    shared_ptr<TriangleRobot> robot(std::static_pointer_cast<TriangleRobot>(m_robot));
+    shared_ptr<TriangleRobot2D> robot(std::static_pointer_cast<TriangleRobot2D>(m_robot));
     std::vector<Triangle> triangles = robot->getTriangles();
 
     Eigen::Matrix2f R;
