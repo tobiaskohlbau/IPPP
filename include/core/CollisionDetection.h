@@ -51,14 +51,12 @@ class CollisionDetection : public ModuleBase {
     bool checkMobileRobot(const Vec<float> &vec);
     bool checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &base, Eigen::Matrix3f R[],
                    Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT);
-    bool checkMesh(std::vector<std::shared_ptr<FCLModel>> &models,
-                   std::shared_ptr<FCLModel> & base, Eigen::Matrix3f R[], Eigen::Matrix3f &poseR,
-                   Eigen::Vector3f t[], Eigen::Vector3f &poseT);
+    bool checkMesh(std::vector<std::shared_ptr<FCLModel>> &models, std::shared_ptr<FCLModel> &base, Eigen::Matrix3f R[],
+                   Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT);
 
     bool checkPQP(std::shared_ptr<PQP_Model> &model1, std::shared_ptr<PQP_Model> &model2, Eigen::Matrix3f &R1,
                   Eigen::Matrix3f &R2, Eigen::Vector3f &t1, Eigen::Vector3f &t2);
-    bool checkFCL(std::shared_ptr<FCLModel> &model1,
-                  std::shared_ptr<FCLModel> &model2, Eigen::Matrix3f &R1, Eigen::Matrix3f &R2,
+    bool checkFCL(std::shared_ptr<FCLModel> &model1, std::shared_ptr<FCLModel> &model2, Eigen::Matrix3f &R1, Eigen::Matrix3f &R2,
                   Eigen::Vector3f &t1, Eigen::Vector3f &t2);
 
     bool checkPoint2D(float x, float y);

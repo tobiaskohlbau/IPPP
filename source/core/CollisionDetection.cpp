@@ -100,7 +100,7 @@ bool CollisionDetection::controlTrajectory(std::vector<Vec<float>> &vecs) {
 }
 
 /*!
-*  \brief      Check for 2D PointRobot collision
+*  \brief      Check for 2D point collision
 *  \author     Sascha Kaden
 *  \param[in]  x
 *  \param[in]  y
@@ -113,18 +113,16 @@ bool CollisionDetection::checkPoint2D(float x, float y) {
         return true;
     }
 
-    if (m_2DWorkspace(x, y) < 80) {
+    if (m_2DWorkspace(x, y) < 80)
         return true;
-    } else {
+    else
         return false;
-    }
 }
 
 /*!
-*  \brief      Check for 2D PointRobot collision
+*  \brief      Check for TriangleRobot collision
 *  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
+*  \param[in]  transformation
 *  \param[out] binary result of collision
 *  \date       2016-06-30
 */
@@ -132,50 +130,45 @@ bool CollisionDetection::checkTriangleRobot(const Vec<float> &vec) {
     shared_ptr<TriangleRobot> robot(std::static_pointer_cast<TriangleRobot>(m_robot));
     std::vector<Triangle> triangles = robot->getTriangles();
 
-    Eigen::Matrix2f rot;
-    rot(0, 0) = std::cos(Utilities::degToRad(vec[2]));
-    rot(1, 0) = std::sin(Utilities::degToRad(vec[2]));
-    rot(0, 1) = -std::sin(Utilities::degToRad(vec[2]));
-    rot(1, 1) = std::cos(Utilities::degToRad(vec[2]));
+    Eigen::Matrix2f R;
     Eigen::Vector2f t;
-    t(0) = vec[0];
-    t(1) = vec[1];
+    Utilities::poseVecToRandT(vec, R, t);
 
-    Vec<float> u, uNorm, temp;
+    Vec<float> u, temp;
     for (auto triangle : triangles) {
-        triangle.transform(rot, t);
+        triangle.transform(R, t);
 
         u = triangle.getP2() - triangle.getP1();
-        uNorm = u / u.norm();
+        u /= u.norm();
         temp = triangle.getP1();
         while ((temp - triangle.getP2()).sqNorm() > 2) {
             if (checkPoint2D(temp[0], temp[1])) {
                 Logging::debug("Collision of triangle", this);
                 return true;
             }
-            temp += uNorm;
+            temp += u;
         }
 
         u = triangle.getP3() - triangle.getP1();
-        uNorm = u / u.norm();
+        u /= u.norm();
         temp = triangle.getP1();
         while ((temp - triangle.getP3()).sqNorm() > 2) {
             if (checkPoint2D(temp[0], temp[1])) {
                 Logging::debug("Collision of triangle", this);
                 return true;
             }
-            temp += uNorm;
+            temp += u;
         }
 
         u = triangle.getP3() - triangle.getP2();
-        uNorm = u / u.norm();
+        u /= u.norm();
         temp = triangle.getP2();
         while ((temp - triangle.getP3()).sqNorm() > 2) {
             if (checkPoint2D(temp[0], temp[1])) {
                 Logging::debug("Collision of triangle", this);
                 return true;
             }
-            temp += uNorm;
+            temp += u;
         }
     }
 
@@ -226,7 +219,6 @@ bool CollisionDetection::checkSerialRobot(const Vec<float> &vec) {
         std::vector<shared_ptr<FCLModel>> jointMeshes = robot->getJointFclModels();
         return checkMesh(jointMeshes, baseMesh, rot, poseR, trans, poseT);
     }
-    return false;
 }
 
 /*!
@@ -259,8 +251,6 @@ bool CollisionDetection::checkMobileRobot(const Vec<float> &vec) {
 
         return checkFCL(workspace, baseMesh, m_identity, poseR, m_zeroVec, poseT);
     }
-
-    return false;
 }
 
 /*!
