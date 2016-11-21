@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <robot/TriangleRobot.h>
+#include <robot/TriangleRobot2D.h>
 
 #include <core/Logging.h>
 
@@ -27,8 +27,9 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-TriangleRobot::TriangleRobot(Vec<float> minBoundary, Vec<float> maxBoundary)
-    : MobileRobot("TriangleRobot", CollisionType::triangle2D, 3, minBoundary, maxBoundary) {
+TriangleRobot2D::TriangleRobot2D(std::vector<Triangle> triangles, Vec<float> minBoundary, Vec<float> maxBoundary)
+    : MobileRobot("TriangleRobot2D", CollisionType::triangle2D, 3, minBoundary, maxBoundary) {
+    setTriangles(triangles);
 }
 
 /*!
@@ -37,8 +38,30 @@ TriangleRobot::TriangleRobot(Vec<float> minBoundary, Vec<float> maxBoundary)
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-void TriangleRobot::setTriangles(std::vector<Triangle> triangles) {
+bool TriangleRobot2D::setTriangles(std::vector<Triangle> &triangles) {
+    for (auto triangle : triangles) {
+        if (triangle.empty()) {
+            Logging::error("Empty Triangle passed, list was not set", this);
+            return false;
+        }
+    }
     m_triangles = triangles;
+    return true;
+}
+
+/*!
+*  \brief      Add Triangle to list
+*  \param[in]  Triangle
+*  \author     Sascha Kaden
+*  \date       2016-11-21
+*/
+bool TriangleRobot2D::addTriangle(Triangle &triangle) {
+    if (triangle.empty()) {
+        Logging::error("Empty Triangle passed, Triangle was not added", this);
+        return false;
+    }
+    m_triangles.push_back(triangle);
+    return true;
 }
 
 /*!
@@ -47,6 +70,8 @@ void TriangleRobot::setTriangles(std::vector<Triangle> triangles) {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-std::vector<Triangle> TriangleRobot::getTriangles() {
+std::vector<Triangle> TriangleRobot2D::getTriangles() {
     return m_triangles;
 }
+
+

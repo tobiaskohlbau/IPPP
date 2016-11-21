@@ -43,6 +43,8 @@ class Triangle {
     Vec<float> getP2();
     Vec<float> getP3();
 
+    bool empty();
+
     void transform(Eigen::MatrixXf rot, Eigen::VectorXf t);
     void transform(Vec<float> vec);
     void getBoundingBox(Vec<float> &p1, Vec<float> &p2);

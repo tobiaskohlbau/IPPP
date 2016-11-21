@@ -28,9 +28,8 @@
 #include <core/Node.h>
 #include <core/Triangle.h>
 #include <robot/MeshContainer.h>
-#include <robot/MobileRobot.h>
 #include <robot/SerialRobot.h>
-#include <robot/TriangleRobot.h>
+#include <robot/TriangleRobot2D.h>
 
 namespace rmpl {
 

@@ -11,7 +11,7 @@
 #include <pathPlanner/PRMPlanner.h>
 #include <pathPlanner/StarRRTPlanner.h>
 #include <robot/PointRobot.h>
-#include <robot/TriangleRobot.h>
+#include <robot/TriangleRobot2D.h>
 
 #include <ui/Drawing2D.h>
 #include <ui/Writer.h>
@@ -22,12 +22,12 @@ cv::Mat obstacleWorkspace;
 
 void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     min.append(0);
-    max.append(359);
-    std::shared_ptr<TriangleRobot> triangleRobot(new TriangleRobot(min, max));
+    max.append(359.999);
     std::vector<Triangle> triangles;
     triangles.push_back(Triangle(Vec<float>(0.0, 0.0), Vec<float>(0.0, 25), Vec<float>(25, 0.0)));
-    triangles.push_back(Triangle(Vec<float>(0.0,25), Vec<float>(25,0.0), Vec<float>(50,50)));
-    triangleRobot->setTriangles(triangles);
+    triangles.push_back(Triangle(Vec<float>(0.0,25), Vec<float>(25,0.0), Vec<float>(25,25)));
+    triangles.push_back(Triangle(Vec<float>(0.0,25), Vec<float>(25,25), Vec<float>(25,50)));
+    std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(triangles, min, max));
     triangleRobot->set2DWorkspace(mat);
 
     std::shared_ptr<RRTOptions> options(new RRTOptions(30, 0.5, TrajectoryMethod::linear, SamplingMethod::randomly));
@@ -36,7 +36,7 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     auto startTime = std::chrono::system_clock::now();
     Vec<float> start(5, 5, 0);
     Vec<float> goal(400.0, 950.0, 0);
-    bool connected = planner.computePath(start, goal, 35000, 2);
+    bool connected = planner.computePath(start, goal, 30000, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
@@ -44,9 +44,8 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     nodes = planner.getPathNodes();
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
-        std::vector<Vec<float>> path;// = planner.getPath(2, true);
-        for (auto node : nodes)
-            path.push_back(node->getVec());
+        std::vector<Vec<float>> path = planner.getPath(40, true);
+
         //Writer::writeVecsToFile(path, "result.txt");
 
         cv::Mat image = obstacleWorkspace.clone();
