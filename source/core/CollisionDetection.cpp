@@ -128,20 +128,20 @@ bool CollisionDetection::checkPoint2D(float x, float y) {
 */
 bool CollisionDetection::checkTriangleRobot(const Vec<float> &vec) {
     shared_ptr<TriangleRobot2D> robot(std::static_pointer_cast<TriangleRobot2D>(m_robot));
-    std::vector<Triangle> triangles = robot->getTriangles();
+    std::vector<Triangle<Eigen::Vector2f>> triangles = robot->getTriangles();
 
     Eigen::Matrix2f R;
     Eigen::Vector2f t;
     Utilities::poseVecToRandT(vec, R, t);
 
-    Vec<float> u, temp;
+    Eigen::Vector2f u, temp;
     for (auto triangle : triangles) {
         triangle.transform(R, t);
 
         u = triangle.getP2() - triangle.getP1();
         u /= u.norm();
         temp = triangle.getP1();
-        while ((temp - triangle.getP2()).sqNorm() > 2) {
+        while ((temp - triangle.getP2()).squaredNorm() > 2) {
             if (checkPoint2D(temp[0], temp[1])) {
                 Logging::debug("Collision of triangle", this);
                 return true;
@@ -152,7 +152,7 @@ bool CollisionDetection::checkTriangleRobot(const Vec<float> &vec) {
         u = triangle.getP3() - triangle.getP1();
         u /= u.norm();
         temp = triangle.getP1();
-        while ((temp - triangle.getP3()).sqNorm() > 2) {
+        while ((temp - triangle.getP3()).squaredNorm() > 2) {
             if (checkPoint2D(temp[0], temp[1])) {
                 Logging::debug("Collision of triangle", this);
                 return true;
@@ -163,7 +163,7 @@ bool CollisionDetection::checkTriangleRobot(const Vec<float> &vec) {
         u = triangle.getP3() - triangle.getP2();
         u /= u.norm();
         temp = triangle.getP2();
-        while ((temp - triangle.getP3()).sqNorm() > 2) {
+        while ((temp - triangle.getP3()).squaredNorm() > 2) {
             if (checkPoint2D(temp[0], temp[1])) {
                 Logging::debug("Collision of triangle", this);
                 return true;

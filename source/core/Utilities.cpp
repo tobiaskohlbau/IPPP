@@ -175,7 +175,7 @@ float Utilities::degToRad(float deg) {
 *  \date       2016-07-07
 */
 Eigen::VectorXf Utilities::VecToEigen(const Vec<float> &vec) {
-    Eigen::ArrayXf eigenVec(vec.getDim());
+    Eigen::VectorXf eigenVec(vec.getDim());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         eigenVec(i, 0) = vec[i];
     return eigenVec;
@@ -189,7 +189,7 @@ Eigen::VectorXf Utilities::VecToEigen(const Vec<float> &vec) {
 *  \date       2016-07-07
 */
 Eigen::VectorXf Utilities::VecToEigen(const Vec<PQP_REAL> &vec) {
-    Eigen::ArrayXf eigenVec(vec.getDim());
+    Eigen::VectorXf eigenVec(vec.getDim());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         eigenVec(i, 0) = vec[i];
     return eigenVec;
