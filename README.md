@@ -8,6 +8,7 @@ RMPL has the target to provide a coherent interface for path planning with a ser
 ## Robots
 Currently available robots:
 * [Kinova Jaco](http://www.kinovarobotics.com/service-robotics/products/robot-arms/)
+* KukaKR5
 * 2D Point Robot, for test cases
 
 The user can set up his own robot too, he has only to pass the D-H parameter and the triangle meshes (.obj).
@@ -17,14 +18,15 @@ The user can set up his own robot too, he has only to pass the D-H parameter and
 Currently available algorithms:
 * RRT
 * RRT*
-* PRM
+* sPRM
+
 
 ## Dependencies
 For matrix manipulation the [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) library is included.
 Collision detection between triangle meshes by the [PQP](http://gamma.cs.unc.edu/SSV/) library and the [fcl](https://github.com/flexible-collision-library/fcl) library.
  
-#### Dependencies of the examles
-To show results, the [OpenCV](http://opencv.org/) library is for 2D examples included and the QT library is for the gui2D example included. 
+#### Dependencies of the examples
+To show results, the [OpenCV](http://opencv.org/) library is for 2D examples included and the [QT](https://www.qt.io/) library is for the gui2D example included. 
 The results from serial robots can be tested by the [vrep](http://www.coppeliarobotics.com/) simulation (an interface for the Jaco robot is written).
 
 
