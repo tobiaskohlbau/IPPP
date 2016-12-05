@@ -91,11 +91,6 @@ void MainWindow::viewPath() {
     scene->setSceneRect(qPixmap.rect());
 
     ui->mainImage->setScene(scene);
-
-    // cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
-    // cv::imshow("pathPlanner", image);
-    // cv::imwrite("result.png", image);
-    // cv::waitKey(0);
 }
 
 QImage MainWindow::convertCvMat(cv::Mat inMat) {
