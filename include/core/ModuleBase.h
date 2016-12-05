@@ -26,7 +26,6 @@
 
 namespace rmpl {
 
-enum class Message { info, warning, error, debug };
 
 /*!
 * \brief   Base class of all modules
@@ -35,13 +34,18 @@ enum class Message { info, warning, error, debug };
 * \date    2016-06-02
 */
 class ModuleBase {
-  public:
-    ModuleBase();
-    ModuleBase(const std::string &name);
-    std::string getName();
 
-  protected:
-    std::string m_name;
+public:
+    virtual ~ModuleBase();
+
+protected:
+    ModuleBase(const std::string &name);
+
+public:
+    const std::string& getName();
+
+private:
+    const std::string m_name;
 };
 
 } /* namespace rmpl */

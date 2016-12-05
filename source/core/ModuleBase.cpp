@@ -21,12 +21,11 @@
 using namespace rmpl;
 
 /*!
-*  \brief      Standard constructor of the ModuleBase
+*  \brief      Standard deconstructor of the ModuleBase
 *  \author     Sasch Kaden
 *  \date       2016-05-30
 */
-ModuleBase::ModuleBase() {
-    m_name = "Unknown";
+ModuleBase::~ModuleBase() {
 }
 
 /*!
@@ -35,8 +34,9 @@ ModuleBase::ModuleBase() {
 *  \param[in]  module name
 *  \date       2016-05-30
 */
-ModuleBase::ModuleBase(const std::string &name) {
-    m_name = name;
+ModuleBase::ModuleBase(const std::string &name)
+    : m_name(name)
+{
 }
 
 /*!
@@ -45,6 +45,6 @@ ModuleBase::ModuleBase(const std::string &name) {
 *  \param[out] name
 *  \date       2016-05-30
 */
-std::string ModuleBase::getName() {
+const std::string& ModuleBase::getName() {
     return m_name;
 }
