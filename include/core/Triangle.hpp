@@ -16,19 +16,49 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/Triangle.h>
+#ifndef TRIANGLE_H
+#define TRIANGLE_H
 
+#include <Eigen/Core>
 #include <core/Logging.h>
 #include <core/Utilities.h>
 
-using namespace rmpl;
+namespace rmpl {
+
+/*!
+* \brief   Base class of Triangle, consists of three points and the manipulation of them
+* \author  Sascha Kaden
+* \date    2016-11-15
+*/
+template <typename T>
+class Triangle {
+  public:
+    Triangle();
+    Triangle(T p1, T p2, T p3);
+
+    void setPoints(T &pt1, T &pt2, T &pt3);
+    void setP1(T &pt);
+    void setP2(T &pt);
+    void setP3(T &pt);
+    void getPoints(T &pt1, T &pt2, T &pt3);
+    T getP1();
+    T getP2();
+    T getP3();
+
+    void transform(const Eigen::MatrixXf R, const T t);
+    void getBoundingBox(T &p1, T &p2);
+
+  private:
+    T m_p1, m_p2, m_p3;
+};
 
 /*!
 *  \brief      Standard constructor of the Triangle
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-Triangle::Triangle() {
+template <typename T>
+Triangle<T>::Triangle() {
 }
 
 /*!
@@ -39,7 +69,8 @@ Triangle::Triangle() {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-Triangle::Triangle(Vec<float> p1, Vec<float> p2, Vec<float> p3) {
+template <typename T>
+Triangle<T>::Triangle(T p1, T p2, T p3) {
     setPoints(p1, p2, p3);
 }
 
@@ -51,11 +82,8 @@ Triangle::Triangle(Vec<float> p1, Vec<float> p2, Vec<float> p3) {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-void Triangle::setPoints(Vec<float> &p1, Vec<float> &p2, Vec<float> &p3) {
-    if (p1.getDim() != p2.getDim() || p1.getDim() != p3.getDim()) {
-        Logging::warning("Points have different dimensions", "Triangle");
-        return;
-    }
+template <typename T>
+void Triangle<T>::setPoints(T &p1, T &p2, T &p3) {
     m_p1 = p1;
     m_p2 = p2;
     m_p3 = p3;
@@ -67,7 +95,8 @@ void Triangle::setPoints(Vec<float> &p1, Vec<float> &p2, Vec<float> &p3) {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-void Triangle::setP1(Vec<float> &pt) {
+template <typename T>
+void Triangle<T>::setP1(T &pt) {
     m_p1 = pt;
 }
 
@@ -77,7 +106,8 @@ void Triangle::setP1(Vec<float> &pt) {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-void Triangle::setP2(Vec<float> &pt) {
+template <typename T>
+void Triangle<T>::setP2(T &pt) {
     m_p2 = pt;
 }
 
@@ -87,7 +117,8 @@ void Triangle::setP2(Vec<float> &pt) {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-void Triangle::setP3(Vec<float> &pt) {
+template <typename T>
+void Triangle<T>::setP3(T &pt) {
     m_p3 = pt;
 }
 
@@ -99,7 +130,8 @@ void Triangle::setP3(Vec<float> &pt) {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-void Triangle::getPoints(Vec<float> &p1, Vec<float> &p2, Vec<float> &p3) {
+template <typename T>
+void Triangle<T>::getPoints(T &p1, T &p2, T &p3) {
     p1 = m_p1;
     p2 = m_p2;
     p3 = m_p3;
@@ -111,7 +143,8 @@ void Triangle::getPoints(Vec<float> &p1, Vec<float> &p2, Vec<float> &p3) {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-Vec<float> Triangle::getP1() {
+template <typename T>
+T Triangle<T>::getP1() {
     return m_p1;
 }
 
@@ -121,7 +154,8 @@ Vec<float> Triangle::getP1() {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-Vec<float> Triangle::getP2() {
+template <typename T>
+T Triangle<T>::getP2() {
     return m_p2;
 }
 
@@ -131,25 +165,9 @@ Vec<float> Triangle::getP2() {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-Vec<float> Triangle::getP3() {
+template <typename T>
+T Triangle<T>::getP3() {
     return m_p3;
-}
-
-/*!
-*  \brief      Return true if one point of the triangle is empty
-*  \param[out] binary result
-*  \author     Sascha Kaden
-*  \date       2016-11-15
-*/
-bool Triangle::empty() {
-    if (m_p1.empty())
-        return true;
-    else if (m_p2.empty())
-        return true;
-    else if (m_p3.empty())
-        return true;
-    else
-        return false;
 }
 
 /*!
@@ -159,50 +177,13 @@ bool Triangle::empty() {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-bool Triangle::transform(Eigen::MatrixXf R, Eigen::VectorXf t) {
-    if (R.cols() != m_p1.getDim() || t.rows() != m_p1.getDim()) {
-        Logging::warning("Different dimensions transformation to Triangle", "Triangle");
-        return false;
-    }
+template <typename T>
+void Triangle<T>::transform(const Eigen::MatrixXf R, const T t) {
+    assert(R.cols() == m_p1.cols());
 
-    Eigen::VectorXf p1 = Utilities::VecToEigen(m_p1);
-    Eigen::VectorXf p2 = Utilities::VecToEigen(m_p2);
-    Eigen::VectorXf p3 = Utilities::VecToEigen(m_p3);
-
-    p1 = R * p1 + t;
-    p2 = R * p2 + t;
-    p3 = R * p3 + t;
-
-    m_p1 = Utilities::EigenToVec(p1);
-    m_p2 = Utilities::EigenToVec(p2);
-    m_p3 = Utilities::EigenToVec(p3);
-    return true;
-}
-
-/*!
-*  \brief      Transform Triangle by passed pose vector (2D and 3D)
-*  \param[in]  pose vector with translation and rotation
-*  \author     Sascha Kaden
-*  \date       2016-11-15
-*/
-bool Triangle::transform(Vec<float> vec) {
-    if (vec.getDim() == 3) {
-        assert(m_p1.getDim() == 2);
-
-        Eigen::Matrix2f R;
-        Eigen::Vector2f t;
-        Utilities::poseVecToRandT(vec, R, t);
-        transform(R, t);
-    } else if (vec.getDim() == 6) {
-        assert(m_p1.getDim() == 3);
-
-        Eigen::Matrix3f R;
-        Eigen::Vector3f t;
-        Utilities::poseVecToRandT(vec, R, t);
-        transform(R, t);
-    } else {
-        Logging::error("Pose dim is not compatible to triangle dim", "Triangle");
-    }
+    m_p1 = R * m_p1 + t;
+    m_p2 = R * m_p2 + t;
+    m_p3 = R * m_p3 + t;
 }
 
 /*!
@@ -212,11 +193,14 @@ bool Triangle::transform(Vec<float> vec) {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-void Triangle::getBoundingBox(Vec<float> &min, Vec<float> &max) {
-    min = Vec<float>(m_p1.getDim());
-    max = Vec<float>(m_p1.getDim());
+template <typename T>
+void Triangle<T>::getBoundingBox(T &min, T &max) {
     for (unsigned int i = 0; i < m_p1.getDim(); ++i) {
         min[i] = std::min(std::min(m_p1[i], m_p2[i]), m_p3[i]);
         max[i] = std::max(std::max(m_p1[i], m_p2[i]), m_p3[i]);
     }
 }
+
+} /* namespace rmpl */
+
+#endif    // TRIANGLE_H

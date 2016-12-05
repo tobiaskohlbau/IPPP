@@ -1,6 +1,6 @@
 #include <ui/Drawing2D.h>
 
-#include <core/Logging.h>
+#include <core/Utilities.h>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -86,20 +86,24 @@ void Drawing2D::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, c
 *  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
-void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector<Triangle> triangles, cv::Mat &image,
+void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector<Triangle<Eigen::Vector2f>> triangles, cv::Mat &image,
                                  const Vec<uint8_t> &colorPoint, int thickness) {
     if (vecs.size() == 0)
         return;
 
-    assert(vecs[0].getDim() == 2);
-    assert(triangles[0].getP1().getDim() == 2);
+    assert(vecs[0].getDim() == 3);
 
     Logging::info("start drawing of triangles", "Drawing2D");
 
+    Eigen::Matrix2f R;
+    Eigen::Vector2f t;
     cv::Point2i pt1, pt2, pt3;
+    Triangle<Eigen::Vector2f> triangle;
     for (auto vec : vecs) {
-        for (auto triangle : triangles) {
-            triangle.transform(vec);
+        for (int i = 0; i < triangles.size(); ++i) {
+            triangle = triangles[i];
+            Utilities::poseVecToRandT(vec, R, t);
+            triangle.transform(R,t);
             pt1 = cv::Point2i(triangle.getP1()[0], triangle.getP1()[1]);
             pt2 = cv::Point2i(triangle.getP2()[0], triangle.getP2()[1]);
             pt3 = cv::Point2i(triangle.getP3()[0], triangle.getP3()[1]);

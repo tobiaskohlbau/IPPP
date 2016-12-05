@@ -44,6 +44,7 @@ link_directories(${ASSIMP_LIBRARIES}
 set(SRCS
     include/core/KDNode.hpp
     include/core/KDTree.hpp
+    include/core/Triangle.hpp
     include/core/Vec.hpp
     source/core/CollisionDetection.cpp
     source/core/Edge.cpp
@@ -54,7 +55,6 @@ set(SRCS
     source/core/Node.cpp
     source/core/Sampling.cpp
     source/core/TrajectoryPlanner.cpp
-    source/core/Triangle.cpp
     source/core/Utilities.cpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
