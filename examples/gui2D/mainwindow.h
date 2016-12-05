@@ -52,8 +52,8 @@ private:
     unsigned int m_numThreads = 2;
     unsigned int m_numNodes = 5000;
     unsigned int m_plannerType = 0;
-    int m_startX = 30;
-    int m_startY = 50;
+    int m_startX = 60;
+    int m_startY = 60;
     int m_goalX = 870;
     int m_goalY = 870;
     double m_trajectoryStepSize = 0.5;
@@ -65,7 +65,6 @@ private:
     cv::Mat m_image;
     Eigen::MatrixXi m_workspace;
     bool m_connected = false;
-
 };
 
 #endif // MAINWINDOW_H
