@@ -23,10 +23,14 @@ cv::Mat obstacleWorkspace;
 void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     min.append(0);
     max.append(359.999);
-    std::vector<Triangle<Eigen::Vector2f>> triangles;
-    triangles.push_back(Triangle<Eigen::Vector2f>(Eigen::Vector2f(0.0, 0.0), Eigen::Vector2f(0.0, 25), Eigen::Vector2f(25, 0.0)));
-    triangles.push_back(Triangle<Eigen::Vector2f>(Eigen::Vector2f(0.0,25),   Eigen::Vector2f(25,0.0),  Eigen::Vector2f(25,25)));
-    triangles.push_back(Triangle<Eigen::Vector2f>(Eigen::Vector2f(0.0,25),   Eigen::Vector2f(25,25),   Eigen::Vector2f(25,50)));
+    std::vector<Triangle2D> triangles;
+    Eigen::Vector2f v1(0.0,0.0);
+    Eigen::Vector2f v2(0.0,25.0);
+    Eigen::Vector2f v3(25.0,0.0);
+
+    triangles.push_back(Triangle2D(v1, v2, v3));
+    triangles.push_back(Triangle2D(Eigen::Vector2f(0.0,25.0),   Eigen::Vector2f(25,0.0),  Eigen::Vector2f(25,25)));
+    triangles.push_back(Triangle2D(Eigen::Vector2f(0.0,25.0),   Eigen::Vector2f(25,25),   Eigen::Vector2f(25,50)));
     std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(triangles, min, max));
     triangleRobot->set2DWorkspace(mat);
 

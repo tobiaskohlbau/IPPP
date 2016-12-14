@@ -86,7 +86,7 @@ void Drawing2D::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, c
 *  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
-void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector<Triangle<Eigen::Vector2f>> triangles, cv::Mat &image,
+void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
                                  const Vec<uint8_t> &colorPoint, int thickness) {
     if (vecs.size() == 0)
         return;
@@ -98,15 +98,15 @@ void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector
     Eigen::Matrix2f R;
     Eigen::Vector2f t;
     cv::Point2i pt1, pt2, pt3;
-    Triangle<Eigen::Vector2f> triangle;
+    PointList<Eigen::Vector2f, 3> triangle;
     for (auto vec : vecs) {
         for (int i = 0; i < triangles.size(); ++i) {
             triangle = triangles[i];
             Utilities::poseVecToRandT(vec, R, t);
             triangle.transform(R,t);
-            pt1 = cv::Point2i(triangle.getP1()[0], triangle.getP1()[1]);
-            pt2 = cv::Point2i(triangle.getP2()[0], triangle.getP2()[1]);
-            pt3 = cv::Point2i(triangle.getP3()[0], triangle.getP3()[1]);
+            pt1 = cv::Point2i(triangle.getP(1)[0], triangle.getP(1)[1]);
+            pt2 = cv::Point2i(triangle.getP(2)[0], triangle.getP(2)[1]);
+            pt3 = cv::Point2i(triangle.getP(3)[0], triangle.getP(3)[1]);
             cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
             cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
             cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);

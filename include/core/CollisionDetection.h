@@ -26,7 +26,7 @@
 
 #include <core/ModuleBase.h>
 #include <core/Node.h>
-#include <core/Triangle.hpp>
+#include <core/PointList.hpp>
 #include <robot/MeshContainer.h>
 #include <robot/SerialRobot.h>
 #include <robot/TriangleRobot2D.h>

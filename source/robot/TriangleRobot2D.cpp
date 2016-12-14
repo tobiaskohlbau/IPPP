@@ -27,7 +27,7 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-TriangleRobot2D::TriangleRobot2D(std::vector<Triangle<Eigen::Vector2f>> triangles, Vec<float> minBoundary, Vec<float> maxBoundary)
+TriangleRobot2D::TriangleRobot2D(std::vector<Triangle2D> triangles, Vec<float> minBoundary, Vec<float> maxBoundary)
     : MobileRobot("TriangleRobot2D", CollisionType::triangle2D, 3, minBoundary, maxBoundary) {
     setTriangles(triangles);
 }
@@ -38,7 +38,7 @@ TriangleRobot2D::TriangleRobot2D(std::vector<Triangle<Eigen::Vector2f>> triangle
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-bool TriangleRobot2D::setTriangles(std::vector<Triangle<Eigen::Vector2f>> &triangles) {
+bool TriangleRobot2D::setTriangles(std::vector<Triangle2D> &triangles) {
     m_triangles = triangles;
     return true;
 }
@@ -49,7 +49,7 @@ bool TriangleRobot2D::setTriangles(std::vector<Triangle<Eigen::Vector2f>> &trian
 *  \author     Sascha Kaden
 *  \date       2016-11-21
 */
-bool TriangleRobot2D::addTriangle(Triangle<Eigen::Vector2f> &triangle) {
+bool TriangleRobot2D::addTriangle(Triangle2D &triangle) {
     m_triangles.push_back(triangle);
     return true;
 }
@@ -60,7 +60,7 @@ bool TriangleRobot2D::addTriangle(Triangle<Eigen::Vector2f> &triangle) {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-std::vector<Triangle<Eigen::Vector2f>> TriangleRobot2D::getTriangles() {
+std::vector<Triangle2D> TriangleRobot2D::getTriangles() {
     return m_triangles;
 }
 
