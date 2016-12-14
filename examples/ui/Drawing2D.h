@@ -8,7 +8,7 @@
 
 #include <core/ModuleBase.h>
 #include <core/Node.h>
-#include <core/Triangle.hpp>
+#include <core/PointList.hpp>
 
 /*!
 * \brief   Provides methods of drawing form 2D paths with OpenCV
@@ -24,7 +24,7 @@ class Drawing2D : public rmpl::ModuleBase {
                             const rmpl::Vec<uint8_t> &colorNode, const rmpl::Vec<uint8_t> &colorEdge, int thickness);
     static void drawPath2D(const std::vector<rmpl::Vec<float>> vecs, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge,
                            int thickness);
-    static void drawTrianglePath(const std::vector<rmpl::Vec<float>> vecs, std::vector<rmpl::Triangle<Eigen::Vector2f>> triangles, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge,
+    static void drawTrianglePath(const std::vector<rmpl::Vec<float>> vecs, std::vector<rmpl::Triangle2D> triangles, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge,
                                  int thickness);
 };
 

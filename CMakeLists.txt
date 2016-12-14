@@ -20,7 +20,7 @@ cmake_minimum_required (VERSION 2.8.10)
 project (RobotMotionPlanning)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -pthread")
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++1y -pthread")
 
 OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(DEBUG_OUTPUT "Display debug output")
@@ -44,7 +44,7 @@ link_directories(${ASSIMP_LIBRARIES}
 set(SRCS
     include/core/KDNode.hpp
     include/core/KDTree.hpp
-    include/core/Triangle.hpp
+    include/core/PointList.hpp
     include/core/Vec.hpp
     source/core/CollisionDetection.cpp
     source/core/Edge.cpp
