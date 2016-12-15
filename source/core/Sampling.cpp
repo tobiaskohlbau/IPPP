@@ -29,14 +29,17 @@ using namespace rmpl;
 *  \param[in]  SamplingMethod
 *  \date       2016-05-24
 */
-Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method) : ModuleBase("Sampling") {
+Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method, SamplingStrategy strategy)
+        : ModuleBase("Sampling") {
     m_method = method;
+    m_strategy = strategy;
     m_robot = robot;
 
     m_minBoundary = m_robot->getMinBoundary();
     m_maxBoundary = m_robot->getMaxBoundary();
 
     m_generator = std::mt19937(rd());
+
     for (unsigned int i = 0; i < m_robot->getDim(); ++i) {
         std::normal_distribution<float> dist1(0, 500);
         m_distNormal.push_back(dist1);

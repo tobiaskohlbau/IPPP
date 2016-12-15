@@ -32,19 +32,19 @@ namespace rmpl {
 */
 class PlannerOptions : public ModuleBase {
   public:
-    PlannerOptions(float trajectoryStepSize, TrajectoryMethod trajectoryMethod, SamplingMethod samplingMethod);
+    PlannerOptions(float trajectoryStepSize, SamplingMethod samplingMethod, SamplingStrategy strategy);
 
     void setTrajectoryStepSize(float stepSize);
     float getTrajectoryStepSize();
-    void setTrajectoryMethod(TrajectoryMethod method);
-    TrajectoryMethod getTrajectoryMethod();
     void setSamplingMethod(SamplingMethod method);
     SamplingMethod getSamplingMethod();
+    void setSamplingStrategy(SamplingStrategy strategy);
+    SamplingStrategy getSamplingStrategy();
 
   protected:
     float m_trajectoryStepSize;
-    TrajectoryMethod m_trajectoryMethod;
     SamplingMethod m_samplingMethod;
+    SamplingStrategy m_samplingStrategy;
 };
 
 } /* namespace rmpl */

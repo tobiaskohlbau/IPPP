@@ -30,10 +30,8 @@ using std::shared_ptr;
 *  \param[in]  pointer to ColllisionDetection instance
 *  \date       2016-05-25
 */
-TrajectoryPlanner::TrajectoryPlanner(TrajectoryMethod method, float stepSize,
-                                     const shared_ptr<CollisionDetection> &collision)
+TrajectoryPlanner::TrajectoryPlanner(float stepSize, const shared_ptr<CollisionDetection> &collision)
     : ModuleBase("TrajectoryPlanner") {
-    m_method = method;
     m_collision = collision;
 
     setStepSize(stepSize);
