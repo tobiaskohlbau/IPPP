@@ -34,7 +34,7 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(triangles, min, max));
     triangleRobot->set2DWorkspace(mat);
 
-    std::shared_ptr<RRTOptions> options(new RRTOptions(30, 0.5, TrajectoryMethod::linear, SamplingMethod::randomly));
+    std::shared_ptr<RRTOptions> options(new RRTOptions(30, 0.5));
     StarRRTPlanner planner(triangleRobot, options);
 
     auto startTime = std::chrono::system_clock::now();
@@ -66,7 +66,7 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
 void testPointRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     std::shared_ptr<PointRobot> robot(new PointRobot(min, max));
     robot->set2DWorkspace(mat);
-    std::shared_ptr<RRTOptions> options(new RRTOptions(50, 0.5, TrajectoryMethod::linear, SamplingMethod::randomly));
+    std::shared_ptr<RRTOptions> options(new RRTOptions(50, 0.5, SamplingMethod::randomly));
     StarRRTPlanner planner(robot, options);
     NormalRRTPlanner planner1(robot, options);
     // compute the tree

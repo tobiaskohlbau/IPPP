@@ -31,8 +31,8 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, TrajectoryMethod trajectoryMethod,
-                       SamplingMethod samplingMethod) : PlannerOptions(trajectoryStepSize, trajectoryMethod, samplingMethod) {
+RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize,  SamplingMethod method,
+                       SamplingStrategy strategy) : PlannerOptions(trajectoryStepSize, method, strategy) {
     if (stepSize <= 0) {
         Logging::warning("Step size was smaller than 0 and was set to 1", this);
         m_stepSize = 1;

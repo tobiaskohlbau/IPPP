@@ -11,16 +11,18 @@
 
 #include <ui/Writer.h>
 
+using namespace rmpl;
+
 void printTime(clock_t begin, clock_t end) {
     float elapsed_secs = float(end - begin) / CLOCKS_PER_SEC;
     std::cout << "Computation time: " << elapsed_secs << std::endl;
 }
 
 void simpleRRT() {
-    std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
-    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(30, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
-    rmpl::NormalRRTPlanner planner(robot, options);
-    rmpl::Vec<float> start(180, 180, 180, 180, 180, 180);
+    std::shared_ptr<rmpl::Jaco> robot(new Jaco());
+    std::shared_ptr<rmpl::RRTOptions> options(new RRTOptions(30, 0.5));
+    NormalRRTPlanner planner(robot, options);
+    Vec<float> start(180, 180, 180, 180, 180, 180);
     //planner.setInitNode(rmpl::Node(0, 0, 0, 0, 0, 0));
 
     // compute the tree
@@ -29,10 +31,10 @@ void simpleRRT() {
     clock_t end = std::clock();
     printTime(begin, end);
 
-    bool connected = planner.connectGoalNode(rmpl::Vec<float>(275, 167.5, 57.4, 241, 82.7, 75.5));
+    bool connected = planner.connectGoalNode(Vec<float>(275, 167.5, 57.4, 241, 82.7, 75.5));
 
-    std::vector<std::shared_ptr<rmpl::Node>> nodes = planner.getGraphNodes();
-    std::vector<rmpl::Vec<float>> graphPoints;
+    std::vector<std::shared_ptr<Node>> nodes = planner.getGraphNodes();
+    std::vector<Vec<float>> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
@@ -40,9 +42,9 @@ void simpleRRT() {
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
-        std::vector<rmpl::Vec<float>> pathAngles = planner.getPath(5, true);
+        std::vector<Vec<float>> pathAngles = planner.getPath(5, true);
 
-        std::vector<rmpl::Vec<float>> pathPoints;
+        std::vector<Vec<float>> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
         Writer::appendVecsToFile(pathPoints, "example.ASC", 10);
@@ -55,16 +57,16 @@ void simpleRRT() {
 }
 
 void treeConnection() {
-    std::shared_ptr<rmpl::Jaco> robot(new rmpl::Jaco());
+    std::shared_ptr<Jaco> robot(new Jaco());
 
     // create two trees from init and from goal
-    std::shared_ptr<rmpl::RRTOptions> options(new rmpl::RRTOptions(20, 0.5, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
-    rmpl::StarRRTPlanner plannerGoalNode(robot, options);
-    rmpl::StarRRTPlanner plannerInitNode(robot, options);
+    std::shared_ptr<RRTOptions> options(new RRTOptions(20, 0.5, SamplingMethod::standardDistribution));
+    StarRRTPlanner plannerGoalNode(robot, options);
+    StarRRTPlanner plannerInitNode(robot, options);
 
     // set properties to the planners
-    plannerInitNode.setInitNode(rmpl::Vec<float>(180, 180, 180, 180, 180, 180));
-    plannerGoalNode.setInitNode(rmpl::Vec<float>(275, 167.5, 57.4, 241, 82.7, 75.5));
+    plannerInitNode.setInitNode(Vec<float>(180, 180, 180, 180, 180, 180));
+    plannerGoalNode.setInitNode(Vec<float>(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     // compute the tree
     clock_t begin = std::clock();
@@ -74,7 +76,7 @@ void treeConnection() {
     printTime(begin, end);
 
     // get random sample from the first pathPlanner and try to connect to both planners
-    rmpl::Vec<float> goal;
+    Vec<float> goal;
     bool connected = false;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < 10000; ++i) {
@@ -91,8 +93,8 @@ void treeConnection() {
 //        }
     }
 
-    std::vector<std::shared_ptr<rmpl::Node>> nodes = plannerInitNode.getGraphNodes();
-    std::vector<rmpl::Vec<float>> graphPoints;
+    std::vector<std::shared_ptr<Node>> nodes = plannerInitNode.getGraphNodes();
+    std::vector<Vec<float>> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));

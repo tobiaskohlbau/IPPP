@@ -41,7 +41,8 @@ enum SamplingStrategy { normal, nearObstacles };
 */
 class Sampling : public ModuleBase {
   public:
-    Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
+    Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly,
+             SamplingStrategy strategy = SamplingStrategy::normal);
     Vec<float> getSample(unsigned int dim);
 
     bool setMeanOfDistribution(const Vec<float> &mean);
@@ -55,6 +56,7 @@ class Sampling : public ModuleBase {
     Vec<float> m_minBoundary;
     Vec<float> m_maxBoundary;
     SamplingMethod m_method;
+    SamplingStrategy m_strategy;
     std::shared_ptr<RobotBase> m_robot;
 
     std::random_device rd;

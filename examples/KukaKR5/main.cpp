@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 
     std::shared_ptr<rmpl::KukaKR5> robot(new rmpl::KukaKR5());
     std::shared_ptr<rmpl::RRTOptions> options(
-        new rmpl::RRTOptions(40, 1, rmpl::TrajectoryMethod::linear, rmpl::SamplingMethod::randomly));
+        new rmpl::RRTOptions(40, 1));
     NormalRRTPlanner planner(robot, options);
 
     rmpl::Vec<float> start(0, 0, 0, 0, 51, 0);

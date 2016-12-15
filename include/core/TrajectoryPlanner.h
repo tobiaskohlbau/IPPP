@@ -24,8 +24,6 @@
 
 namespace rmpl {
 
-enum TrajectoryMethod { linear, spline };
-
 /*!
 * \brief   Class TrajectoryPlanner plans between the passed nodes/vecs
 * \author  Sascha Kaden
@@ -33,7 +31,7 @@ enum TrajectoryMethod { linear, spline };
 */
 class TrajectoryPlanner : public ModuleBase {
   public:
-    TrajectoryPlanner(TrajectoryMethod method, float stepSize, const std::shared_ptr<CollisionDetection> &collision);
+    TrajectoryPlanner(float stepSize, const std::shared_ptr<CollisionDetection> &collision);
 
     bool controlTrajectory(const Node &source, const Node &target);
     bool controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target);
@@ -45,7 +43,6 @@ class TrajectoryPlanner : public ModuleBase {
     float getStepSize();
 
   private:
-    TrajectoryMethod m_method;
     float m_stepSize;
     std::shared_ptr<CollisionDetection> m_collision;
 };

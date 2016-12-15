@@ -31,9 +31,8 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, TrajectoryMethod trajectoryMethod,
-                       SamplingMethod samplingMethod)
-    : PlannerOptions(trajectoryStepSize, trajectoryMethod, samplingMethod) {
+PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy)
+    : PlannerOptions(trajectoryStepSize, method, strategy) {
     if (rangeSize <= 0) {
         Logging::warning("Step size was equal or smaller than 0 and is set to 1", this);
         m_rangeSize = 1;
