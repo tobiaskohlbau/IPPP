@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     // init TrajectoryPlanner
     std::shared_ptr<RobotBase> robot = std::shared_ptr<RobotBase>(new RobotBase("", CollisionType::pqp, RobotType::mobile, 6));
     std::shared_ptr<CollisionDetection> collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(robot));
-    TrajectoryPlanner planner(TrajectoryMethod::linear, 0.1, collision);
+    TrajectoryPlanner planner(0.1, collision);
 
     // test trajectories
     Vec<float> init(0, 0, 0, 0, 0, 0);
