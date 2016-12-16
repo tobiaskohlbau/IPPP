@@ -335,7 +335,7 @@ float Node::getCost() {
 */
 void Node::setParent(shared_ptr<Node> &parent) {
     if (!parent->empty())
-        m_parent = Edge(parent, getDist(parent));
+        m_parent = Edge(std::make_shared<Node>(*this), parent, getDist(parent));
 }
 
 /*!
@@ -375,7 +375,7 @@ void Node::clearParent() {
 */
 void Node::addChild(shared_ptr<Node> &child) {
     if (!child->empty())
-        m_childs.push_back(Edge(child, getDist(child)));
+        m_childs.push_back(Edge(std::make_shared<Node>(*this), child, getDist(child)));
 }
 
 /*!
