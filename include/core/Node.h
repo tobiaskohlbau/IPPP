@@ -21,6 +21,7 @@
 
 #include <assert.h>
 #include <vector>
+#include <memory>
 
 #include <core/Edge.h>
 #include <core/Vec.hpp>

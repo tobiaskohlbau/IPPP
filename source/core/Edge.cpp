@@ -38,13 +38,14 @@ Edge::Edge() {
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-Edge::Edge(shared_ptr<Node> &target, float length) {
+Edge::Edge(shared_ptr<Node> source, shared_ptr<Node> &target, float length) {
+
     m_target = target;
     m_length = length;
 }
 
 /*!
-*  \brief      Return legth of the Edge
+*  \brief      Return the euclidean length of the Edge
 *  \author     Sascha Kaden
 *  \param[out] length of the Edge
 *  \date       2016-05-25
@@ -59,9 +60,10 @@ float Edge::getLength() {
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-void Edge::setTarget(shared_ptr<Node> &target, float length) {
+void Edge::setTarget(shared_ptr<Node> &target) {
     m_target = target;
-    m_length = length;
+    if (!m_source)
+        m_length = m_source->getDist(target);
 }
 
 /*!
@@ -72,4 +74,26 @@ void Edge::setTarget(shared_ptr<Node> &target, float length) {
 */
 shared_ptr<Node> Edge::getTarget() {
     return m_target;
+}
+
+/*!
+*  \brief      Set target Node of the Edge
+*  \author     Sascha Kaden
+*  \param[in]  target Node
+*  \date       2016-05-25
+*/
+void Edge::setSource(shared_ptr<Node> &source) {
+    m_source = source;
+    if (!m_target)
+        m_length = m_target->getDist(source);
+}
+
+/*!
+*  \brief      Return target Node of the Edge
+*  \author     Sascha Kaden
+*  \param[out] target Node
+*  \date       2016-05-25
+*/
+shared_ptr<Node> Edge::getSource() {
+    return m_source;
 }
