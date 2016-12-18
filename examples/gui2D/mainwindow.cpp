@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include <QFileDialog>
-#include <pathPlanner/PRMOptions.h>
+#include <pathPlanner/options/PRMOptions.h>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);

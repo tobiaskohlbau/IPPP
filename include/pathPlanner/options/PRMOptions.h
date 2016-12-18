@@ -19,7 +19,7 @@
 #ifndef PRMOPTIONS_H_
 #define PRMOPTIONS_H_
 
-#include <pathPlanner/PlannerOptions.h>
+#include <pathPlanner/options/PlannerOptions.h>
 
 namespace rmpl {
 

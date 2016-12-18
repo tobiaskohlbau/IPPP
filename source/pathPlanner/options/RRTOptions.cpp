@@ -16,52 +16,54 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <pathPlanner/PRMOptions.h>
+#include <include/pathPlanner/options/RRTOptions.h>
 
 #include <core/Logging.h>
 
 using namespace rmpl;
 
 /*!
-*  \brief      Standard constructor of the class PRMOptions
-*  \param[in]  rangeSize
+*  \brief      Standard constructor of the class RRTOptions
+*  \param[in]  RRT step size
 *  \param[in]  trajectoryStepSize
 *  \param[in]  trajectoryMethod
 *  \param[in]  samplingMethod
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy)
-    : PlannerOptions(trajectoryStepSize, method, strategy) {
-    if (rangeSize <= 0) {
-        Logging::warning("Step size was equal or smaller than 0 and is set to 1", "PRM options");
-        m_rangeSize = 1;
-    } else {
-        m_rangeSize = rangeSize;
+RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize,  SamplingMethod method,
+                       SamplingStrategy strategy) : PlannerOptions(trajectoryStepSize, method, strategy) {
+    if (stepSize <= 0) {
+        Logging::warning("Step size was smaller than 0 and was set to 1", "RRT options");
+        m_stepSize = 1;
+    }
+    else {
+        m_stepSize = stepSize;
     }
 }
 
 /*!
-*  \brief      Sets the range size of the local planner from the PRMPlanner
-*  \param[in]  rangeSize
+*  \brief      Sets the step size of the RRTPlanner
+*  \param[in]  stepSize
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-void PRMOptions::setRangeSize(float rangeSize) {
-    if (rangeSize <= 0) {
-        Logging::warning("Step size was equal or smaller than 0 and is set to 1", "PRM options");
-        m_rangeSize = 1;
-    } else {
-        m_rangeSize = rangeSize;
+void RRTOptions::setStepSize(float stepSize) {
+    if (stepSize <= 0) {
+        Logging::warning("Step size was smaller than 0 and was set to 1", "RRT options");
+        m_stepSize = 1;
+    }
+    else {
+        m_stepSize = stepSize;
     }
 }
 
 /*!
-*  \brief      Returns the range size of the local planner from the PRMPlanner
-*  \param[out] rangeSize
+*  \brief      Returns the step size of the RRTPlanner
+*  \param[out] stepSize
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-float PRMOptions::getRangeSize() const {
-    return m_rangeSize;
+float RRTOptions::getStepSize() const {
+    return m_stepSize;
 }

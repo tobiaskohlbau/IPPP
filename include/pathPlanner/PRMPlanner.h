@@ -20,7 +20,7 @@
 #define PRMPLANNER_H_
 
 #include <core/List.h>
-#include <pathPlanner/PRMOptions.h>
+#include <pathPlanner/options/PRMOptions.h>
 #include <pathPlanner/Planner.h>
 
 namespace rmpl {

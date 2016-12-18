@@ -26,7 +26,7 @@
 #include <core/ModuleBase.h>
 #include <core/Sampling.h>
 #include <core/TrajectoryPlanner.h>
-#include <pathPlanner/PlannerOptions.h>
+#include <pathPlanner/options/PlannerOptions.h>
 #include <robot/RobotBase.h>
 
 namespace rmpl {

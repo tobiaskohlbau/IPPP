@@ -58,11 +58,11 @@ set(SRCS
     source/core/Utilities.cpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
-    source/pathPlanner/PlannerOptions.cpp
+    source/pathPlanner/options/RRTOptions.cpp
+    source/pathPlanner/options/PlannerOptions.cpp
+    source/pathPlanner/options/PRMOptions.cpp
     source/pathPlanner/PRMPlanner.cpp
-    source/pathPlanner/PRMOptions.cpp
     source/pathPlanner/RRTPlanner.cpp
-    source/pathPlanner/RRTOptions.cpp
     source/pathPlanner/StarRRTPlanner.cpp
     source/robot/GenericRobot.cpp
     source/robot/Jaco.cpp
