@@ -24,9 +24,9 @@
 #include <fcl/fcl.h>
 #include <fcl/narrowphase/collision.h>
 
-#include <core/ModuleBase.h>
-#include <core/Node.h>
-#include <core/PointList.hpp>
+#include <core/module/ModuleBase.h>
+#include <core/dataObj/Node.h>
+#include <core/dataObj/PointList.hpp>
 #include <robot/MeshContainer.h>
 #include <robot/SerialRobot.h>
 #include <robot/TriangleRobot2D.h>

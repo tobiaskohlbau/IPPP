@@ -19,8 +19,8 @@
 #ifndef TRAJECTORYPLANNER_H_
 #define TRAJECTORYPLANNER_H_
 
-#include <core/CollisionDetection.h>
-#include <core/ModuleBase.h>
+#include <core/module/CollisionDetection.h>
+#include <core/module/ModuleBase.h>
 
 namespace rmpl {
 

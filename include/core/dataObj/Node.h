@@ -23,8 +23,8 @@
 #include <vector>
 #include <memory>
 
-#include <core/Edge.h>
-#include <core/Vec.hpp>
+#include <core/dataObj/Edge.h>
+#include <core/dataObj/Vec.hpp>
 
 namespace rmpl {
 

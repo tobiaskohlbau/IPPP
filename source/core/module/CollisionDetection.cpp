@@ -16,10 +16,10 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/CollisionDetection.h>
+#include <core/module/CollisionDetection.h>
 
-#include <core/Logging.h>
-#include <core/Utilities.h>
+#include <include/core/utility/Logging.h>
+#include <include/core/utility/Utilities.h>
 
 using namespace rmpl;
 using std::shared_ptr;

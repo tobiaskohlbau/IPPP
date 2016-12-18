@@ -19,7 +19,7 @@
 #ifndef LIST_H_
 #define LIST_H_
 
-#include <core/Node.h>
+#include <core/dataObj/Node.h>
 
 namespace rmpl {
 

@@ -21,8 +21,8 @@
 
 #include <vector>
 
-#include <core/ModuleBase.h>
-#include <core/Vec.hpp>
+#include <core/module/ModuleBase.h>
+#include <core/dataObj/Vec.hpp>
 
 /*!
 * \brief   Provides methods for writing Vec lists to passed files

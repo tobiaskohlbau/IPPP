@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/Logging.h>
+#include <core/utility/Logging.h>
 
 #include <fstream>
 

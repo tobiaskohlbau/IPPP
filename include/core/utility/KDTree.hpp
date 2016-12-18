@@ -21,9 +21,9 @@
 
 #include <mutex>
 
-#include <core/ModuleBase.h>
-#include <core/KDNode.hpp>
-#include <core/Node.h>
+#include <core/module/ModuleBase.h>
+#include <core/utility/KDNode.hpp>
+#include <core/dataObj/Node.h>
 
 namespace rmpl {
 

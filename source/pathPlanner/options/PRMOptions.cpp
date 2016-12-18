@@ -18,7 +18,7 @@
 
 #include <include/pathPlanner/options/PRMOptions.h>
 
-#include <core/Logging.h>
+#include <include/core/utility/Logging.h>
 
 using namespace rmpl;
 

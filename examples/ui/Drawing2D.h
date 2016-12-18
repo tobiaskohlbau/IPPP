@@ -6,9 +6,9 @@
 
 #include <Eigen/Core>
 
-#include <core/ModuleBase.h>
-#include <core/Node.h>
-#include <core/PointList.hpp>
+#include <core/module/ModuleBase.h>
+#include <core/dataObj/Node.h>
+#include <core/dataObj/PointList.hpp>
 
 /*!
 * \brief   Provides methods of drawing form 2D paths with OpenCV

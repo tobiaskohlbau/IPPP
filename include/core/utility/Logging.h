@@ -21,7 +21,7 @@
 
 #include <mutex>
 
-#include <core/ModuleBase.h>
+#include <core/module/ModuleBase.h>
 
 namespace rmpl {
 

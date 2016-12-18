@@ -1,6 +1,6 @@
 #include <ui/Drawing2D.h>
 
-#include <core/Utilities.h>
+#include <core/utility/Utilities.h>
 
 using namespace rmpl;
 using std::shared_ptr;

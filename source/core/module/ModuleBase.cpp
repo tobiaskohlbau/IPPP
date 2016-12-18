@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/ModuleBase.h>
+#include <core/module/ModuleBase.h>
 
 using namespace rmpl;
 

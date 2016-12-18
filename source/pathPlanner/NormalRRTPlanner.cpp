@@ -18,7 +18,7 @@
 
 #include <pathPlanner/NormalRRTPlanner.h>
 
-#include <core/Logging.h>
+#include <include/core/utility/Logging.h>
 
 using namespace rmpl;
 using std::shared_ptr;

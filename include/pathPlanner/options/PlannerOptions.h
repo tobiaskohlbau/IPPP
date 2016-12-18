@@ -19,9 +19,9 @@
 #ifndef PLANNEROPTIONS_H_
 #define PLANNEROPTIONS_H_
 
-#include <core/ModuleBase.h>
-#include <core/Sampling.h>
-#include <core/TrajectoryPlanner.h>
+#include <core/module/ModuleBase.h>
+#include <core/module/Sampling.h>
+#include <core/module/TrajectoryPlanner.h>
 
 namespace rmpl {
 

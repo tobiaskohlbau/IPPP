@@ -25,8 +25,8 @@
 #include <Eigen/Core>
 #include <PQP.h>
 
-#include <core/ModuleBase.h>
-#include <core/Vec.hpp>
+#include <core/module/ModuleBase.h>
+#include <core/dataObj/Vec.hpp>
 #include <robot/MeshContainer.h>
 
 namespace rmpl {

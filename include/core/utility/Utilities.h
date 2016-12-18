@@ -22,7 +22,7 @@
 #include <Eigen/Core>
 #include <PQP.h>
 
-#include <core/Vec.hpp>
+#include <core/dataObj/Vec.hpp>
 
 namespace rmpl {
 

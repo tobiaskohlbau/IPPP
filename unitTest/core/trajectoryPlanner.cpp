@@ -18,7 +18,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/TrajectoryPlanner.h>
+#include <core/module/TrajectoryPlanner.h>
 
 using namespace rmpl;
 
