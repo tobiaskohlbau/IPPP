@@ -114,3 +114,35 @@ void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector
     }
 }
 
+/*!
+*  \brief      Convert cv::Mat to integer Eigen matrix
+*  \author     Sascha Kaden
+*  \param[in]  image
+*  \param[out] Eigen matrix
+*  \date       2016-12-18
+*/
+Eigen::MatrixXi Drawing2D::cvToEigen(cv::Mat cvMat) {
+    if (cvMat.empty()) {
+        Logging::error("Image is empty");
+        return Eigen::MatrixXi();
+    }
+
+    cv::Mat dst;
+    cvMat.convertTo(dst, CV_32SC1);
+
+    int rows = dst.rows;
+    int cols = dst.cols;
+    Eigen::MatrixXi eigenMat(rows, cols);
+    std::vector<int> entries;
+    int* temp;
+    for (int i = 0; i < cols; ++i) {
+        temp = dst.ptr<int>(i);
+        for (int j = 0; j < rows; ++j) {
+            entries.push_back(*temp);
+            ++temp;
+        }
+    }
+    eigenMat = Eigen::MatrixXi::Map(&entries[0], rows, cols);
+    return eigenMat;
+}
+
