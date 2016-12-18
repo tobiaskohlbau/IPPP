@@ -19,7 +19,7 @@
 #ifndef RRTOPTIONS_H_
 #define RRTOPTIONS_H_
 
-#include <pathPlanner/PlannerOptions.h>
+#include <pathPlanner/options/PlannerOptions.h>
 
 namespace rmpl {
 

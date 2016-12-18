@@ -20,7 +20,7 @@
 #define RRTPLANNER_H_
 
 #include "Planner.h"
-#include <pathPlanner/RRTOptions.h>
+#include <pathPlanner/options/RRTOptions.h>
 
 namespace rmpl {
 
