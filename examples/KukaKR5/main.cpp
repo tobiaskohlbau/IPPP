@@ -4,12 +4,12 @@
 
 #include <Eigen/Core>
 
-#include <core/Logging.h>
+#include <core/utility/Logging.h>
 #include <pathPlanner/NormalRRTPlanner.h>
 #include <pathPlanner/StarRRTPlanner.h>
 #include <robot/KukaKR5.h>
 
-#include <core/Utilities.h>
+#include <core/utility/Utilities.h>
 #include <ui/Writer.h>
 
 using namespace rmpl;

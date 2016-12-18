@@ -18,7 +18,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/Utilities.h>
+#include <core/utility/Utilities.h>
 
 using namespace rmpl;
 using namespace Eigen;

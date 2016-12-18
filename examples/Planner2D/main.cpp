@@ -6,7 +6,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include <Eigen/Core>
 
-#include <core/Logging.h>
+#include <core/utility/Logging.h>
 #include <pathPlanner/NormalRRTPlanner.h>
 #include <pathPlanner/PRMPlanner.h>
 #include <pathPlanner/StarRRTPlanner.h>
@@ -30,7 +30,7 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
 
     triangles.push_back(Triangle2D(v1, v2, v3));
     triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25, 0.0), Eigen::Vector2f(25, 25)));
-    triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25, 25), Eigen::Vector2f(25, 50)));
+    triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25, 25), Eigen::Vector2f(25, 45)));
     std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(triangles, min, max));
     triangleRobot->set2DWorkspace(mat);
 
@@ -38,14 +38,14 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     RRTOptions rrtOptions(30, 0.5, SamplingMethod::randomly);
 
     std::shared_ptr<rmpl::Planner> planner;
-    // planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(triangleRobot, prmOptions));
+    planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(triangleRobot, prmOptions));
     //planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(triangleRobot, rrtOptions));
-    planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(triangleRobot, rrtOptions));
+    //planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(triangleRobot, rrtOptions));
 
     auto startTime = std::chrono::system_clock::now();
     Vec<float> start(5, 5, 0);
-    Vec<float> goal(400.0, 950.0, 0);
-    bool connected = planner->computePath(start, goal, 40000, 2);
+    Vec<float> goal(400.0, 930.0, 0);
+    bool connected = planner->computePath(start, goal, 60000, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 

@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/Node.h>
+#include <core/dataObj/Node.h>
 #include <limits>
 
 using namespace rmpl;

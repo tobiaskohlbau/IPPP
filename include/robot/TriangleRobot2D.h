@@ -19,7 +19,7 @@
 #ifndef TRIANGLEROBOT2D_H_
 #define TRIANGLEROBOT2D_H_
 
-#include <core/PointList.hpp>
+#include <core/dataObj/PointList.hpp>
 #include <robot/MobileRobot.h>
 
 namespace rmpl {

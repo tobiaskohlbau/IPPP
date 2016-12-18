@@ -18,8 +18,8 @@
 
 #include <robot/GenericRobot.h>
 
-#include <core/Logging.h>
-#include <core/Utilities.h>
+#include <include/core/utility/Logging.h>
+#include <include/core/utility/Utilities.h>
 
 using namespace rmpl;
 

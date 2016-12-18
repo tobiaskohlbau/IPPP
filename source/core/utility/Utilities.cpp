@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/Utilities.h>
+#include <core/utility/Utilities.h>
 
 #include <Eigen/Geometry>
 

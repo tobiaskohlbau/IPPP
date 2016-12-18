@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/Edge.h>
-#include <core/Node.h>
+#include <core/dataObj/Edge.h>
+#include <core/dataObj/Node.h>
 
 using std::shared_ptr;
 using namespace rmpl;

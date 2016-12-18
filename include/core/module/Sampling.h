@@ -24,8 +24,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <core/ModuleBase.h>
-#include <core/Vec.hpp>
+#include <core/module/ModuleBase.h>
+#include <core/dataObj/Vec.hpp>
 #include <robot/RobotBase.h>
 
 namespace rmpl {

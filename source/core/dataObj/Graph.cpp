@@ -16,9 +16,9 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/Graph.h>
+#include <core/dataObj/Graph.h>
 
-#include <core/Logging.h>
+#include <include/core/utility/Logging.h>
 
 using namespace rmpl;
 using std::shared_ptr;

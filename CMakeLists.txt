@@ -42,20 +42,20 @@ link_directories(${ASSIMP_LIBRARIES}
         ${PQP_DIR}/lib)
 
 set(SRCS
-    include/core/KDNode.hpp
-    include/core/KDTree.hpp
-    include/core/PointList.hpp
-    include/core/Vec.hpp
-    source/core/CollisionDetection.cpp
-    source/core/Edge.cpp
-    source/core/Graph.cpp
+    include/core/utility/KDNode.hpp
+    include/core/utility/KDTree.hpp
+    include/core/dataObj/PointList.hpp
+    include/core/dataObj/Vec.hpp
+    source/core/dataObj/Edge.cpp
+    source/core/dataObj/Graph.cpp
+    source/core/dataObj/Node.cpp
+    source/core/module/CollisionDetection.cpp
+    source/core/module/ModuleBase.cpp
+    source/core/module/Sampling.cpp
+    source/core/module/TrajectoryPlanner.cpp
     source/core/List.cpp
-    source/core/Logging.cpp
-    source/core/ModuleBase.cpp
-    source/core/Node.cpp
-    source/core/Sampling.cpp
-    source/core/TrajectoryPlanner.cpp
-    source/core/Utilities.cpp
+    source/core/utility/Logging.cpp
+    source/core/utility/Utilities.cpp
     source/pathPlanner/NormalRRTPlanner.cpp
     source/pathPlanner/Planner.cpp
     source/pathPlanner/options/RRTOptions.cpp

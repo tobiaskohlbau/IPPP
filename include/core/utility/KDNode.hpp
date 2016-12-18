@@ -21,7 +21,7 @@
 
 #include <cstdint>
 
-#include <core/Vec.hpp>
+#include <core/dataObj/Vec.hpp>
 
 namespace rmpl {
 

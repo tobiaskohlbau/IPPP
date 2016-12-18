@@ -18,7 +18,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/Node.h>
+#include <core/dataObj/Node.h>
 
 using namespace rmpl;
 

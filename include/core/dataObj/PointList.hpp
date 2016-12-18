@@ -20,8 +20,8 @@
 #define TRIANGLE_H
 
 #include <Eigen/Core>
-#include <core/Logging.h>
-#include <core/Utilities.h>
+#include <core/utility/Logging.h>
+#include <core/utility/Utilities.h>
 
 namespace rmpl {
 

@@ -21,11 +21,11 @@
 
 #include <Eigen/Core>
 
-#include <core/CollisionDetection.h>
-#include <core/Graph.h>
-#include <core/ModuleBase.h>
-#include <core/Sampling.h>
-#include <core/TrajectoryPlanner.h>
+#include <core/module/CollisionDetection.h>
+#include <core/dataObj/Graph.h>
+#include <core/module/ModuleBase.h>
+#include <core/module/Sampling.h>
+#include <core/module/TrajectoryPlanner.h>
 #include <pathPlanner/options/PlannerOptions.h>
 #include <robot/RobotBase.h>
 

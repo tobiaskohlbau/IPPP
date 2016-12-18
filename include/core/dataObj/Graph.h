@@ -22,9 +22,9 @@
 #include <algorithm>
 #include <mutex>
 
-#include <core/ModuleBase.h>
-#include <core/KDTree.hpp>
-#include <core/Node.h>
+#include <core/module/ModuleBase.h>
+#include <core/utility/KDTree.hpp>
+#include <core/dataObj/Node.h>
 
 namespace rmpl {
 

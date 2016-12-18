@@ -18,7 +18,7 @@
 
 #include <pathPlanner/PRMPlanner.h>
 
-#include <include/core/Logging.h>
+#include <include/core/utility/Logging.h>
 #include <thread>
 
 using namespace rmpl;

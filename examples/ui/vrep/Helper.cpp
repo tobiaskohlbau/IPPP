@@ -1,6 +1,6 @@
 #include "Helper.h"
 
-#include <core/Logging.h>
+#include <core/utility/Logging.h>
 
 using namespace rmpl;
 
