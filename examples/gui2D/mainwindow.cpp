@@ -18,22 +18,7 @@ void MainWindow::loadImage() {
     QString qFileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "/home", tr("Image Files (*.png *.jpg *.bmp)"));
 
     cv::Mat obstacleWorkspace = cv::imread(qFileName.toStdString(), CV_LOAD_IMAGE_GRAYSCALE);
-    cv::Mat dst;
-    obstacleWorkspace.convertTo(dst, CV_32SC1);
-
-    int rows = dst.rows;
-    int cols = dst.cols;
-    m_workspace = Eigen::MatrixXi(rows, cols);
-    std::vector<int> entries;
-    int* temp;
-    for (int i = 0; i < cols; ++i) {
-        temp = dst.ptr<int>(i);
-        for (int j = 0; j < rows; ++j) {
-            entries.push_back(*temp);
-            ++temp;
-        }
-    }
-    m_workspace = Eigen::MatrixXi::Map(&entries[0], rows, cols);
+    m_workspace = Drawing2D::cvToEigen(obstacleWorkspace);
     m_image = obstacleWorkspace;
 }
 

@@ -45,7 +45,7 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     auto startTime = std::chrono::system_clock::now();
     Vec<float> start(5, 5, 0);
     Vec<float> goal(400.0, 950.0, 0);
-    bool connected = planner->computePath(start, goal, 70000, 2);
+    bool connected = planner->computePath(start, goal, 40000, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
@@ -106,25 +106,10 @@ int main(int argc, char** argv) {
     // obstacleWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     // obstacleWorkspace = cv::imread("spaces/labyrinth.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    cv::Mat dst;
-    obstacleWorkspace.convertTo(dst, CV_32SC1);
-
-    int rows = dst.rows;
-    int cols = dst.cols;
-    Eigen::MatrixXi mat(rows, cols);
-    std::vector<int> entries;
-    int* temp;
-    for (int i = 0; i < cols; ++i) {
-        temp = dst.ptr<int>(i);
-        for (int j = 0; j < rows; ++j) {
-            entries.push_back(*temp);
-            ++temp;
-        }
-    }
-    mat = Eigen::MatrixXi::Map(&entries[0], rows, cols);
+    Eigen::MatrixXi mat = Drawing2D::cvToEigen(obstacleWorkspace);
 
     Vec<float> minBoundary(0.0, 0.0);
-    Vec<float> maxBoundary(rows, cols);
+    Vec<float> maxBoundary(mat.rows(), mat.cols());
 
     testTriangleRobot(minBoundary, maxBoundary, mat);
 

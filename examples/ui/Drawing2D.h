@@ -26,6 +26,8 @@ class Drawing2D : public rmpl::ModuleBase {
                            int thickness);
     static void drawTrianglePath(const std::vector<rmpl::Vec<float>> vecs, std::vector<rmpl::Triangle2D> triangles, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge,
                                  int thickness);
+
+    static Eigen::MatrixXi cvToEigen(cv::Mat image);
 };
 
 #endif /* DRAWING2D_H_ */
