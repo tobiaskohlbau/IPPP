@@ -28,7 +28,6 @@ using namespace rmpl;
 *  \date       2016-05-30
 */
 Edge::Edge() {
-    m_length = -1;
 }
 
 /*!
@@ -39,7 +38,6 @@ Edge::Edge() {
 *  \date       2016-05-25
 */
 Edge::Edge(shared_ptr<Node> source, shared_ptr<Node> &target, float length) {
-
     m_target = target;
     m_length = length;
 }
@@ -47,7 +45,7 @@ Edge::Edge(shared_ptr<Node> source, shared_ptr<Node> &target, float length) {
 /*!
 *  \brief      Return the euclidean length of the Edge
 *  \author     Sascha Kaden
-*  \param[out] length of the Edge
+*  \param[out] length
 *  \date       2016-05-25
 */
 float Edge::getLength() {
@@ -77,10 +75,10 @@ shared_ptr<Node> Edge::getTarget() {
 }
 
 /*!
-*  \brief      Set target Node of the Edge
+*  \brief      Set source Node of the Edge
 *  \author     Sascha Kaden
-*  \param[in]  target Node
-*  \date       2016-05-25
+*  \param[in]  source Node
+*  \date       2016-12-16
 */
 void Edge::setSource(shared_ptr<Node> &source) {
     m_source = source;
@@ -89,10 +87,10 @@ void Edge::setSource(shared_ptr<Node> &source) {
 }
 
 /*!
-*  \brief      Return target Node of the Edge
+*  \brief      Return source Node of the Edge
 *  \author     Sascha Kaden
-*  \param[out] target Node
-*  \date       2016-05-25
+*  \param[out] source Node
+*  \date       2016-12-16
 */
 shared_ptr<Node> Edge::getSource() {
     return m_source;
