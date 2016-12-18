@@ -19,19 +19,17 @@ void printTime(clock_t begin, clock_t end) {
 }
 
 void simpleRRT() {
-    std::shared_ptr<rmpl::Jaco> robot(new Jaco());
-    std::shared_ptr<rmpl::RRTOptions> options(new RRTOptions(30, 0.5));
+    std::shared_ptr<Jaco> robot(new Jaco());
+    RRTOptions options(30, 0.5);
     NormalRRTPlanner planner(robot, options);
     Vec<float> start(180, 180, 180, 180, 180, 180);
-    //planner.setInitNode(rmpl::Node(0, 0, 0, 0, 0, 0));
+    Vec<float> goal(275, 167.5, 57.4, 241, 82.7, 75.5);
 
     // compute the tree
     clock_t begin = std::clock();
-    planner.computeTree(25000, 2);
+    bool connected = planner.computePath(start, goal, 25000, 2);
     clock_t end = std::clock();
     printTime(begin, end);
-
-    bool connected = planner.connectGoalNode(Vec<float>(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     std::vector<std::shared_ptr<Node>> nodes = planner.getGraphNodes();
     std::vector<Vec<float>> graphPoints;
@@ -49,7 +47,7 @@ void simpleRRT() {
             pathPoints.push_back(robot->directKinematic(angles));
         Writer::appendVecsToFile(pathPoints, "example.ASC", 10);
 
-        rmpl::Helper vrep(6);
+        Helper vrep(6);
         vrep.start();
         for (auto angles : pathAngles)
             vrep.setPos(angles);
@@ -60,7 +58,7 @@ void treeConnection() {
     std::shared_ptr<Jaco> robot(new Jaco());
 
     // create two trees from init and from goal
-    std::shared_ptr<RRTOptions> options(new RRTOptions(20, 0.5, SamplingMethod::standardDistribution));
+    RRTOptions options(20, 0.5, SamplingMethod::standardDistribution);
     StarRRTPlanner plannerGoalNode(robot, options);
     StarRRTPlanner plannerInitNode(robot, options);
 
@@ -80,7 +78,7 @@ void treeConnection() {
     bool connected = false;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < 10000; ++i) {
-//        rmpl::Vec<float> sample = plannerInitNode.getSamplePoint();
+//        Vec<float> sample = plannerInitNode.getSamplePoint();
 //
 //        bool planner1Connected = plannerInitNode.connectGoalNode(sample);
 //        bool planner2Connected = plannerGoalNode.connectGoalNode(sample);
@@ -111,11 +109,11 @@ void treeConnection() {
         plannerInitNode.connectGoalNode(goal);
         plannerGoalNode.connectGoalNode(goal);
 
-        std::vector<rmpl::Vec<float>> pathAngles = plannerInitNode.getPath(5, true);
-        std::vector<rmpl::Vec<float>> temp = plannerGoalNode.getPath(5, true);
+        std::vector<Vec<float>> pathAngles = plannerInitNode.getPath(5, true);
+        std::vector<Vec<float>> temp = plannerGoalNode.getPath(5, true);
         pathAngles.insert(pathAngles.end(), temp.begin(), temp.end());
 
-        std::vector<rmpl::Vec<float>> pathPoints;
+        std::vector<Vec<float>> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
         Writer::appendVecsToFile(pathPoints, "example.ASC", 10);

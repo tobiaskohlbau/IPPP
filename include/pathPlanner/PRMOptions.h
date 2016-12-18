@@ -21,7 +21,7 @@
 
 #include <pathPlanner/PlannerOptions.h>
 
-namespace rmpl{
+namespace rmpl {
 
 /*!
 * \brief   Class PRMOptions determines special options for the PRMPlanner
@@ -29,17 +29,17 @@ namespace rmpl{
 * \date    2016-08-29
 */
 class PRMOptions : public PlannerOptions {
-public:
+  public:
     PRMOptions(float rangeSize, float trajectoryStepSize, SamplingMethod samplingMethod = SamplingMethod::randomly,
                SamplingStrategy strategy = SamplingStrategy::normal);
 
     void setRangeSize(float rangeSize);
-    float getRangeSize();
+    float getRangeSize() const;
 
-private:
+  private:
     float m_rangeSize;
 };
 
 } /* namespace rmpl */
 
-#endif //PRMOPTIONS_H_
+#endif    // PRMOPTIONS_H_

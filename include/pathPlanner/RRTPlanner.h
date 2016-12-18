@@ -31,7 +31,7 @@ namespace rmpl {
 */
 class RRTPlanner : public Planner {
   public:
-    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, std::shared_ptr<RRTOptions> options);
+    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const RRTOptions &options);
 
     bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads);
     bool setInitNode(Vec<float> start);

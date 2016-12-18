@@ -53,16 +53,13 @@ void MainWindow::computePath() {
 
     m_planner = nullptr;
     if (m_plannerType == 0) {
-        std::shared_ptr<rmpl::RRTOptions> options(
-            new rmpl::RRTOptions(m_rrtStepsize, m_trajectoryStepSize, rmpl::TrajectoryMethod::linear, sampling));
+        rmpl::RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
         m_planner = std::shared_ptr<rmpl::NormalRRTPlanner>(new rmpl::NormalRRTPlanner(robot, options));
     } else if (m_plannerType == 1) {
-        std::shared_ptr<rmpl::RRTOptions> options(
-            new rmpl::RRTOptions(m_rrtStepsize, m_trajectoryStepSize, rmpl::TrajectoryMethod::linear, sampling));
+        rmpl::RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
         m_planner = std::shared_ptr<rmpl::StarRRTPlanner>(new rmpl::StarRRTPlanner(robot, options));
     } else {
-        std::shared_ptr<rmpl::PRMOptions> options(
-            new rmpl::PRMOptions(m_rrtStepsize, m_trajectoryStepSize, rmpl::TrajectoryMethod::linear, sampling));
+        rmpl::PRMOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
         m_planner = std::shared_ptr<rmpl::PRMPlanner>(new rmpl::PRMPlanner(robot, options));
     }
 

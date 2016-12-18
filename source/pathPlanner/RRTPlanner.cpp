@@ -30,9 +30,9 @@ using std::shared_ptr;
 *  \author     Sascha Kaden
 *  \date       2016-05-27
 */
-RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, std::shared_ptr<RRTOptions> options)
+RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const RRTOptions &options)
     : Planner(name, robot, options) {
-    m_stepSize = options->getStepSize();
+    m_stepSize = options.getStepSize();
     m_initNode = nullptr;
     m_goalNode = nullptr;
 }

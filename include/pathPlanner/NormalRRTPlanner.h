@@ -32,7 +32,7 @@ namespace rmpl {
 */
 class NormalRRTPlanner : public RRTPlanner {
   public:
-    NormalRRTPlanner(const std::shared_ptr<RobotBase> &robot, std::shared_ptr<RRTOptions> options)
+    NormalRRTPlanner(const std::shared_ptr<RobotBase> &robot, const RRTOptions &options)
         : RRTPlanner("Normal RRT Planner", robot, options) {
     }
 
@@ -41,7 +41,6 @@ class NormalRRTPlanner : public RRTPlanner {
   protected:
     void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
 
-  private:
     std::mutex m_mutex;
 };
 

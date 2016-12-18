@@ -24,33 +24,38 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     min.append(0);
     max.append(359.999);
     std::vector<Triangle2D> triangles;
-    Eigen::Vector2f v1(0.0,0.0);
-    Eigen::Vector2f v2(0.0,25.0);
-    Eigen::Vector2f v3(25.0,0.0);
+    Eigen::Vector2f v1(0.0, 0.0);
+    Eigen::Vector2f v2(0.0, 25.0);
+    Eigen::Vector2f v3(25.0, 0.0);
 
     triangles.push_back(Triangle2D(v1, v2, v3));
-    triangles.push_back(Triangle2D(Eigen::Vector2f(0.0,25.0),   Eigen::Vector2f(25,0.0),  Eigen::Vector2f(25,25)));
-    triangles.push_back(Triangle2D(Eigen::Vector2f(0.0,25.0),   Eigen::Vector2f(25,25),   Eigen::Vector2f(25,50)));
+    triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25, 0.0), Eigen::Vector2f(25, 25)));
+    triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25, 25), Eigen::Vector2f(25, 50)));
     std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(triangles, min, max));
     triangleRobot->set2DWorkspace(mat);
 
-    std::shared_ptr<RRTOptions> options(new RRTOptions(30, 0.5));
-    StarRRTPlanner planner(triangleRobot, options);
+    PRMOptions prmOptions(30, 0.5, SamplingMethod::randomly);
+    RRTOptions rrtOptions(30, 0.5, SamplingMethod::randomly);
+
+    std::shared_ptr<rmpl::Planner> planner;
+    // planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(triangleRobot, prmOptions));
+    //planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(triangleRobot, rrtOptions));
+    planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(triangleRobot, rrtOptions));
 
     auto startTime = std::chrono::system_clock::now();
     Vec<float> start(5, 5, 0);
     Vec<float> goal(400.0, 950.0, 0);
-    bool connected = planner.computePath(start, goal, 30000, 2);
+    bool connected = planner->computePath(start, goal, 70000, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
-    std::vector<std::shared_ptr<Node>> nodes = planner.getGraphNodes();
-    nodes = planner.getPathNodes();
+    std::vector<std::shared_ptr<Node>> nodes = planner->getGraphNodes();
+    nodes = planner->getPathNodes();
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
-        std::vector<Vec<float>> path = planner.getPath(40, true);
+        std::vector<Vec<float>> path = planner->getPath(40, true);
 
-        //Writer::writeVecsToFile(path, "result.txt");
+        // Writer::writeVecsToFile(path, "result.txt");
 
         cv::Mat image = obstacleWorkspace.clone();
         cv::cvtColor(image, image, CV_GRAY2BGR);
@@ -66,7 +71,7 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
 void testPointRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     std::shared_ptr<PointRobot> robot(new PointRobot(min, max));
     robot->set2DWorkspace(mat);
-    std::shared_ptr<RRTOptions> options(new RRTOptions(50, 0.5, SamplingMethod::randomly));
+    RRTOptions options(50, 0.5, SamplingMethod::randomly);
     StarRRTPlanner planner(robot, options);
     NormalRRTPlanner planner1(robot, options);
     // compute the tree
@@ -98,7 +103,6 @@ void testPointRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
 }
 
 int main(int argc, char** argv) {
-
     // obstacleWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     // obstacleWorkspace = cv::imread("spaces/labyrinth.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
@@ -124,5 +128,5 @@ int main(int argc, char** argv) {
 
     testTriangleRobot(minBoundary, maxBoundary, mat);
 
-    //testPointRobot(minBoundary, maxBoundary, mat);
+    // testPointRobot(minBoundary, maxBoundary, mat);
 }

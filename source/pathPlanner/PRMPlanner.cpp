@@ -34,9 +34,8 @@ using std::shared_ptr;
 *  \param[in]  SamplingMethod
 *  \date       2016-08-09
 */
-PRMPlanner::PRMPlanner(const shared_ptr<RobotBase> &robot, std::shared_ptr<PRMOptions> options)
-    : Planner("PRMPlanner", robot, options) {
-    m_rangeSize = options->getRangeSize();
+PRMPlanner::PRMPlanner(const shared_ptr<RobotBase> &robot, const PRMOptions &options) : Planner("PRMPlanner", robot, options) {
+    m_rangeSize = options.getRangeSize();
 }
 
 bool PRMPlanner::computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads) {

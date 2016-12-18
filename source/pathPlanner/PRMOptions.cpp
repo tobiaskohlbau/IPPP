@@ -34,7 +34,7 @@ using namespace rmpl;
 PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy)
     : PlannerOptions(trajectoryStepSize, method, strategy) {
     if (rangeSize <= 0) {
-        Logging::warning("Step size was equal or smaller than 0 and is set to 1", this);
+        Logging::warning("Step size was equal or smaller than 0 and is set to 1", "PRM options");
         m_rangeSize = 1;
     } else {
         m_rangeSize = rangeSize;
@@ -49,7 +49,7 @@ PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, SamplingMethod
 */
 void PRMOptions::setRangeSize(float rangeSize) {
     if (rangeSize <= 0) {
-        Logging::warning("Step size was equal or smaller than 0 and is set to 1", this);
+        Logging::warning("Step size was equal or smaller than 0 and is set to 1", "PRM options");
         m_rangeSize = 1;
     } else {
         m_rangeSize = rangeSize;
@@ -62,6 +62,6 @@ void PRMOptions::setRangeSize(float rangeSize) {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-float PRMOptions::getRangeSize() {
+float PRMOptions::getRangeSize() const {
     return m_rangeSize;
 }

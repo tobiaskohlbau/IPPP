@@ -32,7 +32,7 @@ namespace rmpl {
 */
 class StarRRTPlanner : public RRTPlanner {
   public:
-    StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, std::shared_ptr<RRTOptions> options)
+    StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, const RRTOptions &options)
         : RRTPlanner("RRT* Planner", robot, options) {
     }
     bool connectGoalNode(Vec<float> goal);
@@ -44,7 +44,6 @@ class StarRRTPlanner : public RRTPlanner {
     void reWire(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode,
                 std::vector<std::shared_ptr<Node>> &nearNodes);
 
-  private:
     std::mutex m_mutex;
 };
 
