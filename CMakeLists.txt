@@ -18,6 +18,7 @@
 
 cmake_minimum_required (VERSION 2.8.10)
 project (RobotMotionPlanning)
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++1y -pthread")
@@ -41,40 +42,12 @@ include_directories(${CMAKE_SOURCE_DIR}/include
 link_directories(${ASSIMP_LIBRARIES}
         ${PQP_DIR}/lib)
 
-set(SRCS
-    include/core/utility/KDNode.hpp
-    include/core/utility/KDTree.hpp
-    include/core/dataObj/PointList.hpp
-    include/core/dataObj/Vec.hpp
-    source/core/dataObj/Edge.cpp
-    source/core/dataObj/Graph.cpp
-    source/core/dataObj/Node.cpp
-    source/core/module/CollisionDetection.cpp
-    source/core/module/ModuleBase.cpp
-    source/core/module/Sampling.cpp
-    source/core/module/TrajectoryPlanner.cpp
-    source/core/List.cpp
-    source/core/utility/Logging.cpp
-    source/core/utility/Utilities.cpp
-    source/pathPlanner/NormalRRTPlanner.cpp
-    source/pathPlanner/Planner.cpp
-    source/pathPlanner/options/RRTOptions.cpp
-    source/pathPlanner/options/PlannerOptions.cpp
-    source/pathPlanner/options/PRMOptions.cpp
-    source/pathPlanner/PRMPlanner.cpp
-    source/pathPlanner/RRTPlanner.cpp
-    source/pathPlanner/StarRRTPlanner.cpp
-    source/robot/GenericRobot.cpp
-    source/robot/Jaco.cpp
-    source/robot/Joint.cpp
-    source/robot/KukaKR5.cpp
-    source/robot/MeshContainer.cpp
-    source/robot/MobileRobot.cpp
-    source/robot/PointRobot.cpp
-    source/robot/RobotBase.cpp
-    source/robot/SerialRobot.cpp
-    source/robot/TriangleRobot2D.cpp)
+# source files
+set(SRCS)
+ADD_SUBDIRECTORY(include)
+ADD_SUBDIRECTORY(source)
 
+# options
 IF (${DEBUG_OUTPUT})
     add_definitions(-DDEBUG_OUTPUT)
 ENDIF()
