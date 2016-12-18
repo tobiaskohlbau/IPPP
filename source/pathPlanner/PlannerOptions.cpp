@@ -29,10 +29,9 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-PlannerOptions::PlannerOptions(float trajectoryStepSize,  SamplingMethod method, SamplingStrategy strategy)
-    : ModuleBase("PlannerOptions") {
+PlannerOptions::PlannerOptions(float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy) {
     if (trajectoryStepSize <= 0) {
-        Logging::warning("Trajectory step size was smaller than 0 and was set to 1", this);
+        Logging::warning("Trajectory step size was smaller than 0 and was set to 1", "Planner options");
         m_trajectoryStepSize = 1;
     } else {
         m_trajectoryStepSize = trajectoryStepSize;
@@ -49,7 +48,7 @@ PlannerOptions::PlannerOptions(float trajectoryStepSize,  SamplingMethod method,
 */
 void PlannerOptions::setTrajectoryStepSize(float stepSize) {
     if (stepSize <= 0) {
-        Logging::warning("Trajectory step size was smaller than 0 and was set to 1", this);
+        Logging::warning("Trajectory step size was smaller than 0 and was set to 1", "Planner options");
         m_trajectoryStepSize = 1;
     } else {
         m_trajectoryStepSize = stepSize;
@@ -62,7 +61,7 @@ void PlannerOptions::setTrajectoryStepSize(float stepSize) {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-float PlannerOptions::getTrajectoryStepSize() {
+float PlannerOptions::getTrajectoryStepSize() const {
     return m_trajectoryStepSize;
 }
 
@@ -82,7 +81,7 @@ void PlannerOptions::setSamplingMethod(SamplingMethod method) {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-SamplingMethod PlannerOptions::getSamplingMethod() {
+SamplingMethod PlannerOptions::getSamplingMethod() const {
     return m_samplingMethod;
 }
 
@@ -102,6 +101,6 @@ void PlannerOptions::setSamplingStrategy(SamplingStrategy strategy) {
 *  \author     Sascha Kaden
 *  \date       2016-12-15
 */
-SamplingStrategy PlannerOptions::getSamplingStrategy() {
+SamplingStrategy PlannerOptions::getSamplingStrategy() const {
     return m_samplingStrategy;
 }

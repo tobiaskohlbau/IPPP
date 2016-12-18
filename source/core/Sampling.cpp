@@ -27,6 +27,7 @@ using namespace rmpl;
 *  \author     Sascha Kaden
 *  \param[in]  robot
 *  \param[in]  SamplingMethod
+*  \param[in]  SamplingStrategy
 *  \date       2016-05-24
 */
 Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method, SamplingStrategy strategy)

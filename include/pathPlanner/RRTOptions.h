@@ -21,7 +21,7 @@
 
 #include <pathPlanner/PlannerOptions.h>
 
-namespace rmpl{
+namespace rmpl {
 
 /*!
 * \brief   Class RRTOptions determines special options for the RRTPlanner
@@ -29,17 +29,17 @@ namespace rmpl{
 * \date    2016-08-29
 */
 class RRTOptions : public PlannerOptions {
-public:
-    RRTOptions(float stepSize, float trajectoryStepSize,  SamplingMethod samplingMethod = SamplingMethod::randomly,
+  public:
+    RRTOptions(float stepSize, float trajectoryStepSize, SamplingMethod samplingMethod = SamplingMethod::randomly,
                SamplingStrategy strategy = SamplingStrategy::normal);
 
     void setStepSize(float stepSize);
-    float getStepSize();
+    float getStepSize() const;
 
-private:
+  private:
     float m_stepSize;
 };
 
 } /* namespace rmpl */
 
-#endif //RRTOPTIONS_H_
+#endif    // RRTOPTIONS_H_

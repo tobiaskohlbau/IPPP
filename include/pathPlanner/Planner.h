@@ -38,7 +38,7 @@ namespace rmpl {
 */
 class Planner : public ModuleBase {
   public:
-    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, std::shared_ptr<PlannerOptions> options);
+    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const PlannerOptions &options);
 
     virtual bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads) = 0;
 

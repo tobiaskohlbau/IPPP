@@ -34,7 +34,7 @@ using namespace rmpl;
 RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize,  SamplingMethod method,
                        SamplingStrategy strategy) : PlannerOptions(trajectoryStepSize, method, strategy) {
     if (stepSize <= 0) {
-        Logging::warning("Step size was smaller than 0 and was set to 1", this);
+        Logging::warning("Step size was smaller than 0 and was set to 1", "RRT options");
         m_stepSize = 1;
     }
     else {
@@ -50,7 +50,7 @@ RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize,  SamplingMethod
 */
 void RRTOptions::setStepSize(float stepSize) {
     if (stepSize <= 0) {
-        Logging::warning("Step size was smaller than 0 and was set to 1", this);
+        Logging::warning("Step size was smaller than 0 and was set to 1", "RRT options");
         m_stepSize = 1;
     }
     else {
@@ -64,6 +64,6 @@ void RRTOptions::setStepSize(float stepSize) {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-float RRTOptions::getStepSize() {
+float RRTOptions::getStepSize() const {
     return m_stepSize;
 }

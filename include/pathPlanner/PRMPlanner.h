@@ -32,7 +32,7 @@ namespace rmpl {
 */
 class PRMPlanner : public Planner {
   public:
-    PRMPlanner(const std::shared_ptr<RobotBase> &robot, std::shared_ptr<PRMOptions> options);
+    PRMPlanner(const std::shared_ptr<RobotBase> &robot, const PRMOptions &options);
 
     bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads);
 

@@ -30,16 +30,16 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-08-29
 */
-class PlannerOptions : public ModuleBase {
+class PlannerOptions {
   public:
     PlannerOptions(float trajectoryStepSize, SamplingMethod samplingMethod, SamplingStrategy strategy);
 
     void setTrajectoryStepSize(float stepSize);
-    float getTrajectoryStepSize();
+    float getTrajectoryStepSize() const;
     void setSamplingMethod(SamplingMethod method);
-    SamplingMethod getSamplingMethod();
+    SamplingMethod getSamplingMethod() const;
     void setSamplingStrategy(SamplingStrategy strategy);
-    SamplingStrategy getSamplingStrategy();
+    SamplingStrategy getSamplingStrategy() const;
 
   protected:
     float m_trajectoryStepSize;
