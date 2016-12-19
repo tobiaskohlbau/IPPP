@@ -19,7 +19,6 @@
 #ifndef PRMPLANNER_H_
 #define PRMPLANNER_H_
 
-#include <core/List.h>
 #include <pathPlanner/options/PRMOptions.h>
 #include <pathPlanner/Planner.h>
 
@@ -53,7 +52,7 @@ class PRMPlanner : public Planner {
 
     float m_rangeSize;
     std::vector<std::shared_ptr<Node>> m_nodePath;
-    List m_openList, m_closedList;
+    std::vector<std::shared_ptr<Node>> m_openList, m_closedList;
 };
 
 } /* namespace rmpl */

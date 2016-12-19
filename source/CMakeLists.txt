@@ -24,7 +24,6 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/ModuleBase.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampling.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/List.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Logging.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Utility.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/NormalRRTPlanner.cpp

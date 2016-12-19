@@ -45,7 +45,7 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     auto startTime = std::chrono::system_clock::now();
     Vec<float> start(5, 5, 0);
     Vec<float> goal(400.0, 930.0, 0);
-    bool connected = planner->computePath(start, goal, 60000, 2);
+    bool connected = planner->computePath(start, goal, 20000, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
@@ -71,9 +71,16 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
 void testPointRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     std::shared_ptr<PointRobot> robot(new PointRobot(min, max));
     robot->set2DWorkspace(mat);
-    RRTOptions options(50, 0.5, SamplingMethod::randomly);
-    StarRRTPlanner planner(robot, options);
-    NormalRRTPlanner planner1(robot, options);
+
+
+    PRMOptions prmOptions(50, 0.5, SamplingMethod::randomly);
+    RRTOptions rrtOptions(50, 0.5, SamplingMethod::randomly);
+
+    std::shared_ptr<rmpl::Planner> planner;
+    planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(robot, prmOptions));
+    //planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(robot, rrtOptions));
+    //planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(robot, rrtOptions));
+
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
     Vec<float> start(50.0, 30.0);
@@ -81,10 +88,10 @@ void testPointRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     // planner.setInitNode(start);
     // planner.computeTree(4000, 2);
     // bool connected = planner.connectGoalNode(goal);
-    bool connected = planner.computePath(start, goal, 4000, 2);
+    bool connected = planner->computePath(start, goal, 4000, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
-    std::vector<std::shared_ptr<Node>> nodes = planner.getGraphNodes();
+    std::vector<std::shared_ptr<Node>> nodes = planner->getGraphNodes();
 
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
@@ -92,7 +99,7 @@ void testPointRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     Drawing2D::drawTree2D(nodes, image, Vec<uint8_t>(0, 0, 255), Vec<uint8_t>(0, 0, 0), 1);
 
     if (connected) {
-        std::vector<Vec<float>> pathPoints = planner.getPath(0.5, true);
+        std::vector<Vec<float>> pathPoints = planner->getPath(0.5, true);
         Drawing2D::drawPath2D(pathPoints, image, Vec<uint8_t>(255, 0, 0), 3);
     }
 
@@ -111,7 +118,7 @@ int main(int argc, char** argv) {
     Vec<float> minBoundary(0.0, 0.0);
     Vec<float> maxBoundary(mat.rows(), mat.cols());
 
-    testTriangleRobot(minBoundary, maxBoundary, mat);
+    //testTriangleRobot(minBoundary, maxBoundary, mat);
 
-    // testPointRobot(minBoundary, maxBoundary, mat);
+     testPointRobot(minBoundary, maxBoundary, mat);
 }
