@@ -26,38 +26,76 @@
 namespace rmpl {
 
 /*!
-* \brief   Base class of Triangle, consists of three points and the manipulation of them
+* \brief   Data structure for 2D or 3D point list
+* \details Typedefs has to be used otherwise the variadic template constructor will not be working
+*          Number of input points have to be the size of the PointList
 * \author  Sascha Kaden
-* \date    2016-11-15
+* \date    2016-12-19
 */
 template <class T, unsigned int P>
 class PointList {
   public:
     PointList() = default;
 
+    /*!
+    *  \brief      Last constructor of PointList
+    *  \param[in]  index
+    *  \param[in]  point
+    *  \author     Sascha Kaden
+    *  \date       2016-12-19
+    */
     template <class... Args>
     PointList(unsigned int index, T pt) {
-        assert(index < P);
+        assert(index == P - 1);
         m_p[index] = pt;
     }
 
+    /*!
+    *  \brief      First constructor of PointList
+    *  \param[in]  point
+    *  \param[in]  remaining list of points
+    *  \author     Sascha Kaden
+    *  \date       2016-12-19
+    */
     template <class... Args>
     PointList(T pt, Args... fargs) : PointList(1, fargs...) {
         m_p[0] = pt;
     }
 
+    /*!
+    *  \brief      Second constructor of PointList
+    *  \param[in]  index
+    *  \param[in]  point
+    *  \param[in]  remaining list of points
+    *  \author     Sascha Kaden
+    *  \date       2016-12-19
+    */
     template <class... Args>
     PointList(unsigned int index, T pt, Args... fargs) : PointList(index + 1, fargs...) {
         assert(index < P);
         m_p[index] = pt;
     }
 
+    /*!
+    *  \brief      Set point of PointList from index
+    *  \param[in]  index
+    *  \param[out] point
+    *  \author     Sascha Kaden
+    *  \date       2016-12-19
+    */
     void setP(T p, unsigned int index) {
         assert(index > 0);
         assert(index <= P);
         m_p[index - 1] = p;
     }
 
+    /*!
+    *  \brief      Return point of PointList from index
+    *  \param[in]  index
+    *  \param[out] point
+    *  \author     Sascha Kaden
+    *  \date       2016-12-19
+    */
     T getP(unsigned int index) {
         assert(index > 0);
         assert(index <= P);
@@ -65,11 +103,11 @@ class PointList {
     }
 
     /*!
-    *  \brief      Transform Triangle by passed rotation matrix and translation vector
+    *  \brief      Transform Pointlist itself by passed rotation matrix and translation vector
     *  \param[in]  rotation matrix R
     *  \param[in]  translation vector t
     *  \author     Sascha Kaden
-    *  \date       2016-11-15
+    *  \date       2016-12-19
     */
     void transform(const Eigen::MatrixXf R, const T t) {
         assert(R.rows() == m_p[0].rows());
