@@ -210,25 +210,28 @@ shared_ptr<Node> PRMPlanner::connectNode(Vec<float> &node) {
 *  \date       2016-08-09
 */
 bool PRMPlanner::aStar(shared_ptr<Node> sourceNode, shared_ptr<Node> targetNode) {
+    m_closedList.clear();
+    m_openList.clear();
+
     std::vector<Edge> edges = sourceNode->getChildEdges();
     for (int i = 0; i < edges.size(); ++i) {
         edges[i].getTarget()->setCost(edges[i].getLength());
         edges[i].getTarget()->setParent(sourceNode);
-        m_openList.addNode(edges[i].getTarget());
+        m_openList.push_back(edges[i].getTarget());
     }
-    m_closedList.addNode(sourceNode);
+    m_closedList.push_back(sourceNode);
 
     int count = 0;
     shared_ptr<Node> currentNode;
     while (!m_openList.empty()) {
-        currentNode = m_openList.removeMin();
+        currentNode = utility::removeMinFromList(m_openList);
 
         if (currentNode == targetNode) {
             std::cout << "closed list has: " << count << std::endl;
             return true;
         }
 
-        m_closedList.addNode(currentNode);
+        m_closedList.push_back(currentNode);
         ++count;
 
         expandNode(currentNode);
@@ -247,20 +250,20 @@ bool PRMPlanner::aStar(shared_ptr<Node> sourceNode, shared_ptr<Node> targetNode)
 */
 void PRMPlanner::expandNode(shared_ptr<Node> currentNode) {
     for (auto successor : currentNode->getChildNodes()) {
-        if (m_closedList.contains(successor))
+        if (utility::contains(m_closedList, successor))
             continue;
 
         float dist = currentNode->getCost() + currentNode->getDist(successor);
 
-        if (m_openList.contains(successor) && dist >= successor->getCost())
+        if (utility::contains(m_openList, successor) && dist >= successor->getCost())
             continue;
 
         successor->setParent(currentNode);
         successor->setCost(dist);
-        if (m_openList.contains(successor)) {
+        if (utility::contains(m_openList, successor)) {
             // nothing to do
         } else {
-            m_openList.addNode(successor);
+            m_openList.push_back(successor);
         }
     }
 }

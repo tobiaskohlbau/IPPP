@@ -19,9 +19,12 @@
 #ifndef UTILITIES_H_
 #define UTILITIES_H_
 
+#include <memory>
+
 #include <Eigen/Core>
 #include <PQP.h>
 
+#include <core/dataObj/Node.h>
 #include <core/dataObj/Vec.hpp>
 
 namespace rmpl {
@@ -56,6 +59,10 @@ float degToRad(float deg);
 Eigen::VectorXf VecToEigen(const Vec<float> &vec);
 Eigen::VectorXf VecToEigen(const Vec<PQP_REAL> &vec);
 Vec<float> EigenToVec(const Eigen::VectorXf &eigenVec);
+
+void eraseFromList(std::vector<std::shared_ptr<Node>> &list, const std::shared_ptr<Node> &node);
+std::shared_ptr<Node> removeMinFromList(std::vector<std::shared_ptr<Node>> &list);
+bool contains(std::vector<std::shared_ptr<Node>> &list, std::shared_ptr<Node> &node);
 
 } /* namespace utility */
 } /* namespace rmpl */
