@@ -38,8 +38,8 @@ void testTriangleRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     RRTOptions rrtOptions(30, 0.5, SamplingMethod::randomly);
 
     std::shared_ptr<rmpl::Planner> planner;
-    planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(triangleRobot, prmOptions));
-    //planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(triangleRobot, rrtOptions));
+    //planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(triangleRobot, prmOptions));
+    planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(triangleRobot, rrtOptions));
     //planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(triangleRobot, rrtOptions));
 
     auto startTime = std::chrono::system_clock::now();

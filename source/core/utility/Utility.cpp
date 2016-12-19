@@ -16,11 +16,12 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/Utilities.h>
+#include <core/utility/Utility.h>
 
 #include <Eigen/Geometry>
 
-using namespace rmpl;
+namespace rmpl {
+namespace utility {
 
 /*!
 *  \brief      Create transformation matrix T from rotation R and translation t
@@ -30,7 +31,7 @@ using namespace rmpl;
 *  \param[out] transformation matrix
 *  \date       2016-08-25
 */
-Eigen::Matrix4f Utilities::createT(Eigen::Matrix3f &R, Eigen::Vector3f &t) {
+Eigen::Matrix4f createT(Eigen::Matrix3f &R, Eigen::Vector3f &t) {
     Eigen::Matrix4f T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
     T.block<3, 1>(0, 3) = t;
@@ -45,7 +46,7 @@ Eigen::Matrix4f Utilities::createT(Eigen::Matrix3f &R, Eigen::Vector3f &t) {
 *  \param[out] translatin matrix
 *  \date       2016-08-25
 */
-void Utilities::decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector3f &t) {
+void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector3f &t) {
     R = T.block<3, 3>(0, 0);
     t = T.block<3, 1>(0, 3);
 }
@@ -57,7 +58,7 @@ void Utilities::decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-Eigen::Matrix2f Utilities::getRotMat2D(float deg) {
+Eigen::Matrix2f getRotMat2D(float deg) {
     Eigen::Rotation2D<float> rot2(deg * toRad());
     return rot2.toRotationMatrix();
 }
@@ -71,11 +72,10 @@ Eigen::Matrix2f Utilities::getRotMat2D(float deg) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-Eigen::Matrix3f Utilities::getRotMat3D(float degX, float degY, float degZ) {
+Eigen::Matrix3f getRotMat3D(float degX, float degY, float degZ) {
     Eigen::Matrix3f R;
     R = Eigen::AngleAxisf(degX * toRad(), Eigen::Vector3f::UnitX()) *
-        Eigen::AngleAxisf(degY * toRad(), Eigen::Vector3f::UnitY()) *
-        Eigen::AngleAxisf(degZ * toRad(), Eigen::Vector3f::UnitZ());
+        Eigen::AngleAxisf(degY * toRad(), Eigen::Vector3f::UnitY()) * Eigen::AngleAxisf(degZ * toRad(), Eigen::Vector3f::UnitZ());
     return R;
 }
 
@@ -87,7 +87,7 @@ Eigen::Matrix3f Utilities::getRotMat3D(float degX, float degY, float degZ) {
 *  \param[out] translation vector
 *  \date       2016-11-15
 */
-void Utilities::poseVecToRandT(const Vec<float> &pose, Eigen::Matrix2f &R, Eigen::Vector2f &t) {
+void poseVecToRandT(const Vec<float> &pose, Eigen::Matrix2f &R, Eigen::Vector2f &t) {
     assert(pose.getDim() == 3);
     R = getRotMat2D(pose[2]);
     t(0) = pose[0];
@@ -102,7 +102,7 @@ void Utilities::poseVecToRandT(const Vec<float> &pose, Eigen::Matrix2f &R, Eigen
 *  \param[out] translation vector
 *  \date       2016-11-15
 */
-void Utilities::poseVecToRandT(const Vec<float> &pose, Eigen::Matrix3f &R, Eigen::Vector3f &t) {
+void poseVecToRandT(const Vec<float> &pose, Eigen::Matrix3f &R, Eigen::Vector3f &t) {
     assert(pose.getDim() == 6);
     R = getRotMat3D(pose[3], pose[4], pose[5]);
     t(0) = pose[0];
@@ -117,7 +117,7 @@ void Utilities::poseVecToRandT(const Vec<float> &pose, Eigen::Matrix3f &R, Eigen
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Eigen::Matrix4f Utilities::poseVecToMat(const Vec<float> &pose) {
+Eigen::Matrix4f poseVecToMat(const Vec<float> &pose) {
     Eigen::Matrix3f R = getRotMat3D(pose[3], pose[4], pose[5]);
     Eigen::Matrix4f T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
@@ -133,7 +133,7 @@ Eigen::Matrix4f Utilities::poseVecToMat(const Vec<float> &pose) {
 *  \param[out] pose Vec (angles)
 *  \date       2016-07-07
 */
-Vec<float> Utilities::poseMatToVec(const Eigen::Matrix4f &pose) {
+Vec<float> poseMatToVec(const Eigen::Matrix4f &pose) {
     Vec<float> vec(pose(0, 3), pose(1, 3), pose(2, 3));
     Eigen::Vector3f euler = pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2);
     euler(0, 0) *= toDeg();
@@ -150,7 +150,7 @@ Vec<float> Utilities::poseMatToVec(const Eigen::Matrix4f &pose) {
 *  \param[out] Vec of rad
 *  \date       2016-07-07
 */
-Vec<float> Utilities::degToRad(const Vec<float> deg) {
+Vec<float> degToRad(const Vec<float> deg) {
     Vec<float> rad(deg.getDim());
     for (unsigned int i = 0; i < deg.getDim(); ++i)
         rad[i] = deg[i] * toRad();
@@ -164,9 +164,10 @@ Vec<float> Utilities::degToRad(const Vec<float> deg) {
 *  \param[out] rad
 *  \date       2016-11-16
 */
-float Utilities::degToRad(float deg) {
+float degToRad(float deg) {
     return deg * toRad();
 }
+
 /*!
 *  \brief      Convert rmpl Vec to Eigen Array
 *  \author     Sascha Kaden
@@ -174,7 +175,7 @@ float Utilities::degToRad(float deg) {
 *  \param[out] Eigen Array
 *  \date       2016-07-07
 */
-Eigen::VectorXf Utilities::VecToEigen(const Vec<float> &vec) {
+Eigen::VectorXf VecToEigen(const Vec<float> &vec) {
     Eigen::VectorXf eigenVec(vec.getDim());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         eigenVec(i, 0) = vec[i];
@@ -188,7 +189,7 @@ Eigen::VectorXf Utilities::VecToEigen(const Vec<float> &vec) {
 *  \param[out] Eigen Array
 *  \date       2016-07-07
 */
-Eigen::VectorXf Utilities::VecToEigen(const Vec<PQP_REAL> &vec) {
+Eigen::VectorXf VecToEigen(const Vec<PQP_REAL> &vec) {
     Eigen::VectorXf eigenVec(vec.getDim());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         eigenVec(i, 0) = vec[i];
@@ -202,9 +203,12 @@ Eigen::VectorXf Utilities::VecToEigen(const Vec<PQP_REAL> &vec) {
 *  \param[out] Vec
 *  \date       2016-07-07
 */
-Vec<float> Utilities::EigenToVec(const Eigen::VectorXf &eigenVec) {
+Vec<float> EigenToVec(const Eigen::VectorXf &eigenVec) {
     Vec<float> vec((unsigned int)eigenVec.rows());
     for (unsigned int i = 0; i < vec.getDim(); ++i)
         vec[i] = eigenVec(i, 0);
     return vec;
 }
+
+} /* namespace utility */
+} /* namespace rmpl */

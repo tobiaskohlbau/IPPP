@@ -19,7 +19,7 @@
 #include <robot/RobotBase.h>
 
 #include <include/core/utility/Logging.h>
-#include <include/core/utility/Utilities.h>
+#include <include/core/utility/Utility.h>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -39,7 +39,7 @@ RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType ro
     m_dim = dim;
 
     m_pose = Vec<float>(0, 0, 0, 0, 0, 0);
-    m_poseMat = Utilities::poseVecToMat(m_pose);
+    m_poseMat = utility::poseVecToMat(m_pose);
     m_baseMesh = nullptr;
     m_workspaceMesh = nullptr;
 }
@@ -80,7 +80,7 @@ void RobotBase::setPose(const Vec<float> &pose) {
     }
 
     m_pose = pose;
-    m_poseMat = Utilities::poseVecToMat(pose);
+    m_poseMat = utility::poseVecToMat(pose);
 }
 
 /*!

@@ -9,7 +9,7 @@
 #include <pathPlanner/StarRRTPlanner.h>
 #include <robot/KukaKR5.h>
 
-#include <core/utility/Utilities.h>
+#include <core/utility/Utility.h>
 #include <ui/Writer.h>
 
 using namespace rmpl;
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
             std::vector<Eigen::Matrix4f> jointTrafos = robot->getJointTrafos(angle);
             std::vector<Vec<float>> tmp;
             for (auto joint : jointTrafos)
-                tmp.push_back(Utilities::poseMatToVec(joint));
+                tmp.push_back(utility::poseMatToVec(joint));
             vecs.push_back(tmp);
         }
         Writer::writeTrafosToFile(vecs, "trafos.txt");
