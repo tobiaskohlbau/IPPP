@@ -20,7 +20,7 @@
 
 #include <include/core/utility/Utility.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the Jaco robot
@@ -112,3 +112,5 @@ Vec<float> Jaco::convertRealToDH(const Vec<float> &realAngles) {
 
     return dhAngles;
 }
+
+} /* namespace rmpl */

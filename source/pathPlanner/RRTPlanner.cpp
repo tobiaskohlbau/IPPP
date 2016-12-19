@@ -22,8 +22,8 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the class RRTPlanner
@@ -209,3 +209,5 @@ bool RRTPlanner::controlConstraints() {
         return true;
     }
 }
+
+} /* namespace rmpl */

@@ -20,7 +20,7 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the class Sampling
@@ -152,3 +152,5 @@ bool Sampling::checkBoudaries() {
     }
     return true;
 }
+
+} /* namespace rmpl */

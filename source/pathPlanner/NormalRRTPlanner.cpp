@@ -20,8 +20,8 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief         Computation of the new Node by the normal RRT algorithm
@@ -88,3 +88,5 @@ bool NormalRRTPlanner::connectGoalNode(Vec<float> goal) {
 
     return false;
 }
+
+} /* namespace rmpl */

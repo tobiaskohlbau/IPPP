@@ -20,7 +20,7 @@
 #include <core/dataObj/Node.h>
 
 using std::shared_ptr;
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Default constructor of the class Edge
@@ -95,3 +95,5 @@ void Edge::setSource(shared_ptr<Node> &source) {
 shared_ptr<Node> Edge::getSource() {
     return m_source;
 }
+
+} /* namespace rmpl */

@@ -25,7 +25,7 @@
 #include <include/core/utility/Logging.h>
 #include <include/core/utility/Utility.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Standard contructor of the MeshContainer class
@@ -212,3 +212,5 @@ std::shared_ptr<PQP_Model> MeshContainer::getPqp() {
         Logging::warning("PQP model is empty");
     return m_pqpModel;
 }
+
+} /* namespace rmpl */

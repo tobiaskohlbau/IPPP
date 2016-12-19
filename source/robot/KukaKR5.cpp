@@ -20,7 +20,7 @@
 
 #include <include/core/utility/Utility.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the Jaco robot
@@ -88,3 +88,5 @@ std::vector<Eigen::Matrix4f> KukaKR5::getJointTrafos(const Vec<float> &angles) {
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));
     return trafos;
 }
+
+} /* namespace rmpl */

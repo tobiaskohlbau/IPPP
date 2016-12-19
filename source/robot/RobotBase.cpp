@@ -21,8 +21,8 @@
 #include <include/core/utility/Logging.h>
 #include <include/core/utility/Utility.h>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the class RobotBase
@@ -208,3 +208,5 @@ void RobotBase::setCollisionType(CollisionType type) {
 CollisionType RobotBase::getCollisionType() {
     return m_collisionType;
 }
+
+} /* namespace rmpl */

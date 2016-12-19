@@ -19,7 +19,7 @@
 #include <include/core/utility/Logging.h>
 #include <include/pathPlanner/options/PlannerOptions.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Standard constructor of the class PlannerOptions
@@ -104,3 +104,5 @@ void PlannerOptions::setSamplingStrategy(SamplingStrategy strategy) {
 SamplingStrategy PlannerOptions::getSamplingStrategy() const {
     return m_samplingStrategy;
 }
+
+} /* namespace rmpl */

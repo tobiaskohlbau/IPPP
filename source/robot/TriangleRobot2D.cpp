@@ -20,7 +20,7 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Standard constructor of the 2D TriangleRobot
@@ -63,5 +63,7 @@ bool TriangleRobot2D::addTriangle(Triangle2D &triangle) {
 std::vector<Triangle2D> TriangleRobot2D::getTriangles() {
     return m_triangles;
 }
+
+} /* namespace rmpl */
 
 

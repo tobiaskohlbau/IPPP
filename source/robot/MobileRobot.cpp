@@ -20,7 +20,7 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 MobileRobot::MobileRobot(std::string name, CollisionType type, unsigned int dim, Vec<float> minBoundary,
                          Vec<float> maxBoundary) : RobotBase(name, type, RobotType::mobile, dim) {
@@ -42,3 +42,5 @@ MobileRobot::MobileRobot(std::string name, CollisionType type, unsigned int dim,
     m_maxBoundary = maxBoundary;
     m_minBoundary = minBoundary;
 }
+
+} /* namespace rmpl */
