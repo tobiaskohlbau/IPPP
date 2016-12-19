@@ -20,8 +20,8 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief      Default constructor of the class Graph
@@ -126,3 +126,5 @@ std::vector<shared_ptr<Node>> Graph::getNearNodes(const shared_ptr<Node> node, f
 unsigned int Graph::size() {
     return m_nodes.size();
 }
+
+} /* namespace rmpl */

@@ -19,8 +19,8 @@
 #include <core/dataObj/Node.h>
 #include <limits>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief      Default constructor of the class Node
@@ -420,3 +420,5 @@ void Node::clearChilds() {
 Vec<float> Node::getVec() const {
     return m_vec;
 }
+
+} /* namespace rmpl */

@@ -21,7 +21,7 @@
 #include <include/core/utility/Logging.h>
 #include <include/core/utility/Utility.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the GenericRobot robot
@@ -67,3 +67,5 @@ std::vector<Eigen::Matrix4f> GenericRobot::getJointTrafos(const Vec<float> &angl
     }
     return trafos;
 }
+
+} /* namespace rmpl */

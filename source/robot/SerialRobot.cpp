@@ -21,8 +21,8 @@
 #include <include/core/utility/Logging.h>
 #include <include/core/utility/Utility.h>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the class RobotBase
@@ -199,3 +199,5 @@ void SerialRobot::saveMeshConfig(Eigen::Matrix4f *As) {
         //std::cout<< As[i] << std::endl <<std::endl;
     }
 }
+
+} /* namespace rmpl */

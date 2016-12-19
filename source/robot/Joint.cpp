@@ -18,7 +18,7 @@
 
 #include <robot/Joint.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Standard contructor of the Joint class
@@ -104,3 +104,5 @@ void Joint::getBoundaries(float &minBound, float &maxBound) {
     minBound = m_minBound;
     maxBound = m_maxBound;
 }
+
+} /* namespace rmpl */

@@ -20,7 +20,7 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Standard constructor of the class PRMOptions
@@ -65,3 +65,5 @@ void PRMOptions::setRangeSize(float rangeSize) {
 float PRMOptions::getRangeSize() const {
     return m_rangeSize;
 }
+
+} /* namespace rmpl */

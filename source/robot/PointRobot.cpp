@@ -20,7 +20,7 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the 2D PointRobot
@@ -30,3 +30,5 @@ using namespace rmpl;
 PointRobot::PointRobot(Vec<float> minBoundary, Vec<float> maxBoundary)
     : MobileRobot("PointRobot", CollisionType::point2D, 2, minBoundary, maxBoundary) {
 }
+
+} /* namespace rmpl */

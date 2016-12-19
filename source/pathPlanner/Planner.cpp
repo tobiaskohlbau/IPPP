@@ -19,8 +19,8 @@
 #include <include/core/utility/Logging.h>
 #include <pathPlanner/Planner.h>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the class Planner
@@ -92,3 +92,5 @@ std::vector<shared_ptr<Node>> Planner::smoothPath(std::vector<shared_ptr<Node>> 
     }
     return nodes;
 }
+
+} /* namespace rmpl */

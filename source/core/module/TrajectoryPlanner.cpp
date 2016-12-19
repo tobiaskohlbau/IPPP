@@ -20,8 +20,8 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the class TrajectoryPlanner
@@ -164,3 +164,5 @@ void TrajectoryPlanner::setStepSize(float stepSize) {
 float TrajectoryPlanner::getStepSize() {
     return m_stepSize;
 }
+
+} /* namespace rmpl */

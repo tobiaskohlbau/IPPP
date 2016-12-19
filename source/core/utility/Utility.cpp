@@ -258,6 +258,5 @@ bool contains(std::vector<std::shared_ptr<Node>> &list, std::shared_ptr<Node> &n
         return false;
 }
 
-
 } /* namespace utility */
 } /* namespace rmpl */

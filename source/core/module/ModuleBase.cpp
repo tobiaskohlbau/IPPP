@@ -18,7 +18,7 @@
 
 #include <core/module/ModuleBase.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Standard deconstructor of the ModuleBase
@@ -48,3 +48,5 @@ ModuleBase::ModuleBase(const std::string &name)
 const std::string& ModuleBase::getName() {
     return m_name;
 }
+
+} /* namespace rmpl */

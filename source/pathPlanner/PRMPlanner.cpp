@@ -21,8 +21,8 @@
 #include <include/core/utility/Logging.h>
 #include <thread>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief      Standard constructor of the class PRMPlanner
@@ -287,3 +287,5 @@ std::vector<shared_ptr<Node>> PRMPlanner::getPathNodes() {
 std::vector<Vec<float>> PRMPlanner::getPath(float trajectoryStepSize, bool smoothing) {
     return getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
+
+} /* namespace rmpl */

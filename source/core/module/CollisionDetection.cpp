@@ -21,8 +21,8 @@
 #include <include/core/utility/Logging.h>
 #include <include/core/utility/Utility.h>
 
-using namespace rmpl;
 using std::shared_ptr;
+namespace rmpl {
 
 /*!
 *  \brief      Constructor of the class CollisionDetection
@@ -429,3 +429,5 @@ bool CollisionDetection::checkFCL(shared_ptr<FCLModel> &model1, shared_ptr<FCLMo
 
     return result.isCollision();
 }
+
+} /* namespace rmpl */

@@ -20,7 +20,7 @@
 
 #include <fstream>
 
-using namespace rmpl;
+namespace rmpl {
 
 LogLevel Logging::m_level = LogLevel::all;
 LogOutput Logging::m_output = LogOutput::terminal;
@@ -240,3 +240,5 @@ void Logging::writeToFile(std::string message) {
         myfile.close();
     }
 }
+
+} /* namespace rmpl */

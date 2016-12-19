@@ -20,7 +20,7 @@
 
 #include <include/core/utility/Logging.h>
 
-using namespace rmpl;
+namespace rmpl {
 
 /*!
 *  \brief      Standard constructor of the class RRTOptions
@@ -67,3 +67,5 @@ void RRTOptions::setStepSize(float stepSize) {
 float RRTOptions::getStepSize() const {
     return m_stepSize;
 }
+
+} /* namespace rmpl */
