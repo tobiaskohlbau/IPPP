@@ -21,7 +21,7 @@
 
 #include <Eigen/Core>
 #include <core/utility/Logging.h>
-#include <core/utility/Utilities.h>
+#include <core/utility/Utility.h>
 
 namespace rmpl {
 

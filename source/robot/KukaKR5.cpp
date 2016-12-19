@@ -18,7 +18,7 @@
 
 #include <robot/KukaKR5.h>
 
-#include <include/core/utility/Utilities.h>
+#include <include/core/utility/Utility.h>
 
 using namespace rmpl;
 
@@ -30,7 +30,7 @@ using namespace rmpl;
 */
 KukaKR5::KukaKR5() : SerialRobot("KukaKR5", CollisionType::pqp, 6) {
     m_alpha = Vec<float>(90, 0, 90, 90, 90, 0);
-    m_alpha = Utilities::degToRad(m_alpha);
+    m_alpha = utility::degToRad(m_alpha);
     m_a = Vec<float>(180, 600, 120, 0, 0, 0);
     m_d = Vec<float>(400, 0, 0, 620, 0, 115);
     m_pose = Vec<float>(0, 0, 0, 0, 0, 0);
@@ -81,7 +81,7 @@ Vec<float> KukaKR5::directKinematic(const Vec<float> &angles) {
 *  \date       2016-10-22
 */
 std::vector<Eigen::Matrix4f> KukaKR5::getJointTrafos(const Vec<float> &angles) {
-    Vec<float> rads = Utilities::degToRad(angles);
+    Vec<float> rads = utility::degToRad(angles);
 
     std::vector<Eigen::Matrix4f> trafos;
     for (int i = 0; i < getDim(); ++i)

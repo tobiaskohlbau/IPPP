@@ -1,6 +1,6 @@
 #include <ui/Drawing2D.h>
 
-#include <core/utility/Utilities.h>
+#include <core/utility/Utility.h>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -102,7 +102,7 @@ void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector
     for (auto vec : vecs) {
         for (int i = 0; i < triangles.size(); ++i) {
             triangle = triangles[i];
-            Utilities::poseVecToRandT(vec, R, t);
+            utility::poseVecToRandT(vec, R, t);
             triangle.transform(R,t);
             pt1 = cv::Point2i(triangle.getP(1)[0], triangle.getP(1)[1]);
             pt2 = cv::Point2i(triangle.getP(2)[0], triangle.getP(2)[1]);

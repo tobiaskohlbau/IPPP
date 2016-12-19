@@ -23,7 +23,7 @@
 #include <sstream>
 
 #include <include/core/utility/Logging.h>
-#include <include/core/utility/Utilities.h>
+#include <include/core/utility/Utility.h>
 
 using namespace rmpl;
 
@@ -172,7 +172,7 @@ bool MeshContainer::saveObj(const std::string path, Eigen::Matrix4f T) {
     std::vector<Vec<float>> verts;
     for (auto vertice : m_vertices) {
         vertice.append(1);
-        Eigen::Vector4f temp = Utilities::VecToEigen(vertice);
+        Eigen::Vector4f temp = utility::VecToEigen(vertice);
         temp = T * temp;
         verts.push_back(Vec<float>(temp(0, 0), temp(1, 0), temp(2, 0)));
     }

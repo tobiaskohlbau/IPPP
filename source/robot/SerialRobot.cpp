@@ -19,7 +19,7 @@
 #include <robot/SerialRobot.h>
 
 #include <include/core/utility/Logging.h>
-#include <include/core/utility/Utilities.h>
+#include <include/core/utility/Utility.h>
 
 using namespace rmpl;
 using std::shared_ptr;
@@ -100,7 +100,7 @@ Vec<float> SerialRobot::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafo
 
     Eigen::Matrix4f basisToTcp = m_poseMat * robotToTcp;
 
-    return Utilities::poseMatToVec(basisToTcp);
+    return utility::poseMatToVec(basisToTcp);
 }
 
 /*!

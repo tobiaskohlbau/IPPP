@@ -18,7 +18,7 @@
 
 #include <robot/Jaco.h>
 
-#include <include/core/utility/Utilities.h>
+#include <include/core/utility/Utility.h>
 
 using namespace rmpl;
 
@@ -29,7 +29,7 @@ using namespace rmpl;
 *  \date       2016-06-30
 */
 Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
-    m_alpha = Vec<float>(Utilities::pi() / 2, Utilities::pi(), Utilities::pi() / 2, 0.95993, 0.95993, Utilities::pi());
+    m_alpha = Vec<float>(utility::pi() / 2, utility::pi(), utility::pi() / 2, 0.95993, 0.95993, utility::pi());
     m_a = Vec<float>(0, 410, 0, 0, 0, 0);
     m_d = Vec<float>(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
@@ -84,7 +84,7 @@ Vec<float> Jaco::directKinematic(const Vec<float> &angles) {
 std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Vec<float> &angles) {
     // transform form jaco physical angles to dh angles
     Vec<float> dhAngles = convertRealToDH(angles);
-    Vec<float> rads = Utilities::degToRad(dhAngles);
+    Vec<float> rads = utility::degToRad(dhAngles);
 
     std::vector<Eigen::Matrix4f> trafos;
     // create transformation matrizes

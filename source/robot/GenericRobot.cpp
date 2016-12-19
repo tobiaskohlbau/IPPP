@@ -19,7 +19,7 @@
 #include <robot/GenericRobot.h>
 
 #include <include/core/utility/Logging.h>
-#include <include/core/utility/Utilities.h>
+#include <include/core/utility/Utility.h>
 
 using namespace rmpl;
 
@@ -52,7 +52,7 @@ Vec<float> GenericRobot::directKinematic(const Vec<float> &angles) {
 *  \date       2016-07-24
 */
 std::vector<Eigen::Matrix4f> GenericRobot::getJointTrafos(const Vec<float> &angles) {
-    Vec<float> rads = Utilities::degToRad(angles);
+    Vec<float> rads = utility::degToRad(angles);
 
     std::vector<Eigen::Matrix4f> trafos;
     Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4, 4);
