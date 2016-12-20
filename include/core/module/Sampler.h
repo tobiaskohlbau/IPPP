@@ -16,39 +16,52 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SAMPLING_H_
-#define SAMPLING_H_
+#ifndef SAMPLER_H_
+#define SAMPLER_H_
 
 #include <math.h>
+#include <random>
+#include <stdlib.h>
+#include <time.h>
 
 #include <core/module/ModuleBase.h>
-#include <core/module/Sampler.h>
 #include <core/dataObj/Vec.hpp>
 #include <robot/RobotBase.h>
 
 namespace rmpl {
 
-enum SamplingStrategy { normal, nearObstacles };
+enum SamplingMethod { randomly, uniform, standardDistribution };
 
 /*!
 * \brief   Class Sampling creates sample vecs with the passed method
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
-class Sampling : public ModuleBase {
+class Sampler : public ModuleBase {
   public:
-    Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly,
-             SamplingStrategy strategy = SamplingStrategy::normal);
-
+    Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
     Vec<float> getSample();
+
     bool setMeanOfDistribution(const Vec<float> &mean);
 
   private:
-    SamplingStrategy m_strategy;
+    bool checkBoudaries();
+    Vec<float> sampleStandardDist();
+    Vec<float> sampleUniform();
+    Vec<float> sampleRandom();
+
+    unsigned int m_dim;
+    Vec<float> m_minBoundary;
+    Vec<float> m_maxBoundary;
+    SamplingMethod m_method;
     std::shared_ptr<RobotBase> m_robot;
-    std::shared_ptr<Sampler> m_sampler;
+
+    std::random_device rd;
+    std::mt19937 m_generator;
+    std::vector<std::normal_distribution<float>> m_distNormal;
+    std::vector<std::uniform_real_distribution<float>> m_distUniform;
 };
 
 } /* namespace rmpl */
 
-#endif /* SAMPLING_H_ */
+#endif /* SAMPLER_H_ */

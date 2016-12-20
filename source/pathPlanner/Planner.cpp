@@ -25,9 +25,9 @@ namespace rmpl {
 /*!
 *  \brief      Constructor of the class Planner
 *  \author     Sascha Kaden
-*  \param[in]  dimension
-*  \param[in]  TrajectoryMethod
-*  \param[in]  SamplingMethod
+*  \param[in]  name
+*  \param[in]  robot
+*  \param[in]  planner options
 *  \date       2016-05-27
 */
 Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, const PlannerOptions &options)
@@ -36,7 +36,7 @@ Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, co
 
     m_robot = robot;
     m_graph = shared_ptr<Graph>(new Graph());
-    m_sampler = shared_ptr<Sampling>(new Sampling(m_robot, options.getSamplingMethod()));
+    m_sampler = shared_ptr<Sampling>(new Sampling(m_robot, options.getSamplingMethod(), options.getSamplingStrategy()));
     m_collision = shared_ptr<CollisionDetection>(new CollisionDetection(m_robot));
     m_planner = shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(options.getTrajectoryStepSize(), m_collision));
 }
