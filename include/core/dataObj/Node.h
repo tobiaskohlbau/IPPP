@@ -67,12 +67,12 @@ class Node {
 
     void setParent(std::shared_ptr<Node> &parent);
     std::shared_ptr<Node> getParentNode();
-    Edge getParentEdge();
+    std::shared_ptr<Edge> getParentEdge();
     void clearParent();
     void addChild(std::shared_ptr<Node> &child);
     std::vector<std::shared_ptr<Node>> getChildNodes();
-    std::vector<Edge> getChildEdges();
-    void clearChilds();
+    std::vector<std::shared_ptr<Edge>> getChildEdges();
+    void clearChildes();
 
     Vec<float> getVec() const;
 
@@ -80,8 +80,8 @@ class Node {
     Vec<float> m_vec;
     float m_cost;
 
-    Edge m_parent;
-    std::vector<Edge> m_childs;
+    std::shared_ptr<Edge> m_parent = nullptr;
+    std::vector<std::shared_ptr<Edge>> m_childes;
 };
 
 } /* namespace rmpl */
