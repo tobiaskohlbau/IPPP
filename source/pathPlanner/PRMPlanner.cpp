@@ -213,11 +213,11 @@ bool PRMPlanner::aStar(shared_ptr<Node> sourceNode, shared_ptr<Node> targetNode)
     m_closedList.clear();
     m_openList.clear();
 
-    std::vector<Edge> edges = sourceNode->getChildEdges();
+    std::vector<shared_ptr<Edge>> edges = sourceNode->getChildEdges();
     for (int i = 0; i < edges.size(); ++i) {
-        edges[i].getTarget()->setCost(edges[i].getLength());
-        edges[i].getTarget()->setParent(sourceNode);
-        m_openList.push_back(edges[i].getTarget());
+        edges[i]->getTarget()->setCost(edges[i]->getLength());
+        edges[i]->getTarget()->setParent(sourceNode);
+        m_openList.push_back(edges[i]->getTarget());
     }
     m_closedList.push_back(sourceNode);
 

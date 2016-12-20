@@ -292,7 +292,7 @@ float Node::getDist(const Node &node) {
 *  \date       2016-05-24
 */
 float Node::getDistToParent() {
-    return m_parent.getLength();
+    return m_parent->getLength();
 }
 
 /*!
@@ -335,7 +335,7 @@ float Node::getCost() {
 */
 void Node::setParent(shared_ptr<Node> &parent) {
     if (!parent->empty())
-        m_parent = Edge(std::make_shared<Node>(*this), parent, getDist(parent));
+        m_parent = shared_ptr<Edge>(new Edge(std::make_shared<Node>(*this), parent, getDist(parent)));
 }
 
 /*!
@@ -345,7 +345,7 @@ void Node::setParent(shared_ptr<Node> &parent) {
 *  \date       2016-07-15
 */
 shared_ptr<Node> Node::getParentNode() {
-    return m_parent.getTarget();
+    return m_parent->getTarget();
 }
 
 /*!
@@ -354,7 +354,7 @@ shared_ptr<Node> Node::getParentNode() {
 *  \param[out] Edge
 *  \date       2016-10-22
 */
-Edge Node::getParentEdge() {
+shared_ptr<Edge> Node::getParentEdge() {
     return m_parent;
 }
 
@@ -364,7 +364,7 @@ Edge Node::getParentEdge() {
 *  \date       2016-07-15
 */
 void Node::clearParent() {
-    m_parent = Edge();
+    m_parent = nullptr;
 }
 
 /*!
@@ -375,7 +375,7 @@ void Node::clearParent() {
 */
 void Node::addChild(shared_ptr<Node> &child) {
     if (!child->empty())
-        m_childs.push_back(Edge(std::make_shared<Node>(*this), child, getDist(child)));
+        m_childes.push_back(std::shared_ptr<Edge>(new Edge(std::make_shared<Node>(*this), child, getDist(child))));
 }
 
 /*!
@@ -386,8 +386,8 @@ void Node::addChild(shared_ptr<Node> &child) {
 */
 std::vector<shared_ptr<Node>> Node::getChildNodes() {
     std::vector<shared_ptr<Node>> childNodes;
-    for (auto child : m_childs) {
-        childNodes.push_back(child.getTarget());
+    for (auto child : m_childes) {
+        childNodes.push_back(child->getTarget());
     }
     return childNodes;
 }
@@ -398,8 +398,8 @@ std::vector<shared_ptr<Node>> Node::getChildNodes() {
 *  \param[out] list of child edges
 *  \date       2016-07-15
 */
-std::vector<Edge> Node::getChildEdges() {
-    return m_childs;
+std::vector<std::shared_ptr<Edge>> Node::getChildEdges() {
+    return m_childes;
 }
 
 /*!
@@ -407,8 +407,8 @@ std::vector<Edge> Node::getChildEdges() {
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */
-void Node::clearChilds() {
-    m_childs.clear();
+void Node::clearChildes() {
+    m_childes.clear();
 }
 
 /*!
