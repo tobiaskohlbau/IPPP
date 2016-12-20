@@ -103,7 +103,7 @@ bool RRTPlanner::computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads) {
 */
 void RRTPlanner::computeTreeThread(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vec<float> randVec = m_sampler->getSample(m_robot->getDim());
+        Vec<float> randVec = m_sampler->getSample();
         shared_ptr<Node> newNode;
         computeRRTNode(randVec, newNode);
 

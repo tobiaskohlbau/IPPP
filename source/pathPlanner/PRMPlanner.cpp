@@ -76,7 +76,7 @@ void PRMPlanner::startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThr
 void PRMPlanner::samplingPhase(unsigned int nbOfNodes) {
     unsigned int dim = m_robot->getDim();
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vec<float> sample = m_sampler->getSample(dim);
+        Vec<float> sample = m_sampler->getSample();
         if (!m_collision->controlVec(sample)) {
             m_graph->addNode(shared_ptr<Node>(new Node(sample)));
         }
