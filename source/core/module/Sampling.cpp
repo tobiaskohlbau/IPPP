@@ -18,8 +18,6 @@
 
 #include <core/module/Sampling.h>
 
-#include <include/core/utility/Logging.h>
-
 namespace rmpl {
 
 /*!
@@ -28,19 +26,32 @@ namespace rmpl {
 *  \param[in]  robot
 *  \param[in]  SamplingMethod
 *  \param[in]  SamplingStrategy
-*  \date       2016-05-24
+*  \date       2016-12-20
 */
 Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method, SamplingStrategy strategy)
-        : ModuleBase("Sampler") {
+        : ModuleBase("Sampling") {
     m_strategy = strategy;
     m_robot = robot;
     m_sampler = std::shared_ptr<Sampler>(new Sampler(robot, method));
 }
 
+/*!
+*  \brief      Return sample
+*  \author     Sascha Kaden
+*  \param[out] sample Vec
+*  \date       2016-12-20
+*/
 Vec<float> Sampling::getSample() {
     return m_sampler->getSample();
 }
 
+/*!
+*  \brief      Set the mean of the standard distribution of the Sampler
+*  \author     Sascha Kaden
+*  \param[in]  mean of distribution
+*  \param[out] binary result
+*  \date       2016-12-20
+*/
 bool Sampling::setMeanOfDistribution(const Vec<float> &mean) {
     return m_sampler->setMeanOfDistribution(mean);
 }

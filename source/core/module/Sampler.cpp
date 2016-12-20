@@ -53,7 +53,6 @@ Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
 /*!
 *  \brief      Return sample
 *  \author     Sascha Kaden
-*  \param[in]  dimension
 *  \param[out] sample Vec
 *  \date       2016-05-24
 */

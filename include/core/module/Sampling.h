@@ -31,9 +31,9 @@ namespace rmpl {
 enum SamplingStrategy { normal, nearObstacles };
 
 /*!
-* \brief   Class Sampling creates sample vecs with the passed method
+* \brief   Class Sampling creates sample vecs with the passed strategy, for the methods will be used Sampler
 * \author  Sascha Kaden
-* \date    2016-05-23
+* \date    2016-12-20
 */
 class Sampling : public ModuleBase {
   public:
