@@ -38,8 +38,8 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     BOOST_CHECK(path.size() == 0);
 
     goal = Vec<float>(1, 1, 1, 1, 1, 1);
-    path = planner.calcTrajectoryBin(init, goal);
-    float dist = 0;
+    path = planner.calcTrajectoryCont(init, goal);
+    float dist = 1 / goal.norm() * 0.1;
     for (float i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
             BOOST_CHECK(path[i][j] <= dist + 0.0001);
@@ -49,8 +49,8 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     }
 
     goal = Vec<float>(-1, -1, -1, -1, -1, -1);
-    path = planner.calcTrajectoryBin(init, goal);
-    dist = 0;
+    path = planner.calcTrajectoryCont(init, goal);
+    dist = -1 / goal.norm() * 0.1;
     for (float i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
             BOOST_CHECK(path[i][j] <= dist + 0.0001);
