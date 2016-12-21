@@ -345,7 +345,10 @@ void Node::setParent(shared_ptr<Node> &parent) {
 *  \date       2016-07-15
 */
 shared_ptr<Node> Node::getParentNode() {
-    return m_parent->getTarget();
+    if (!m_parent)
+        return nullptr;
+    else
+        return m_parent->getTarget();
 }
 
 /*!
