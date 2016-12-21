@@ -69,7 +69,7 @@ Vec<float> Sampling::sampleNearObstacle() {
         do {
             sample2 = m_sampler->getSample();
         } while (m_collision->controlVec(sample2));
-        std::vector<Vec<float>> path = m_planner->computeTrajectory(sample2, sample1);
+        std::vector<Vec<float>> path = m_planner->calcTrajectoryBin(sample2, sample1);
         sample1 = path[0];
         for (auto point : path) {
             if (!m_collision->controlVec(point))

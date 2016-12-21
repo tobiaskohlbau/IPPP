@@ -108,7 +108,7 @@ bool CollisionDetection::controlTrajectory(std::vector<Vec<float>> &vecs) {
 *  \date       2016-06-30
 */
 bool CollisionDetection::checkPoint2D(float x, float y) {
-    if (m_minBoundary[0] > x || x > m_maxBoundary[0] || m_minBoundary[1] > y || y > m_maxBoundary[1]) {
+    if (m_minBoundary[0] >= x || x >= m_maxBoundary[0] || m_minBoundary[1] >= y || y >= m_maxBoundary[1]) {
         Logging::debug("Point out of workspace", this);
         return true;
     }

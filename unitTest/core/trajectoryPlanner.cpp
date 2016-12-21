@@ -34,11 +34,11 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     Vec<float> init(0, 0, 0, 0, 0, 0);
     Vec<float> goal(0, 0, 0, 0, 0, 0);
     std::vector<Vec<float>> path;
-    path = planner.computeTrajectory(init, goal);
+    path = planner.calcTrajectoryCont(init, goal);
     BOOST_CHECK(path.size() == 0);
 
     goal = Vec<float>(1, 1, 1, 1, 1, 1);
-    path = planner.computeTrajectory(init, goal, 0.1);
+    path = planner.calcTrajectoryBin(init, goal);
     float dist = 0;
     for (float i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     }
 
     goal = Vec<float>(-1, -1, -1, -1, -1, -1);
-    path = planner.computeTrajectory(init, goal, 0.1);
+    path = planner.calcTrajectoryBin(init, goal);
     dist = 0;
     for (float i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
