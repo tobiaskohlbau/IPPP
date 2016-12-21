@@ -49,7 +49,7 @@ CollisionDetection::CollisionDetection(const shared_ptr<RobotBase> &robot) : Mod
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  vec
-*  \param[out] binary result of collision
+*  \param[out] binary result of collision (true if in collision)
 *  \date       2016-05-25
 */
 bool CollisionDetection::controlVec(const Vec<float> &vec) {
@@ -74,7 +74,7 @@ bool CollisionDetection::controlCollisionMesh(const Vec<float> &vec) {
 *  \brief      Check collision of a trajectory of points
 *  \author     Sascha Kaden
 *  \param[in]  vector of points
-*  \param[out] binary result of collision
+*  \param[out] binary result of collision (true if in collision)
 *  \date       2016-05-25
 */
 bool CollisionDetection::controlTrajectory(std::vector<Vec<float>> &vecs) {
@@ -104,7 +104,7 @@ bool CollisionDetection::controlTrajectory(std::vector<Vec<float>> &vecs) {
 *  \author     Sascha Kaden
 *  \param[in]  x
 *  \param[in]  y
-*  \param[out] binary result of collision
+*  \param[out] binary result of collision (true if in collision)
 *  \date       2016-06-30
 */
 bool CollisionDetection::checkPoint2D(float x, float y) {

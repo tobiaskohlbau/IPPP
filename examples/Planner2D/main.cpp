@@ -73,22 +73,19 @@ void testPointRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     robot->set2DWorkspace(mat);
 
 
-    PRMOptions prmOptions(50, 0.5, SamplingMethod::randomly);
-    RRTOptions rrtOptions(50, 0.5, SamplingMethod::randomly);
+    PRMOptions prmOptions(40, 0.5, SamplingMethod::randomly, SamplingStrategy::nearObstacles);
+    RRTOptions rrtOptions(50, 0.5, SamplingMethod::randomly, SamplingStrategy::nearObstacles);
 
     std::shared_ptr<rmpl::Planner> planner;
-    planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(robot, prmOptions));
-    //planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(robot, rrtOptions));
+    //planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(robot, prmOptions));
+    planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(robot, rrtOptions));
     //planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(robot, rrtOptions));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
     Vec<float> start(50.0, 30.0);
     Vec<float> goal(870.0, 870.0);
-    // planner.setInitNode(start);
-    // planner.computeTree(4000, 2);
-    // bool connected = planner.connectGoalNode(goal);
-    bool connected = planner->computePath(start, goal, 4000, 2);
+    bool connected = planner->computePath(start, goal, 5200, 1);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node>> nodes = planner->getGraphNodes();
@@ -96,6 +93,7 @@ void testPointRobot(Vec<float> min, Vec<float> max, Eigen::MatrixXi mat) {
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
+    Drawing2D::drawGraph2D(nodes, image, Vec<uint8_t>(125,125,125), Vec<uint8_t>(125,125,125), 2);
     Drawing2D::drawTree2D(nodes, image, Vec<uint8_t>(0, 0, 255), Vec<uint8_t>(0, 0, 0), 1);
 
     if (connected) {
@@ -120,5 +118,5 @@ int main(int argc, char** argv) {
 
     //testTriangleRobot(minBoundary, maxBoundary, mat);
 
-     testPointRobot(minBoundary, maxBoundary, mat);
+    testPointRobot(minBoundary, maxBoundary, mat);
 }
