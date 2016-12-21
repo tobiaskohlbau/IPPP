@@ -34,6 +34,10 @@ constexpr float pi() {
     return std::atan(1) * 4;
 }
 
+constexpr float twoPi() {
+    return std::atan(1) * 8;
+}
+
 constexpr float toRad() {
     return (std::atan(1) * 4) / 180;
 }
