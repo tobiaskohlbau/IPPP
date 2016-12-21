@@ -36,14 +36,15 @@ class TrajectoryPlanner : public ModuleBase {
     bool controlTrajectory(const Node &source, const Node &target);
     bool controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target);
     bool controlTrajectory(const Vec<float> &source, const Vec<float> &target);
-    std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target);
-    std::vector<Vec<float>> computeTrajectory(const Vec<float> &source, const Vec<float> &target, float stepSize);
+    std::vector<Vec<float>> calcTrajectoryCont(const Vec<float> &source, const Vec<float> &target);
+    std::vector<Vec<float>> calcTrajectoryBin(const Vec<float> &source, const Vec<float> &target);
 
     void setStepSize(float stepSize);
-    float getStepSize();
+    float getStepSize() const;
 
   private:
     float m_stepSize;
+    float m_sqStepSize;
     std::shared_ptr<CollisionDetection> m_collision;
 };
 

@@ -30,15 +30,15 @@ namespace rmpl {
 *  \param[in]  planner options
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, const PlannerOptions &options)
-    : ModuleBase(name) {
+Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, const PlannerOptions &options) : ModuleBase(name) {
     m_pathPlanned = false;
 
     m_robot = robot;
     m_graph = shared_ptr<Graph>(new Graph());
     m_collision = shared_ptr<CollisionDetection>(new CollisionDetection(m_robot));
     m_planner = shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(options.getTrajectoryStepSize(), m_collision));
-    m_sampler = shared_ptr<Sampling>(new Sampling(m_robot, m_collision, m_planner, options.getSamplingMethod(), options.getSamplingStrategy()));
+    m_sampler = shared_ptr<Sampling>(
+        new Sampling(m_robot, m_collision, m_planner, options.getSamplingMethod(), options.getSamplingStrategy()));
 }
 
 /*!
@@ -73,9 +73,32 @@ std::vector<Vec<float>> Planner::getPathFromNodes(const std::vector<shared_ptr<N
     std::vector<Vec<float>> path;
     for (int i = 0; i < smoothedNodes.size() - 1; ++i) {
         std::vector<Vec<float>> tempVecs =
-            m_planner->computeTrajectory(smoothedNodes[i]->getVec(), smoothedNodes[i + 1]->getVec(), trajectoryStepSize);
+            m_planner->calcTrajectoryCont(smoothedNodes[i]->getVec(), smoothedNodes[i + 1]->getVec());
         for (auto vec : tempVecs)
             path.push_back(vec);
+    }
+
+    if (trajectoryStepSize < m_planner->getStepSize()) {
+        Logging::info("Passed trajectory step size is smaller than the step of the planner! Path has step size of the planner",
+                      this);
+    } else if (trajectoryStepSize > m_planner->getStepSize()) {
+        unsigned int steps = trajectoryStepSize / m_planner->getStepSize();
+        std::vector<Vec<float>> newPath;
+        newPath.push_back(path[0]);
+        unsigned int j = 0;
+        for (auto point : path) {
+            if (j == steps) {
+                newPath.push_back(point);
+                j = 0;
+            } else {
+                ++j;
+            }
+        }
+
+        if (newPath.back() != path.back())
+            newPath.push_back(path.back());
+
+        path = newPath;
     }
     return path;
 }
