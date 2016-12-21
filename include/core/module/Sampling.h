@@ -21,9 +21,11 @@
 
 #include <math.h>
 
+#include <core/dataObj/Vec.hpp>
+#include <core/module/CollisionDetection.h>
 #include <core/module/ModuleBase.h>
 #include <core/module/Sampler.h>
-#include <core/dataObj/Vec.hpp>
+#include <core/module/TrajectoryPlanner.h>
 #include <robot/RobotBase.h>
 
 namespace rmpl {
@@ -37,16 +39,22 @@ enum SamplingStrategy { normal, nearObstacles };
 */
 class Sampling : public ModuleBase {
   public:
-    Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly,
+    Sampling(const std::shared_ptr<RobotBase> &robot, const std::shared_ptr<CollisionDetection> &collision,
+             const std::shared_ptr<TrajectoryPlanner> &planner, SamplingMethod method = SamplingMethod::randomly,
              SamplingStrategy strategy = SamplingStrategy::normal);
 
     Vec<float> getSample();
     bool setMeanOfDistribution(const Vec<float> &mean);
 
   private:
+    Vec<float> sampleNearObstacle();
+
     SamplingStrategy m_strategy;
+
+    std::shared_ptr<CollisionDetection> m_collision;
     std::shared_ptr<RobotBase> m_robot;
     std::shared_ptr<Sampler> m_sampler;
+    std::shared_ptr<TrajectoryPlanner> m_planner;
 };
 
 } /* namespace rmpl */

@@ -28,10 +28,14 @@ namespace rmpl {
 *  \param[in]  SamplingStrategy
 *  \date       2016-12-20
 */
-Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod method, SamplingStrategy strategy)
-        : ModuleBase("Sampling") {
+Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, const std::shared_ptr<CollisionDetection> &collision,
+                   const std::shared_ptr<TrajectoryPlanner> &planner, SamplingMethod method, SamplingStrategy strategy)
+    : ModuleBase("Sampling") {
     m_strategy = strategy;
+
+    m_collision = collision;
     m_robot = robot;
+    m_planner = planner;
     m_sampler = std::shared_ptr<Sampler>(new Sampler(robot, method));
 }
 
@@ -42,7 +46,38 @@ Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, SamplingMethod metho
 *  \date       2016-12-20
 */
 Vec<float> Sampling::getSample() {
-    return m_sampler->getSample();
+    if (m_strategy == SamplingStrategy::nearObstacles)
+        return sampleNearObstacle();
+    else
+        return m_sampler->getSample();
+}
+
+/*!
+*  \brief      Sample in the neighboorhood of obstacles
+*  \details    If Sample is in collision, second random collision free sample will be computed and by binary search the
+*              nearest collision free sample to the first sample, will be taken.
+*  \author     Sascha Kaden
+*  \param[out] sample Vec
+*  \date       2016-12-20
+*/
+Vec<float> Sampling::sampleNearObstacle() {
+    Vec<float> sample1 = m_sampler->getSample();
+    if (!m_collision->controlVec(sample1)) {
+        return sample1;
+    } else {
+        Vec<float> sample2;
+        do {
+            sample2 = m_sampler->getSample();
+        } while (m_collision->controlVec(sample2));
+        std::vector<Vec<float>> path = m_planner->computeTrajectory(sample2, sample1);
+        sample1 = path[0];
+        for (auto point : path) {
+            if (!m_collision->controlVec(point))
+                sample1 = point;
+            else
+                break;
+        }
+    }
 }
 
 /*!
