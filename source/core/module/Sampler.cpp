@@ -18,7 +18,8 @@
 
 #include <core/module/Sampler.h>
 
-#include <include/core/utility/Logging.h>
+#include <core/utility/Logging.h>
+#include <core/utility/Utility.h>
 
 namespace rmpl {
 
@@ -48,6 +49,7 @@ Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
         std::uniform_real_distribution<float> dist2(m_minBoundary[i], m_maxBoundary[i]);
         m_distUniform.push_back(dist2);
     }
+    m_distAngle = std::uniform_real_distribution<float>(0, utility::twoPi());
 }
 
 /*!
@@ -68,6 +70,16 @@ Vec<float> Sampler::getSample() {
         default:
             return sampleRandom();
     }
+}
+
+/*!
+*  \brief      Return random angle in rad
+*  \author     Sascha Kaden
+*  \param[out] rad angle
+*  \date       2016-12-20
+*/
+float Sampler::getRandomAngle() {
+    return m_distAngle(m_generator);
 }
 
 /*!

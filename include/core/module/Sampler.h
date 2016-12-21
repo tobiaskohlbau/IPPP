@@ -41,6 +41,7 @@ class Sampler : public ModuleBase {
   public:
     Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
     Vec<float> getSample();
+    float getRandomAngle();
 
     bool setMeanOfDistribution(const Vec<float> &mean);
 
@@ -60,6 +61,7 @@ class Sampler : public ModuleBase {
     std::mt19937 m_generator;
     std::vector<std::normal_distribution<float>> m_distNormal;
     std::vector<std::uniform_real_distribution<float>> m_distUniform;
+    std::uniform_real_distribution<float> m_distAngle;
 };
 
 } /* namespace rmpl */
