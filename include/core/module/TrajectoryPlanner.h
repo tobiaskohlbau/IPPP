@@ -25,7 +25,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Class TrajectoryPlanner plans between the passed nodes/vecs
+* \brief   Class TrajectoryPlanner plans between the passed nodes/vecs. Start and end point aren't part of the path.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */

@@ -100,8 +100,8 @@ std::vector<Vec<float>> TrajectoryPlanner::calcTrajectoryBin(const Vec<float> &s
     Vec<float> u(target - source);
     vecs.push_back(source);
     unsigned int divider = 2;
-    for (Vec<float> uTemp = u/divider; uTemp.sqNorm() > m_sqStepSize; divider *= 2, uTemp = u/divider)
-        for (int i = 1; i < divider; i+=2)
+    for (Vec<float> uTemp = u / divider; uTemp.sqNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider)
+        for (int i = 1; i < divider; i += 2)
             vecs.push_back(source + (uTemp * i));
     vecs.push_back(target);
 
@@ -123,18 +123,15 @@ std::vector<Vec<float>> TrajectoryPlanner::calcTrajectoryCont(const Vec<float> &
         return vecs;
     }
 
-    Vec<float> u(target - source); // u = a - b
-    u /= u.norm(); // u = |u|
-    Vec<float> temp(source);
-    while ((temp - target).sqNorm() > 1) {
-        temp += u * m_stepSize;
+    Vec<float> u(target - source);    // u = a - b
+    u /= u.norm();                    // u = |u|
+    for (Vec<float> temp = source + u * m_stepSize; (temp - target).sqNorm() > 1; temp += u * m_stepSize)
         vecs.push_back(temp);
-    }
     return vecs;
 }
 
 /*!
-*  \brief      Set step size, if it is larger than zero
+*  \brief      Set step size, if value is larger than zero
 *  \author     Sascha Kaden
 *  \param[in]  step size
 *  \date       2016-07-14
@@ -142,12 +139,11 @@ std::vector<Vec<float>> TrajectoryPlanner::calcTrajectoryCont(const Vec<float> &
 void TrajectoryPlanner::setStepSize(float stepSize) {
     if (stepSize <= 0) {
         m_stepSize = 1;
-        m_sqStepSize = 1;
         Logging::warning("Step size has to be larger than 0, it has set to 1!", this);
     } else {
         m_stepSize = stepSize;
-        m_sqStepSize = stepSize * stepSize;
     }
+    m_sqStepSize = stepSize * stepSize;
 }
 
 /*!
