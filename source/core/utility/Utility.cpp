@@ -229,7 +229,7 @@ Eigen::VectorXf append(Eigen::VectorXf source, Eigen::VectorXf add) {
     vec.resize(source.rows() + add.rows(), 1);
     for (int i = 0; i < source.rows(); ++i)
         vec[i] = source[i];
-    for (int i = source.rows() - 1; i < add.rows() + source.rows(); ++i)
+    for (int i = 0; i < add.rows(); ++i)
         vec[source.rows() + i] = add[i];
     return vec;
 }
