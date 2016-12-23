@@ -23,6 +23,14 @@ using std::shared_ptr;
 namespace rmpl {
 
 /*!
+*  \brief      Standard deconstructor of the Planner
+*  \author     Sasch Kaden
+*  \date       2016-12-23
+*/
+Planner::~Planner() {
+}
+
+/*!
 *  \brief      Constructor of the class Planner
 *  \author     Sascha Kaden
 *  \param[in]  name
@@ -30,7 +38,8 @@ namespace rmpl {
 *  \param[in]  planner options
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, const PlannerOptions &options) : ModuleBase(name) {
+Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, const PlannerOptions &options)
+    : ModuleBase(name), m_options(options) {
     m_pathPlanned = false;
 
     m_robot = robot;

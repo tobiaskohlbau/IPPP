@@ -34,7 +34,7 @@ namespace rmpl {
 enum SamplingStrategy { normal, nearObstacles };
 
 /*!
-* \brief   Class Sampling creates sample vecs with the passed strategy, for the methods will be used Sampler
+* \brief   Class Sampling creates sample vecs with the passed strategy, for the methods Sampler will be used
 * \author  Sascha Kaden
 * \date    2016-12-20
 */
@@ -53,7 +53,6 @@ class Sampling : public ModuleBase {
     SamplingStrategy m_strategy;
 
     std::shared_ptr<CollisionDetection> m_collision;
-    std::shared_ptr<RobotBase> m_robot;
     std::shared_ptr<Sampler> m_sampler;
     std::shared_ptr<TrajectoryPlanner> m_planner;
 };

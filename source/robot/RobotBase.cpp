@@ -27,7 +27,7 @@ namespace rmpl {
 /*!
 *  \brief      Standard deconstructor of the RobotBase
 *  \author     Sasch Kaden
-*  \date       2016-05-30
+*  \date       2016-12-23
 */
 RobotBase::~RobotBase() {
 }

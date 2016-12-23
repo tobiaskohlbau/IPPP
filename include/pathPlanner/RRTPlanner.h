@@ -44,7 +44,6 @@ class RRTPlanner : public Planner {
     std::shared_ptr<Node> getGoalNode();
 
   protected:
-    bool controlConstraints();
     void computeTreeThread(unsigned int nbOfNodes);
     virtual void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node> &newNode) = 0;
     Eigen::VectorXf computeNodeNew(const Eigen::VectorXf &randNode, const Eigen::VectorXf &nearestNode);
