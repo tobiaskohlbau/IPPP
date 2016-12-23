@@ -26,7 +26,6 @@
 #include <PQP.h>
 
 #include <core/module/ModuleBase.h>
-#include <core/dataObj/Vec.hpp>
 #include <robot/MeshContainer.h>
 
 namespace rmpl {
@@ -44,11 +43,11 @@ class RobotBase : public ModuleBase {
   public:
     RobotBase(std::string name, CollisionType collisionType, RobotType robotType, unsigned int dim);
 
-    Vec<float> getMinBoundary();
-    Vec<float> getMaxBoundary();
+    Eigen::VectorXf getMinBoundary();
+    Eigen::VectorXf getMaxBoundary();
 
-    void setPose(const Vec<float> &pose);
-    Vec<float> getPose();
+    void setPose(const Eigen::Matrix<float, 6, 1> &pose);
+    Eigen::Matrix<float, 6, 1> getPose();
     Eigen::Matrix4f getPoseMat();
 
     void setBaseMesh(const std::shared_ptr<MeshContainer> &baseMesh);
@@ -70,9 +69,9 @@ class RobotBase : public ModuleBase {
     RobotType m_robotType;
     unsigned int m_dim;
 
-    Vec<float> m_minBoundary;
-    Vec<float> m_maxBoundary;
-    Vec<float> m_pose;
+    Eigen::VectorXf m_minBoundary;
+    Eigen::VectorXf m_maxBoundary;
+    Eigen::Matrix<float, 6, 1> m_pose;
     Eigen::Matrix4f m_poseMat;
 
     std::shared_ptr<MeshContainer> m_baseMesh;

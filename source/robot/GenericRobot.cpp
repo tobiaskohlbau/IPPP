@@ -28,17 +28,16 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-07-24
 */
-GenericRobot::GenericRobot(std::string name, unsigned int dimension, const Vec<float> &alphaParams,
-                           const Vec<float> &aParams, const Vec<float> dParams)
+GenericRobot::GenericRobot(std::string name, unsigned int dimension, const Eigen::VectorXf &alphaParams,
+                           const Eigen::VectorXf &aParams, const Eigen::VectorXf dParams)
     : SerialRobot(name, CollisionType::pqp, dimension) {
     // check consistency of parameters
-    if (alphaParams.getDim() != dimension || aParams.getDim() != dimension || dParams.getDim() != dimension) {
+    if (alphaParams.rows() != dimension || aParams.rows() != dimension || dParams.rows() != dimension) {
         Logging::error("DH parameter have wrong dimensions, unequal to joint count!", this);
     }
-
 }
 
-Vec<float> GenericRobot::directKinematic(const Vec<float> &angles) {
+Eigen::Matrix<float, 6, 1> GenericRobot::directKinematic(const Eigen::VectorXf &angles) {
     std::vector<Eigen::Matrix4f> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos);
@@ -51,8 +50,8 @@ Vec<float> GenericRobot::directKinematic(const Vec<float> &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-24
 */
-std::vector<Eigen::Matrix4f> GenericRobot::getJointTrafos(const Vec<float> &angles) {
-    Vec<float> rads = utility::degToRad(angles);
+std::vector<Eigen::Matrix4f> GenericRobot::getJointTrafos(const Eigen::VectorXf &angles) {
+    Eigen::VectorXf rads = utility::degToRad(angles);
 
     std::vector<Eigen::Matrix4f> trafos;
     Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4, 4);

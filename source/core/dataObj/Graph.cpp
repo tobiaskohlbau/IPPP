@@ -39,7 +39,7 @@ Graph::Graph() : ModuleBase("Graph") {
 * \date       2016-05-25
 */
 void Graph::addNode(const shared_ptr<Node> &node) {
-    m_kdTree->addNode(node->getVec(), node);
+    m_kdTree->addNode(node->getValues(), node);
     m_mutex.lock();
     m_nodes.push_back(node);
     if (m_nodes.size() % 4000 == 0) {
@@ -79,7 +79,7 @@ std::vector<shared_ptr<Node>> Graph::getNodes() {
 * \date       2016-05-25
 */
 shared_ptr<Node> Graph::getNearestNode(const Node &node) {
-    return m_kdTree->searchNearestNeighbor(node.getVec());
+    return m_kdTree->searchNearestNeighbor(node.getValues());
 }
 
 /*!
@@ -90,7 +90,7 @@ shared_ptr<Node> Graph::getNearestNode(const Node &node) {
 * \date       2016-05-25
 */
 shared_ptr<Node> Graph::getNearestNode(const shared_ptr<Node> &node) {
-    return m_kdTree->searchNearestNeighbor(node->getVec());
+    return m_kdTree->searchNearestNeighbor(node->getValues());
 }
 
 /*!
@@ -102,7 +102,7 @@ shared_ptr<Node> Graph::getNearestNode(const shared_ptr<Node> &node) {
 * \date       2016-05-25
 */
 std::vector<shared_ptr<Node>> Graph::getNearNodes(const Node &node, float range) {
-    return m_kdTree->searchRange(node.getVec(), range);
+    return m_kdTree->searchRange(node.getValues(), range);
 }
 
 /*!
@@ -114,7 +114,7 @@ std::vector<shared_ptr<Node>> Graph::getNearNodes(const Node &node, float range)
 * \date       2016-05-25
 */
 std::vector<shared_ptr<Node>> Graph::getNearNodes(const shared_ptr<Node> node, float range) {
-    return m_kdTree->searchRange(node->getVec(), range);
+    return m_kdTree->searchRange(node->getValues(), range);
 }
 
 /*!

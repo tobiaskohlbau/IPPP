@@ -31,11 +31,11 @@ namespace rmpl {
 class Jaco : public SerialRobot {
   public:
     Jaco();
-    Vec<float> directKinematic(const Vec<float> &angles);
-    std::vector<Eigen::Matrix4f> getJointTrafos(const Vec<float> &angles);
+    Eigen::Matrix<float, 6, 1> directKinematic(const Eigen::VectorXf &angles);
+    std::vector<Eigen::Matrix4f> getJointTrafos(const Eigen::VectorXf &angles);
 
   private:
-    Vec<float> convertRealToDH(const Vec<float> &realAngles);
+    Eigen::Matrix<float, 6, 1> convertRealToDH(const Eigen::Matrix<float, 6, 1> &realAngles);
 };
 
 } /* namespace rmpl */

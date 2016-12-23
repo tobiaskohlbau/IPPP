@@ -30,17 +30,17 @@ namespace rmpl {
 *  \param[in,out] new Node
 *  \date          2016-06-02
 */
-void StarRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
+void StarRRTPlanner::computeRRTNode(const Eigen::VectorXf &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
     shared_ptr<Node> nearestNode = m_graph->getNearestNode(Node(randVec));
     // set node new fix fixed step size of 10
-    Vec<float> newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getVec());
+    Eigen::VectorXf newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getValues());
     newNode = shared_ptr<Node>(new Node(newVec));
 
     std::vector<shared_ptr<Node>> nearNodes;
     chooseParent(newNode, nearestNode, nearNodes);
 
-    if (m_collision->controlVec(newNode->getVec())) {
+    if (m_collision->controlVec(newNode->getValues())) {
         newNode = nullptr;
         return;
     } else if (!m_planner->controlTrajectory(newNode, nearestNode)) {
@@ -115,7 +115,7 @@ void StarRRTPlanner::reWire(shared_ptr<Node> &newNode, shared_ptr<Node> &parentN
 *  \param[out] true, if the connection was possible
 *  \date       2016-05-27
 */
-bool StarRRTPlanner::connectGoalNode(Vec<float> goal) {
+bool StarRRTPlanner::connectGoalNode(Eigen::VectorXf goal) {
     if (m_collision->controlVec(goal))
         return false;
 

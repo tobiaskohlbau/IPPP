@@ -38,7 +38,7 @@ RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType ro
     m_robotType = robotType;
     m_dim = dim;
 
-    m_pose = Vec<float>(0, 0, 0, 0, 0, 0);
+    m_pose = Vecf(0, 0, 0, 0, 0, 0);
     m_poseMat = utility::poseVecToMat(m_pose);
     m_baseMesh = nullptr;
     m_workspaceMesh = nullptr;
@@ -50,7 +50,7 @@ RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType ro
 *  \param[out] minimum Boudaries
 *  \date       2016-07-15
 */
-Vec<float> RobotBase::getMinBoundary() {
+Eigen::VectorXf RobotBase::getMinBoundary() {
     return m_minBoundary;
 }
 
@@ -60,7 +60,7 @@ Vec<float> RobotBase::getMinBoundary() {
 *  \param[out] maximum Boudaries
 *  \date       2016-07-15
 */
-Vec<float> RobotBase::getMaxBoundary() {
+Eigen::VectorXf RobotBase::getMaxBoundary() {
     return m_maxBoundary;
 }
 
@@ -70,11 +70,11 @@ Vec<float> RobotBase::getMaxBoundary() {
 *  \param[in]  pose Vec
 *  \date       2016-07-24
 */
-void RobotBase::setPose(const Vec<float> &pose) {
-    if (pose.getDim() != 6) {
+void RobotBase::setPose(const Eigen::Matrix<float, 6, 1> &pose) {
+    if (pose.rows() != 6) {
         Logging::warning("Pose vector has wrong dimension, must have 6!", this);
         return;
-    } else if (pose.empty()) {
+    } else if (empty(pose)) {
         Logging::warning("Empty pose vector!", this);
         return;
     }
@@ -89,7 +89,7 @@ void RobotBase::setPose(const Vec<float> &pose) {
 *  \param[out] pose Vec
 *  \date       2016-07-24
 */
-Vec<float> RobotBase::getPose() {
+Eigen::Matrix<float, 6, 1> RobotBase::getPose() {
     return m_pose;
 }
 

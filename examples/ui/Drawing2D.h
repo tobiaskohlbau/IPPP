@@ -6,9 +6,9 @@
 
 #include <Eigen/Core>
 
-#include <core/module/ModuleBase.h>
 #include <core/dataObj/Node.h>
 #include <core/dataObj/PointList.hpp>
+#include <core/module/ModuleBase.h>
 
 /*!
 * \brief   Provides methods of drawing form 2D paths with OpenCV
@@ -19,13 +19,13 @@
 class Drawing2D : public rmpl::ModuleBase {
   public:
     static void drawTree2D(const std::vector<std::shared_ptr<rmpl::Node>> &nodes, cv::Mat &image,
-                           const rmpl::Vec<uint8_t> &colorNode, const rmpl::Vec<uint8_t> &colorEdge, int thickness);
+                           Eigen::Vector3i colorNode, Eigen::Vector3i colorEdge, int thickness);
     static void drawGraph2D(const std::vector<std::shared_ptr<rmpl::Node>> &nodes, cv::Mat &image,
-                            const rmpl::Vec<uint8_t> &colorNode, const rmpl::Vec<uint8_t> &colorEdge, int thickness);
-    static void drawPath2D(const std::vector<rmpl::Vec<float>> vecs, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge,
+                            Eigen::Vector3i colorNode, Eigen::Vector3i colorEdge, int thickness);
+    static void drawPath2D(const std::vector<Eigen::VectorXf> vecs, cv::Mat &image, Eigen::Vector3i colorEdge,
                            int thickness);
-    static void drawTrianglePath(const std::vector<rmpl::Vec<float>> vecs, std::vector<rmpl::Triangle2D> triangles, cv::Mat &image, const rmpl::Vec<uint8_t> &colorEdge,
-                                 int thickness);
+    static void drawTrianglePath(std::vector<Eigen::VectorXf> vecs, std::vector<rmpl::Triangle2D> triangles, cv::Mat &image,
+                                 Eigen::Vector3i colorEdge, int thickness);
 
     static Eigen::MatrixXi cvToEigen(cv::Mat image);
 };

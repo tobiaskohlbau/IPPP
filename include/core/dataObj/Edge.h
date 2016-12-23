@@ -33,9 +33,9 @@ class Node;
 class Edge {
   public:
     Edge();
-    Edge(std::shared_ptr<Node> source, std::shared_ptr<Node> &target, float length);
+    Edge(std::shared_ptr<Node> source, std::shared_ptr<Node> &target, float cost);
 
-    float getLength();
+    float getCost();
 
     void setSource(std::shared_ptr<Node> &source);
     std::shared_ptr<Node> getSource();
@@ -45,7 +45,7 @@ class Edge {
   private:
     std::shared_ptr<Node> m_source = nullptr;
     std::shared_ptr<Node> m_target = nullptr;
-    float m_length = -1;
+    float m_cost = -1;
 };
 
 } /* namespace rmpl */

@@ -21,8 +21,9 @@
 
 #include <vector>
 
+#include <Eigen/Core>
+
 #include <core/module/ModuleBase.h>
-#include <core/dataObj/Vec.hpp>
 
 /*!
 * \brief   Provides methods for writing Vec lists to passed files
@@ -31,9 +32,9 @@
 */
 class Writer : public rmpl::ModuleBase {
   public:
-    static void writeVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale = 1);
-    static void appendVecsToFile(const std::vector<rmpl::Vec<float>> &vecs, const std::string &filename, float scale = 1);
-    static void writeTrafosToFile(const std::vector<std::vector<rmpl::Vec<float>>> &vecs, const std::string &filenames);
+    static void writeVecsToFile(const std::vector<Eigen::VectorXf> &vecs, const std::string &filename, float scale = 1);
+    static void appendVecsToFile(const std::vector<Eigen::VectorXf> &vecs, const std::string &filename, float scale = 1);
+    static void writeTrafosToFile(const std::vector<std::vector<Eigen::VectorXf>> &vecs, const std::string &filenames);
 };
 
 #endif    // WRITER_H

@@ -27,7 +27,7 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-TriangleRobot2D::TriangleRobot2D(std::vector<Triangle2D> triangles, Vec<float> minBoundary, Vec<float> maxBoundary)
+TriangleRobot2D::TriangleRobot2D(std::vector<Triangle2D> triangles, Eigen::Vector3f minBoundary, Eigen::Vector3f maxBoundary)
     : MobileRobot("TriangleRobot2D", CollisionType::triangle2D, 3, minBoundary, maxBoundary) {
     setTriangles(triangles);
 }
@@ -65,5 +65,3 @@ std::vector<Triangle2D> TriangleRobot2D::getTriangles() {
 }
 
 } /* namespace rmpl */
-
-

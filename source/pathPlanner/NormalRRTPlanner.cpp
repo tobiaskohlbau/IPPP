@@ -30,18 +30,18 @@ namespace rmpl {
 *  \param[in,out] new Node
 *  \date          2016-06-02
 */
-void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node> &newNode) {
+void NormalRRTPlanner::computeRRTNode(const Eigen::VectorXf &randVec, shared_ptr<Node> &newNode) {
     // get nearest neighbor
     shared_ptr<Node> nearestNode = m_graph->getNearestNode(Node(randVec));
 
     // compute node new with fixed step size
-    Vec<float> newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getVec());
+    Eigen::VectorXf newVec = RRTPlanner::computeNodeNew(randVec, nearestNode->getValues());
     newNode = shared_ptr<Node>(new Node(newVec));
 
-    if (m_collision->controlVec(newNode->getVec())) {
+    if (m_collision->controlVec(newNode->getValues())) {
         newNode = nullptr;
         return;
-    } else if (!m_planner->controlTrajectory(newNode->getVec(), nearestNode->getVec())) {
+    } else if (!m_planner->controlTrajectory(newNode->getValues(), nearestNode->getValues())) {
         newNode = nullptr;
         return;
     }
@@ -60,7 +60,7 @@ void NormalRRTPlanner::computeRRTNode(const Vec<float> &randVec, shared_ptr<Node
 *  \param[out] true, if the connection was possible
 *  \date       2016-05-27
 */
-bool NormalRRTPlanner::connectGoalNode(Vec<float> goal) {
+bool NormalRRTPlanner::connectGoalNode(Eigen::VectorXf goal) {
     if (m_collision->controlVec(goal))
         return false;
 
@@ -69,7 +69,7 @@ bool NormalRRTPlanner::connectGoalNode(Vec<float> goal) {
 
     shared_ptr<Node> nearestNode = nullptr;
     for (auto node : nearNodes) {
-        if (m_planner->controlTrajectory(goal, node->getVec())) {
+        if (m_planner->controlTrajectory(goal, node->getValues())) {
             nearestNode = node;
             break;
         }

@@ -36,10 +36,10 @@ class NormalRRTPlanner : public RRTPlanner {
         : RRTPlanner("Normal RRT Planner", robot, options) {
     }
 
-    bool connectGoalNode(Vec<float> goal);
+    bool connectGoalNode(Eigen::VectorXf goal);
 
   protected:
-    void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
+    void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node> &newNode);
 
     std::mutex m_mutex;
 };

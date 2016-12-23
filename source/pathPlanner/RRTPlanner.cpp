@@ -37,7 +37,7 @@ RRTPlanner::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase>
     m_goalNode = nullptr;
 }
 
-bool RRTPlanner::computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads) {
+bool RRTPlanner::computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads) {
     if (!setInitNode(start))
         return false;
 
@@ -53,7 +53,7 @@ bool RRTPlanner::computePath(Vec<float> start, Vec<float> goal, unsigned int num
 *  \param[out] true, if set was possible
 *  \date       2016-05-27
 */
-bool RRTPlanner::setInitNode(Vec<float> start) {
+bool RRTPlanner::setInitNode(Eigen::VectorXf start) {
     if (m_collision->controlVec(start)) {
         Logging::warning("Init node could not be connected", this);
         return false;
@@ -103,7 +103,7 @@ bool RRTPlanner::computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads) {
 */
 void RRTPlanner::computeTreeThread(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vec<float> randVec = m_sampler->getSample();
+        Eigen::VectorXf randVec = m_sampler->getSample();
         shared_ptr<Node> newNode;
         computeRRTNode(randVec, newNode);
 
@@ -140,8 +140,8 @@ std::vector<std::shared_ptr<Node>> RRTPlanner::getPathNodes() {
 *  \param[out] vecs of the path
 *  \date       2016-05-31
 */
-std::vector<Vec<float>> RRTPlanner::getPath(float trajectoryStepSize, bool smoothing) {
-    std::vector<Vec<float>> path;
+std::vector<Eigen::VectorXf> RRTPlanner::getPath(float trajectoryStepSize, bool smoothing) {
+    std::vector<Eigen::VectorXf> path;
     if (!m_pathPlanned) {
         Logging::warning("Path is not complete", this);
         return path;
@@ -162,14 +162,14 @@ std::vector<Vec<float>> RRTPlanner::getPath(float trajectoryStepSize, bool smoot
 *  \param[out] Node new
 *  \date       2016-05-27
 */
-Vec<float> RRTPlanner::computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode) {
-    if (randNode.getDist(nearestNode) < m_stepSize)
+Eigen::VectorXf RRTPlanner::computeNodeNew(const Eigen::VectorXf &randNode, const Eigen::VectorXf &nearestNode) {
+    if ((randNode - nearestNode).norm() < m_stepSize)
         return randNode;
 
     // p = a + k * (b-a)
     // ||u|| = ||b - a||
     // k = stepSize / ||u||
-    Vec<float> u = randNode - nearestNode;
+    Eigen::VectorXf u = randNode - nearestNode;
     u *= m_stepSize / u.norm();
     u += nearestNode;
     return u;

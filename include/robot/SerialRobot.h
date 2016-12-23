@@ -33,10 +33,10 @@ class SerialRobot : public RobotBase {
   public:
     SerialRobot(std::string name, CollisionType type, unsigned int dim);
 
-    virtual Vec<float> directKinematic(const Vec<float> &angles) = 0;
-    virtual std::vector<Eigen::Matrix4f> getJointTrafos(const Vec<float> &angles) = 0;
+    virtual Eigen::Matrix<float, 6, 1> directKinematic(const Eigen::VectorXf &angles) = 0;
+    virtual std::vector<Eigen::Matrix4f> getJointTrafos(const Eigen::VectorXf &angles) = 0;
     Eigen::Matrix4f getTrafo(float alpha, float a, float d, float q);
-    Vec<float> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos);
+    Eigen::Matrix<float, 6, 1> getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos);
 
     void setJoints(std::vector<Joint> joints);
     unsigned int getNbJoints();
@@ -46,14 +46,14 @@ class SerialRobot : public RobotBase {
     std::vector<std::shared_ptr<PQP_Model>> getJointPqpModels();
     std::vector<std::shared_ptr<FCLModel>> getJointFclModels();
 
-    void saveMeshConfig(Vec<float> angles);
+    void saveMeshConfig(Eigen::VectorXf angles);
     void saveMeshConfig(Eigen::Matrix4f *As);
 
   protected:
     std::vector<Joint> m_joints;
-    Vec<float> m_alpha;
-    Vec<float> m_a;
-    Vec<float> m_d;
+    Eigen::VectorXf m_alpha;
+    Eigen::VectorXf m_a;
+    Eigen::VectorXf m_d;
 };
 
 } /* namespace rmpl */

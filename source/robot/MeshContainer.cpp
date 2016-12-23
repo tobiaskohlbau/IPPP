@@ -69,8 +69,8 @@ MeshContainer::MeshContainer(std::shared_ptr<FCLModel>& fclModel, std::shared_pt
 *  \date       2016-07-14
 */
 bool MeshContainer::loadFile(const std::string filePath) {
-    Vec<PQP_REAL> vertice;
-    std::vector<Vec<PQP_REAL>> vertices;
+    Eigen::Vector3f vertice;
+    std::vector<Eigen::Vector3f> vertices;
     int num;
     std::vector<int> face;
     std::vector<std::vector<int>> faces;
@@ -81,7 +81,7 @@ bool MeshContainer::loadFile(const std::string filePath) {
             if (line.at(0) == 'v') {
                 line = line.substr(2);
                 std::stringstream iss(line);
-                vertice = Vec<PQP_REAL>((unsigned int)3);
+                vertice = Vecf((unsigned int)3);
                 for (int i = 0; i < 3; ++i) {
                     iss >> vertice[i];
                 }
@@ -112,7 +112,7 @@ bool MeshContainer::loadFile(const std::string filePath) {
             const aiMesh* mesh = scene->mMeshes[i];
 
             for (int j = 0; j < mesh->mNumVertices; ++j) {
-                vertice = Vec<PQP_REAL>(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
+                vertice = Eigen::Vector3f(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
                 vertices.push_back(vertice);
             }
 
@@ -169,12 +169,11 @@ bool MeshContainer::loadFile(const std::string filePath) {
 *  \date       2016-07-14
 */
 bool MeshContainer::saveObj(const std::string path, Eigen::Matrix4f T) {
-    std::vector<Vec<float>> verts;
+    std::vector<Eigen::Vector3f> verts;
     for (auto vertice : m_vertices) {
-        vertice.append(1);
-        Eigen::Vector4f temp = utility::VecToEigen(vertice);
+        Eigen::Vector4f temp(append(vertice, (float)1));
         temp = T * temp;
-        verts.push_back(Vec<float>(temp(0, 0), temp(1, 0), temp(2, 0)));
+        verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
     }
 
     std::ofstream myfile;

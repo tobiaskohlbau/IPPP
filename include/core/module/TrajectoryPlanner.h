@@ -35,9 +35,9 @@ class TrajectoryPlanner : public ModuleBase {
 
     bool controlTrajectory(const Node &source, const Node &target);
     bool controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target);
-    bool controlTrajectory(const Vec<float> &source, const Vec<float> &target);
-    std::vector<Vec<float>> calcTrajectoryCont(const Vec<float> &source, const Vec<float> &target);
-    std::vector<Vec<float>> calcTrajectoryBin(const Vec<float> &source, const Vec<float> &target);
+    bool controlTrajectory(const Eigen::VectorXf &source, const Eigen::VectorXf &target);
+    std::vector<Eigen::VectorXf> calcTrajectoryCont(const Eigen::VectorXf &source, const Eigen::VectorXf &target);
+    std::vector<Eigen::VectorXf> calcTrajectoryBin(const Eigen::VectorXf &source, const Eigen::VectorXf &target);
 
     void setStepSize(float stepSize);
     float getStepSize() const;

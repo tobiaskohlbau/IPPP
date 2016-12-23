@@ -31,8 +31,8 @@ namespace rmpl {
 class KukaKR5 : public SerialRobot {
   public:
     KukaKR5();
-    Vec<float> directKinematic(const Vec<float> &angles);
-    std::vector<Eigen::Matrix4f> getJointTrafos(const Vec<float> &angles);
+    Eigen::Matrix<float, 6, 1> directKinematic(const Eigen::VectorXf &angles);
+    std::vector<Eigen::Matrix4f> getJointTrafos(const Eigen::VectorXf &angles);
 };
 
 } /* namespace rmpl */

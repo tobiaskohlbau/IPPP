@@ -38,7 +38,7 @@ PRMPlanner::PRMPlanner(const shared_ptr<RobotBase> &robot, const PRMOptions &opt
     m_rangeSize = options.getRangeSize();
 }
 
-bool PRMPlanner::computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads) {
+bool PRMPlanner::computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads) {
     startSamplingPhase(numNodes, numThreads);
     startPlannerPhase(numThreads);
 
@@ -76,7 +76,7 @@ void PRMPlanner::startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThr
 void PRMPlanner::samplingPhase(unsigned int nbOfNodes) {
     unsigned int dim = m_robot->getDim();
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vec<float> sample = m_sampler->getSample();
+        Eigen::VectorXf sample = m_sampler->getSample();
         if (!m_collision->controlVec(sample)) {
             m_graph->addNode(shared_ptr<Node>(new Node(sample)));
         }
@@ -131,7 +131,7 @@ void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeI
          ++node) {
         std::vector<shared_ptr<Node>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
-            if (m_planner->controlTrajectory((*node)->getVec(), nearNode->getVec()))
+            if (m_planner->controlTrajectory((*node)->getValues(), nearNode->getValues()))
                 (*node)->addChild(nearNode);
         }
     }
@@ -146,8 +146,8 @@ void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeI
 *  \param[out] result of query
 *  \date       2016-08-09
 */
-bool PRMPlanner::queryPath(Vec<float> start, Vec<float> goal) {
-    if (start.empty() || goal.empty()) {
+bool PRMPlanner::queryPath(Eigen::VectorXf start, Eigen::VectorXf goal) {
+    if (empty(start) || empty(goal)) {
         Logging::warning("Start or goal node is empty", this);
         return false;
     }
@@ -186,13 +186,13 @@ bool PRMPlanner::queryPath(Vec<float> start, Vec<float> goal) {
 *  \param[in]  nearest Node
 *  \date       2016-08-09
 */
-shared_ptr<Node> PRMPlanner::connectNode(Vec<float> &node) {
-    std::vector<shared_ptr<Node>> nearNodes = m_graph->getNearNodes(shared_ptr<Node>(new Node(node)), m_rangeSize * 3);
+shared_ptr<Node> PRMPlanner::connectNode(Eigen::VectorXf &vec) {
+    std::vector<shared_ptr<Node>> nearNodes = m_graph->getNearNodes(shared_ptr<Node>(new Node(vec)), m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
     shared_ptr<Node> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (m_planner->controlTrajectory(node, *nearNodes[i]) && node.getDist(nearNodes[i]->getVec()) < dist) {
-            dist = node.getDist(nearNodes[i]->getVec());
+        if (m_planner->controlTrajectory(vec, *nearNodes[i]) && (vec - nearNodes[i]->getValues()).norm() < dist) {
+            dist = (vec - nearNodes[i]->getValues()).norm();
             nearestNode = nearNodes[i];
         }
     }
@@ -215,7 +215,7 @@ bool PRMPlanner::aStar(shared_ptr<Node> sourceNode, shared_ptr<Node> targetNode)
 
     std::vector<shared_ptr<Edge>> edges = sourceNode->getChildEdges();
     for (int i = 0; i < edges.size(); ++i) {
-        edges[i]->getTarget()->setCost(edges[i]->getLength());
+        edges[i]->getTarget()->setCost(edges[i]->getCost());
         edges[i]->getTarget()->setParent(sourceNode);
         m_openList.push_back(edges[i]->getTarget());
     }
@@ -284,7 +284,7 @@ std::vector<shared_ptr<Node>> PRMPlanner::getPathNodes() {
 *  \param[out] vecs of the path
 *  \date       2016-05-31
 */
-std::vector<Vec<float>> PRMPlanner::getPath(float trajectoryStepSize, bool smoothing) {
+std::vector<Eigen::VectorXf> PRMPlanner::getPath(float trajectoryStepSize, bool smoothing) {
     return getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 

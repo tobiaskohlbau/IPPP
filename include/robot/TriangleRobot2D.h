@@ -31,14 +31,14 @@ namespace rmpl {
 */
 class TriangleRobot2D : public MobileRobot {
   public:
-    TriangleRobot2D(std::vector<Triangle2D> triangles, Vec<float> minBoundary, Vec<float> maxBoundary);
+    TriangleRobot2D(std::vector<Triangle2D> triangles, Eigen::Vector3f minBoundary, Eigen::Vector3f maxBoundary);
 
     bool setTriangles(std::vector<Triangle2D> &triangles);
     bool addTriangle(Triangle2D &triangle);
     std::vector<Triangle2D> getTriangles();
 
   private:
-    Vec<float> m_pose; // x,y,rot(z)
+    Eigen::VectorXf m_pose;    // x,y,rot(z)
     std::vector<Triangle2D> m_triangles;
 };
 

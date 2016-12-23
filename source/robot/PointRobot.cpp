@@ -18,7 +18,7 @@
 
 #include <robot/PointRobot.h>
 
-#include <include/core/utility/Logging.h>
+#include <core/utility/Logging.h>
 
 namespace rmpl {
 
@@ -27,7 +27,7 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-PointRobot::PointRobot(Vec<float> minBoundary, Vec<float> maxBoundary)
+PointRobot::PointRobot(const Eigen::Vector2f &minBoundary, const Eigen::Vector2f &maxBoundary)
     : MobileRobot("PointRobot", CollisionType::point2D, 2, minBoundary, maxBoundary) {
 }
 

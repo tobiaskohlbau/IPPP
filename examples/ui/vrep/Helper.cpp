@@ -7,7 +7,7 @@ using namespace rmpl;
 Helper::Helper(unsigned int dim) : ModuleBase("VREP Helper") {
     m_dim = dim;
     m_clientId = -1;
-    m_jointHandles = Vec<simxInt>(m_dim);
+    m_jointHandles.resize(m_dim, 1);
     m_started = false;
 }
 
@@ -33,19 +33,19 @@ void Helper::start() {
     errorcode[5] = simxGetObjectHandle(m_clientId, (simxChar *)"Jaco_joint6", &m_jointHandles[5], simx_opmode_oneshot_wait);
 }
 
-bool Helper::setPos(const Vec<float> &vec) {
+bool Helper::setPos(const Eigen::VectorXf &vec) {
     if (m_clientId == -1)
         return false;
 
-    Vec<simxFloat> pos = convertVecToRad(vec);
+    Eigen::VectorXf pos = convertVecToRad(vec);
     for (unsigned int i = 0; i < m_dim; ++i)
         simxSetJointTargetPosition(m_clientId, m_jointHandles[i], pos[i], simx_opmode_oneshot_wait);
     // usleep(1);
     return true;
 }
 
-Vec<simxFloat> Helper::convertVecToRad(const Vec<float> &vec) {
-    Vec<simxFloat> rads(vec.getDim());
+Eigen::VectorXf Helper::convertVecToRad(const Eigen::VectorXf &vec) {
+    Eigen::VectorXf rads(vec.rows());
     for (unsigned int i = 0; i < m_dim; ++i)
         rads[i] = vec[i] * M_PI / 180;
     return rads;

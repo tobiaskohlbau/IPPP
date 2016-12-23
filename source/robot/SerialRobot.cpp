@@ -68,19 +68,19 @@ Eigen::Matrix4f SerialRobot::getTrafo(float alpha, float a, float d, float q) {
 
     return T;
     // secont method for transformation matrix
-//    T(0, 0) = cosQ;
-//    T(0, 1) = -sinQ;
-//    T(0, 2) = 0;
-//    T(0, 3) = a;
-//    T(1, 0) = sinQ * cosAlpha;
-//    T(1, 1) = cosQ * cosAlpha;
-//    T(1, 2) = -sinAlpha;
-//    T(1, 3) = -sinAlpha * d;
-//    T(2,0) = sinQ * sinAlpha;
-//    T(2, 1) = cosQ * sinAlpha;
-//    T(2, 2) = cosAlpha;
-//    T(2, 3) = cosAlpha * d;
-//    T(3, 3) = 1;
+    //    T(0, 0) = cosQ;
+    //    T(0, 1) = -sinQ;
+    //    T(0, 2) = 0;
+    //    T(0, 3) = a;
+    //    T(1, 0) = sinQ * cosAlpha;
+    //    T(1, 1) = cosQ * cosAlpha;
+    //    T(1, 2) = -sinAlpha;
+    //    T(1, 3) = -sinAlpha * d;
+    //    T(2,0) = sinQ * sinAlpha;
+    //    T(2, 1) = cosQ * sinAlpha;
+    //    T(2, 2) = cosAlpha;
+    //    T(2, 3) = cosAlpha * d;
+    //    T(3, 3) = 1;
 }
 
 /*!
@@ -91,7 +91,7 @@ Eigen::Matrix4f SerialRobot::getTrafo(float alpha, float a, float d, float q) {
 *  \param[out] TCP pose
 *  \date       2016-07-07
 */
-Vec<float> SerialRobot::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos) {
+Eigen::Matrix<float, 6, 1> SerialRobot::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos) {
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
     Eigen::Matrix4f robotToTcp = trafos[0];
@@ -174,7 +174,7 @@ unsigned int SerialRobot::getNbJoints() {
 *  \param[in]  joint angles
 *  \date       2016-10-22
 */
-void SerialRobot::saveMeshConfig(Vec<float> angles) {
+void SerialRobot::saveMeshConfig(Eigen::VectorXf angles) {
     std::vector<Eigen::Matrix4f> jointTrafos = getJointTrafos(angles);
     Eigen::Matrix4f As[jointTrafos.size()];
     As[0] = m_poseMat * jointTrafos[0];
@@ -196,7 +196,7 @@ void SerialRobot::saveMeshConfig(Eigen::Matrix4f *As) {
 
     for (int i = 0; i < getDim(); ++i) {
         getMeshFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
-        //std::cout<< As[i] << std::endl <<std::endl;
+        // std::cout<< As[i] << std::endl <<std::endl;
     }
 }
 

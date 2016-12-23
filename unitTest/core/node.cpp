@@ -37,15 +37,12 @@ BOOST_AUTO_TEST_CASE(elementContructor) {
     nodes.push_back(Node(0, 1, 2, 3));
     nodes.push_back(Node(0, 1, 2, 3, 4));
     nodes.push_back(Node(0, 1, 2, 3, 4, 5));
-    nodes.push_back(Node(0, 1, 2, 3, 4, 5, 6));
-    nodes.push_back(Node(0, 1, 2, 3, 4, 5, 6, 7));
-    nodes.push_back(Node(0, 1, 2, 3, 4, 5, 6, 7, 8));
 
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 5; ++i) {
         BOOST_CHECK(nodes[i].getDim() == (i + 2));
         BOOST_CHECK(nodes[i].empty() == false);
         for (int j = 0; j < nodes[i].getDim(); ++j) {
-            BOOST_CHECK(nodes[i].getVecValue(j) == j);
+            BOOST_CHECK(nodes[i].getValues()[j] == j);
         }
         BOOST_CHECK(nodes[i].getParentNode() == nullptr);
         BOOST_CHECK(nodes[i].getChildNodes().size() == 0);

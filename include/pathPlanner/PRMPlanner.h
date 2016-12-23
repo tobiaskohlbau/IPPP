@@ -19,8 +19,8 @@
 #ifndef PRMPLANNER_H_
 #define PRMPLANNER_H_
 
-#include <pathPlanner/options/PRMOptions.h>
 #include <pathPlanner/Planner.h>
+#include <pathPlanner/options/PRMOptions.h>
 
 namespace rmpl {
 
@@ -33,22 +33,22 @@ class PRMPlanner : public Planner {
   public:
     PRMPlanner(const std::shared_ptr<RobotBase> &robot, const PRMOptions &options);
 
-    bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads);
+    bool computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads);
 
     void startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     void startPlannerPhase(unsigned int nbOfThreads = 1);
 
-    bool queryPath(Vec<float> start, Vec<float> goal);
+    bool queryPath(Eigen::VectorXf start, Eigen::VectorXf goal);
     bool aStar(std::shared_ptr<Node> sourceNode, std::shared_ptr<Node> targetNode);
     void expandNode(std::shared_ptr<Node> currentNode);
 
     std::vector<std::shared_ptr<Node>> getPathNodes();
-    std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing = true);
+    std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing = true);
 
   protected:
     void samplingPhase(unsigned int nbOfNodes);
     void plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex);
-    std::shared_ptr<Node> connectNode(Vec<float> &node);
+    std::shared_ptr<Node> connectNode(Eigen::VectorXf &node);
 
     float m_rangeSize;
     std::vector<std::shared_ptr<Node>> m_nodePath;
