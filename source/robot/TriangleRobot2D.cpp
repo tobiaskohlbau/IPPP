@@ -18,7 +18,7 @@
 
 #include <robot/TriangleRobot2D.h>
 
-#include <include/core/utility/Logging.h>
+#include <core/utility/Logging.h>
 
 namespace rmpl {
 

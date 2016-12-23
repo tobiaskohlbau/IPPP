@@ -26,6 +26,7 @@ void testTriangleRobot(Eigen::Vector2f minimum, Eigen::Vector2f maximum, Eigen::
     Eigen::Vector3f max = append(maximum, 360.0);
 
     std::vector<Triangle2D> triangles;
+    triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 0.0), Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25.0, 0.0), Eigen::Vector2f(25.0, 0.0)));
     triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 0.0), Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25.0, 0.0)));
     triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25, 0.0), Eigen::Vector2f(25, 25)));
     triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25, 25), Eigen::Vector2f(25, 45)));
@@ -112,7 +113,7 @@ int main(int argc, char** argv) {
     Eigen::Vector2f minBoundary(0.0, 0.0);
     Eigen::Vector2f maxBoundary(mat.rows(), mat.cols());
 
-    //testTriangleRobot(minBoundary, maxBoundary, mat);
+    testTriangleRobot(minBoundary, maxBoundary, mat);
 
-    testPointRobot(minBoundary, maxBoundary, mat);
+    //testPointRobot(minBoundary, maxBoundary, mat);
 }
