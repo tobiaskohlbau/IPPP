@@ -20,7 +20,6 @@
 #define MODULEBASE_H_
 
 #include <cstdint>
-#include <iostream>
 #include <memory>
 #include <string>
 
