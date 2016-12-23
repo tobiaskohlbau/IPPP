@@ -72,7 +72,7 @@ class Node {
 
   private:
     Eigen::VectorXf m_vec;
-    float m_cost;
+    float m_cost = -1;
 
     std::shared_ptr<Edge> m_parent = nullptr;
     std::vector<std::shared_ptr<Edge>> m_childes;

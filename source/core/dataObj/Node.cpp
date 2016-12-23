@@ -30,7 +30,6 @@ namespace rmpl {
 *  \date       2016-05-24
 */
 Node::Node() {
-    m_cost = 0;
 }
 
 /*!
@@ -41,7 +40,6 @@ Node::Node() {
 *  \date       2016-05-24
 */
 Node::Node(float x, float y) {
-    m_cost = 0;
     m_vec = Eigen::Vector2f(x, y);
 }
 
@@ -54,7 +52,6 @@ Node::Node(float x, float y) {
 *  \date       2016-05-24
 */
 Node::Node(float x, float y, float z) {
-    m_cost = 0;
     m_vec = Eigen::Vector3f(x, y, z);
 }
 
@@ -68,7 +65,6 @@ Node::Node(float x, float y, float z) {
 *  \date       2016-05-24
 */
 Node::Node(float x, float y, float z, float rx) {
-    m_cost = 0;
     m_vec = Eigen::Vector4f(x, y, z, rx);
 }
 
@@ -83,7 +79,6 @@ Node::Node(float x, float y, float z, float rx) {
 *  \date       2016-05-24
 */
 Node::Node(float x, float y, float z, float rx, float ry) {
-    m_cost = 0;
     m_vec = Vecf(x, y, z, rx, ry);
 }
 
@@ -99,19 +94,17 @@ Node::Node(float x, float y, float z, float rx, float ry) {
 *  \date       2016-05-24
 */
 Node::Node(float x, float y, float z, float rx, float ry, float rz) {
-    m_cost = 0;
     m_vec = Vecf(x, y, z, rx, ry, rz);
 }
 
 /*!
 *  \brief      Constructor of the class Node
 *  \author     Sascha Kaden
-*  \param[in]  Vector
+*  \param[in]  Eigen Vector
 *  \date       2016-05-24
 */
 Node::Node(const Eigen::VectorXf &vec) {
     m_vec = vec;
-    m_cost = 0;
 }
 
 /*!
@@ -142,7 +135,7 @@ float Node::getZ() {
 }
 
 /*!
-*  \brief      Return the dimension of the Node
+*  \brief      Return the dimension of the Node (rows of the vector)
 *  \author     Sascha Kaden
 *  \param[out] Dimension of the Node
 *  \date       2016-05-24
@@ -294,9 +287,9 @@ void Node::addChild(shared_ptr<Node> &child) {
 */
 std::vector<shared_ptr<Node>> Node::getChildNodes() {
     std::vector<shared_ptr<Node>> childNodes;
-    for (auto child : m_childes) {
+    for (auto child : m_childes)
         childNodes.push_back(child->getTarget());
-    }
+
     return childNodes;
 }
 
