@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef TRIANGLE_H
-#define TRIANGLE_H
+#ifndef POINTLIST_H
+#define POINTLIST_H
 
 #include <Eigen/Core>
 #include <core/utility/Logging.h>
@@ -72,7 +72,7 @@ class PointList {
     */
     template <class... Args>
     PointList(unsigned int index, T pt, Args... fargs) : PointList(index + 1, fargs...) {
-        assert(index < P);
+        assert(index < P -1);
         m_p[index] = pt;
     }
 
@@ -135,4 +135,4 @@ typedef PointList<Eigen::Vector3f, 7> Heptagon3D;
 
 } /* namespace rmpl */
 
-#endif    // TRIANGLE_H
+#endif    // POINTLIST_H
