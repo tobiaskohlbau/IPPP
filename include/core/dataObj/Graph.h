@@ -37,7 +37,6 @@ class Graph : public ModuleBase {
   public:
     Graph();
     void addNode(const std::shared_ptr<Node> &node);
-    void removeNode(int index);
     std::vector<std::shared_ptr<Node>> getNodes();
 
     std::shared_ptr<Node> getNearestNode(const Node &node);
