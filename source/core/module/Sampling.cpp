@@ -34,7 +34,6 @@ Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, const std::shared_pt
     m_strategy = strategy;
 
     m_collision = collision;
-    m_robot = robot;
     m_planner = planner;
     m_sampler = std::shared_ptr<Sampler>(new Sampler(robot, method));
 }

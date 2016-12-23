@@ -74,7 +74,6 @@ void PRMPlanner::startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThr
 *  \date       2016-08-09
 */
 void PRMPlanner::samplingPhase(unsigned int nbOfNodes) {
-    unsigned int dim = m_robot->getDim();
     for (int i = 0; i < nbOfNodes; ++i) {
         Eigen::VectorXf sample = m_sampler->getSample();
         if (!m_collision->controlVec(sample)) {

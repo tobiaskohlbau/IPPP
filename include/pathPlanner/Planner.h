@@ -38,8 +38,12 @@ namespace rmpl {
 */
 class Planner : public ModuleBase {
   public:
+    ~Planner();
+
+  protected:
     Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const PlannerOptions &options);
 
+  public:
     virtual bool computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads) = 0;
 
     std::vector<std::shared_ptr<Node>> getGraphNodes();
@@ -57,7 +61,7 @@ class Planner : public ModuleBase {
     std::shared_ptr<Graph> m_graph;
     std::shared_ptr<RobotBase> m_robot;
 
-    // variables
+    const PlannerOptions m_options;
     bool m_pathPlanned;
 };
 

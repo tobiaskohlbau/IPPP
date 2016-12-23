@@ -83,7 +83,7 @@ bool TrajectoryPlanner::controlTrajectory(const Eigen::VectorXf &source, const E
 }
 
 /*!
-*  \brief      Compute the binary trajectory between source and target. Return vector of points.
+*  \brief      Compute the binary (section wise) trajectory between source and target. Return vector of points.
 *  \author     Sascha Kaden
 *  \param[in]  source Vec
 *  \param[in]  target Vec

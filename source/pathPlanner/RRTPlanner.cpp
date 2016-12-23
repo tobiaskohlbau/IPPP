@@ -75,8 +75,10 @@ bool RRTPlanner::setInitNode(Eigen::VectorXf start) {
 *  \date       2016-05-27
 */
 bool RRTPlanner::computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads) {
-    if (!controlConstraints())
-        return false;
+        if (m_initNode == nullptr) {
+            Logging::warning("Init node is not connected", this);
+            return false;
+        }
 
     if (nbOfThreads == 1) {
         computeTreeThread(nbOfNodes);
@@ -193,21 +195,6 @@ std::shared_ptr<Node> RRTPlanner::getInitNode() {
 */
 std::shared_ptr<Node> RRTPlanner::getGoalNode() {
     return m_goalNode;
-}
-
-/*!
-*  \brief      Control all constraints of the RRTPlanner
-*  \author     Sascha Kaden
-*  \param[out] check flag
-*  \date       2016-05-27
-*/
-bool RRTPlanner::controlConstraints() {
-    if (m_initNode == nullptr) {
-        Logging::warning("Init node is not connected", this);
-        return false;
-    } else {
-        return true;
-    }
 }
 
 } /* namespace rmpl */
