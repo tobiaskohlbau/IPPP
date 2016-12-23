@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(elementContructor) {
         }
         BOOST_CHECK(nodes[i].getParentNode() == nullptr);
         BOOST_CHECK(nodes[i].getChildNodes().size() == 0);
-        BOOST_CHECK(nodes[i].getCost() == 0);
+        BOOST_CHECK(nodes[i].getCost() == -1);
     }
 }
 
