@@ -25,6 +25,14 @@ using std::shared_ptr;
 namespace rmpl {
 
 /*!
+*  \brief      Standard deconstructor of the RobotBase
+*  \author     Sasch Kaden
+*  \date       2016-05-30
+*/
+RobotBase::~RobotBase() {
+}
+
+/*!
 *  \brief      Constructor of the class RobotBase
 *  \author     Sascha Kaden
 *  \param[in]  name of the robot
@@ -33,10 +41,9 @@ namespace rmpl {
 *  \param[in]  number of joints of the robot
 *  \date       2016-06-30
 */
-RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType robotType, unsigned int dim) : ModuleBase(name) {
+RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType robotType, unsigned int dim) : ModuleBase(name), m_dim(dim) {
     m_collisionType = collisionType;
     m_robotType = robotType;
-    m_dim = dim;
 
     m_pose = Vecf(0, 0, 0, 0, 0, 0);
     m_poseMat = utility::poseVecToMat(m_pose);

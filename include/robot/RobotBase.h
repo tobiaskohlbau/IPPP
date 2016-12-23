@@ -41,8 +41,12 @@ enum RobotType { serial, mobile };
 */
 class RobotBase : public ModuleBase {
   public:
+    virtual ~RobotBase();
+
+protected:
     RobotBase(std::string name, CollisionType collisionType, RobotType robotType, unsigned int dim);
 
+public:
     Eigen::VectorXf getMinBoundary();
     Eigen::VectorXf getMaxBoundary();
 
@@ -67,7 +71,7 @@ class RobotBase : public ModuleBase {
   protected:
     CollisionType m_collisionType;
     RobotType m_robotType;
-    unsigned int m_dim;
+    const unsigned int m_dim;
 
     Eigen::VectorXf m_minBoundary;
     Eigen::VectorXf m_maxBoundary;
