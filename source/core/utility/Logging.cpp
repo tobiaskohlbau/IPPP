@@ -19,6 +19,7 @@
 #include <core/utility/Logging.h>
 
 #include <fstream>
+#include <iostream>
 
 namespace rmpl {
 
