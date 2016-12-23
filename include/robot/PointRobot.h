@@ -30,7 +30,7 @@ namespace rmpl {
 */
 class PointRobot : public MobileRobot {
   public:
-    PointRobot(Vec<float> minBoundary, Vec<float> maxBoundary);
+    PointRobot(const Eigen::Vector2f &minBoundary, const Eigen::Vector2f &maxBoundary);
 
   private:
 };

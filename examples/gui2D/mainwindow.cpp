@@ -6,6 +6,8 @@
 #include <QFileDialog>
 #include <pathPlanner/options/PRMOptions.h>
 
+using namespace rmpl;
+
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 }
@@ -25,31 +27,31 @@ void MainWindow::loadImage() {
 void MainWindow::computePath() {
     std::cout << "compute path" << std::endl;
     std::cout << m_numNodes << std::endl;
-    rmpl::Vec<float> minBoundary(0.0, 0.0);
-    rmpl::Vec<float> maxBoundary(m_workspace.rows(), m_workspace.cols());
-    std::shared_ptr<rmpl::PointRobot> robot(new rmpl::PointRobot(minBoundary, maxBoundary));
+    Eigen::Vector2f minBoundary(0.0, 0.0);
+    Eigen::Vector2f maxBoundary(m_workspace.rows(), m_workspace.cols());
+    std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
     robot->set2DWorkspace(m_workspace);
 
-    rmpl::SamplingMethod sampling = rmpl::SamplingMethod::randomly;
+    SamplingMethod sampling = SamplingMethod::randomly;
     if (m_samplingType == 1)
-        sampling = rmpl::SamplingMethod::uniform;
+        sampling = SamplingMethod::uniform;
     if (m_samplingType == 2)
-        sampling = rmpl::SamplingMethod::standardDistribution;
+        sampling = SamplingMethod::standardDistribution;
 
     m_planner = nullptr;
     if (m_plannerType == 0) {
-        rmpl::RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
-        m_planner = std::shared_ptr<rmpl::NormalRRTPlanner>(new rmpl::NormalRRTPlanner(robot, options));
+        RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
+        m_planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(robot, options));
     } else if (m_plannerType == 1) {
-        rmpl::RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
-        m_planner = std::shared_ptr<rmpl::StarRRTPlanner>(new rmpl::StarRRTPlanner(robot, options));
+        RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
+        m_planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(robot, options));
     } else {
-        rmpl::PRMOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
-        m_planner = std::shared_ptr<rmpl::PRMPlanner>(new rmpl::PRMPlanner(robot, options));
+        PRMOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
+        m_planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(robot, options));
     }
 
-    rmpl::Vec<float> start(m_startX, m_startY);
-    rmpl::Vec<float> goal(m_goalX, m_goalY);
+    Eigen::Vector2f start(m_startX, m_startY);
+    Eigen::Vector2f goal(m_goalX, m_goalY);
     m_connected = m_planner->computePath(start, goal, m_numNodes, m_numThreads);
 }
 
@@ -58,11 +60,11 @@ void MainWindow::viewPath() {
     cv::Mat image = m_image.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    std::vector<std::shared_ptr<rmpl::Node>> nodes = m_planner->getGraphNodes();
-    Drawing2D::drawTree2D(nodes, image, rmpl::Vec<uint8_t>(0, 0, 255), rmpl::Vec<uint8_t>(0, 0, 0), 1);
+    std::vector<std::shared_ptr<Node>> nodes = m_planner->getGraphNodes();
+    Drawing2D::drawTree2D(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
     if (m_connected) {
-        std::vector<rmpl::Vec<float>> pathPoints = m_planner->getPath(0.5, true);
-        Drawing2D::drawPath2D(pathPoints, image, rmpl::Vec<uint8_t>(255, 0, 0), 3);
+        std::vector<Eigen::VectorXf> pathPoints = m_planner->getPath(0.5, true);
+        Drawing2D::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
     }
 
     QImage qImage = convertCvMat(image);

@@ -30,7 +30,6 @@
 #include <fcl/fcl.h>
 
 #include <core/module/ModuleBase.h>
-#include <core/dataObj/Vec.hpp>
 
 namespace rmpl {
 
@@ -57,7 +56,7 @@ class MeshContainer {
     std::shared_ptr<PQP_Model> m_pqpModel;
 
   private:
-    std::vector<Vec<PQP_REAL>> m_vertices;
+    std::vector<Eigen::Vector3f> m_vertices;
     std::vector<std::vector<int>> m_faces;
 };
 

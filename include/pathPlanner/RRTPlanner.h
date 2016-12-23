@@ -33,21 +33,21 @@ class RRTPlanner : public Planner {
   public:
     RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const RRTOptions &options);
 
-    bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads);
-    bool setInitNode(Vec<float> start);
+    bool computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads);
+    bool setInitNode(Eigen::VectorXf start);
     bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
-    virtual bool connectGoalNode(Vec<float> goal) = 0;
+    virtual bool connectGoalNode(Eigen::VectorXf goal) = 0;
 
     std::vector<std::shared_ptr<Node>> getPathNodes();
-    std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing = true);
+    std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing = true);
     std::shared_ptr<Node> getInitNode();
     std::shared_ptr<Node> getGoalNode();
 
   protected:
     bool controlConstraints();
     void computeTreeThread(unsigned int nbOfNodes);
-    virtual void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode) = 0;
-    Vec<float> computeNodeNew(const Vec<float> &randNode, const Vec<float> &nearestNode);
+    virtual void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node> &newNode) = 0;
+    Eigen::VectorXf computeNodeNew(const Eigen::VectorXf &randNode, const Eigen::VectorXf &nearestNode);
 
     // variables
     float m_stepSize;

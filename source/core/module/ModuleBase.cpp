@@ -34,9 +34,7 @@ ModuleBase::~ModuleBase() {
 *  \param[in]  module name
 *  \date       2016-05-30
 */
-ModuleBase::ModuleBase(const std::string &name)
-    : m_name(name)
-{
+ModuleBase::ModuleBase(const std::string& name) : m_name(name) {
 }
 
 /*!

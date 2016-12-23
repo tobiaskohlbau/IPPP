@@ -46,7 +46,7 @@ TrajectoryPlanner::TrajectoryPlanner(float stepSize, const shared_ptr<CollisionD
 *  \date       2016-05-31
 */
 bool TrajectoryPlanner::controlTrajectory(const Node &source, const Node &target) {
-    return controlTrajectory(source.getVec(), target.getVec());
+    return controlTrajectory(source.getValues(), target.getValues());
 }
 
 /*!
@@ -58,7 +58,7 @@ bool TrajectoryPlanner::controlTrajectory(const Node &source, const Node &target
 *  \date       2016-05-31
 */
 bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target) {
-    return controlTrajectory(source->getVec(), target->getVec());
+    return controlTrajectory(source->getValues(), target->getValues());
 }
 
 /*!
@@ -69,13 +69,13 @@ bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, c
 *  \param[out] possibility of trajectory, true if possible
 *  \date       2016-05-31
 */
-bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<float> &target) {
-    if (source.getDim() != target.getDim()) {
+bool TrajectoryPlanner::controlTrajectory(const Eigen::VectorXf &source, const Eigen::VectorXf &target) {
+    if (source.rows() != target.rows()) {
         Logging::error("Nodes/Vecs have different dimensions", this);
         return false;
     }
 
-    std::vector<Vec<float>> path = calcTrajectoryBin(source, target);
+    std::vector<Eigen::VectorXf> path = calcTrajectoryBin(source, target);
     if (m_collision->controlTrajectory(path))
         return false;
 
@@ -90,17 +90,17 @@ bool TrajectoryPlanner::controlTrajectory(const Vec<float> &source, const Vec<fl
 *  \param[out] trajectory
 *  \date       2016-12-21
 */
-std::vector<Vec<float>> TrajectoryPlanner::calcTrajectoryBin(const Vec<float> &source, const Vec<float> &target) {
-    std::vector<Vec<float>> vecs;
-    if (source.getDim() != target.getDim()) {
+std::vector<Eigen::VectorXf> TrajectoryPlanner::calcTrajectoryBin(const Eigen::VectorXf &source, const Eigen::VectorXf &target) {
+    std::vector<Eigen::VectorXf> vecs;
+    if (source.rows() != target.rows()) {
         Logging::error("Vecs have different dimensions", this);
         return vecs;
     }
 
-    Vec<float> u(target - source);
+    Eigen::VectorXf u(target - source);
     vecs.push_back(source);
     unsigned int divider = 2;
-    for (Vec<float> uTemp = u / divider; uTemp.sqNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider)
+    for (Eigen::VectorXf uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider)
         for (int i = 1; i < divider; i += 2)
             vecs.push_back(source + (uTemp * i));
     vecs.push_back(target);
@@ -116,16 +116,16 @@ std::vector<Vec<float>> TrajectoryPlanner::calcTrajectoryBin(const Vec<float> &s
 *  \param[out] trajectory
 *  \date       2016-12-21
 */
-std::vector<Vec<float>> TrajectoryPlanner::calcTrajectoryCont(const Vec<float> &source, const Vec<float> &target) {
-    std::vector<Vec<float>> vecs;
-    if (source.getDim() != target.getDim()) {
+std::vector<Eigen::VectorXf> TrajectoryPlanner::calcTrajectoryCont(const Eigen::VectorXf &source, const Eigen::VectorXf &target) {
+    std::vector<Eigen::VectorXf> vecs;
+    if (source.rows() != target.rows()) {
         Logging::error("Vecs have different dimensions", this);
         return vecs;
     }
 
-    Vec<float> u(target - source);    // u = a - b
-    u /= u.norm();                    // u = |u|
-    for (Vec<float> temp = source + u * m_stepSize; (temp - target).sqNorm() > 1; temp += u * m_stepSize)
+    Eigen::VectorXf u(target - source);    // u = a - b
+    u /= u.norm();                         // u = |u|
+    for (Eigen::VectorXf temp(source + (u * m_stepSize)); (temp - target).squaredNorm() > 1; temp = temp + (u * m_stepSize))
         vecs.push_back(temp);
     return vecs;
 }

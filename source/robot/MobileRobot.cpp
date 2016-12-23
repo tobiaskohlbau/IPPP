@@ -18,16 +18,18 @@
 
 #include <robot/MobileRobot.h>
 
-#include <include/core/utility/Logging.h>
+#include <core/utility/Logging.h>
+#include <core/utility/Utility.h>
 
 namespace rmpl {
 
-MobileRobot::MobileRobot(std::string name, CollisionType type, unsigned int dim, Vec<float> minBoundary,
-                         Vec<float> maxBoundary) : RobotBase(name, type, RobotType::mobile, dim) {
-    if (minBoundary.empty() || maxBoundary.empty()) {
+MobileRobot::MobileRobot(std::string name, CollisionType type, unsigned int dim, const Eigen::VectorXf &minBoundary,
+                         const Eigen::VectorXf &maxBoundary)
+    : RobotBase(name, type, RobotType::mobile, dim) {
+    if (empty(minBoundary) || empty(maxBoundary)) {
         Logging::warning("Boundaries are empty", this);
         return;
-    } else if (minBoundary.getDim() != m_dim || maxBoundary.getDim() != m_dim) {
+    } else if (minBoundary.rows() != m_dim || maxBoundary.rows() != m_dim) {
         Logging::warning("Boudaries have different dimensions from the robot!", this);
         return;
     }

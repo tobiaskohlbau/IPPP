@@ -24,9 +24,9 @@
 #include <fcl/fcl.h>
 #include <fcl/narrowphase/collision.h>
 
-#include <core/module/ModuleBase.h>
 #include <core/dataObj/Node.h>
 #include <core/dataObj/PointList.hpp>
+#include <core/module/ModuleBase.h>
 #include <robot/MeshContainer.h>
 #include <robot/SerialRobot.h>
 #include <robot/TriangleRobot2D.h>
@@ -41,13 +41,13 @@ namespace rmpl {
 class CollisionDetection : public ModuleBase {
   public:
     CollisionDetection(const std::shared_ptr<RobotBase> &robot);
-    bool controlVec(const Vec<float> &vec);
-    bool controlTrajectory(std::vector<Vec<float>> &vec);
+    bool controlVec(const Eigen::VectorXf &vec);
+    bool controlTrajectory(std::vector<Eigen::VectorXf> &vec);
 
   private:
-    bool controlCollisionMesh(const Vec<float> &vec);
-    bool checkSerialRobot(const Vec<float> &vec);
-    bool checkMobileRobot(const Vec<float> &vec);
+    bool controlCollisionMesh(const Eigen::VectorXf &vec);
+    bool checkSerialRobot(const Eigen::VectorXf &vec);
+    bool checkMobileRobot(const Eigen::VectorXf &vec);
     bool checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &base, Eigen::Matrix3f R[],
                    Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT);
     bool checkMesh(std::vector<std::shared_ptr<FCLModel>> &models, std::shared_ptr<FCLModel> &base, Eigen::Matrix3f R[],
@@ -59,10 +59,10 @@ class CollisionDetection : public ModuleBase {
                   Eigen::Vector3f &t1, Eigen::Vector3f &t2);
 
     bool checkPoint2D(float x, float y);
-    bool checkTriangleRobot(const Vec<float> &vec);
+    bool checkTriangleRobot(const Eigen::Vector3f &vec);
 
     std::shared_ptr<RobotBase> m_robot;
-    Vec<float> m_minBoundary, m_maxBoundary;
+    Eigen::VectorXf m_minBoundary, m_maxBoundary;
 
     Eigen::MatrixXi m_2DWorkspace;
     std::shared_ptr<MeshContainer> m_workspace = nullptr;

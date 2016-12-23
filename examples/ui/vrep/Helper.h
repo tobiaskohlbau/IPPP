@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <vector>
 
+#include <Eigen/Core>
+
 extern "C" {
 #include "extApi.h"
 #include "extApiPlatform.h"
@@ -14,7 +16,6 @@ extern "C" {
 }
 
 #include <core/module/ModuleBase.h>
-#include <core/dataObj/Vec.hpp>
 
 namespace rmpl {
 
@@ -22,14 +23,14 @@ class Helper : public ModuleBase {
   public:
     Helper(unsigned int dim);
     void start();
-    bool setPos(const Vec<float> &vec);
+    bool setPos(const Eigen::VectorXf &vec);
 
   private:
-    Vec<simxFloat> convertVecToRad(const Vec<float> &vec);    // convert to simxFloat array and radiant
+    Eigen::VectorXf convertVecToRad(const Eigen::VectorXf &vec);    // convert to simxFloat array and radiant
 
     unsigned int m_dim;
     simxInt m_clientId;
-    Vec<simxInt> m_jointHandles;
+    Eigen::VectorXi m_jointHandles;
     bool m_started;
 };
 

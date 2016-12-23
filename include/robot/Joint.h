@@ -21,9 +21,6 @@
 
 #include <memory>
 
-#include <fcl/fcl.h>
-#include <PQP.h>
-
 #include <robot/MeshContainer.h>
 
 namespace rmpl {
@@ -34,7 +31,7 @@ namespace rmpl {
 * \date    2016-08-25
 */
 class Joint {
-public:
+  public:
     Joint();
     Joint(float minBound, float maxBound);
     Joint(float minBound, float maxBound, std::shared_ptr<MeshContainer> &mesh);
@@ -45,7 +42,7 @@ public:
     void setBoundaries(float minBound, float maxBound);
     void getBoundaries(float &minBound, float &maxBound);
 
-private:
+  private:
     float m_minBound;
     float m_maxBound;
     std::shared_ptr<MeshContainer> m_mesh;
@@ -53,4 +50,4 @@ private:
 
 } /* namespace rmpl */
 
-#endif //JOINT_H_
+#endif    // JOINT_H_

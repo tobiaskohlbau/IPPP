@@ -20,11 +20,12 @@
 #define NODE_H_
 
 #include <assert.h>
-#include <vector>
 #include <memory>
+#include <vector>
+
+#include <Eigen/Core>
 
 #include <core/dataObj/Edge.h>
-#include <core/dataObj/Vec.hpp>
 
 namespace rmpl {
 
@@ -37,16 +38,12 @@ namespace rmpl {
 class Node {
   public:
     Node();
-    Node(float x);
     Node(float x, float y);
     Node(float x, float y, float z);
     Node(float x, float y, float z, float rx);
     Node(float x, float y, float z, float rx, float ry);
     Node(float x, float y, float z, float rx, float ry, float rz);
-    Node(float x, float y, float z, float rx, float ry, float rz, float wx);
-    Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy);
-    Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy, float wz);
-    Node(const Vec<float> &vec);
+    Node(const Eigen::VectorXf &vec);
 
     float getX();
     float getY();
@@ -54,12 +51,9 @@ class Node {
 
     unsigned int getDim();
     bool empty() const;
-    void setVecValue(float value, unsigned int index);
-    float getVecValue(unsigned int index);
     float getDist(const std::shared_ptr<Node> &node);
     float getDist(const Node &node);
     float getDistToParent();
-    float norm();
 
     void setCost(float cost);
     void addCost(float cost);
@@ -74,10 +68,10 @@ class Node {
     std::vector<std::shared_ptr<Edge>> getChildEdges();
     void clearChildes();
 
-    Vec<float> getVec() const;
+    Eigen::VectorXf getValues() const;
 
   private:
-    Vec<float> m_vec;
+    Eigen::VectorXf m_vec;
     float m_cost;
 
     std::shared_ptr<Edge> m_parent = nullptr;

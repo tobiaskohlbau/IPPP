@@ -15,8 +15,8 @@ using std::shared_ptr;
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing2D::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode,
-                         const Vec<uint8_t> &colorEdge, int thickness) {
+void Drawing2D::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, Eigen::Vector3i colorNode,
+                           Eigen::Vector3i colorEdge, int thickness) {
     assert(nodes[0]->getDim() == 2);
 
     for (auto &elem : nodes) {
@@ -39,8 +39,8 @@ void Drawing2D::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing2D::drawGraph2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, const Vec<uint8_t> &colorNode,
-                         const Vec<uint8_t> &colorEdge, int thickness) {
+void Drawing2D::drawGraph2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, Eigen::Vector3i colorNode,
+                            Eigen::Vector3i colorEdge, int thickness) {
     assert(nodes[0]->getDim() == 2);
 
     for (auto &elem : nodes) {
@@ -64,11 +64,12 @@ void Drawing2D::drawGraph2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat 
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing2D::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, const Vec<uint8_t> &colorPoint, int thickness) {
+void Drawing2D::drawPath2D(const std::vector<Eigen::VectorXf> vecs, cv::Mat &image, Eigen::Vector3i colorPoint,
+                           int thickness) {
     if (vecs.size() == 0)
         return;
 
-    assert(vecs[0].getDim() == 2);
+    assert(vecs[0].rows() == 2);
 
     for (int i = 0; i < vecs.size(); ++i) {
         cv::Point point(vecs[i][0], vecs[i][1]);
@@ -86,24 +87,24 @@ void Drawing2D::drawPath2D(const std::vector<Vec<float>> vecs, cv::Mat &image, c
 *  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
-void Drawing2D::drawTrianglePath(const std::vector<Vec<float>> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
-                                 const Vec<uint8_t> &colorPoint, int thickness) {
+void Drawing2D::drawTrianglePath(std::vector<Eigen::VectorXf> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
+                                 Eigen::Vector3i colorPoint, int thickness) {
     if (vecs.size() == 0)
         return;
 
-    assert(vecs[0].getDim() == 3);
+    assert(vecs[0].rows() == 3);
 
     Logging::info("start drawing of triangles", "Drawing2D");
 
     Eigen::Matrix2f R;
     Eigen::Vector2f t;
     cv::Point2i pt1, pt2, pt3;
-    PointList<Eigen::Vector2f, 3> triangle;
+    Triangle2D triangle;
     for (auto vec : vecs) {
         for (int i = 0; i < triangles.size(); ++i) {
             triangle = triangles[i];
             utility::poseVecToRandT(vec, R, t);
-            triangle.transform(R,t);
+            triangle.transform(R, t);
             pt1 = cv::Point2i(triangle.getP(1)[0], triangle.getP(1)[1]);
             pt2 = cv::Point2i(triangle.getP(2)[0], triangle.getP(2)[1]);
             pt3 = cv::Point2i(triangle.getP(3)[0], triangle.getP(3)[1]);
@@ -134,7 +135,7 @@ Eigen::MatrixXi Drawing2D::cvToEigen(cv::Mat cvMat) {
     int cols = dst.cols;
     Eigen::MatrixXi eigenMat(rows, cols);
     std::vector<int> entries;
-    int* temp;
+    int *temp;
     for (int i = 0; i < cols; ++i) {
         temp = dst.ptr<int>(i);
         for (int j = 0; j < rows; ++j) {
@@ -145,4 +146,3 @@ Eigen::MatrixXi Drawing2D::cvToEigen(cv::Mat cvMat) {
     eigenMat = Eigen::MatrixXi::Map(&entries[0], rows, cols);
     return eigenMat;
 }
-

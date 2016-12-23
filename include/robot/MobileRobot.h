@@ -11,7 +11,8 @@ namespace rmpl {
 
 class MobileRobot : public RobotBase {
   public:
-    MobileRobot(std::string name, CollisionType type, unsigned int dim, Vec<float> minBoundary, Vec<float> maxBoundary);
+    MobileRobot(std::string name, CollisionType type, unsigned int dim, const Eigen::VectorXf &minBoundary,
+                const Eigen::VectorXf &maxBoundary);
 };
 
 } /* namespace rmpl */

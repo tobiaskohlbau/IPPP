@@ -25,7 +25,6 @@
 #include <time.h>
 
 #include <core/module/ModuleBase.h>
-#include <core/dataObj/Vec.hpp>
 #include <robot/RobotBase.h>
 
 namespace rmpl {
@@ -40,20 +39,20 @@ enum SamplingMethod { randomly, uniform, standardDistribution };
 class Sampler : public ModuleBase {
   public:
     Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
-    Vec<float> getSample();
+    Eigen::VectorXf getSample();
     float getRandomAngle();
 
-    bool setMeanOfDistribution(const Vec<float> &mean);
+    bool setMeanOfDistribution(const Eigen::VectorXf &mean);
 
   private:
     bool checkBoudaries();
-    Vec<float> sampleStandardDist();
-    Vec<float> sampleUniform();
-    Vec<float> sampleRandom();
+    Eigen::VectorXf sampleStandardDist();
+    Eigen::VectorXf sampleUniform();
+    Eigen::VectorXf sampleRandom();
 
     unsigned int m_dim;
-    Vec<float> m_minBoundary;
-    Vec<float> m_maxBoundary;
+    Eigen::VectorXf m_minBoundary;
+    Eigen::VectorXf m_maxBoundary;
     SamplingMethod m_method;
     std::shared_ptr<RobotBase> m_robot;
 

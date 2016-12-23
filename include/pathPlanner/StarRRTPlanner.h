@@ -35,10 +35,10 @@ class StarRRTPlanner : public RRTPlanner {
     StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, const RRTOptions &options)
         : RRTPlanner("RRT* Planner", robot, options) {
     }
-    bool connectGoalNode(Vec<float> goal);
+    bool connectGoalNode(Eigen::VectorXf goal);
 
   protected:
-    void computeRRTNode(const Vec<float> &randVec, std::shared_ptr<Node> &newNode);
+    void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node> &newNode);
     void chooseParent(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode,
                       std::vector<std::shared_ptr<Node>> &nearNodes);
     void reWire(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode,

@@ -39,10 +39,8 @@ CollisionDetection::CollisionDetection(const shared_ptr<RobotBase> &robot) : Mod
     m_identity = Eigen::Matrix3f::Identity(3, 3);
     m_zeroVec = Eigen::Vector3f::Zero(3, 1);
 
-    if (m_robot->getCollisionType() == CollisionType::point2D || m_robot->getCollisionType() == CollisionType::triangle2D)
-        m_2DWorkspace = m_robot->get2DWorkspace();
-    else
-        m_workspace = m_robot->getWorkspace();
+    m_2DWorkspace = m_robot->get2DWorkspace();
+    m_workspace = m_robot->getWorkspace();
 }
 
 /*!
@@ -52,8 +50,8 @@ CollisionDetection::CollisionDetection(const shared_ptr<RobotBase> &robot) : Mod
 *  \param[out] binary result of collision (true if in collision)
 *  \date       2016-05-25
 */
-bool CollisionDetection::controlVec(const Vec<float> &vec) {
-    assert(vec.getDim() == m_robot->getDim());
+bool CollisionDetection::controlVec(const Eigen::VectorXf &vec) {
+    assert(vec.rows() == m_robot->getDim());
 
     if (m_robot->getCollisionType() == CollisionType::point2D)
         return checkPoint2D(vec[0], vec[1]);
@@ -63,7 +61,7 @@ bool CollisionDetection::controlVec(const Vec<float> &vec) {
         return controlCollisionMesh(vec);
 }
 
-bool CollisionDetection::controlCollisionMesh(const Vec<float> &vec) {
+bool CollisionDetection::controlCollisionMesh(const Eigen::VectorXf &vec) {
     if (m_robot->getRobotType() == RobotType::mobile)
         return checkMobileRobot(vec);
     else
@@ -77,11 +75,11 @@ bool CollisionDetection::controlCollisionMesh(const Vec<float> &vec) {
 *  \param[out] binary result of collision (true if in collision)
 *  \date       2016-05-25
 */
-bool CollisionDetection::controlTrajectory(std::vector<Vec<float>> &vecs) {
+bool CollisionDetection::controlTrajectory(std::vector<Eigen::VectorXf> &vecs) {
     if (vecs.size() == 0)
         return false;
 
-    assert(vecs[0].getDim() == m_robot->getDim());
+    assert(vecs[0].rows() == m_robot->getDim());
 
     if (m_robot->getCollisionType() == CollisionType::point2D) {
         for (int i = 0; i < vecs.size(); ++i)
@@ -126,9 +124,9 @@ bool CollisionDetection::checkPoint2D(float x, float y) {
 *  \param[out] binary result of collision
 *  \date       2016-06-30
 */
-bool CollisionDetection::checkTriangleRobot(const Vec<float> &vec) {
+bool CollisionDetection::checkTriangleRobot(const Eigen::Vector3f &vec) {
     shared_ptr<TriangleRobot2D> robot(std::static_pointer_cast<TriangleRobot2D>(m_robot));
-    std::vector<PointList<Eigen::Vector2f, 3>> triangles = robot->getTriangles();
+    std::vector<Triangle2D> triangles = robot->getTriangles();
 
     Eigen::Matrix2f R;
     Eigen::Vector2f t;
@@ -182,7 +180,7 @@ bool CollisionDetection::checkTriangleRobot(const Vec<float> &vec) {
 *  \param[out] binary result of collision
 *  \date       2016-09-02
 */
-bool CollisionDetection::checkSerialRobot(const Vec<float> &vec) {
+bool CollisionDetection::checkSerialRobot(const Eigen::VectorXf &vec) {
     shared_ptr<SerialRobot> robot(std::static_pointer_cast<SerialRobot>(m_robot));
 
     std::vector<Eigen::Matrix4f> jointTrafos = robot->getJointTrafos(vec);
@@ -228,7 +226,7 @@ bool CollisionDetection::checkSerialRobot(const Vec<float> &vec) {
 *  \param[out] binary result of collision
 *  \date       2016-11-14
 */
-bool CollisionDetection::checkMobileRobot(const Vec<float> &vec) {
+bool CollisionDetection::checkMobileRobot(const Eigen::VectorXf &vec) {
     Eigen::Matrix4f pose = m_robot->getPoseMat();
     Eigen::Matrix3f poseR;
     Eigen::Vector3f poseT;

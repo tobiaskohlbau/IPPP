@@ -45,7 +45,7 @@ Sampling::Sampling(const std::shared_ptr<RobotBase> &robot, const std::shared_pt
 *  \param[out] sample Vec
 *  \date       2016-12-20
 */
-Vec<float> Sampling::getSample() {
+Eigen::VectorXf Sampling::getSample() {
     if (m_strategy == SamplingStrategy::nearObstacles)
         return sampleNearObstacle();
     else
@@ -60,16 +60,16 @@ Vec<float> Sampling::getSample() {
 *  \param[out] sample Vec
 *  \date       2016-12-20
 */
-Vec<float> Sampling::sampleNearObstacle() {
-    Vec<float> sample1 = m_sampler->getSample();
+Eigen::VectorXf Sampling::sampleNearObstacle() {
+    Eigen::VectorXf sample1 = m_sampler->getSample();
     if (!m_collision->controlVec(sample1)) {
         return sample1;
     } else {
-        Vec<float> sample2;
+        Eigen::VectorXf sample2;
         do {
             sample2 = m_sampler->getSample();
         } while (m_collision->controlVec(sample2));
-        std::vector<Vec<float>> path = m_planner->calcTrajectoryBin(sample2, sample1);
+        std::vector<Eigen::VectorXf> path = m_planner->calcTrajectoryBin(sample2, sample1);
         sample1 = path[0];
         for (auto point : path) {
             if (!m_collision->controlVec(point))
@@ -77,6 +77,7 @@ Vec<float> Sampling::sampleNearObstacle() {
             else
                 break;
         }
+        return sample1;
     }
 }
 
@@ -87,7 +88,7 @@ Vec<float> Sampling::sampleNearObstacle() {
 *  \param[out] binary result
 *  \date       2016-12-20
 */
-bool Sampling::setMeanOfDistribution(const Vec<float> &mean) {
+bool Sampling::setMeanOfDistribution(const Eigen::VectorXf &mean) {
     return m_sampler->setMeanOfDistribution(mean);
 }
 

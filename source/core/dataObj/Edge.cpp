@@ -37,9 +37,9 @@ Edge::Edge() {
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-Edge::Edge(shared_ptr<Node> source, shared_ptr<Node> &target, float length) {
+Edge::Edge(shared_ptr<Node> source, shared_ptr<Node> &target, float cost) {
     m_target = target;
-    m_length = length;
+    m_cost = cost;
 }
 
 /*!
@@ -48,8 +48,8 @@ Edge::Edge(shared_ptr<Node> source, shared_ptr<Node> &target, float length) {
 *  \param[out] length
 *  \date       2016-05-25
 */
-float Edge::getLength() {
-    return m_length;
+float Edge::getCost() {
+    return m_cost;
 }
 
 /*!
@@ -61,7 +61,7 @@ float Edge::getLength() {
 void Edge::setTarget(shared_ptr<Node> &target) {
     m_target = target;
     if (!m_source)
-        m_length = m_source->getDist(target);
+        m_cost = m_source->getDist(target);
 }
 
 /*!
@@ -83,7 +83,7 @@ shared_ptr<Node> Edge::getTarget() {
 void Edge::setSource(shared_ptr<Node> &source) {
     m_source = source;
     if (!m_target)
-        m_length = m_target->getDist(source);
+        m_cost = m_target->getDist(source);
 }
 
 /*!

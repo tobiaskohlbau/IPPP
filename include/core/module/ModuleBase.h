@@ -26,7 +26,6 @@
 
 namespace rmpl {
 
-
 /*!
 * \brief   Base class of all modules
 * \detail  Will be used to send messages and adds the name of the class
@@ -34,17 +33,16 @@ namespace rmpl {
 * \date    2016-06-02
 */
 class ModuleBase {
-
-public:
+  public:
     virtual ~ModuleBase();
 
-protected:
-    ModuleBase(const std::string &name);
+  protected:
+    ModuleBase(const std::string& name);
 
-public:
+  public:
     const std::string& getName();
 
-private:
+  private:
     const std::string m_name;
 };
 

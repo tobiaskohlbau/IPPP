@@ -31,8 +31,7 @@ namespace rmpl {
 *  \param[in]  SamplingStrategy
 *  \date       2016-05-24
 */
-Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
-        : ModuleBase("Sampler") {
+Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method) : ModuleBase("Sampler") {
     m_method = method;
     m_robot = robot;
     m_dim = robot->getDim();
@@ -58,9 +57,9 @@ Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
 *  \param[out] sample Vec
 *  \date       2016-05-24
 */
-Vec<float> Sampler::getSample() {
+Eigen::VectorXf Sampler::getSample() {
     if (!checkBoudaries())
-        return Vec<float>();
+        return Eigen::VectorXf();
 
     switch (m_method) {
         case SamplingMethod::standardDistribution:
@@ -89,8 +88,8 @@ float Sampler::getRandomAngle() {
 *  \param[out] binary result
 *  \date       2016-11-14
 */
-bool Sampler::setMeanOfDistribution(const Vec<float> &mean) {
-    if (mean.getDim() != m_robot->getDim()) {
+bool Sampler::setMeanOfDistribution(const Eigen::VectorXf &mean) {
+    if (mean.rows() != m_robot->getDim()) {
         Logging::warning("Wrong dimension of mean vector", this);
         return false;
     }
@@ -110,8 +109,8 @@ bool Sampler::setMeanOfDistribution(const Vec<float> &mean) {
 *  \param[out] sample Vec
 *  \date       2016-11-14
 */
-Vec<float> Sampler::sampleStandardDist() {
-    Vec<float> vec(m_dim);
+Eigen::VectorXf Sampler::sampleStandardDist() {
+    Eigen::VectorXf vec = Vecf(m_dim);
     float number;
     for (unsigned int i = 0; i < m_dim; ++i) {
         do {
@@ -129,8 +128,8 @@ Vec<float> Sampler::sampleStandardDist() {
 *  \param[out] sample Vec
 *  \date       2016-11-14
 */
-Vec<float> Sampler::sampleUniform() {
-    Vec<float> vec(m_dim);
+Eigen::VectorXf Sampler::sampleUniform() {
+    Eigen::VectorXf vec = Vecf(m_dim);
     for (unsigned int i = 0; i < m_dim; ++i)
         vec[i] = m_distUniform[i](m_generator);
     return vec;
@@ -143,8 +142,8 @@ Vec<float> Sampler::sampleUniform() {
 *  \param[out] sample Vec
 *  \date       2016-11-14
 */
-Vec<float> Sampler::sampleRandom() {
-    Vec<float> vec(m_dim);
+Eigen::VectorXf Sampler::sampleRandom() {
+    Eigen::VectorXf vec = Vecf(m_dim);
     for (unsigned int i = 0; i < m_dim; ++i)
         vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
     return vec;
@@ -157,7 +156,7 @@ Vec<float> Sampler::sampleRandom() {
 *  \date       2016-05-24
 */
 bool Sampler::checkBoudaries() {
-    if (m_minBoundary.empty() || m_maxBoundary.empty()) {
+    if (empty(m_minBoundary) || empty(m_maxBoundary)) {
         Logging::warning("Boundaries are empty", this);
         return false;
     }

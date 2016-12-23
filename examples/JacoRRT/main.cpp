@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 
+#include <core/utility/Utility.h>
 #include <pathPlanner/NormalRRTPlanner.h>
 #include <pathPlanner/StarRRTPlanner.h>
 #include <robot/Jaco.h>
@@ -22,8 +23,8 @@ void simpleRRT() {
     std::shared_ptr<Jaco> robot(new Jaco());
     RRTOptions options(30, 0.5);
     NormalRRTPlanner planner(robot, options);
-    Vec<float> start(180, 180, 180, 180, 180, 180);
-    Vec<float> goal(275, 167.5, 57.4, 241, 82.7, 75.5);
+    Eigen::VectorXf start = Vecf(180, 180, 180, 180, 180, 180);
+    Eigen::VectorXf goal = Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
 
     // compute the tree
     clock_t begin = std::clock();
@@ -32,17 +33,17 @@ void simpleRRT() {
     printTime(begin, end);
 
     std::vector<std::shared_ptr<Node>> nodes = planner.getGraphNodes();
-    std::vector<Vec<float>> graphPoints;
+    std::vector<Eigen::VectorXf> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
-        graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
+        graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
     Writer::writeVecsToFile(graphPoints, "example.ASC", 10);
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
-        std::vector<Vec<float>> pathAngles = planner.getPath(5, true);
+        std::vector<Eigen::VectorXf> pathAngles = planner.getPath(5, true);
 
-        std::vector<Vec<float>> pathPoints;
+        std::vector<Eigen::VectorXf> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
         Writer::appendVecsToFile(pathPoints, "example.ASC", 10);
@@ -63,8 +64,8 @@ void treeConnection() {
     StarRRTPlanner plannerInitNode(robot, options);
 
     // set properties to the planners
-    plannerInitNode.setInitNode(Vec<float>(180, 180, 180, 180, 180, 180));
-    plannerGoalNode.setInitNode(Vec<float>(275, 167.5, 57.4, 241, 82.7, 75.5));
+    plannerInitNode.setInitNode(Vecf(180, 180, 180, 180, 180, 180));
+    plannerGoalNode.setInitNode(Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     // compute the tree
     clock_t begin = std::clock();
@@ -74,7 +75,7 @@ void treeConnection() {
     printTime(begin, end);
 
     // get random sample from the first pathPlanner and try to connect to both planners
-    Vec<float> goal;
+    Eigen::VectorXf goal;
     bool connected = false;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < 10000; ++i) {
@@ -92,16 +93,16 @@ void treeConnection() {
     }
 
     std::vector<std::shared_ptr<Node>> nodes = plannerInitNode.getGraphNodes();
-    std::vector<Vec<float>> graphPoints;
+    std::vector<Eigen::VectorXf> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
-        graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
+        graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
     Writer::writeVecsToFile(graphPoints, "example.ASC", 10);
 
     nodes = plannerGoalNode.getGraphNodes();
     std::cout << "Goal Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
-        graphPoints.push_back(robot->directKinematic(nodes[i]->getVec()));
+        graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
     Writer::appendVecsToFile(graphPoints, "example.ASC", 10);
 
     if (connected) {
@@ -109,11 +110,11 @@ void treeConnection() {
         plannerInitNode.connectGoalNode(goal);
         plannerGoalNode.connectGoalNode(goal);
 
-        std::vector<Vec<float>> pathAngles = plannerInitNode.getPath(5, true);
-        std::vector<Vec<float>> temp = plannerGoalNode.getPath(5, true);
+        std::vector<Eigen::VectorXf> pathAngles = plannerInitNode.getPath(5, true);
+        std::vector<Eigen::VectorXf> temp = plannerGoalNode.getPath(5, true);
         pathAngles.insert(pathAngles.end(), temp.begin(), temp.end());
 
-        std::vector<Vec<float>> pathPoints;
+        std::vector<Eigen::VectorXf> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
         Writer::appendVecsToFile(pathPoints, "example.ASC", 10);

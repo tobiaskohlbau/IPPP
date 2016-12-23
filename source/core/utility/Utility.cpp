@@ -87,8 +87,8 @@ Eigen::Matrix3f getRotMat3D(float degX, float degY, float degZ) {
 *  \param[out] translation vector
 *  \date       2016-11-15
 */
-void poseVecToRandT(const Vec<float> &pose, Eigen::Matrix2f &R, Eigen::Vector2f &t) {
-    assert(pose.getDim() == 3);
+void poseVecToRandT(const Eigen::Vector3f &pose, Eigen::Matrix2f &R, Eigen::Vector2f &t) {
+    assert(pose.rows() == 3);
     R = getRotMat2D(pose[2]);
     t(0) = pose[0];
     t(1) = pose[1];
@@ -102,8 +102,8 @@ void poseVecToRandT(const Vec<float> &pose, Eigen::Matrix2f &R, Eigen::Vector2f 
 *  \param[out] translation vector
 *  \date       2016-11-15
 */
-void poseVecToRandT(const Vec<float> &pose, Eigen::Matrix3f &R, Eigen::Vector3f &t) {
-    assert(pose.getDim() == 6);
+void poseVecToRandT(const Eigen::Matrix<float, 6, 1> &pose, Eigen::Matrix3f &R, Eigen::Vector3f &t) {
+    assert(pose.rows() == 6);
     R = getRotMat3D(pose[3], pose[4], pose[5]);
     t(0) = pose[0];
     t(1) = pose[1];
@@ -117,7 +117,7 @@ void poseVecToRandT(const Vec<float> &pose, Eigen::Matrix3f &R, Eigen::Vector3f 
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Eigen::Matrix4f poseVecToMat(const Vec<float> &pose) {
+Eigen::Matrix4f poseVecToMat(const Eigen::Matrix<float, 6, 1> &pose) {
     Eigen::Matrix3f R = getRotMat3D(pose[3], pose[4], pose[5]);
     Eigen::Matrix4f T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
@@ -133,14 +133,13 @@ Eigen::Matrix4f poseVecToMat(const Vec<float> &pose) {
 *  \param[out] pose Vec (angles)
 *  \date       2016-07-07
 */
-Vec<float> poseMatToVec(const Eigen::Matrix4f &pose) {
-    Vec<float> vec(pose(0, 3), pose(1, 3), pose(2, 3));
+Eigen::Matrix<float, 6, 1> poseMatToVec(const Eigen::Matrix4f &pose) {
+    Eigen::Vector3f vec(pose(0, 3), pose(1, 3), pose(2, 3));
     Eigen::Vector3f euler = pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2);
     euler(0, 0) *= toDeg();
     euler(1, 0) *= toDeg();
     euler(2, 0) *= toDeg();
-    vec.append(EigenToVec(euler));
-    return vec;
+    return append(vec, euler);
 }
 
 /*!
@@ -150,9 +149,9 @@ Vec<float> poseMatToVec(const Eigen::Matrix4f &pose) {
 *  \param[out] Vec of rad
 *  \date       2016-07-07
 */
-Vec<float> degToRad(const Vec<float> deg) {
-    Vec<float> rad(deg.getDim());
-    for (unsigned int i = 0; i < deg.getDim(); ++i)
+Eigen::VectorXf degToRad(Eigen::VectorXf deg) {
+    Eigen::VectorXf rad(deg.rows());
+    for (unsigned int i = 0; i < deg.rows(); ++i)
         rad[i] = deg[i] * toRad();
     return rad;
 }
@@ -166,48 +165,6 @@ Vec<float> degToRad(const Vec<float> deg) {
 */
 float degToRad(float deg) {
     return deg * toRad();
-}
-
-/*!
-*  \brief      Convert rmpl Vec to Eigen Array
-*  \author     Sascha Kaden
-*  \param[in]  Vec
-*  \param[out] Eigen Array
-*  \date       2016-07-07
-*/
-Eigen::VectorXf VecToEigen(const Vec<float> &vec) {
-    Eigen::VectorXf eigenVec(vec.getDim());
-    for (unsigned int i = 0; i < vec.getDim(); ++i)
-        eigenVec(i, 0) = vec[i];
-    return eigenVec;
-}
-
-/*!
-*  \brief      Convert rmpl Vec to Eigen Array
-*  \author     Sascha Kaden
-*  \param[in]  Vec
-*  \param[out] Eigen Array
-*  \date       2016-07-07
-*/
-Eigen::VectorXf VecToEigen(const Vec<PQP_REAL> &vec) {
-    Eigen::VectorXf eigenVec(vec.getDim());
-    for (unsigned int i = 0; i < vec.getDim(); ++i)
-        eigenVec(i, 0) = vec[i];
-    return eigenVec;
-}
-
-/*!
-*  \brief      Convert Eigen Array to rmpl Vec
-*  \author     Sascha Kaden
-*  \param[in]  Eigen Array
-*  \param[out] Vec
-*  \date       2016-07-07
-*/
-Vec<float> EigenToVec(const Eigen::VectorXf &eigenVec) {
-    Vec<float> vec((unsigned int)eigenVec.rows());
-    for (unsigned int i = 0; i < vec.getDim(); ++i)
-        vec[i] = eigenVec(i, 0);
-    return vec;
 }
 
 /*!
@@ -259,4 +216,74 @@ bool contains(std::vector<std::shared_ptr<Node>> &list, std::shared_ptr<Node> &n
 }
 
 } /* namespace utility */
+
+bool empty(Eigen::VectorXf vec) {
+    if (vec.rows() == 0 || vec.rows() == -1 || vec.rows() > 100)
+        return true;
+    else
+        return false;
+}
+
+Eigen::VectorXf append(Eigen::VectorXf source, Eigen::VectorXf add) {
+    Eigen::VectorXf vec;
+    vec.resize(source.rows() + add.rows(), 1);
+    for (int i = 0; i < source.rows(); ++i)
+        vec[i] = source[i];
+    for (int i = source.rows() - 1; i < add.rows() + source.rows(); ++i)
+        vec[source.rows() + i] = add[i];
+    return vec;
+}
+
+Eigen::Vector3f append(Eigen::Vector2f source, float add) {
+    Eigen::Vector3f vec;
+    for (int i = 0; i < source.rows(); ++i)
+        vec[i] = source[i];
+    vec[source.rows()] = add;
+    return vec;
+}
+
+Eigen::Vector4f append(Eigen::Vector3f source, float add) {
+    Eigen::Vector4f vec;
+    for (int i = 0; i < source.rows(); ++i)
+        vec[i] = source[i];
+    vec[source.rows()] = add;
+    return vec;
+}
+
+Eigen::VectorXf append(Eigen::VectorXf source, float add) {
+    Eigen::VectorXf vec;
+    vec.resize(source.rows() + 1, 1);
+    for (int i = 0; i < source.rows(); ++i)
+        vec[i] = source[i];
+
+    vec[source.rows()] = add;
+    return vec;
+}
+
+Eigen::VectorXf Vecf(unsigned int dim) {
+    Eigen::VectorXf vec;
+    vec.resize(dim, 1);
+    return vec;
+}
+
+Eigen::Matrix<float, 5, 1> Vecf(float x, float y, float z, float rx, float ry) {
+    Eigen::Matrix<float, 5, 1> vec;
+    vec << x, y, z, rx, ry;
+    return vec;
+}
+
+Eigen::Matrix<float, 6, 1> Vecf(float x, float y, float z, float rx, float ry, float rz) {
+    Eigen::Matrix<float, 6, 1> vec;
+    vec << x, y, z, rx, ry, rz;
+    return vec;
+}
+
+Eigen::VectorXf Vecf(unsigned int dim, float data[]) {
+    Eigen::VectorXf vec;
+    vec.resize(dim, 1);
+    for (unsigned int i = 0; i < dim; ++i)
+        vec[i] = data[i];
+    return vec;
+}
+
 } /* namespace rmpl */

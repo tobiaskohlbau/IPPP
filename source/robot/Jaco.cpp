@@ -29,12 +29,12 @@ namespace rmpl {
 *  \date       2016-06-30
 */
 Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
-    m_alpha = Vec<float>(utility::pi() / 2, utility::pi(), utility::pi() / 2, 0.95993, 0.95993, utility::pi());
-    m_a = Vec<float>(0, 410, 0, 0, 0, 0);
-    m_d = Vec<float>(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
+    m_alpha = Vecf(utility::pi() / 2, utility::pi(), utility::pi() / 2, 0.95993, 0.95993, utility::pi());
+    m_a = Vecf(0, 410, 0, 0, 0, 0);
+    m_d = Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
-    m_pose = Vec<float>(0,0,0,0,0,0);
-    //m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_base_fixed_origin.obj"));
+    m_pose = Vecf(0, 0, 0, 0, 0, 0);
+    // m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_base_fixed_origin.obj"));
     std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/link_base_fixed_origin.obj"));
     Joint joint(0, 360, mesh);
     m_joints.push_back(joint);
@@ -54,11 +54,11 @@ Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
     mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_5_fixed_origin.obj"));
     joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
-    //mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_hand_fixed_origin.obj"));
-    //joint = Joint(0, 360, mesh);
-    //m_joints.push_back(joint);
-    m_minBoundary = Vec<float>(0, 42, 17, 0, 0, 0);
-    m_maxBoundary = Vec<float>(360, 318, 343, 360, 360, 360);
+    // mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_hand_fixed_origin.obj"));
+    // joint = Joint(0, 360, mesh);
+    // m_joints.push_back(joint);
+    m_minBoundary = Vecf(0, 42, 17, 0, 0, 0);
+    m_maxBoundary = Vecf(360, 318, 343, 360, 360, 360);
 }
 
 /*!
@@ -68,7 +68,7 @@ Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
 *  \param[out] euclidean position Vec
 *  \date       2016-08-25
 */
-Vec<float> Jaco::directKinematic(const Vec<float> &angles) {
+Eigen::Matrix<float, 6, 1> Jaco::directKinematic(const Eigen::VectorXf &angles) {
     std::vector<Eigen::Matrix4f> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos);
@@ -81,10 +81,10 @@ Vec<float> Jaco::directKinematic(const Vec<float> &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-14
 */
-std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Vec<float> &angles) {
+std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Eigen::VectorXf &angles) {
     // transform form jaco physical angles to dh angles
-    Vec<float> dhAngles = convertRealToDH(angles);
-    Vec<float> rads = utility::degToRad(dhAngles);
+    Eigen::VectorXf dhAngles = convertRealToDH(angles);
+    Eigen::VectorXf rads = utility::degToRad(dhAngles);
 
     std::vector<Eigen::Matrix4f> trafos;
     // create transformation matrizes
@@ -102,8 +102,8 @@ std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Vec<float> &angles) {
 *  \param[out] D-H angles
 *  \date       2016-07-14
 */
-Vec<float> Jaco::convertRealToDH(const Vec<float> &realAngles) {
-    Vec<float> dhAngles(realAngles);
+Eigen::Matrix<float, 6, 1> Jaco::convertRealToDH(const Eigen::Matrix<float, 6, 1> &realAngles) {
+    Eigen::Matrix<float, 6, 1> dhAngles(realAngles);
     dhAngles[0] = -realAngles[0];
     dhAngles[1] = realAngles[1] - 90;
     dhAngles[2] = realAngles[2] + 90;

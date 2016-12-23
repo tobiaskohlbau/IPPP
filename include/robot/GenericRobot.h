@@ -30,11 +30,11 @@ namespace rmpl {
 */
 class GenericRobot : public SerialRobot {
   public:
-    GenericRobot(std::string name, unsigned int dimension, const Vec<float> &alphaParams,
-                 const Vec<float> &aParams, const Vec<float> dParams);
+    GenericRobot(std::string name, unsigned int dimension, const Eigen::VectorXf &alphaParams, const Eigen::VectorXf &aParams,
+                 const Eigen::VectorXf dParams);
 
-    Vec<float> directKinematic(const Vec<float> &angles);
-    std::vector<Eigen::Matrix4f> getJointTrafos(const Vec<float> &angles);
+    Eigen::Matrix<float, 6, 1> directKinematic(const Eigen::VectorXf &angles);
+    std::vector<Eigen::Matrix4f> getJointTrafos(const Eigen::VectorXf &angles);
 
   private:
 };

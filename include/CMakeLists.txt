@@ -19,7 +19,6 @@
 list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDTree.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Vec.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp)
 
 set(SRCS "${SRCS}" PARENT_SCOPE)

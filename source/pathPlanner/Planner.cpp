@@ -54,14 +54,14 @@ std::vector<shared_ptr<Node>> Planner::getGraphNodes() {
 /*!
 *  \brief      Return path points from passed path nodes, using optional smoothing
 *  \author     Sascha Kaden
-*  \param[in]
-*  \param[in]
-*  \param[in]
-*  \param[out] list of all nodes
+*  \param[in]  path nodes
+*  \param[in]  trajectory step size
+*  \param[in]  smoothing
+*  \param[out] path points
 *  \date       2016-05-27
 */
-std::vector<Vec<float>> Planner::getPathFromNodes(const std::vector<shared_ptr<Node>> &nodes, float trajectoryStepSize,
-                                                  bool smoothing) {
+std::vector<Eigen::VectorXf> Planner::getPathFromNodes(const std::vector<shared_ptr<Node>> &nodes, float trajectoryStepSize,
+                                                       bool smoothing) {
     std::vector<shared_ptr<Node>> smoothedNodes;
     if (smoothing)
         smoothedNodes = smoothPath(nodes);
@@ -70,10 +70,10 @@ std::vector<Vec<float>> Planner::getPathFromNodes(const std::vector<shared_ptr<N
 
     Logging::info("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", this);
 
-    std::vector<Vec<float>> path;
+    std::vector<Eigen::VectorXf> path;
     for (int i = 0; i < smoothedNodes.size() - 1; ++i) {
-        std::vector<Vec<float>> tempVecs =
-            m_planner->calcTrajectoryCont(smoothedNodes[i]->getVec(), smoothedNodes[i + 1]->getVec());
+        std::vector<Eigen::VectorXf> tempVecs =
+            m_planner->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues());
         for (auto vec : tempVecs)
             path.push_back(vec);
     }
@@ -83,7 +83,7 @@ std::vector<Vec<float>> Planner::getPathFromNodes(const std::vector<shared_ptr<N
                       this);
     } else if (trajectoryStepSize > m_planner->getStepSize()) {
         unsigned int steps = trajectoryStepSize / m_planner->getStepSize();
-        std::vector<Vec<float>> newPath;
+        std::vector<Eigen::VectorXf> newPath;
         newPath.push_back(path[0]);
         unsigned int j = 0;
         for (auto point : path) {
@@ -103,11 +103,19 @@ std::vector<Vec<float>> Planner::getPathFromNodes(const std::vector<shared_ptr<N
     return path;
 }
 
+/*!
+*  \brief      Return shortened path nodes
+*  \details    If trajectory from node to grandparent node is free, parent node will be erased.
+*  \author     Sascha Kaden
+*  \param[in]  path nodes
+*  \param[out] shortened path nodes
+*  \date       2016-05-27
+*/
 std::vector<shared_ptr<Node>> Planner::smoothPath(std::vector<shared_ptr<Node>> nodes) {
     unsigned int i = 0;
     unsigned int countNodes = nodes.size() - 2;
     while (i < countNodes) {
-        while (i < countNodes && m_planner->controlTrajectory(nodes[i]->getVec(), nodes[i + 2]->getVec())) {
+        while (i < countNodes && m_planner->controlTrajectory(nodes[i]->getValues(), nodes[i + 2]->getValues())) {
             nodes.erase(nodes.begin() + i + 1);
             --countNodes;
         }

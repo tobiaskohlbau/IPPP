@@ -16,8 +16,10 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/dataObj/Node.h>
 #include <limits>
+
+#include <core/dataObj/Node.h>
+#include <core/utility/Utility.h>
 
 using std::shared_ptr;
 namespace rmpl {
@@ -32,17 +34,6 @@ Node::Node() {
 }
 
 /*!
-*  \brief      Constructor of the class Node (1D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \date       2016-05-24
-*/
-Node::Node(float x) {
-    m_cost = 0;
-    m_vec = Vec<float>(x);
-}
-
-/*!
 *  \brief      Constructor of the class Node (2D)
 *  \author     Sascha Kaden
 *  \param[in]  x
@@ -51,7 +42,7 @@ Node::Node(float x) {
 */
 Node::Node(float x, float y) {
     m_cost = 0;
-    m_vec = Vec<float>(x, y);
+    m_vec = Eigen::Vector2f(x, y);
 }
 
 /*!
@@ -64,7 +55,7 @@ Node::Node(float x, float y) {
 */
 Node::Node(float x, float y, float z) {
     m_cost = 0;
-    m_vec = Vec<float>(x, y, z);
+    m_vec = Eigen::Vector3f(x, y, z);
 }
 
 /*!
@@ -78,7 +69,7 @@ Node::Node(float x, float y, float z) {
 */
 Node::Node(float x, float y, float z, float rx) {
     m_cost = 0;
-    m_vec = Vec<float>(x, y, z, rx);
+    m_vec = Eigen::Vector4f(x, y, z, rx);
 }
 
 /*!
@@ -93,7 +84,7 @@ Node::Node(float x, float y, float z, float rx) {
 */
 Node::Node(float x, float y, float z, float rx, float ry) {
     m_cost = 0;
-    m_vec = Vec<float>(x, y, z, rx, ry);
+    m_vec = Vecf(x, y, z, rx, ry);
 }
 
 /*!
@@ -109,61 +100,7 @@ Node::Node(float x, float y, float z, float rx, float ry) {
 */
 Node::Node(float x, float y, float z, float rx, float ry, float rz) {
     m_cost = 0;
-    m_vec = Vec<float>(x, y, z, rx, ry, rz);
-}
-
-/*!
-*  \brief      Constructor of the class Node (6D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \param[in]  rx
-*  \param[in]  ry
-*  \param[in]  rz
-*  \param[in]  wx
-*  \date       2016-07-14
-*/
-Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx) {
-    m_cost = 0;
-    m_vec = Vec<float>(x, y, z, rx, ry, rz, wx);
-}
-
-/*!
-*  \brief      Constructor of the class Node (6D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \param[in]  rx
-*  \param[in]  ry
-*  \param[in]  rz
-*  \param[in]  wx
-*  \param[in]  wy
-*  \date       2016-07-14
-*/
-Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy) {
-    m_cost = 0;
-    m_vec = Vec<float>(x, y, z, rx, ry, rz, wx, wy);
-}
-
-/*!
-*  \brief      Constructor of the class Node (6D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \param[in]  rx
-*  \param[in]  ry
-*  \param[in]  rz
-*  \param[in]  wx
-*  \param[in]  wy
-*  \param[in]  wz
-*  \date       2016-07-14
-*/
-Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, float wy, float wz) {
-    m_cost = 0;
-    m_vec = Vec<float>(x, y, z, rx, ry, rz, wx, wy, wz);
+    m_vec = Vecf(x, y, z, rx, ry, rz);
 }
 
 /*!
@@ -172,7 +109,7 @@ Node::Node(float x, float y, float z, float rx, float ry, float rz, float wx, fl
 *  \param[in]  Vector
 *  \date       2016-05-24
 */
-Node::Node(const Vec<float> &vec) {
+Node::Node(const Eigen::VectorXf &vec) {
     m_vec = vec;
     m_cost = 0;
 }
@@ -183,7 +120,6 @@ Node::Node(const Vec<float> &vec) {
 *  \date       2016-05-24
 */
 float Node::getX() {
-    assert(m_vec.getDim() > 0);
     return m_vec[0];
 }
 
@@ -193,7 +129,6 @@ float Node::getX() {
 *  \date       2016-05-24
 */
 float Node::getY() {
-    assert(m_vec.getDim() > 1);
     return m_vec[1];
 }
 
@@ -203,7 +138,6 @@ float Node::getY() {
 *  \date       2016-05-24
 */
 float Node::getZ() {
-    assert(m_vec.getDim() > 2);
     return m_vec[2];
 }
 
@@ -214,7 +148,7 @@ float Node::getZ() {
 *  \date       2016-05-24
 */
 unsigned int Node::getDim() {
-    return m_vec.getDim();
+    return m_vec.rows();
 }
 
 /*!
@@ -224,39 +158,10 @@ unsigned int Node::getDim() {
 *  \date       2016-05-24
 */
 bool Node::empty() const {
-    return m_vec.empty();
-}
-
-/*!
-*  \brief      Set the vector element by index
-*  \author     Sascha Kaden
-*  \param[in]  value
-*  \param[in]  index
-*  \date       2016-05-24
-*/
-void Node::setVecValue(float value, unsigned int index) {
-    m_vec[index] = value;
-}
-
-/*!
-*  \brief      Return the vector element by index
-*  \author     Sascha Kaden
-*  \param[in]  index
-*  \param[out] value
-*  \date       2016-05-24
-*/
-float Node::getVecValue(unsigned int index) {
-    return m_vec[index];
-}
-
-/*!
-*  \brief      Return norm 2 from the vector
-*  \author     Sascha Kaden
-*  \param[out] norm 2
-*  \date       2016-05-24
-*/
-float Node::norm() {
-    return m_vec.norm();
+    if (m_vec.rows() == 0 || m_vec.rows() == -1)
+        return true;
+    else
+        return false;
 }
 
 /*!
@@ -282,7 +187,7 @@ float Node::getDist(const shared_ptr<Node> &node) {
 float Node::getDist(const Node &node) {
     if (node.empty() || empty())
         return -1;
-    return m_vec.getDist(node.getVec());
+    return (m_vec - node.getValues()).norm();
 }
 
 /*!
@@ -292,7 +197,7 @@ float Node::getDist(const Node &node) {
 *  \date       2016-05-24
 */
 float Node::getDistToParent() {
-    return m_parent->getLength();
+    return m_parent->getCost();
 }
 
 /*!
@@ -420,7 +325,7 @@ void Node::clearChildes() {
 *  \param[out] Vec
 *  \date       2016-05-24
 */
-Vec<float> Node::getVec() const {
+Eigen::VectorXf Node::getValues() const {
     return m_vec;
 }
 

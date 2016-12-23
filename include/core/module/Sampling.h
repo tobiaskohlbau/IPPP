@@ -21,7 +21,8 @@
 
 #include <math.h>
 
-#include <core/dataObj/Vec.hpp>
+#include <Eigen/Core>
+
 #include <core/module/CollisionDetection.h>
 #include <core/module/ModuleBase.h>
 #include <core/module/Sampler.h>
@@ -43,11 +44,11 @@ class Sampling : public ModuleBase {
              const std::shared_ptr<TrajectoryPlanner> &planner, SamplingMethod method = SamplingMethod::randomly,
              SamplingStrategy strategy = SamplingStrategy::normal);
 
-    Vec<float> getSample();
-    bool setMeanOfDistribution(const Vec<float> &mean);
+    Eigen::VectorXf getSample();
+    bool setMeanOfDistribution(const Eigen::VectorXf &mean);
 
   private:
-    Vec<float> sampleNearObstacle();
+    Eigen::VectorXf sampleNearObstacle();
 
     SamplingStrategy m_strategy;
 

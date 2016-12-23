@@ -30,10 +30,10 @@ using namespace rmpl;
 *  \author     Sasch Kaden
 *  \date       2016-11-14
 */
-void Writer::writeVecsToFile(const std::vector<Vec<float>> &vecs, const std::string &filename, float scale) {
+void Writer::writeVecsToFile(const std::vector<Eigen::VectorXf> &vecs, const std::string &filename, float scale) {
     std::ofstream myfile(filename);
     for (int i = 0; i < vecs.size(); ++i) {
-        for (unsigned int j = 0; j < vecs[i].getDim(); ++j)
+        for (unsigned int j = 0; j < vecs[i].cols(); ++j)
             myfile << vecs[i][j] * scale << " ";
         myfile << std::endl;
     }
@@ -48,11 +48,11 @@ void Writer::writeVecsToFile(const std::vector<Vec<float>> &vecs, const std::str
 *  \author     Sasch Kaden
 *  \date       2016-11-14
 */
-void Writer::appendVecsToFile(const std::vector<Vec<float>> &vecs, const std::string &filename, float scale) {
+void Writer::appendVecsToFile(const std::vector<Eigen::VectorXf> &vecs, const std::string &filename, float scale) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);
     for (int i = 0; i < vecs.size(); ++i) {
-        for (unsigned int j = 0; j < vecs[i].getDim(); ++j)
+        for (unsigned int j = 0; j < vecs[i].cols(); ++j)
             myfile << vecs[i][j] * scale << " ";
         myfile << std::endl;
     }
@@ -66,12 +66,12 @@ void Writer::appendVecsToFile(const std::vector<Vec<float>> &vecs, const std::st
 *  \author     Sasch Kaden
 *  \date       2016-11-14
 */
-void Writer::writeTrafosToFile(const std::vector<std::vector<Vec<float>>> &vecs, const std::string &filename) {
+void Writer::writeTrafosToFile(const std::vector<std::vector<Eigen::VectorXf>> &vecs, const std::string &filename) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);
     for (auto trafos : vecs) {
         for (auto trafo : trafos) {
-            for (unsigned int i = 0; i < trafo.getDim(); ++i) {
+            for (unsigned int i = 0; i < trafo.cols(); ++i) {
                 myfile << trafo[i] << " ";
             }
         }

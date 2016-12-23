@@ -21,8 +21,8 @@
 
 #include <Eigen/Core>
 
-#include <core/module/CollisionDetection.h>
 #include <core/dataObj/Graph.h>
+#include <core/module/CollisionDetection.h>
 #include <core/module/ModuleBase.h>
 #include <core/module/Sampling.h>
 #include <core/module/TrajectoryPlanner.h>
@@ -40,13 +40,13 @@ class Planner : public ModuleBase {
   public:
     Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const PlannerOptions &options);
 
-    virtual bool computePath(Vec<float> start, Vec<float> goal, unsigned int numNodes, unsigned int numThreads) = 0;
+    virtual bool computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads) = 0;
 
     std::vector<std::shared_ptr<Node>> getGraphNodes();
-    virtual std::vector<Vec<float>> getPath(float trajectoryStepSize, bool smoothing) = 0;
+    virtual std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing) = 0;
     virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
-    std::vector<Vec<float>> getPathFromNodes(const std::vector<std::shared_ptr<Node>> &nodes, float trajectoryStepSize,
-                                             bool smoothing);
+    std::vector<Eigen::VectorXf> getPathFromNodes(const std::vector<std::shared_ptr<Node>> &nodes, float trajectoryStepSize,
+                                                  bool smoothing);
 
   protected:
     std::vector<std::shared_ptr<Node>> smoothPath(std::vector<std::shared_ptr<Node>> nodes);

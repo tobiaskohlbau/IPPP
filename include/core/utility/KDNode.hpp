@@ -19,9 +19,8 @@
 #ifndef KDNODE_H_
 #define KDNODE_H_
 
+#include <Eigen/Core>
 #include <cstdint>
-
-#include <core/dataObj/Vec.hpp>
 
 namespace rmpl {
 
@@ -35,12 +34,12 @@ namespace rmpl {
 template <typename T>
 class KDNode {
   public:
-    KDNode(const Vec<float> &vec, const T &node);
+    KDNode(const Eigen::VectorXf &vec, const T &node);
     unsigned int getDim();
 
     std::shared_ptr<KDNode<T>> left;
     std::shared_ptr<KDNode<T>> right;
-    Vec<float> vec;
+    Eigen::VectorXf vec;
     T node;
     unsigned int axis;
     float value;
@@ -54,7 +53,7 @@ class KDNode {
 *  \date       2016-05-27
 */
 template <typename T>
-KDNode<T>::KDNode(const Vec<float> &vec, const T &node) {
+KDNode<T>::KDNode(const Eigen::VectorXf &vec, const T &node) {
     this->vec = vec;
     this->node = node;
     axis = 0;
@@ -69,7 +68,7 @@ KDNode<T>::KDNode(const Vec<float> &vec, const T &node) {
 */
 template <typename T>
 unsigned int KDNode<T>::getDim() {
-    return vec.getDim();
+    return vec.rows();
 }
 
 } /* namespace rmpl */

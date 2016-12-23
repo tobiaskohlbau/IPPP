@@ -19,6 +19,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <core/module/TrajectoryPlanner.h>
+#include <core/utility/Utility.h>
 
 using namespace rmpl;
 
@@ -31,13 +32,13 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     TrajectoryPlanner planner(0.1, collision);
 
     // test trajectories
-    Vec<float> init(0, 0, 0, 0, 0, 0);
-    Vec<float> goal(0, 0, 0, 0, 0, 0);
-    std::vector<Vec<float>> path;
+    Eigen::VectorXf init = Vecf(0, 0, 0, 0, 0, 0);
+    Eigen::VectorXf goal = Vecf(0, 0, 0, 0, 0, 0);
+    std::vector<Eigen::VectorXf> path;
     path = planner.calcTrajectoryCont(init, goal);
     BOOST_CHECK(path.size() == 0);
 
-    goal = Vec<float>(1, 1, 1, 1, 1, 1);
+    goal = Vecf(1, 1, 1, 1, 1, 1);
     path = planner.calcTrajectoryCont(init, goal);
     float dist = 1 / goal.norm() * 0.1;
     for (float i = 0; i < path.size(); ++i) {
@@ -48,7 +49,7 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
         dist += 1 / goal.norm() * 0.1;
     }
 
-    goal = Vec<float>(-1, -1, -1, -1, -1, -1);
+    goal = Vecf(-1, -1, -1, -1, -1, -1);
     path = planner.calcTrajectoryCont(init, goal);
     dist = -1 / goal.norm() * 0.1;
     for (float i = 0; i < path.size(); ++i) {
