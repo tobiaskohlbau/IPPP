@@ -50,18 +50,6 @@ void Graph::addNode(const shared_ptr<Node> &node) {
 }
 
 /*!
-* \brief      Remove Node from the graph
-* \author     Sascha Kaden
-* \param[in]  index
-* \date       2016-05-25
-*/
-void Graph::removeNode(int index) {
-    if (index < m_nodes.size()) {
-        m_nodes.erase(m_nodes.begin() + index);
-    }
-}
-
-/*!
 * \brief      Return a the list of nodes
 * \author     Sascha Kaden
 * \param[out] list of nodes
