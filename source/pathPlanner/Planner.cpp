@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <include/core/utility/Logging.h>
+#include <core/utility/Logging.h>
 #include <pathPlanner/Planner.h>
 
 using std::shared_ptr;

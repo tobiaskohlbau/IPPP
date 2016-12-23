@@ -18,8 +18,8 @@
 
 #include <core/module/CollisionDetection.h>
 
-#include <include/core/utility/Logging.h>
-#include <include/core/utility/Utility.h>
+#include <core/utility/Logging.h>
+#include <core/utility/Utility.h>
 
 using std::shared_ptr;
 namespace rmpl {

@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <include/core/utility/Logging.h>
-#include <include/pathPlanner/options/PlannerOptions.h>
+#include <core/utility/Logging.h>
+#include <pathPlanner/options/PlannerOptions.h>
 
 namespace rmpl {
 

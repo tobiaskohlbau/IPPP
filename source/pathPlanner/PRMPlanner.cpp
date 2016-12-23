@@ -18,7 +18,7 @@
 
 #include <pathPlanner/PRMPlanner.h>
 
-#include <include/core/utility/Logging.h>
+#include <core/utility/Logging.h>
 #include <thread>
 
 using std::shared_ptr;

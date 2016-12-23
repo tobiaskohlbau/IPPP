@@ -18,7 +18,7 @@
 
 #include <robot/KukaKR5.h>
 
-#include <include/core/utility/Utility.h>
+#include <core/utility/Utility.h>
 
 namespace rmpl {
 

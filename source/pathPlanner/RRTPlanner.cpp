@@ -20,7 +20,7 @@
 
 #include <thread>
 
-#include <include/core/utility/Logging.h>
+#include <core/utility/Logging.h>
 
 using std::shared_ptr;
 namespace rmpl {

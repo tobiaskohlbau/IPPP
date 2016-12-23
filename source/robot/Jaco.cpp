@@ -18,7 +18,7 @@
 
 #include <robot/Jaco.h>
 
-#include <include/core/utility/Utility.h>
+#include <core/utility/Utility.h>
 
 namespace rmpl {
 

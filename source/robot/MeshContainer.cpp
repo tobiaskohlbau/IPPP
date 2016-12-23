@@ -22,8 +22,8 @@
 #include <iostream>
 #include <sstream>
 
-#include <include/core/utility/Logging.h>
-#include <include/core/utility/Utility.h>
+#include <core/utility/Logging.h>
+#include <core/utility/Utility.h>
 
 namespace rmpl {
 
