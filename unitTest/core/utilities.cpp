@@ -16,6 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
+#include <iostream>
+
 #include <boost/test/unit_test.hpp>
 
 #include <core/utility/Utility.h>
@@ -64,6 +66,9 @@ BOOST_AUTO_TEST_CASE(poseVecToMat) {
         }
     }
     Eigen::Matrix<float, 6, 1> poseVec = utility::poseMatToVec(poseMat);
+    for (int i = 0; i < 6; ++i)
+        if (poseVec[i] < 0.0001 && poseVec[i] > -0.0001)
+            poseVec[i] = 0;
     for (int i = 0; i < 6; ++i)
         BOOST_CHECK(poseZero[i] == poseVec[i]);
 
