@@ -32,7 +32,7 @@ namespace rmpl {
 enum SamplingMethod { randomly, uniform, standardDistribution };
 
 /*!
-* \brief   Class Sampling creates sample vecs with the passed method
+* \brief   Class Sampling creates sample vecs with the configurated method
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
@@ -45,16 +45,14 @@ class Sampler : public ModuleBase {
     bool setMeanOfDistribution(const Eigen::VectorXf &mean);
 
   private:
-    bool checkBoudaries();
     Eigen::VectorXf sampleStandardDist();
     Eigen::VectorXf sampleUniform();
     Eigen::VectorXf sampleRandom();
 
-    unsigned int m_dim;
+    const unsigned int m_dim;
     Eigen::VectorXf m_minBoundary;
     Eigen::VectorXf m_maxBoundary;
     SamplingMethod m_method;
-    std::shared_ptr<RobotBase> m_robot;
 
     std::random_device rd;
     std::mt19937 m_generator;
