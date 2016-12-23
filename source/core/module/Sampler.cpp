@@ -31,17 +31,17 @@ namespace rmpl {
 *  \param[in]  SamplingStrategy
 *  \date       2016-05-24
 */
-Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method) : ModuleBase("Sampler") {
+Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method) : ModuleBase("Sampler"), m_dim(robot->getDim()) {
     m_method = method;
-    m_robot = robot;
-    m_dim = robot->getDim();
 
-    m_minBoundary = m_robot->getMinBoundary();
-    m_maxBoundary = m_robot->getMaxBoundary();
+    m_minBoundary = robot->getMinBoundary();
+    m_maxBoundary = robot->getMaxBoundary();
+    if (empty(m_minBoundary) || empty(m_maxBoundary))
+        Logging::warning("Boundaries are empty", this);
 
     m_generator = std::mt19937(rd());
 
-    for (unsigned int i = 0; i < m_robot->getDim(); ++i) {
+    for (unsigned int i = 0; i < m_dim; ++i) {
         std::normal_distribution<float> dist1(0, 500);
         m_distNormal.push_back(dist1);
 
@@ -58,9 +58,6 @@ Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
 *  \date       2016-05-24
 */
 Eigen::VectorXf Sampler::getSample() {
-    if (!checkBoudaries())
-        return Eigen::VectorXf();
-
     switch (m_method) {
         case SamplingMethod::standardDistribution:
             return sampleStandardDist();
@@ -89,13 +86,13 @@ float Sampler::getRandomAngle() {
 *  \date       2016-11-14
 */
 bool Sampler::setMeanOfDistribution(const Eigen::VectorXf &mean) {
-    if (mean.rows() != m_robot->getDim()) {
+    if (mean.rows() != m_dim) {
         Logging::warning("Wrong dimension of mean vector", this);
         return false;
     }
 
     m_distNormal.clear();
-    for (unsigned int i = 0; i < m_robot->getDim(); ++i) {
+    for (unsigned int i = 0; i < m_dim; ++i) {
         std::normal_distribution<float> distribution(mean[i], m_maxBoundary[i] - m_minBoundary[i]);
         m_distNormal.push_back(distribution);
     }
@@ -147,20 +144,6 @@ Eigen::VectorXf Sampler::sampleRandom() {
     for (unsigned int i = 0; i < m_dim; ++i)
         vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
     return vec;
-}
-
-/*!
-*  \brief      Check boundary existence
-*  \author     Sascha Kaden
-*  \param[out] result of check
-*  \date       2016-05-24
-*/
-bool Sampler::checkBoudaries() {
-    if (empty(m_minBoundary) || empty(m_maxBoundary)) {
-        Logging::warning("Boundaries are empty", this);
-        return false;
-    }
-    return true;
 }
 
 } /* namespace rmpl */
