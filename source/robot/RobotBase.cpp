@@ -79,10 +79,10 @@ Eigen::VectorXf RobotBase::getMaxBoundary() {
 */
 void RobotBase::setPose(const Eigen::Matrix<float, 6, 1> &pose) {
     if (pose.rows() != 6) {
-        Logging::warning("Pose vector has wrong dimension, must have 6!", this);
+        Logging::error("Pose vector has wrong dimension, must have 6!", this);
         return;
     } else if (empty(pose)) {
-        Logging::warning("Empty pose vector!", this);
+        Logging::error("Empty pose vector!", this);
         return;
     }
 
