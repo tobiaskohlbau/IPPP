@@ -76,7 +76,7 @@ bool RRTPlanner::setInitNode(Eigen::VectorXf start) {
 */
 bool RRTPlanner::computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads) {
         if (m_initNode == nullptr) {
-            Logging::warning("Init node is not connected", this);
+            Logging::error("Init node is not connected", this);
             return false;
         }
 

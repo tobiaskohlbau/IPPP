@@ -147,7 +147,7 @@ void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeI
 */
 bool PRMPlanner::queryPath(Eigen::VectorXf start, Eigen::VectorXf goal) {
     if (empty(start) || empty(goal)) {
-        Logging::warning("Start or goal node is empty", this);
+        Logging::error("Start or goal node is empty", this);
         return false;
     }
 
@@ -173,7 +173,7 @@ bool PRMPlanner::queryPath(Eigen::VectorXf start, Eigen::VectorXf goal) {
         m_nodePath.push_back(shared_ptr<Node>(new Node(start)));
         return true;
     } else {
-        Logging::warning("Path could NOT be planned", this);
+        Logging::info("Path could NOT be planned", this);
         return false;
     }
 }

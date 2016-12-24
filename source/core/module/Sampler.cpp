@@ -37,7 +37,7 @@ Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();
     if (empty(m_minBoundary) || empty(m_maxBoundary))
-        Logging::warning("Boundaries are empty", this);
+        Logging::error("Boundaries are empty", this);
 
     m_generator = std::mt19937(rd());
 
@@ -87,7 +87,7 @@ float Sampler::getRandomAngle() {
 */
 bool Sampler::setMeanOfDistribution(const Eigen::VectorXf &mean) {
     if (mean.rows() != m_dim) {
-        Logging::warning("Wrong dimension of mean vector", this);
+        Logging::error("Wrong dimension of mean vector", this);
         return false;
     }
 

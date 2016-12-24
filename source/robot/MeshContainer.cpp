@@ -208,7 +208,7 @@ std::shared_ptr<FCLModel> MeshContainer::getFcl() {
 */
 std::shared_ptr<PQP_Model> MeshContainer::getPqp() {
     if (m_pqpModel == nullptr)
-        Logging::warning("PQP model is empty");
+        Logging::error("PQP model is empty");
     return m_pqpModel;
 }
 

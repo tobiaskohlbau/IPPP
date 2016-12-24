@@ -140,7 +140,7 @@ bool StarRRTPlanner::connectGoalNode(Eigen::VectorXf goal) {
         return true;
     }
 
-    Logging::warning("Goal could NOT connected", this);
+    Logging::info("Goal could NOT connected", this);
 
     return false;
 }
