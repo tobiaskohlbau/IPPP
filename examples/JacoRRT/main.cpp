@@ -23,8 +23,8 @@ void simpleRRT() {
     std::shared_ptr<Jaco> robot(new Jaco());
     RRTOptions options(30, 0.5);
     NormalRRTPlanner planner(robot, options);
-    Eigen::VectorXf start = Vecf(180, 180, 180, 180, 180, 180);
-    Eigen::VectorXf goal = Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
+    Eigen::VectorXf start = utilVec::Vecf(180, 180, 180, 180, 180, 180);
+    Eigen::VectorXf goal = utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
 
     // compute the tree
     clock_t begin = std::clock();
@@ -64,8 +64,8 @@ void treeConnection() {
     StarRRTPlanner plannerInitNode(robot, options);
 
     // set properties to the planners
-    plannerInitNode.setInitNode(Vecf(180, 180, 180, 180, 180, 180));
-    plannerGoalNode.setInitNode(Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
+    plannerInitNode.setInitNode(utilVec::Vecf(180, 180, 180, 180, 180, 180));
+    plannerGoalNode.setInitNode(utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     // compute the tree
     clock_t begin = std::clock();

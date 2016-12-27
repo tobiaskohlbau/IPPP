@@ -36,7 +36,7 @@ Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
 
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();
-    if (empty(m_minBoundary) || empty(m_maxBoundary))
+    if (utilVec::empty(m_minBoundary) || utilVec::empty(m_maxBoundary))
         Logging::error("Boundaries are empty", this);
 
     m_generator = std::mt19937(rd());
@@ -48,7 +48,7 @@ Sampler::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method)
         std::uniform_real_distribution<float> dist2(m_minBoundary[i], m_maxBoundary[i]);
         m_distUniform.push_back(dist2);
     }
-    m_distAngle = std::uniform_real_distribution<float>(0, utility::twoPi());
+    m_distAngle = std::uniform_real_distribution<float>(0, utilGeo::twoPi());
 }
 
 /*!
@@ -107,7 +107,7 @@ bool Sampler::setMeanOfDistribution(const Eigen::VectorXf &mean) {
 *  \date       2016-11-14
 */
 Eigen::VectorXf Sampler::sampleStandardDist() {
-    Eigen::VectorXf vec = Vecf(m_dim);
+    Eigen::VectorXf vec = utilVec::Vecf(m_dim);
     float number;
     for (unsigned int i = 0; i < m_dim; ++i) {
         do {
@@ -126,7 +126,7 @@ Eigen::VectorXf Sampler::sampleStandardDist() {
 *  \date       2016-11-14
 */
 Eigen::VectorXf Sampler::sampleUniform() {
-    Eigen::VectorXf vec = Vecf(m_dim);
+    Eigen::VectorXf vec = utilVec::Vecf(m_dim);
     for (unsigned int i = 0; i < m_dim; ++i)
         vec[i] = m_distUniform[i](m_generator);
     return vec;
@@ -140,7 +140,7 @@ Eigen::VectorXf Sampler::sampleUniform() {
 *  \date       2016-11-14
 */
 Eigen::VectorXf Sampler::sampleRandom() {
-    Eigen::VectorXf vec = Vecf(m_dim);
+    Eigen::VectorXf vec = utilVec::Vecf(m_dim);
     for (unsigned int i = 0; i < m_dim; ++i)
         vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
     return vec;

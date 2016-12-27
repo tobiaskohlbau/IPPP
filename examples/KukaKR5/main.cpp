@@ -23,9 +23,9 @@ int main(int argc, char** argv) {
     RRTOptions options(40, 1);
     NormalRRTPlanner planner(robot, options);
 
-    Eigen::Matrix<float, 6 ,1> start = Vecf(0, 0, 0, 0, 51, 0);
+    Eigen::Matrix<float, 6 ,1> start = utilVec::Vecf(0, 0, 0, 0, 51, 0);
     robot->saveMeshConfig(start);
-    Eigen::Matrix<float, 6 ,1> goal = Vecf(150, -60, 90, 0, 82.7, 75.5);
+    Eigen::Matrix<float, 6 ,1> goal = utilVec::Vecf(150, -60, 90, 0, 82.7, 75.5);
 
     auto startTime = std::chrono::system_clock::now();
     bool connected = planner.computePath(start, goal, 25000, 2);
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
             std::vector<Eigen::Matrix4f> jointTrafos = robot->getJointTrafos(angle);
             std::vector<Eigen::VectorXf> tmp;
             for (auto joint : jointTrafos)
-                tmp.push_back(utility::poseMatToVec(joint));
+                tmp.push_back(utilGeo::poseMatToVec(joint));
             vecs.push_back(tmp);
         }
         Writer::writeTrafosToFile(vecs, "trafos.txt");

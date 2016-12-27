@@ -16,19 +16,22 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/Utility.h>
+#ifndef UTILLIST_H
+#define UTILLIST_H
 
-#include <Eigen/Geometry>
+#include <memory>
+
+#include <core/dataObj/Node.h>
 
 namespace rmpl {
-namespace utility {
+namespace utilList {
 
+void eraseFromList(std::vector<std::shared_ptr<Node>> &list, const std::shared_ptr<Node> &node);
+std::shared_ptr<Node> removeMinFromList(std::vector<std::shared_ptr<Node>> &list);
+bool contains(std::vector<std::shared_ptr<Node>> &list, std::shared_ptr<Node> &node);
 
-
-
-
-} /* namespace utility */
-
-
-
+} /* namespace utilList */
 } /* namespace rmpl */
+
+
+#endif //UTILLIST_H

@@ -29,7 +29,8 @@ int main(int argc, char** argv) {
     clock_t end = std::clock();
     printTime(begin, end);
 
-    bool connected = planner.queryPath(Vecf(180, 180, 180, 180, 180, 180), Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
+    bool connected =
+        planner.queryPath(utilVec::Vecf(180, 180, 180, 180, 180, 180), utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     std::vector<std::shared_ptr<Node>> nodes = planner.getGraphNodes();
     std::vector<Eigen::VectorXf> graphPoints;

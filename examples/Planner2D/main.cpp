@@ -22,8 +22,8 @@ using namespace rmpl;
 cv::Mat obstacleWorkspace;
 
 void testTriangleRobot(Eigen::Vector2f minimum, Eigen::Vector2f maximum, Eigen::MatrixXi mat) {
-    Eigen::Vector3f min = append(minimum, 0.0);
-    Eigen::Vector3f max = append(maximum, 360.0);
+    Eigen::Vector3f min = utilVec::append(minimum, 0.0);
+    Eigen::Vector3f max = utilVec::append(maximum, 360.0);
 
     std::vector<Triangle2D> triangles;
     triangles.push_back(Triangle2D(Eigen::Vector2f(0.0, 0.0), Eigen::Vector2f(0.0, 25.0), Eigen::Vector2f(25.0, 0.0), Eigen::Vector2f(25.0, 0.0)));
@@ -94,7 +94,7 @@ void testPointRobot(Eigen::Vector2f min, Eigen::Vector2f max, Eigen::MatrixXi ma
     Drawing2D::drawTree2D(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
 
     if (connected) {
-        std::vector<Eigen::VectorXf> pathPoints = planner->getPath(0.5, true);
+        std::vector<Eigen::VectorXf> pathPoints = planner->getPath(1, true);
         Drawing2D::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
     }
 
@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
     Eigen::Vector2f minBoundary(0.0, 0.0);
     Eigen::Vector2f maxBoundary(mat.rows(), mat.cols());
 
-    testTriangleRobot(minBoundary, maxBoundary, mat);
+    //testTriangleRobot(minBoundary, maxBoundary, mat);
 
-    //testPointRobot(minBoundary, maxBoundary, mat);
+    testPointRobot(minBoundary, maxBoundary, mat);
 }
