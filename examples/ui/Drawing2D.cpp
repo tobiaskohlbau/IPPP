@@ -103,7 +103,7 @@ void Drawing2D::drawTrianglePath(std::vector<Eigen::VectorXf> vecs, std::vector<
     for (auto vec : vecs) {
         for (int i = 0; i < triangles.size(); ++i) {
             triangle = triangles[i];
-            utility::poseVecToRandT(vec, R, t);
+            utilGeo::poseVecToRandT(vec, R, t);
             triangle.transform(R, t);
             pt1 = cv::Point2i(triangle.getP(1)[0], triangle.getP(1)[1]);
             pt2 = cv::Point2i(triangle.getP(2)[0], triangle.getP(2)[1]);

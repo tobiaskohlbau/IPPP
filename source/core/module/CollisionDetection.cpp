@@ -130,7 +130,7 @@ bool CollisionDetection::checkTriangleRobot(const Eigen::Vector3f &vec) {
 
     Eigen::Matrix2f R;
     Eigen::Vector2f t;
-    utility::poseVecToRandT(vec, R, t);
+        utilGeo::poseVecToRandT(vec, R, t);
 
     Eigen::Vector2f u, temp;
     for (auto triangle : triangles) {
@@ -192,12 +192,12 @@ bool CollisionDetection::checkSerialRobot(const Eigen::VectorXf &vec) {
 
     Eigen::Matrix3f poseR;
     Eigen::Vector3f poseT;
-    utility::decomposeT(pose, poseR, poseT);
+        utilGeo::decomposeT(pose, poseR, poseT);
 
     Eigen::Matrix3f rot[jointTrafos.size()];
     Eigen::Vector3f trans[jointTrafos.size()];
     for (int i = 0; i < jointTrafos.size(); ++i)
-        utility::decomposeT(As[i], rot[i], trans[i]);
+        utilGeo::decomposeT(As[i], rot[i], trans[i]);
 
     if (m_robot->getCollisionType() == CollisionType::pqp) {
         shared_ptr<PQP_Model> baseMesh = nullptr;
@@ -230,7 +230,7 @@ bool CollisionDetection::checkMobileRobot(const Eigen::VectorXf &vec) {
     Eigen::Matrix4f pose = m_robot->getPoseMat();
     Eigen::Matrix3f poseR;
     Eigen::Vector3f poseT;
-    utility::decomposeT(pose, poseR, poseT);
+        utilGeo::decomposeT(pose, poseR, poseT);
 
     if (m_robot->getCollisionType() == CollisionType::pqp) {
         if (m_robot->getBaseMesh() == nullptr || m_robot->getWorkspace() == nullptr)
@@ -284,12 +284,12 @@ bool CollisionDetection::checkMesh(std::vector<shared_ptr<PQP_Model>> &models, s
                     std::cout << "A" << i << ": ";
                     std::cout << "Euler angles: " << std::endl << R[i] << std::endl;
                     std::cout << "Translation: " << t[i].transpose() << std::endl;
-                    robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", utility::createT(R[i], t[i]));
+                    robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", utilGeo::createT(R[i], t[i]));
                     r = R[j].eulerAngles(0, 1, 2);
                     std::cout << "A" << j << ": ";
                     std::cout << "Euler angles: " << std::endl << R[j] << std::endl;
                     std::cout << "Translation: " << t[j].transpose() << std::endl << std::endl;
-                    robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", utility::createT(R[i], t[i]));
+                    robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", utilGeo::createT(R[i], t[i]));
                 }
                 return true;
             }

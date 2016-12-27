@@ -29,11 +29,11 @@ namespace rmpl {
 *  \date        2016-10-22
 */
 KukaKR5::KukaKR5() : SerialRobot("KukaKR5", CollisionType::pqp, 6) {
-    m_alpha = Vecf(90, 0, 90, 90, 90, 0);
-    m_alpha = utility::degToRad(m_alpha);
-    m_a = Vecf(180, 600, 120, 0, 0, 0);
-    m_d = Vecf(400, 0, 0, 620, 0, 115);
-    m_pose = Vecf(0, 0, 0, 0, 0, 0);
+    m_alpha = utilVec::Vecf(90, 0, 90, 90, 90, 0);
+    m_alpha = utilGeo::degToRad(m_alpha);
+    m_a = utilVec::Vecf(180, 600, 120, 0, 0, 0);
+    m_d = utilVec::Vecf(400, 0, 0, 620, 0, 115);
+    m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
 
     m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/KukaKR5/link0.stl"));
 
@@ -56,8 +56,8 @@ KukaKR5::KukaKR5() : SerialRobot("KukaKR5", CollisionType::pqp, 6) {
     joint = Joint(-530, 170, mesh);
     m_joints.push_back(joint);
 
-    m_minBoundary = Vecf(-155, -65, -68, -350, 50, -530);
-    m_maxBoundary = Vecf(155, 180, 105, 350, 310, 170);
+    m_minBoundary = utilVec::Vecf(-155, -65, -68, -350, 50, -530);
+    m_maxBoundary = utilVec::Vecf(155, 180, 105, 350, 310, 170);
 }
 
 /*!
@@ -81,7 +81,7 @@ Eigen::Matrix<float, 6, 1> KukaKR5::directKinematic(const Eigen::VectorXf &angle
 *  \date       2016-10-22
 */
 std::vector<Eigen::Matrix4f> KukaKR5::getJointTrafos(const Eigen::VectorXf &angles) {
-    Eigen::VectorXf rads = utility::degToRad(angles);
+    Eigen::VectorXf rads = utilGeo::degToRad(angles);
 
     std::vector<Eigen::Matrix4f> trafos;
     for (int i = 0; i < getDim(); ++i)

@@ -146,7 +146,7 @@ void PRMPlanner::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeI
 *  \date       2016-08-09
 */
 bool PRMPlanner::queryPath(Eigen::VectorXf start, Eigen::VectorXf goal) {
-    if (empty(start) || empty(goal)) {
+    if (utilVec::empty(start) || utilVec::empty(goal)) {
         Logging::error("Start or goal node is empty", this);
         return false;
     }
@@ -223,7 +223,7 @@ bool PRMPlanner::aStar(shared_ptr<Node> sourceNode, shared_ptr<Node> targetNode)
     int count = 0;
     shared_ptr<Node> currentNode;
     while (!m_openList.empty()) {
-        currentNode = utility::removeMinFromList(m_openList);
+        currentNode = utilList::removeMinFromList(m_openList);
 
         if (currentNode == targetNode) {
             std::cout << "closed list has: " << count << std::endl;
@@ -249,17 +249,17 @@ bool PRMPlanner::aStar(shared_ptr<Node> sourceNode, shared_ptr<Node> targetNode)
 */
 void PRMPlanner::expandNode(shared_ptr<Node> currentNode) {
     for (auto successor : currentNode->getChildNodes()) {
-        if (utility::contains(m_closedList, successor))
+        if (utilList::contains(m_closedList, successor))
             continue;
 
         float dist = currentNode->getCost() + currentNode->getDist(successor);
 
-        if (utility::contains(m_openList, successor) && dist >= successor->getCost())
+        if (utilList::contains(m_openList, successor) && dist >= successor->getCost())
             continue;
 
         successor->setParent(currentNode);
         successor->setCost(dist);
-        if (utility::contains(m_openList, successor)) {
+        if (utilList::contains(m_openList, successor)) {
             // nothing to do
         } else {
             m_openList.push_back(successor);

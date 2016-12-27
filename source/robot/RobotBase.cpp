@@ -45,8 +45,8 @@ RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType ro
     m_collisionType = collisionType;
     m_robotType = robotType;
 
-    m_pose = Vecf(0, 0, 0, 0, 0, 0);
-    m_poseMat = utility::poseVecToMat(m_pose);
+    m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
+    m_poseMat = utilGeo::poseVecToMat(m_pose);
     m_baseMesh = nullptr;
     m_workspaceMesh = nullptr;
 }
@@ -81,13 +81,13 @@ void RobotBase::setPose(const Eigen::Matrix<float, 6, 1> &pose) {
     if (pose.rows() != 6) {
         Logging::error("Pose vector has wrong dimension, must have 6!", this);
         return;
-    } else if (empty(pose)) {
+    } else if (utilVec::empty(pose)) {
         Logging::error("Empty pose vector!", this);
         return;
     }
 
     m_pose = pose;
-    m_poseMat = utility::poseVecToMat(pose);
+    m_poseMat = utilGeo::poseVecToMat(pose);
 }
 
 /*!

@@ -16,19 +16,27 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/Utility.h>
+#ifndef UTILVEC_H
+#define UTILVEC_H
 
-#include <Eigen/Geometry>
+#include <Eigen/Core>
 
 namespace rmpl {
-namespace utility {
+namespace utilVec {
 
+bool empty(Eigen::VectorXf vec);
+Eigen::VectorXf append(Eigen::VectorXf source, Eigen::VectorXf add);
+Eigen::Vector3f append(Eigen::Vector2f source, float add);
+Eigen::Vector4f append(Eigen::Vector3f source, float add);
+Eigen::VectorXf append(Eigen::VectorXf source, float add);
 
+Eigen::VectorXf Vecf(unsigned int dim);
+Eigen::Matrix<float, 5, 1> Vecf(float x, float y, float z, float rx, float ry);
+Eigen::Matrix<float, 6, 1> Vecf(float x, float y, float z, float rx, float ry, float rz);
+Eigen::VectorXf Vecf(unsigned int dim, float data[]);
 
-
-
-} /* namespace utility */
-
-
-
+} /* namespace utilVec */
 } /* namespace rmpl */
+
+
+#endif //UTILVEC_H

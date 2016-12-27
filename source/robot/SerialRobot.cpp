@@ -100,7 +100,7 @@ Eigen::Matrix<float, 6, 1> SerialRobot::getTcpPosition(const std::vector<Eigen::
 
     Eigen::Matrix4f basisToTcp = m_poseMat * robotToTcp;
 
-    return utility::poseMatToVec(basisToTcp);
+    return utilGeo::poseMatToVec(basisToTcp);
 }
 
 /*!

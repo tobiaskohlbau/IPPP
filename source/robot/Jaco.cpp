@@ -29,11 +29,11 @@ namespace rmpl {
 *  \date       2016-06-30
 */
 Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
-    m_alpha = Vecf(utility::pi() / 2, utility::pi(), utility::pi() / 2, 0.95993, 0.95993, utility::pi());
-    m_a = Vecf(0, 410, 0, 0, 0, 0);
-    m_d = Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
+    m_alpha = utilVec::Vecf(utilGeo::pi() / 2, utilGeo::pi(), utilGeo::pi() / 2, 0.95993, 0.95993, utilGeo::pi());
+    m_a = utilVec::Vecf(0, 410, 0, 0, 0, 0);
+    m_d = utilVec::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
-    m_pose = Vecf(0, 0, 0, 0, 0, 0);
+    m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
     // m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_base_fixed_origin.obj"));
     std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/link_base_fixed_origin.obj"));
     Joint joint(0, 360, mesh);
@@ -57,8 +57,8 @@ Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
     // mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_hand_fixed_origin.obj"));
     // joint = Joint(0, 360, mesh);
     // m_joints.push_back(joint);
-    m_minBoundary = Vecf(0, 42, 17, 0, 0, 0);
-    m_maxBoundary = Vecf(360, 318, 343, 360, 360, 360);
+    m_minBoundary = utilVec::Vecf(0, 42, 17, 0, 0, 0);
+    m_maxBoundary = utilVec::Vecf(360, 318, 343, 360, 360, 360);
 }
 
 /*!
@@ -84,7 +84,7 @@ Eigen::Matrix<float, 6, 1> Jaco::directKinematic(const Eigen::VectorXf &angles) 
 std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Eigen::VectorXf &angles) {
     // transform form jaco physical angles to dh angles
     Eigen::VectorXf dhAngles = convertRealToDH(angles);
-    Eigen::VectorXf rads = utility::degToRad(dhAngles);
+    Eigen::VectorXf rads = utilGeo::degToRad(dhAngles);
 
     std::vector<Eigen::Matrix4f> trafos;
     // create transformation matrizes

@@ -51,7 +51,7 @@ Eigen::Matrix<float, 6, 1> GenericRobot::directKinematic(const Eigen::VectorXf &
 *  \date       2016-07-24
 */
 std::vector<Eigen::Matrix4f> GenericRobot::getJointTrafos(const Eigen::VectorXf &angles) {
-    Eigen::VectorXf rads = utility::degToRad(angles);
+    Eigen::VectorXf rads = utilGeo::degToRad(angles);
 
     std::vector<Eigen::Matrix4f> trafos;
     Eigen::Matrix4f A = Eigen::Matrix4f::Zero(4, 4);

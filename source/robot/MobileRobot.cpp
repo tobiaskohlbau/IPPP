@@ -26,7 +26,7 @@ namespace rmpl {
 MobileRobot::MobileRobot(std::string name, CollisionType type, unsigned int dim, const Eigen::VectorXf &minBoundary,
                          const Eigen::VectorXf &maxBoundary)
     : RobotBase(name, type, RobotType::mobile, dim) {
-    if (empty(minBoundary) || empty(maxBoundary)) {
+    if (utilVec::empty(minBoundary) || utilVec::empty(maxBoundary)) {
         Logging::error("Boundaries are empty", this);
         return;
     } else if (minBoundary.rows() != m_dim || maxBoundary.rows() != m_dim) {
