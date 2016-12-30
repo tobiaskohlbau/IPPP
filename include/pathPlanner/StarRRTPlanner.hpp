@@ -36,34 +36,35 @@ class StarRRTPlanner : public RRTPlanner<dim> {
     StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, const RRTOptions &options)
         : RRTPlanner<dim>("RRT* Planner", robot, options) {
     }
+
     bool connectGoalNode(Eigen::VectorXf goal);
 
   protected:
-    void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node> &newNode);
-    void chooseParent(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode,
-                      std::vector<std::shared_ptr<Node>> &nearNodes);
-    void reWire(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode,
-                std::vector<std::shared_ptr<Node>> &nearNodes);
+    void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode);
+    void chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
+                      std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
+    void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
+                std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
     std::mutex m_mutex;
 };
 
 /*!
-*  \brief         Computation of the new Node by the RRT* algorithm
+*  \brief         Computation of the new Node<dim> by the RRT* algorithm
 *  \author        Sascha Kaden
 *  \param[in]     random Vec
 *  \param[in,out] new Node
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void StarRRTPlanner<dim>::computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node> &newNode) {
+void StarRRTPlanner<dim>::computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode) {
     // get nearest neighbor
-    std::shared_ptr<Node> nearestNode = this->m_graph->getNearestNode(Node(randVec));
-    // set node new fix fixed step size of 10
+    std::shared_ptr<Node<dim>> nearestNode = this->m_graph->getNearestNode(Node<dim>(randVec));
+    // set Node<dim> new fix fixed step size of 10
     Eigen::VectorXf newVec = this->computeNodeNew(randVec, nearestNode->getValues());
-    newNode = std::shared_ptr<Node>(new Node(newVec));
+    newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
 
-    std::vector<std::shared_ptr<Node>> nearNodes;
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes;
     chooseParent(newNode, nearestNode, nearNodes);
 
     if (this->m_collision->controlVec(newNode->getValues())) {
@@ -92,8 +93,8 @@ void StarRRTPlanner<dim>::computeRRTNode(const Eigen::VectorXf &randVec, std::sh
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &nearestNode,
-                                  std::vector<std::shared_ptr<Node>> &nearNodes) {
+void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
+                                       std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     // get near nodes to the new node
     nearNodes = this->m_graph->getNearNodes(newNode, this->m_stepSize);
 
@@ -117,7 +118,8 @@ void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node> &newNode, std::shar
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node> &newNode, std::shared_ptr<Node> &parentNode, std::vector<std::shared_ptr<Node>> &nearNodes) {
+void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
+                                 std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     for (auto nearNode : nearNodes) {
         if (nearNode != parentNode && nearNode->getChildEdges().size() != 0) {
             float oldDist = nearNode->getCost();
@@ -137,7 +139,7 @@ void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node> &newNode, std::shared_ptr
 }
 
 /*!
-*  \brief      Connects goal Node to tree, if connection is possible
+*  \brief      Connects goal Node<dim> to tree, if connection is possible
 *  \author     Sascha Kaden
 *  \param[in]  goal Node
 *  \param[out] true, if the connection was possible
@@ -148,10 +150,10 @@ bool StarRRTPlanner<dim>::connectGoalNode(Eigen::VectorXf goal) {
     if (this->m_collision->controlVec(goal))
         return false;
 
-    std::shared_ptr<Node> goalNode(new Node(goal));
-    std::vector<std::shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
+    std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
 
-    std::shared_ptr<Node> nearestNode = nullptr;
+    std::shared_ptr<Node<dim>> nearestNode = nullptr;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < minCost && this->m_planner->controlTrajectory(goalNode, nearNodes[i])) {
@@ -164,7 +166,7 @@ bool StarRRTPlanner<dim>::connectGoalNode(Eigen::VectorXf goal) {
         goalNode->setParent(nearestNode);
         this->m_goalNode = goalNode;
         this->m_goalNode->setCost(this->m_goalNode->getDist(*nearestNode) + nearestNode->getCost());
-        // Logging::info("Goal Node is connected", this);
+        // Logging::info("Goal Node<dim> is connected", this);
         this->m_pathPlanned = true;
         return true;
     }

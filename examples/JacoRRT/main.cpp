@@ -32,7 +32,7 @@ void simpleRRT() {
     clock_t end = std::clock();
     printTime(begin, end);
 
-    std::vector<std::shared_ptr<Node>> nodes = planner.getGraphNodes();
+    std::vector<std::shared_ptr<Node<6>>> nodes = planner.getGraphNodes();
     std::vector<Eigen::VectorXf> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
@@ -92,7 +92,7 @@ void treeConnection() {
 //        }
     }
 
-    std::vector<std::shared_ptr<Node>> nodes = plannerInitNode.getGraphNodes();
+    std::vector<std::shared_ptr<Node<6>>> nodes = plannerInitNode.getGraphNodes();
     std::vector<Eigen::VectorXf> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)

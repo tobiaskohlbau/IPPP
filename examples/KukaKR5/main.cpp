@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
-    std::vector<std::shared_ptr<Node>> nodes = planner.getGraphNodes();
+    std::vector<std::shared_ptr<Node<6>>> nodes = planner.getGraphNodes();
     std::vector<Eigen::VectorXf> graphPoints;
     Logging::info("Init Graph has: " + std::to_string(nodes.size()) + "nodes", "Example");
     for (auto node : nodes)

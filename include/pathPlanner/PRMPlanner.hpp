@@ -40,20 +40,20 @@ class PRMPlanner : public Planner<dim> {
     void startPlannerPhase(unsigned int nbOfThreads = 1);
 
     bool queryPath(Eigen::VectorXf start, Eigen::VectorXf goal);
-    bool aStar(std::shared_ptr<Node> sourceNode, std::shared_ptr<Node> targetNode);
-    void expandNode(std::shared_ptr<Node> currentNode);
+    bool aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode);
+    void expandNode(std::shared_ptr<Node<dim>> currentNode);
 
-    std::vector<std::shared_ptr<Node>> getPathNodes();
+    std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
     std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing = true);
 
   protected:
     void samplingPhase(unsigned int nbOfNodes);
     void plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex);
-    std::shared_ptr<Node> connectNode(Eigen::VectorXf &node);
+    std::shared_ptr<Node<dim>> connectNode(Eigen::VectorXf &node);
 
     float m_rangeSize;
-    std::vector<std::shared_ptr<Node>> m_nodePath;
-    std::vector<std::shared_ptr<Node>> m_openList, m_closedList;
+    std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
+    std::vector<std::shared_ptr<Node<dim>>> m_openList, m_closedList;
 };
 
 /*!
@@ -73,7 +73,7 @@ PRMPlanner<dim>::PRMPlanner(const std::shared_ptr<RobotBase> &robot, const PRMOp
 }
 
 /*!
-*  \brief      Compute path from start Node to goal Node with passed number of samples and threads
+*  \brief      Compute path from start Node<dim> to goal Node<dim> with passed number of samples and threads
 *  \author     Sascha Kaden
 *  \param[in]  start Node
 *  \param[in]  goal Node
@@ -124,14 +124,14 @@ void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
         Eigen::VectorXf sample = this->m_sampler->getSample();
         if (!this->m_collision->controlVec(sample)) {
-            this->m_graph->addNode(std::shared_ptr<Node>(new Node(sample)));
+            this->m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
         }
     }
 }
 
 /*!
 *  \brief      Local planning phase of the PRMPlanner.
-*  \details    Add the nearest neighbors of a Node as childs.
+*  \details    Add the nearest neighbors of a Node<dim> as childs.
 *  \author     Sascha Kaden
 *  \param[in]  number threads
 *  \date       2016-08-09
@@ -169,15 +169,15 @@ void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int end
         return;
     }
 
-    std::vector<std::shared_ptr<Node>> nodes = this->m_graph->getNodes();
+    std::vector<std::shared_ptr<Node<dim>>> nodes = this->m_graph->getNodes();
     if (endNodeIndex > nodes.size()) {
-        Logging::error("End index is larger than node size", this);
+        Logging::error("End index is larger than Node size", this);
         return;
     }
 
-    for (std::vector<std::shared_ptr<Node>>::iterator node = nodes.begin() + startNodeIndex; node != nodes.begin() + endNodeIndex;
-         ++node) {
-        std::vector<std::shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(*node, m_rangeSize);
+    for (auto node = nodes.begin() + startNodeIndex;
+         node != nodes.begin() + endNodeIndex; ++node) {
+        std::vector<std::shared_ptr<Node<dim>>> nearNodes = this->m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
             if (this->m_planner->controlTrajectory((*node)->getValues(), nearNode->getValues()))
                 (*node)->addChild(nearNode);
@@ -197,14 +197,14 @@ void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int end
 template <unsigned int dim>
 bool PRMPlanner<dim>::queryPath(Eigen::VectorXf start, Eigen::VectorXf goal) {
     if (utilVec::empty(start) || utilVec::empty(goal)) {
-        Logging::error("Start or goal node is empty", this);
+        Logging::error("Start or goal Node<dim> is empty", this);
         return false;
     }
 
-    std::shared_ptr<Node> sourceNode = connectNode(start);
-    std::shared_ptr<Node> targetNode = connectNode(goal);
+    std::shared_ptr<Node<dim>> sourceNode = connectNode(start);
+    std::shared_ptr<Node<dim>> targetNode = connectNode(goal);
     if (sourceNode == nullptr || targetNode == nullptr) {
-        Logging::info("Start or goal Node could not be connected", this);
+        Logging::info("Start or goal Node<dim> could not be connected", this);
         return false;
     }
 
@@ -212,15 +212,15 @@ bool PRMPlanner<dim>::queryPath(Eigen::VectorXf start, Eigen::VectorXf goal) {
 
     if (pathPlanned) {
         Logging::info("Path could be planned", this);
-        m_nodePath.push_back(std::shared_ptr<Node>(new Node(goal)));
-        std::shared_ptr<Node> temp = targetNode;
+        m_nodePath.push_back(std::shared_ptr<Node<dim>>(new Node<dim>(goal)));
+        std::shared_ptr<Node<dim>> temp = targetNode;
         int count = 0;
         while (temp != nullptr) {
             ++count;
             m_nodePath.push_back(temp);
             temp = temp->getParentNode();
         }
-        m_nodePath.push_back(std::shared_ptr<Node>(new Node(start)));
+        m_nodePath.push_back(std::shared_ptr<Node<dim>>(new Node<dim>(start)));
         return true;
     } else {
         Logging::info("Path could NOT be planned", this);
@@ -229,17 +229,18 @@ bool PRMPlanner<dim>::queryPath(Eigen::VectorXf start, Eigen::VectorXf goal) {
 }
 
 /*!
-*  \brief      Try to find nearest Node of the graph to the passed Node
+*  \brief      Try to find nearest Node<dim> of the graph to the passed Node
 *  \author     Sascha Kaden
 *  \param[in]  Node
 *  \param[in]  nearest Node
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-std::shared_ptr<Node> PRMPlanner<dim>::connectNode(Eigen::VectorXf &vec) {
-    std::vector<std::shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(std::shared_ptr<Node>(new Node(vec)), m_rangeSize * 3);
+std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Eigen::VectorXf &vec) {
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes =
+        this->m_graph->getNearNodes(std::shared_ptr<Node<dim>>(new Node<dim>(vec)), m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
-    std::shared_ptr<Node> nearestNode = nullptr;
+    std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (this->m_planner->controlTrajectory(vec, *nearNodes[i]) && (vec - nearNodes[i]->getValues()).norm() < dist) {
             dist = (vec - nearNodes[i]->getValues()).norm();
@@ -254,17 +255,17 @@ std::shared_ptr<Node> PRMPlanner<dim>::connectNode(Eigen::VectorXf &vec) {
 *  \brief      A* algorithm to find best path
 *  \author     Sascha Kaden
 *  \param[in]  start index
-*  \param[in]  source Node (start)
-*  \param[in]  target Node (goal)
+*  \param[in]  source Node<dim> (start)
+*  \param[in]  target Node<dim> (goal)
 *  \param[out] result of algorithm
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-bool PRMPlanner<dim>::aStar(std::shared_ptr<Node> sourceNode, std::shared_ptr<Node> targetNode) {
+bool PRMPlanner<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode) {
     m_closedList.clear();
     m_openList.clear();
 
-    std::vector<std::shared_ptr<Edge>> edges = sourceNode->getChildEdges();
+    std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
     for (int i = 0; i < edges.size(); ++i) {
         edges[i]->getTarget()->setCost(edges[i]->getCost());
         edges[i]->getTarget()->setParent(sourceNode);
@@ -273,7 +274,7 @@ bool PRMPlanner<dim>::aStar(std::shared_ptr<Node> sourceNode, std::shared_ptr<No
     m_closedList.push_back(sourceNode);
 
     int count = 0;
-    std::shared_ptr<Node> currentNode;
+    std::shared_ptr<Node<dim>> currentNode;
     while (!m_openList.empty()) {
         currentNode = utilList::removeMinFromList(m_openList);
 
@@ -300,7 +301,7 @@ bool PRMPlanner<dim>::aStar(std::shared_ptr<Node> sourceNode, std::shared_ptr<No
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRMPlanner<dim>::expandNode(std::shared_ptr<Node> currentNode) {
+void PRMPlanner<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
     for (auto successor : currentNode->getChildNodes()) {
         if (utilList::contains(m_closedList, successor))
             continue;
@@ -327,7 +328,7 @@ void PRMPlanner<dim>::expandNode(std::shared_ptr<Node> currentNode) {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<std::shared_ptr<Node>> PRMPlanner<dim>::getPathNodes() {
+std::vector<std::shared_ptr<Node<dim>>> PRMPlanner<dim>::getPathNodes() {
     return m_nodePath;
 }
 

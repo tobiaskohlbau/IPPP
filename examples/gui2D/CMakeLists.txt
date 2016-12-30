@@ -28,8 +28,7 @@ set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.cpp
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp
     ${UIS_HDRS})
 
 set(ADDITIONAL_LIBRARIES

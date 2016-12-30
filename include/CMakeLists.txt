@@ -17,9 +17,17 @@
 #-------------------------------------------------------------------------//
 
 list(APPEND SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Edge.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Graph.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/CollisionDetection.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampler.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDTree.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/NormalRRTPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/Planner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/PRMPlanner.hpp

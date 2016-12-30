@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
     bool connected =
         planner.queryPath(utilVec::Vecf(180, 180, 180, 180, 180, 180), utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
 
-    std::vector<std::shared_ptr<Node>> nodes = planner.getGraphNodes();
+    std::vector<std::shared_ptr<Node<6>>> nodes = planner.getGraphNodes();
     std::vector<Eigen::VectorXf> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)

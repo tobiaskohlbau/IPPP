@@ -1,9 +1,18 @@
-#include <ui/Drawing2D.h>
+#ifndef DRAWING2D_H_
+#define DRAWING2D_H_
 
-#include <core/utility/Utility.h>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 
-using namespace rmpl;
-using std::shared_ptr;
+#include <Eigen/Core>
+
+#include <core/dataObj/Node.hpp>
+#include <core/dataObj/PointList.hpp>
+#include <core/module/ModuleBase.h>
+#include <core/utility/Logging.h>
+
+namespace rmpl {
+namespace drawing {
 
 /*!
 *  \brief         Draw nodes and there edge to the parent Node
@@ -15,10 +24,9 @@ using std::shared_ptr;
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing2D::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, Eigen::Vector3i colorNode,
-                           Eigen::Vector3i colorEdge, int thickness) {
-    assert(nodes[0]->getDim() == 2);
-
+template <unsigned int dim>
+void drawTree2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &image, Eigen::Vector3i colorNode,
+                Eigen::Vector3i colorEdge, int thickness) {
     for (auto &elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
         cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
@@ -39,10 +47,9 @@ void Drawing2D::drawTree2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing2D::drawGraph2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat &image, Eigen::Vector3i colorNode,
-                            Eigen::Vector3i colorEdge, int thickness) {
-    assert(nodes[0]->getDim() == 2);
-
+template <unsigned int dim>
+void drawGraph2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &image, Eigen::Vector3i colorNode,
+                 Eigen::Vector3i colorEdge, int thickness) {
     for (auto &elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
         cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
@@ -64,8 +71,7 @@ void Drawing2D::drawGraph2D(const std::vector<shared_ptr<Node>> &nodes, cv::Mat 
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void Drawing2D::drawPath2D(const std::vector<Eigen::VectorXf> vecs, cv::Mat &image, Eigen::Vector3i colorPoint,
-                           int thickness) {
+void drawPath2D(const std::vector<Eigen::VectorXf> vecs, cv::Mat &image, Eigen::Vector3i colorPoint, int thickness) {
     if (vecs.size() == 0)
         return;
 
@@ -87,8 +93,8 @@ void Drawing2D::drawPath2D(const std::vector<Eigen::VectorXf> vecs, cv::Mat &ima
 *  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
-void Drawing2D::drawTrianglePath(std::vector<Eigen::VectorXf> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
-                                 Eigen::Vector3i colorPoint, int thickness) {
+void drawTrianglePath(std::vector<Eigen::VectorXf> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
+                      Eigen::Vector3i colorPoint, int thickness) {
     if (vecs.size() == 0)
         return;
 
@@ -122,9 +128,9 @@ void Drawing2D::drawTrianglePath(std::vector<Eigen::VectorXf> vecs, std::vector<
 *  \param[out] Eigen matrix
 *  \date       2016-12-18
 */
-Eigen::MatrixXi Drawing2D::cvToEigen(cv::Mat cvMat) {
+Eigen::MatrixXi cvToEigen(cv::Mat cvMat) {
     if (cvMat.empty()) {
-        Logging::error("Image is empty");
+        Logging::error("Image is empty", "Drawing2D");
         return Eigen::MatrixXi();
     }
 
@@ -146,3 +152,8 @@ Eigen::MatrixXi Drawing2D::cvToEigen(cv::Mat cvMat) {
     eigenMat = Eigen::MatrixXi::Map(&entries[0], rows, cols);
     return eigenMat;
 }
+
+} /* namespace drawing */
+} /* namespace rmpl */
+
+#endif /* DRAWING2D_H_ */

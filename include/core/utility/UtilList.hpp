@@ -16,7 +16,12 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/UtilList.h>
+#ifndef UTILLIST_H
+#define UTILLIST_H
+
+#include <memory>
+
+#include <core/dataObj/Node.hpp>
 
 namespace rmpl {
 namespace utilList {
@@ -28,7 +33,8 @@ namespace utilList {
 *  \param[in]  pointer of Node
 *  \date       2016-12-19
 */
-void eraseFromList(std::vector<std::shared_ptr<Node>> &list, const std::shared_ptr<Node> &node) {
+template <unsigned int dim>
+void eraseFromList(std::vector<std::shared_ptr<Node<dim>>> &list, const std::shared_ptr<Node<dim>> &node) {
     list.erase(std::remove(list.begin(), list.end(), node), list.end());
 }
 
@@ -39,9 +45,10 @@ void eraseFromList(std::vector<std::shared_ptr<Node>> &list, const std::shared_p
 *  \param[out] Node with lowest cost
 *  \date       2016-12-19
 */
-std::shared_ptr<Node> removeMinFromList(std::vector<std::shared_ptr<Node>> &list) {
+template <unsigned int dim>
+std::shared_ptr<Node<dim>> removeMinFromList(std::vector<std::shared_ptr<Node<dim>>> &list) {
     float min = std::numeric_limits<float>::max();
-    std::shared_ptr<Node> minNode = nullptr;
+    std::shared_ptr<Node<dim>> minNode = nullptr;
     for (int i = 0; i < list.size(); ++i) {
         if (list[i]->getCost() < min) {
             minNode = list[i];
@@ -62,7 +69,8 @@ std::shared_ptr<Node> removeMinFromList(std::vector<std::shared_ptr<Node>> &list
 *  \param[out] true, if list contains passed Node
 *  \date       2016-12-19
 */
-bool contains(std::vector<std::shared_ptr<Node>> &list, std::shared_ptr<Node> &node) {
+template <unsigned int dim>
+bool contains(std::vector<std::shared_ptr<Node<dim>>> &list, std::shared_ptr<Node<dim>> &node) {
     if (std::find(list.begin(), list.end(), node) != list.end())
         return true;
     else
@@ -71,3 +79,5 @@ bool contains(std::vector<std::shared_ptr<Node>> &list, std::shared_ptr<Node> &n
 
 } /* namespace utilList */
 } /* namespace rmpl */
+
+#endif    // UTILLIST_H

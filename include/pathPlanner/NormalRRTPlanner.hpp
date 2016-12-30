@@ -40,26 +40,26 @@ class NormalRRTPlanner : public RRTPlanner<dim> {
     bool connectGoalNode(Eigen::VectorXf goal);
 
   protected:
-    void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node> &newNode);
+    void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode);
 
     std::mutex m_mutex;
 };
 
 /*!
-*  \brief         Computation of the new Node by the normal RRT algorithm
+*  \brief         Computation of the new Node<dim> by the normal RRT algorithm
 *  \author        Sascha Kaden
 *  \param[in]     random Vec
 *  \param[in,out] new Node
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void NormalRRTPlanner<dim>::computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node> &newNode) {
+void NormalRRTPlanner<dim>::computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode) {
     // get nearest neighbor
-    std::shared_ptr<Node> nearestNode = this->m_graph->getNearestNode(Node(randVec));
+    std::shared_ptr<Node<dim>> nearestNode = this->m_graph->getNearestNode(Node<dim>(randVec));
 
-    // compute node new with fixed step size
+    // compute Node<dim> new with fixed step size
     Eigen::VectorXf newVec = this->computeNodeNew(randVec, nearestNode->getValues());
-    newNode = std::shared_ptr<Node>(new Node(newVec));
+    newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
 
     if (this->m_collision->controlVec(newNode->getValues())) {
         newNode = nullptr;
@@ -77,7 +77,7 @@ void NormalRRTPlanner<dim>::computeRRTNode(const Eigen::VectorXf &randVec, std::
 }
 
 /*!
-*  \brief      Connects goal Node to tree, if connection is possible
+*  \brief      Connects goal Node<dim> to tree, if connection is possible
 *  \author     Sascha Kaden
 *  \param[in]  goal Node
 *  \param[out] true, if the connection was possible
@@ -88,10 +88,10 @@ bool NormalRRTPlanner<dim>::connectGoalNode(Eigen::VectorXf goal) {
     if (this->m_collision->controlVec(goal))
         return false;
 
-    std::shared_ptr<Node> goalNode(new Node(goal));
-    std::vector<std::shared_ptr<Node>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
+    std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
 
-    std::shared_ptr<Node> nearestNode = nullptr;
+    std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (auto node : nearNodes) {
         if (this->m_planner->controlTrajectory(goal, node->getValues())) {
             nearestNode = node;
@@ -103,7 +103,7 @@ bool NormalRRTPlanner<dim>::connectGoalNode(Eigen::VectorXf goal) {
         goalNode->setParent(nearestNode);
         this->m_goalNode = goalNode;
         this->m_graph->addNode(goalNode);
-        // Logging::info("Goal Node is connected", this);
+        // Logging::info("Goal Node<dim> is connected", this);
         this->m_pathPlanned = true;
         return true;
     }

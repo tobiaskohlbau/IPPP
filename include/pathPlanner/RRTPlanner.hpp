@@ -39,20 +39,20 @@ class RRTPlanner : public Planner<dim> {
     bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     virtual bool connectGoalNode(Eigen::VectorXf goal) = 0;
 
-    std::vector<std::shared_ptr<Node>> getPathNodes();
+    std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
     std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing = true);
-    std::shared_ptr<Node> getInitNode();
-    std::shared_ptr<Node> getGoalNode();
+    std::shared_ptr<Node<dim>> getInitNode();
+    std::shared_ptr<Node<dim>> getGoalNode();
 
   protected:
     void computeTreeThread(unsigned int nbOfNodes);
-    virtual void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node> &newNode) = 0;
+    virtual void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode) = 0;
     Eigen::VectorXf computeNodeNew(const Eigen::VectorXf &randNode, const Eigen::VectorXf &nearestNode);
 
     // variables
     float m_stepSize;
-    std::shared_ptr<Node> m_initNode;
-    std::shared_ptr<Node> m_goalNode;
+    std::shared_ptr<Node<dim>> m_initNode;
+    std::shared_ptr<Node<dim>> m_goalNode;
 };
 
 /*!
@@ -69,7 +69,7 @@ RRTPlanner<dim>::RRTPlanner(const std::string &name, const std::shared_ptr<Robot
 }
 
 /*!
-*  \brief      Compute path from start Node to goal Node with passed number of samples and threads
+*  \brief      Compute path from start Node<dim> to goal Node<dim> with passed number of samples and threads
 *  \author     Sascha Kaden
 *  \param[in]  start Node
 *  \param[in]  goal Node
@@ -89,7 +89,7 @@ bool RRTPlanner<dim>::computePath(Eigen::VectorXf start, Eigen::VectorXf goal, u
 }
 
 /*!
-*  \brief      Set init Node of the RRTPlanner
+*  \brief      Set init Node<dim> of the RRTPlanner
 *  \author     Sascha Kaden
 *  \param[in]  initial Node
 *  \param[out] true, if set was possible
@@ -98,11 +98,11 @@ bool RRTPlanner<dim>::computePath(Eigen::VectorXf start, Eigen::VectorXf goal, u
 template <unsigned int dim>
 bool RRTPlanner<dim>::setInitNode(Eigen::VectorXf start) {
     if (this->m_collision->controlVec(start)) {
-        Logging::warning("Init node could not be connected", this);
+        Logging::warning("Init Node<dim> could not be connected", this);
         return false;
     }
 
-    std::shared_ptr<Node> initNode(new Node(start));
+    std::shared_ptr<Node<dim>> initNode(new Node<dim>(start));
     this->m_sampler->setMeanOfDistribution(start);
     m_initNode = initNode;
     this->m_graph->addNode(m_initNode);
@@ -120,7 +120,7 @@ bool RRTPlanner<dim>::setInitNode(Eigen::VectorXf start) {
 template <unsigned int dim>
 bool RRTPlanner<dim>::computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads) {
     if (m_initNode == nullptr) {
-        Logging::error("Init node is not connected", this);
+        Logging::error("Init Node<dim> is not connected", this);
         return false;
     }
 
@@ -151,7 +151,7 @@ template <unsigned int dim>
 void RRTPlanner<dim>::computeTreeThread(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
         Eigen::VectorXf randVec = this->m_sampler->getSample();
-        std::shared_ptr<Node> newNode;
+        std::shared_ptr<Node<dim>> newNode;
         computeRRTNode(randVec, newNode);
 
         if (newNode == nullptr)
@@ -167,13 +167,13 @@ void RRTPlanner<dim>::computeTreeThread(unsigned int nbOfNodes) {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<std::shared_ptr<Node>> RRTPlanner<dim>::getPathNodes() {
-    std::vector<std::shared_ptr<Node>> nodes;
+std::vector<std::shared_ptr<Node<dim>>> RRTPlanner<dim>::getPathNodes() {
+    std::vector<std::shared_ptr<Node<dim>>> nodes;
     if (!this->m_pathPlanned)
         return nodes;
 
     nodes.push_back(m_goalNode);
-    std::shared_ptr<Node> temp = m_goalNode->getParentNode();
+    std::shared_ptr<Node<dim>> temp = m_goalNode->getParentNode();
     while (temp != nullptr) {
         nodes.push_back(temp);
         temp = temp->getParentNode();
@@ -196,7 +196,7 @@ std::vector<Eigen::VectorXf> RRTPlanner<dim>::getPath(float trajectoryStepSize, 
         return path;
     }
 
-    std::vector<std::shared_ptr<Node>> nodes = getPathNodes();
+    std::vector<std::shared_ptr<Node<dim>>> nodes = getPathNodes();
     path = this->getPathFromNodes(nodes, trajectoryStepSize, smoothing);
 
     Logging::info("Path has: " + std::to_string(path.size()) + " points", this);
@@ -204,11 +204,11 @@ std::vector<Eigen::VectorXf> RRTPlanner<dim>::getPath(float trajectoryStepSize, 
 }
 
 /*!
-*  \brief      Computation of a new Node from the RRT algorithm
+*  \brief      Computation of a new Node<dim> from the RRT algorithm
 *  \author     Sascha Kaden
 *  \param[in]  random Node
 *  \param[in]  nearest Node
-*  \param[out] Node new
+*  \param[out] Node<dim> new
 *  \date       2016-05-27
 */
 template <unsigned int dim>
@@ -226,24 +226,24 @@ Eigen::VectorXf RRTPlanner<dim>::computeNodeNew(const Eigen::VectorXf &randNode,
 }
 
 /*!
-*  \brief      Return the init Node of the RRTPlanner
+*  \brief      Return the init Node<dim> of the RRTPlanner
 *  \author     Sascha Kaden
 *  \param[out] init Node
 * \date        2016-06-01
 */
 template <unsigned int dim>
-std::shared_ptr<Node> RRTPlanner<dim>::getInitNode() {
+std::shared_ptr<Node<dim>> RRTPlanner<dim>::getInitNode() {
     return m_initNode;
 }
 
 /*!
-*  \brief      Return the goal Node of the RRTPlanner
+*  \brief      Return the goal Node<dim> of the RRTPlanner
 *  \author     Sascha Kaden
 *  \param[out] goal Node
 * \date        2016-06-01
 */
 template <unsigned int dim>
-std::shared_ptr<Node> RRTPlanner<dim>::getGoalNode() {
+std::shared_ptr<Node<dim>> RRTPlanner<dim>::getGoalNode() {
     return m_goalNode;
 }
 

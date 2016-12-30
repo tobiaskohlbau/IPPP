@@ -14,7 +14,7 @@
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
 
-#include <ui/Drawing2D.h>
+#include <ui/Drawing2D.hpp>
 #include <ui/Writer.h>
 
 using namespace rmpl;
@@ -22,6 +22,7 @@ using namespace rmpl;
 cv::Mat obstacleWorkspace;
 
 void testTriangleRobot(Eigen::Vector2f minimum, Eigen::Vector2f maximum, Eigen::MatrixXi mat) {
+    const unsigned int dim = 3;
     Eigen::Vector3f min = utilVec::append(minimum, 0.0);
     Eigen::Vector3f max = utilVec::append(maximum, 360.0);
 
@@ -36,10 +37,10 @@ void testTriangleRobot(Eigen::Vector2f minimum, Eigen::Vector2f maximum, Eigen::
     PRMOptions prmOptions(30, 0.5, SamplingMethod::randomly);
     RRTOptions rrtOptions(30, 0.5, SamplingMethod::randomly);
 
-    std::shared_ptr<rmpl::Planner<3>> planner;
-    // planner = std::shared_ptr<PRMPlanner<3>>(new PRMPlanner<3>(triangleRobot, prmOptions));
-    planner = std::shared_ptr<StarRRTPlanner<3>>(new StarRRTPlanner<3>(triangleRobot, rrtOptions));
-    // planner = std::shared_ptr<NormalRRTPlanner<3>>(new NormalRRTPlanner<3>(triangleRobot, rrtOptions));
+    std::shared_ptr<rmpl::Planner<dim>> planner;
+    // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(triangleRobot, prmOptions));
+    planner = std::shared_ptr<StarRRTPlanner<dim>>(new StarRRTPlanner<dim>(triangleRobot, rrtOptions));
+    // planner = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(triangleRobot, rrtOptions));
 
     auto startTime = std::chrono::system_clock::now();
     Eigen::Vector3f start(5, 5, 0);
@@ -48,7 +49,7 @@ void testTriangleRobot(Eigen::Vector2f minimum, Eigen::Vector2f maximum, Eigen::
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
-    std::vector<std::shared_ptr<Node>> nodes = planner->getGraphNodes();
+    std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
         std::vector<Eigen::VectorXf> path = planner->getPath(60, true);
@@ -57,7 +58,7 @@ void testTriangleRobot(Eigen::Vector2f minimum, Eigen::Vector2f maximum, Eigen::
 
         cv::Mat image = obstacleWorkspace.clone();
         cv::cvtColor(image, image, CV_GRAY2BGR);
-        Drawing2D::drawTrianglePath(path, triangles, image, Eigen::Vector3i(0, 0, 255), 2);
+        drawing::drawTrianglePath(path, triangles, image, Eigen::Vector3i(0, 0, 255), 2);
 
         cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
         cv::imshow("pathPlanner", image);
@@ -67,16 +68,17 @@ void testTriangleRobot(Eigen::Vector2f minimum, Eigen::Vector2f maximum, Eigen::
 }
 
 void testPointRobot(Eigen::Vector2f min, Eigen::Vector2f max, Eigen::MatrixXi mat) {
+    const unsigned int dim = 2;
     std::shared_ptr<PointRobot> robot(new PointRobot(min, max));
     robot->set2DWorkspace(mat);
 
     PRMOptions prmOptions(40, 0.5, SamplingMethod::randomly, SamplingStrategy::nearObstacles);
     RRTOptions rrtOptions(50, 1, SamplingMethod::randomly, SamplingStrategy::nearObstacles);
 
-    std::shared_ptr<rmpl::Planner<2>> planner;
-    // planner = std::shared_ptr<PRMPlanner<2>>(new PRMPlanner<2>(robot, prmOptions));
-    planner = std::shared_ptr<StarRRTPlanner<2>>(new StarRRTPlanner<2>(robot, rrtOptions));
-    // planner = std::shared_ptr<NormalRRTPlanner<2>>(new NormalRRTPlanner<2>(robot, rrtOptions));
+    std::shared_ptr<rmpl::Planner<dim>> planner;
+    // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));
+    planner = std::shared_ptr<StarRRTPlanner<dim>>(new StarRRTPlanner<dim>(robot, rrtOptions));
+    // planner = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(robot, rrtOptions));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
@@ -85,17 +87,17 @@ void testPointRobot(Eigen::Vector2f min, Eigen::Vector2f max, Eigen::MatrixXi ma
     bool connected = planner->computePath(start, goal, 5200, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
-    std::vector<std::shared_ptr<Node>> nodes = planner->getGraphNodes();
+    std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
 
     cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    Drawing2D::drawGraph2D(nodes, image, Eigen::Vector3i(125, 125, 125), Eigen::Vector3i(125, 125, 125), 2);
-    Drawing2D::drawTree2D(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
+    drawing::drawGraph2D(nodes, image, Eigen::Vector3i(125, 125, 125), Eigen::Vector3i(125, 125, 125), 2);
+    drawing::drawTree2D(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
 
     if (connected) {
         std::vector<Eigen::VectorXf> pathPoints = planner->getPath(1, true);
-        Drawing2D::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
+        drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
     }
 
     cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
@@ -108,7 +110,7 @@ int main(int argc, char** argv) {
     // obstacleWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     // obstacleWorkspace = cv::imread("spaces/labyrinth.png", CV_LOAD_IMAGE_GRAYSCALE);
     obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    Eigen::MatrixXi mat = Drawing2D::cvToEigen(obstacleWorkspace);
+    Eigen::MatrixXi mat = drawing::cvToEigen(obstacleWorkspace);
 
     Eigen::Vector2f minBoundary(0.0, 0.0);
     Eigen::Vector2f maxBoundary(mat.rows(), mat.cols());

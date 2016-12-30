@@ -20,7 +20,7 @@
 #define UTILITY_H_
 
 #include <core/utility/UtilGeo.h>
-#include <core/utility/UtilList.h>
+#include <core/utility/UtilList.hpp>
 #include <core/utility/UtilVec.h>
 
 namespace rmpl {
