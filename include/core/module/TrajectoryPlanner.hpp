@@ -16,12 +16,38 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/module/TrajectoryPlanner.h>
+#ifndef TRAJECTORYPLANNER_H_
+#define TRAJECTORYPLANNER_H_
 
-#include <core/utility/Logging.h>
+#include <core/module/CollisionDetection.hpp>
+#include <core/module/ModuleBase.h>
 
-using std::shared_ptr;
 namespace rmpl {
+
+/*!
+* \brief   Class TrajectoryPlanner plans between the passed nodes/vecs. Start and end point aren't part of the path.
+* \author  Sascha Kaden
+* \date    2016-05-25
+*/
+template <unsigned int dim>
+class TrajectoryPlanner : public ModuleBase {
+  public:
+    TrajectoryPlanner(float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision);
+
+    bool controlTrajectory(const Node<dim> &source, const Node<dim> &target);
+    bool controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
+    bool controlTrajectory(const Eigen::VectorXf &source, const Eigen::VectorXf &target);
+    std::vector<Eigen::VectorXf> calcTrajectoryCont(const Eigen::VectorXf &source, const Eigen::VectorXf &target);
+    std::vector<Eigen::VectorXf> calcTrajectoryBin(const Eigen::VectorXf &source, const Eigen::VectorXf &target);
+
+    void setStepSize(float stepSize);
+    float getStepSize() const;
+
+  private:
+    float m_stepSize;
+    float m_sqStepSize;
+    std::shared_ptr<CollisionDetection<dim>> m_collision;
+};
 
 /*!
 *  \brief      Constructor of the class TrajectoryPlanner
@@ -30,7 +56,8 @@ namespace rmpl {
 *  \param[in]  pointer to ColllisionDetection instance
 *  \date       2016-05-25
 */
-TrajectoryPlanner::TrajectoryPlanner(float stepSize, const shared_ptr<CollisionDetection> &collision)
+template <unsigned int dim>
+TrajectoryPlanner<dim>::TrajectoryPlanner(float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision)
     : ModuleBase("TrajectoryPlanner") {
     m_collision = collision;
 
@@ -45,7 +72,8 @@ TrajectoryPlanner::TrajectoryPlanner(float stepSize, const shared_ptr<CollisionD
 *  \param[out] possibility of trajectory, true if possible
 *  \date       2016-05-31
 */
-bool TrajectoryPlanner::controlTrajectory(const Node &source, const Node &target) {
+template <unsigned int dim>
+bool TrajectoryPlanner<dim>::controlTrajectory(const Node<dim> &source, const Node<dim> &target) {
     return controlTrajectory(source.getValues(), target.getValues());
 }
 
@@ -57,7 +85,8 @@ bool TrajectoryPlanner::controlTrajectory(const Node &source, const Node &target
 *  \param[out] possibility of trajectory, true if possible
 *  \date       2016-05-31
 */
-bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, const std::shared_ptr<Node> &target) {
+template <unsigned int dim>
+bool TrajectoryPlanner<dim>::controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) {
     return controlTrajectory(source->getValues(), target->getValues());
 }
 
@@ -69,7 +98,8 @@ bool TrajectoryPlanner::controlTrajectory(const std::shared_ptr<Node> &source, c
 *  \param[out] possibility of trajectory, true if possible
 *  \date       2016-05-31
 */
-bool TrajectoryPlanner::controlTrajectory(const Eigen::VectorXf &source, const Eigen::VectorXf &target) {
+template <unsigned int dim>
+bool TrajectoryPlanner<dim>::controlTrajectory(const Eigen::VectorXf &source, const Eigen::VectorXf &target) {
     if (source.rows() != target.rows()) {
         Logging::error("Nodes/Vecs have different dimensions", this);
         return false;
@@ -90,7 +120,9 @@ bool TrajectoryPlanner::controlTrajectory(const Eigen::VectorXf &source, const E
 *  \param[out] trajectory
 *  \date       2016-12-21
 */
-std::vector<Eigen::VectorXf> TrajectoryPlanner::calcTrajectoryBin(const Eigen::VectorXf &source, const Eigen::VectorXf &target) {
+template <unsigned int dim>
+std::vector<Eigen::VectorXf> TrajectoryPlanner<dim>::calcTrajectoryBin(const Eigen::VectorXf &source,
+                                                                       const Eigen::VectorXf &target) {
     std::vector<Eigen::VectorXf> vecs;
     if (source.rows() != target.rows()) {
         Logging::error("Vecs have different dimensions", this);
@@ -116,7 +148,9 @@ std::vector<Eigen::VectorXf> TrajectoryPlanner::calcTrajectoryBin(const Eigen::V
 *  \param[out] trajectory
 *  \date       2016-12-21
 */
-std::vector<Eigen::VectorXf> TrajectoryPlanner::calcTrajectoryCont(const Eigen::VectorXf &source, const Eigen::VectorXf &target) {
+template <unsigned int dim>
+std::vector<Eigen::VectorXf> TrajectoryPlanner<dim>::calcTrajectoryCont(const Eigen::VectorXf &source,
+                                                                        const Eigen::VectorXf &target) {
     std::vector<Eigen::VectorXf> vecs;
     if (source.rows() != target.rows()) {
         Logging::error("Vecs have different dimensions", this);
@@ -136,7 +170,8 @@ std::vector<Eigen::VectorXf> TrajectoryPlanner::calcTrajectoryCont(const Eigen::
 *  \param[in]  step size
 *  \date       2016-07-14
 */
-void TrajectoryPlanner::setStepSize(float stepSize) {
+template <unsigned int dim>
+void TrajectoryPlanner<dim>::setStepSize(float stepSize) {
     if (stepSize <= 0) {
         m_stepSize = 1;
         Logging::warning("Step size has to be larger than 0, it has set to 1!", this);
@@ -152,8 +187,11 @@ void TrajectoryPlanner::setStepSize(float stepSize) {
 *  \param[out] step size
 *  \date       2016-07-14
 */
-float TrajectoryPlanner::getStepSize() const {
+template <unsigned int dim>
+float TrajectoryPlanner<dim>::getStepSize() const {
     return m_stepSize;
 }
 
 } /* namespace rmpl */
+
+#endif /* TRAJECTORYPLANNER_H_ */

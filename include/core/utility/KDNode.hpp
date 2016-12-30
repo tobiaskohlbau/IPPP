@@ -31,14 +31,13 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-05-27
 */
-template <typename T>
+template <unsigned int dim, typename T>
 class KDNode {
   public:
     KDNode(const Eigen::VectorXf &vec, const T &node);
-    unsigned int getDim();
 
-    std::shared_ptr<KDNode<T>> left;
-    std::shared_ptr<KDNode<T>> right;
+    std::shared_ptr<KDNode<dim, T>> left;
+    std::shared_ptr<KDNode<dim, T>> right;
     Eigen::VectorXf vec;
     T node;
     unsigned int axis;
@@ -52,25 +51,13 @@ class KDNode {
 *  \param[in]  pointer to an extern object
 *  \date       2016-05-27
 */
-template <typename T>
-KDNode<T>::KDNode(const Eigen::VectorXf &vec, const T &node) {
+template <unsigned int dim, typename T>
+KDNode<dim, T>::KDNode(const Eigen::VectorXf &vec, const T &node) {
     this->vec = vec;
     this->node = node;
     axis = 0;
     value = 0;
 }
-
-/*!
-*  \brief      Return dimension of KDNode
-*  \author     Sascha Kaden
-*  \param[out] dimension
-*  \date       2016-05-27
-*/
-template <typename T>
-unsigned int KDNode<T>::getDim() {
-    return vec.rows();
-}
-
 } /* namespace rmpl */
 
 #endif /* KDNODE_H_ */

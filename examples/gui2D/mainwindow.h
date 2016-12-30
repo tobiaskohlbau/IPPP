@@ -13,7 +13,6 @@
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/PointRobot.h>
-#include <ui/Drawing2D.h>
 
 namespace Ui {
 class MainWindow;

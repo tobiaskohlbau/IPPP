@@ -17,18 +17,12 @@
 #-------------------------------------------------------------------------//
 
 list(APPEND SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Edge.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Graph.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/CollisionDetection.cpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/ModuleBase.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampler.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampling.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Logging.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Utility.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilGeo.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilList.cpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilVec.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.cpp

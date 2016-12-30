@@ -21,11 +21,11 @@
 
 #include <Eigen/Core>
 
-#include <core/dataObj/Graph.h>
-#include <core/module/CollisionDetection.h>
+#include <core/dataObj/Graph.hpp>
+#include <core/module/CollisionDetection.hpp>
 #include <core/module/ModuleBase.h>
-#include <core/module/Sampling.h>
-#include <core/module/TrajectoryPlanner.h>
+#include <core/module/Sampling.hpp>
+#include <core/module/TrajectoryPlanner.hpp>
 #include <pathPlanner/options/PlannerOptions.h>
 #include <robot/RobotBase.h>
 
@@ -47,19 +47,19 @@ class Planner : public ModuleBase {
   public:
     virtual bool computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads) = 0;
 
-    std::vector<std::shared_ptr<Node>> getGraphNodes();
+    std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
     virtual std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing) = 0;
-    virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
-    std::vector<Eigen::VectorXf> getPathFromNodes(const std::vector<std::shared_ptr<Node>> &nodes, float trajectoryStepSize,
+    virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
+    std::vector<Eigen::VectorXf> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, float trajectoryStepSize,
                                                   bool smoothing);
 
   protected:
-    std::vector<std::shared_ptr<Node>> smoothPath(std::vector<std::shared_ptr<Node>> nodes);
+    std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
 
-    std::shared_ptr<TrajectoryPlanner> m_planner;
-    std::shared_ptr<Sampling> m_sampler;
-    std::shared_ptr<CollisionDetection> m_collision;
-    std::shared_ptr<Graph> m_graph;
+    std::shared_ptr<TrajectoryPlanner<dim>> m_planner;
+    std::shared_ptr<Sampling<dim>> m_sampler;
+    std::shared_ptr<CollisionDetection<dim>> m_collision;
+    std::shared_ptr<Graph<dim>> m_graph;
     std::shared_ptr<RobotBase> m_robot;
 
     const PlannerOptions m_options;
@@ -89,11 +89,11 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase> 
     m_pathPlanned = false;
 
     m_robot = robot;
-    m_graph = std::shared_ptr<Graph>(new Graph());
-    m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_robot));
-    m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(options.getTrajectoryStepSize(), m_collision));
-    m_sampler = std::shared_ptr<Sampling>(
-        new Sampling(m_robot, m_collision, m_planner, options.getSamplingMethod(), options.getSamplingStrategy()));
+    m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>());
+    m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetection<dim>(m_robot));
+    m_planner = std::shared_ptr<TrajectoryPlanner<dim>>(new TrajectoryPlanner<dim>(options.getTrajectoryStepSize(), m_collision));
+    m_sampler = std::shared_ptr<Sampling<dim>>(
+        new Sampling<dim>(m_robot, m_collision, m_planner, options.getSamplingMethod(), options.getSamplingStrategy()));
 }
 
 /*!
@@ -103,7 +103,7 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase> 
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-std::vector<std::shared_ptr<Node>> Planner<dim>::getGraphNodes() {
+std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
     return m_graph->getNodes();
 }
 
@@ -117,9 +117,9 @@ std::vector<std::shared_ptr<Node>> Planner<dim>::getGraphNodes() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-std::vector<Eigen::VectorXf> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node>> &nodes,
+std::vector<Eigen::VectorXf> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
                                                             float trajectoryStepSize, bool smoothing) {
-    std::vector<std::shared_ptr<Node>> smoothedNodes;
+    std::vector<std::shared_ptr<Node<dim>>> smoothedNodes;
     if (smoothing)
         smoothedNodes = smoothPath(nodes);
     else
@@ -169,7 +169,7 @@ std::vector<Eigen::VectorXf> Planner<dim>::getPathFromNodes(const std::vector<st
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-std::vector<std::shared_ptr<Node>> Planner<dim>::smoothPath(std::vector<std::shared_ptr<Node>> nodes) {
+std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes) {
     unsigned int i = 0;
     unsigned int countNodes = nodes.size() - 2;
     while (i < countNodes) {

@@ -16,19 +16,40 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/dataObj/Edge.h>
-#include <core/dataObj/Node.h>
+#ifndef EDGE_H_
+#define EDGE_H_
 
-using std::shared_ptr;
+#include <memory>
+
+#include <core/dataObj/Node.hpp>
+
 namespace rmpl {
 
+template <unsigned int dim>
+class Node;
+
 /*!
-*  \brief      Default constructor of the class Edge
-*  \author     Sasch Kaden
-*  \date       2016-05-30
+* \brief   Class Edge contains the two nodes of the Edge and different parameters
+* \author  Sascha Kaden
+* \date    2016-05-25
 */
-Edge::Edge() {
-}
+template <unsigned int dim>
+class Edge {
+  public:
+    Edge(std::shared_ptr<Node<dim>> source, std::shared_ptr<Node<dim>> &target, float cost);
+
+    float getCost();
+
+    void setSource(std::shared_ptr<Node<dim>> &source);
+    std::shared_ptr<Node<dim>> getSource();
+    void setTarget(std::shared_ptr<Node<dim>> &target);
+    std::shared_ptr<Node<dim>> getTarget();
+
+  private:
+    std::shared_ptr<Node<dim>> m_source = nullptr;
+    std::shared_ptr<Node<dim>> m_target = nullptr;
+    float m_cost = -1;
+};
 
 /*!
 *  \brief      Constructor of the class Edge
@@ -37,7 +58,8 @@ Edge::Edge() {
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-Edge::Edge(shared_ptr<Node> source, shared_ptr<Node> &target, float cost) {
+template <unsigned int dim>
+Edge<dim>::Edge(std::shared_ptr<Node<dim>> source, std::shared_ptr<Node<dim>> &target, float cost) {
     m_target = target;
     m_cost = cost;
 }
@@ -48,7 +70,8 @@ Edge::Edge(shared_ptr<Node> source, shared_ptr<Node> &target, float cost) {
 *  \param[out] length
 *  \date       2016-05-25
 */
-float Edge::getCost() {
+template <unsigned int dim>
+float Edge<dim>::getCost() {
     return m_cost;
 }
 
@@ -58,7 +81,8 @@ float Edge::getCost() {
 *  \param[in]  target Node
 *  \date       2016-05-25
 */
-void Edge::setTarget(shared_ptr<Node> &target) {
+template <unsigned int dim>
+void Edge<dim>::setTarget(std::shared_ptr<Node<dim>> &target) {
     m_target = target;
     if (!m_source)
         m_cost = m_source->getDist(target);
@@ -70,7 +94,8 @@ void Edge::setTarget(shared_ptr<Node> &target) {
 *  \param[out] target Node
 *  \date       2016-05-25
 */
-shared_ptr<Node> Edge::getTarget() {
+template <unsigned int dim>
+std::shared_ptr<Node<dim>> Edge<dim>::getTarget() {
     return m_target;
 }
 
@@ -80,7 +105,8 @@ shared_ptr<Node> Edge::getTarget() {
 *  \param[in]  source Node
 *  \date       2016-12-16
 */
-void Edge::setSource(shared_ptr<Node> &source) {
+template <unsigned int dim>
+void Edge<dim>::setSource(std::shared_ptr<Node<dim>> &source) {
     m_source = source;
     if (!m_target)
         m_cost = m_target->getDist(source);
@@ -92,8 +118,11 @@ void Edge::setSource(shared_ptr<Node> &source) {
 *  \param[out] source Node
 *  \date       2016-12-16
 */
-shared_ptr<Node> Edge::getSource() {
+template <unsigned int dim>
+std::shared_ptr<Node<dim>> Edge<dim>::getSource() {
     return m_source;
 }
 
 } /* namespace rmpl */
+
+#endif /* EDGE_H_ */

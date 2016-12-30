@@ -18,8 +18,7 @@
 
 set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.cpp
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp
     ${CMAKE_SOURCE_DIR}/examples/ui/Writer.h
     ${CMAKE_SOURCE_DIR}/examples/ui/Writer.cpp)
 

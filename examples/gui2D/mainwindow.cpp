@@ -5,6 +5,7 @@
 
 #include <QFileDialog>
 #include <pathPlanner/options/PRMOptions.h>
+#include <ui/Drawing2D.hpp>
 
 using namespace rmpl;
 
@@ -20,7 +21,7 @@ void MainWindow::loadImage() {
     QString qFileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "/home", tr("Image Files (*.png *.jpg *.bmp)"));
 
     cv::Mat obstacleWorkspace = cv::imread(qFileName.toStdString(), CV_LOAD_IMAGE_GRAYSCALE);
-    m_workspace = Drawing2D::cvToEigen(obstacleWorkspace);
+    m_workspace = drawing::cvToEigen(obstacleWorkspace);
     m_image = obstacleWorkspace;
 }
 
@@ -60,11 +61,11 @@ void MainWindow::viewPath() {
     cv::Mat image = m_image.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    std::vector<std::shared_ptr<Node>> nodes = m_planner->getGraphNodes();
-    Drawing2D::drawTree2D(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
+    std::vector<std::shared_ptr<Node<2>>> nodes = m_planner->getGraphNodes();
+    drawing::drawTree2D<2>(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
     if (m_connected) {
         std::vector<Eigen::VectorXf> pathPoints = m_planner->getPath(0.5, true);
-        Drawing2D::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
+        drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
     }
 
     QImage qImage = convertCvMat(image);

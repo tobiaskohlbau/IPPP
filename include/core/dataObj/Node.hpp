@@ -16,20 +16,76 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <limits>
+#ifndef NODE_H_
+#define NODE_H_
 
-#include <core/dataObj/Node.h>
-#include <core/utility/Utility.h>
+#include <assert.h>
+#include <memory>
+#include <vector>
 
-using std::shared_ptr;
+#include <Eigen/Core>
+
+#include <core/dataObj/Edge.hpp>
+#include <core/utility/UtilVec.h>
+
 namespace rmpl {
+
+/*!
+* \brief   Class Node to present nodes of path planner
+* \details Consists of the position by an Vec, a cost parameter, pointer to an parent Node and a list of child
+* \author  Sascha Kaden
+* \date    2016-05-23
+*/
+template <unsigned int dim>
+class Node {
+  public:
+    Node();
+    Node(float x, float y);
+    Node(float x, float y, float z);
+    Node(float x, float y, float z, float rx);
+    Node(float x, float y, float z, float rx, float ry);
+    Node(float x, float y, float z, float rx, float ry, float rz);
+    Node(const Eigen::VectorXf &vec);
+
+    float getX();
+    float getY();
+    float getZ();
+
+    bool empty() const;
+    float getDist(const std::shared_ptr<Node> &node);
+    float getDist(const Node &node);
+    float getDistToParent();
+
+    void setCost(float cost);
+    void addCost(float cost);
+    float getCost();
+
+    void setParent(std::shared_ptr<Node> &parent);
+    std::shared_ptr<Node> getParentNode();
+    std::shared_ptr<Edge<dim>> getParentEdge();
+    void clearParent();
+    void addChild(std::shared_ptr<Node> &child);
+    std::vector<std::shared_ptr<Node>> getChildNodes();
+    std::vector<std::shared_ptr<Edge<dim>>> getChildEdges();
+    void clearChildes();
+
+    Eigen::VectorXf getValues() const;
+
+  private:
+    Eigen::VectorXf m_vec;
+    float m_cost = -1;
+
+    std::shared_ptr<Edge<dim>> m_parent = nullptr;
+    std::vector<std::shared_ptr<Edge<dim>>> m_childes;
+};
 
 /*!
 *  \brief      Default constructor of the class Node
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-Node::Node() {
+template <unsigned int dim>
+Node<dim>::Node() {
 }
 
 /*!
@@ -39,7 +95,8 @@ Node::Node() {
 *  \param[in]  y
 *  \date       2016-05-24
 */
-Node::Node(float x, float y) {
+template <unsigned int dim>
+Node<dim>::Node(float x, float y) {
     m_vec = Eigen::Vector2f(x, y);
 }
 
@@ -51,7 +108,8 @@ Node::Node(float x, float y) {
 *  \param[in]  z
 *  \date       2016-05-24
 */
-Node::Node(float x, float y, float z) {
+template <unsigned int dim>
+Node<dim>::Node(float x, float y, float z) {
     m_vec = Eigen::Vector3f(x, y, z);
 }
 
@@ -64,7 +122,8 @@ Node::Node(float x, float y, float z) {
 *  \param[in]  rx
 *  \date       2016-05-24
 */
-Node::Node(float x, float y, float z, float rx) {
+template <unsigned int dim>
+Node<dim>::Node(float x, float y, float z, float rx) {
     m_vec = Eigen::Vector4f(x, y, z, rx);
 }
 
@@ -78,7 +137,8 @@ Node::Node(float x, float y, float z, float rx) {
 *  \param[in]  ry
 *  \date       2016-05-24
 */
-Node::Node(float x, float y, float z, float rx, float ry) {
+template <unsigned int dim>
+Node<dim>::Node(float x, float y, float z, float rx, float ry) {
     m_vec = utilVec::Vecf(x, y, z, rx, ry);
 }
 
@@ -93,7 +153,8 @@ Node::Node(float x, float y, float z, float rx, float ry) {
 *  \param[in]  rz
 *  \date       2016-05-24
 */
-Node::Node(float x, float y, float z, float rx, float ry, float rz) {
+template <unsigned int dim>
+Node<dim>::Node(float x, float y, float z, float rx, float ry, float rz) {
     m_vec = utilVec::Vecf(x, y, z, rx, ry, rz);
 }
 
@@ -103,7 +164,8 @@ Node::Node(float x, float y, float z, float rx, float ry, float rz) {
 *  \param[in]  Eigen Vector
 *  \date       2016-05-24
 */
-Node::Node(const Eigen::VectorXf &vec) {
+template <unsigned int dim>
+Node<dim>::Node(const Eigen::VectorXf &vec) {
     m_vec = vec;
 }
 
@@ -112,7 +174,8 @@ Node::Node(const Eigen::VectorXf &vec) {
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-float Node::getX() {
+template <unsigned int dim>
+float Node<dim>::getX() {
     return m_vec[0];
 }
 
@@ -121,7 +184,8 @@ float Node::getX() {
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-float Node::getY() {
+template <unsigned int dim>
+float Node<dim>::getY() {
     return m_vec[1];
 }
 
@@ -130,18 +194,9 @@ float Node::getY() {
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
-float Node::getZ() {
+template <unsigned int dim>
+float Node<dim>::getZ() {
     return m_vec[2];
-}
-
-/*!
-*  \brief      Return the dimension of the Node (rows of the vector)
-*  \author     Sascha Kaden
-*  \param[out] Dimension of the Node
-*  \date       2016-05-24
-*/
-unsigned int Node::getDim() {
-    return m_vec.rows();
 }
 
 /*!
@@ -150,7 +205,8 @@ unsigned int Node::getDim() {
 *  \param[out] State of the Node
 *  \date       2016-05-24
 */
-bool Node::empty() const {
+template <unsigned int dim>
+bool Node<dim>::empty() const {
     if (m_vec.rows() == 0 || m_vec.rows() == -1)
         return true;
     else
@@ -164,7 +220,8 @@ bool Node::empty() const {
 *  \param[out] distance
 *  \date       2016-05-24
 */
-float Node::getDist(const shared_ptr<Node> &node) {
+template <unsigned int dim>
+float Node<dim>::getDist(const std::shared_ptr<Node> &node) {
     if (node == nullptr)
         return -1;
     return getDist(*node);
@@ -177,7 +234,8 @@ float Node::getDist(const shared_ptr<Node> &node) {
 *  \param[out] distance
 *  \date       2016-05-24
 */
-float Node::getDist(const Node &node) {
+template <unsigned int dim>
+float Node<dim>::getDist(const Node &node) {
     if (node.empty() || empty())
         return -1;
     return (m_vec - node.getValues()).norm();
@@ -189,7 +247,8 @@ float Node::getDist(const Node &node) {
 *  \param[out] distance
 *  \date       2016-05-24
 */
-float Node::getDistToParent() {
+template <unsigned int dim>
+float Node<dim>::getDistToParent() {
     return m_parent->getCost();
 }
 
@@ -199,7 +258,8 @@ float Node::getDistToParent() {
 *  \param[in]  cost
 *  \date       2016-05-24
 */
-void Node::setCost(float cost) {
+template <unsigned int dim>
+void Node<dim>::setCost(float cost) {
     if (cost >= 0)
         m_cost = cost;
 }
@@ -210,7 +270,8 @@ void Node::setCost(float cost) {
 *  \param[in]  cost
 *  \date       2016-10-22
 */
-void Node::addCost(float cost) {
+template <unsigned int dim>
+void Node<dim>::addCost(float cost) {
     if (cost >= 0)
         m_cost += cost;
 }
@@ -221,7 +282,8 @@ void Node::addCost(float cost) {
 *  \param[out] cost
 *  \date       2016-05-24
 */
-float Node::getCost() {
+template <unsigned int dim>
+float Node<dim>::getCost() {
     return m_cost;
 }
 
@@ -231,9 +293,10 @@ float Node::getCost() {
 *  \param[in]  shared_ptr parent Node
 *  \date       2016-07-15
 */
-void Node::setParent(shared_ptr<Node> &parent) {
+template <unsigned int dim>
+void Node<dim>::setParent(std::shared_ptr<Node> &parent) {
     if (!parent->empty())
-        m_parent = shared_ptr<Edge>(new Edge(std::make_shared<Node>(*this), parent, getDist(parent)));
+        m_parent = std::shared_ptr<Edge<dim>>(new Edge<dim>(std::make_shared<Node>(*this), parent, getDist(parent)));
 }
 
 /*!
@@ -242,7 +305,8 @@ void Node::setParent(shared_ptr<Node> &parent) {
 *  \param[out] shared_ptr parent Node
 *  \date       2016-07-15
 */
-shared_ptr<Node> Node::getParentNode() {
+template <unsigned int dim>
+std::shared_ptr<Node<dim>> Node<dim>::getParentNode() {
     if (!m_parent)
         return nullptr;
     else
@@ -255,7 +319,8 @@ shared_ptr<Node> Node::getParentNode() {
 *  \param[out] Edge
 *  \date       2016-10-22
 */
-shared_ptr<Edge> Node::getParentEdge() {
+template <unsigned int dim>
+    std::shared_ptr<Edge<dim>> Node<dim>::getParentEdge() {
     return m_parent;
 }
 
@@ -264,7 +329,8 @@ shared_ptr<Edge> Node::getParentEdge() {
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */
-void Node::clearParent() {
+template <unsigned int dim>
+void Node<dim>::clearParent() {
     m_parent = nullptr;
 }
 
@@ -274,9 +340,10 @@ void Node::clearParent() {
 *  \param[in]  shared_ptr child Node
 *  \date       2016-07-15
 */
-void Node::addChild(shared_ptr<Node> &child) {
+template <unsigned int dim>
+void Node<dim>::addChild(std::shared_ptr<Node<dim>> &child) {
     if (!child->empty())
-        m_childes.push_back(std::shared_ptr<Edge>(new Edge(std::make_shared<Node>(*this), child, getDist(child))));
+        m_childes.push_back(std::shared_ptr<Edge<dim>>(new Edge<dim>(std::make_shared<Node>(*this), child, getDist(child))));
 }
 
 /*!
@@ -285,8 +352,9 @@ void Node::addChild(shared_ptr<Node> &child) {
 *  \param[out] list of child nodes
 *  \date       2016-07-15
 */
-std::vector<shared_ptr<Node>> Node::getChildNodes() {
-    std::vector<shared_ptr<Node>> childNodes;
+template <unsigned int dim>
+std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChildNodes() {
+    std::vector<std::shared_ptr<Node>> childNodes;
     for (auto child : m_childes)
         childNodes.push_back(child->getTarget());
 
@@ -299,7 +367,8 @@ std::vector<shared_ptr<Node>> Node::getChildNodes() {
 *  \param[out] list of child edges
 *  \date       2016-07-15
 */
-std::vector<std::shared_ptr<Edge>> Node::getChildEdges() {
+template <unsigned int dim>
+std::vector<std::shared_ptr<Edge<dim>>> Node<dim>::getChildEdges() {
     return m_childes;
 }
 
@@ -308,7 +377,8 @@ std::vector<std::shared_ptr<Edge>> Node::getChildEdges() {
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */
-void Node::clearChildes() {
+template <unsigned int dim>
+void Node<dim>::clearChildes() {
     m_childes.clear();
 }
 
@@ -318,8 +388,11 @@ void Node::clearChildes() {
 *  \param[out] Vec
 *  \date       2016-05-24
 */
-Eigen::VectorXf Node::getValues() const {
+template <unsigned int dim>
+Eigen::VectorXf Node<dim>::getValues() const {
     return m_vec;
 }
 
 } /* namespace rmpl */
+
+#endif /* NODE_H_ */

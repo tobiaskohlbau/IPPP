@@ -21,9 +21,9 @@
 
 #include <mutex>
 
+#include <core/dataObj/Node.hpp>
 #include <core/module/ModuleBase.h>
 #include <core/utility/KDNode.hpp>
-#include <core/dataObj/Node.h>
 
 namespace rmpl {
 
@@ -31,31 +31,33 @@ enum Direction { left, right };
 
 /*!
 * \brief   Class KDTree for a fast binary search
-* \details Class uses KDNode to save the points
+* \details Class uses KDNode<dim> to save the points
 * \author  Sascha Kaden
 * \date    2016-05-27
 */
-template <class T>
+template <unsigned int dim, class T>
 class KDTree : public ModuleBase {
   public:
     KDTree();
-    KDTree(std::vector<std::shared_ptr<Node>> &nodes);
+    KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes);
     void addNode(const Eigen::VectorXf &vec, const T &node);
     T searchNearestNeighbor(const Eigen::VectorXf &vec);
     std::vector<T> searchRange(const Eigen::VectorXf &vec, float range);
 
-    std::shared_ptr<KDNode<T>> sort(std::vector<std::shared_ptr<Node>> &vec, unsigned int dim);
-    void quickSort(std::vector<std::shared_ptr<Node>> &A, int left, int right, int dim);
-    int partition(std::vector<std::shared_ptr<Node>> &A, int left, int right, int dim);
+    std::shared_ptr<KDNode<dim, T>> sort(std::vector<std::shared_ptr<Node<dim>>> &vec, unsigned int cd);
+    void quickSort(std::vector<std::shared_ptr<Node<dim>>> &A, int left, int right, int dimension);
+    int partition(std::vector<std::shared_ptr<Node<dim>>> &A, int left, int right, int dimension);
 
   private:
-    std::shared_ptr<KDNode<T>> insert(std::shared_ptr<KDNode<T>> insertNode, std::shared_ptr<KDNode<T>> currentNode,
-                                      unsigned int depth);
-    void NNS(const Eigen::VectorXf &point, std::shared_ptr<KDNode<T>> node, std::shared_ptr<KDNode<T>> &refNode, float &bestDist);
-    void RS(const Eigen::VectorXf &point, std::shared_ptr<KDNode<T>> node, std::vector<std::shared_ptr<KDNode<T>>> &refNodes,
-            float sqRange, const Eigen::VectorXf &maxBoundary, const Eigen::VectorXf &minBoundary);
+    std::shared_ptr<KDNode<dim, T>> insert(std::shared_ptr<KDNode<dim, T>> insertNode,
+                                           std::shared_ptr<KDNode<dim, T>> currentNode, unsigned int depth);
+    void NNS(const Eigen::VectorXf &point, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode,
+             float &bestDist);
+    void RS(const Eigen::VectorXf &point, std::shared_ptr<KDNode<dim, T>> node,
+            std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, float sqRange, const Eigen::VectorXf &maxBoundary,
+            const Eigen::VectorXf &minBoundary);
 
-    std::shared_ptr<KDNode<T>> m_root;
+    std::shared_ptr<KDNode<dim, T>> m_root;
     std::mutex m_mutex;
 };
 
@@ -64,8 +66,8 @@ class KDTree : public ModuleBase {
 *  \author     Sascha Kaden
 *  \date       2016-06-02
 */
-template <class T>
-KDTree<T>::KDTree() : ModuleBase("KD Tree") {
+template <unsigned int dim, class T>
+KDTree<dim, T>::KDTree() : ModuleBase("KD Tree") {
 }
 
 /*!
@@ -74,36 +76,36 @@ KDTree<T>::KDTree() : ModuleBase("KD Tree") {
 *  \param[in]  vector of nodes
 *  \date       2016-07-18
 */
-template <class T>
-KDTree<T>::KDTree(std::vector<std::shared_ptr<Node>> &nodes) : ModuleBase("KD Tree") {
+template <unsigned int dim, class T>
+KDTree<dim, T>::KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) : ModuleBase("KD Tree") {
     quickSort(nodes, 0, nodes.size() - 1, 0);
-    m_root = std::shared_ptr<KDNode<T>>(new KDNode<T>(nodes[nodes.size() / 2]->getValues(), nodes[nodes.size() / 2]));
+    m_root = std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(nodes[nodes.size() / 2]->getValues(), nodes[nodes.size() / 2]));
     m_root->axis = 0;
     m_root->value = m_root->vec[0];
 
-    std::vector<std::shared_ptr<Node>> vecLeft(nodes.begin(), nodes.begin() + (nodes.size() / 2) - 1);
-    std::vector<std::shared_ptr<Node>> vecRight(nodes.begin() + (nodes.size() / 2) + 1, nodes.end());
+    std::vector<std::shared_ptr<Node<dim>>> vecLeft(nodes.begin(), nodes.begin() + (nodes.size() / 2) - 1);
+    std::vector<std::shared_ptr<Node<dim>>> vecRight(nodes.begin() + (nodes.size() / 2) + 1, nodes.end());
     m_root->left = sort(vecLeft, 1);
     m_root->right = sort(vecRight, 1);
 }
 
 /*!
-*  \brief      Add Node to the KDTree
+*  \brief      Add Node<dim> to the KDTree
 *  \author     Sascha Kaden
 *  \param[in]  position
 *  \param[in]  pointer to the Node
 *  \date       2016-05-27
 */
-template <class T>
-void KDTree<T>::addNode(const Eigen::VectorXf &vec, const T &node) {
-    std::shared_ptr<KDNode<T>> shrKDNode(new KDNode<T>(vec, node));
+template <unsigned int dim, class T>
+void KDTree<dim, T>::addNode(const Eigen::VectorXf &vec, const T &node) {
+    std::shared_ptr<KDNode<dim, T>> shrKDNode(new KDNode<dim, T>(vec, node));
     if (m_root == nullptr) {
         m_root = shrKDNode;
         return;
     }
     // insert(shrKDNode, m_root, 0);
 
-    std::shared_ptr<KDNode<T>> leaf, last;
+    std::shared_ptr<KDNode<dim, T>> leaf, last;
     last = m_root;
     Direction dir;
     if (shrKDNode->vec[0] < m_root->vec[0]) {
@@ -115,7 +117,6 @@ void KDTree<T>::addNode(const Eigen::VectorXf &vec, const T &node) {
     }
 
     unsigned int cd = 1;
-    unsigned int dim = m_root->getDim();
     while (leaf != nullptr) {
         last = leaf;
         if (shrKDNode->vec[cd] < leaf->vec[cd]) {
@@ -140,27 +141,27 @@ void KDTree<T>::addNode(const Eigen::VectorXf &vec, const T &node) {
 }
 
 /*!
-*  \brief      Insert KDNode to the KDTree (recursive function)
+*  \brief      Insert KDNode<dim> to the KDTree (recursive function)
 *  \author     Sascha Kaden
-*  \param[in]  KDNode to insert
-*  \param[in]  current KDNode in the KDTree
+*  \param[in]  KDNode<dim> to insert
+*  \param[in]  current KDNode<dim> in the KDTree
 *  \param[in]  split dimension
 *  \param[out] current KDNode
 *  \date       2016-05-27
 */
-template <class T>
-std::shared_ptr<KDNode<T>> KDTree<T>::insert(std::shared_ptr<KDNode<T>> insertNode, std::shared_ptr<KDNode<T>> currentNode,
-                                             unsigned int cd) {
-    if (currentNode == nullptr) {    // node at leaf doesn't exist and will be added
+template <unsigned int dim, class T>
+std::shared_ptr<KDNode<dim, T>> KDTree<dim, T>::insert(std::shared_ptr<KDNode<dim, T>> insertNode,
+                                                       std::shared_ptr<KDNode<dim, T>> currentNode, unsigned int cd) {
+    if (currentNode == nullptr) {    // Node<dim> at leaf doesn't exist and will be added
         currentNode = insertNode;
         currentNode->axis = cd;
         currentNode->value = currentNode->vec[cd];
     } else if (insertNode == currentNode) {    // error! duplicate
         return currentNode;
     } else if (insertNode->vec[cd] < currentNode->vec[cd]) {
-        currentNode->left = insert(insertNode, currentNode->left, (cd + 1) % insertNode->getDim());
+        currentNode->left = insert(insertNode, currentNode->left, (cd + 1) % dim);
     } else {
-        currentNode->right = insert(insertNode, currentNode->right, (cd + 1) % insertNode->getDim());
+        currentNode->right = insert(insertNode, currentNode->right, (cd + 1) % dim);
     }
     return currentNode;
 }
@@ -172,12 +173,12 @@ std::shared_ptr<KDNode<T>> KDTree<T>::insert(std::shared_ptr<KDNode<T>> insertNo
 *  \param[out] pointer to the nearest Node
 *  \date       2016-05-27
 */
-template <class T>
-T KDTree<T>::searchNearestNeighbor(const Eigen::VectorXf &vec) {
+template <unsigned int dim, class T>
+T KDTree<dim, T>::searchNearestNeighbor(const Eigen::VectorXf &vec) {
     if (m_root == nullptr)
         return nullptr;
 
-    std::shared_ptr<KDNode<T>> node;
+    std::shared_ptr<KDNode<dim, T>> node;
     float bestDist = std::numeric_limits<float>::max();
     NNS(vec, m_root, node, bestDist);
     return node->node;
@@ -191,13 +192,13 @@ T KDTree<T>::searchNearestNeighbor(const Eigen::VectorXf &vec) {
 *  \param[out] list of near nodes to the position
 *  \date       2016-05-27
 */
-template <class T>
-std::vector<T> KDTree<T>::searchRange(const Eigen::VectorXf &vec, float range) {
+template <unsigned int dim, class T>
+std::vector<T> KDTree<dim, T>::searchRange(const Eigen::VectorXf &vec, float range) {
     std::vector<T> nodes;
     if (m_root == nullptr)
         return nodes;
 
-    std::vector<std::shared_ptr<KDNode<T>>> kdNodes;
+    std::vector<std::shared_ptr<KDNode<dim, T>>> kdNodes;
     float sqRange = range * range;
     Eigen::VectorXf maxBoundary = vec;
     Eigen::VectorXf minBoundary = vec;
@@ -221,9 +222,9 @@ std::vector<T> KDTree<T>::searchRange(const Eigen::VectorXf &vec, float range) {
 *  \param[in]  shortest distance
 *  \date       2016-05-27
 */
-template <class T>
-void KDTree<T>::NNS(const Eigen::VectorXf &vec, std::shared_ptr<KDNode<T>> node, std::shared_ptr<KDNode<T>> &refNode,
-                    float &bestDist) {
+template <unsigned int dim, class T>
+void KDTree<dim, T>::NNS(const Eigen::VectorXf &vec, std::shared_ptr<KDNode<dim, T>> node,
+                         std::shared_ptr<KDNode<dim, T>> &refNode, float &bestDist) {
     if (node->left == nullptr && node->right == nullptr) {
         float dist = (vec - node->vec).squaredNorm();
         if (dist < bestDist) {
@@ -255,9 +256,10 @@ void KDTree<T>::NNS(const Eigen::VectorXf &vec, std::shared_ptr<KDNode<T>> node,
 *  \param[in]  minimum boundary
 *  \date       2016-05-27
 */
-template <class T>
-void KDTree<T>::RS(const Eigen::VectorXf &vec, std::shared_ptr<KDNode<T>> node, std::vector<std::shared_ptr<KDNode<T>>> &refNodes,
-                   float sqRange, const Eigen::VectorXf &maxBoundary, const Eigen::VectorXf &minBoundary) {
+template <unsigned int dim, class T>
+void KDTree<dim, T>::RS(const Eigen::VectorXf &vec, std::shared_ptr<KDNode<dim, T>> node,
+                        std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, float sqRange, const Eigen::VectorXf &maxBoundary,
+                        const Eigen::VectorXf &minBoundary) {
     if (node == nullptr) {
         return;
     }
@@ -275,43 +277,43 @@ void KDTree<T>::RS(const Eigen::VectorXf &vec, std::shared_ptr<KDNode<T>> node, 
 }
 
 /*!
-*  \brief      Sorts the passed vector of Nodes and add the KDNode to the KDTree (recursive function)
+*  \brief      Sorts the passed vector of Nodes and add the KDNode<dim> to the KDTree (recursive function)
 *  \author     Sascha Kaden
-*  \param[in]  vector of Node pointer
+*  \param[in]  vector of Node<dim> pointer
 *  \param[in]  split dimension
 *  \param[out] pointer of KDNode
 *  \date       2016-08-09
 */
-template <class T>
-std::shared_ptr<KDNode<T>> KDTree<T>::sort(std::vector<std::shared_ptr<Node>> &vec, unsigned int dim) {
+template <unsigned int dim, class T>
+std::shared_ptr<KDNode<dim, T>> KDTree<dim, T>::sort(std::vector<std::shared_ptr<Node<dim>>> &vec, unsigned int cd) {
     if (vec.size() < 1) {
         return nullptr;
     } else if (vec.size() == 1) {
-        std::shared_ptr<KDNode<T>> kdNode = std::shared_ptr<KDNode<T>>(new KDNode<T>(vec[0]->getValues(), vec[0]));
-        kdNode->axis = dim;
-        kdNode->value = kdNode->vec[dim];
+        std::shared_ptr<KDNode<dim, T>> kdNode = std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(vec[0]->getValues(), vec[0]));
+        kdNode->axis = cd;
+        kdNode->value = kdNode->vec[cd];
         return kdNode;
     } else if (vec.size() == 2) {
-        quickSort(vec, 0, vec.size() - 1, dim);
-        std::shared_ptr<KDNode<T>> kdNode = std::shared_ptr<KDNode<T>>(new KDNode<T>(vec[1]->getValues(), vec[1]));
-        kdNode->axis = dim;
-        kdNode->value = kdNode->vec[dim];
+        quickSort(vec, 0, vec.size() - 1, cd);
+        std::shared_ptr<KDNode<dim, T>> kdNode = std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(vec[1]->getValues(), vec[1]));
+        kdNode->axis = cd;
+        kdNode->value = kdNode->vec[cd];
 
-        std::vector<std::shared_ptr<Node>> vecLeft(vec.begin(), vec.begin() + 1);
-        kdNode->left = sort(vecLeft, (dim + 1) % vec[vec.size() / 2]->getDim());
+        std::vector<std::shared_ptr<Node<dim>>> vecLeft(vec.begin(), vec.begin() + 1);
+        kdNode->left = sort(vecLeft, (cd + 1) % dim);
 
         return kdNode;
     } else {
-        quickSort(vec, 0, vec.size() - 1, dim);
-        std::shared_ptr<KDNode<T>> kdNode =
-            std::shared_ptr<KDNode<T>>(new KDNode<T>(vec[vec.size() / 2]->getValues(), vec[vec.size() / 2]));
-        kdNode->axis = dim;
-        kdNode->value = kdNode->vec[dim];
+        quickSort(vec, 0, vec.size() - 1, cd);
+        std::shared_ptr<KDNode<dim, T>> kdNode =
+            std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(vec[vec.size() / 2]->getValues(), vec[vec.size() / 2]));
+        kdNode->axis = cd;
+        kdNode->value = kdNode->vec[cd];
 
-        std::vector<std::shared_ptr<Node>> vecLeft(vec.begin(), vec.begin() + (vec.size() / 2) - 1);
-        std::vector<std::shared_ptr<Node>> vecRight(vec.begin() + (vec.size() / 2) + 1, vec.end());
-        kdNode->left = sort(vecLeft, (dim + 1) % vec[vec.size() / 2]->getDim());
-        kdNode->right = sort(vecRight, (dim + 1) % vec[vec.size() / 2]->getDim());
+        std::vector<std::shared_ptr<Node<dim>>> vecLeft(vec.begin(), vec.begin() + (vec.size() / 2) - 1);
+        std::vector<std::shared_ptr<Node<dim>>> vecRight(vec.begin() + (vec.size() / 2) + 1, vec.end());
+        kdNode->left = sort(vecLeft, (cd + 1) % dim);
+        kdNode->right = sort(vecRight, (cd + 1) % dim);
         return kdNode;
     }
 }
@@ -319,40 +321,40 @@ std::shared_ptr<KDNode<T>> KDTree<T>::sort(std::vector<std::shared_ptr<Node>> &v
 /*!
 *  \brief      quick sort algorithm (recursive function)
 *  \author     Sascha Kaden
-*  \param[in]  vector of Node pointer
+*  \param[in]  vector of Node<dim> pointer
 *  \param[in]  left start index for the vector
 *  \param[in]  right end index for the vector
 *  \param[in]  split dimension
 *  \date       2016-08-09
 */
-template <class T>
-void KDTree<T>::quickSort(std::vector<std::shared_ptr<Node>> &A, int left, int right, int dim) {
+template <unsigned int dim, class T>
+void KDTree<dim, T>::quickSort(std::vector<std::shared_ptr<Node<dim>>> &A, int left, int right, int cd) {
     int r;
     if (left < right) {
-        r = partition(A, left, right, dim);
-        quickSort(A, left, r, dim);
-        quickSort(A, r + 1, right, dim);
+        r = partition(A, left, right, cd);
+        quickSort(A, left, r, cd);
+        quickSort(A, r + 1, right, cd);
     }
 }
 
 /*!
 *  \brief      Partition of the vector and return pivot element
 *  \author     Sascha Kaden
-*  \param[in]  vector of Node pointer
+*  \param[in]  vector of Node<dim> pointer
 *  \param[in]  left start index for the vector
 *  \param[in]  right end index for the vector
 *  \param[in]  split dimension
 *  \param[out] index for splitting (pivot element)
 *  \date       2016-08-09
 */
-template <class T>
-int KDTree<T>::partition(std::vector<std::shared_ptr<Node>> &A, int left, int right, int dim) {
-    float x = A[left]->getValues()[dim];
+template <unsigned int dim, class T>
+int KDTree<dim, T>::partition(std::vector<std::shared_ptr<Node<dim>>> &A, int left, int right, int cd) {
+    float x = A[left]->getValues()[cd];
     int i = left;
     int j;
 
     for (j = left + 1; j < right; j++) {
-        if (A[j]->getValues()[dim] <= x) {
+        if (A[j]->getValues()[cd] <= x) {
             i = i + 1;
             swap(A[i], A[j]);
         }

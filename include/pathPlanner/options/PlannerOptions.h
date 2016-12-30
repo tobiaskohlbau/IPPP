@@ -20,8 +20,8 @@
 #define PLANNEROPTIONS_H_
 
 #include <core/module/ModuleBase.h>
-#include <core/module/Sampling.h>
-#include <core/module/TrajectoryPlanner.h>
+#include <core/module/Sampling.hpp>
+#include <core/module/TrajectoryPlanner.hpp>
 
 namespace rmpl {
 
