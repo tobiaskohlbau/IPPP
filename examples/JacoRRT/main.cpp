@@ -5,8 +5,8 @@
 #include <Eigen/Core>
 
 #include <core/utility/Utility.h>
-#include <pathPlanner/NormalRRTPlanner.h>
-#include <pathPlanner/StarRRTPlanner.h>
+#include <pathPlanner/NormalRRTPlanner.hpp>
+#include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/Jaco.h>
 #include <ui/vrep/Helper.h>
 
@@ -22,7 +22,7 @@ void printTime(clock_t begin, clock_t end) {
 void simpleRRT() {
     std::shared_ptr<Jaco> robot(new Jaco());
     RRTOptions options(30, 0.5);
-    NormalRRTPlanner planner(robot, options);
+    NormalRRTPlanner<6> planner(robot, options);
     Eigen::VectorXf start = utilVec::Vecf(180, 180, 180, 180, 180, 180);
     Eigen::VectorXf goal = utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
 
@@ -60,8 +60,8 @@ void treeConnection() {
 
     // create two trees from init and from goal
     RRTOptions options(20, 0.5, SamplingMethod::standardDistribution);
-    StarRRTPlanner plannerGoalNode(robot, options);
-    StarRRTPlanner plannerInitNode(robot, options);
+    StarRRTPlanner<6> plannerGoalNode(robot, options);
+    StarRRTPlanner<6> plannerInitNode(robot, options);
 
     // set properties to the planners
     plannerInitNode.setInitNode(utilVec::Vecf(180, 180, 180, 180, 180, 180));

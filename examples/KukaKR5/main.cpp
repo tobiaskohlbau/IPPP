@@ -6,8 +6,8 @@
 
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
-#include <pathPlanner/NormalRRTPlanner.h>
-#include <pathPlanner/StarRRTPlanner.h>
+#include <pathPlanner/NormalRRTPlanner.hpp>
+#include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/KukaKR5.h>
 
 #include <core/utility/Utility.h>
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 
     std::shared_ptr<KukaKR5> robot(new KukaKR5());
     RRTOptions options(40, 1);
-    NormalRRTPlanner planner(robot, options);
+    NormalRRTPlanner<6> planner(robot, options);
 
     Eigen::Matrix<float, 6 ,1> start = utilVec::Vecf(0, 0, 0, 0, 51, 0);
     robot->saveMeshConfig(start);

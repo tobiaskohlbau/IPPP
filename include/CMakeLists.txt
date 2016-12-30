@@ -19,6 +19,11 @@
 list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDTree.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/NormalRRTPlanner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/Planner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/PRMPlanner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTPlanner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/StarRRTPlanner.hpp)
 
 set(SRCS "${SRCS}" PARENT_SCOPE)

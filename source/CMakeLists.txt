@@ -30,14 +30,9 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilGeo.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilList.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilVec.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/NormalRRTPlanner.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/Planner.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/PRMPlanner.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTPlanner.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/StarRRTPlanner.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/GenericRobot.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Jaco.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Joint.cpp
