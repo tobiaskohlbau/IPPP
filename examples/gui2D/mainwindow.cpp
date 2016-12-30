@@ -41,13 +41,13 @@ void MainWindow::computePath() {
     m_planner = nullptr;
     if (m_plannerType == 0) {
         RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
-        m_planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(robot, options));
+        m_planner = std::shared_ptr<NormalRRTPlanner<2>>(new NormalRRTPlanner<2>(robot, options));
     } else if (m_plannerType == 1) {
         RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
-        m_planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(robot, options));
+        m_planner = std::shared_ptr<StarRRTPlanner<2>>(new StarRRTPlanner<2>(robot, options));
     } else {
         PRMOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
-        m_planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(robot, options));
+        m_planner = std::shared_ptr<PRMPlanner<2>>(new PRMPlanner<2>(robot, options));
     }
 
     Eigen::Vector2f start(m_startX, m_startY);

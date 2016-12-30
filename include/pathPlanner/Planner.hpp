@@ -16,18 +16,63 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/Logging.h>
-#include <pathPlanner/Planner.h>
+#ifndef PLANNER_H_
+#define PLANNER_H_
 
-using std::shared_ptr;
+#include <Eigen/Core>
+
+#include <core/dataObj/Graph.h>
+#include <core/module/CollisionDetection.h>
+#include <core/module/ModuleBase.h>
+#include <core/module/Sampling.h>
+#include <core/module/TrajectoryPlanner.h>
+#include <pathPlanner/options/PlannerOptions.h>
+#include <robot/RobotBase.h>
+
 namespace rmpl {
+
+/*!
+* \brief   Super class of all path planners
+* \author  Sascha Kaden
+* \date    2016-05-27
+*/
+template <unsigned int dim>
+class Planner : public ModuleBase {
+  public:
+    ~Planner();
+
+  protected:
+    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const PlannerOptions &options);
+
+  public:
+    virtual bool computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads) = 0;
+
+    std::vector<std::shared_ptr<Node>> getGraphNodes();
+    virtual std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing) = 0;
+    virtual std::vector<std::shared_ptr<Node>> getPathNodes() = 0;
+    std::vector<Eigen::VectorXf> getPathFromNodes(const std::vector<std::shared_ptr<Node>> &nodes, float trajectoryStepSize,
+                                                  bool smoothing);
+
+  protected:
+    std::vector<std::shared_ptr<Node>> smoothPath(std::vector<std::shared_ptr<Node>> nodes);
+
+    std::shared_ptr<TrajectoryPlanner> m_planner;
+    std::shared_ptr<Sampling> m_sampler;
+    std::shared_ptr<CollisionDetection> m_collision;
+    std::shared_ptr<Graph> m_graph;
+    std::shared_ptr<RobotBase> m_robot;
+
+    const PlannerOptions m_options;
+    bool m_pathPlanned;
+};
 
 /*!
 *  \brief      Standard deconstructor of the Planner
 *  \author     Sasch Kaden
 *  \date       2016-12-23
 */
-Planner::~Planner() {
+template <unsigned int dim>
+Planner<dim>::~Planner() {
 }
 
 /*!
@@ -38,15 +83,16 @@ Planner::~Planner() {
 *  \param[in]  planner options
 *  \date       2016-05-27
 */
-Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, const PlannerOptions &options)
+template <unsigned int dim>
+Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const PlannerOptions &options)
     : ModuleBase(name), m_options(options) {
     m_pathPlanned = false;
 
     m_robot = robot;
-    m_graph = shared_ptr<Graph>(new Graph());
-    m_collision = shared_ptr<CollisionDetection>(new CollisionDetection(m_robot));
-    m_planner = shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(options.getTrajectoryStepSize(), m_collision));
-    m_sampler = shared_ptr<Sampling>(
+    m_graph = std::shared_ptr<Graph>(new Graph());
+    m_collision = std::shared_ptr<CollisionDetection>(new CollisionDetection(m_robot));
+    m_planner = std::shared_ptr<TrajectoryPlanner>(new TrajectoryPlanner(options.getTrajectoryStepSize(), m_collision));
+    m_sampler = std::shared_ptr<Sampling>(
         new Sampling(m_robot, m_collision, m_planner, options.getSamplingMethod(), options.getSamplingStrategy()));
 }
 
@@ -56,7 +102,8 @@ Planner::Planner(const std::string &name, const shared_ptr<RobotBase> &robot, co
 *  \param[out] list of all nodes
 *  \date       2016-05-27
 */
-std::vector<shared_ptr<Node>> Planner::getGraphNodes() {
+template <unsigned int dim>
+std::vector<std::shared_ptr<Node>> Planner<dim>::getGraphNodes() {
     return m_graph->getNodes();
 }
 
@@ -69,9 +116,10 @@ std::vector<shared_ptr<Node>> Planner::getGraphNodes() {
 *  \param[out] path points
 *  \date       2016-05-27
 */
-std::vector<Eigen::VectorXf> Planner::getPathFromNodes(const std::vector<shared_ptr<Node>> &nodes, float trajectoryStepSize,
-                                                       bool smoothing) {
-    std::vector<shared_ptr<Node>> smoothedNodes;
+template <unsigned int dim>
+std::vector<Eigen::VectorXf> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node>> &nodes,
+                                                            float trajectoryStepSize, bool smoothing) {
+    std::vector<std::shared_ptr<Node>> smoothedNodes;
     if (smoothing)
         smoothedNodes = smoothPath(nodes);
     else
@@ -120,7 +168,8 @@ std::vector<Eigen::VectorXf> Planner::getPathFromNodes(const std::vector<shared_
 *  \param[out] shortened path nodes
 *  \date       2016-05-27
 */
-std::vector<shared_ptr<Node>> Planner::smoothPath(std::vector<shared_ptr<Node>> nodes) {
+template <unsigned int dim>
+std::vector<std::shared_ptr<Node>> Planner<dim>::smoothPath(std::vector<std::shared_ptr<Node>> nodes) {
     unsigned int i = 0;
     unsigned int countNodes = nodes.size() - 2;
     while (i < countNodes) {
@@ -134,3 +183,5 @@ std::vector<shared_ptr<Node>> Planner::smoothPath(std::vector<shared_ptr<Node>> 
 }
 
 } /* namespace rmpl */
+
+#endif /* RRTPLANNER_H_ */

@@ -9,9 +9,9 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <Eigen/Core>
 
-#include <pathPlanner/NormalRRTPlanner.h>
-#include <pathPlanner/PRMPlanner.h>
-#include <pathPlanner/StarRRTPlanner.h>
+#include <pathPlanner/NormalRRTPlanner.hpp>
+#include <pathPlanner/PRMPlanner.hpp>
+#include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/PointRobot.h>
 #include <ui/Drawing2D.h>
 
@@ -61,7 +61,7 @@ private:
     double m_prmDistance = 50;
     double m_rrtStepsize = 50;
 
-    std::shared_ptr<rmpl::Planner> m_planner;
+    std::shared_ptr<rmpl::Planner<2>> m_planner;
     cv::Mat m_image;
     Eigen::MatrixXi m_workspace;
     bool m_connected = false;

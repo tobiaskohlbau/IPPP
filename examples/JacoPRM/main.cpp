@@ -4,7 +4,7 @@
 
 #include <Eigen/Core>
 
-#include <pathPlanner/PRMPlanner.h>
+#include <pathPlanner/PRMPlanner.hpp>
 #include <robot/Jaco.h>
 #include <ui/vrep/Helper.h>
 
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     std::shared_ptr<Jaco> robot(new rmpl::Jaco());
 
     PRMOptions options(30, 0.5);
-    PRMPlanner planner(robot, options);
+    PRMPlanner<6> planner(robot, options);
 
     clock_t begin = std::clock();
     planner.startSamplingPhase(21000, 2);

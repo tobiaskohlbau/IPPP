@@ -8,9 +8,9 @@
 
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
-#include <pathPlanner/NormalRRTPlanner.h>
-#include <pathPlanner/PRMPlanner.h>
-#include <pathPlanner/StarRRTPlanner.h>
+#include <pathPlanner/NormalRRTPlanner.hpp>
+#include <pathPlanner/PRMPlanner.hpp>
+#include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
 
@@ -36,10 +36,10 @@ void testTriangleRobot(Eigen::Vector2f minimum, Eigen::Vector2f maximum, Eigen::
     PRMOptions prmOptions(30, 0.5, SamplingMethod::randomly);
     RRTOptions rrtOptions(30, 0.5, SamplingMethod::randomly);
 
-    std::shared_ptr<rmpl::Planner> planner;
-    // planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(triangleRobot, prmOptions));
-    planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(triangleRobot, rrtOptions));
-    // planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(triangleRobot, rrtOptions));
+    std::shared_ptr<rmpl::Planner<3>> planner;
+    // planner = std::shared_ptr<PRMPlanner<3>>(new PRMPlanner<3>(triangleRobot, prmOptions));
+    planner = std::shared_ptr<StarRRTPlanner<3>>(new StarRRTPlanner<3>(triangleRobot, rrtOptions));
+    // planner = std::shared_ptr<NormalRRTPlanner<3>>(new NormalRRTPlanner<3>(triangleRobot, rrtOptions));
 
     auto startTime = std::chrono::system_clock::now();
     Eigen::Vector3f start(5, 5, 0);
@@ -73,10 +73,10 @@ void testPointRobot(Eigen::Vector2f min, Eigen::Vector2f max, Eigen::MatrixXi ma
     PRMOptions prmOptions(40, 0.5, SamplingMethod::randomly, SamplingStrategy::nearObstacles);
     RRTOptions rrtOptions(50, 1, SamplingMethod::randomly, SamplingStrategy::nearObstacles);
 
-    std::shared_ptr<rmpl::Planner> planner;
-    // planner = std::shared_ptr<PRMPlanner>(new PRMPlanner(robot, prmOptions));
-    planner = std::shared_ptr<StarRRTPlanner>(new StarRRTPlanner(robot, rrtOptions));
-    // planner = std::shared_ptr<NormalRRTPlanner>(new NormalRRTPlanner(robot, rrtOptions));
+    std::shared_ptr<rmpl::Planner<2>> planner;
+    // planner = std::shared_ptr<PRMPlanner<2>>(new PRMPlanner<2>(robot, prmOptions));
+    planner = std::shared_ptr<StarRRTPlanner<2>>(new StarRRTPlanner<2>(robot, rrtOptions));
+    // planner = std::shared_ptr<NormalRRTPlanner<2>>(new NormalRRTPlanner<2>(robot, rrtOptions));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
