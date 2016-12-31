@@ -20,7 +20,7 @@
 #define TRIANGLEROBOT2D_H_
 
 #include <core/dataObj/PointList.hpp>
-#include <robot/MobileRobot.h>
+#include <robot/MobileRobot.hpp>
 
 namespace rmpl {
 
@@ -29,16 +29,15 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-11-14
 */
-class TriangleRobot2D : public MobileRobot {
+class TriangleRobot2D : public MobileRobot<3> {
   public:
-    TriangleRobot2D(std::vector<Triangle2D> triangles, Eigen::Vector3f minBoundary, Eigen::Vector3f maxBoundary);
+    TriangleRobot2D(std::vector<Triangle2D> triangles, Vector3 minBoundary, Vector3 maxBoundary);
 
     bool setTriangles(std::vector<Triangle2D> &triangles);
     bool addTriangle(Triangle2D &triangle);
     std::vector<Triangle2D> getTriangles();
 
   private:
-    Eigen::VectorXf m_pose;    // x,y,rot(z)
     std::vector<Triangle2D> m_triangles;
 };
 

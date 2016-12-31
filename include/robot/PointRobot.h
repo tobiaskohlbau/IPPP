@@ -19,7 +19,7 @@
 #ifndef POINTROBOT_H_
 #define POINTROBOT_H_
 
-#include <robot/MobileRobot.h>
+#include <robot/MobileRobot.hpp>
 
 namespace rmpl {
 
@@ -28,9 +28,9 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
-class PointRobot : public MobileRobot {
+class PointRobot : public MobileRobot<2> {
   public:
-    PointRobot(const Eigen::Vector2f &minBoundary, const Eigen::Vector2f &maxBoundary);
+    PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary);
 
   private:
 };

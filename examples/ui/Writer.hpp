@@ -16,11 +16,19 @@
 //
 //-------------------------------------------------------------------------//
 
-#include "Writer.h"
+#ifndef WRITER_H
+#define WRITER_H
 
 #include <fstream>
+#include <type_traits>
+#include <vector>
 
-using namespace rmpl;
+#include <Eigen/Core>
+
+#include <core/types.h>
+
+namespace rmpl {
+namespace writer {
 
 /*!
 *  \brief      Write vecs to defined file, clear file
@@ -30,10 +38,11 @@ using namespace rmpl;
 *  \author     Sasch Kaden
 *  \date       2016-11-14
 */
-void Writer::writeVecsToFile(const std::vector<Eigen::VectorXf> &vecs, const std::string &filename, float scale) {
+template <unsigned int dim>
+void writeVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, float scale) {
     std::ofstream myfile(filename);
     for (int i = 0; i < vecs.size(); ++i) {
-        for (unsigned int j = 0; j < vecs[i].cols(); ++j)
+        for (unsigned int j = 0; j < dim; ++j)
             myfile << vecs[i][j] * scale << " ";
         myfile << std::endl;
     }
@@ -48,11 +57,12 @@ void Writer::writeVecsToFile(const std::vector<Eigen::VectorXf> &vecs, const std
 *  \author     Sasch Kaden
 *  \date       2016-11-14
 */
-void Writer::appendVecsToFile(const std::vector<Eigen::VectorXf> &vecs, const std::string &filename, float scale) {
+template <unsigned int dim>
+void appendVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, float scale) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);
     for (int i = 0; i < vecs.size(); ++i) {
-        for (unsigned int j = 0; j < vecs[i].cols(); ++j)
+        for (unsigned int j = 0; j < dim; ++j)
             myfile << vecs[i][j] * scale << " ";
         myfile << std::endl;
     }
@@ -66,7 +76,7 @@ void Writer::appendVecsToFile(const std::vector<Eigen::VectorXf> &vecs, const st
 *  \author     Sasch Kaden
 *  \date       2016-11-14
 */
-void Writer::writeTrafosToFile(const std::vector<std::vector<Eigen::VectorXf>> &vecs, const std::string &filename) {
+static void writeTrafosToFile(const std::vector<std::vector<Vector6>> &vecs, const std::string &filename) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);
     for (auto trafos : vecs) {
@@ -79,3 +89,8 @@ void Writer::writeTrafosToFile(const std::vector<std::vector<Eigen::VectorXf>> &
     }
     myfile.close();
 }
+
+} /* namespace utilList */
+} /* namespace rmpl */
+
+#endif    // WRITER_H

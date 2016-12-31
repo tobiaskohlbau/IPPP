@@ -10,7 +10,7 @@
 #include <robot/Jaco.h>
 #include <ui/vrep/Helper.h>
 
-#include <ui/Writer.h>
+#include <ui/Writer.hpp>
 
 using namespace rmpl;
 
@@ -23,8 +23,8 @@ void simpleRRT() {
     std::shared_ptr<Jaco> robot(new Jaco());
     RRTOptions options(30, 0.5);
     NormalRRTPlanner<6> planner(robot, options);
-    Eigen::VectorXf start = utilVec::Vecf(180, 180, 180, 180, 180, 180);
-    Eigen::VectorXf goal = utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
+    Eigen::Matrix<float, 6, 1> start = utilVec::Vecf(180, 180, 180, 180, 180, 180);
+    Eigen::Matrix<float, 6, 1> goal = utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
 
     // compute the tree
     clock_t begin = std::clock();
@@ -33,20 +33,20 @@ void simpleRRT() {
     printTime(begin, end);
 
     std::vector<std::shared_ptr<Node<6>>> nodes = planner.getGraphNodes();
-    std::vector<Eigen::VectorXf> graphPoints;
+    std::vector<Eigen::Matrix<float, 6 ,1>> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
-    Writer::writeVecsToFile(graphPoints, "example.ASC", 10);
+    writer::writeVecsToFile<6>(graphPoints, "example.ASC", 10);
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
-        std::vector<Eigen::VectorXf> pathAngles = planner.getPath(5, true);
+        std::vector<Eigen::Matrix<float, 6, 1>> pathAngles = planner.getPath(5, true);
 
-        std::vector<Eigen::VectorXf> pathPoints;
+        std::vector<Eigen::Matrix<float, 6, 1>> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
-        Writer::appendVecsToFile(pathPoints, "example.ASC", 10);
+        writer::appendVecsToFile<6>(pathPoints, "example.ASC", 10);
 
         Helper vrep(6);
         vrep.start();
@@ -93,31 +93,31 @@ void treeConnection() {
     }
 
     std::vector<std::shared_ptr<Node<6>>> nodes = plannerInitNode.getGraphNodes();
-    std::vector<Eigen::VectorXf> graphPoints;
+    std::vector<Eigen::Matrix<float, 6, 1>> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
-    Writer::writeVecsToFile(graphPoints, "example.ASC", 10);
+    writer::writeVecsToFile<6>(graphPoints, "example.ASC", 10);
 
     nodes = plannerGoalNode.getGraphNodes();
     std::cout << "Goal Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
-    Writer::appendVecsToFile(graphPoints, "example.ASC", 10);
+    writer::appendVecsToFile<6>(graphPoints, "example.ASC", 10);
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
         plannerInitNode.connectGoalNode(goal);
         plannerGoalNode.connectGoalNode(goal);
 
-        std::vector<Eigen::VectorXf> pathAngles = plannerInitNode.getPath(5, true);
-        std::vector<Eigen::VectorXf> temp = plannerGoalNode.getPath(5, true);
+        std::vector<Eigen::Matrix<float, 6, 1>> pathAngles = plannerInitNode.getPath(5, true);
+        std::vector<Eigen::Matrix<float, 6, 1>> temp = plannerGoalNode.getPath(5, true);
         pathAngles.insert(pathAngles.end(), temp.begin(), temp.end());
 
-        std::vector<Eigen::VectorXf> pathPoints;
+        std::vector<Eigen::Matrix<float, 6, 1>> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
-        Writer::appendVecsToFile(pathPoints, "example.ASC", 10);
+        writer::appendVecsToFile<6>(pathPoints, "example.ASC", 10);
 
         // for (int i = 0; i < pathPoints.size(); ++i)
         //    vrep->setPos(pathAngles[i]);

@@ -33,14 +33,14 @@ namespace rmpl {
 template <unsigned int dim>
 class StarRRTPlanner : public RRTPlanner<dim> {
   public:
-    StarRRTPlanner(const std::shared_ptr<RobotBase> &robot, const RRTOptions &options)
+    StarRRTPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions &options)
         : RRTPlanner<dim>("RRT* Planner", robot, options) {
     }
 
-    bool connectGoalNode(Eigen::VectorXf goal);
+    bool connectGoalNode(Vector<dim> goal);
 
   protected:
-    void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode);
+    void computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode);
     void chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
                       std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
     void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
@@ -57,11 +57,11 @@ class StarRRTPlanner : public RRTPlanner<dim> {
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void StarRRTPlanner<dim>::computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode) {
+void StarRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) {
     // get nearest neighbor
     std::shared_ptr<Node<dim>> nearestNode = this->m_graph->getNearestNode(Node<dim>(randVec));
     // set Node<dim> new fix fixed step size of 10
-    Eigen::VectorXf newVec = this->computeNodeNew(randVec, nearestNode->getValues());
+    Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
     newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
 
     std::vector<std::shared_ptr<Node<dim>>> nearNodes;
@@ -146,7 +146,7 @@ void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::share
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool StarRRTPlanner<dim>::connectGoalNode(Eigen::VectorXf goal) {
+bool StarRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
     if (this->m_collision->controlVec(goal))
         return false;
 

@@ -27,7 +27,7 @@
 #include <core/module/ModuleBase.h>
 #include <core/module/Sampler.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
-#include <robot/RobotBase.h>
+#include <robot/RobotBase.hpp>
 
 namespace rmpl {
 
@@ -41,15 +41,15 @@ enum SamplingStrategy { normal, nearObstacles };
 template <unsigned int dim>
 class Sampling : public ModuleBase {
   public:
-    Sampling(const std::shared_ptr<RobotBase> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
              const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplingMethod method = SamplingMethod::randomly,
              SamplingStrategy strategy = SamplingStrategy::normal);
 
-    Eigen::VectorXf getSample();
-    bool setMeanOfDistribution(const Eigen::VectorXf &mean);
+    Vector<dim> getSample();
+    bool setMeanOfDistribution(const Vector<dim> &mean);
 
   private:
-    Eigen::VectorXf sampleNearObstacle();
+    Vector<dim> sampleNearObstacle();
 
     SamplingStrategy m_strategy;
 
@@ -67,7 +67,7 @@ class Sampling : public ModuleBase {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Sampling<dim>::Sampling(const std::shared_ptr<RobotBase> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
+Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplingMethod method, SamplingStrategy strategy)
     : ModuleBase("Sampling") {
     m_strategy = strategy;
@@ -84,7 +84,7 @@ Sampling<dim>::Sampling(const std::shared_ptr<RobotBase> &robot, const std::shar
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Eigen::VectorXf Sampling<dim>::getSample() {
+Vector<dim> Sampling<dim>::getSample() {
     if (m_strategy == SamplingStrategy::nearObstacles)
         return sampleNearObstacle();
     else
@@ -100,16 +100,16 @@ Eigen::VectorXf Sampling<dim>::getSample() {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Eigen::VectorXf Sampling<dim>::sampleNearObstacle() {
-    Eigen::VectorXf sample1 = m_sampler->getSample();
+    Vector<dim> Sampling<dim>::sampleNearObstacle() {
+        Vector<dim> sample1 = m_sampler->getSample();
     if (!m_collision->controlVec(sample1)) {
         return sample1;
     } else {
-        Eigen::VectorXf sample2;
+        Vector<dim> sample2;
         do {
             sample2 = m_sampler->getSample();
         } while (m_collision->controlVec(sample2));
-        std::vector<Eigen::VectorXf> path = m_planner->calcTrajectoryBin(sample2, sample1);
+        std::vector<Vector<dim>> path = m_planner->calcTrajectoryBin(sample2, sample1);
         sample1 = path[0];
         for (auto point : path) {
             if (!m_collision->controlVec(point))
@@ -129,7 +129,7 @@ Eigen::VectorXf Sampling<dim>::sampleNearObstacle() {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-bool Sampling<dim>::setMeanOfDistribution(const Eigen::VectorXf &mean) {
+bool Sampling<dim>::setMeanOfDistribution(const Vector<dim> &mean) {
     return m_sampler->setMeanOfDistribution(mean);
 }
 

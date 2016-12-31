@@ -19,16 +19,7 @@
 #ifndef UTILITY_H_
 #define UTILITY_H_
 
-#include <core/utility/UtilGeo.h>
+#include <core/utility/UtilGeo.hpp>
 #include <core/utility/UtilList.hpp>
-#include <core/utility/UtilVec.h>
-
-namespace rmpl {
-namespace utility {
-
-
-
-} /* namespace utility */
-} /* namespace rmpl */
 
 #endif    // UTILITY_H_

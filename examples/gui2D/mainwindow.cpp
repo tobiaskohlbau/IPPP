@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <QFileDialog>
+#include <core/types.h>
 #include <pathPlanner/options/PRMOptions.h>
 #include <ui/Drawing2D.hpp>
 
@@ -28,8 +29,8 @@ void MainWindow::loadImage() {
 void MainWindow::computePath() {
     std::cout << "compute path" << std::endl;
     std::cout << m_numNodes << std::endl;
-    Eigen::Vector2f minBoundary(0.0, 0.0);
-    Eigen::Vector2f maxBoundary(m_workspace.rows(), m_workspace.cols());
+    Vector2 minBoundary(0.0, 0.0);
+    Vector2 maxBoundary(m_workspace.rows(), m_workspace.cols());
     std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
     robot->set2DWorkspace(m_workspace);
 
@@ -51,8 +52,8 @@ void MainWindow::computePath() {
         m_planner = std::shared_ptr<PRMPlanner<2>>(new PRMPlanner<2>(robot, options));
     }
 
-    Eigen::Vector2f start(m_startX, m_startY);
-    Eigen::Vector2f goal(m_goalX, m_goalY);
+    Vector2 start(m_startX, m_startY);
+    Vector2 goal(m_goalX, m_goalY);
     m_connected = m_planner->computePath(start, goal, m_numNodes, m_numThreads);
 }
 
@@ -64,7 +65,7 @@ void MainWindow::viewPath() {
     std::vector<std::shared_ptr<Node<2>>> nodes = m_planner->getGraphNodes();
     drawing::drawTree2D<2>(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
     if (m_connected) {
-        std::vector<Eigen::VectorXf> pathPoints = m_planner->getPath(0.5, true);
+        std::vector<Vector2> pathPoints = m_planner->getPath(0.5, true);
         drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
     }
 

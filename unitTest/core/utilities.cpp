@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(degToRad) {
     float a2[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
     Eigen::VectorXf deg = utilVec::Vecf(11, a1);
     Eigen::VectorXf rad = utilVec::Vecf(11, a2);
-    Eigen::VectorXf temp = utilGeo::degToRad(deg);
+    Eigen::VectorXf temp = utilGeo::degToRad<11>(deg);
     for (int i = 0; i < deg.rows(); ++i) {
         BOOST_CHECK(rad[i] <= temp[i] + 0.0001);
         BOOST_CHECK(rad[i] >= temp[i] - 0.0001);

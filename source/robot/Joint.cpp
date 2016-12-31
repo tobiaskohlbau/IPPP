@@ -26,9 +26,6 @@ namespace rmpl {
 *  \date       2016-10-25
 */
 Joint::Joint() {
-    m_maxBound = 0;
-    m_minBound = 0;
-    m_mesh = nullptr;
 }
 
 /*!
@@ -40,7 +37,6 @@ Joint::Joint() {
 */
 Joint::Joint(float minBound, float maxBound) {
     setBoundaries(minBound, maxBound);
-    m_mesh = nullptr;
 }
 
 /*!

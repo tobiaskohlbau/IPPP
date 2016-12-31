@@ -16,20 +16,83 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <robot/RobotBase.h>
+#ifndef ROBOTBASE_H_
+#define ROBOTBASE_H_
 
+#include <string>
+#include <vector>
+
+#include <Eigen/Core>
+#include <PQP.h>
+
+#include <core/types.h>
+#include <core/module/ModuleBase.h>
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
+#include <robot/MeshContainer.h>
 
-using std::shared_ptr;
 namespace rmpl {
+
+enum CollisionType { fcl, pqp, point2D, triangle2D };
+
+enum RobotType { serial, mobile };
+
+/*!
+* \brief   Base class of all robots
+* \author  Sascha Kaden
+* \date    2016-06-30
+*/
+template <unsigned int dim>
+class RobotBase : public ModuleBase {
+  public:
+    virtual ~RobotBase();
+
+  protected:
+    RobotBase(std::string name, CollisionType collisionType, RobotType robotType);
+
+  public:
+    Vector<dim> getMinBoundary();
+    Vector<dim> getMaxBoundary();
+
+    void setPose(const Vector6 &pose);
+    Vector6 getPose();
+    Eigen::Matrix4f getPoseMat();
+
+    void setBaseMesh(const std::shared_ptr<MeshContainer> &baseMesh);
+    std::shared_ptr<MeshContainer> getBaseMesh();
+
+    void setWorkspace(const std::shared_ptr<MeshContainer> &mesh);
+    std::shared_ptr<MeshContainer> getWorkspace();
+    void set2DWorkspace(const Eigen::MatrixXi &space);
+    Eigen::MatrixXi &get2DWorkspace();
+
+    unsigned int getDim();
+    RobotType getRobotType();
+
+    CollisionType getCollisionType();
+    void setCollisionType(CollisionType type);
+
+  protected:
+    CollisionType m_collisionType;
+    RobotType m_robotType;
+
+    Vector<dim> m_minBoundary;
+    Vector<dim> m_maxBoundary;
+    Vector6 m_pose;
+    Eigen::Matrix4f m_poseMat;
+
+    std::shared_ptr<MeshContainer> m_baseMesh;
+    std::shared_ptr<MeshContainer> m_workspaceMesh;
+    Eigen::MatrixXi m_2DWorkspace;
+};
 
 /*!
 *  \brief      Standard deconstructor of the RobotBase
 *  \author     Sasch Kaden
 *  \date       2016-12-23
 */
-RobotBase::~RobotBase() {
+template <unsigned int dim>
+RobotBase<dim>::~RobotBase() {
 }
 
 /*!
@@ -41,7 +104,9 @@ RobotBase::~RobotBase() {
 *  \param[in]  number of joints of the robot
 *  \date       2016-06-30
 */
-RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType robotType, unsigned int dim) : ModuleBase(name), m_dim(dim) {
+template <unsigned int dim>
+RobotBase<dim>::RobotBase(std::string name, CollisionType collisionType, RobotType robotType)
+    : ModuleBase(name) {
     m_collisionType = collisionType;
     m_robotType = robotType;
 
@@ -57,7 +122,8 @@ RobotBase::RobotBase(std::string name, CollisionType collisionType, RobotType ro
 *  \param[out] minimum Boudaries
 *  \date       2016-07-15
 */
-Eigen::VectorXf RobotBase::getMinBoundary() {
+template <unsigned int dim>
+Vector<dim> RobotBase<dim>::getMinBoundary() {
     return m_minBoundary;
 }
 
@@ -67,7 +133,8 @@ Eigen::VectorXf RobotBase::getMinBoundary() {
 *  \param[out] maximum Boudaries
 *  \date       2016-07-15
 */
-Eigen::VectorXf RobotBase::getMaxBoundary() {
+template <unsigned int dim>
+Vector<dim> RobotBase<dim>::getMaxBoundary() {
     return m_maxBoundary;
 }
 
@@ -77,12 +144,10 @@ Eigen::VectorXf RobotBase::getMaxBoundary() {
 *  \param[in]  pose Vec
 *  \date       2016-07-24
 */
-void RobotBase::setPose(const Eigen::Matrix<float, 6, 1> &pose) {
+template <unsigned int dim>
+void RobotBase<dim>::setPose(const Vector6 &pose) {
     if (pose.rows() != 6) {
         Logging::error("Pose vector has wrong dimension, must have 6!", this);
-        return;
-    } else if (utilVec::empty(pose)) {
-        Logging::error("Empty pose vector!", this);
         return;
     }
 
@@ -96,7 +161,8 @@ void RobotBase::setPose(const Eigen::Matrix<float, 6, 1> &pose) {
 *  \param[out] pose Vec
 *  \date       2016-07-24
 */
-Eigen::Matrix<float, 6, 1> RobotBase::getPose() {
+template <unsigned int dim>
+Vector6 RobotBase<dim>::getPose() {
     return m_pose;
 }
 
@@ -106,7 +172,8 @@ Eigen::Matrix<float, 6, 1> RobotBase::getPose() {
 *  \param[out] pose matrix
 *  \date       2016-07-24
 */
-Eigen::Matrix4f RobotBase::getPoseMat() {
+template <unsigned int dim>
+Eigen::Matrix4f RobotBase<dim>::getPoseMat() {
     return m_poseMat;
 }
 
@@ -117,7 +184,8 @@ Eigen::Matrix4f RobotBase::getPoseMat() {
 *  \param[out] true if loading was feasible
 *  \date       2016-06-30
 */
-void RobotBase::setBaseMesh(const std::shared_ptr<MeshContainer> &mesh) {
+template <unsigned int dim>
+void RobotBase<dim>::setBaseMesh(const std::shared_ptr<MeshContainer> &mesh) {
     m_baseMesh = mesh;
 }
 
@@ -128,7 +196,8 @@ void RobotBase::setBaseMesh(const std::shared_ptr<MeshContainer> &mesh) {
 *  \param[out] PQP cad model
 *  \date       2016-06-30
 */
-std::shared_ptr<MeshContainer> RobotBase::getBaseMesh() {
+template <unsigned int dim>
+std::shared_ptr<MeshContainer> RobotBase<dim>::getBaseMesh() {
     return m_baseMesh;
 }
 
@@ -138,7 +207,8 @@ std::shared_ptr<MeshContainer> RobotBase::getBaseMesh() {
 *  \param[in]  file of workspace cad
 *  \date       2016-07-14
 */
-void RobotBase::setWorkspace(const std::shared_ptr<MeshContainer> &mesh) {
+template <unsigned int dim>
+void RobotBase<dim>::setWorkspace(const std::shared_ptr<MeshContainer> &mesh) {
     m_workspaceMesh = mesh;
 }
 
@@ -148,7 +218,8 @@ void RobotBase::setWorkspace(const std::shared_ptr<MeshContainer> &mesh) {
 *  \param[out] pointer to PQP_Model
 *  \date       2016-07-14
 */
-shared_ptr<MeshContainer> RobotBase::getWorkspace() {
+template <unsigned int dim>
+std::shared_ptr<MeshContainer> RobotBase<dim>::getWorkspace() {
     return m_workspaceMesh;
 }
 
@@ -158,7 +229,8 @@ shared_ptr<MeshContainer> RobotBase::getWorkspace() {
 *  \param[in]  2D workspace
 *  \date       2016-07-14
 */
-void RobotBase::set2DWorkspace(const Eigen::MatrixXi &workspace) {
+template <unsigned int dim>
+void RobotBase<dim>::set2DWorkspace(const Eigen::MatrixXi &workspace) {
     m_2DWorkspace = workspace;
 }
 
@@ -168,7 +240,8 @@ void RobotBase::set2DWorkspace(const Eigen::MatrixXi &workspace) {
 *  \param[out] 2D workspace
 *  \date       2016-07-14
 */
-Eigen::MatrixXi &RobotBase::get2DWorkspace() {
+template <unsigned int dim>
+Eigen::MatrixXi &RobotBase<dim>::get2DWorkspace() {
     return m_2DWorkspace;
 }
 
@@ -178,8 +251,9 @@ Eigen::MatrixXi &RobotBase::get2DWorkspace() {
 *  \param[out] dimension
 *  \date       2016-06-30
 */
-unsigned int RobotBase::getDim() {
-    return m_dim;
+template <unsigned int dim>
+unsigned int RobotBase<dim>::getDim() {
+    return dim;
 }
 
 /*!
@@ -188,7 +262,8 @@ unsigned int RobotBase::getDim() {
 *  \param[out] RobotType
 *  \date       2016-08-25
 */
-RobotType RobotBase::getRobotType() {
+template <unsigned int dim>
+RobotType RobotBase<dim>::getRobotType() {
     return m_robotType;
 }
 
@@ -198,8 +273,9 @@ RobotType RobotBase::getRobotType() {
 *  \param[in]  CollisionType
 *  \date       2016-07-24
 */
-void RobotBase::setCollisionType(CollisionType type) {
-    if (type == CollisionType::point2D && m_dim != 2) {
+template <unsigned int dim>
+void RobotBase<dim>::setCollisionType(CollisionType type) {
+    if (type == CollisionType::point2D && dim != 2) {
         Logging::warning("CollisionType twoD unequal to dimension", this);
     } else {
         m_collisionType = type;
@@ -212,8 +288,11 @@ void RobotBase::setCollisionType(CollisionType type) {
 *  \param[out] CollisionType
 *  \date       2016-06-30
 */
-CollisionType RobotBase::getCollisionType() {
+template <unsigned int dim>
+CollisionType RobotBase<dim>::getCollisionType() {
     return m_collisionType;
 }
 
 } /* namespace rmpl */
+
+#endif /* ROBOTBASE_H_ */

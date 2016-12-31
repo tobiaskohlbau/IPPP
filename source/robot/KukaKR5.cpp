@@ -28,9 +28,9 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date        2016-10-22
 */
-KukaKR5::KukaKR5() : SerialRobot("KukaKR5", CollisionType::pqp, 6) {
+KukaKR5::KukaKR5() : SerialRobot<6>("KukaKR5", CollisionType::pqp) {
     m_alpha = utilVec::Vecf(90, 0, 90, 90, 90, 0);
-    m_alpha = utilGeo::degToRad(m_alpha);
+    m_alpha = utilGeo::degToRad<6>(m_alpha);
     m_a = utilVec::Vecf(180, 600, 120, 0, 0, 0);
     m_d = utilVec::Vecf(400, 0, 0, 620, 0, 115);
     m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
@@ -67,7 +67,7 @@ KukaKR5::KukaKR5() : SerialRobot("KukaKR5", CollisionType::pqp, 6) {
 *  \param[out] euclidean position Vec
 *  \date       2016-10-22
 */
-Eigen::Matrix<float, 6, 1> KukaKR5::directKinematic(const Eigen::VectorXf &angles) {
+Vector6 KukaKR5::directKinematic(const Vector6 &angles) {
     std::vector<Eigen::Matrix4f> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos);
@@ -80,11 +80,11 @@ Eigen::Matrix<float, 6, 1> KukaKR5::directKinematic(const Eigen::VectorXf &angle
 *  \param[out] vector of transformation matrizes
 *  \date       2016-10-22
 */
-std::vector<Eigen::Matrix4f> KukaKR5::getJointTrafos(const Eigen::VectorXf &angles) {
-    Eigen::VectorXf rads = utilGeo::degToRad(angles);
+std::vector<Eigen::Matrix4f> KukaKR5::getJointTrafos(const Vector6 &angles) {
+    Vector6 rads = utilGeo::degToRad<6>(angles);
 
     std::vector<Eigen::Matrix4f> trafos;
-    for (int i = 0; i < getDim(); ++i)
+    for (int i = 0; i < 6; ++i)
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));
     return trafos;
 }

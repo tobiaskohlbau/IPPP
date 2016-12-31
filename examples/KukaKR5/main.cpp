@@ -10,8 +10,7 @@
 #include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/KukaKR5.h>
 
-#include <core/utility/Utility.h>
-#include <ui/Writer.h>
+#include <ui/Writer.hpp>
 
 using namespace rmpl;
 
@@ -21,7 +20,7 @@ int main(int argc, char** argv) {
 
     std::shared_ptr<KukaKR5> robot(new KukaKR5());
     RRTOptions options(40, 1);
-    NormalRRTPlanner<6> planner(robot, options);
+    StarRRTPlanner<6> planner(robot, options);
 
     Eigen::Matrix<float, 6 ,1> start = utilVec::Vecf(0, 0, 0, 0, 51, 0);
     robot->saveMeshConfig(start);
@@ -33,30 +32,30 @@ int main(int argc, char** argv) {
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
     std::vector<std::shared_ptr<Node<6>>> nodes = planner.getGraphNodes();
-    std::vector<Eigen::VectorXf> graphPoints;
+    std::vector<Eigen::Matrix<float, 6, 1>> graphPoints;
     Logging::info("Init Graph has: " + std::to_string(nodes.size()) + "nodes", "Example");
     for (auto node : nodes)
         graphPoints.push_back(robot->directKinematic(node->getValues()));
-    Writer::writeVecsToFile(graphPoints, "example.ASC", 10);
+    writer::writeVecsToFile<6>(graphPoints, "example.ASC", 10);
 
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
-        std::vector<Eigen::VectorXf> pathAngles = planner.getPath(0.3, true);
+        std::vector<Eigen::Matrix<float, 6 ,1>> pathAngles = planner.getPath(1, true);
 
-        std::vector<std::vector<Eigen::VectorXf>> vecs;
+        std::vector<std::vector<Eigen::Matrix<float, 6 ,1>>> vecs;
         for (auto angle : pathAngles) {
             std::vector<Eigen::Matrix4f> jointTrafos = robot->getJointTrafos(angle);
-            std::vector<Eigen::VectorXf> tmp;
+            std::vector<Eigen::Matrix<float, 6 ,1>> tmp;
             for (auto joint : jointTrafos)
                 tmp.push_back(utilGeo::poseMatToVec(joint));
             vecs.push_back(tmp);
         }
-        Writer::writeTrafosToFile(vecs, "trafos.txt");
+        writer::writeTrafosToFile(vecs, "trafos.txt");
 
-        std::vector<Eigen::VectorXf> pathPoints;
+        std::vector<Eigen::Matrix<float, 6, 1>> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
-        Writer::appendVecsToFile(pathPoints, "example.ASC", 10);
+        writer::appendVecsToFile<6>(pathPoints, "example.ASC", 10);
     } else {
         Logging::warning("Init and goal could NOT be connected!", "Example");
     }

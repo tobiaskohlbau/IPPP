@@ -27,8 +27,8 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-PointRobot::PointRobot(const Eigen::Vector2f &minBoundary, const Eigen::Vector2f &maxBoundary)
-    : MobileRobot("PointRobot", CollisionType::point2D, 2, minBoundary, maxBoundary) {
+PointRobot::PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary)
+    : MobileRobot<2>("PointRobot", CollisionType::point2D, minBoundary, maxBoundary) {
 }
 
 } /* namespace rmpl */

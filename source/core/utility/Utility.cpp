@@ -18,17 +18,4 @@
 
 #include <core/utility/Utility.h>
 
-#include <Eigen/Geometry>
 
-namespace rmpl {
-namespace utility {
-
-
-
-
-
-} /* namespace utility */
-
-
-
-} /* namespace rmpl */

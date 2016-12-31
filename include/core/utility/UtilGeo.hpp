@@ -16,10 +16,33 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/UtilGeo.h>
+#ifndef UTILGEO_H
+#define UTILGEO_H
+
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+
+#include <core/types.h>
+#include <core/utility/UtilVec.hpp>
 
 namespace rmpl {
 namespace utilGeo {
+
+constexpr float pi() {
+    return std::atan(1) * 4;
+}
+
+constexpr float twoPi() {
+    return std::atan(1) * 8;
+}
+
+constexpr float toRad() {
+    return (std::atan(1) * 4) / 180;
+}
+
+constexpr float toDeg() {
+    return 180 / (std::atan(1) * 4);
+}
 
 /*!
 *  \brief      Create transformation matrix T from rotation R and translation t
@@ -29,7 +52,7 @@ namespace utilGeo {
 *  \param[out] transformation matrix
 *  \date       2016-08-25
 */
-Eigen::Matrix4f createT(Eigen::Matrix3f &R, Eigen::Vector3f &t) {
+static Eigen::Matrix4f createT(Eigen::Matrix3f &R, Vector3 &t) {
     Eigen::Matrix4f T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
     T.block<3, 1>(0, 3) = t;
@@ -44,7 +67,7 @@ Eigen::Matrix4f createT(Eigen::Matrix3f &R, Eigen::Vector3f &t) {
 *  \param[out] translatin matrix
 *  \date       2016-08-25
 */
-void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector3f &t) {
+static void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Vector3 &t) {
     R = T.block<3, 3>(0, 0);
     t = T.block<3, 1>(0, 3);
 }
@@ -56,7 +79,7 @@ void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Eigen::Vector3f &t) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-Eigen::Matrix2f getRotMat2D(float deg) {
+static Eigen::Matrix2f getRotMat2D(float deg) {
     Eigen::Rotation2D<float> rot2(deg * toRad());
     return rot2.toRotationMatrix();
 }
@@ -70,7 +93,7 @@ Eigen::Matrix2f getRotMat2D(float deg) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-Eigen::Matrix3f getRotMat3D(float degX, float degY, float degZ) {
+static Eigen::Matrix3f getRotMat3D(float degX, float degY, float degZ) {
     Eigen::Matrix3f R;
     R = Eigen::AngleAxisf(degX * toRad(), Eigen::Vector3f::UnitX()) *
         Eigen::AngleAxisf(degY * toRad(), Eigen::Vector3f::UnitY()) * Eigen::AngleAxisf(degZ * toRad(), Eigen::Vector3f::UnitZ());
@@ -85,7 +108,7 @@ Eigen::Matrix3f getRotMat3D(float degX, float degY, float degZ) {
 *  \param[out] translation vector
 *  \date       2016-11-15
 */
-void poseVecToRandT(const Eigen::Vector3f &pose, Eigen::Matrix2f &R, Eigen::Vector2f &t) {
+static void poseVecToRandT(const Vector3 &pose, Eigen::Matrix2f &R, Vector2 &t) {
     assert(pose.rows() == 3);
     R = getRotMat2D(pose[2]);
     t(0) = pose[0];
@@ -100,7 +123,7 @@ void poseVecToRandT(const Eigen::Vector3f &pose, Eigen::Matrix2f &R, Eigen::Vect
 *  \param[out] translation vector
 *  \date       2016-11-15
 */
-void poseVecToRandT(const Eigen::Matrix<float, 6, 1> &pose, Eigen::Matrix3f &R, Eigen::Vector3f &t) {
+static void poseVecToRandT(const Vector6 &pose, Eigen::Matrix3f &R, Vector3 &t) {
     assert(pose.rows() == 6);
     R = getRotMat3D(pose[3], pose[4], pose[5]);
     t(0) = pose[0];
@@ -115,7 +138,7 @@ void poseVecToRandT(const Eigen::Matrix<float, 6, 1> &pose, Eigen::Matrix3f &R, 
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Eigen::Matrix4f poseVecToMat(const Eigen::Matrix<float, 6, 1> &pose) {
+static Eigen::Matrix4f poseVecToMat(const Vector6 &pose) {
     Eigen::Matrix3f R = getRotMat3D(pose[3], pose[4], pose[5]);
     Eigen::Matrix4f T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
@@ -131,13 +154,13 @@ Eigen::Matrix4f poseVecToMat(const Eigen::Matrix<float, 6, 1> &pose) {
 *  \param[out] pose Vec (angles)
 *  \date       2016-07-07
 */
-Eigen::Matrix<float, 6, 1> poseMatToVec(const Eigen::Matrix4f &pose) {
-    Eigen::Vector3f vec(pose(0, 3), pose(1, 3), pose(2, 3));
-    Eigen::Vector3f euler = pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2);
+static Vector6 poseMatToVec(const Eigen::Matrix4f &pose) {
+    Vector3 vec(pose(0, 3), pose(1, 3), pose(2, 3));
+    Vector3 euler = pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2);
     euler(0, 0) *= toDeg();
     euler(1, 0) *= toDeg();
     euler(2, 0) *= toDeg();
-    return utilVec::append(vec, euler);
+    return utilVec::append<3, 3>(vec, euler);
 }
 
 /*!
@@ -147,11 +170,11 @@ Eigen::Matrix<float, 6, 1> poseMatToVec(const Eigen::Matrix4f &pose) {
 *  \param[out] Vec of rad
 *  \date       2016-07-07
 */
-Eigen::VectorXf degToRad(Eigen::VectorXf deg) {
-    Eigen::VectorXf rad(deg.rows());
-    for (unsigned int i = 0; i < deg.rows(); ++i)
-        rad[i] = deg[i] * toRad();
-    return rad;
+template <unsigned int dim>
+Vector<dim> degToRad(Vector<dim> deg) {
+    for (unsigned int i = 0; i < dim; ++i)
+        deg[i] *= toRad();
+    return deg;
 }
 
 /*!
@@ -161,9 +184,11 @@ Eigen::VectorXf degToRad(Eigen::VectorXf deg) {
 *  \param[out] rad
 *  \date       2016-11-16
 */
-float degToRad(float deg) {
+static float degToRad(float deg) {
     return deg * toRad();
 }
 
 } /* namespace utilGeo */
 } /* namespace rmpl */
+
+#endif    // UTILGEO_H

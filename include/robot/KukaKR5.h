@@ -19,7 +19,7 @@
 #ifndef KUKAKR5_H_
 #define KUKAKR5_H_
 
-#include <robot/SerialRobot.h>
+#include <robot/SerialRobot.hpp>
 
 namespace rmpl {
 
@@ -28,11 +28,11 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-10-22
 */
-class KukaKR5 : public SerialRobot {
+class KukaKR5 : public SerialRobot<6> {
   public:
     KukaKR5();
-    Eigen::Matrix<float, 6, 1> directKinematic(const Eigen::VectorXf &angles);
-    std::vector<Eigen::Matrix4f> getJointTrafos(const Eigen::VectorXf &angles);
+    Vector6 directKinematic(const Vector6 &angles);
+    std::vector<Eigen::Matrix4f> getJointTrafos(const Vector6 &angles);
 };
 
 } /* namespace rmpl */

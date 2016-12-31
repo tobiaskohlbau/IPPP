@@ -81,7 +81,6 @@ bool MeshContainer::loadFile(const std::string filePath) {
             if (line.at(0) == 'v') {
                 line = line.substr(2);
                 std::stringstream iss(line);
-                vertice = utilVec::Vecf((unsigned int)3);
                 for (int i = 0; i < 3; ++i) {
                     iss >> vertice[i];
                 }
@@ -171,7 +170,7 @@ bool MeshContainer::loadFile(const std::string filePath) {
 bool MeshContainer::saveObj(const std::string path, Eigen::Matrix4f T) {
     std::vector<Eigen::Vector3f> verts;
     for (auto vertice : m_vertices) {
-        Eigen::Vector4f temp(utilVec::append(vertice, (float)1));
+        Eigen::Vector4f temp(utilVec::append<3>(vertice, (float)1));
         temp = T * temp;
         verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
     }

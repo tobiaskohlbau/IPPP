@@ -34,11 +34,11 @@ namespace rmpl {
 template <unsigned int dim, typename T>
 class KDNode {
   public:
-    KDNode(const Eigen::VectorXf &vec, const T &node);
+    KDNode(const Vector<dim> &vec, const T &node);
 
     std::shared_ptr<KDNode<dim, T>> left;
     std::shared_ptr<KDNode<dim, T>> right;
-    Eigen::VectorXf vec;
+    Vector<dim> vec;
     T node;
     unsigned int axis;
     float value;
@@ -52,7 +52,7 @@ class KDNode {
 *  \date       2016-05-27
 */
 template <unsigned int dim, typename T>
-KDNode<dim, T>::KDNode(const Eigen::VectorXf &vec, const T &node) {
+KDNode<dim, T>::KDNode(const Vector<dim> &vec, const T &node) {
     this->vec = vec;
     this->node = node;
     axis = 0;

@@ -28,7 +28,7 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
+Jaco::Jaco() : SerialRobot<6>("Jaco", CollisionType::pqp) {
     m_alpha = utilVec::Vecf(utilGeo::pi() / 2, utilGeo::pi(), utilGeo::pi() / 2, 0.95993, 0.95993, utilGeo::pi());
     m_a = utilVec::Vecf(0, 410, 0, 0, 0, 0);
     m_d = utilVec::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
@@ -68,7 +68,7 @@ Jaco::Jaco() : SerialRobot("Jaco", CollisionType::pqp, 6) {
 *  \param[out] euclidean position Vec
 *  \date       2016-08-25
 */
-Eigen::Matrix<float, 6, 1> Jaco::directKinematic(const Eigen::VectorXf &angles) {
+Vector6 Jaco::directKinematic(const Vector6 &angles) {
     std::vector<Eigen::Matrix4f> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos);
@@ -81,14 +81,14 @@ Eigen::Matrix<float, 6, 1> Jaco::directKinematic(const Eigen::VectorXf &angles) 
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-14
 */
-std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Eigen::VectorXf &angles) {
+std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Vector6 &angles) {
     // transform form jaco physical angles to dh angles
-    Eigen::VectorXf dhAngles = convertRealToDH(angles);
-    Eigen::VectorXf rads = utilGeo::degToRad(dhAngles);
+    Vector6 dhAngles = convertRealToDH(angles);
+    Vector6 rads = utilGeo::degToRad<6>(dhAngles);
 
     std::vector<Eigen::Matrix4f> trafos;
     // create transformation matrizes
-    for (int i = 0; i < getDim(); ++i)
+    for (int i = 0; i < 6; ++i)
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));
 
     return trafos;
@@ -102,8 +102,8 @@ std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Eigen::VectorXf &angles)
 *  \param[out] D-H angles
 *  \date       2016-07-14
 */
-Eigen::Matrix<float, 6, 1> Jaco::convertRealToDH(const Eigen::Matrix<float, 6, 1> &realAngles) {
-    Eigen::Matrix<float, 6, 1> dhAngles(realAngles);
+Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) {
+    Vector6 dhAngles(realAngles);
     dhAngles[0] = -realAngles[0];
     dhAngles[1] = realAngles[1] - 90;
     dhAngles[2] = realAngles[2] + 90;

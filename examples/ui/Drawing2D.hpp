@@ -1,11 +1,13 @@
 #ifndef DRAWING2D_H_
 #define DRAWING2D_H_
 
+#include <type_traits>
+
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-
 #include <Eigen/Core>
 
+#include <core/types.h>
 #include <core/dataObj/Node.hpp>
 #include <core/dataObj/PointList.hpp>
 #include <core/module/ModuleBase.h>
@@ -27,6 +29,7 @@ namespace drawing {
 template <unsigned int dim>
 void drawTree2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &image, Eigen::Vector3i colorNode,
                 Eigen::Vector3i colorEdge, int thickness) {
+    static_assert(dim == 2, "Dimension has to be 2");
     for (auto &elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
         cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
@@ -50,6 +53,7 @@ void drawTree2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &i
 template <unsigned int dim>
 void drawGraph2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &image, Eigen::Vector3i colorNode,
                  Eigen::Vector3i colorEdge, int thickness) {
+    static_assert(dim == 2, "Dimension has to be 2");
     for (auto &elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
         cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
@@ -71,11 +75,9 @@ void drawGraph2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-void drawPath2D(const std::vector<Eigen::VectorXf> vecs, cv::Mat &image, Eigen::Vector3i colorPoint, int thickness) {
+static void drawPath2D(const std::vector<Vector2> vecs, cv::Mat &image, Eigen::Vector3i colorPoint, int thickness) {
     if (vecs.size() == 0)
         return;
-
-    assert(vecs[0].rows() == 2);
 
     for (int i = 0; i < vecs.size(); ++i) {
         cv::Point point(vecs[i][0], vecs[i][1]);
@@ -93,17 +95,15 @@ void drawPath2D(const std::vector<Eigen::VectorXf> vecs, cv::Mat &image, Eigen::
 *  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
-void drawTrianglePath(std::vector<Eigen::VectorXf> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
+static void drawTrianglePath(std::vector<Vector3> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
                       Eigen::Vector3i colorPoint, int thickness) {
     if (vecs.size() == 0)
         return;
 
-    assert(vecs[0].rows() == 3);
-
     Logging::info("start drawing of triangles", "Drawing2D");
 
     Eigen::Matrix2f R;
-    Eigen::Vector2f t;
+    Vector2 t;
     cv::Point2i pt1, pt2, pt3;
     Triangle2D triangle;
     for (auto vec : vecs) {

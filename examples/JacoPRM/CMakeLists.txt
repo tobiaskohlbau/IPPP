@@ -20,8 +20,7 @@ set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write
 
 set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.cpp
+    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp
 
     ${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApi.h
     ${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApiPlatform.h

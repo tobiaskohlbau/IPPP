@@ -16,13 +16,46 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <robot/SerialRobot.h>
+#ifndef SERIALROBOT_H_
+#define SERIALROBOT_H_
 
-#include <include/core/utility/Logging.h>
-#include <include/core/utility/Utility.h>
+#include <robot/Joint.h>
+#include <robot/RobotBase.hpp>
 
-using std::shared_ptr;
 namespace rmpl {
+
+/*!
+* \brief   Base class of all serial robots
+* \author  Sascha Kaden
+* \date    2016-08-25
+*/
+template <unsigned int dim>
+class SerialRobot : public RobotBase<dim> {
+  public:
+    SerialRobot(std::string name, CollisionType type);
+
+    virtual Vector<dim> directKinematic(const Vector<dim> &angles) = 0;
+    virtual std::vector<Eigen::Matrix4f> getJointTrafos(const Vector<dim> &angles) = 0;
+    Eigen::Matrix4f getTrafo(float alpha, float a, float d, float q);
+    Vector6 getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos);
+
+    void setJoints(std::vector<Joint> joints);
+    unsigned int getNbJoints();
+
+    std::shared_ptr<MeshContainer> getMeshFromJoint(unsigned int jointIndex);
+    std::vector<std::shared_ptr<MeshContainer>> getJointMeshs();
+    std::vector<std::shared_ptr<PQP_Model>> getJointPqpModels();
+    std::vector<std::shared_ptr<FCLModel>> getJointFclModels();
+
+    void saveMeshConfig(Vector<dim> angles);
+    void saveMeshConfig(Eigen::Matrix4f *As);
+
+  protected:
+    std::vector<Joint> m_joints;
+    Vector<dim> m_alpha;
+    Vector<dim> m_a;
+    Vector<dim> m_d;
+};
 
 /*!
 *  \brief      Constructor of the class RobotBase
@@ -33,7 +66,9 @@ namespace rmpl {
 *  \param[in]  number of joints of the robot
 *  \date       2016-06-30
 */
-SerialRobot::SerialRobot(std::string name, CollisionType type, unsigned int dim) : RobotBase(name, type, RobotType::serial, dim) {
+template <unsigned int dim>
+SerialRobot<dim>::SerialRobot(std::string name, CollisionType type)
+    : RobotBase<dim>(name, type, RobotType::serial) {
 }
 
 /*!
@@ -46,7 +81,8 @@ SerialRobot::SerialRobot(std::string name, CollisionType type, unsigned int dim)
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Eigen::Matrix4f SerialRobot::getTrafo(float alpha, float a, float d, float q) {
+template <unsigned int dim>
+Eigen::Matrix4f SerialRobot<dim>::getTrafo(float alpha, float a, float d, float q) {
     float sinAlpha = sin(alpha);
     float cosAlpha = cos(alpha);
     float sinQ = sin(q);
@@ -91,14 +127,15 @@ Eigen::Matrix4f SerialRobot::getTrafo(float alpha, float a, float d, float q) {
 *  \param[out] TCP pose
 *  \date       2016-07-07
 */
-Eigen::Matrix<float, 6, 1> SerialRobot::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos) {
+template <unsigned int dim>
+Vector6 SerialRobot<dim>::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos) {
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
     Eigen::Matrix4f robotToTcp = trafos[0];
     for (int i = 1; i < 6; ++i)
         robotToTcp *= trafos[i];
 
-    Eigen::Matrix4f basisToTcp = m_poseMat * robotToTcp;
+    Eigen::Matrix4f basisToTcp = this->m_poseMat * robotToTcp;
 
     return utilGeo::poseMatToVec(basisToTcp);
 }
@@ -110,7 +147,8 @@ Eigen::Matrix<float, 6, 1> SerialRobot::getTcpPosition(const std::vector<Eigen::
 *  \param[out] MeshContainer
 *  \date       2016-08-25
 */
-shared_ptr<MeshContainer> SerialRobot::getMeshFromJoint(unsigned int jointIndex) {
+template <unsigned int dim>
+std::shared_ptr<MeshContainer> SerialRobot<dim>::getMeshFromJoint(unsigned int jointIndex) {
     if (jointIndex < m_joints.size()) {
         return m_joints[jointIndex].getMesh();
     } else {
@@ -125,8 +163,9 @@ shared_ptr<MeshContainer> SerialRobot::getMeshFromJoint(unsigned int jointIndex)
 *  \param[out] vector of MeshContainer
 *  \date       2016-08-25
 */
-std::vector<shared_ptr<MeshContainer>> SerialRobot::getJointMeshs() {
-    std::vector<shared_ptr<MeshContainer>> models;
+template <unsigned int dim>
+std::vector<std::shared_ptr<MeshContainer>> SerialRobot<dim>::getJointMeshs() {
+    std::vector<std::shared_ptr<MeshContainer>> models;
     for (auto joint : m_joints)
         models.push_back(joint.getMesh());
     return models;
@@ -138,8 +177,9 @@ std::vector<shared_ptr<MeshContainer>> SerialRobot::getJointMeshs() {
 *  \param[out] vector of pqp models
 *  \date       2016-08-25
 */
-std::vector<shared_ptr<PQP_Model>> SerialRobot::getJointPqpModels() {
-    std::vector<shared_ptr<PQP_Model>> models;
+template <unsigned int dim>
+std::vector<std::shared_ptr<PQP_Model>> SerialRobot<dim>::getJointPqpModels() {
+    std::vector<std::shared_ptr<PQP_Model>> models;
     for (auto joint : m_joints)
         models.push_back(joint.getMesh()->getPqp());
     return models;
@@ -151,8 +191,9 @@ std::vector<shared_ptr<PQP_Model>> SerialRobot::getJointPqpModels() {
 *  \param[out] vector of fcl models
 *  \date       2016-08-25
 */
-std::vector<shared_ptr<FCLModel>> SerialRobot::getJointFclModels() {
-    std::vector<shared_ptr<FCLModel>> models;
+template <unsigned int dim>
+std::vector<std::shared_ptr<FCLModel>> SerialRobot<dim>::getJointFclModels() {
+    std::vector<std::shared_ptr<FCLModel>> models;
     for (auto joint : m_joints)
         models.push_back(joint.getMesh()->getFcl());
     return models;
@@ -164,7 +205,8 @@ std::vector<shared_ptr<FCLModel>> SerialRobot::getJointFclModels() {
 *  \param[out] number of joints
 *  \date       2016-06-30
 */
-unsigned int SerialRobot::getNbJoints() {
+template <unsigned int dim>
+unsigned int SerialRobot<dim>::getNbJoints() {
     return m_joints.size();
 }
 
@@ -174,10 +216,11 @@ unsigned int SerialRobot::getNbJoints() {
 *  \param[in]  joint angles
 *  \date       2016-10-22
 */
-void SerialRobot::saveMeshConfig(Eigen::VectorXf angles) {
+template <unsigned int dim>
+void SerialRobot<dim>::saveMeshConfig(Vector<dim> angles) {
     std::vector<Eigen::Matrix4f> jointTrafos = getJointTrafos(angles);
     Eigen::Matrix4f As[jointTrafos.size()];
-    As[0] = m_poseMat * jointTrafos[0];
+    As[0] = this->m_poseMat * jointTrafos[0];
     for (int i = 1; i < jointTrafos.size(); ++i)
         As[i] = As[i - 1] * jointTrafos[i];
 
@@ -190,14 +233,17 @@ void SerialRobot::saveMeshConfig(Eigen::VectorXf angles) {
 *  \param[in]  transformation matrizes
 *  \date       2016-10-22
 */
-void SerialRobot::saveMeshConfig(Eigen::Matrix4f *As) {
-    if (m_baseMesh != nullptr)
-        m_baseMesh->saveObj("base.obj", m_poseMat);
+template <unsigned int dim>
+void SerialRobot<dim>::saveMeshConfig(Eigen::Matrix4f *As) {
+    if (this->m_baseMesh != nullptr)
+        this->m_baseMesh->saveObj("base.obj", this->m_poseMat);
 
-    for (int i = 0; i < getDim(); ++i) {
+    for (int i = 0; i < dim; ++i) {
         getMeshFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
         // std::cout<< As[i] << std::endl <<std::endl;
     }
 }
 
 } /* namespace rmpl */
+
+#endif    // SERIALROBOT_H_

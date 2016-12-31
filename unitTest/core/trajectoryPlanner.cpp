@@ -27,16 +27,16 @@ BOOST_AUTO_TEST_SUITE(constructor)
 
 BOOST_AUTO_TEST_CASE(computeTrajectory) {
     // init TrajectoryPlanner
-    const unsigned int dim = 2;
-    std::shared_ptr<MobileRobot> robot = std::shared_ptr<MobileRobot>(
-        new MobileRobot("", CollisionType::pqp, dim, Eigen::Vector2f(-100, -100), Eigen::Vector2f(100, 100)));
+    const unsigned int dim = 6;
+    std::shared_ptr<MobileRobot<dim>> robot = std::shared_ptr<MobileRobot<dim>>(
+        new MobileRobot<dim>("", CollisionType::pqp, utilVec::Vecf(-10, -10, -10, -10, -10, -10), utilVec::Vecf(10, 10, 10, 10, 10, 10)));
     std::shared_ptr<CollisionDetection<dim>> collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetection<dim>(robot));
     TrajectoryPlanner<dim> planner(0.1, collision);
 
     // test trajectories
-    Eigen::VectorXf init = utilVec::Vecf(0, 0, 0, 0, 0, 0);
-    Eigen::VectorXf goal = utilVec::Vecf(0, 0, 0, 0, 0, 0);
-    std::vector<Eigen::VectorXf> path;
+    Vector6 init = utilVec::Vecf(0, 0, 0, 0, 0, 0);
+    Vector6 goal = utilVec::Vecf(0, 0, 0, 0, 0, 0);
+    std::vector<Vector6> path;
     path = planner.calcTrajectoryCont(init, goal);
     BOOST_CHECK(path.size() == 0);
 
