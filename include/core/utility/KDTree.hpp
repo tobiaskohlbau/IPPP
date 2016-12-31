@@ -40,9 +40,9 @@ class KDTree : public ModuleBase {
   public:
     KDTree();
     KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes);
-    void addNode(const Eigen::VectorXf &vec, const T &node);
-    T searchNearestNeighbor(const Eigen::VectorXf &vec);
-    std::vector<T> searchRange(const Eigen::VectorXf &vec, float range);
+    void addNode(const Vector<dim> &vec, const T &node);
+    T searchNearestNeighbor(const Vector<dim> &vec);
+    std::vector<T> searchRange(const Vector<dim> &vec, float range);
 
     std::shared_ptr<KDNode<dim, T>> sort(std::vector<std::shared_ptr<Node<dim>>> &vec, unsigned int cd);
     void quickSort(std::vector<std::shared_ptr<Node<dim>>> &A, int left, int right, int dimension);
@@ -51,11 +51,11 @@ class KDTree : public ModuleBase {
   private:
     std::shared_ptr<KDNode<dim, T>> insert(std::shared_ptr<KDNode<dim, T>> insertNode,
                                            std::shared_ptr<KDNode<dim, T>> currentNode, unsigned int depth);
-    void NNS(const Eigen::VectorXf &point, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode,
+    void NNS(const Vector<dim> &point, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode,
              float &bestDist);
-    void RS(const Eigen::VectorXf &point, std::shared_ptr<KDNode<dim, T>> node,
-            std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, float sqRange, const Eigen::VectorXf &maxBoundary,
-            const Eigen::VectorXf &minBoundary);
+    void RS(const Vector<dim> &point, std::shared_ptr<KDNode<dim, T>> node,
+            std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, float sqRange, const Vector<dim> &maxBoundary,
+            const Vector<dim> &minBoundary);
 
     std::shared_ptr<KDNode<dim, T>> m_root;
     std::mutex m_mutex;
@@ -97,7 +97,7 @@ KDTree<dim, T>::KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) : ModuleB
 *  \date       2016-05-27
 */
 template <unsigned int dim, class T>
-void KDTree<dim, T>::addNode(const Eigen::VectorXf &vec, const T &node) {
+void KDTree<dim, T>::addNode(const Vector<dim> &vec, const T &node) {
     std::shared_ptr<KDNode<dim, T>> shrKDNode(new KDNode<dim, T>(vec, node));
     if (m_root == nullptr) {
         m_root = shrKDNode;
@@ -174,7 +174,7 @@ std::shared_ptr<KDNode<dim, T>> KDTree<dim, T>::insert(std::shared_ptr<KDNode<di
 *  \date       2016-05-27
 */
 template <unsigned int dim, class T>
-T KDTree<dim, T>::searchNearestNeighbor(const Eigen::VectorXf &vec) {
+T KDTree<dim, T>::searchNearestNeighbor(const Vector<dim> &vec) {
     if (m_root == nullptr)
         return nullptr;
 
@@ -193,15 +193,15 @@ T KDTree<dim, T>::searchNearestNeighbor(const Eigen::VectorXf &vec) {
 *  \date       2016-05-27
 */
 template <unsigned int dim, class T>
-std::vector<T> KDTree<dim, T>::searchRange(const Eigen::VectorXf &vec, float range) {
+std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &vec, float range) {
     std::vector<T> nodes;
     if (m_root == nullptr)
         return nodes;
 
     std::vector<std::shared_ptr<KDNode<dim, T>>> kdNodes;
     float sqRange = range * range;
-    Eigen::VectorXf maxBoundary = vec;
-    Eigen::VectorXf minBoundary = vec;
+    Vector<dim> maxBoundary = vec;
+    Vector<dim> minBoundary = vec;
     maxBoundary = maxBoundary.array() + range;
     minBoundary = minBoundary.array() - range;
     RS(vec, m_root, kdNodes, sqRange, maxBoundary, minBoundary);
@@ -223,8 +223,8 @@ std::vector<T> KDTree<dim, T>::searchRange(const Eigen::VectorXf &vec, float ran
 *  \date       2016-05-27
 */
 template <unsigned int dim, class T>
-void KDTree<dim, T>::NNS(const Eigen::VectorXf &vec, std::shared_ptr<KDNode<dim, T>> node,
-                         std::shared_ptr<KDNode<dim, T>> &refNode, float &bestDist) {
+void KDTree<dim, T>::NNS(const Vector<dim> &vec, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode,
+                         float &bestDist) {
     if (node->left == nullptr && node->right == nullptr) {
         float dist = (vec - node->vec).squaredNorm();
         if (dist < bestDist) {
@@ -257,9 +257,9 @@ void KDTree<dim, T>::NNS(const Eigen::VectorXf &vec, std::shared_ptr<KDNode<dim,
 *  \date       2016-05-27
 */
 template <unsigned int dim, class T>
-void KDTree<dim, T>::RS(const Eigen::VectorXf &vec, std::shared_ptr<KDNode<dim, T>> node,
-                        std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, float sqRange, const Eigen::VectorXf &maxBoundary,
-                        const Eigen::VectorXf &minBoundary) {
+void KDTree<dim, T>::RS(const Vector<dim> &vec, std::shared_ptr<KDNode<dim, T>> node,
+                        std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, float sqRange, const Vector<dim> &maxBoundary,
+                        const Vector<dim> &minBoundary) {
     if (node == nullptr) {
         return;
     }

@@ -26,8 +26,9 @@
 #include <core/module/ModuleBase.h>
 #include <core/module/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
+#include <core/types.h>
 #include <pathPlanner/options/PlannerOptions.h>
-#include <robot/RobotBase.h>
+#include <robot/RobotBase.hpp>
 
 namespace rmpl {
 
@@ -42,16 +43,16 @@ class Planner : public ModuleBase {
     ~Planner();
 
   protected:
-    Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const PlannerOptions &options);
+    Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions &options);
 
   public:
-    virtual bool computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads) = 0;
+    virtual bool computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads) = 0;
 
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
-    virtual std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing) = 0;
+    virtual std::vector<Vector<dim>> getPath(float trajectoryStepSize, bool smoothing) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
-    std::vector<Eigen::VectorXf> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, float trajectoryStepSize,
-                                                  bool smoothing);
+    std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, float trajectoryStepSize,
+                                              bool smoothing);
 
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
@@ -60,7 +61,7 @@ class Planner : public ModuleBase {
     std::shared_ptr<Sampling<dim>> m_sampler;
     std::shared_ptr<CollisionDetection<dim>> m_collision;
     std::shared_ptr<Graph<dim>> m_graph;
-    std::shared_ptr<RobotBase> m_robot;
+    std::shared_ptr<RobotBase<dim>> m_robot;
 
     const PlannerOptions m_options;
     bool m_pathPlanned;
@@ -84,7 +85,7 @@ Planner<dim>::~Planner() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const PlannerOptions &options)
+Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions &options)
     : ModuleBase(name), m_options(options) {
     m_pathPlanned = false;
 
@@ -117,8 +118,8 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-std::vector<Eigen::VectorXf> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                                            float trajectoryStepSize, bool smoothing) {
+std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
+                                                        float trajectoryStepSize, bool smoothing) {
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes;
     if (smoothing)
         smoothedNodes = smoothPath(nodes);
@@ -127,9 +128,9 @@ std::vector<Eigen::VectorXf> Planner<dim>::getPathFromNodes(const std::vector<st
 
     Logging::info("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", this);
 
-    std::vector<Eigen::VectorXf> path;
+    std::vector<Vector<dim>> path;
     for (int i = 0; i < smoothedNodes.size() - 1; ++i) {
-        std::vector<Eigen::VectorXf> tempVecs =
+        std::vector<Vector<dim>> tempVecs =
             m_planner->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues());
         for (auto vec : tempVecs)
             path.push_back(vec);
@@ -140,7 +141,7 @@ std::vector<Eigen::VectorXf> Planner<dim>::getPathFromNodes(const std::vector<st
                       this);
     } else if (trajectoryStepSize > m_planner->getStepSize()) {
         unsigned int steps = trajectoryStepSize / m_planner->getStepSize();
-        std::vector<Eigen::VectorXf> newPath;
+        std::vector<Vector<dim>> newPath;
         newPath.push_back(path[0]);
         unsigned int j = 0;
         for (auto point : path) {

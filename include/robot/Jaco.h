@@ -19,7 +19,7 @@
 #ifndef JACO_H_
 #define JACO_H_
 
-#include <robot/SerialRobot.h>
+#include <robot/SerialRobot.hpp>
 
 namespace rmpl {
 
@@ -28,14 +28,14 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
-class Jaco : public SerialRobot {
+class Jaco : public SerialRobot<6> {
   public:
     Jaco();
-    Eigen::Matrix<float, 6, 1> directKinematic(const Eigen::VectorXf &angles);
-    std::vector<Eigen::Matrix4f> getJointTrafos(const Eigen::VectorXf &angles);
+    Vector6 directKinematic(const Vector6 &angles);
+    std::vector<Eigen::Matrix4f> getJointTrafos(const Vector6 &angles);
 
   private:
-    Eigen::Matrix<float, 6, 1> convertRealToDH(const Eigen::Matrix<float, 6, 1> &realAngles);
+    Vector6 convertRealToDH(const Vector6 &realAngles);
 };
 
 } /* namespace rmpl */

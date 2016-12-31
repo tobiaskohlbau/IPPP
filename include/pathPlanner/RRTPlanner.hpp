@@ -32,22 +32,22 @@ namespace rmpl {
 template <unsigned int dim>
 class RRTPlanner : public Planner<dim> {
   public:
-    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const RRTOptions &options);
+    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions &options);
 
-    bool computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads);
-    bool setInitNode(Eigen::VectorXf start);
+    bool computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads);
+    bool setInitNode(Vector<dim> start);
     bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
-    virtual bool connectGoalNode(Eigen::VectorXf goal) = 0;
+    virtual bool connectGoalNode(Vector<dim> goal) = 0;
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing = true);
+    std::vector<Vector<dim>> getPath(float trajectoryStepSize, bool smoothing = true);
     std::shared_ptr<Node<dim>> getInitNode();
     std::shared_ptr<Node<dim>> getGoalNode();
 
   protected:
     void computeTreeThread(unsigned int nbOfNodes);
-    virtual void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode) = 0;
-    Eigen::VectorXf computeNodeNew(const Eigen::VectorXf &randNode, const Eigen::VectorXf &nearestNode);
+    virtual void computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) = 0;
+    Vector<dim> computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode);
 
     // variables
     float m_stepSize;
@@ -61,7 +61,7 @@ class RRTPlanner : public Planner<dim> {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-RRTPlanner<dim>::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase> &robot, const RRTOptions &options)
+RRTPlanner<dim>::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions &options)
     : Planner<dim>(name, robot, options) {
     m_stepSize = options.getStepSize();
     m_initNode = nullptr;
@@ -79,7 +79,7 @@ RRTPlanner<dim>::RRTPlanner(const std::string &name, const std::shared_ptr<Robot
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRTPlanner<dim>::computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads) {
+bool RRTPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads) {
     if (!setInitNode(start))
         return false;
 
@@ -96,7 +96,7 @@ bool RRTPlanner<dim>::computePath(Eigen::VectorXf start, Eigen::VectorXf goal, u
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRTPlanner<dim>::setInitNode(Eigen::VectorXf start) {
+bool RRTPlanner<dim>::setInitNode(Vector<dim> start) {
     if (this->m_collision->controlVec(start)) {
         Logging::warning("Init Node<dim> could not be connected", this);
         return false;
@@ -150,7 +150,7 @@ bool RRTPlanner<dim>::computeTree(unsigned int nbOfNodes, unsigned int nbOfThrea
 template <unsigned int dim>
 void RRTPlanner<dim>::computeTreeThread(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
-        Eigen::VectorXf randVec = this->m_sampler->getSample();
+        Vector<dim> randVec = this->m_sampler->getSample();
         std::shared_ptr<Node<dim>> newNode;
         computeRRTNode(randVec, newNode);
 
@@ -189,8 +189,8 @@ std::vector<std::shared_ptr<Node<dim>>> RRTPlanner<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Eigen::VectorXf> RRTPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
-    std::vector<Eigen::VectorXf> path;
+std::vector<Vector<dim>> RRTPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
+    std::vector<Vector<dim>> path;
     if (!this->m_pathPlanned) {
         Logging::warning("Path is not complete", this);
         return path;
@@ -212,14 +212,14 @@ std::vector<Eigen::VectorXf> RRTPlanner<dim>::getPath(float trajectoryStepSize, 
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-Eigen::VectorXf RRTPlanner<dim>::computeNodeNew(const Eigen::VectorXf &randNode, const Eigen::VectorXf &nearestNode) {
+    Vector<dim> RRTPlanner<dim>::computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode) {
     if ((randNode - nearestNode).norm() < m_stepSize)
         return randNode;
 
     // p = a + k * (b-a)
     // ||u|| = ||b - a||
     // k = stepSize / ||u||
-    Eigen::VectorXf u = randNode - nearestNode;
+    Vector<dim> u = randNode - nearestNode;
     u *= m_stepSize / u.norm();
     u += nearestNode;
     return u;

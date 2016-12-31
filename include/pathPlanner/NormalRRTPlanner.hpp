@@ -33,14 +33,14 @@ namespace rmpl {
 template <unsigned int dim>
 class NormalRRTPlanner : public RRTPlanner<dim> {
   public:
-    NormalRRTPlanner(const std::shared_ptr<RobotBase> &robot, const RRTOptions &options)
+    NormalRRTPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions &options)
         : RRTPlanner<dim>("Normal RRT Planner", robot, options) {
     }
 
-    bool connectGoalNode(Eigen::VectorXf goal);
+    bool connectGoalNode(Vector<dim> goal);
 
   protected:
-    void computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode);
+    void computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode);
 
     std::mutex m_mutex;
 };
@@ -53,12 +53,12 @@ class NormalRRTPlanner : public RRTPlanner<dim> {
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void NormalRRTPlanner<dim>::computeRRTNode(const Eigen::VectorXf &randVec, std::shared_ptr<Node<dim>> &newNode) {
+void NormalRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) {
     // get nearest neighbor
     std::shared_ptr<Node<dim>> nearestNode = this->m_graph->getNearestNode(Node<dim>(randVec));
 
     // compute Node<dim> new with fixed step size
-    Eigen::VectorXf newVec = this->computeNodeNew(randVec, nearestNode->getValues());
+    Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
     newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
 
     if (this->m_collision->controlVec(newNode->getValues())) {
@@ -84,7 +84,7 @@ void NormalRRTPlanner<dim>::computeRRTNode(const Eigen::VectorXf &randVec, std::
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool NormalRRTPlanner<dim>::connectGoalNode(Eigen::VectorXf goal) {
+bool NormalRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
     if (this->m_collision->controlVec(goal))
         return false;
 

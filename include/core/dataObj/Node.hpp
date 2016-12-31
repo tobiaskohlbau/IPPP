@@ -20,13 +20,15 @@
 #define NODE_H_
 
 #include <assert.h>
+#include <cmath>
 #include <memory>
 #include <vector>
 
 #include <Eigen/Core>
 
 #include <core/dataObj/Edge.hpp>
-#include <core/utility/UtilVec.h>
+#include <core/types.h>
+#include <core/utility/UtilVec.hpp>
 
 namespace rmpl {
 
@@ -45,7 +47,7 @@ class Node {
     Node(float x, float y, float z, float rx);
     Node(float x, float y, float z, float rx, float ry);
     Node(float x, float y, float z, float rx, float ry, float rz);
-    Node(const Eigen::VectorXf &vec);
+    Node(const Vector<dim> &vec);
 
     float getX();
     float getY();
@@ -69,10 +71,10 @@ class Node {
     std::vector<std::shared_ptr<Edge<dim>>> getChildEdges();
     void clearChildes();
 
-    Eigen::VectorXf getValues() const;
+    Vector<dim> getValues() const;
 
   private:
-    Eigen::VectorXf m_vec;
+    Vector<dim> m_vec;
     float m_cost = -1;
 
     std::shared_ptr<Edge<dim>> m_parent = nullptr;
@@ -86,6 +88,8 @@ class Node {
 */
 template <unsigned int dim>
 Node<dim>::Node() {
+    for (int i = 0; i < dim; ++i)
+        m_vec[i] = NAN;
 }
 
 /*!
@@ -165,7 +169,7 @@ Node<dim>::Node(float x, float y, float z, float rx, float ry, float rz) {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Node<dim>::Node(const Eigen::VectorXf &vec) {
+Node<dim>::Node(const Vector<dim> &vec) {
     m_vec = vec;
 }
 
@@ -207,10 +211,7 @@ float Node<dim>::getZ() {
 */
 template <unsigned int dim>
 bool Node<dim>::empty() const {
-    if (m_vec.rows() == 0 || m_vec.rows() == -1)
-        return true;
-    else
-        return false;
+    return std::isnan(m_vec[0]);
 }
 
 /*!
@@ -320,7 +321,7 @@ std::shared_ptr<Node<dim>> Node<dim>::getParentNode() {
 *  \date       2016-10-22
 */
 template <unsigned int dim>
-    std::shared_ptr<Edge<dim>> Node<dim>::getParentEdge() {
+std::shared_ptr<Edge<dim>> Node<dim>::getParentEdge() {
     return m_parent;
 }
 
@@ -389,7 +390,7 @@ void Node<dim>::clearChildes() {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Eigen::VectorXf Node<dim>::getValues() const {
+Vector<dim> Node<dim>::getValues() const {
     return m_vec;
 }
 

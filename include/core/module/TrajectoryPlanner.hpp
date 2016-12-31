@@ -19,6 +19,7 @@
 #ifndef TRAJECTORYPLANNER_H_
 #define TRAJECTORYPLANNER_H_
 
+#include <core/types.h>
 #include <core/module/CollisionDetection.hpp>
 #include <core/module/ModuleBase.h>
 
@@ -36,9 +37,9 @@ class TrajectoryPlanner : public ModuleBase {
 
     bool controlTrajectory(const Node<dim> &source, const Node<dim> &target);
     bool controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
-    bool controlTrajectory(const Eigen::VectorXf &source, const Eigen::VectorXf &target);
-    std::vector<Eigen::VectorXf> calcTrajectoryCont(const Eigen::VectorXf &source, const Eigen::VectorXf &target);
-    std::vector<Eigen::VectorXf> calcTrajectoryBin(const Eigen::VectorXf &source, const Eigen::VectorXf &target);
+    bool controlTrajectory(const Vector<dim> &source, const Vector<dim> &target);
+    std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
+    std::vector<Vector<dim>> calcTrajectoryBin (const Vector<dim> &source, const Vector<dim> &target);
 
     void setStepSize(float stepSize);
     float getStepSize() const;
@@ -99,13 +100,13 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const std::shared_ptr<Node<dim>> 
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::controlTrajectory(const Eigen::VectorXf &source, const Eigen::VectorXf &target) {
+bool TrajectoryPlanner<dim>::controlTrajectory(const Vector<dim> &source, const Vector<dim> &target) {
     if (source.rows() != target.rows()) {
         Logging::error("Nodes/Vecs have different dimensions", this);
         return false;
     }
 
-    std::vector<Eigen::VectorXf> path = calcTrajectoryBin(source, target);
+    std::vector<Vector<dim>> path = calcTrajectoryBin(source, target);
     if (m_collision->controlTrajectory(path))
         return false;
 
@@ -121,18 +122,18 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const Eigen::VectorXf &source, co
 *  \date       2016-12-21
 */
 template <unsigned int dim>
-std::vector<Eigen::VectorXf> TrajectoryPlanner<dim>::calcTrajectoryBin(const Eigen::VectorXf &source,
-                                                                       const Eigen::VectorXf &target) {
-    std::vector<Eigen::VectorXf> vecs;
+std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<dim> &source,
+                                                                       const Vector<dim> &target) {
+    std::vector<Vector<dim>> vecs;
     if (source.rows() != target.rows()) {
         Logging::error("Vecs have different dimensions", this);
         return vecs;
     }
 
-    Eigen::VectorXf u(target - source);
+    Vector<dim> u(target - source);
     vecs.push_back(source);
     unsigned int divider = 2;
-    for (Eigen::VectorXf uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider)
+    for (Vector<dim> uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider)
         for (int i = 1; i < divider; i += 2)
             vecs.push_back(source + (uTemp * i));
     vecs.push_back(target);
@@ -149,17 +150,17 @@ std::vector<Eigen::VectorXf> TrajectoryPlanner<dim>::calcTrajectoryBin(const Eig
 *  \date       2016-12-21
 */
 template <unsigned int dim>
-std::vector<Eigen::VectorXf> TrajectoryPlanner<dim>::calcTrajectoryCont(const Eigen::VectorXf &source,
-                                                                        const Eigen::VectorXf &target) {
-    std::vector<Eigen::VectorXf> vecs;
+std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector<dim> &source,
+                                                                        const Vector<dim> &target) {
+    std::vector<Vector<dim>> vecs;
     if (source.rows() != target.rows()) {
         Logging::error("Vecs have different dimensions", this);
         return vecs;
     }
 
-    Eigen::VectorXf u(target - source);    // u = a - b
+    Vector<dim> u(target - source);    // u = a - b
     u /= u.norm();                         // u = |u|
-    for (Eigen::VectorXf temp(source + (u * m_stepSize)); (temp - target).squaredNorm() > 1; temp = temp + (u * m_stepSize))
+    for (Vector<dim> temp(source + (u * m_stepSize)); (temp - target).squaredNorm() > 1; temp = temp + (u * m_stepSize))
         vecs.push_back(temp);
     return vecs;
 }

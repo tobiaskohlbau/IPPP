@@ -28,7 +28,7 @@
 #include <core/dataObj/PointList.hpp>
 #include <core/module/ModuleBase.h>
 #include <robot/MeshContainer.h>
-#include <robot/SerialRobot.h>
+#include <robot/SerialRobot.hpp>
 #include <robot/TriangleRobot2D.h>
 
 namespace rmpl {
@@ -41,29 +41,29 @@ namespace rmpl {
 template <unsigned int dim>
 class CollisionDetection : public ModuleBase {
   public:
-    CollisionDetection(const std::shared_ptr<RobotBase> &robot);
-    bool controlVec(const Eigen::VectorXf &vec);
-    bool controlTrajectory(std::vector<Eigen::VectorXf> &vec);
+    CollisionDetection(const std::shared_ptr<RobotBase<dim>> &robot);
+    bool controlVec(const Vector<dim> &vec);
+    bool controlTrajectory(std::vector<Vector<dim>> &vec);
 
   private:
-    bool controlCollisionMesh(const Eigen::VectorXf &vec);
-    bool checkSerialRobot(const Eigen::VectorXf &vec);
-    bool checkMobileRobot(const Eigen::VectorXf &vec);
+    bool controlCollisionMesh(const Vector<dim> &vec);
+    bool checkSerialRobot(const Vector<dim> &vec);
+    bool checkMobileRobot(const Vector<dim> &vec);
     bool checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &base, Eigen::Matrix3f R[],
-                   Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT);
+                   Eigen::Matrix3f &poseR, Vector3 t[], Vector3 &poseT);
     bool checkMesh(std::vector<std::shared_ptr<FCLModel>> &models, std::shared_ptr<FCLModel> &base, Eigen::Matrix3f R[],
-                   Eigen::Matrix3f &poseR, Eigen::Vector3f t[], Eigen::Vector3f &poseT);
+                   Eigen::Matrix3f &poseR, Vector3 t[], Vector3 &poseT);
 
     bool checkPQP(std::shared_ptr<PQP_Model> &model1, std::shared_ptr<PQP_Model> &model2, Eigen::Matrix3f &R1,
-                  Eigen::Matrix3f &R2, Eigen::Vector3f &t1, Eigen::Vector3f &t2);
+                  Eigen::Matrix3f &R2, Vector3 &t1, Vector3 &t2);
     bool checkFCL(std::shared_ptr<FCLModel> &model1, std::shared_ptr<FCLModel> &model2, Eigen::Matrix3f &R1, Eigen::Matrix3f &R2,
-                  Eigen::Vector3f &t1, Eigen::Vector3f &t2);
+                  Vector3 &t1, Vector3 &t2);
 
     bool checkPoint2D(float x, float y);
-    bool checkTriangleRobot(const Eigen::Vector3f &vec);
+    bool checkTriangleRobot(const Vector<dim> &vec);
 
-    std::shared_ptr<RobotBase> m_robot;
-    Eigen::VectorXf m_minBoundary, m_maxBoundary;
+    std::shared_ptr<RobotBase<dim>> m_robot;
+    Vector<dim> m_minBoundary, m_maxBoundary;
 
     Eigen::MatrixXi m_2DWorkspace;
     std::shared_ptr<MeshContainer> m_workspace = nullptr;
@@ -84,7 +84,7 @@ class CollisionDetection : public ModuleBase {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-CollisionDetection<dim>::CollisionDetection(const std::shared_ptr<RobotBase> &robot) : ModuleBase("CollisionDetection") {
+CollisionDetection<dim>::CollisionDetection(const std::shared_ptr<RobotBase<dim>> &robot) : ModuleBase("CollisionDetection") {
     m_robot = robot;
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();
@@ -104,7 +104,7 @@ CollisionDetection<dim>::CollisionDetection(const std::shared_ptr<RobotBase> &ro
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-bool CollisionDetection<dim>::controlVec(const Eigen::VectorXf &vec) {
+bool CollisionDetection<dim>::controlVec(const Vector<dim> &vec) {
 
     if (m_robot->getCollisionType() == CollisionType::point2D)
         return checkPoint2D(vec[0], vec[1]);
@@ -115,7 +115,7 @@ bool CollisionDetection<dim>::controlVec(const Eigen::VectorXf &vec) {
 }
 
 template <unsigned int dim>
-bool CollisionDetection<dim>::controlCollisionMesh(const Eigen::VectorXf &vec) {
+bool CollisionDetection<dim>::controlCollisionMesh(const Vector<dim> &vec) {
     if (m_robot->getRobotType() == RobotType::mobile)
         return checkMobileRobot(vec);
     else
@@ -130,11 +130,9 @@ bool CollisionDetection<dim>::controlCollisionMesh(const Eigen::VectorXf &vec) {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-bool CollisionDetection<dim>::controlTrajectory(std::vector<Eigen::VectorXf> &vecs) {
+bool CollisionDetection<dim>::controlTrajectory(std::vector<Vector<dim>> &vecs) {
     if (vecs.size() == 0)
         return false;
-
-    assert(vecs[0].rows() == m_robot->getDim());
 
     if (m_robot->getCollisionType() == CollisionType::point2D) {
         for (int i = 0; i < vecs.size(); ++i)
@@ -181,15 +179,17 @@ bool CollisionDetection<dim>::checkPoint2D(float x, float y) {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-bool CollisionDetection<dim>::checkTriangleRobot(const Eigen::Vector3f &vec) {
-    std::shared_ptr<TriangleRobot2D> robot(std::static_pointer_cast<TriangleRobot2D>(m_robot));
+bool CollisionDetection<dim>::checkTriangleRobot(const Vector<dim> &vec) {
+    std::shared_ptr<TriangleRobot2D> robot(std::dynamic_pointer_cast<TriangleRobot2D>(m_robot));
     std::vector<Triangle2D> triangles = robot->getTriangles();
+    VectorX vector = vec;
+    vector.resize(3);
 
     Eigen::Matrix2f R;
-    Eigen::Vector2f t;
-    utilGeo::poseVecToRandT(vec, R, t);
+    Vector2 t;
+    utilGeo::poseVecToRandT(vector, R, t);
 
-    Eigen::Vector2f u, temp;
+    Vector2 u, temp;
     for (auto triangle : triangles) {
         triangle.transform(R, t);
 
@@ -238,8 +238,8 @@ bool CollisionDetection<dim>::checkTriangleRobot(const Eigen::Vector3f &vec) {
 *  \date       2016-09-02
 */
 template <unsigned int dim>
-bool CollisionDetection<dim>::checkSerialRobot(const Eigen::VectorXf &vec) {
-    std::shared_ptr<SerialRobot> robot(std::static_pointer_cast<SerialRobot>(m_robot));
+bool CollisionDetection<dim>::checkSerialRobot(const Vector<dim> &vec) {
+    std::shared_ptr<SerialRobot<dim>> robot(std::static_pointer_cast<SerialRobot<dim>>(m_robot));
 
     std::vector<Eigen::Matrix4f> jointTrafos = robot->getJointTrafos(vec);
     Eigen::Matrix4f pose = robot->getPoseMat();
@@ -249,11 +249,11 @@ bool CollisionDetection<dim>::checkSerialRobot(const Eigen::VectorXf &vec) {
         As[i] = As[i - 1] * jointTrafos[i];
 
     Eigen::Matrix3f poseR;
-    Eigen::Vector3f poseT;
+    Vector3 poseT;
     utilGeo::decomposeT(pose, poseR, poseT);
 
     Eigen::Matrix3f rot[jointTrafos.size()];
-    Eigen::Vector3f trans[jointTrafos.size()];
+    Vector3 trans[jointTrafos.size()];
     for (int i = 0; i < jointTrafos.size(); ++i)
         utilGeo::decomposeT(As[i], rot[i], trans[i]);
 
@@ -285,7 +285,7 @@ bool CollisionDetection<dim>::checkSerialRobot(const Eigen::VectorXf &vec) {
 *  \date       2016-11-14
 */
 template <unsigned int dim>
-bool CollisionDetection<dim>::checkMobileRobot(const Eigen::VectorXf &vec) {
+bool CollisionDetection<dim>::checkMobileRobot(const Vector<dim> &vec) {
     Eigen::Matrix4f pose = m_robot->getPoseMat();
     Eigen::Matrix3f poseR;
     Eigen::Vector3f poseT;
@@ -324,8 +324,8 @@ bool CollisionDetection<dim>::checkMobileRobot(const Eigen::VectorXf &vec) {
 */
 template <unsigned int dim>
 bool CollisionDetection<dim>::checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &baseModel,
-                                        Eigen::Matrix3f R[], Eigen::Matrix3f &poseR, Eigen::Vector3f t[],
-                                        Eigen::Vector3f &poseT) {
+                                        Eigen::Matrix3f R[], Eigen::Matrix3f &poseR, Vector3 t[],
+                                        Vector3 &poseT) {
     // control collision between baseModel and joints
     if (baseModel != nullptr) {
         for (int i = 1; i < dim; ++i) {
@@ -339,9 +339,9 @@ bool CollisionDetection<dim>::checkMesh(std::vector<std::shared_ptr<PQP_Model>> 
         for (int j = i + 2; j < dim; ++j) {
             if (checkPQP(models[i], models[j], R[i], R[j], t[i], t[j])) {
                 if (Logging::getLogLevel() == LogLevel::debug) {
-                    std::shared_ptr<SerialRobot> robot(std::static_pointer_cast<SerialRobot>(m_robot));
+                    std::shared_ptr<SerialRobot<dim>> robot(std::static_pointer_cast<SerialRobot<dim>>(m_robot));
                     Logging::debug("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), this);
-                    Eigen::Vector3f r = R[i].eulerAngles(0, 1, 2);
+                    Vector3 r = R[i].eulerAngles(0, 1, 2);
                     std::cout << "A" << i << ": ";
                     std::cout << "Euler angles: " << std::endl << R[i] << std::endl;
                     std::cout << "Translation: " << t[i].transpose() << std::endl;
@@ -364,7 +364,7 @@ bool CollisionDetection<dim>::checkMesh(std::vector<std::shared_ptr<PQP_Model>> 
         if (checkPQP(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT))
             return true;
 
-        for (int i = 0; i < m_robot->getDim(); ++i) {
+        for (int i = 0; i < dim; ++i) {
             if (checkPQP(workspace, models[i], m_identity, R[i], m_zeroVec, t[i])) {
                 Logging::debug("Collision between workspace and link " + std::to_string(i), this);
                 return true;
@@ -388,8 +388,8 @@ bool CollisionDetection<dim>::checkMesh(std::vector<std::shared_ptr<PQP_Model>> 
 */
 template <unsigned int dim>
 bool CollisionDetection<dim>::checkMesh(std::vector<std::shared_ptr<FCLModel>> &models, std::shared_ptr<FCLModel> &baseModel,
-                                        Eigen::Matrix3f R[], Eigen::Matrix3f &poseR, Eigen::Vector3f t[],
-                                        Eigen::Vector3f &poseT) {
+                                        Eigen::Matrix3f R[], Eigen::Matrix3f &poseR, Vector3 t[],
+                                        Vector3 &poseT) {
     // control collision between baseModel and joints
     if (baseModel != nullptr) {
         for (int i = 1; i < dim; ++i) {
@@ -425,7 +425,7 @@ bool CollisionDetection<dim>::checkMesh(std::vector<std::shared_ptr<FCLModel>> &
         if (checkFCL(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT))
             return true;
 
-        for (int i = 0; i < m_robot->getDim(); ++i) {
+        for (int i = 0; i < dim; ++i) {
             if (checkFCL(workspace, models[i], m_identity, R[i], m_zeroVec, t[i])) {
                 Logging::debug("Collision between workspace and link " + std::to_string(i), this);
                 return true;
@@ -449,7 +449,7 @@ bool CollisionDetection<dim>::checkMesh(std::vector<std::shared_ptr<FCLModel>> &
 */
 template <unsigned int dim>
 bool CollisionDetection<dim>::checkPQP(std::shared_ptr<PQP_Model> &model1, std::shared_ptr<PQP_Model> &model2, Eigen::Matrix3f &R1,
-                                       Eigen::Matrix3f &R2, Eigen::Vector3f &t1, Eigen::Vector3f &t2) {
+                                       Eigen::Matrix3f &R2, Vector3 &t1, Vector3 &t2) {
     PQP_REAL pqpR1[3][3], pqpR2[3][3], pqpT1[3], pqpT2[3];
 
     for (int i = 0; i < 3; ++i) {
@@ -483,7 +483,7 @@ bool CollisionDetection<dim>::checkPQP(std::shared_ptr<PQP_Model> &model1, std::
 */
 template <unsigned int dim>
 bool CollisionDetection<dim>::checkFCL(std::shared_ptr<FCLModel> &model1, std::shared_ptr<FCLModel> &model2, Eigen::Matrix3f &R1,
-                                       Eigen::Matrix3f &R2, Eigen::Vector3f &t1, Eigen::Vector3f &t2) {
+                                       Eigen::Matrix3f &R2, Vector3 &t1, Vector3 &t2) {
     o1 = new fcl::CollisionObject<float>(model1, R1, t1);
     o2 = new fcl::CollisionObject<float>(model2, R2, t2);
     fcl::CollisionRequest<float> request;    // default setting

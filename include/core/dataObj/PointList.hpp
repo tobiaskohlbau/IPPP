@@ -120,18 +120,18 @@ class PointList {
     T m_p[P];
 };
 
-typedef PointList<Eigen::Vector2f, 2> Line2D;
-typedef PointList<Eigen::Vector3f, 2> Line3D;
-typedef PointList<Eigen::Vector2f, 3> Triangle2D;
-typedef PointList<Eigen::Vector3f, 3> Triangle3D;
-typedef PointList<Eigen::Vector2f, 4> Square2D;
-typedef PointList<Eigen::Vector3f, 4> Square3D;
-typedef PointList<Eigen::Vector2f, 5> Pentagon2D;
-typedef PointList<Eigen::Vector3f, 5> Pentagon3D;
-typedef PointList<Eigen::Vector2f, 6> Hexagon2D;
-typedef PointList<Eigen::Vector3f, 6> Hexagon3D;
-typedef PointList<Eigen::Vector2f, 7> Heptagon2D;
-typedef PointList<Eigen::Vector3f, 7> Heptagon3D;
+typedef PointList<Vector2, 2> Line2D;
+typedef PointList<Vector3, 2> Line3D;
+typedef PointList<Vector2, 3> Triangle2D;
+typedef PointList<Vector3, 3> Triangle3D;
+typedef PointList<Vector2, 4> Square2D;
+typedef PointList<Vector3, 4> Square3D;
+typedef PointList<Vector2, 5> Pentagon2D;
+typedef PointList<Vector3, 5> Pentagon3D;
+typedef PointList<Vector2, 6> Hexagon2D;
+typedef PointList<Vector3, 6> Hexagon3D;
+typedef PointList<Vector2, 7> Heptagon2D;
+typedef PointList<Vector3, 7> Heptagon3D;
 
 } /* namespace rmpl */
 

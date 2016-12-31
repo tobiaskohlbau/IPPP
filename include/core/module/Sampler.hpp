@@ -24,8 +24,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <core/types.h>
 #include <core/module/ModuleBase.h>
-#include <robot/RobotBase.h>
+#include <robot/RobotBase.hpp>
 
 namespace rmpl {
 
@@ -39,19 +40,19 @@ enum SamplingMethod { randomly, uniform, standardDistribution };
 template <unsigned int dim>
 class Sampler : public ModuleBase {
   public:
-    Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method = SamplingMethod::randomly);
-    Eigen::VectorXf getSample();
+    Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplingMethod method = SamplingMethod::randomly);
+    Vector<dim> getSample();
     float getRandomAngle();
 
-    bool setMeanOfDistribution(const Eigen::VectorXf &mean);
+    bool setMeanOfDistribution(const Vector<dim> &mean);
 
   private:
-    Eigen::VectorXf sampleStandardDist();
-    Eigen::VectorXf sampleUniform();
-    Eigen::VectorXf sampleRandom();
+    Vector<dim> sampleStandardDist();
+    Vector<dim> sampleUniform();
+    Vector<dim> sampleRandom();
 
-    Eigen::VectorXf m_minBoundary;
-    Eigen::VectorXf m_maxBoundary;
+    Vector<dim> m_minBoundary;
+    Vector<dim> m_maxBoundary;
     SamplingMethod m_method;
 
     std::random_device rd;
@@ -69,17 +70,14 @@ class Sampler : public ModuleBase {
 *  \param[in]  SamplingStrategy
 *  \date       2016-05-24
 */
-    template <unsigned int dim>
-Sampler<dim>::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod method) : ModuleBase("Sampler") {
+template <unsigned int dim>
+Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplingMethod method) : ModuleBase("Sampler") {
     m_method = method;
 
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();
-    if (utilVec::empty(m_minBoundary) || utilVec::empty(m_maxBoundary))
-        Logging::error("Boundaries are empty", this);
 
     m_generator = std::mt19937(rd());
-
     for (unsigned int i = 0; i < dim; ++i) {
         std::normal_distribution<float> dist1(0, 500);
         m_distNormal.push_back(dist1);
@@ -96,8 +94,8 @@ Sampler<dim>::Sampler(const std::shared_ptr<RobotBase> &robot, SamplingMethod me
 *  \param[out] sample Vec
 *  \date       2016-05-24
 */
-    template <unsigned int dim>
-Eigen::VectorXf Sampler<dim>::getSample() {
+template <unsigned int dim>
+Vector<dim> Sampler<dim>::getSample() {
     switch (m_method) {
         case SamplingMethod::standardDistribution:
             return sampleStandardDist();
@@ -114,7 +112,7 @@ Eigen::VectorXf Sampler<dim>::getSample() {
 *  \param[out] rad angle
 *  \date       2016-12-20
 */
-    template <unsigned int dim>
+template <unsigned int dim>
 float Sampler<dim>::getRandomAngle() {
     return m_distAngle(m_generator);
 }
@@ -127,7 +125,7 @@ float Sampler<dim>::getRandomAngle() {
 *  \date       2016-11-14
 */
 template <unsigned int dim>
-bool Sampler<dim>::setMeanOfDistribution(const Eigen::VectorXf &mean) {
+bool Sampler<dim>::setMeanOfDistribution(const Vector<dim> &mean) {
     if (mean.rows() != dim) {
         Logging::error("Wrong dimension of mean vector", this);
         return false;
@@ -148,9 +146,9 @@ bool Sampler<dim>::setMeanOfDistribution(const Eigen::VectorXf &mean) {
 *  \param[out] sample Vec
 *  \date       2016-11-14
 */
-    template <unsigned int dim>
-Eigen::VectorXf Sampler<dim>::sampleStandardDist() {
-    Eigen::VectorXf vec = utilVec::Vecf(dim);
+template <unsigned int dim>
+Vector<dim> Sampler<dim>::sampleStandardDist() {
+    Vector<dim> vec;
     float number;
     for (unsigned int i = 0; i < dim; ++i) {
         do {
@@ -168,9 +166,9 @@ Eigen::VectorXf Sampler<dim>::sampleStandardDist() {
 *  \param[out] sample Vec
 *  \date       2016-11-14
 */
-    template <unsigned int dim>
-Eigen::VectorXf Sampler<dim>::sampleUniform() {
-    Eigen::VectorXf vec = utilVec::Vecf(dim);
+template <unsigned int dim>
+Vector<dim> Sampler<dim>::sampleUniform() {
+    Vector<dim> vec;
     for (unsigned int i = 0; i < dim; ++i)
         vec[i] = m_distUniform[i](m_generator);
     return vec;
@@ -183,9 +181,9 @@ Eigen::VectorXf Sampler<dim>::sampleUniform() {
 *  \param[out] sample Vec
 *  \date       2016-11-14
 */
-    template <unsigned int dim>
-Eigen::VectorXf Sampler<dim>::sampleRandom() {
-    Eigen::VectorXf vec = utilVec::Vecf(dim);
+template <unsigned int dim>
+Vector<dim> Sampler<dim>::sampleRandom() {
+    Vector<dim> vec;
     for (unsigned int i = 0; i < dim; ++i)
         vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
     return vec;

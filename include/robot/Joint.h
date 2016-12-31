@@ -43,9 +43,9 @@ class Joint {
     void getBoundaries(float &minBound, float &maxBound);
 
   private:
-    float m_minBound;
-    float m_maxBound;
-    std::shared_ptr<MeshContainer> m_mesh;
+    float m_minBound = 0;
+    float m_maxBound = 0;
+    std::shared_ptr<MeshContainer> m_mesh = nullptr;
 };
 
 } /* namespace rmpl */

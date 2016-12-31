@@ -25,7 +25,7 @@ using namespace rmpl;
 BOOST_AUTO_TEST_SUITE(constructor)
 
 BOOST_AUTO_TEST_CASE(standardConstructor) {
-    Node<1> node;
+    Node<3> node;
     BOOST_CHECK(node.empty() == true);
 }
 

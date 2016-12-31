@@ -16,29 +16,26 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef GENERICROBOT_H_
-#define GENERICROBOT_H_
+#ifndef TYPES_H
+#define TYPES_H
 
-#include <robot/SerialRobot.h>
+#include <Eigen/Dense>
 
 namespace rmpl {
 
-/*!
-* \brief   Class for the GenericRobot
-* \author  Sascha Kaden
-* \date    2016-07-24
-*/
-class GenericRobot : public SerialRobot {
-  public:
-    GenericRobot(std::string name, unsigned int dimension, const Eigen::VectorXf &alphaParams, const Eigen::VectorXf &aParams,
-                 const Eigen::VectorXf dParams);
+template <unsigned int dim>
+using Vector = Eigen::Matrix<float, dim, 1>;
 
-    Eigen::Matrix<float, 6, 1> directKinematic(const Eigen::VectorXf &angles);
-    std::vector<Eigen::Matrix4f> getJointTrafos(const Eigen::VectorXf &angles);
+using Vector2 = Eigen::Matrix<float, 2, 1>;
+using Vector3 = Eigen::Matrix<float, 3, 1>;
+using Vector4 = Eigen::Matrix<float, 4, 1>;
+using Vector5 = Eigen::Matrix<float, 5, 1>;
+using Vector6 = Eigen::Matrix<float, 6, 1>;
 
-  private:
-};
+using VectorX = Eigen::Matrix<float, Eigen::Dynamic, 1>;
+
 
 } /* namespace rmpl */
 
-#endif /* GENERICROBOT_H_ */
+
+#endif //TYPES_H

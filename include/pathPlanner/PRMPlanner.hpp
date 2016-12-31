@@ -32,24 +32,24 @@ namespace rmpl {
 template <unsigned int dim>
 class PRMPlanner : public Planner<dim> {
   public:
-    PRMPlanner(const std::shared_ptr<RobotBase> &robot, const PRMOptions &options);
+    PRMPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions &options);
 
-    bool computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads);
+    bool computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads);
 
     void startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     void startPlannerPhase(unsigned int nbOfThreads = 1);
 
-    bool queryPath(Eigen::VectorXf start, Eigen::VectorXf goal);
+    bool queryPath(Vector<dim> start, Vector<dim> goal);
     bool aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode);
     void expandNode(std::shared_ptr<Node<dim>> currentNode);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Eigen::VectorXf> getPath(float trajectoryStepSize, bool smoothing = true);
+    std::vector<Vector<dim>> getPath(float trajectoryStepSize, bool smoothing = true);
 
   protected:
     void samplingPhase(unsigned int nbOfNodes);
     void plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex);
-    std::shared_ptr<Node<dim>> connectNode(Eigen::VectorXf &node);
+    std::shared_ptr<Node<dim>> connectNode(Vector<dim> &node);
 
     float m_rangeSize;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
@@ -67,7 +67,7 @@ class PRMPlanner : public Planner<dim> {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-PRMPlanner<dim>::PRMPlanner(const std::shared_ptr<RobotBase> &robot, const PRMOptions &options)
+PRMPlanner<dim>::PRMPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions &options)
     : Planner<dim>("PRMPlanner", robot, options) {
     m_rangeSize = options.getRangeSize();
 }
@@ -83,7 +83,7 @@ PRMPlanner<dim>::PRMPlanner(const std::shared_ptr<RobotBase> &robot, const PRMOp
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool PRMPlanner<dim>::computePath(Eigen::VectorXf start, Eigen::VectorXf goal, unsigned int numNodes, unsigned int numThreads) {
+bool PRMPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads) {
     startSamplingPhase(numNodes, numThreads);
     startPlannerPhase(numThreads);
 
@@ -122,7 +122,7 @@ void PRMPlanner<dim>::startSamplingPhase(unsigned int nbOfNodes, unsigned int nb
 template <unsigned int dim>
 void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
-        Eigen::VectorXf sample = this->m_sampler->getSample();
+        Vector<dim> sample = this->m_sampler->getSample();
         if (!this->m_collision->controlVec(sample)) {
             this->m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
         }
@@ -195,12 +195,7 @@ void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int end
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-bool PRMPlanner<dim>::queryPath(Eigen::VectorXf start, Eigen::VectorXf goal) {
-    if (utilVec::empty(start) || utilVec::empty(goal)) {
-        Logging::error("Start or goal Node<dim> is empty", this);
-        return false;
-    }
-
+bool PRMPlanner<dim>::queryPath(Vector<dim> start, Vector<dim> goal) {
     std::shared_ptr<Node<dim>> sourceNode = connectNode(start);
     std::shared_ptr<Node<dim>> targetNode = connectNode(goal);
     if (sourceNode == nullptr || targetNode == nullptr) {
@@ -236,7 +231,7 @@ bool PRMPlanner<dim>::queryPath(Eigen::VectorXf start, Eigen::VectorXf goal) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Eigen::VectorXf &vec) {
+std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Vector<dim> &vec) {
     std::vector<std::shared_ptr<Node<dim>>> nearNodes =
         this->m_graph->getNearNodes(std::shared_ptr<Node<dim>>(new Node<dim>(vec)), m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
@@ -339,7 +334,7 @@ std::vector<std::shared_ptr<Node<dim>>> PRMPlanner<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Eigen::VectorXf> PRMPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
+std::vector<Vector<dim>> PRMPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
     return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 
