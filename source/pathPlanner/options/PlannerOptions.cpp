@@ -29,15 +29,13 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-PlannerOptions::PlannerOptions(float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy) {
-    if (trajectoryStepSize <= 0) {
-        Logging::warning("Trajectory step size was smaller than 0 and was set to 1", "Planner options");
-        m_trajectoryStepSize = 1;
-    } else {
-        m_trajectoryStepSize = trajectoryStepSize;
-    }
+PlannerOptions::PlannerOptions(float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy,
+                               EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic) {
+    setTrajectoryStepSize(trajectoryStepSize);
     m_samplingStrategy = strategy;
     m_samplingMethod = method;
+    m_edgeHeuristic = edgeHeuristic;
+    m_nodeHeuristic = nodeHeuristic;
 }
 
 /*!
@@ -48,7 +46,7 @@ PlannerOptions::PlannerOptions(float trajectoryStepSize, SamplingMethod method, 
 */
 void PlannerOptions::setTrajectoryStepSize(float stepSize) {
     if (stepSize <= 0) {
-        Logging::warning("Trajectory step size was smaller than 0 and was set to 1", "Planner options");
+        Logging::warning("Trajectory step size was smaller than 0 and was set up to 1", "PlannerOptions");
         m_trajectoryStepSize = 1;
     } else {
         m_trajectoryStepSize = stepSize;
@@ -103,6 +101,46 @@ void PlannerOptions::setSamplingStrategy(SamplingStrategy strategy) {
 */
 SamplingStrategy PlannerOptions::getSamplingStrategy() const {
     return m_samplingStrategy;
+}
+
+/*!
+*  \brief      Sets the EdgeHeuristic
+*  \param[in]  heuristic
+*  \author     Sascha Kaden
+*  \date       2017-01-01
+*/
+void PlannerOptions::setEdgeHeuristic(EdgeHeuristic heuristic) {
+    m_edgeHeuristic = heuristic;
+}
+
+/*!
+*  \brief      Returns the EdgeHeuristic
+*  \param[out] heuristic
+*  \author     Sascha Kaden
+*  \date       2017-01-01
+*/
+EdgeHeuristic PlannerOptions::getEdgeHeuristic() const {
+    return m_edgeHeuristic;
+}
+
+/*!
+*  \brief      Sets the NodeHeuristic
+*  \param[in]  heuristic
+*  \author     Sascha Kaden
+*  \date       2017-01-01
+*/
+void PlannerOptions::setNodeHeuristic(NodeHeuristic heuristic) {
+    m_nodeHeuristic = heuristic;
+}
+
+/*!
+*  \brief      Returns the NodeHeuristic
+*  \param[out] heuristic
+*  \author     Sascha Kaden
+*  \date       2017-01-01
+*/
+NodeHeuristic PlannerOptions::getNodeHeuristic() const {
+    return m_nodeHeuristic;
 }
 
 } /* namespace rmpl */

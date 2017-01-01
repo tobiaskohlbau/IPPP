@@ -22,6 +22,7 @@
 #include <core/module/ModuleBase.h>
 #include <core/module/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
+#include <core/utility/Heuristic.hpp>
 
 namespace rmpl {
 
@@ -32,7 +33,8 @@ namespace rmpl {
 */
 class PlannerOptions {
   public:
-    PlannerOptions(float trajectoryStepSize, SamplingMethod samplingMethod, SamplingStrategy strategy);
+    PlannerOptions(float trajectoryStepSize, SamplingMethod samplingMethod, SamplingStrategy strategy,
+                   EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic);
 
     void setTrajectoryStepSize(float stepSize);
     float getTrajectoryStepSize() const;
@@ -40,11 +42,17 @@ class PlannerOptions {
     SamplingMethod getSamplingMethod() const;
     void setSamplingStrategy(SamplingStrategy strategy);
     SamplingStrategy getSamplingStrategy() const;
+    void setEdgeHeuristic(EdgeHeuristic heuristic);
+    EdgeHeuristic getEdgeHeuristic() const;
+    void setNodeHeuristic(NodeHeuristic heuristic);
+    NodeHeuristic getNodeHeuristic() const;
 
   protected:
     float m_trajectoryStepSize;
     SamplingMethod m_samplingMethod;
     SamplingStrategy m_samplingStrategy;
+    EdgeHeuristic m_edgeHeuristic;
+    NodeHeuristic m_nodeHeuristic;
 };
 
 } /* namespace rmpl */

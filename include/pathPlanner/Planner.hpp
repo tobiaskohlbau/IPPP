@@ -95,6 +95,9 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<d
     m_planner = std::shared_ptr<TrajectoryPlanner<dim>>(new TrajectoryPlanner<dim>(options.getTrajectoryStepSize(), m_collision));
     m_sampler = std::shared_ptr<Sampling<dim>>(
         new Sampling<dim>(m_robot, m_collision, m_planner, options.getSamplingMethod(), options.getSamplingStrategy()));
+
+    Heuristic<dim>::setEdgeHeuristic(options.getEdgeHeuristic());
+    Heuristic<dim>::setNodeHeuristic(options.getNodeHeuristic());
 }
 
 /*!

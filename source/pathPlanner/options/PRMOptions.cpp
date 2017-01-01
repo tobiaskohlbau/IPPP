@@ -29,14 +29,10 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy)
-    : PlannerOptions(trajectoryStepSize, method, strategy) {
-    if (rangeSize <= 0) {
-        Logging::warning("Step size was equal or smaller than 0 and is set to 1", "PRM options");
-        m_rangeSize = 1;
-    } else {
-        m_rangeSize = rangeSize;
-    }
+PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy,
+                       EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic)
+    : PlannerOptions(trajectoryStepSize, method, strategy, edgeHeuristic, nodeHeuristic) {
+    setRangeSize(rangeSize);
 }
 
 /*!
@@ -47,7 +43,7 @@ PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, SamplingMethod
 */
 void PRMOptions::setRangeSize(float rangeSize) {
     if (rangeSize <= 0) {
-        Logging::warning("Step size was equal or smaller than 0 and is set to 1", "PRM options");
+        Logging::warning("Step size was equal or smaller than 0 and is set up to 1", "PRM options");
         m_rangeSize = 1;
     } else {
         m_rangeSize = rangeSize;

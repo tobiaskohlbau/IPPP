@@ -302,16 +302,15 @@ void PRMPlanner<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
         if (utilList::contains(m_closedList, successor))
             continue;
 
-        dist = currentNode->getCost() + Heuristic<dim>::calcEdgeCost(currentNode, successor);;
+        dist = currentNode->getCost() + Heuristic<dim>::calcEdgeCost(currentNode, successor);
 
         if (utilList::contains(m_openList, successor) && dist >= successor->getCost())
             continue;
 
         successor->setParent(currentNode);
         successor->setCost(dist);
-        if (!utilList::contains(m_openList, successor)) {
+        if (!utilList::contains(m_openList, successor))
             m_openList.push_back(successor);
-        }
     }
 }
 
