@@ -128,7 +128,7 @@ static void drawTrianglePath(std::vector<Vector3> vecs, std::vector<Triangle2D> 
 *  \param[out] Eigen matrix
 *  \date       2016-12-18
 */
-Eigen::MatrixXi cvToEigen(cv::Mat cvMat) {
+static Eigen::MatrixXi cvToEigen(cv::Mat cvMat) {
     if (cvMat.empty()) {
         Logging::error("Image is empty", "Drawing2D");
         return Eigen::MatrixXi();
