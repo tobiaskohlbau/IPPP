@@ -173,11 +173,9 @@ std::vector<std::shared_ptr<Node<dim>>> RRTPlanner<dim>::getPathNodes() {
         return nodes;
 
     nodes.push_back(m_goalNode);
-    std::shared_ptr<Node<dim>> temp = m_goalNode->getParentNode();
-    while (temp != nullptr) {
+    for (std::shared_ptr<Node<dim>> temp = m_goalNode->getParentNode(); temp != nullptr; temp = temp->getParentNode())
         nodes.push_back(temp);
-        temp = temp->getParentNode();
-    }
+
     Logging::info("Path has: " + std::to_string(nodes.size()) + " nodes", this);
     return nodes;
 }
@@ -212,7 +210,7 @@ std::vector<Vector<dim>> RRTPlanner<dim>::getPath(float trajectoryStepSize, bool
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-    Vector<dim> RRTPlanner<dim>::computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode) {
+Vector<dim> RRTPlanner<dim>::computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode) {
     if ((randNode - nearestNode).norm() < m_stepSize)
         return randNode;
 

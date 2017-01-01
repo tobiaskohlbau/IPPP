@@ -195,36 +195,21 @@ bool CollisionDetection<dim>::checkTriangleRobot(const Vector<dim> &vec) {
 
         u = triangle.getP(2) - triangle.getP(1);
         u /= u.norm();
-        temp = triangle.getP(1);
-        while ((temp - triangle.getP(2)).squaredNorm() > 2) {
-            if (checkPoint2D(temp[0], temp[1])) {
-                Logging::debug("Collision of triangle", this);
+        for (temp = triangle.getP(1) + u; (temp - triangle.getP(2)).squaredNorm() > 2; temp += u)
+            if (checkPoint2D(temp[0], temp[1]))
                 return true;
-            }
-            temp += u;
-        }
 
         u = triangle.getP(3) - triangle.getP(1);
         u /= u.norm();
-        temp = triangle.getP(1);
-        while ((temp - triangle.getP(3)).squaredNorm() > 2) {
-            if (checkPoint2D(temp[0], temp[1])) {
-                Logging::debug("Collision of triangle", this);
+        for (temp = triangle.getP(1) + u; (temp - triangle.getP(3)).squaredNorm() > 2; temp += u)
+            if (checkPoint2D(temp[0], temp[1]))
                 return true;
-            }
-            temp += u;
-        }
 
         u = triangle.getP(3) - triangle.getP(2);
         u /= u.norm();
-        temp = triangle.getP(2);
-        while ((temp - triangle.getP(3)).squaredNorm() > 2) {
-            if (checkPoint2D(temp[0], temp[1])) {
-                Logging::debug("Collision of triangle", this);
+        for (temp = triangle.getP(2) + u; (temp - triangle.getP(3)).squaredNorm() > 2; temp += u)
+            if (checkPoint2D(temp[0], temp[1]))
                 return true;
-            }
-            temp += u;
-        }
     }
 
     return false;
