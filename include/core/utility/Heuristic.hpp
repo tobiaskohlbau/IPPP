@@ -26,12 +26,12 @@ namespace rmpl {
 template <unsigned int dim>
 class Node;
 
-enum EdgeHeuristic { euclidean, weightedVec, A, B, C};
-enum NodeHeuristic { norm};
+enum EdgeHeuristic { euclidean, weightedVec, A, B, C };
+enum NodeHeuristic { norm };
 
 template <unsigned int dim>
 class Heuristic {
-public:
+  public:
     static float calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
     static float calcNodeCost(const std::shared_ptr<Node<dim>> &node);
 
@@ -40,7 +40,7 @@ public:
     static EdgeHeuristic getEdgeHeuristic();
     static NodeHeuristic getNodeHeuristic();
 
-private:
+  private:
     static EdgeHeuristic m_edgeHeuristic;
     static NodeHeuristic m_nodeHeuristic;
 };
@@ -51,8 +51,7 @@ template <unsigned int dim>
 NodeHeuristic Heuristic<dim>::m_nodeHeuristic = NodeHeuristic::norm;
 
 template <unsigned int dim>
-float Heuristic<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source,
-                                   const std::shared_ptr<Node<dim>> &target) {
+float Heuristic<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) {
     return (source->getValues() - target->getValues()).norm();
 }
 
@@ -83,4 +82,4 @@ NodeHeuristic Heuristic<dim>::getNodeHeuristic() {
 
 } /* namespace rmpl */
 
-#endif // HEURISTIC_H
+#endif    // HEURISTIC_H
