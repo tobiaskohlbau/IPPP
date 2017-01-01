@@ -29,14 +29,10 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy)
-    : PlannerOptions(trajectoryStepSize, method, strategy) {
-    if (stepSize <= 0) {
-        Logging::warning("Step size was smaller than 0 and was set to 1", "RRT options");
-        m_stepSize = 1;
-    } else {
-        m_stepSize = stepSize;
-    }
+RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy,
+                       EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic)
+    : PlannerOptions(trajectoryStepSize, method, strategy, edgeHeuristic, nodeHeuristic) {
+    setStepSize(stepSize);
 }
 
 /*!
@@ -47,7 +43,7 @@ RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, SamplingMethod 
 */
 void RRTOptions::setStepSize(float stepSize) {
     if (stepSize <= 0) {
-        Logging::warning("Step size was smaller than 0 and was set to 1", "RRT options");
+        Logging::warning("Step size was smaller than 0 and was set up to 1", "RRT options");
         m_stepSize = 1;
     } else {
         m_stepSize = stepSize;

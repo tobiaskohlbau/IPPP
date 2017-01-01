@@ -31,7 +31,8 @@ namespace rmpl {
 class PRMOptions : public PlannerOptions {
   public:
     PRMOptions(float rangeSize, float trajectoryStepSize, SamplingMethod samplingMethod = SamplingMethod::randomly,
-               SamplingStrategy strategy = SamplingStrategy::normal);
+               SamplingStrategy strategy = SamplingStrategy::normal, EdgeHeuristic edgeHeuristic = EdgeHeuristic::euclidean,
+               NodeHeuristic nodeHeuristic = NodeHeuristic::norm);
 
     void setRangeSize(float rangeSize);
     float getRangeSize() const;
