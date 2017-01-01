@@ -75,7 +75,7 @@ void StarRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared
         return;
     }
 
-    newNode->setCost(newNode->getDist(*nearestNode) + nearestNode->getCost());
+    newNode->setCost(Heuristic<dim>::calcEdgeCost(newNode, nearestNode) + nearestNode->getCost());
     newNode->setParent(nearestNode);
     m_mutex.lock();
     nearestNode->addChild(newNode);
@@ -120,21 +120,16 @@ void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std:
 template <unsigned int dim>
 void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
                                  std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
-    /// Todo change from getDist to Heuristic (at the time there are unknown errors)
-    float oldDist, newDist, cost;
+    float oldDist, newDist;
     for (auto nearNode : nearNodes) {
-        if (nearNode != parentNode && nearNode->getChildEdges().size() != 0) {
+        if (nearNode != parentNode) {
             oldDist = nearNode->getCost();
-            newDist = nearNode->getDist(newNode) + newNode->getCost();
-            if (newDist < oldDist) {
-                if (this->m_planner->controlTrajectory(newNode, nearNode)) {
-                    cost = nearNode->getCost() - nearNode->getDist(nearNode->getParentNode());
-                    cost += newNode->getDist(nearNode);
-                    m_mutex.lock();
-                    nearNode->setCost(cost);
-                    nearNode->setParent(newNode);
-                    m_mutex.unlock();
-                }
+            newDist = Heuristic<dim>::calcEdgeCost(nearNode, newNode) + newNode->getCost();
+            if (newDist < oldDist && this->m_planner->controlTrajectory(nearNode, newNode)) {
+                m_mutex.lock();
+                nearNode->setCost(newDist);
+                nearNode->setParent(newNode);
+                m_mutex.unlock();
             }
         }
     }
@@ -166,15 +161,13 @@ bool StarRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
 
     if (nearestNode != nullptr) {
         goalNode->setParent(nearestNode);
+        goalNode->setCost(goalNode->getParentEdge()->getCost() + nearestNode->getCost());
         this->m_goalNode = goalNode;
-        this->m_goalNode->setCost(this->m_goalNode->getDist(*nearestNode) + nearestNode->getCost());
-        // Logging::info("Goal Node<dim> is connected", this);
         this->m_pathPlanned = true;
         return true;
     }
 
     Logging::info("Goal could NOT connected", this);
-
     return false;
 }
 
