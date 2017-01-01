@@ -100,12 +100,12 @@ bool MeshContainer::loadFile(const std::string filePath) {
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(filePath, aiProcess_SortByPType);
         if (!scene) {
-            Logging::error("Mesh could not be loaded");
+            Logging::error("Mesh could not be loaded", "MeshContainer");
             return false;
         }
 
         int numMeshes = scene->mNumMeshes;
-        Logging::info("Scene has: " + std::to_string(numMeshes) + " meshes");
+        Logging::info("Scene has: " + std::to_string(numMeshes) + " meshes", "MeshContainer");
 
         for (int i = 0; i < numMeshes; ++i) {
             const aiMesh* mesh = scene->mMeshes[i];
