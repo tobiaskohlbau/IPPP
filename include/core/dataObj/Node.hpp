@@ -55,10 +55,6 @@ class Node {
     float getZ();
 
     bool empty() const;
-    float getDist(const std::shared_ptr<Node> &node);
-    float getDist(const Node &node);
-    float getDistToParent();
-
     void setCost(float cost);
     void addCost(float cost);
     float getCost();
@@ -213,45 +209,6 @@ float Node<dim>::getZ() {
 template <unsigned int dim>
 bool Node<dim>::empty() const {
     return std::isnan(m_vec[0]);
-}
-
-/*!
-*  \brief      Return distance to passed Node
-*  \author     Sascha Kaden
-*  \param[in]  shared_ptr to Node
-*  \param[out] distance
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-float Node<dim>::getDist(const std::shared_ptr<Node> &node) {
-    if (node == nullptr)
-        return -1;
-    return getDist(*node);
-}
-
-/*!
-*  \brief      Return distance to passed Node
-*  \author     Sascha Kaden
-*  \param[in]  Node
-*  \param[out] distance
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-float Node<dim>::getDist(const Node &node) {
-    if (node.empty() || empty())
-        return -1;
-    return (m_vec - node.getValues()).norm();
-}
-
-/*!
-*  \brief      Return distance to parent Node
-*  \author     Sascha Kaden
-*  \param[out] distance
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-float Node<dim>::getDistToParent() {
-    return m_parent->getCost();
 }
 
 /*!
