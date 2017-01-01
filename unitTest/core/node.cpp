@@ -30,22 +30,44 @@ BOOST_AUTO_TEST_CASE(standardConstructor) {
 }
 
 BOOST_AUTO_TEST_CASE(elementContructor) {
-//    std::vector<Node> nodes;
-//    nodes.push_back(Node<2>(0, 1));
-//    nodes.push_back(Node<3>(0, 1, 2));
-//    nodes.push_back(Node<4>(0, 1, 2, 3));
-//    nodes.push_back(Node<5>(0, 1, 2, 3, 4));
-//    nodes.push_back(Node<6>(0, 1, 2, 3, 4, 5));
-//
-//    for (int i = 0; i < 5; ++i) {
-//        BOOST_CHECK(nodes[i].empty() == false);
-//        for (int j = 0; j < nodes[i].getDim(); ++j) {
-//            BOOST_CHECK(nodes[i].getValues()[j] == j);
-//        }
-//        BOOST_CHECK(nodes[i].getParentNode() == nullptr);
-//        BOOST_CHECK(nodes[i].getChildNodes().size() == 0);
-//        BOOST_CHECK(nodes[i].getCost() == -1);
-//    }
+    Node<2> node2(0, 1);
+    Node<3> node3(0, 1, 2);
+    Node<4> node4(0, 1, 2, 3);
+    Node<5> node5(0, 1, 2, 3, 4);
+    Node<6> node6(0, 1, 2, 3, 4, 5);
+
+    BOOST_CHECK(node2.empty() == false);
+    BOOST_CHECK(node3.empty() == false);
+    BOOST_CHECK(node4.empty() == false);
+    BOOST_CHECK(node5.empty() == false);
+    BOOST_CHECK(node6.empty() == false);
+
+    for (int i = 0; i < 2; ++i)
+        BOOST_CHECK(node2.getValues()[i] == i);
+    for (int i = 0; i < 3; ++i)
+        BOOST_CHECK(node3.getValues()[i] == i);
+    for (int i = 0; i < 4; ++i)
+        BOOST_CHECK(node4.getValues()[i] == i);
+    for (int i = 0; i < 5; ++i)
+        BOOST_CHECK(node5.getValues()[i] == i);
+    for (int i = 0; i < 6; ++i)
+        BOOST_CHECK(node6.getValues()[i] == i);
+
+    BOOST_CHECK(node2.getParentNode() == nullptr);
+    BOOST_CHECK(node2.getChildNodes().size() == 0);
+    BOOST_CHECK(node2.getCost() == -1);
+    BOOST_CHECK(node3.getParentNode() == nullptr);
+    BOOST_CHECK(node3.getChildNodes().size() == 0);
+    BOOST_CHECK(node3.getCost() == -1);
+    BOOST_CHECK(node4.getParentNode() == nullptr);
+    BOOST_CHECK(node4.getChildNodes().size() == 0);
+    BOOST_CHECK(node4.getCost() == -1);
+    BOOST_CHECK(node5.getParentNode() == nullptr);
+    BOOST_CHECK(node5.getChildNodes().size() == 0);
+    BOOST_CHECK(node5.getCost() == -1);
+    BOOST_CHECK(node6.getParentNode() == nullptr);
+    BOOST_CHECK(node6.getChildNodes().size() == 0);
+    BOOST_CHECK(node6.getCost() == -1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
