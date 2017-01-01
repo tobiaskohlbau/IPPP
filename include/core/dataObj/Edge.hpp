@@ -22,6 +22,7 @@
 #include <memory>
 
 #include <core/dataObj/Node.hpp>
+#include <core/utility/Heuristic.hpp>
 
 namespace rmpl {
 
@@ -36,7 +37,7 @@ class Node;
 template <unsigned int dim>
 class Edge {
   public:
-    Edge(std::shared_ptr<Node<dim>> source, std::shared_ptr<Node<dim>> &target, float cost);
+    Edge(std::shared_ptr<Node<dim>> source, std::shared_ptr<Node<dim>> &target);
 
     float getCost();
 
@@ -59,9 +60,10 @@ class Edge {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-Edge<dim>::Edge(std::shared_ptr<Node<dim>> source, std::shared_ptr<Node<dim>> &target, float cost) {
+Edge<dim>::Edge(std::shared_ptr<Node<dim>> source, std::shared_ptr<Node<dim>> &target) {
+    m_source = source;
     m_target = target;
-    m_cost = cost;
+    m_cost = Heuristic<dim>::calcEdgeCost(m_source, m_target);
 }
 
 /*!
@@ -85,7 +87,7 @@ template <unsigned int dim>
 void Edge<dim>::setTarget(std::shared_ptr<Node<dim>> &target) {
     m_target = target;
     if (!m_source)
-        m_cost = m_source->getDist(target);
+        m_cost = Heuristic<dim>::calcEdgeCost(m_source, m_target);
 }
 
 /*!
@@ -109,7 +111,7 @@ template <unsigned int dim>
 void Edge<dim>::setSource(std::shared_ptr<Node<dim>> &source) {
     m_source = source;
     if (!m_target)
-        m_cost = m_target->getDist(source);
+        m_cost = Heuristic<dim>::calcEdgeCost(m_source, m_target);
 }
 
 /*!

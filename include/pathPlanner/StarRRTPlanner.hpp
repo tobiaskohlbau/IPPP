@@ -120,13 +120,15 @@ void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std:
 template <unsigned int dim>
 void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
                                  std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
+    /// Todo change from getDist to Heuristic (at the time there are unknown errors)
+    float oldDist, newDist, cost;
     for (auto nearNode : nearNodes) {
         if (nearNode != parentNode && nearNode->getChildEdges().size() != 0) {
-            float oldDist = nearNode->getCost();
-            float newDist = nearNode->getDist(newNode) + newNode->getCost();
+            oldDist = nearNode->getCost();
+            newDist = nearNode->getDist(newNode) + newNode->getCost();
             if (newDist < oldDist) {
                 if (this->m_planner->controlTrajectory(newNode, nearNode)) {
-                    float cost = nearNode->getCost() - nearNode->getDist(nearNode->getParentNode());
+                    cost = nearNode->getCost() - nearNode->getDist(nearNode->getParentNode());
                     cost += newNode->getDist(nearNode);
                     m_mutex.lock();
                     nearNode->setCost(cost);

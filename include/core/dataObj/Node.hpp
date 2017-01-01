@@ -28,6 +28,7 @@
 
 #include <core/dataObj/Edge.hpp>
 #include <core/types.h>
+#include <core/utility/Heuristic.hpp>
 #include <core/utility/UtilVec.hpp>
 
 namespace rmpl {
@@ -297,7 +298,7 @@ float Node<dim>::getCost() {
 template <unsigned int dim>
 void Node<dim>::setParent(std::shared_ptr<Node> &parent) {
     if (!parent->empty())
-        m_parent = std::shared_ptr<Edge<dim>>(new Edge<dim>(std::make_shared<Node>(*this), parent, getDist(parent)));
+        m_parent = std::shared_ptr<Edge<dim>>(new Edge<dim>(std::make_shared<Node>(*this), parent));
 }
 
 /*!
@@ -344,7 +345,7 @@ void Node<dim>::clearParent() {
 template <unsigned int dim>
 void Node<dim>::addChild(std::shared_ptr<Node<dim>> &child) {
     if (!child->empty())
-        m_childes.push_back(std::shared_ptr<Edge<dim>>(new Edge<dim>(std::make_shared<Node>(*this), child, getDist(child))));
+        m_childes.push_back(std::shared_ptr<Edge<dim>>(new Edge<dim>(std::make_shared<Node>(*this), child)));
 }
 
 /*!

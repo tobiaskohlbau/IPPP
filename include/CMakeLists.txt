@@ -25,6 +25,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Heuristic.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDTree.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilGeo.hpp
