@@ -34,29 +34,29 @@ Jaco::Jaco() : SerialRobot<6>("Jaco", CollisionType::pqp) {
     m_d = utilVec::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
     m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
-    // m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_base_fixed_origin.obj"));
-    std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/link_base_fixed_origin.obj"));
+    m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_base_fixed_origin.STL"));
+    std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/Jaco/link_base_fixed_origin.STL"));
     Joint joint(0, 360, mesh);
-    m_joints.push_back(joint);
+    //m_joints.push_back(joint);
 
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_1_fixed_origin.obj"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_1_fixed_origin.STL"));
     joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_2_fixed_origin.obj"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_2_fixed_origin.STL"));
     joint = Joint(42, 318, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_3_fixed_origin.obj"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_3_fixed_origin.STL"));
     joint = Joint(17, 343, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_4_fixed_origin.obj"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_4_fixed_origin.STL"));
     joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_5_fixed_origin.obj"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_5_fixed_origin.STL"));
     joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
-    // mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/link_hand_fixed_origin.obj"));
-    // joint = Joint(0, 360, mesh);
-    // m_joints.push_back(joint);
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_hand_fixed_origin.STL"));
+    joint = Joint(0, 360, mesh);
+    m_joints.push_back(joint);
     m_minBoundary = utilVec::Vecf(0, 42, 17, 0, 0, 0);
     m_maxBoundary = utilVec::Vecf(360, 318, 343, 360, 360, 360);
 }
