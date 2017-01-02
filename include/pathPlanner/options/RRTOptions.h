@@ -31,7 +31,7 @@ namespace rmpl {
 class RRTOptions : public PlannerOptions {
   public:
     RRTOptions(float stepSize, float trajectoryStepSize, SamplingMethod samplingMethod = SamplingMethod::randomly,
-               SamplingStrategy strategy = SamplingStrategy::normal, EdgeHeuristic edgeHeuristic = EdgeHeuristic::euclidean,
+               SamplingStrategy strategy = SamplingStrategy::normal, EdgeHeuristic edgeHeuristic = EdgeHeuristic::L2,
                NodeHeuristic nodeHeuristic = NodeHeuristic::norm);
 
     void setStepSize(float stepSize);
