@@ -94,8 +94,8 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const std::shared_ptr<Node<dim>> 
 /*!
 *  \brief      Control the trajectory and return if possible or not
 *  \author     Sascha Kaden
-*  \param[in]  source Vec
-*  \param[in]  target Vec
+*  \param[in]  source Vector
+*  \param[in]  target Vector
 *  \param[out] possibility of trajectory, true if possible
 *  \date       2016-05-31
 */
@@ -116,8 +116,8 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const Vector<dim> &source, const 
 /*!
 *  \brief      Compute the binary (section wise) trajectory between source and target. Return vector of points.
 *  \author     Sascha Kaden
-*  \param[in]  source Vec
-*  \param[in]  target Vec
+*  \param[in]  source Vector
+*  \param[in]  target Vector
 *  \param[out] trajectory
 *  \date       2016-12-21
 */
@@ -142,8 +142,8 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<
 /*!
 *  \brief      Compute the continuous trajectory between source and target. Return vector of points.
 *  \author     Sascha Kaden
-*  \param[in]  source Vec
-*  \param[in]  target Vec
+*  \param[in]  source Vector
+*  \param[in]  target Vector
 *  \param[out] trajectory
 *  \date       2016-12-21
 */
@@ -164,7 +164,7 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector
 }
 
 /*!
-*  \brief      Set step size, if value is larger than zero
+*  \brief      Set step size, if value is larger than zero otherwise 1 will be set
 *  \author     Sascha Kaden
 *  \param[in]  step size
 *  \date       2016-07-14

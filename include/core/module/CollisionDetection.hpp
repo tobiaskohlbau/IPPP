@@ -174,9 +174,9 @@ bool CollisionDetection<dim>::checkPoint2D(float x, float y) {
 /*!
 *  \brief      Check for TriangleRobot collision
 *  \author     Sascha Kaden
-*  \param[in]  transformation
-*  \param[out] binary result of collision
-*  \date       2016-06-30
+*  \param[in]  transformation Vector
+*  \param[out] binary result of collision, true if in collision
+*  \date       2016-12-19
 */
 template <unsigned int dim>
 bool CollisionDetection<dim>::checkTriangleRobot(const Vector<dim> &vec) {

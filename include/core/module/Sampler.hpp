@@ -89,7 +89,7 @@ Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplingMeth
 }
 
 /*!
-*  \brief      Return sample
+*  \brief      Return sample by specified SamplerMethod
 *  \author     Sascha Kaden
 *  \param[out] sample Vec
 *  \date       2016-05-24
@@ -142,7 +142,6 @@ bool Sampler<dim>::setMeanOfDistribution(const Vector<dim> &mean) {
 /*!
 *  \brief      Create a sample by the standard distribution and the set mean value
 *  \author     Sascha Kaden
-*  \param[in]  dimension
 *  \param[out] sample Vec
 *  \date       2016-11-14
 */
@@ -162,7 +161,6 @@ Vector<dim> Sampler<dim>::sampleStandardDist() {
 /*!
 *  \brief      Create a sample by a uniform distribution
 *  \author     Sascha Kaden
-*  \param[in]  dimension
 *  \param[out] sample Vec
 *  \date       2016-11-14
 */
@@ -177,7 +175,6 @@ Vector<dim> Sampler<dim>::sampleUniform() {
 /*!
 *  \brief      Create a random sample
 *  \author     Sascha Kaden
-*  \param[in]  dimension
 *  \param[out] sample Vec
 *  \date       2016-11-14
 */

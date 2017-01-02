@@ -103,7 +103,7 @@ static Eigen::Matrix3f getRotMat3D(float degX, float degY, float degZ) {
 /*!
 *  \brief      Convert pose Vec to R and t in 2D
 *  \author     Sascha Kaden
-*  \param[in]  pose Vec
+*  \param[in]  pose Vector
 *  \param[out] rotation matrix
 *  \param[out] translation vector
 *  \date       2016-11-15
@@ -118,7 +118,7 @@ static void poseVecToRandT(const Vector3 &pose, Eigen::Matrix2f &R, Vector2 &t) 
 /*!
 *  \brief      Convert pose Vec to R and t in 3D
 *  \author     Sascha Kaden
-*  \param[in]  pose Vec
+*  \param[in]  pose Vector
 *  \param[out] rotation matrix
 *  \param[out] translation vector
 *  \date       2016-11-15
@@ -134,7 +134,7 @@ static void poseVecToRandT(const Vector6 &pose, Eigen::Matrix3f &R, Vector3 &t) 
 /*!
 *  \brief      Convert pose Vec to transformation matrix
 *  \author     Sascha Kaden
-*  \param[in]  pose Vec
+*  \param[in]  pose Vector
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
@@ -151,7 +151,7 @@ static Eigen::Matrix4f poseVecToMat(const Vector6 &pose) {
 *  \brief      Convert transformation matrix into poseVec
 *  \author     Sascha Kaden
 *  \param[in]  transformation matrix
-*  \param[out] pose Vec (angles)
+*  \param[out] pose Vector (angles)
 *  \date       2016-07-07
 */
 static Vector6 poseMatToVec(const Eigen::Matrix4f &pose) {
@@ -166,8 +166,8 @@ static Vector6 poseMatToVec(const Eigen::Matrix4f &pose) {
 /*!
 *  \brief      Convert Vec of deg angles to Vec of rad
 *  \author     Sascha Kaden
-*  \param[in]  Vec of deg
-*  \param[out] Vec of rad
+*  \param[in]  Vector of deg
+*  \param[out] Vector of rad
 *  \date       2016-07-07
 */
 template <unsigned int dim>

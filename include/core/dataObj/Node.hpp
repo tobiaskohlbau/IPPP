@@ -34,8 +34,8 @@
 namespace rmpl {
 
 /*!
-* \brief   Class Node to present nodes of path planner
-* \details Consists of the position by an Vec, a cost parameter, pointer to an parent Node and a list of child
+* \brief   Class Node to present nodes of the path planner.
+* \details Consists of the position by an Vec, a cost parameter, an Edge to the parent and a list of child Edges
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
@@ -79,7 +79,7 @@ class Node {
 };
 
 /*!
-*  \brief      Default constructor of the class Node
+*  \brief      Default constructor of the class Node, sets all elements of the Vector NaN.
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
@@ -236,7 +236,7 @@ void Node<dim>::addCost(float cost) {
 }
 
 /*!
-*  \brief      Return cost of Node
+*  \brief      Return cost of the Node
 *  \author     Sascha Kaden
 *  \param[out] cost
 *  \date       2016-05-24
@@ -247,7 +247,7 @@ float Node<dim>::getCost() {
 }
 
 /*!
-*  \brief      Set parent of Node
+*  \brief      Set parent of the Node
 *  \author     Sascha Kaden
 *  \param[in]  shared_ptr parent Node
 *  \date       2016-07-15
@@ -261,7 +261,7 @@ void Node<dim>::setParent(std::shared_ptr<Node> &parent) {
 /*!
 *  \brief      Return parent Node
 *  \author     Sascha Kaden
-*  \param[out] shared_ptr parent Node
+*  \param[out] shared_ptr of parent Node
 *  \date       2016-07-15
 */
 template <unsigned int dim>
@@ -284,7 +284,7 @@ std::shared_ptr<Edge<dim>> Node<dim>::getParentEdge() {
 }
 
 /*!
-*  \brief      Set the parent Edge as standard constructor
+*  \brief      Removes the parent and set it as nullptr
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */
@@ -294,7 +294,7 @@ void Node<dim>::clearParent() {
 }
 
 /*!
-*  \brief      Add a child Node to child list
+*  \brief      Add a child Node to the child list
 *  \author     Sascha Kaden
 *  \param[in]  shared_ptr child Node
 *  \date       2016-07-15
@@ -332,7 +332,7 @@ std::vector<std::shared_ptr<Edge<dim>>> Node<dim>::getChildEdges() {
 }
 
 /*!
-*  \brief      Clear list of child nodes
+*  \brief      Clear list of childs
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */
@@ -342,7 +342,7 @@ void Node<dim>::clearChildes() {
 }
 
 /*!
-*  \brief      Return Vec
+*  \brief      Return const Vector of the Node
 *  \author     Sascha Kaden
 *  \param[out] Vec
 *  \date       2016-05-24

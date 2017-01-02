@@ -30,7 +30,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through a KDTree
+* \brief   Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through a KDTree.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
@@ -65,7 +65,7 @@ Graph<dim>::Graph() : ModuleBase("Graph") {
 }
 
 /*!
-* \brief      Add Node<dim>to the graph
+* \brief      Add a Node to the graph
 * \author     Sascha Kaden
 * \param[in]  Node
 * \date       2016-05-25
@@ -83,9 +83,9 @@ void Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
 }
 
 /*!
-* \brief      Return a the list of nodes
+* \brief      Returns the list of all nodes from the Graph
 * \author     Sascha Kaden
-* \param[out] list of nodes
+* \param[out] vector of nodes
 * \date       2016-05-25
 */
 template <unsigned int dim>
@@ -96,7 +96,7 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() {
 /*!
 * \brief      Search for nearrest neighbor
 * \author     Sascha Kaden
-* \param[in]  Node<dim>for the search
+* \param[in]  Node from where the search starts
 * \param[out] nearest neighbor Node
 * \date       2016-05-25
 */
@@ -108,7 +108,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim>&node) {
 /*!
 * \brief      Search for nearrest neighbor
 * \author     Sascha Kaden
-* \param[in]  pointer of the Node<dim>for the search
+* \param[in]  Node from where the search starts
 * \param[out] nearest neighbor Node
 * \date       2016-05-25
 */
@@ -120,8 +120,8 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const std::shared_ptr<Node
 /*!
 * \brief      Search range
 * \author     Sascha Kaden
-* \param[in]  Node<dim>for the search
-* \param[in]  distance around the passed Node
+* \param[in]  Node for the search
+* \param[in]  range around the passed Node
 * \param[out] list of nodes inside the range
 * \date       2016-05-25
 */
@@ -133,8 +133,8 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Node<dim>
 /*!
 * \brief      Search range
 * \author     Sascha Kaden
-* \param[in]  Node<dim>for the search
-* \param[in]  distance around the passed Node
+* \param[in]  Node for the search
+* \param[in]  range around the passed Node
 * \param[out] list of nodes inside the range
 * \date       2016-05-25
 */
@@ -146,7 +146,7 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shar
 /*!
 * \brief      Return size of the graph
 * \author     Sascha Kaden
-* \param[out] size of Node<dim>vector
+* \param[out] size of Node vector
 * \date       2016-08-09
 */
 template <unsigned int dim>
