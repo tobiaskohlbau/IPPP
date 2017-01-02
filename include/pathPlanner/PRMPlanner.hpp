@@ -54,6 +54,14 @@ class PRMPlanner : public Planner<dim> {
     float m_rangeSize;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
     std::vector<std::shared_ptr<Node<dim>>> m_openList, m_closedList;
+
+    using Planner<dim>::m_collision;
+    using Planner<dim>::m_graph;
+    using Planner<dim>::m_options;
+    using Planner<dim>::m_pathPlanned;
+    using Planner<dim>::m_planner;
+    using Planner<dim>::m_robot;
+    using Planner<dim>::m_sampler;
 };
 
 /*!
@@ -122,9 +130,9 @@ void PRMPlanner<dim>::startSamplingPhase(unsigned int nbOfNodes, unsigned int nb
 template <unsigned int dim>
 void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vector<dim> sample = this->m_sampler->getSample();
-        if (!this->m_collision->controlVec(sample)) {
-            this->m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
+        Vector<dim> sample = m_sampler->getSample();
+        if (!m_collision->controlVec(sample)) {
+            m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
         }
     }
 }
@@ -138,7 +146,7 @@ void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
 */
 template <unsigned int dim>
 void PRMPlanner<dim>::startPlannerPhase(unsigned int nbOfThreads) {
-    unsigned int nodeCount = this->m_graph->size();
+    unsigned int nodeCount = m_graph->size();
     if (nbOfThreads == 1) {
         plannerPhase(0, nodeCount);
     } else {
@@ -169,7 +177,7 @@ void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int end
         return;
     }
 
-    std::vector<std::shared_ptr<Node<dim>>> nodes = this->m_graph->getNodes();
+    std::vector<std::shared_ptr<Node<dim>>> nodes = m_graph->getNodes();
     if (endNodeIndex > nodes.size()) {
         Logging::error("End index is larger than Node size", this);
         return;
@@ -177,9 +185,9 @@ void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int end
 
     for (auto node = nodes.begin() + startNodeIndex;
          node != nodes.begin() + endNodeIndex; ++node) {
-        std::vector<std::shared_ptr<Node<dim>>> nearNodes = this->m_graph->getNearNodes(*node, m_rangeSize);
+        std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
-            if (this->m_planner->controlTrajectory((*node)->getValues(), nearNode->getValues()))
+            if (m_planner->controlTrajectory((*node)->getValues(), nearNode->getValues()))
                 (*node)->addChild(nearNode);
         }
     }
@@ -233,11 +241,11 @@ bool PRMPlanner<dim>::queryPath(Vector<dim> start, Vector<dim> goal) {
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Vector<dim> &vec) {
     std::vector<std::shared_ptr<Node<dim>>> nearNodes =
-        this->m_graph->getNearNodes(std::shared_ptr<Node<dim>>(new Node<dim>(vec)), m_rangeSize * 3);
+        m_graph->getNearNodes(std::shared_ptr<Node<dim>>(new Node<dim>(vec)), m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (this->m_planner->controlTrajectory(vec, *nearNodes[i]) && (vec - nearNodes[i]->getValues()).norm() < dist) {
+        if (m_planner->controlTrajectory(vec, *nearNodes[i]) && (vec - nearNodes[i]->getValues()).norm() < dist) {
             dist = (vec - nearNodes[i]->getValues()).norm();
             nearestNode = nearNodes[i];
         }
@@ -333,7 +341,7 @@ std::vector<std::shared_ptr<Node<dim>>> PRMPlanner<dim>::getPathNodes() {
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> PRMPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
-    return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
+    return getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 
 } /* namespace rmpl */

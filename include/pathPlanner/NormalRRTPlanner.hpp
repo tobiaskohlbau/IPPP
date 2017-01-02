@@ -43,6 +43,17 @@ class NormalRRTPlanner : public RRTPlanner<dim> {
     void computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode);
 
     std::mutex m_mutex;
+
+    using Planner<dim>::m_collision;
+    using Planner<dim>::m_graph;
+    using Planner<dim>::m_options;
+    using Planner<dim>::m_pathPlanned;
+    using Planner<dim>::m_planner;
+    using Planner<dim>::m_robot;
+    using Planner<dim>::m_sampler;
+    using RRTPlanner<dim>::m_initNode;
+    using RRTPlanner<dim>::m_goalNode;
+    using RRTPlanner<dim>::m_stepSize;
 };
 
 /*!
@@ -55,16 +66,16 @@ class NormalRRTPlanner : public RRTPlanner<dim> {
 template <unsigned int dim>
 void NormalRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) {
     // get nearest neighbor
-    std::shared_ptr<Node<dim>> nearestNode = this->m_graph->getNearestNode(Node<dim>(randVec));
+    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(Node<dim>(randVec));
 
     // compute Node<dim> new with fixed step size
     Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
     newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
 
-    if (this->m_collision->controlVec(newNode->getValues())) {
+    if (m_collision->controlVec(newNode->getValues())) {
         newNode = nullptr;
         return;
-    } else if (!this->m_planner->controlTrajectory(newNode->getValues(), nearestNode->getValues())) {
+    } else if (!m_planner->controlTrajectory(newNode->getValues(), nearestNode->getValues())) {
         newNode = nullptr;
         return;
     }
@@ -85,15 +96,15 @@ void NormalRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shar
 */
 template <unsigned int dim>
 bool NormalRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
-    if (this->m_collision->controlVec(goal))
+    if (m_collision->controlVec(goal))
         return false;
 
     std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes = this->m_graph->getNearNodes(goalNode, this->m_stepSize * 3);
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(goalNode, m_stepSize * 3);
 
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (auto node : nearNodes) {
-        if (this->m_planner->controlTrajectory(goal, node->getValues())) {
+        if (m_planner->controlTrajectory(goal, node->getValues())) {
             nearestNode = node;
             break;
         }
@@ -101,10 +112,10 @@ bool NormalRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
 
     if (nearestNode != nullptr) {
         goalNode->setParent(nearestNode);
-        this->m_goalNode = goalNode;
-        this->m_graph->addNode(goalNode);
+        m_goalNode = goalNode;
+        m_graph->addNode(goalNode);
         // Logging::info("Goal Node<dim> is connected", this);
-        this->m_pathPlanned = true;
+        m_pathPlanned = true;
         return true;
     }
 

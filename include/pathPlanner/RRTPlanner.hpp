@@ -24,6 +24,8 @@
 
 namespace rmpl {
 
+
+
 /*!
 * \brief   Super class of the RRTPlanner
 * \author  Sascha Kaden
@@ -53,6 +55,14 @@ class RRTPlanner : public Planner<dim> {
     float m_stepSize;
     std::shared_ptr<Node<dim>> m_initNode;
     std::shared_ptr<Node<dim>> m_goalNode;
+
+    using Planner<dim>::m_collision;
+    using Planner<dim>::m_graph;
+    using Planner<dim>::m_options;
+    using Planner<dim>::m_pathPlanned;
+    using Planner<dim>::m_planner;
+    using Planner<dim>::m_robot;
+    using Planner<dim>::m_sampler;
 };
 
 /*!
@@ -97,15 +107,15 @@ bool RRTPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned 
 */
 template <unsigned int dim>
 bool RRTPlanner<dim>::setInitNode(Vector<dim> start) {
-    if (this->m_collision->controlVec(start)) {
+    if (m_collision->controlVec(start)) {
         Logging::warning("Init Node<dim> could not be connected", this);
         return false;
     }
 
     std::shared_ptr<Node<dim>> initNode(new Node<dim>(start));
-    this->m_sampler->setMeanOfDistribution(start);
+    m_sampler->setMeanOfDistribution(start);
     m_initNode = initNode;
-    this->m_graph->addNode(m_initNode);
+    m_graph->addNode(m_initNode);
     return true;
 }
 
@@ -150,13 +160,13 @@ bool RRTPlanner<dim>::computeTree(unsigned int nbOfNodes, unsigned int nbOfThrea
 template <unsigned int dim>
 void RRTPlanner<dim>::computeTreeThread(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vector<dim> randVec = this->m_sampler->getSample();
+        Vector<dim> randVec = m_sampler->getSample();
         std::shared_ptr<Node<dim>> newNode;
         computeRRTNode(randVec, newNode);
 
         if (newNode == nullptr)
             continue;
-        this->m_graph->addNode(newNode);
+        m_graph->addNode(newNode);
     }
 }
 
@@ -169,7 +179,7 @@ void RRTPlanner<dim>::computeTreeThread(unsigned int nbOfNodes) {
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> RRTPlanner<dim>::getPathNodes() {
     std::vector<std::shared_ptr<Node<dim>>> nodes;
-    if (!this->m_pathPlanned)
+    if (!m_pathPlanned)
         return nodes;
 
     nodes.push_back(m_goalNode);
@@ -189,7 +199,7 @@ std::vector<std::shared_ptr<Node<dim>>> RRTPlanner<dim>::getPathNodes() {
 template <unsigned int dim>
 std::vector<Vector<dim>> RRTPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
     std::vector<Vector<dim>> path;
-    if (!this->m_pathPlanned) {
+    if (!m_pathPlanned) {
         Logging::warning("Path is not complete", this);
         return path;
     }
