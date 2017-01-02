@@ -42,7 +42,7 @@ template <unsigned int dim>
 class Sampling : public ModuleBase {
   public:
     Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-             const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplingMethod method = SamplingMethod::randomly,
+             const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplerMethod method = SamplerMethod::randomly,
              SamplingStrategy strategy = SamplingStrategy::normal);
 
     Vector<dim> getSample();
@@ -62,13 +62,13 @@ class Sampling : public ModuleBase {
 *  \brief      Constructor of the class Sampling
 *  \author     Sascha Kaden
 *  \param[in]  robot
-*  \param[in]  SamplingMethod
+*  \param[in]  SamplerMethod
 *  \param[in]  SamplingStrategy
 *  \date       2016-12-20
 */
 template <unsigned int dim>
 Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                        const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplingMethod method, SamplingStrategy strategy)
+                        const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplerMethod method, SamplingStrategy strategy)
     : ModuleBase("Sampling") {
     m_strategy = strategy;
 

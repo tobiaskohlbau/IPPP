@@ -25,11 +25,11 @@ namespace rmpl {
 *  \param[in]  RRT step size
 *  \param[in]  trajectoryStepSize
 *  \param[in]  trajectoryMethod
-*  \param[in]  samplingMethod
+*  \param[in]  samplerMethod
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy,
+RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
                        EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic)
     : PlannerOptions(trajectoryStepSize, method, strategy, edgeHeuristic, nodeHeuristic) {
     setStepSize(stepSize);

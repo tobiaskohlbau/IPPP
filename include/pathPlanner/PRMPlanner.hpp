@@ -71,7 +71,7 @@ class PRMPlanner : public Planner<dim> {
 *  \param[in]  rangeSize for the nearest neighbor search from the local planner
 *  \param[in]  trajectoryStepSize
 *  \param[in]  TrajectoryMethod
-*  \param[in]  SamplingMethod
+*  \param[in]  SamplerMethod
 *  \date       2016-08-09
 */
 template <unsigned int dim>

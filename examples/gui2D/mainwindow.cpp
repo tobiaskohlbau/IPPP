@@ -34,11 +34,11 @@ void MainWindow::computePath() {
     std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
     robot->set2DWorkspace(m_workspace);
 
-    SamplingMethod sampling = SamplingMethod::randomly;
+    SamplerMethod sampling = SamplerMethod::randomly;
     if (m_samplingType == 1)
-        sampling = SamplingMethod::uniform;
+        sampling = SamplerMethod::uniform;
     if (m_samplingType == 2)
-        sampling = SamplingMethod::standardDistribution;
+        sampling = SamplerMethod::standardDistribution;
 
     m_planner = nullptr;
     if (m_plannerType == 0) {
