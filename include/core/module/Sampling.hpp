@@ -34,7 +34,7 @@ namespace rmpl {
 enum SamplingStrategy { normal, nearObstacles };
 
 /*!
-* \brief   Class Sampling creates sample vecs with the passed strategy, for the methods Sampler will be used
+* \brief   Class Sampling creates sample Vectors with the passed strategy, for creating single Vectors the Sampler is used.
 * \author  Sascha Kaden
 * \date    2016-12-20
 */
@@ -78,7 +78,7 @@ Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std:
 }
 
 /*!
-*  \brief      Return sample
+*  \brief      Return sample by the specified SamplingStrategy
 *  \author     Sascha Kaden
 *  \param[out] sample Vec
 *  \date       2016-12-20
@@ -92,11 +92,11 @@ Vector<dim> Sampling<dim>::getSample() {
 }
 
 /*!
-*  \brief      Sample in the neighboorhood of obstacles
+*  \brief      Sample in the neighborhood of obstacles
 *  \details    If Sample is in collision, second random collision free sample will be computed and by binary search the
 *              nearest collision free sample to the first sample, will be taken.
 *  \author     Sascha Kaden
-*  \param[out] sample Vec
+*  \param[out] sample Vector
 *  \date       2016-12-20
 */
 template <unsigned int dim>

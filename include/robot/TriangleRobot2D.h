@@ -25,7 +25,8 @@
 namespace rmpl {
 
 /*!
-* \brief   Class for the 2D trianlge robot
+* \brief   Class for the 2D trianlge robot.
+* \details The robot contains the list of triangles, which defines his body.
 * \author  Sascha Kaden
 * \date    2016-11-14
 */

@@ -29,6 +29,11 @@ class Node;
 enum EdgeHeuristic { L1, L2, INF };
 enum NodeHeuristic { norm };
 
+/*!
+* \brief   Static class for the computation of heuristic costs from Edge and Node
+* \author  Sascha Kaden
+* \date    2017-01-02
+*/
 template <unsigned int dim>
 class Heuristic {
   public:
@@ -50,6 +55,14 @@ EdgeHeuristic Heuristic<dim>::m_edgeHeuristic = EdgeHeuristic::L2;
 template <unsigned int dim>
 NodeHeuristic Heuristic<dim>::m_nodeHeuristic = NodeHeuristic::norm;
 
+/*!
+*  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] heuristic cost
+*  \date       2017-01-02
+*/
 template <unsigned int dim>
 float Heuristic<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) {
     if (m_edgeHeuristic == EdgeHeuristic::L1)
@@ -60,26 +73,57 @@ float Heuristic<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source, con
         return (source->getValues() - target->getValues()).norm();
 }
 
+/*!
+*  \brief      Calculates the heuristic cost of a Node by the specified heuristic.
+*  \author     Sascha Kaden
+*  \param[in]  Node
+*  \param[out] heuristic cost
+*  \date       2017-01-02
+*/
 template <unsigned int dim>
 float Heuristic<dim>::calcNodeCost(const std::shared_ptr<Node<dim>> &source) {
     return source->getValues().norm();
 }
 
+/*!
+*  \brief      Sets the heuristic method for the Edge
+*  \author     Sascha Kaden
+*  \param[in]  method
+*  \date       2017-01-02
+*/
 template <unsigned int dim>
 void Heuristic<dim>::setEdgeHeuristic(EdgeHeuristic heuristic) {
     m_edgeHeuristic = heuristic;
 }
 
+/*!
+*  \brief      Sets the heuristic method for the Node
+*  \author     Sascha Kaden
+*  \param[in]  method
+*  \date       2017-01-02
+*/
 template <unsigned int dim>
 void Heuristic<dim>::setNodeHeuristic(NodeHeuristic heuristic) {
     m_nodeHeuristic = heuristic;
 }
 
+/*!
+*  \brief      Returns the heuristic method from the Edge
+*  \author     Sascha Kaden
+*  \param[in]  method
+*  \date       2017-01-02
+*/
 template <unsigned int dim>
 EdgeHeuristic Heuristic<dim>::getEdgeHeuristic() {
     return m_edgeHeuristic;
 }
 
+/*!
+*  \brief      Returns the heuristic method from the Node
+*  \author     Sascha Kaden
+*  \param[in]  method
+*  \date       2017-01-02
+*/
 template <unsigned int dim>
 NodeHeuristic Heuristic<dim>::getNodeHeuristic() {
     return m_nodeHeuristic;

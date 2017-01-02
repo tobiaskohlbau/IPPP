@@ -30,7 +30,7 @@ template <unsigned int dim>
 class Node;
 
 /*!
-* \brief   Class Edge contains the two nodes of the Edge and different parameters
+* \brief   Class Edge consists of the source and the target Node. It contains and calculates the cost between the Nodes.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
