@@ -30,7 +30,7 @@
 
 namespace rmpl {
 
-enum SamplingMethod { randomly, uniform, standardDistribution };
+enum SamplerMethod { randomly, uniform, standardDistribution };
 
 /*!
 * \brief   Class Sampling creates sample vecs with the configurated method
@@ -40,7 +40,7 @@ enum SamplingMethod { randomly, uniform, standardDistribution };
 template <unsigned int dim>
 class Sampler : public ModuleBase {
   public:
-    Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplingMethod method = SamplingMethod::randomly);
+    Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplerMethod method = SamplerMethod::randomly);
     Vector<dim> getSample();
     float getRandomAngle();
 
@@ -53,7 +53,7 @@ class Sampler : public ModuleBase {
 
     Vector<dim> m_minBoundary;
     Vector<dim> m_maxBoundary;
-    SamplingMethod m_method;
+    SamplerMethod m_method;
 
     std::random_device rd;
     std::mt19937 m_generator;
@@ -66,12 +66,12 @@ class Sampler : public ModuleBase {
 *  \brief      Constructor of the class Sampling
 *  \author     Sascha Kaden
 *  \param[in]  robot
-*  \param[in]  SamplingMethod
+*  \param[in]  SamplerMethod
 *  \param[in]  SamplingStrategy
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplingMethod method) : ModuleBase("Sampler") {
+Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplerMethod method) : ModuleBase("Sampler") {
     m_method = method;
 
     m_minBoundary = robot->getMinBoundary();
@@ -97,9 +97,9 @@ Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplingMeth
 template <unsigned int dim>
 Vector<dim> Sampler<dim>::getSample() {
     switch (m_method) {
-        case SamplingMethod::standardDistribution:
+        case SamplerMethod::standardDistribution:
             return sampleStandardDist();
-        case SamplingMethod::uniform:
+        case SamplerMethod::uniform:
             return sampleUniform();
         default:
             return sampleRandom();

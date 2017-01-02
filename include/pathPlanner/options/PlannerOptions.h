@@ -33,13 +33,13 @@ namespace rmpl {
 */
 class PlannerOptions {
   public:
-    PlannerOptions(float trajectoryStepSize, SamplingMethod samplingMethod, SamplingStrategy strategy,
+    PlannerOptions(float trajectoryStepSize, SamplerMethod samplerMethod, SamplingStrategy strategy,
                    EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic);
 
     void setTrajectoryStepSize(float stepSize);
     float getTrajectoryStepSize() const;
-    void setSamplingMethod(SamplingMethod method);
-    SamplingMethod getSamplingMethod() const;
+    void setSamplerMethod(SamplerMethod method);
+    SamplerMethod getSamplerMethod() const;
     void setSamplingStrategy(SamplingStrategy strategy);
     SamplingStrategy getSamplingStrategy() const;
     void setEdgeHeuristic(EdgeHeuristic heuristic);
@@ -49,7 +49,7 @@ class PlannerOptions {
 
   protected:
     float m_trajectoryStepSize;
-    SamplingMethod m_samplingMethod;
+    SamplerMethod m_samplerMethod;
     SamplingStrategy m_samplingStrategy;
     EdgeHeuristic m_edgeHeuristic;
     NodeHeuristic m_nodeHeuristic;

@@ -63,7 +63,7 @@ void treeConnection() {
     std::shared_ptr<Jaco> robot(new Jaco());
 
     // create two trees from init and from goal
-    RRTOptions options(20, 0.5, SamplingMethod::standardDistribution);
+    RRTOptions options(20, 0.5, SamplerMethod::standardDistribution);
     StarRRTPlanner<6> plannerGoalNode(robot, options);
     StarRRTPlanner<6> plannerInitNode(robot, options);
 

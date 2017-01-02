@@ -25,15 +25,15 @@ namespace rmpl {
 *  \brief      Standard constructor of the class PlannerOptions
 *  \param[in]  trajectoryStepSize
 *  \param[in]  trajectoryMethod
-*  \param[in]  samplingMethod
+*  \param[in]  samplerMethod
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-PlannerOptions::PlannerOptions(float trajectoryStepSize, SamplingMethod method, SamplingStrategy strategy,
+PlannerOptions::PlannerOptions(float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
                                EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic) {
     setTrajectoryStepSize(trajectoryStepSize);
     m_samplingStrategy = strategy;
-    m_samplingMethod = method;
+    m_samplerMethod = method;
     m_edgeHeuristic = edgeHeuristic;
     m_nodeHeuristic = nodeHeuristic;
 }
@@ -69,8 +69,8 @@ float PlannerOptions::getTrajectoryStepSize() const {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-void PlannerOptions::setSamplingMethod(SamplingMethod method) {
-    m_samplingMethod = method;
+void PlannerOptions::setSamplerMethod(SamplerMethod method) {
+    m_samplerMethod = method;
 }
 
 /*!
@@ -79,8 +79,8 @@ void PlannerOptions::setSamplingMethod(SamplingMethod method) {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-SamplingMethod PlannerOptions::getSamplingMethod() const {
-    return m_samplingMethod;
+SamplerMethod PlannerOptions::getSamplerMethod() const {
+    return m_samplerMethod;
 }
 
 /*!
