@@ -19,8 +19,7 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
-#include <algorithm>
-#include <mutex>
+#include <boost/thread/shared_mutex.hpp>
 
 #include <core/dataObj/Node.hpp>
 #include <core/module/ModuleBase.h>
@@ -41,9 +40,9 @@ class Graph : public ModuleBase {
     void addNode(const std::shared_ptr<Node<dim>> &node);
     std::vector<std::shared_ptr<Node<dim>>> getNodes();
 
-    std::shared_ptr<Node<dim>> getNearestNode(const Node<dim>&node);
+    std::shared_ptr<Node<dim>> getNearestNode(const Node<dim> &node);
     std::shared_ptr<Node<dim>> getNearestNode(const std::shared_ptr<Node<dim>> &node);
-    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim>&node, float distance);
+    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, float distance);
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, float distance);
 
     unsigned int size();
@@ -51,7 +50,7 @@ class Graph : public ModuleBase {
   private:
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;
     std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>> m_kdTree;
-    std::mutex m_mutex;
+    boost::shared_mutex m_mutex;
 };
 
 /*!
@@ -73,13 +72,12 @@ Graph<dim>::Graph() : ModuleBase("Graph") {
 template <unsigned int dim>
 void Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_kdTree->addNode(node->getValues(), node);
-    m_mutex.lock();
+    boost::unique_lock<boost::shared_mutex> lock(m_mutex);
     m_nodes.push_back(node);
     if (m_nodes.size() % 4000 == 0) {
         m_kdTree = std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>(m_nodes));
         Logging::info("KD Tree has been sorted and have: " + std::to_string(m_nodes.size()) + " Nodes", this);
     }
-    m_mutex.unlock();
 }
 
 /*!
@@ -101,7 +99,8 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() {
 * \date       2016-05-25
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim>&node) {
+std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> &node) {
+    boost::shared_lock<boost::shared_mutex> lock(m_mutex);
     return m_kdTree->searchNearestNeighbor(node.getValues());
 }
 
@@ -114,6 +113,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim>&node) {
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const std::shared_ptr<Node<dim>> &node) {
+    boost::shared_lock<boost::shared_mutex> lock(m_mutex);
     return m_kdTree->searchNearestNeighbor(node->getValues());
 }
 
@@ -126,7 +126,8 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const std::shared_ptr<Node
 * \date       2016-05-25
 */
 template <unsigned int dim>
-std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Node<dim>&node, float range) {
+std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Node<dim> &node, float range) {
+    boost::shared_lock<boost::shared_mutex> lock(m_mutex);
     return m_kdTree->searchRange(node.getValues(), range);
 }
 
@@ -140,6 +141,7 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Node<dim>
 */
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shared_ptr<Node<dim>> node, float range) {
+    boost::shared_lock<boost::shared_mutex> lock(m_mutex);
     return m_kdTree->searchRange(node->getValues(), range);
 }
 
