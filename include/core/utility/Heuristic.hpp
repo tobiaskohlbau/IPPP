@@ -20,13 +20,15 @@
 #define HEURISTIC_H
 
 #include <core/dataObj/Node.hpp>
+#include <core/types.h>
+#include <core/utility/UtilVec.hpp>
 
 namespace rmpl {
 
 template <unsigned int dim>
 class Node;
 
-enum EdgeHeuristic { L1, L2, INF };
+enum EdgeHeuristic { L1, L2, INF, WeightVec_L1, WeightVec_L2, WeightVec_INF };
 enum NodeHeuristic { norm };
 
 /*!
@@ -45,15 +47,21 @@ class Heuristic {
     static EdgeHeuristic getEdgeHeuristic();
     static NodeHeuristic getNodeHeuristic();
 
+    static void setWeightVec(const Vector<dim> &vec);
+    static Vector<dim> getWeightVec();
+
   private:
     static EdgeHeuristic m_edgeHeuristic;
     static NodeHeuristic m_nodeHeuristic;
+    static Vector<dim> m_weightVec;
 };
 
 template <unsigned int dim>
 EdgeHeuristic Heuristic<dim>::m_edgeHeuristic = EdgeHeuristic::L2;
 template <unsigned int dim>
 NodeHeuristic Heuristic<dim>::m_nodeHeuristic = NodeHeuristic::norm;
+template <unsigned int dim>
+Vector<dim> Heuristic<dim>::m_weightVec = utilVec::Vecf<dim>(1);
 
 /*!
 *  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.
@@ -65,12 +73,19 @@ NodeHeuristic Heuristic<dim>::m_nodeHeuristic = NodeHeuristic::norm;
 */
 template <unsigned int dim>
 float Heuristic<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) {
-    if (m_edgeHeuristic == EdgeHeuristic::L1)
+    if (m_edgeHeuristic == EdgeHeuristic::L1) {
         return (source->getValues() - target->getValues()).sum();
-    else if (m_edgeHeuristic == EdgeHeuristic::INF)
+    } else if (m_edgeHeuristic == EdgeHeuristic::INF) {
         return (source->getValues() - target->getValues()).maxCoeff();
-    else
+    } else if (m_edgeHeuristic == EdgeHeuristic::WeightVec_L1) {
+        return (source->getValues() - target->getValues()).cwiseProduct(m_weightVec).sum();
+    } else if (m_edgeHeuristic == EdgeHeuristic::WeightVec_L2) {
+        return (source->getValues() - target->getValues()).cwiseProduct(m_weightVec).norm();
+    } else if (m_edgeHeuristic == EdgeHeuristic::WeightVec_L2) {
+        return (source->getValues() - target->getValues()).cwiseProduct(m_weightVec).maxCoeff();
+    } else {
         return (source->getValues() - target->getValues()).norm();
+    }
 }
 
 /*!
@@ -127,6 +142,28 @@ EdgeHeuristic Heuristic<dim>::getEdgeHeuristic() {
 template <unsigned int dim>
 NodeHeuristic Heuristic<dim>::getNodeHeuristic() {
     return m_nodeHeuristic;
+}
+
+/*!
+*  \brief      Sets the weighting Vector
+*  \author     Sascha Kaden
+*  \param[in]  Vector
+*  \date       2017-01-02
+*/
+template <unsigned int dim>
+void Heuristic<dim>::setWeightVec(const Vector<dim> &vec) {
+    m_weightVec = vec;
+}
+
+/*!
+*  \brief      Returns the weighting Vector
+*  \author     Sascha Kaden
+*  \param[in]  Vector
+*  \date       2017-01-02
+*/
+template <unsigned int dim>
+Vector<dim> Heuristic<dim>::getWeightVec() {
+    return m_weightVec;
 }
 
 } /* namespace rmpl */

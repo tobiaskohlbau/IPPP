@@ -35,7 +35,9 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     triangleRobot->set2DWorkspace(mat);
 
     PRMOptions prmOptions(30, 0.5, SamplerMethod::randomly);
-    RRTOptions rrtOptions(30, 0.5, SamplerMethod::randomly);
+    RRTOptions rrtOptions(30, 0.5, SamplerMethod::randomly, SamplingStrategy::normal, EdgeHeuristic::WeightVec_L2);
+    Vector3 weight(1, 1, 0.2);
+    Heuristic<dim>::setWeightVec(weight);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(triangleRobot, prmOptions));
@@ -45,14 +47,14 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
     Vector3 goal(400.0, 930.0, 50);
-    bool connected = planner->computePath(start, goal, 20000, 2);
+    bool connected = planner->computePath(start, goal, 20000, 4);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
-        std::vector<Vector3> path = planner->getPath(60, true);
+        std::vector<Vector3> path = planner->getPath(60, false);
 
         // Writer::writeVecsToFile(path, "result.txt");
 
@@ -74,7 +76,7 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     robot->set2DWorkspace(mat);
 
     PRMOptions prmOptions(40, 0.5, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
-    RRTOptions rrtOptions(50, 1, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
+    RRTOptions rrtOptions(50, 1, SamplerMethod::randomly, SamplingStrategy::nearObstacles, EdgeHeuristic::WeightVec_L2);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));
