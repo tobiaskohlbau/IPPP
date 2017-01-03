@@ -97,6 +97,21 @@ static Vector6 Vecf(float x, float y, float z, float rx, float ry, float rz) {
 }
 
 /*!
+*  \brief      Creates a Vector with template dimension and all elements are set to the passed value
+*  \author     Sascha Kaden
+*  \param[in]  value
+*  \param[out] result Vector
+*  \date       2016-12-23
+*/
+template <unsigned int dim>
+Vector<dim> Vecf(float data) {
+    Vector<dim> vec;
+    for (unsigned int i = 0; i < dim; ++i)
+        vec[i] = data;
+    return vec;
+}
+
+/*!
 *  \brief      Creates a Vector with passed array (dimension by template parameter)
 *  \author     Sascha Kaden
 *  \param[in]  array
