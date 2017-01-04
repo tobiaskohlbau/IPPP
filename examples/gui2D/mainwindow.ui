@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>697</width>
-    <height>627</height>
+    <width>1041</width>
+    <height>776</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,6 +17,9 @@
    <layout class="QFormLayout" name="formLayout">
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout"/>
+      </item>
       <item>
        <widget class="QPushButton" name="buttonLoadImage">
         <property name="text">
@@ -32,13 +35,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="text">
-         <string>view path</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QLabel" name="labelTrajectoryStepSize">
@@ -50,19 +46,19 @@
         <item>
          <widget class="QDoubleSpinBox" name="boxTrajectoryStepSize">
           <property name="value">
-           <double>0.500000000000000</double>
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="labelSampling">
+         <widget class="QLabel" name="labelSampler">
           <property name="text">
-           <string>sampling method</string>
+           <string>sampler method</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="boxSampling">
+         <widget class="QComboBox" name="boxSampler">
           <item>
            <property name="text">
             <string>random</string>
@@ -81,31 +77,24 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="labelPRM">
+         <widget class="QLabel" name="labelSampling">
           <property name="text">
-           <string>prm local planner distance</string>
+           <string>sampling method</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="boxPRM">
-          <property name="value">
-           <double>50.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelRRT">
-          <property name="text">
-           <string>rrt step size</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="boxRRT">
-          <property name="value">
-           <double>50.000000000000000</double>
-          </property>
+         <widget class="QComboBox" name="boxSampling">
+          <item>
+           <property name="text">
+            <string>normal</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>nearObstacles</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item>
@@ -163,6 +152,75 @@
             <item>
              <property name="text">
               <string>PRM</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelRRT">
+            <property name="text">
+             <string>rrt step size</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="boxRRT">
+            <property name="value">
+             <double>50.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelPRM">
+            <property name="text">
+             <string>prm local planner distance</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="boxPRM">
+            <property name="value">
+             <double>50.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelEdgeHeuristic">
+            <property name="text">
+             <string>EdgeHeuristic</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="boxEdgeHeuristic">
+            <item>
+             <property name="text">
+              <string>L2</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>L1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>INF</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>weightedVec_L2</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>weightedVec_L1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>weightedVec_INF</string>
              </property>
             </item>
            </widget>
@@ -264,8 +322,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>697</width>
-     <height>20</height>
+     <width>1041</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -337,30 +395,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton_3</sender>
-   <signal>pressed()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>viewPath()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>147</x>
-     <y>119</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>162</x>
-     <y>134</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>boxTrajectoryStepSize</sender>
    <signal>valueChanged(double)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateTrajectoryStepSize(double)</slot>
+   <slot>TrajectoryStepSize(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>132</x>
-     <y>176</y>
+     <x>143</x>
+     <y>172</y>
     </hint>
     <hint type="destinationlabel">
      <x>166</x>
@@ -369,10 +411,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>boxSampling</sender>
+   <sender>boxSampler</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateSamplingType(int)</slot>
+   <slot>SamplerType(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>142</x>
@@ -388,11 +430,11 @@
    <sender>boxPRM</sender>
    <signal>valueChanged(double)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updatePRMDistance(double)</slot>
+   <slot>PRMDistance(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>270</y>
+     <x>158</x>
+     <y>565</y>
     </hint>
     <hint type="destinationlabel">
      <x>170</x>
@@ -404,11 +446,11 @@
    <sender>boxRRT</sender>
    <signal>valueChanged(double)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateRRTStepSize(double)</slot>
+   <slot>RRTStepSize(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>108</x>
-     <y>317</y>
+     <x>120</x>
+     <y>509</y>
     </hint>
     <hint type="destinationlabel">
      <x>164</x>
@@ -420,11 +462,11 @@
    <sender>boxThreads</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateThreads(int)</slot>
+   <slot>Threads(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>126</x>
-     <y>375</y>
+     <x>138</x>
+     <y>341</y>
     </hint>
     <hint type="destinationlabel">
      <x>166</x>
@@ -436,11 +478,11 @@
    <sender>boxNodes</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateNodes(int)</slot>
+   <slot>Nodes(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>122</x>
-     <y>432</y>
+     <x>134</x>
+     <y>397</y>
     </hint>
     <hint type="destinationlabel">
      <x>164</x>
@@ -452,11 +494,11 @@
    <sender>boxPlanner</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updatePlannerType(int)</slot>
+   <slot>PlannerType(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>142</x>
-     <y>475</y>
+     <x>154</x>
+     <y>453</y>
     </hint>
     <hint type="destinationlabel">
      <x>155</x>
@@ -468,11 +510,11 @@
    <sender>boxStartX</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateStartX(int)</slot>
+   <slot>StartX(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>41</x>
-     <y>519</y>
+     <x>54</x>
+     <y>678</y>
     </hint>
     <hint type="destinationlabel">
      <x>64</x>
@@ -484,11 +526,11 @@
    <sender>boxStartY</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateStartY(int)</slot>
+   <slot>StartY(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>133</x>
-     <y>525</y>
+     <x>193</x>
+     <y>678</y>
     </hint>
     <hint type="destinationlabel">
      <x>161</x>
@@ -500,11 +542,11 @@
    <sender>boxGoalX</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateGoalX(int)</slot>
+   <slot>GoalX(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>59</x>
-     <y>577</y>
+     <x>72</x>
+     <y>734</y>
     </hint>
     <hint type="destinationlabel">
      <x>59</x>
@@ -516,15 +558,47 @@
    <sender>boxGoalY</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>updateGoalY(int)</slot>
+   <slot>GoalY(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>142</x>
-     <y>575</y>
+     <x>193</x>
+     <y>734</y>
     </hint>
     <hint type="destinationlabel">
      <x>147</x>
      <y>596</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxSampling</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>SamplingType(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>272</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxEdgeHeuristic</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>EdgeHeuristic(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>32</x>
+     <y>618</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>629</y>
     </hint>
    </hints>
   </connection>
@@ -533,17 +607,18 @@
   <signal>signal1()</signal>
   <slot>loadImage()</slot>
   <slot>computePath()</slot>
-  <slot>viewPath()</slot>
-  <slot>updateThreads(int)</slot>
-  <slot>updateNodes(int)</slot>
-  <slot>updatePlannerType(int)</slot>
-  <slot>updateStartX(int)</slot>
-  <slot>updateStartY(int)</slot>
-  <slot>updateGoalX(int)</slot>
-  <slot>updateGoalY(int)</slot>
-  <slot>updateTrajectoryStepSize(double)</slot>
-  <slot>updateSamplingType(int)</slot>
-  <slot>updatePRMDistance(double)</slot>
-  <slot>updateRRTStepSize(double)</slot>
+  <slot>Threads(int)</slot>
+  <slot>Nodes(int)</slot>
+  <slot>PlannerType(int)</slot>
+  <slot>StartX(int)</slot>
+  <slot>StartY(int)</slot>
+  <slot>GoalX(int)</slot>
+  <slot>GoalY(int)</slot>
+  <slot>TrajectoryStepSize(double)</slot>
+  <slot>SamplerType(int)</slot>
+  <slot>PRMDistance(double)</slot>
+  <slot>RRTStepSize(double)</slot>
+  <slot>SamplingType(int)</slot>
+  <slot>EdgeHeuristic(int)</slot>
  </slots>
 </ui>
