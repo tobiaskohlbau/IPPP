@@ -28,16 +28,13 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     Vector3 max = utilVec::append<2>(maximum, 360.0);
 
     std::vector<Triangle2D> triangles;
-    triangles.push_back(Triangle2D(Vector2(0.0, 0.0),  Vector2(0.0, 25.0), Vector2(25.0, 0.0)));
-    triangles.push_back(Triangle2D(Vector2(0.0, 25.0), Vector2(25, 0.0),   Vector2(25, 25)));
-    triangles.push_back(Triangle2D(Vector2(0.0, 25.0), Vector2(25, 25),    Vector2(25, 45)));
+    triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0 ), Vector2(25, 50)));
+    triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(0 , 50), Vector2(25, 50)));
     std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(triangles, min, max));
     triangleRobot->set2DWorkspace(mat);
 
     PRMOptions prmOptions(30, 0.5, SamplerMethod::randomly);
-    RRTOptions rrtOptions(30, 0.5, SamplerMethod::randomly, SamplingStrategy::normal, EdgeHeuristic::WeightVec_L2);
-    Vector3 weight(1, 1, 0.2);
-    Heuristic<dim>::setWeightVec(weight);
+    RRTOptions rrtOptions(30, 0.5, SamplerMethod::randomly, SamplingStrategy::normal);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(triangleRobot, prmOptions));
@@ -54,7 +51,7 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
-        std::vector<Vector3> path = planner->getPath(60, false);
+        std::vector<Vector3> path = planner->getPath(80, true);
 
         // Writer::writeVecsToFile(path, "result.txt");
 
@@ -76,7 +73,7 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     robot->set2DWorkspace(mat);
 
     PRMOptions prmOptions(40, 0.5, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
-    RRTOptions rrtOptions(50, 1, SamplerMethod::randomly, SamplingStrategy::nearObstacles, EdgeHeuristic::WeightVec_L2);
+    RRTOptions rrtOptions(50, 1, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));
