@@ -40,8 +40,10 @@ class Graph : public ModuleBase {
     void addNode(const std::shared_ptr<Node<dim>> &node);
     std::vector<std::shared_ptr<Node<dim>>> getNodes();
 
+    std::shared_ptr<Node<dim>> getNearestNode(const Vector<dim> &vec);
     std::shared_ptr<Node<dim>> getNearestNode(const Node<dim> &node);
     std::shared_ptr<Node<dim>> getNearestNode(const std::shared_ptr<Node<dim>> &node);
+    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Vector<dim> &vec, float distance);
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, float distance);
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, float distance);
 
@@ -94,6 +96,19 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() {
 /*!
 * \brief      Search for nearrest neighbor
 * \author     Sascha Kaden
+* \param[in]  Vector from where the search starts
+* \param[out] nearest neighbor Node
+* \date       2016-05-25
+*/
+    template <unsigned int dim>
+    std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Vector<dim> &vec) {
+        boost::shared_lock<boost::shared_mutex> lock(m_mutex);
+        return m_kdTree->searchNearestNeighbor(vec);
+    }
+
+/*!
+* \brief      Search for nearrest neighbor
+* \author     Sascha Kaden
 * \param[in]  Node from where the search starts
 * \param[out] nearest neighbor Node
 * \date       2016-05-25
@@ -115,6 +130,20 @@ template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const std::shared_ptr<Node<dim>> &node) {
     boost::shared_lock<boost::shared_mutex> lock(m_mutex);
     return m_kdTree->searchNearestNeighbor(node->getValues());
+}
+
+/*!
+* \brief      Search range
+* \author     Sascha Kaden
+* \param[in]  Vector for the search
+* \param[in]  range around the passed Vector
+* \param[out] list of nodes inside the range
+* \date       2016-05-25
+*/
+template <unsigned int dim>
+std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Vector<dim> &vec, float range) {
+    boost::shared_lock<boost::shared_mutex> lock(m_mutex);
+    return m_kdTree->searchRange(vec, range);
 }
 
 /*!

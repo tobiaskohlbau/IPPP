@@ -40,7 +40,9 @@ template <unsigned int dim>
 class Heuristic {
   public:
     static float calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
+    static float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target);
     static float calcNodeCost(const std::shared_ptr<Node<dim>> &node);
+    static float calcNodeCost(const Vector<dim> &node);
 
     static void setEdgeHeuristic(EdgeHeuristic heuristic);
     static void setNodeHeuristic(NodeHeuristic heuristic);
@@ -73,18 +75,31 @@ Vector<dim> Heuristic<dim>::m_weightVec = utilVec::Vecf<dim>(1);
 */
 template <unsigned int dim>
 float Heuristic<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) {
+    return calcEdgeCost(source->getValues(), target->getValues());
+}
+
+/*!
+*  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] heuristic cost
+*  \date       2017-01-02
+*/
+template <unsigned int dim>
+float Heuristic<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) {
     if (m_edgeHeuristic == EdgeHeuristic::L1) {
-        return (source->getValues() - target->getValues()).sum();
+        return (source - target).sum();
     } else if (m_edgeHeuristic == EdgeHeuristic::INF) {
-        return (source->getValues() - target->getValues()).maxCoeff();
+        return (source - target).maxCoeff();
     } else if (m_edgeHeuristic == EdgeHeuristic::WeightVec_L1) {
-        return (source->getValues() - target->getValues()).cwiseProduct(m_weightVec).sum();
+        return (source - target).cwiseProduct(m_weightVec).sum();
     } else if (m_edgeHeuristic == EdgeHeuristic::WeightVec_L2) {
-        return (source->getValues() - target->getValues()).cwiseProduct(m_weightVec).norm();
-    } else if (m_edgeHeuristic == EdgeHeuristic::WeightVec_L2) {
-        return (source->getValues() - target->getValues()).cwiseProduct(m_weightVec).maxCoeff();
+        return (source - target).cwiseProduct(m_weightVec).norm();
+    } else if (m_edgeHeuristic == EdgeHeuristic::WeightVec_INF) {
+        return (source - target).cwiseProduct(m_weightVec).maxCoeff();
     } else {
-        return (source->getValues() - target->getValues()).norm();
+        return (source - target).norm();
     }
 }
 
@@ -97,8 +112,20 @@ float Heuristic<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source, con
 */
 template <unsigned int dim>
 float Heuristic<dim>::calcNodeCost(const std::shared_ptr<Node<dim>> &source) {
-    return source->getValues().norm();
+    return calcNodeCost(source->getValues());
 }
+
+/*!
+*  \brief      Calculates the heuristic cost of a Node by the specified heuristic.
+*  \author     Sascha Kaden
+*  \param[in]  Node
+*  \param[out] heuristic cost
+*  \date       2017-01-02
+*/
+    template <unsigned int dim>
+    float Heuristic<dim>::calcNodeCost(const Vector<dim> &source) {
+        return source.norm();
+    }
 
 /*!
 *  \brief      Sets the heuristic method for the Edge

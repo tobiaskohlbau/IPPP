@@ -183,8 +183,7 @@ void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int end
         return;
     }
 
-    for (auto node = nodes.begin() + startNodeIndex;
-         node != nodes.begin() + endNodeIndex; ++node) {
+    for (auto node = nodes.begin() + startNodeIndex; node != nodes.begin() + endNodeIndex; ++node) {
         std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
             if (m_planner->controlTrajectory((*node)->getValues(), nearNode->getValues()))
@@ -240,13 +239,12 @@ bool PRMPlanner<dim>::queryPath(Vector<dim> start, Vector<dim> goal) {
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Vector<dim> &vec) {
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes =
-        m_graph->getNearNodes(std::shared_ptr<Node<dim>>(new Node<dim>(vec)), m_rangeSize * 3);
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(vec, m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (m_planner->controlTrajectory(vec, *nearNodes[i]) && (vec - nearNodes[i]->getValues()).norm() < dist) {
-            dist = (vec - nearNodes[i]->getValues()).norm();
+        if (m_planner->controlTrajectory(vec, *nearNodes[i]) && Heuristic<dim>::calcEdgeCost(vec, nearNodes[i]) < dist) {
+            dist = Heuristic<dim>::calcEdgeCost(vec, nearNodes[i]);
             nearestNode = nearNodes[i];
         }
     }
@@ -341,7 +339,7 @@ std::vector<std::shared_ptr<Node<dim>>> PRMPlanner<dim>::getPathNodes() {
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> PRMPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
-    return getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
+    return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 
 } /* namespace rmpl */

@@ -66,7 +66,7 @@ class NormalRRTPlanner : public RRTPlanner<dim> {
 template <unsigned int dim>
 void NormalRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) {
     // get nearest neighbor
-    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(Node<dim>(randVec));
+    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randVec);
 
     // compute Node<dim> new with fixed step size
     Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
