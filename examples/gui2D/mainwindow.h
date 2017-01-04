@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include <QGraphicsScene>
+#include <QMainWindow>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -18,31 +18,32 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
+  public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-public slots:
+  public slots:
     void loadImage();
     void computePath();
-    void viewPath();
-    void updateThreads(int num);
-    void updateNodes(int num) ;
-    void updatePlannerType(int type);
-    void updateStartX(int value) ;
-    void updateStartY(int value);
-    void updateGoalX(int value);
-    void updateGoalY(int value);
-    void updateTrajectoryStepSize(double value);
-    void updateSamplingType(int type);
-    void updatePRMDistance(double value);
-    void updateRRTStepSize(double value);
+    void Threads(int num);
+    void Nodes(int num);
+    void PlannerType(int type);
+    void StartX(int value);
+    void StartY(int value);
+    void GoalX(int value);
+    void GoalY(int value);
+    void TrajectoryStepSize(double value);
+    void SamplerType(int type);
+    void SamplingType(int type);
+    void EdgeHeuristic(int type);
+    void PRMDistance(double value);
+    void RRTStepSize(double value);
 
-private:
+  private:
+    void viewPath();
     QImage convertCvMat(cv::Mat image);
 
     Ui::MainWindow *ui;
@@ -55,8 +56,10 @@ private:
     int m_startY = 60;
     int m_goalX = 870;
     int m_goalY = 870;
-    double m_trajectoryStepSize = 0.5;
+    double m_trajectoryStepSize = 1;
+    unsigned int m_samplerType = 0;
     unsigned int m_samplingType = 0;
+    unsigned int m_edgeHeuristic = 0;
     double m_prmDistance = 50;
     double m_rrtStepsize = 50;
 
@@ -64,6 +67,7 @@ private:
     cv::Mat m_image;
     Eigen::MatrixXi m_workspace;
     bool m_connected = false;
+    bool m_imageLoaded = false;
 };
 
-#endif // MAINWINDOW_H
+#endif    // MAINWINDOW_H

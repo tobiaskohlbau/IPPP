@@ -21,44 +21,73 @@ MainWindow::~MainWindow() {
 void MainWindow::loadImage() {
     QString qFileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "/home", tr("Image Files (*.png *.jpg *.bmp)"));
 
-    cv::Mat obstacleWorkspace = cv::imread(qFileName.toStdString(), CV_LOAD_IMAGE_GRAYSCALE);
-    m_workspace = drawing::cvToEigen(obstacleWorkspace);
-    m_image = obstacleWorkspace;
+    cv::Mat image = cv::imread(qFileName.toStdString(), CV_LOAD_IMAGE_GRAYSCALE);
+    if (!image.data)    // Check for invalid input
+    {
+        Logging::error("could not load image", "GUI");
+        return;
+    }
+
+    m_workspace = drawing::cvToEigen(image);
+    m_image = image;
+    m_imageLoaded = true;
+    Logging::info("loading image was successful", "GUI");
 }
 
 void MainWindow::computePath() {
-    std::cout << "compute path" << std::endl;
+    if (!m_imageLoaded) {
+        Logging::error("image was not loaded", "GUI");
+        return;
+    }
+    Logging::info("compute path", "GUI");
     std::cout << m_numNodes << std::endl;
     Vector2 minBoundary(0.0, 0.0);
     Vector2 maxBoundary(m_workspace.rows(), m_workspace.cols());
     std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
     robot->set2DWorkspace(m_workspace);
 
-    SamplerMethod sampling = SamplerMethod::randomly;
+    SamplerMethod sampler = SamplerMethod::randomly;
     if (m_samplingType == 1)
-        sampling = SamplerMethod::uniform;
-    if (m_samplingType == 2)
-        sampling = SamplerMethod::standardDistribution;
+        sampler = SamplerMethod::uniform;
+    else if (m_samplerType == 2)
+        sampler = SamplerMethod::standardDistribution;
+
+    SamplingStrategy sampling = SamplingStrategy::normal;
+    if (m_samplingType == 1)
+        sampling = SamplingStrategy::nearObstacles;
+
+    rmpl::EdgeHeuristic edgeH = rmpl::EdgeHeuristic::L2;
+    if (m_edgeHeuristic == 1)
+        edgeH = rmpl::EdgeHeuristic::L1;
+    else if (m_edgeHeuristic == 2)
+        edgeH = rmpl::EdgeHeuristic::INF;
+    else if (m_edgeHeuristic == 3)
+        edgeH = rmpl::EdgeHeuristic::WeightVec_L2;
+    else if (m_edgeHeuristic == 4)
+        edgeH = rmpl::EdgeHeuristic::WeightVec_L1;
+    else if (m_edgeHeuristic == 5)
+        edgeH = rmpl::EdgeHeuristic::WeightVec_INF;
 
     m_planner = nullptr;
     if (m_plannerType == 0) {
-        RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
+        RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampler, sampling, edgeH);
         m_planner = std::shared_ptr<NormalRRTPlanner<2>>(new NormalRRTPlanner<2>(robot, options));
     } else if (m_plannerType == 1) {
-        RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
+        RRTOptions options(m_rrtStepsize, m_trajectoryStepSize, sampler, sampling, edgeH);
         m_planner = std::shared_ptr<StarRRTPlanner<2>>(new StarRRTPlanner<2>(robot, options));
     } else {
-        PRMOptions options(m_rrtStepsize, m_trajectoryStepSize, sampling);
+        PRMOptions options(m_prmDistance, m_trajectoryStepSize, sampler, sampling, edgeH);
         m_planner = std::shared_ptr<PRMPlanner<2>>(new PRMPlanner<2>(robot, options));
     }
 
     Vector2 start(m_startX, m_startY);
     Vector2 goal(m_goalX, m_goalY);
     m_connected = m_planner->computePath(start, goal, m_numNodes, m_numThreads);
+
+    viewPath();
 }
 
 void MainWindow::viewPath() {
-    std::cout << "view path" << std::endl;
     cv::Mat image = m_image.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
@@ -110,36 +139,42 @@ QImage MainWindow::convertCvMat(cv::Mat inMat) {
     return QImage();
 }
 
-void MainWindow::updateThreads(int num) {
+void MainWindow::Threads(int num) {
     m_numThreads = num;
 };
-void MainWindow::updateNodes(int num) {
+void MainWindow::Nodes(int num) {
     m_numNodes = num;
 };
-void MainWindow::updatePlannerType(int type) {
+void MainWindow::PlannerType(int type) {
     m_plannerType = type;
 };
-void MainWindow::updateStartX(int value) {
+void MainWindow::StartX(int value) {
     m_startX = value;
 };
-void MainWindow::updateStartY(int value) {
+void MainWindow::StartY(int value) {
     m_startY = value;
 };
-void MainWindow::updateGoalX(int value) {
+void MainWindow::GoalX(int value) {
     m_goalX = value;
 };
-void MainWindow::updateGoalY(int value) {
+void MainWindow::GoalY(int value) {
     m_goalX = value;
 };
-void MainWindow::updateTrajectoryStepSize(double value) {
+void MainWindow::TrajectoryStepSize(double value) {
     m_trajectoryStepSize = value;
 };
-void MainWindow::updateSamplingType(int type) {
+void MainWindow::SamplingType(int type) {
     m_samplingType = type;
 };
-void MainWindow::updatePRMDistance(double value) {
+void MainWindow::SamplerType(int type) {
+    m_samplerType = type;
+};
+void MainWindow::EdgeHeuristic(int type) {
+    m_edgeHeuristic = type;
+};
+void MainWindow::PRMDistance(double value) {
     m_prmDistance = value;
 };
-void MainWindow::updateRRTStepSize(double value) {
+void MainWindow::RRTStepSize(double value) {
     m_rrtStepsize = value;
 };
