@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1041</width>
-    <height>776</height>
+    <width>1042</width>
+    <height>832</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -227,6 +227,13 @@
           </item>
           <item>
            <layout class="QGridLayout" name="gridLayout">
+            <item row="3" column="0">
+             <widget class="QLabel" name="labelGoal">
+              <property name="text">
+               <string>goal</string>
+              </property>
+             </widget>
+            </item>
             <item row="4" column="0">
              <widget class="QSpinBox" name="boxGoalX">
               <property name="maximum">
@@ -234,6 +241,13 @@
               </property>
               <property name="value">
                <number>870</number>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="labelWeightVec">
+              <property name="text">
+               <string>weight Vec</string>
               </property>
              </widget>
             </item>
@@ -270,17 +284,30 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="labelGoal">
-              <property name="text">
-               <string>goal</string>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="0">
              <widget class="QLabel" name="labelStart">
               <property name="text">
                <string>start</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QDoubleSpinBox" name="boxWeightVecX">
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value">
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QDoubleSpinBox" name="boxWeightVecY">
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value">
+               <double>1.000000000000000</double>
               </property>
              </widget>
             </item>
@@ -322,7 +349,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1041</width>
+     <width>1042</width>
      <height>25</height>
     </rect>
    </property>
@@ -602,6 +629,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>boxWeightVecX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>weightVecX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>32</x>
+     <y>788</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>787</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxWeightVecY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>weightVecY(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>154</x>
+     <y>775</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>142</x>
+     <y>806</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>signal1()</signal>
@@ -620,5 +679,7 @@
   <slot>RRTStepSize(double)</slot>
   <slot>SamplingType(int)</slot>
   <slot>EdgeHeuristic(int)</slot>
+  <slot>weightVecX(double)</slot>
+  <slot>weightVecY(double)</slot>
  </slots>
 </ui>
