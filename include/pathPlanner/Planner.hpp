@@ -90,7 +90,7 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<d
     m_pathPlanned = false;
 
     m_robot = robot;
-    m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>());
+    m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(options.getSortCountGraph()));
     m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetection<dim>(m_robot));
     m_planner = std::shared_ptr<TrajectoryPlanner<dim>>(new TrajectoryPlanner<dim>(options.getTrajectoryStepSize(), m_collision));
     m_sampler = std::shared_ptr<Sampling<dim>>(

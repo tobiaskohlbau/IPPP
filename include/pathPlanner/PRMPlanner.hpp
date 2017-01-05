@@ -93,6 +93,7 @@ PRMPlanner<dim>::PRMPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const 
 template <unsigned int dim>
 bool PRMPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads) {
     startSamplingPhase(numNodes, numThreads);
+    m_graph->sortTree();
     startPlannerPhase(numThreads);
 
     return queryPath(start, goal);
@@ -243,8 +244,8 @@ std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Vector<dim> &vec) {
     float dist = std::numeric_limits<float>::max();
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (m_planner->controlTrajectory(vec, *nearNodes[i]) && Heuristic<dim>::calcEdgeCost(vec, nearNodes[i]) < dist) {
-            dist = Heuristic<dim>::calcEdgeCost(vec, nearNodes[i]);
+        if (m_planner->controlTrajectory(vec, *nearNodes[i]) && Heuristic<dim>::calcEdgeCost(vec, nearNodes[i]->getValues()) < dist) {
+            dist = Heuristic<dim>::calcEdgeCost(vec, nearNodes[i]->getValues());
             nearestNode = nearNodes[i];
         }
     }
