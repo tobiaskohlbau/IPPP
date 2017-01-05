@@ -29,16 +29,20 @@ OPTION(BUILD_TESTS "Build tests" ON)
 
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
-find_package(Eigen3 REQUIRED)
 find_package(assimp)
+#find_package(Boost COMPONENTS thread REQUIRED)
+find_package(Eigen3 REQUIRED)
 find_package(fcl REQUIRED)
+find_package(Threads REQUIRED)
 set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
 
 include_directories(${CMAKE_SOURCE_DIR}/include
-        ${EIGEN3_INCLUDE_DIR}
         ${ASSIMP_INCLUDE_DIR}
+        ${EIGEN3_INCLUDE_DIR}
         ${FCL_INCLUDE_DIRS}
         ${PQP_DIR}/include)
+#        ${Boost_INCLUDE_DIRS}
+
 link_directories(${ASSIMP_LIBRARIES}
         ${PQP_DIR}/lib)
 
@@ -61,13 +65,8 @@ IF (${BUILD_TESTS})
     ADD_SUBDIRECTORY(unitTest)
 ENDIF()
 
-set(Boost_USE_STATIC_LIBS   ON)
-set(Boost_USE_MULTITHREADED ON)
-find_package(Boost COMPONENTS thread REQUIRED)
-include_directories (${Boost_INCLUDE_DIRS})
-
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP assimp fcl ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY})
+target_link_libraries(${PROJECT_NAME} pthread PQP assimp fcl)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
