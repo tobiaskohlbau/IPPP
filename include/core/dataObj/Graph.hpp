@@ -36,7 +36,7 @@ namespace rmpl {
 template <unsigned int dim>
 class Graph : public ModuleBase {
   public:
-    Graph();
+    Graph(unsigned int sortCount);
     void addNode(const std::shared_ptr<Node<dim>> &node);
     std::vector<std::shared_ptr<Node<dim>>> getNodes();
 
@@ -48,11 +48,14 @@ class Graph : public ModuleBase {
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, float distance);
 
     unsigned int size();
+    void sortTree();
 
   private:
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;
     std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>> m_kdTree;
     boost::shared_mutex m_mutex;
+    unsigned int m_sortCount;
+    bool m_autoSort = false;
 };
 
 /*!
@@ -61,7 +64,8 @@ class Graph : public ModuleBase {
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-Graph<dim>::Graph() : ModuleBase("Graph") {
+Graph<dim>::Graph(unsigned int sortCount) : ModuleBase("Graph"), m_sortCount(sortCount) {
+    m_autoSort = (sortCount != 0);
     m_kdTree = std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>());
 }
 
@@ -74,12 +78,11 @@ Graph<dim>::Graph() : ModuleBase("Graph") {
 template <unsigned int dim>
 void Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_kdTree->addNode(node->getValues(), node);
-    boost::unique_lock<boost::shared_mutex> lock(m_mutex);
+    m_mutex.lock();
     m_nodes.push_back(node);
-    if (m_nodes.size() % 4000 == 0) {
-        m_kdTree = std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>(m_nodes));
-        Logging::info("KD Tree has been sorted and have: " + std::to_string(m_nodes.size()) + " Nodes", this);
-    }
+    m_mutex.unlock();
+    if (m_autoSort && m_nodes.size() % m_sortCount == 0)
+        sortTree();
 }
 
 /*!
@@ -172,6 +175,13 @@ template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shared_ptr<Node<dim>> node, float range) {
     boost::shared_lock<boost::shared_mutex> lock(m_mutex);
     return m_kdTree->searchRange(node->getValues(), range);
+}
+
+template <unsigned int dim>
+void Graph<dim>::sortTree() {
+    boost::unique_lock<boost::shared_mutex> lock(m_mutex);
+    m_kdTree = std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>(m_nodes));
+    Logging::info("KD Tree has been sorted and have: " + std::to_string(m_nodes.size()) + " Nodes", this);
 }
 
 /*!
