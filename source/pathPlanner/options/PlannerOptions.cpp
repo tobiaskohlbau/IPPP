@@ -26,16 +26,21 @@ namespace rmpl {
 *  \param[in]  trajectoryStepSize
 *  \param[in]  trajectoryMethod
 *  \param[in]  samplerMethod
+*  \param[in]  samplingMethod
+*  \param[in]  edgeHeuristic
+*  \param[in]  nodeHeuristic
+*  \param[in]  sortingCountGraph
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
 PlannerOptions::PlannerOptions(float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
-                               EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic) {
+                               EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic, unsigned int sortingCountGraph) {
     setTrajectoryStepSize(trajectoryStepSize);
     m_samplingStrategy = strategy;
     m_samplerMethod = method;
     m_edgeHeuristic = edgeHeuristic;
     m_nodeHeuristic = nodeHeuristic;
+    m_sortingCountGraph = sortingCountGraph;
 }
 
 /*!
@@ -141,6 +146,26 @@ void PlannerOptions::setNodeHeuristic(NodeHeuristic heuristic) {
 */
 NodeHeuristic PlannerOptions::getNodeHeuristic() const {
     return m_nodeHeuristic;
+}
+
+/*!
+*  \brief      Sets count to sort Graph automically
+*  \param[in]  autoSort
+*  \author     Sascha Kaden
+*  \date       2017-01-05
+*/
+void PlannerOptions::setSortCountGraph(unsigned int sortingCountGraph) {
+    m_sortingCountGraph = sortingCountGraph;
+}
+
+/*!
+*  \brief      Returns count to sort Graph automically
+*  \param[out] autoSort
+*  \author     Sascha Kaden
+*  \date       2017-01-05
+*/
+unsigned int PlannerOptions::getSortCountGraph() const {
+    return m_sortingCountGraph;
 }
 
 } /* namespace rmpl */
