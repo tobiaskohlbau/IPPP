@@ -19,9 +19,9 @@
 #ifndef TRAJECTORYPLANNER_H_
 #define TRAJECTORYPLANNER_H_
 
-#include <core/types.h>
 #include <core/module/CollisionDetection.hpp>
 #include <core/module/ModuleBase.h>
+#include <core/types.h>
 
 namespace rmpl {
 
@@ -39,7 +39,7 @@ class TrajectoryPlanner : public ModuleBase {
     bool controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
     bool controlTrajectory(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
-    std::vector<Vector<dim>> calcTrajectoryBin (const Vector<dim> &source, const Vector<dim> &target);
+    std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
 
     void setStepSize(float stepSize);
     float getStepSize() const;
@@ -87,7 +87,8 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const Node<dim> &source, const No
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) {
+bool TrajectoryPlanner<dim>::controlTrajectory(const std::shared_ptr<Node<dim>> &source,
+                                               const std::shared_ptr<Node<dim>> &target) {
     return controlTrajectory(source->getValues(), target->getValues());
 }
 
@@ -122,8 +123,7 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const Vector<dim> &source, const 
 *  \date       2016-12-21
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<dim> &source,
-                                                                       const Vector<dim> &target) {
+std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) {
     std::vector<Vector<dim>> vecs;
     if (source.rows() != target.rows()) {
         Logging::error("Vecs have different dimensions", this);
@@ -131,6 +131,7 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<
     }
 
     Vector<dim> u(target - source);
+    vecs.reserve((int)(u.norm()/m_stepSize) + 1);
     unsigned int divider = 2;
     for (Vector<dim> uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider)
         for (int i = 1; i < divider; i += 2)
@@ -148,8 +149,7 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<
 *  \date       2016-12-21
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector<dim> &source,
-                                                                        const Vector<dim> &target) {
+std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) {
     std::vector<Vector<dim>> vecs;
     if (source.rows() != target.rows()) {
         Logging::error("Vecs have different dimensions", this);
@@ -157,8 +157,9 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector
     }
 
     Vector<dim> u(target - source);    // u = a - b
-    u /= u.norm();                         // u = |u|
-    for (Vector<dim> temp(source + (u * m_stepSize)); (temp - target).squaredNorm() > 1; temp = temp + (u * m_stepSize))
+    vecs.reserve((int)(u.norm()/m_stepSize) + 1);
+    u /= u.norm() / m_stepSize;                     // u = |u|
+    for (Vector<dim> temp(source + u); (temp - target).squaredNorm() > 1; temp += u)
         vecs.push_back(temp);
     return vecs;
 }
