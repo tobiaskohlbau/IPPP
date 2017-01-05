@@ -94,7 +94,7 @@ void MainWindow::viewPath() {
     std::vector<std::shared_ptr<Node<2>>> nodes = m_planner->getGraphNodes();
     drawing::drawTree2D<2>(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
     if (m_connected) {
-        std::vector<Vector2> pathPoints = m_planner->getPath(0.5, true);
+        std::vector<Vector2> pathPoints = m_planner->getPath(1, true);
         drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
     }
 
@@ -178,3 +178,13 @@ void MainWindow::PRMDistance(double value) {
 void MainWindow::RRTStepSize(double value) {
     m_rrtStepsize = value;
 };
+void MainWindow::weightVecX(double value) {
+    m_weightVecX = value;
+    Vector2 weight(m_weightVecX, m_weightVecY);
+    Heuristic<2>::setWeightVec(weight);
+}
+void MainWindow::weightVecY(double value) {
+    m_weightVecY = value;
+    Vector2 weight(m_weightVecX, m_weightVecY);
+    Heuristic<2>::setWeightVec(weight);
+}

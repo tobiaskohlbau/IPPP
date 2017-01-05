@@ -41,6 +41,8 @@ class MainWindow : public QMainWindow {
     void EdgeHeuristic(int type);
     void PRMDistance(double value);
     void RRTStepSize(double value);
+    void weightVecX(double value);
+    void weightVecY(double value);
 
   private:
     void viewPath();
@@ -62,6 +64,8 @@ class MainWindow : public QMainWindow {
     unsigned int m_edgeHeuristic = 0;
     double m_prmDistance = 50;
     double m_rrtStepsize = 50;
+    double m_weightVecX = 1;
+    double m_weightVecY = 1;
 
     std::shared_ptr<rmpl::Planner<2>> m_planner;
     cv::Mat m_image;
