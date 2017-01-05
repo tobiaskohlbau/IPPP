@@ -34,18 +34,23 @@ namespace rmpl {
 class PlannerOptions {
   public:
     PlannerOptions(float trajectoryStepSize, SamplerMethod samplerMethod, SamplingStrategy strategy,
-                   EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic);
+                   EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic, unsigned int sortingCountGraph);
 
     void setTrajectoryStepSize(float stepSize);
     float getTrajectoryStepSize() const;
+
     void setSamplerMethod(SamplerMethod method);
     SamplerMethod getSamplerMethod() const;
     void setSamplingStrategy(SamplingStrategy strategy);
     SamplingStrategy getSamplingStrategy() const;
+
     void setEdgeHeuristic(EdgeHeuristic heuristic);
     EdgeHeuristic getEdgeHeuristic() const;
     void setNodeHeuristic(NodeHeuristic heuristic);
     NodeHeuristic getNodeHeuristic() const;
+
+    void setSortCountGraph(unsigned int sortAmountGraph);
+    unsigned int getSortCountGraph() const;
 
   protected:
     float m_trajectoryStepSize;
@@ -53,6 +58,7 @@ class PlannerOptions {
     SamplingStrategy m_samplingStrategy;
     EdgeHeuristic m_edgeHeuristic;
     NodeHeuristic m_nodeHeuristic;
+    unsigned int m_sortingCountGraph;
 };
 
 } /* namespace rmpl */

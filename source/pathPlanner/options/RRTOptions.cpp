@@ -30,8 +30,8 @@ namespace rmpl {
 *  \date       2016-08-29
 */
 RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
-                       EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic)
-    : PlannerOptions(trajectoryStepSize, method, strategy, edgeHeuristic, nodeHeuristic) {
+                       EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic, unsigned int sortingCountGraph)
+    : PlannerOptions(trajectoryStepSize, method, strategy, edgeHeuristic, nodeHeuristic, sortingCountGraph) {
     setStepSize(stepSize);
 }
 

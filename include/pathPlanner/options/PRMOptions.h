@@ -32,7 +32,7 @@ class PRMOptions : public PlannerOptions {
   public:
     PRMOptions(float rangeSize, float trajectoryStepSize, SamplerMethod samplerMethod = SamplerMethod::randomly,
                SamplingStrategy strategy = SamplingStrategy::normal, EdgeHeuristic edgeHeuristic = EdgeHeuristic::L2,
-               NodeHeuristic nodeHeuristic = NodeHeuristic::norm);
+               NodeHeuristic nodeHeuristic = NodeHeuristic::norm, unsigned int sortingCountGraph = 0);
 
     void setRangeSize(float rangeSize);
     float getRangeSize() const;
