@@ -36,12 +36,12 @@ class KDNode {
   public:
     KDNode(const Vector<dim> &vec, const T &node);
 
-    std::shared_ptr<KDNode<dim, T>> left;
-    std::shared_ptr<KDNode<dim, T>> right;
+    std::shared_ptr<KDNode<dim, T>> left = nullptr;
+    std::shared_ptr<KDNode<dim, T>> right = nullptr;
     Vector<dim> vec;
     T node;
-    unsigned int axis;
-    float value;
+    unsigned int axis = 0;
+    float value = 0;
 };
 
 /*!
@@ -55,8 +55,6 @@ template <unsigned int dim, typename T>
 KDNode<dim, T>::KDNode(const Vector<dim> &vec, const T &node) {
     this->vec = vec;
     this->node = node;
-    axis = 0;
-    value = 0;
 }
 } /* namespace rmpl */
 
