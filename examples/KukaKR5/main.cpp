@@ -22,9 +22,9 @@ int main(int argc, char** argv) {
     RRTOptions options(40, 1);
     StarRRTPlanner<6> planner(robot, options);
 
-    Eigen::Matrix<float, 6 ,1> start = utilVec::Vecf(0, 0, 0, 0, 51, 0);
+    Vector6 start = utilVec::Vecf(0, 0, 0, 0, 51, 0);
     robot->saveMeshConfig(start);
-    Eigen::Matrix<float, 6 ,1> goal = utilVec::Vecf(150, -60, 90, 0, 82.7, 75.5);
+    Vector6 goal = utilVec::Vecf(150, -60, 90, 0, 82.7, 75.5);
 
     auto startTime = std::chrono::system_clock::now();
     bool connected = planner.computePath(start, goal, 25000, 2);
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
     std::vector<std::shared_ptr<Node<6>>> nodes = planner.getGraphNodes();
-    std::vector<Eigen::Matrix<float, 6, 1>> graphPoints;
+    std::vector<Vector6> graphPoints;
     Logging::info("Init Graph has: " + std::to_string(nodes.size()) + "nodes", "Example");
     for (auto node : nodes)
         graphPoints.push_back(robot->directKinematic(node->getValues()));
@@ -40,19 +40,19 @@ int main(int argc, char** argv) {
 
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
-        std::vector<Eigen::Matrix<float, 6 ,1>> pathAngles = planner.getPath(1, true);
+        std::vector<Vector6> pathAngles = planner.getPath(1, true);
 
-        std::vector<std::vector<Eigen::Matrix<float, 6 ,1>>> vecs;
+        std::vector<std::vector<Vector6>> vecs;
         for (auto angle : pathAngles) {
-            std::vector<Eigen::Matrix4f> jointTrafos = robot->getJointTrafos(angle);
-            std::vector<Eigen::Matrix<float, 6 ,1>> tmp;
+            std::vector<Matrix4> jointTrafos = robot->getJointTrafos(angle);
+            std::vector<Vector6> tmp;
             for (auto joint : jointTrafos)
                 tmp.push_back(utilGeo::poseMatToVec(joint));
             vecs.push_back(tmp);
         }
         writer::writeTrafosToFile(vecs, "trafos.txt");
 
-        std::vector<Eigen::Matrix<float, 6, 1>> pathPoints;
+        std::vector<Vector6> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
         writer::appendVecsToFile<6>(pathPoints, "example.ASC", 10);

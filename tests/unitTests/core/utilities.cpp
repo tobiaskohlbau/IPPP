@@ -33,10 +33,10 @@ BOOST_AUTO_TEST_CASE(pi) {
 }
 
 BOOST_AUTO_TEST_CASE(decomposeT) {
-    Matrix4f T0 = Matrix4f::Zero(4, 4);
-    Matrix4f T1 = Matrix4f::Identity(4, 4);
-    Matrix3f R0, R1;
-    Vector3f t0, t1;
+    Matrix4 T0 = Matrix4f::Zero(4, 4);
+    Matrix4 T1 = Matrix4f::Identity(4, 4);
+    Matrix3 R0, R1;
+    Vector3 t0, t1;
     utilGeo::decomposeT(T0, R0, t0);
     utilGeo::decomposeT(T1, R1, t1);
 
@@ -54,8 +54,8 @@ BOOST_AUTO_TEST_CASE(decomposeT) {
 }
 
 BOOST_AUTO_TEST_CASE(poseVecToMat) {
-    Eigen::Matrix<float, 6, 1> poseZero = utilVec::Vecf(0, 0, 0, 0, 0, 0);
-    Matrix4f poseMat = utilGeo::poseVecToMat(poseZero);
+    Vector6 poseZero = utilVec::Vecf(0, 0, 0, 0, 0, 0);
+    Matrix4 poseMat = utilGeo::poseVecToMat(poseZero);
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
             if (i == j) {
@@ -65,14 +65,14 @@ BOOST_AUTO_TEST_CASE(poseVecToMat) {
             }
         }
     }
-    Eigen::Matrix<float, 6, 1> poseVec = utilGeo::poseMatToVec(poseMat);
+    Vector6 poseVec = utilGeo::poseMatToVec(poseMat);
     for (int i = 0; i < 6; ++i)
         if (poseVec[i] < 0.0001 && poseVec[i] > -0.0001)
             poseVec[i] = 0;
     for (int i = 0; i < 6; ++i)
         BOOST_CHECK(poseZero[i] == poseVec[i]);
 
-    Eigen::Matrix<float, 6, 1> poseTwo = utilVec::Vecf(1, 1, 1, 0, 0, 0);
+    Vector6 poseTwo = utilVec::Vecf(1, 1, 1, 0, 0, 0);
     poseMat = utilGeo::poseVecToMat(poseTwo);
     for (int i = 0; i < 4; ++i)
         BOOST_CHECK(poseMat(i, 3) == 1);
@@ -95,9 +95,9 @@ BOOST_AUTO_TEST_CASE(degToRad) {
     float pi = utilGeo::pi();
     float a1[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
     float a2[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
-    Eigen::VectorXf deg = utilVec::Vecf(11, a1);
-    Eigen::VectorXf rad = utilVec::Vecf(11, a2);
-    Eigen::VectorXf temp = utilGeo::degToRad<11>(deg);
+    VectorX deg = utilVec::Vecf(11, a1);
+    VectorX rad = utilVec::Vecf(11, a2);
+    VectorX temp = utilGeo::degToRad<11>(deg);
     for (int i = 0; i < deg.rows(); ++i) {
         BOOST_CHECK(rad[i] <= temp[i] + 0.0001);
         BOOST_CHECK(rad[i] >= temp[i] - 0.0001);

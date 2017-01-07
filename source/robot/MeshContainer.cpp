@@ -167,7 +167,7 @@ bool MeshContainer::loadFile(const std::string filePath) {
 *  \param[out] binary result
 *  \date       2016-07-14
 */
-bool MeshContainer::saveObj(const std::string path, Eigen::Matrix4f T) {
+bool MeshContainer::saveObj(const std::string path, Matrix4 T) {
     std::vector<Eigen::Vector3f> verts;
     for (auto vertice : m_vertices) {
         Eigen::Vector4f temp(utilVec::append<3>(vertice, (float)1));

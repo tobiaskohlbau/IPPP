@@ -52,8 +52,8 @@ constexpr float toDeg() {
 *  \param[out] transformation matrix
 *  \date       2016-08-25
 */
-static Eigen::Matrix4f createT(Eigen::Matrix3f &R, Vector3 &t) {
-    Eigen::Matrix4f T = Eigen::Matrix4f::Identity(4, 4);
+static Matrix4 createT(Matrix3 &R, Vector3 &t) {
+    Matrix4 T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
     T.block<3, 1>(0, 3) = t;
     return T;
@@ -67,7 +67,7 @@ static Eigen::Matrix4f createT(Eigen::Matrix3f &R, Vector3 &t) {
 *  \param[out] translatin matrix
 *  \date       2016-08-25
 */
-static void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Vector3 &t) {
+static void decomposeT(Matrix4 &T, Matrix3 &R, Vector3 &t) {
     R = T.block<3, 3>(0, 0);
     t = T.block<3, 1>(0, 3);
 }
@@ -79,7 +79,7 @@ static void decomposeT(Eigen::Matrix4f &T, Eigen::Matrix3f &R, Vector3 &t) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Eigen::Matrix2f getRotMat2D(float deg) {
+static Matrix2 getRotMat2D(float deg) {
     Eigen::Rotation2D<float> rot2(deg * toRad());
     return rot2.toRotationMatrix();
 }
@@ -93,8 +93,8 @@ static Eigen::Matrix2f getRotMat2D(float deg) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Eigen::Matrix3f getRotMat3D(float degX, float degY, float degZ) {
-    Eigen::Matrix3f R;
+static Matrix3 getRotMat3D(float degX, float degY, float degZ) {
+    Matrix3 R;
     R = Eigen::AngleAxisf(degX * toRad(), Eigen::Vector3f::UnitX()) *
         Eigen::AngleAxisf(degY * toRad(), Eigen::Vector3f::UnitY()) * Eigen::AngleAxisf(degZ * toRad(), Eigen::Vector3f::UnitZ());
     return R;
@@ -108,8 +108,7 @@ static Eigen::Matrix3f getRotMat3D(float degX, float degY, float degZ) {
 *  \param[out] translation vector
 *  \date       2016-11-15
 */
-static void poseVecToRandT(const Vector3 &pose, Eigen::Matrix2f &R, Vector2 &t) {
-    assert(pose.rows() == 3);
+static void poseVecToRandT(const Vector3 &pose, Matrix2 &R, Vector2 &t) {
     R = getRotMat2D(pose[2]);
     t(0) = pose[0];
     t(1) = pose[1];
@@ -123,12 +122,10 @@ static void poseVecToRandT(const Vector3 &pose, Eigen::Matrix2f &R, Vector2 &t) 
 *  \param[out] translation vector
 *  \date       2016-11-15
 */
-static void poseVecToRandT(const Vector6 &pose, Eigen::Matrix3f &R, Vector3 &t) {
-    assert(pose.rows() == 6);
+static void poseVecToRandT(const Vector6 &pose, Matrix3 &R, Vector3 &t) {
     R = getRotMat3D(pose[3], pose[4], pose[5]);
-    t(0) = pose[0];
-    t(1) = pose[1];
-    t(2) = pose[2];
+    for (unsigned int i = 0; i < 3; ++i)
+        t(i) = pose[i];
 }
 
 /*!
@@ -138,9 +135,9 @@ static void poseVecToRandT(const Vector6 &pose, Eigen::Matrix3f &R, Vector3 &t) 
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-static Eigen::Matrix4f poseVecToMat(const Vector6 &pose) {
-    Eigen::Matrix3f R = getRotMat3D(pose[3], pose[4], pose[5]);
-    Eigen::Matrix4f T = Eigen::Matrix4f::Identity(4, 4);
+static Matrix4 poseVecToMat(const Vector6 &pose) {
+    Matrix3 R = getRotMat3D(pose[3], pose[4], pose[5]);
+    Matrix4 T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
     for (int i = 0; i < 3; ++i)
         T(i, 3) = pose[i];
@@ -154,12 +151,11 @@ static Eigen::Matrix4f poseVecToMat(const Vector6 &pose) {
 *  \param[out] pose Vector (angles)
 *  \date       2016-07-07
 */
-static Vector6 poseMatToVec(const Eigen::Matrix4f &pose) {
-    Vector3 vec(pose(0, 3), pose(1, 3), pose(2, 3));
-    Vector3 euler = pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2);
-    euler(0, 0) *= toDeg();
-    euler(1, 0) *= toDeg();
-    euler(2, 0) *= toDeg();
+static Vector6 poseMatToVec(const Matrix4 &pose) {
+    Vector3 vec(pose.block<3, 1>(0, 3));
+    Vector3 euler(pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2));
+    for (unsigned int i = 0; i < 3; ++i)
+        euler(i, 0) *= toDeg();
     return utilVec::append<3, 3>(vec, euler);
 }
 

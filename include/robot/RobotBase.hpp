@@ -56,7 +56,7 @@ class RobotBase : public ModuleBase {
 
     void setPose(const Vector6 &pose);
     Vector6 getPose();
-    Eigen::Matrix4f getPoseMat();
+    Matrix4 getPoseMat();
 
     void setBaseMesh(const std::shared_ptr<MeshContainer> &baseMesh);
     std::shared_ptr<MeshContainer> getBaseMesh();
@@ -79,7 +79,7 @@ class RobotBase : public ModuleBase {
     Vector<dim> m_minBoundary;
     Vector<dim> m_maxBoundary;
     Vector6 m_pose;
-    Eigen::Matrix4f m_poseMat;
+    Matrix4 m_poseMat;
 
     std::shared_ptr<MeshContainer> m_baseMesh;
     std::shared_ptr<MeshContainer> m_workspaceMesh;
@@ -173,7 +173,7 @@ Vector6 RobotBase<dim>::getPose() {
 *  \date       2016-07-24
 */
 template <unsigned int dim>
-Eigen::Matrix4f RobotBase<dim>::getPoseMat() {
+Matrix4 RobotBase<dim>::getPoseMat() {
     return m_poseMat;
 }
 

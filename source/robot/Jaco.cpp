@@ -69,7 +69,7 @@ Jaco::Jaco() : SerialRobot<6>("Jaco", CollisionType::pqp) {
 *  \date       2016-08-25
 */
 Vector6 Jaco::directKinematic(const Vector6 &angles) {
-    std::vector<Eigen::Matrix4f> trafos = getJointTrafos(angles);
+    std::vector<Matrix4> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos);
 }
@@ -81,12 +81,12 @@ Vector6 Jaco::directKinematic(const Vector6 &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-14
 */
-std::vector<Eigen::Matrix4f> Jaco::getJointTrafos(const Vector6 &angles) {
+std::vector<Matrix4> Jaco::getJointTrafos(const Vector6 &angles) {
     // transform form jaco physical angles to dh angles
     Vector6 dhAngles = convertRealToDH(angles);
     Vector6 rads = utilGeo::degToRad<6>(dhAngles);
 
-    std::vector<Eigen::Matrix4f> trafos;
+    std::vector<Matrix4> trafos;
     // create transformation matrizes
     for (int i = 0; i < 6; ++i)
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));

@@ -35,9 +35,9 @@ class SerialRobot : public RobotBase<dim> {
     SerialRobot(std::string name, CollisionType type);
 
     virtual Vector<dim> directKinematic(const Vector<dim> &angles) = 0;
-    virtual std::vector<Eigen::Matrix4f> getJointTrafos(const Vector<dim> &angles) = 0;
-    Eigen::Matrix4f getTrafo(float alpha, float a, float d, float q);
-    Vector6 getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos);
+    virtual std::vector<Matrix4> getJointTrafos(const Vector<dim> &angles) = 0;
+    Matrix4 getTrafo(float alpha, float a, float d, float q);
+    Vector6 getTcpPosition(const std::vector<Matrix4> &trafos);
 
     void setJoints(std::vector<Joint> joints);
     unsigned int getNbJoints();
@@ -48,7 +48,7 @@ class SerialRobot : public RobotBase<dim> {
     std::vector<std::shared_ptr<FCLModel>> getJointFclModels();
 
     void saveMeshConfig(Vector<dim> angles);
-    void saveMeshConfig(Eigen::Matrix4f *As);
+    void saveMeshConfig(Matrix4 *As);
 
   protected:
     std::vector<Joint> m_joints;
@@ -82,13 +82,13 @@ SerialRobot<dim>::SerialRobot(std::string name, CollisionType type)
 *  \date       2016-07-07
 */
 template <unsigned int dim>
-Eigen::Matrix4f SerialRobot<dim>::getTrafo(float alpha, float a, float d, float q) {
+Matrix4 SerialRobot<dim>::getTrafo(float alpha, float a, float d, float q) {
     float sinAlpha = sin(alpha);
     float cosAlpha = cos(alpha);
     float sinQ = sin(q);
     float cosQ = cos(q);
 
-    Eigen::Matrix4f T = Eigen::Matrix4f::Zero(4, 4);
+    Matrix4 T = Eigen::Matrix4f::Zero(4, 4);
     T(0, 0) = cosQ;
     T(0, 1) = -sinQ * cosAlpha;
     T(0, 2) = sinQ * sinAlpha;
@@ -128,14 +128,14 @@ Eigen::Matrix4f SerialRobot<dim>::getTrafo(float alpha, float a, float d, float 
 *  \date       2016-07-07
 */
 template <unsigned int dim>
-Vector6 SerialRobot<dim>::getTcpPosition(const std::vector<Eigen::Matrix4f> &trafos) {
+Vector6 SerialRobot<dim>::getTcpPosition(const std::vector<Matrix4> &trafos) {
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
-    Eigen::Matrix4f robotToTcp = trafos[0];
+    Matrix4 robotToTcp = trafos[0];
     for (int i = 1; i < 6; ++i)
         robotToTcp *= trafos[i];
 
-    Eigen::Matrix4f basisToTcp = this->m_poseMat * robotToTcp;
+    Matrix4 basisToTcp = this->m_poseMat * robotToTcp;
 
     return utilGeo::poseMatToVec(basisToTcp);
 }
@@ -218,8 +218,8 @@ unsigned int SerialRobot<dim>::getNbJoints() {
 */
 template <unsigned int dim>
 void SerialRobot<dim>::saveMeshConfig(Vector<dim> angles) {
-    std::vector<Eigen::Matrix4f> jointTrafos = getJointTrafos(angles);
-    Eigen::Matrix4f As[jointTrafos.size()];
+    std::vector<Matrix4> jointTrafos = getJointTrafos(angles);
+    Matrix4 As[jointTrafos.size()];
     As[0] = this->m_poseMat * jointTrafos[0];
     for (int i = 1; i < jointTrafos.size(); ++i)
         As[i] = As[i - 1] * jointTrafos[i];
@@ -234,7 +234,7 @@ void SerialRobot<dim>::saveMeshConfig(Vector<dim> angles) {
 *  \date       2016-10-22
 */
 template <unsigned int dim>
-void SerialRobot<dim>::saveMeshConfig(Eigen::Matrix4f *As) {
+void SerialRobot<dim>::saveMeshConfig(Matrix4 *As) {
     if (this->m_baseMesh != nullptr)
         this->m_baseMesh->saveObj("base.obj", this->m_poseMat);
 

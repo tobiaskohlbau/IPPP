@@ -68,7 +68,7 @@ KukaKR5::KukaKR5() : SerialRobot<6>("KukaKR5", CollisionType::pqp) {
 *  \date       2016-10-22
 */
 Vector6 KukaKR5::directKinematic(const Vector6 &angles) {
-    std::vector<Eigen::Matrix4f> trafos = getJointTrafos(angles);
+    std::vector<Matrix4> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos);
 }
@@ -80,10 +80,10 @@ Vector6 KukaKR5::directKinematic(const Vector6 &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-10-22
 */
-std::vector<Eigen::Matrix4f> KukaKR5::getJointTrafos(const Vector6 &angles) {
+std::vector<Matrix4> KukaKR5::getJointTrafos(const Vector6 &angles) {
     Vector6 rads = utilGeo::degToRad<6>(angles);
 
-    std::vector<Eigen::Matrix4f> trafos;
+    std::vector<Matrix4> trafos;
     for (int i = 0; i < 6; ++i)
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));
     return trafos;

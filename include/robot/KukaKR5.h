@@ -32,7 +32,7 @@ class KukaKR5 : public SerialRobot<6> {
   public:
     KukaKR5();
     Vector6 directKinematic(const Vector6 &angles);
-    std::vector<Eigen::Matrix4f> getJointTrafos(const Vector6 &angles);
+    std::vector<Matrix4> getJointTrafos(const Vector6 &angles);
 };
 
 } /* namespace rmpl */

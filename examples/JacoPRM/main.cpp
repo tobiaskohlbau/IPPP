@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
         planner.queryPath(utilVec::Vecf(180, 180, 180, 180, 180, 180), utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     std::vector<std::shared_ptr<Node<6>>> nodes = planner.getGraphNodes();
-    std::vector<Eigen::Matrix<float, 6 ,1>> graphPoints;
+    std::vector<Vector6> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
@@ -41,9 +41,9 @@ int main(int argc, char** argv) {
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
-        std::vector<Eigen::Matrix<float, 6, 1>> pathAngles = planner.getPath(5, true);
+        std::vector<Vector6> pathAngles = planner.getPath(5, true);
 
-        std::vector<Eigen::Matrix<float, 6, 1>> pathPoints;
+        std::vector<Vector6> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
         writer::appendVecsToFile<6>(pathPoints, "example.ASC", 10);
