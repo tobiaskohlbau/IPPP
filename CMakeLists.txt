@@ -24,7 +24,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -pthread")
 
 OPTION(BUILD_EXAMPLES "Build the examples")
-OPTION(DEBUG_OUTPUT "Display debug output")
 OPTION(BUILD_TESTS "Build tests" ON)
 
 # external libraries
@@ -52,10 +51,6 @@ ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(source)
 
 # options
-IF (${DEBUG_OUTPUT})
-    add_definitions(-DDEBUG_OUTPUT)
-ENDIF()
-
 IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)
 ENDIF()
