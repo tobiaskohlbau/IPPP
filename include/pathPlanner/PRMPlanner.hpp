@@ -130,8 +130,9 @@ void PRMPlanner<dim>::startSamplingPhase(unsigned int nbOfNodes, unsigned int nb
 */
 template <unsigned int dim>
 void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
+    Vector<dim> sample;
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vector<dim> sample = m_sampler->getSample();
+        sample = m_sampler->getSample();
         if (!m_collision->controlVec(sample)) {
             m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
         }
@@ -280,18 +281,14 @@ bool PRMPlanner<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_p
     while (!m_openList.empty()) {
         currentNode = utilList::removeMinFromList(m_openList);
 
-        if (currentNode == targetNode) {
-            std::cout << "closed list has: " << count << std::endl;
+        if (currentNode == targetNode)
             return true;
-        }
 
         m_closedList.push_back(currentNode);
         ++count;
 
         expandNode(currentNode);
     }
-    std::cout << "closed list has: " << count << std::endl;
-
     return false;
 }
 
