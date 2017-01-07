@@ -35,6 +35,8 @@ template <unsigned int dim>
 class Graph : public ModuleBase {
   public:
     Graph(unsigned int sortCount);
+    ~Graph();
+
     void addNode(const std::shared_ptr<Node<dim>> &node);
     std::vector<std::shared_ptr<Node<dim>>> getNodes();
 
@@ -65,6 +67,20 @@ template <unsigned int dim>
 Graph<dim>::Graph(unsigned int sortCount) : ModuleBase("Graph"), m_sortCount(sortCount) {
     m_autoSort = (sortCount != 0);
     m_kdTree = std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>());
+}
+
+/*!
+*  \brief      Destructor of the class Graph
+*  \author     Sascha Kaden
+*  \date       2017-01-07
+*/
+template <unsigned int dim>
+Graph<dim>::~Graph() {
+    for (auto node : m_nodes) {
+        node->clearParent();
+        node->clearChildes();
+        node = nullptr;
+    }
 }
 
 /*!

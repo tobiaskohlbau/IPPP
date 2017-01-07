@@ -40,6 +40,9 @@ class KDTree : public ModuleBase {
   public:
     KDTree();
     KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes);
+    ~KDTree();
+    void removeNode(std::shared_ptr<KDNode<dim, T>> node);
+
     void addNode(const Vector<dim> &vec, const T &node);
     T searchNearestNeighbor(const Vector<dim> &vec);
     std::vector<T> searchRange(const Vector<dim> &vec, float range);
@@ -71,7 +74,7 @@ KDTree<dim, T>::KDTree() : ModuleBase("KD Tree") {
 }
 
 /*!
-*  \brief      Cconstructor of the class KDTree, builds a sorted tree with the passed nodes
+*  \brief      Constructor of the class KDTree, builds a sorted tree with the passed nodes
 *  \author     Sascha Kaden
 *  \param[in]  vector of nodes
 *  \date       2016-07-18
@@ -88,6 +91,30 @@ KDTree<dim, T>::KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) : ModuleB
     m_root->left = sort(vecLeft, 1);
     m_root->right = sort(vecRight, 1);
 }
+
+/*!
+*  \brief      Destructor of the class KDTree
+*  \author     Sascha Kaden
+*  \date       2017-01-07
+*/
+template <unsigned int dim, class T>
+KDTree<dim, T>::~KDTree() {
+
+    if (m_root != nullptr)
+        removeNode(m_root);
+}
+
+template <unsigned int dim, class T>
+    void KDTree<dim, T>::removeNode(std::shared_ptr<KDNode<dim, T>> node) {
+    if (node->left != nullptr) {
+        removeNode(node->left);
+        node->left = nullptr;
+    }
+    if (node->right != nullptr) {
+        removeNode(node->right);
+        node->right = nullptr;
+    }
+};
 
 /*!
 *  \brief      Add Node<dim> to the KDTree
