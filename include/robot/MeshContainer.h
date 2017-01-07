@@ -29,6 +29,7 @@
 #include <assimp/scene.h>
 #include <fcl/fcl.h>
 
+#include <core/types.h>
 #include <core/module/ModuleBase.h>
 
 namespace rmpl {
@@ -47,7 +48,7 @@ class MeshContainer {
     MeshContainer(std::string filepath);
     MeshContainer(std::shared_ptr<FCLModel> &fclModel, std::shared_ptr<PQP_Model> &pqpModel);
     bool loadFile(const std::string filePath);
-    bool saveObj(const std::string path, Eigen::Matrix4f T);
+    bool saveObj(const std::string path, Matrix4 T);
 
     std::shared_ptr<FCLModel> getFcl();
     std::shared_ptr<PQP_Model> getPqp();

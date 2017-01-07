@@ -114,11 +114,11 @@ void treeConnection() {
         plannerInitNode.connectGoalNode(goal);
         plannerGoalNode.connectGoalNode(goal);
 
-        std::vector<Eigen::Matrix<float, 6, 1>> pathAngles = plannerInitNode.getPath(5, true);
-        std::vector<Eigen::Matrix<float, 6, 1>> temp = plannerGoalNode.getPath(5, true);
+        std::vector<Vector6> pathAngles = plannerInitNode.getPath(5, true);
+        std::vector<Vector6> temp = plannerGoalNode.getPath(5, true);
         pathAngles.insert(pathAngles.end(), temp.begin(), temp.end());
 
-        std::vector<Eigen::Matrix<float, 6, 1>> pathPoints;
+        std::vector<Vector6> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
         writer::appendVecsToFile<6>(pathPoints, "example.ASC", 10);

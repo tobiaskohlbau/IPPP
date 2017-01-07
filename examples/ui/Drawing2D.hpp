@@ -102,7 +102,7 @@ static void drawTrianglePath(std::vector<Vector3> vecs, std::vector<Triangle2D> 
 
     Logging::info("start drawing of triangles", "Drawing2D");
 
-    Eigen::Matrix2f R;
+    Matrix2 R;
     Vector2 t;
     cv::Point2i pt1, pt2, pt3;
     Triangle2D triangle;

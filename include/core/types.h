@@ -25,14 +25,17 @@ namespace rmpl {
 
 template <unsigned int dim>
 using Vector = Eigen::Matrix<float, dim, 1>;
-
 using Vector2 = Eigen::Matrix<float, 2, 1>;
 using Vector3 = Eigen::Matrix<float, 3, 1>;
 using Vector4 = Eigen::Matrix<float, 4, 1>;
 using Vector5 = Eigen::Matrix<float, 5, 1>;
 using Vector6 = Eigen::Matrix<float, 6, 1>;
-
 using VectorX = Eigen::Matrix<float, Eigen::Dynamic, 1>;
+
+using Matrix2 = Eigen::Matrix2f;
+using Matrix3 = Eigen::Matrix3f;
+using Matrix4 = Eigen::Matrix4f;
+using MatrixX = Eigen::MatrixXf;
 
 
 } /* namespace rmpl */

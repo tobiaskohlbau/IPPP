@@ -32,7 +32,7 @@ class Jaco : public SerialRobot<6> {
   public:
     Jaco();
     Vector6 directKinematic(const Vector6 &angles);
-    std::vector<Eigen::Matrix4f> getJointTrafos(const Vector6 &angles);
+    std::vector<Matrix4> getJointTrafos(const Vector6 &angles);
 
   private:
     Vector6 convertRealToDH(const Vector6 &realAngles);
