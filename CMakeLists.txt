@@ -62,7 +62,7 @@ ENDIF()
 
 IF (${BUILD_TESTS})
     enable_testing ()
-    ADD_SUBDIRECTORY(unitTest)
+    ADD_SUBDIRECTORY(tests)
 ENDIF()
 
 add_library(${PROJECT_NAME} STATIC ${SRCS})
