@@ -77,7 +77,7 @@ class PointList {
     }
 
     /*!
-    *  \brief      Set point of PointList from index
+    *  \brief      Set point of PointList from index (index starts with 1)
     *  \param[in]  index
     *  \param[out] point
     *  \author     Sascha Kaden
@@ -109,7 +109,7 @@ class PointList {
     *  \author     Sascha Kaden
     *  \date       2016-12-19
     */
-    void transform(const MatrixX R, const T t) {
+    void transform(const MatrixX &R, const T &t) {
         assert(R.rows() == m_p[0].rows());
 
         for (unsigned int i = 0; i < P; ++i)

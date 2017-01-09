@@ -254,8 +254,10 @@ float Node<dim>::getCost() {
 */
 template <unsigned int dim>
 void Node<dim>::setParent(std::shared_ptr<Node> &parent) {
-    if (!parent->empty())
-        m_parent = std::shared_ptr<Edge<dim>>(new Edge<dim>(std::make_shared<Node>(*this), parent));
+    if (!parent->empty()) {
+        std::shared_ptr<Node> node = std::make_shared<Node>(*this);
+        m_parent = std::shared_ptr<Edge<dim>>(new Edge<dim>(node, parent));
+    }
 }
 
 /*!
@@ -301,8 +303,10 @@ void Node<dim>::clearParent() {
 */
 template <unsigned int dim>
 void Node<dim>::addChild(std::shared_ptr<Node<dim>> &child) {
-    if (!child->empty())
-        m_childes.push_back(std::shared_ptr<Edge<dim>>(new Edge<dim>(std::make_shared<Node>(*this), child)));
+    if (!child->empty()) {
+        std::shared_ptr<Node> node = std::make_shared<Node>(*this);
+        m_childes.push_back(std::shared_ptr<Edge<dim>>(new Edge<dim>(node, child)));
+    }
 }
 
 /*!

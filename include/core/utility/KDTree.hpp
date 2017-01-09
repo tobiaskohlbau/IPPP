@@ -99,13 +99,12 @@ KDTree<dim, T>::KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) : ModuleB
 */
 template <unsigned int dim, class T>
 KDTree<dim, T>::~KDTree() {
-
     if (m_root != nullptr)
         removeNode(m_root);
 }
 
 template <unsigned int dim, class T>
-    void KDTree<dim, T>::removeNode(std::shared_ptr<KDNode<dim, T>> node) {
+void KDTree<dim, T>::removeNode(std::shared_ptr<KDNode<dim, T>> node) {
     if (node->left != nullptr) {
         removeNode(node->left);
         node->left = nullptr;
@@ -252,12 +251,14 @@ std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &vec, float range) 
 template <unsigned int dim, class T>
 void KDTree<dim, T>::NNS(const Vector<dim> &vec, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode,
                          float &bestDist) {
+    float dist = (vec - node->vec).squaredNorm();
+    if (dist < bestDist) {
+        bestDist = dist;
+        refNode = node;
+    }
+
     if (node->left == nullptr && node->right == nullptr) {
-        float dist = (vec - node->vec).squaredNorm();
-        if (dist < bestDist) {
-            bestDist = dist;
-            refNode = node;
-        }
+        return;
     } else {
         if (vec[node->axis] <= node->value) {
             if (vec[node->axis] - bestDist <= node->value && node->left != nullptr)

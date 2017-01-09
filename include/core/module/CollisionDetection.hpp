@@ -69,8 +69,8 @@ class CollisionDetection : public ModuleBase {
     std::shared_ptr<MeshContainer> m_workspace = nullptr;
 
     // models for collision detection
-    fcl::CollisionObject<float> *o1;
-    fcl::CollisionObject<float> *o2;
+    fcl::CollisionObject<float> *o1 = nullptr;
+    fcl::CollisionObject<float> *o2 = nullptr;
 
     Matrix3 m_identity;
     Eigen::Vector3f m_zeroVec;
@@ -474,6 +474,8 @@ bool CollisionDetection<dim>::checkFCL(std::shared_ptr<FCLModel> &model1, std::s
     fcl::CollisionRequest<float> request;    // default setting
     fcl::CollisionResult<float> result;
     collide(o1, o2, request, result);
+    delete o1;
+    delete o2;
 
     return result.isCollision();
 }

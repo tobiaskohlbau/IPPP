@@ -47,14 +47,17 @@ class Graph : public ModuleBase {
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, float distance);
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, float distance);
 
-    unsigned int size();
     void sortTree();
+
+    unsigned int size() const;
+    unsigned int getSortCount() const;
+    bool autoSort() const;
 
   private:
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;
     std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>> m_kdTree;
     std::mutex m_mutex;
-    unsigned int m_sortCount;
+    const unsigned int m_sortCount;
     bool m_autoSort = false;
 };
 
@@ -185,10 +188,17 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shar
     return m_kdTree->searchRange(node->getValues(), range);
 }
 
+/*!
+* \brief      Creates a new sorted KDTree and set them as member
+* \author     Sascha Kaden
+* \date       2017-01-09
+*/
 template <unsigned int dim>
 void Graph<dim>::sortTree() {
     std::lock_guard<std::mutex> lock(m_mutex);
-    std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>> kdTree = std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>(m_nodes));;
+    std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>> kdTree =
+        std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>(m_nodes));
+    ;
     m_kdTree = kdTree;
     Logging::info("KD Tree has been sorted and have: " + std::to_string(m_nodes.size()) + " Nodes", this);
 }
@@ -200,8 +210,30 @@ void Graph<dim>::sortTree() {
 * \date       2016-08-09
 */
 template <unsigned int dim>
-unsigned int Graph<dim>::size() {
+unsigned int Graph<dim>::size() const {
     return m_nodes.size();
+}
+
+/*!
+* \brief      Return sort count, if 0 auto sort is false
+* \author     Sascha Kaden
+* \param[out] count
+* \date       2017-01-09
+*/
+template <unsigned int dim>
+unsigned int Graph<dim>::getSortCount() const {
+    return m_sortCount;
+}
+
+/*!
+* \brief      Return auto sort of Graph
+* \author     Sascha Kaden
+* \param[out] auto sort
+* \date       2017-01-09
+*/
+template <unsigned int dim>
+bool Graph<dim>::autoSort() const {
+    return m_autoSort;
 }
 
 } /* namespace rmpl */
