@@ -36,7 +36,6 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/PRMPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/StarRRTPlanner.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/MobileRobot.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/RobotBase.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/SerialRobot.hpp)
 
