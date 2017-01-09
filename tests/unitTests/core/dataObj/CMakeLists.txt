@@ -16,12 +16,10 @@
 #
 #-------------------------------------------------------------------------//
 
-set(MODULE "main")
+set(MODULE "core_dataObj")
 add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
 
-SET(ADDITIONAL_LIBRARIES
-    ccd
-    fcl)
-
-ADD_RMPL_TEST(clearWorkspace "")
-ADD_RMPL_TEST(obstacleWorkspace "")
+ADD_RMPL_TEST(edge "")
+ADD_RMPL_TEST(graph "")
+ADD_RMPL_TEST(node "")
+ADD_RMPL_TEST(pointList "")
