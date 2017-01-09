@@ -20,6 +20,7 @@
 
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/utility/Utility.h>
+#include <robot/Jaco.h>
 
 using namespace rmpl;
 
@@ -28,8 +29,7 @@ BOOST_AUTO_TEST_SUITE(constructor)
 BOOST_AUTO_TEST_CASE(computeTrajectory) {
     // init TrajectoryPlanner
     const unsigned int dim = 6;
-    std::shared_ptr<MobileRobot<dim>> robot = std::shared_ptr<MobileRobot<dim>>(
-        new MobileRobot<dim>("", CollisionType::pqp, utilVec::Vecf(-10, -10, -10, -10, -10, -10), utilVec::Vecf(10, 10, 10, 10, 10, 10)));
+    std::shared_ptr<Jaco> robot = std::shared_ptr<Jaco>(new Jaco());
     std::shared_ptr<CollisionDetection<dim>> collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetection<dim>(robot));
     TrajectoryPlanner<dim> planner(0.1, collision);
 
