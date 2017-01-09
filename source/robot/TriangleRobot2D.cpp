@@ -28,7 +28,7 @@ namespace rmpl {
 *  \date       2016-11-15
 */
 TriangleRobot2D::TriangleRobot2D(std::vector<Triangle2D> triangles, Vector3 minBoundary, Vector3 maxBoundary)
-    : MobileRobot<3>("TriangleRobot2D", CollisionType::triangle2D, minBoundary, maxBoundary) {
+    : RobotBase<3>("TriangleRobot2D", CollisionType::triangle2D, RobotType::mobile, minBoundary, maxBoundary) {
     setTriangles(triangles);
 }
 

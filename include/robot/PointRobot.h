@@ -19,7 +19,7 @@
 #ifndef POINTROBOT_H_
 #define POINTROBOT_H_
 
-#include <robot/MobileRobot.hpp>
+#include <robot/RobotBase.hpp>
 
 namespace rmpl {
 
@@ -28,7 +28,7 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
-class PointRobot : public MobileRobot<2> {
+class PointRobot : public RobotBase<2> {
   public:
     PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary);
 

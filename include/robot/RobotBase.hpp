@@ -25,8 +25,8 @@
 #include <Eigen/Core>
 #include <PQP.h>
 
-#include <core/types.h>
 #include <core/module/ModuleBase.h>
+#include <core/types.h>
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
 #include <robot/MeshContainer.h>
@@ -48,12 +48,10 @@ class RobotBase : public ModuleBase {
     virtual ~RobotBase();
 
   protected:
-    RobotBase(std::string name, CollisionType collisionType, RobotType robotType);
+    RobotBase(std::string name, CollisionType collisionType, RobotType robotType, Vector<dim> minBoundary,
+              Vector<dim> maxBoundary);
 
   public:
-    Vector<dim> getMinBoundary();
-    Vector<dim> getMaxBoundary();
-
     void setPose(const Vector6 &pose);
     Vector6 getPose();
     Matrix4 getPoseMat();
@@ -66,18 +64,18 @@ class RobotBase : public ModuleBase {
     void set2DWorkspace(const Eigen::MatrixXi &space);
     Eigen::MatrixXi &get2DWorkspace();
 
-    unsigned int getDim();
-    RobotType getRobotType();
-
-    CollisionType getCollisionType();
-    void setCollisionType(CollisionType type);
+    Vector<dim> getMinBoundary() const;
+    Vector<dim> getMaxBoundary() const;
+    unsigned int getDim() const;
+    RobotType getRobotType() const;
+    CollisionType getCollisionType() const;
 
   protected:
-    CollisionType m_collisionType;
-    RobotType m_robotType;
+    const CollisionType m_collisionType;
+    const RobotType m_robotType;
+    const Vector<dim> m_minBoundary;
+    const Vector<dim> m_maxBoundary;
 
-    Vector<dim> m_minBoundary;
-    Vector<dim> m_maxBoundary;
     Vector6 m_pose;
     Matrix4 m_poseMat;
 
@@ -105,37 +103,17 @@ RobotBase<dim>::~RobotBase() {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-RobotBase<dim>::RobotBase(std::string name, CollisionType collisionType, RobotType robotType)
-    : ModuleBase(name) {
-    m_collisionType = collisionType;
-    m_robotType = robotType;
-
+RobotBase<dim>::RobotBase(std::string name, CollisionType collisionType, RobotType robotType, Vector<dim> minBoundary,
+                          Vector<dim> maxBoundary)
+    : ModuleBase(name),
+      m_collisionType(collisionType),
+      m_robotType(robotType),
+      m_minBoundary(minBoundary),
+      m_maxBoundary(maxBoundary) {
     m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
     m_poseMat = utilGeo::poseVecToMat(m_pose);
     m_baseMesh = nullptr;
     m_workspaceMesh = nullptr;
-}
-
-/*!
-*  \brief      Get minimum boundary of the robot
-*  \author     Sascha Kaden
-*  \param[out] minimum Boudaries
-*  \date       2016-07-15
-*/
-template <unsigned int dim>
-Vector<dim> RobotBase<dim>::getMinBoundary() {
-    return m_minBoundary;
-}
-
-/*!
-*  \brief      Get maximum boundary of the robot
-*  \author     Sascha Kaden
-*  \param[out] maximum Boudaries
-*  \date       2016-07-15
-*/
-template <unsigned int dim>
-Vector<dim> RobotBase<dim>::getMaxBoundary() {
-    return m_maxBoundary;
 }
 
 /*!
@@ -246,13 +224,35 @@ Eigen::MatrixXi &RobotBase<dim>::get2DWorkspace() {
 }
 
 /*!
+*  \brief      Get minimum boundary of the robot
+*  \author     Sascha Kaden
+*  \param[out] minimum Boudaries
+*  \date       2016-07-15
+*/
+template <unsigned int dim>
+Vector<dim> RobotBase<dim>::getMinBoundary() const {
+    return m_minBoundary;
+}
+
+/*!
+*  \brief      Get maximum boundary of the robot
+*  \author     Sascha Kaden
+*  \param[out] maximum Boudaries
+*  \date       2016-07-15
+*/
+template <unsigned int dim>
+Vector<dim> RobotBase<dim>::getMaxBoundary() const {
+    return m_maxBoundary;
+}
+
+/*!
 *  \brief      Return dimension from the robot
 *  \author     Sascha Kaden
 *  \param[out] dimension
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-unsigned int RobotBase<dim>::getDim() {
+unsigned int RobotBase<dim>::getDim() const {
     return dim;
 }
 
@@ -263,23 +263,8 @@ unsigned int RobotBase<dim>::getDim() {
 *  \date       2016-08-25
 */
 template <unsigned int dim>
-RobotType RobotBase<dim>::getRobotType() {
+RobotType RobotBase<dim>::getRobotType() const {
     return m_robotType;
-}
-
-/*!
-*  \brief      Set the collision type of the robot
-*  \author     Sascha Kaden
-*  \param[in]  CollisionType
-*  \date       2016-07-24
-*/
-template <unsigned int dim>
-void RobotBase<dim>::setCollisionType(CollisionType type) {
-    if (type == CollisionType::point2D && dim != 2) {
-        Logging::warning("CollisionType twoD unequal to dimension", this);
-    } else {
-        m_collisionType = type;
-    }
 }
 
 /*!
@@ -289,7 +274,7 @@ void RobotBase<dim>::setCollisionType(CollisionType type) {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-CollisionType RobotBase<dim>::getCollisionType() {
+CollisionType RobotBase<dim>::getCollisionType() const {
     return m_collisionType;
 }
 
