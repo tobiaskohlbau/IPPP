@@ -19,4 +19,4 @@
 set(MODULE "core_utility")
 add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
 
-ADD_RMPL_TEST(utilities "")
+ADD_RMPL_TEST(utilGeo "")
