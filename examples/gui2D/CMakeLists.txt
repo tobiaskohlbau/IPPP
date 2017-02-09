@@ -16,10 +16,13 @@
 #
 #-------------------------------------------------------------------------//
 
+find_package(Boost COMPONENTS system REQUIRED)
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 find_package(Qt5Widgets)
 find_package(Qt5Core)
 find_package(Qt5Gui)
+
+include_directories(${Boost_INCLUDE_DIRS})
 
 QT5_WRAP_UI(UIS_HDRS
         ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.ui)
