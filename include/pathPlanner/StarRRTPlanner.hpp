@@ -155,8 +155,10 @@ void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::share
 */
 template <unsigned int dim>
 bool StarRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
-    if (m_collision->controlVec(goal))
+    if (m_collision->controlVec(goal)) {
+        Logging::info("Goal Node in collision", this);
         return false;
+    }
 
     std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(goalNode, m_stepSize * 3);
