@@ -6,350 +6,510 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1042</width>
-    <height>832</height>
+    <width>499</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="buttonLoadImage">
-        <property name="text">
-         <string>load image</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="buttonComputePath">
-        <property name="text">
-         <string>compute path</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="labelTrajectoryStepSize">
-          <property name="text">
-           <string>trajectory step size</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="boxTrajectoryStepSize">
-          <property name="value">
-           <double>1.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelSampler">
-          <property name="text">
-           <string>sampler method</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="boxSampler">
-          <item>
+   <widget class="QWidget" name="gridLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>160</width>
+      <height>128</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="layoutActions">
+     <item row="3" column="0">
+      <widget class="QPushButton" name="buttonLoadImage">
+       <property name="text">
+        <string>load image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="buttonSaveConfig">
+       <property name="text">
+        <string>save config</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="buttonComputePath">
+       <property name="text">
+        <string>compute path</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="buttonLoadConfig">
+       <property name="text">
+        <string>load config</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>140</y>
+      <width>160</width>
+      <height>219</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="layoutPositions">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Positions</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="boxStartX">
+         <property name="maximum">
+          <number>2000</number>
+         </property>
+         <property name="value">
+          <number>30</number>
+         </property>
+         <property name="displayIntegerBase">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>start phi</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelStart_2">
+         <property name="text">
+          <string>start Y</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="labelGoal">
+         <property name="text">
+          <string>goal X</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelStart">
+         <property name="text">
+          <string>start X</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QSpinBox" name="boxGoalX">
+         <property name="maximum">
+          <number>2000</number>
+         </property>
+         <property name="value">
+          <number>870</number>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="labelGoal_2">
+         <property name="text">
+          <string>goal Y</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="boxStartY">
+         <property name="maximum">
+          <number>2000</number>
+         </property>
+         <property name="value">
+          <number>30</number>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QSpinBox" name="boxGoalY">
+         <property name="maximum">
+          <number>2000</number>
+         </property>
+         <property name="value">
+          <number>870</number>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>goal phi</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDoubleSpinBox" name="boxStartPhi"/>
+       </item>
+       <item row="5" column="1">
+        <widget class="QDoubleSpinBox" name="boxGoalPhi"/>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_6">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>0</y>
+      <width>297</width>
+      <height>500</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QGridLayout" name="layoutPlannerOptions">
+       <item row="1" column="0">
+        <layout class="QGridLayout" name="gridLayout_7">
+         <item row="0" column="1">
+          <widget class="QComboBox" name="boxPlanner">
+           <item>
+            <property name="text">
+             <string>RRT</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>RRT*</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>PRM</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelPlanner">
            <property name="text">
-            <string>random</string>
+            <string>Planner</string>
            </property>
-          </item>
-          <item>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QDoubleSpinBox" name="boxPRM">
+           <property name="value">
+            <double>50.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="labelPRM">
            <property name="text">
-            <string>uniform</string>
+            <string>prm local planner distance</string>
            </property>
-          </item>
-          <item>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QDoubleSpinBox" name="boxRRT">
+           <property name="value">
+            <double>50.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="labelTrajectoryStepSize">
            <property name="text">
-            <string>normal distribution</string>
+            <string>Trajectory step size</string>
            </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelSampling">
-          <property name="text">
-           <string>sampling method</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="boxSampling">
-          <item>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="boxTrajectoryStepSize">
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="labelRRT">
            <property name="text">
-            <string>normal</string>
+            <string>rrt step size</string>
            </property>
-          </item>
-          <item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>nearObstacles</string>
+            <string>Robot type</string>
            </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QLabel" name="labelThreads">
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="boxRobot">
+           <item>
             <property name="text">
-             <string>number threads</string>
+             <string>Point</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="boxThreads">
-            <property name="value">
-             <number>2</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelNodes">
+           </item>
+           <item>
             <property name="text">
-             <string>number nodes</string>
+             <string>Triangle</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="boxNodes">
-            <property name="maximum">
-             <number>50000</number>
-            </property>
-            <property name="value">
-             <number>5000</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelPlanner">
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Planner Options</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="layoutComputationOptions">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Computation Options</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_6">
+         <item row="0" column="1">
+          <widget class="QSpinBox" name="boxNodes">
+           <property name="maximum">
+            <number>50000</number>
+           </property>
+           <property name="value">
+            <number>5000</number>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelNodes">
+           <property name="text">
+            <string>number nodes</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="labelThreads">
+           <property name="text">
+            <string>number threads</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QSpinBox" name="boxThreads">
+           <property name="value">
+            <number>2</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="layoutSamplingOptions">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Sampling Options</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="2" column="1">
+          <widget class="QComboBox" name="boxSampling">
+           <item>
             <property name="text">
-             <string>planner</string>
+             <string>normal</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="boxPlanner">
-            <item>
-             <property name="text">
-              <string>RRT</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RRT*</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>PRM</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelRRT">
+           </item>
+           <item>
             <property name="text">
-             <string>rrt step size</string>
+             <string>nearObstacles</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QDoubleSpinBox" name="boxRRT">
-            <property name="value">
-             <double>50.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelPRM">
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="labelSampler">
+           <property name="text">
+            <string>sampler method</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="boxSampler">
+           <item>
             <property name="text">
-             <string>prm local planner distance</string>
+             <string>random</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QDoubleSpinBox" name="boxPRM">
-            <property name="value">
-             <double>50.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelEdgeHeuristic">
+           </item>
+           <item>
             <property name="text">
-             <string>EdgeHeuristic</string>
+             <string>uniform</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="boxEdgeHeuristic">
-            <item>
+           </item>
+           <item>
+            <property name="text">
+             <string>normal distribution</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="labelSampling">
+           <property name="text">
+            <string>sampling strategy</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="layoutHeuristic">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Heuristic</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelEdgeHeuristic">
              <property name="text">
-              <string>L2</string>
+              <string>EdgeHeuristic</string>
              </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>L1</string>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QDoubleSpinBox" name="boxWeightVecX">
+             <property name="singleStep">
+              <double>0.100000000000000</double>
              </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>INF</string>
+             <property name="value">
+              <double>1.000000000000000</double>
              </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>weightedVec_L2</string>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QDoubleSpinBox" name="boxWeightVecY">
+             <property name="singleStep">
+              <double>0.100000000000000</double>
              </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>weightedVec_L1</string>
+             <property name="value">
+              <double>1.000000000000000</double>
              </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>weightedVec_INF</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="3" column="0">
-             <widget class="QLabel" name="labelGoal">
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="boxEdgeHeuristic">
+             <item>
               <property name="text">
-               <string>goal</string>
+               <string>L2</string>
               </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QSpinBox" name="boxGoalX">
-              <property name="maximum">
-               <number>2000</number>
-              </property>
-              <property name="value">
-               <number>870</number>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="labelWeightVec">
+             </item>
+             <item>
               <property name="text">
-               <string>weight Vec</string>
+               <string>L1</string>
               </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QSpinBox" name="boxStartY">
-              <property name="maximum">
-               <number>2000</number>
-              </property>
-              <property name="value">
-               <number>30</number>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QSpinBox" name="boxGoalY">
-              <property name="maximum">
-               <number>2000</number>
-              </property>
-              <property name="value">
-               <number>870</number>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QSpinBox" name="boxStartX">
-              <property name="maximum">
-               <number>2000</number>
-              </property>
-              <property name="value">
-               <number>30</number>
-              </property>
-              <property name="displayIntegerBase">
-               <number>10</number>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="labelStart">
+             </item>
+             <item>
               <property name="text">
-               <string>start</string>
+               <string>INF</string>
               </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
-             <widget class="QDoubleSpinBox" name="boxWeightVecX">
-              <property name="singleStep">
-               <double>0.100000000000000</double>
+             </item>
+             <item>
+              <property name="text">
+               <string>weightedVec_L2</string>
               </property>
-              <property name="value">
-               <double>1.000000000000000</double>
+             </item>
+             <item>
+              <property name="text">
+               <string>weightedVec_L1</string>
               </property>
-             </widget>
-            </item>
-            <item row="6" column="1">
-             <widget class="QDoubleSpinBox" name="boxWeightVecY">
-              <property name="singleStep">
-               <double>0.100000000000000</double>
+             </item>
+             <item>
+              <property name="text">
+               <string>weightedVec_INF</string>
               </property>
-              <property name="value">
-               <double>1.000000000000000</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>600</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item row="0" column="1">
-     <widget class="QGraphicsView" name="mainImage">
-      <property name="sizeAdjustPolicy">
-       <enum>QAbstractScrollArea::AdjustToContents</enum>
-      </property>
-      <property name="dragMode">
-       <enum>QGraphicsView::ScrollHandDrag</enum>
-      </property>
-     </widget>
-    </item>
-   </layout>
+             </item>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelWeightVec">
+             <property name="text">
+              <string>Weight Vec X</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="labelWeightVec_2">
+             <property name="text">
+              <string>Weight Vec Y</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1042</width>
+     <width>499</width>
      <height>25</height>
     </rect>
    </property>
@@ -387,6 +547,30 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>buttonLoadConfig</tabstop>
+  <tabstop>buttonSaveConfig</tabstop>
+  <tabstop>buttonLoadImage</tabstop>
+  <tabstop>buttonComputePath</tabstop>
+  <tabstop>boxStartX</tabstop>
+  <tabstop>boxStartY</tabstop>
+  <tabstop>boxStartPhi</tabstop>
+  <tabstop>boxGoalX</tabstop>
+  <tabstop>boxGoalY</tabstop>
+  <tabstop>boxGoalPhi</tabstop>
+  <tabstop>boxPlanner</tabstop>
+  <tabstop>boxRobot</tabstop>
+  <tabstop>boxTrajectoryStepSize</tabstop>
+  <tabstop>boxRRT</tabstop>
+  <tabstop>boxPRM</tabstop>
+  <tabstop>boxNodes</tabstop>
+  <tabstop>boxThreads</tabstop>
+  <tabstop>boxSampler</tabstop>
+  <tabstop>boxSampling</tabstop>
+  <tabstop>boxEdgeHeuristic</tabstop>
+  <tabstop>boxWeightVecX</tabstop>
+  <tabstop>boxWeightVecY</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -396,8 +580,8 @@
    <slot>loadImage()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>150</x>
-     <y>67</y>
+     <x>161</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>168</x>
@@ -412,8 +596,8 @@
    <slot>computePath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>105</x>
-     <y>91</y>
+     <x>116</x>
+     <y>174</y>
     </hint>
     <hint type="destinationlabel">
      <x>175</x>
@@ -425,11 +609,11 @@
    <sender>boxTrajectoryStepSize</sender>
    <signal>valueChanged(double)</signal>
    <receiver>MainWindow</receiver>
-   <slot>TrajectoryStepSize(double)</slot>
+   <slot>updateTrajectoryStepSize(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>143</x>
-     <y>172</y>
+     <x>378</x>
+     <y>156</y>
     </hint>
     <hint type="destinationlabel">
      <x>166</x>
@@ -441,11 +625,11 @@
    <sender>boxSampler</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>SamplerType(int)</slot>
+   <slot>updateSamplerType(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>142</x>
-     <y>219</y>
+     <x>322</x>
+     <y>375</y>
     </hint>
     <hint type="destinationlabel">
      <x>170</x>
@@ -457,11 +641,11 @@
    <sender>boxPRM</sender>
    <signal>valueChanged(double)</signal>
    <receiver>MainWindow</receiver>
-   <slot>PRMDistance(double)</slot>
+   <slot>updatePRMDistance(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>158</x>
-     <y>565</y>
+     <x>378</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel">
      <x>170</x>
@@ -473,11 +657,11 @@
    <sender>boxRRT</sender>
    <signal>valueChanged(double)</signal>
    <receiver>MainWindow</receiver>
-   <slot>RRTStepSize(double)</slot>
+   <slot>updateRRTStepSize(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>120</x>
-     <y>509</y>
+     <x>378</x>
+     <y>189</y>
     </hint>
     <hint type="destinationlabel">
      <x>164</x>
@@ -489,11 +673,11 @@
    <sender>boxThreads</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>Threads(int)</slot>
+   <slot>updateThreads(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>138</x>
-     <y>341</y>
+     <x>342</x>
+     <y>315</y>
     </hint>
     <hint type="destinationlabel">
      <x>166</x>
@@ -505,11 +689,11 @@
    <sender>boxNodes</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>Nodes(int)</slot>
+   <slot>updateNodes(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>134</x>
-     <y>397</y>
+     <x>342</x>
+     <y>282</y>
     </hint>
     <hint type="destinationlabel">
      <x>164</x>
@@ -521,11 +705,11 @@
    <sender>boxPlanner</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>PlannerType(int)</slot>
+   <slot>updatePlannerType(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>154</x>
-     <y>453</y>
+     <x>378</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>155</x>
@@ -537,11 +721,11 @@
    <sender>boxStartX</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>StartX(int)</slot>
+   <slot>updateStartX(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>54</x>
-     <y>678</y>
+     <x>150</x>
+     <y>229</y>
     </hint>
     <hint type="destinationlabel">
      <x>64</x>
@@ -553,11 +737,11 @@
    <sender>boxStartY</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>StartY(int)</slot>
+   <slot>updateStartY(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>193</x>
-     <y>678</y>
+     <x>177</x>
+     <y>262</y>
     </hint>
     <hint type="destinationlabel">
      <x>161</x>
@@ -569,11 +753,11 @@
    <sender>boxGoalX</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>GoalX(int)</slot>
+   <slot>updateGoalX(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>72</x>
-     <y>734</y>
+     <x>177</x>
+     <y>328</y>
     </hint>
     <hint type="destinationlabel">
      <x>59</x>
@@ -585,11 +769,11 @@
    <sender>boxGoalY</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>GoalY(int)</slot>
+   <slot>updateGoalY(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>193</x>
-     <y>734</y>
+     <x>177</x>
+     <y>361</y>
     </hint>
     <hint type="destinationlabel">
      <x>147</x>
@@ -601,11 +785,11 @@
    <sender>boxSampling</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>SamplingType(int)</slot>
+   <slot>updateSamplingType(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>50</x>
-     <y>272</y>
+     <x>322</x>
+     <y>408</y>
     </hint>
     <hint type="destinationlabel">
      <x>0</x>
@@ -617,11 +801,11 @@
    <sender>boxEdgeHeuristic</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>EdgeHeuristic(int)</slot>
+   <slot>updateEdgeHeuristic(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>32</x>
-     <y>618</y>
+     <x>335</x>
+     <y>467</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -633,11 +817,11 @@
    <sender>boxWeightVecX</sender>
    <signal>valueChanged(double)</signal>
    <receiver>MainWindow</receiver>
-   <slot>weightVecX(double)</slot>
+   <slot>updateWeightVecX(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>32</x>
-     <y>788</y>
+     <x>335</x>
+     <y>500</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -649,11 +833,11 @@
    <sender>boxWeightVecY</sender>
    <signal>valueChanged(double)</signal>
    <receiver>MainWindow</receiver>
-   <slot>weightVecY(double)</slot>
+   <slot>updateWeightVecY(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>154</x>
-     <y>775</y>
+     <x>335</x>
+     <y>533</y>
     </hint>
     <hint type="destinationlabel">
      <x>142</x>
@@ -661,25 +845,415 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttonLoadConfig</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>loadConfig()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>67</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonSaveConfig</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveConfig()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>45</x>
+     <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setTrajectoryStepSize(double)</signal>
+   <receiver>boxTrajectoryStepSize</receiver>
+   <slot>setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>2</x>
+     <y>226</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>378</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setSamplerMethod(int)</signal>
+   <receiver>boxSampler</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>2</x>
+     <y>264</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>322</x>
+     <y>375</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setSamplingStrategy(int)</signal>
+   <receiver>boxSampling</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>4</x>
+     <y>340</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>322</x>
+     <y>408</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setNumThreads(int)</signal>
+   <receiver>boxThreads</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>2</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setPlannerType(int)</signal>
+   <receiver>boxPlanner</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>378</x>
+     <y>90</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setRrtStepSize(double)</signal>
+   <receiver>boxRRT</receiver>
+   <slot>setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>378</x>
+     <y>189</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setEdgeHeuristic(int)</signal>
+   <receiver>boxEdgeHeuristic</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>335</x>
+     <y>467</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setPrmDistance(double)</signal>
+   <receiver>boxPRM</receiver>
+   <slot>setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>378</x>
+     <y>222</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setStartX(int)</signal>
+   <receiver>boxStartX</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>138</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setStartY(int)</signal>
+   <receiver>boxStartY</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>262</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setGoalX(int)</signal>
+   <receiver>boxGoalX</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>328</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setGoalY(int)</signal>
+   <receiver>boxGoalY</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>361</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setWeightVecX(double)</signal>
+   <receiver>boxWeightVecX</receiver>
+   <slot>setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>335</x>
+     <y>500</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setWeightVecY(double)</signal>
+   <receiver>boxWeightVecY</receiver>
+   <slot>setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>532</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>335</x>
+     <y>533</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxRobot</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateRobotType(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>362</x>
+     <y>127</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setRobotType(int)</signal>
+   <receiver>boxRobot</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>430</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setStartPhi(double)</signal>
+   <receiver>boxStartPhi</receiver>
+   <slot>setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>140</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setGoalPhi(double)</signal>
+   <receiver>boxGoalPhi</receiver>
+   <slot>setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>140</x>
+     <y>381</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxStartPhi</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateStartPhi(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>140</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxGoalPhi</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateGoalPhi(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>140</x>
+     <y>381</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>setNumNodes(int)</signal>
+   <receiver>boxNodes</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>412</x>
+     <y>269</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <signal>signal1()</signal>
+  <signal>setNumThreads(int)</signal>
+  <signal>setNumNodes(int)</signal>
+  <signal>setPlannerType(int)</signal>
+  <signal>setRobotType(int)</signal>
+  <signal>setTrajectoryStepSize(double)</signal>
+  <signal>setSamplerMethod(int)</signal>
+  <signal>setSamplingStrategy(int)</signal>
+  <signal>setPrmDistance(double)</signal>
+  <signal>setRrtStepSize(double)</signal>
+  <signal>setStartX(int)</signal>
+  <signal>setStartY(int)</signal>
+  <signal>setStartPhi(double)</signal>
+  <signal>setGoalX(int)</signal>
+  <signal>setGoalY(int)</signal>
+  <signal>setGoalPhi(double)</signal>
+  <signal>setEdgeHeuristic(int)</signal>
+  <signal>setWeightVecX(double)</signal>
+  <signal>setWeightVecY(double)</signal>
+  <slot>loadConfig()</slot>
+  <slot>saveConfig()</slot>
   <slot>loadImage()</slot>
   <slot>computePath()</slot>
-  <slot>Threads(int)</slot>
-  <slot>Nodes(int)</slot>
-  <slot>PlannerType(int)</slot>
-  <slot>StartX(int)</slot>
-  <slot>StartY(int)</slot>
-  <slot>GoalX(int)</slot>
-  <slot>GoalY(int)</slot>
-  <slot>TrajectoryStepSize(double)</slot>
-  <slot>SamplerType(int)</slot>
-  <slot>PRMDistance(double)</slot>
-  <slot>RRTStepSize(double)</slot>
-  <slot>SamplingType(int)</slot>
-  <slot>EdgeHeuristic(int)</slot>
-  <slot>weightVecX(double)</slot>
-  <slot>weightVecY(double)</slot>
+  <slot>updateThreads(int)</slot>
+  <slot>updateNodes(int)</slot>
+  <slot>updatePlannerType(int)</slot>
+  <slot>updateRobotType(int)</slot>
+  <slot>updateStartX(int)</slot>
+  <slot>updateStartY(int)</slot>
+  <slot>updateStartPhi(double)</slot>
+  <slot>updateGoalX(int)</slot>
+  <slot>updateGoalY(int)</slot>
+  <slot>updateGoalPhi(double)</slot>
+  <slot>updateTrajectoryStepSize(double)</slot>
+  <slot>updateSamplerType(int)</slot>
+  <slot>updatePRMDistance(double)</slot>
+  <slot>updateRRTStepSize(double)</slot>
+  <slot>updateSamplingType(int)</slot>
+  <slot>updateEdgeHeuristic(int)</slot>
+  <slot>updateWeightVecX(double)</slot>
+  <slot>updateWeightVecY(double)</slot>
  </slots>
 </ui>
