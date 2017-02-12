@@ -25,12 +25,20 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Heuristic.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/Heuristic.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicL1.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicInf.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicWeightVecL1.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicWeightVecL2.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicWeightVecInf.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDTree.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilGeo.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilVec.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/NormalRRTPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/Planner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/PRMPlanner.hpp

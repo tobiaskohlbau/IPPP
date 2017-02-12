@@ -28,7 +28,6 @@
 
 #include <core/dataObj/Edge.hpp>
 #include <core/types.h>
-#include <core/utility/Heuristic.hpp>
 #include <core/utility/UtilVec.hpp>
 
 namespace rmpl {
@@ -59,11 +58,11 @@ class Node {
     void addCost(float cost);
     float getCost();
 
-    void setParent(std::shared_ptr<Node> &parent);
+    void setParent(std::shared_ptr<Node> &parent, float edgeCost);
     std::shared_ptr<Node> getParentNode();
     std::shared_ptr<Edge<dim>> getParentEdge();
     void clearParent();
-    void addChild(std::shared_ptr<Node> &child);
+    void addChild(std::shared_ptr<Node> &child, float edgeCost);
     std::vector<std::shared_ptr<Node>> getChildNodes();
     std::vector<std::shared_ptr<Edge<dim>>> getChildEdges();
     void clearChildes();
@@ -253,10 +252,10 @@ float Node<dim>::getCost() {
 *  \date       2016-07-15
 */
 template <unsigned int dim>
-void Node<dim>::setParent(std::shared_ptr<Node> &parent) {
+void Node<dim>::setParent(std::shared_ptr<Node> &parent, float edgeCost) {
     if (!parent->empty()) {
         std::shared_ptr<Node> node = std::make_shared<Node>(*this);
-        m_parent = std::shared_ptr<Edge<dim>>(new Edge<dim>(node, parent));
+        m_parent = std::shared_ptr<Edge<dim>>(new Edge<dim>(node, parent, edgeCost));
     }
 }
 
@@ -302,10 +301,10 @@ void Node<dim>::clearParent() {
 *  \date       2016-07-15
 */
 template <unsigned int dim>
-void Node<dim>::addChild(std::shared_ptr<Node<dim>> &child) {
+void Node<dim>::addChild(std::shared_ptr<Node<dim>> &child, float edgeCost) {
     if (!child->empty()) {
         std::shared_ptr<Node> node = std::make_shared<Node>(*this);
-        m_childes.push_back(std::shared_ptr<Edge<dim>>(new Edge<dim>(node, child)));
+        m_childes.push_back(std::shared_ptr<Edge<dim>>(new Edge<dim>(node, child, edgeCost)));
     }
 }
 

@@ -16,31 +16,37 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef PRMOPTIONS_H_
-#define PRMOPTIONS_H_
+#ifndef HEURISTICL1_H
+#define HEURISTICL1_H
 
-#include <pathPlanner/options/PlannerOptions.h>
+#include <core/utility/heuristic/Heuristic.hpp>
 
 namespace rmpl {
 
 /*!
-* \brief   Class PRMOptions determines special options for the PRMPlanner
+* \brief   Static class for the computation of heuristic costs from Edge
 * \author  Sascha Kaden
-* \date    2016-08-29
+* \date    2017-01-02
 */
-class PRMOptions : public PlannerOptions {
+template <unsigned int dim>
+class HeuristicL1 : public Heuristic<dim> {
   public:
-    PRMOptions(float rangeSize, float trajectoryStepSize, SamplerMethod samplerMethod = SamplerMethod::randomly,
-               SamplingStrategy strategy = SamplingStrategy::normal, EdgeHeuristic edgeHeuristic = EdgeHeuristic::L2,
-               NodeHeuristic nodeHeuristic = NodeHeuristic::norm, unsigned int sortingCountGraph = 0);
-
-    void setRangeSize(float rangeSize);
-    float getRangeSize() const;
-
-  private:
-    float m_rangeSize;
+    float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const override;
 };
+
+/*!
+*  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] heuristic cost
+*  \date       2017-01-02
+*/
+template <unsigned int dim>
+float HeuristicL1<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).sum();
+}
 
 } /* namespace rmpl */
 
-#endif    // PRMOPTIONS_H_
+#endif    // HEURISTICL1_H

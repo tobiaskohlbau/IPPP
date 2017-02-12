@@ -17,13 +17,9 @@
 #-------------------------------------------------------------------------//
 
 list(APPEND SRCS
-
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/ModuleBase.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Logging.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Utility.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Jaco.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Joint.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/KukaKR5.cpp

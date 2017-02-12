@@ -20,7 +20,7 @@
 #define RRTPLANNER_H_
 
 #include "Planner.hpp"
-#include <pathPlanner/options/RRTOptions.h>
+#include <pathPlanner/options/RRTOptions.hpp>
 
 namespace rmpl {
 
@@ -34,7 +34,7 @@ namespace rmpl {
 template <unsigned int dim>
 class RRTPlanner : public Planner<dim> {
   public:
-    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions &options);
+    RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options);
 
     bool computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads);
     bool setInitNode(Vector<dim> start);
@@ -71,7 +71,7 @@ class RRTPlanner : public Planner<dim> {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-RRTPlanner<dim>::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions &options)
+RRTPlanner<dim>::RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options)
     : Planner<dim>(name, robot, options) {
     m_stepSize = options.getStepSize();
     m_initNode = nullptr;

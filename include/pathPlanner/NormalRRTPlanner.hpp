@@ -33,7 +33,7 @@ namespace rmpl {
 template <unsigned int dim>
 class NormalRRTPlanner : public RRTPlanner<dim> {
   public:
-    NormalRRTPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions &options)
+    NormalRRTPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options)
         : RRTPlanner<dim>("Normal RRT Planner", robot, options) {
     }
 
@@ -80,10 +80,11 @@ void NormalRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shar
         return;
     }
 
-    newNode->setParent(nearestNode);
+    float edgeCost = this->m_heuristic->calcEdgeCost(nearestNode, newNode);
+    newNode->setParent(nearestNode, edgeCost);
 
     m_mutex.lock();
-    nearestNode->addChild(newNode);
+    nearestNode->addChild(newNode, edgeCost);
     m_mutex.unlock();
 }
 
@@ -113,7 +114,7 @@ bool NormalRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
     }
 
     if (nearestNode != nullptr) {
-        goalNode->setParent(nearestNode);
+        goalNode->setParent(nearestNode, this->m_heuristic->calcEdgeCost(nearestNode, goalNode));
         m_goalNode = goalNode;
         m_graph->addNode(goalNode);
         // Logging::info("Goal Node<dim> is connected", this);

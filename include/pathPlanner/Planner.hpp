@@ -27,7 +27,7 @@
 #include <core/module/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/types.h>
-#include <pathPlanner/options/PlannerOptions.h>
+#include <pathPlanner/options/PlannerOptions.hpp>
 #include <robot/RobotBase.hpp>
 
 namespace rmpl {
@@ -43,7 +43,7 @@ class Planner : public ModuleBase {
     ~Planner();
 
   protected:
-    Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions &options);
+    Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options);
 
   public:
     virtual bool computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads) = 0;
@@ -63,7 +63,8 @@ class Planner : public ModuleBase {
     std::shared_ptr<Graph<dim>> m_graph;
     std::shared_ptr<RobotBase<dim>> m_robot;
 
-    const PlannerOptions m_options;
+    const std::shared_ptr<Heuristic<dim>> m_heuristic;
+    const PlannerOptions<dim> m_options;
     bool m_pathPlanned;
 };
 
@@ -85,8 +86,8 @@ Planner<dim>::~Planner() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions &options)
-    : ModuleBase(name), m_options(options) {
+Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options)
+    : ModuleBase(name), m_options(options), m_heuristic(options.getHeuristic()) {
     m_pathPlanned = false;
 
     m_robot = robot;
@@ -95,9 +96,6 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<d
     m_planner = std::shared_ptr<TrajectoryPlanner<dim>>(new TrajectoryPlanner<dim>(options.getTrajectoryStepSize(), m_collision));
     m_sampler = std::shared_ptr<Sampling<dim>>(
         new Sampling<dim>(m_robot, m_collision, m_planner, options.getSamplerMethod(), options.getSamplingStrategy()));
-
-    Heuristic<dim>::setEdgeHeuristic(options.getEdgeHeuristic());
-    Heuristic<dim>::setNodeHeuristic(options.getNodeHeuristic());
 }
 
 /*!

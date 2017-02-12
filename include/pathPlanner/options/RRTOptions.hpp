@@ -16,9 +16,30 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <pathPlanner/options/RRTOptions.h>
+#ifndef RRTOPTIONS_H_
+#define RRTOPTIONS_H_
+
+#include <pathPlanner/options/PlannerOptions.hpp>
 
 namespace rmpl {
+
+/*!
+* \brief   Class RRTOptions determines special options for the RRTPlanner
+* \author  Sascha Kaden
+* \date    2016-08-29
+*/
+template <unsigned int dim>
+class RRTOptions : public PlannerOptions<dim> {
+  public:
+    RRTOptions(float stepSize, float trajectoryStepSize, SamplerMethod samplerMethod = SamplerMethod::randomly,
+               SamplingStrategy strategy = SamplingStrategy::normal, std::shared_ptr<Heuristic<dim>> heuristic = std::make_shared<Heuristic<dim>>(Heuristic<dim>()), unsigned int sortingCountGraph = 0);
+
+    void setStepSize(float stepSize);
+    float getStepSize() const;
+
+  private:
+    float m_stepSize;
+};
 
 /*!
 *  \brief      Standard constructor of the class RRTOptions
@@ -29,9 +50,10 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
-                       EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic, unsigned int sortingCountGraph)
-    : PlannerOptions(trajectoryStepSize, method, strategy, edgeHeuristic, nodeHeuristic, sortingCountGraph) {
+template <unsigned int dim>
+RRTOptions<dim>::RRTOptions(float stepSize, float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
+                            std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph)
+        : PlannerOptions<dim>(trajectoryStepSize, method, strategy, heuristic, sortingCountGraph) {
     setStepSize(stepSize);
 }
 
@@ -41,7 +63,8 @@ RRTOptions::RRTOptions(float stepSize, float trajectoryStepSize, SamplerMethod m
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-void RRTOptions::setStepSize(float stepSize) {
+template <unsigned int dim>
+void RRTOptions<dim>::setStepSize(float stepSize) {
     if (stepSize <= 0) {
         Logging::warning("Step size was smaller than 0 and was set up to 1", "RRT options");
         m_stepSize = 1;
@@ -56,8 +79,11 @@ void RRTOptions::setStepSize(float stepSize) {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-float RRTOptions::getStepSize() const {
+template <unsigned int dim>
+float RRTOptions<dim>::getStepSize() const {
     return m_stepSize;
 }
 
 } /* namespace rmpl */
+
+#endif    // RRTOPTIONS_H_
