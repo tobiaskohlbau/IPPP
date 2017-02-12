@@ -16,31 +16,37 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef RRTOPTIONS_H_
-#define RRTOPTIONS_H_
+#ifndef HEURISTICINF_H
+#define HEURISTICINF_H
 
-#include <pathPlanner/options/PlannerOptions.h>
+#include <core/utility/heuristic/Heuristic.hpp>
 
 namespace rmpl {
 
 /*!
-* \brief   Class RRTOptions determines special options for the RRTPlanner
+* \brief   Static class for the computation of heuristic costs from Edge
 * \author  Sascha Kaden
-* \date    2016-08-29
+* \date    2017-01-02
 */
-class RRTOptions : public PlannerOptions {
+template <unsigned int dim>
+class HeuristicInf : public Heuristic<dim> {
   public:
-    RRTOptions(float stepSize, float trajectoryStepSize, SamplerMethod samplerMethod = SamplerMethod::randomly,
-               SamplingStrategy strategy = SamplingStrategy::normal, EdgeHeuristic edgeHeuristic = EdgeHeuristic::L2,
-               NodeHeuristic nodeHeuristic = NodeHeuristic::norm, unsigned int sortingCountGraph = 4000);
-
-    void setStepSize(float stepSize);
-    float getStepSize() const;
-
-  private:
-    float m_stepSize;
+    float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const override;
 };
+
+/*!
+*  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] heuristic cost
+*  \date       2017-01-02
+*/
+template <unsigned int dim>
+float HeuristicInf<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).maxCoeff();
+}
 
 } /* namespace rmpl */
 
-#endif    // RRTOPTIONS_H_
+#endif    // HEURISTICINF_H

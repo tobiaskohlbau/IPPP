@@ -33,8 +33,8 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(triangles, min, max));
     triangleRobot->set2DWorkspace(mat);
 
-    PRMOptions prmOptions(30, 0.5, SamplerMethod::randomly);
-    RRTOptions rrtOptions(30, 0.5, SamplerMethod::randomly, SamplingStrategy::normal);
+    PRMOptions<dim> prmOptions(30, 0.5, SamplerMethod::randomly);
+    RRTOptions<dim> rrtOptions(30, 0.5, SamplerMethod::randomly, SamplingStrategy::normal);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(triangleRobot, prmOptions));
@@ -72,8 +72,8 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     std::shared_ptr<PointRobot> robot(new PointRobot(min, max));
     robot->set2DWorkspace(mat);
 
-    PRMOptions prmOptions(40, 0.5, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
-    RRTOptions rrtOptions(50, 1, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
+    PRMOptions<dim> prmOptions(40, 0.5, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
+    RRTOptions<dim> rrtOptions(50, 1, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));

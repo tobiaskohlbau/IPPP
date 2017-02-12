@@ -3,7 +3,12 @@
 
 #include <QFileDialog>
 #include <core/types.h>
-#include <pathPlanner/options/PRMOptions.h>
+#include <core/utility/heuristic/HeuristicL1.hpp>
+#include <core/utility/heuristic/HeuristicInf.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
+#include <pathPlanner/options/PRMOptions.hpp>
 #include <ui/Drawing2D.hpp>
 
 using namespace rmpl;
@@ -57,22 +62,29 @@ void MainWindow::computePath() {
     if (m_samplingStrategy == 1)
         sampling = SamplingStrategy::nearObstacles;
 
-    rmpl::EdgeHeuristic edgeH = rmpl::EdgeHeuristic::L2;
-    if (m_edgeHeuristic == 1)
-        edgeH = rmpl::EdgeHeuristic::L1;
-    else if (m_edgeHeuristic == 2)
-        edgeH = rmpl::EdgeHeuristic::INF;
-    else if (m_edgeHeuristic == 3)
-        edgeH = rmpl::EdgeHeuristic::WeightVec_L2;
-    else if (m_edgeHeuristic == 4)
-        edgeH = rmpl::EdgeHeuristic::WeightVec_L1;
-    else if (m_edgeHeuristic == 5)
-        edgeH = rmpl::EdgeHeuristic::WeightVec_INF;
-
-    RRTOptions rrtOptions(m_rrtStepsize, m_trajectoryStepSize, sampler, sampling, edgeH);
-    PRMOptions prmOptions(m_prmDistance, m_trajectoryStepSize, sampler, sampling, edgeH);
-
     if (m_robotType == 1) {
+        std::shared_ptr<rmpl::Heuristic<3>> edgeH;
+        if (m_edgeHeuristic == 1) {
+            edgeH = std::make_shared<rmpl::HeuristicL1<3>>(rmpl::HeuristicL1<3>());
+        } else if (m_edgeHeuristic == 2) {
+            edgeH = std::make_shared<rmpl::HeuristicInf<3>>(rmpl::HeuristicInf<3>());
+        } else if (m_edgeHeuristic == 3) {
+            std::shared_ptr<HeuristicWeightVecL2<3>> heuristic(new rmpl::HeuristicWeightVecL2<3>());
+            heuristic->setWeightVec(m_weightVec);
+            edgeH = heuristic;
+        } else if (m_edgeHeuristic == 4) {
+            std::shared_ptr<HeuristicWeightVecL1<3>> heuristic(new rmpl::HeuristicWeightVecL1<3>());
+            heuristic->setWeightVec(m_weightVec);
+            edgeH = heuristic;
+        } else if (m_edgeHeuristic == 5) {
+            std::shared_ptr<HeuristicWeightVecInf<3>> heuristic(new rmpl::HeuristicWeightVecInf<3>());
+            heuristic->setWeightVec(m_weightVec);
+            edgeH = heuristic;
+        }
+
+        RRTOptions<3> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, sampler, sampling, edgeH);
+        PRMOptions<3> prmOptions(m_prmDistance, m_trajectoryStepSize, sampler, sampling, edgeH);
+
         Vector3 minBoundary(0.0, 0.0, 0.0);
         Vector3 maxBoundary(m_workspace.rows(), m_workspace.cols(), 360);
         std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(m_triangles, minBoundary, maxBoundary));
@@ -88,6 +100,28 @@ void MainWindow::computePath() {
         Vector3 goal(m_goalX, m_goalY, m_goalPhi);
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
+        std::shared_ptr<rmpl::Heuristic<2>> edgeH;
+        if (m_edgeHeuristic == 1) {
+            edgeH = std::make_shared<rmpl::HeuristicL1<2>>(rmpl::HeuristicL1<2>());
+        } else if (m_edgeHeuristic == 2) {
+            edgeH = std::make_shared<rmpl::HeuristicInf<2>>(rmpl::HeuristicInf<2>());
+        } else if (m_edgeHeuristic == 3) {
+            std::shared_ptr<HeuristicWeightVecL2<2>> heuristic(new rmpl::HeuristicWeightVecL2<2>());
+            heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
+            edgeH = heuristic;
+        } else if (m_edgeHeuristic == 4) {
+            std::shared_ptr<HeuristicWeightVecL1<2>> heuristic(new rmpl::HeuristicWeightVecL1<2>());
+            heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
+            edgeH = heuristic;
+        } else if (m_edgeHeuristic == 5) {
+            std::shared_ptr<HeuristicWeightVecInf<2>> heuristic(new rmpl::HeuristicWeightVecInf<2>());
+            heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
+            edgeH = heuristic;
+        }
+
+        RRTOptions<2> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, sampler, sampling, edgeH);
+        PRMOptions<2> prmOptions(m_prmDistance, m_trajectoryStepSize, sampler, sampling, edgeH);
+
         Vector2 minBoundary(0.0, 0.0);
         Vector2 maxBoundary(m_workspace.rows(), m_workspace.cols());
         std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
@@ -196,7 +230,7 @@ void MainWindow::loadConfig() {
     updatePRMDistance(pt.get<double>("prmDistance"));
     updateRRTStepSize(pt.get<double>("rrtStepSize"));
     updateWeightVecX(pt.get<double>("weightVecX"));
-    updateWeightVecY(pt.get<double>("weightVecY"));
+    updateWeightVecZ(pt.get<double>("weightVecZ"));
 
     setNumThreads(m_numThreads);
     setNumNodes(m_numNodes);
@@ -216,6 +250,7 @@ void MainWindow::loadConfig() {
     setEdgeHeuristic(m_edgeHeuristic);
     setWeightVecX(m_weightVecX);
     setWeightVecY(m_weightVecY);
+    setWeightVecZ(m_weightVecZ);
 }
 
 void MainWindow::saveConfig() {
@@ -239,6 +274,7 @@ void MainWindow::saveConfig() {
     pt.put("edgeHeuristic", m_edgeHeuristic);
     pt.put("weightVecX", m_weightVecX);
     pt.put("weightVecY", m_weightVecY);
+    pt.put("weightVecZ", m_weightVecZ);
 
     QString qFileName = QFileDialog::getSaveFileName(this, tr("Save Config"), "/home", tr("Config Files (*.js *.json)"));
     boost::property_tree::write_json(qFileName.toStdString(), pt);
@@ -294,11 +330,13 @@ void MainWindow::updateEdgeHeuristic(int type) {
 }
 void MainWindow::updateWeightVecX(double value) {
     m_weightVecX = value;
-    Vector2 weight(m_weightVecX, m_weightVecY);
-    Heuristic<2>::setWeightVec(weight);
+    m_weightVec= Vector3(m_weightVecX, m_weightVecY, m_weightVecZ);
 }
 void MainWindow::updateWeightVecY(double value) {
     m_weightVecY = value;
-    Vector2 weight(m_weightVecX, m_weightVecY);
-    Heuristic<2>::setWeightVec(weight);
+    m_weightVec= Vector3(m_weightVecX, m_weightVecY, m_weightVecZ);
+}
+void MainWindow::updateWeightVecZ(double value) {
+    m_weightVecY = value;
+    m_weightVec= Vector3(m_weightVecX, m_weightVecY, m_weightVecZ);
 }

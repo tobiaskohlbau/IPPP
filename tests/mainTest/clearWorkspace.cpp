@@ -22,6 +22,11 @@
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/PointRobot.h>
+#include <core/utility/heuristic/HeuristicL1.hpp>
+#include <core/utility/heuristic/HeuristicInf.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
 
 using namespace rmpl;
 
@@ -31,13 +36,13 @@ BOOST_AUTO_TEST_CASE(clearWorkspace) {
     const unsigned int dim = 2;
     Logging::setLogLevel(LogLevel::none);
 
-    std::vector<EdgeHeuristic> edgeHeuristics;
-    edgeHeuristics.push_back(EdgeHeuristic::L2);
-    edgeHeuristics.push_back(EdgeHeuristic::L1);
-    edgeHeuristics.push_back(EdgeHeuristic::INF);
-    edgeHeuristics.push_back(EdgeHeuristic::WeightVec_L2);
-    edgeHeuristics.push_back(EdgeHeuristic::WeightVec_L1);
-    edgeHeuristics.push_back(EdgeHeuristic::WeightVec_INF);
+    std::vector<std::shared_ptr<Heuristic<dim>>> heuristics;
+    heuristics.push_back(std::make_shared<Heuristic<dim>>(Heuristic<dim>()));
+    heuristics.push_back(std::make_shared<HeuristicL1<dim>>(HeuristicL1<dim>()));
+    heuristics.push_back(std::make_shared<HeuristicInf<dim>>(HeuristicInf<dim>()));
+    heuristics.push_back(std::make_shared<HeuristicWeightVecL2<dim>>(HeuristicWeightVecL2<dim>()));
+    heuristics.push_back(std::make_shared<HeuristicWeightVecL1<dim>>(HeuristicWeightVecL1<dim>()));
+    heuristics.push_back(std::make_shared<HeuristicWeightVecInf<dim>>(HeuristicWeightVecInf<dim>()));
 
     std::vector<SamplerMethod> samplerMethods;
     samplerMethods.push_back(SamplerMethod::randomly);
@@ -59,21 +64,21 @@ BOOST_AUTO_TEST_CASE(clearWorkspace) {
     Vector2 goal(95, 95);
 
     BOOST_TEST_CHECKPOINT("Options order: sampler, sampling, edgeHeuristic");
-    for (auto edgeH : edgeHeuristics) {
+    for (auto heuristic : heuristics) {
         for (auto sampler : samplerMethods) {
             for (auto sampling : samplingStrategies) {
-                PRMOptions prmOptions(30, 1, sampler, sampling, edgeH);
+                PRMOptions<dim> prmOptions(30, 1, sampler, sampling, heuristic);
                 PRMPlanner<dim> prmPlanner (robot, prmOptions);
-                BOOST_TEST_CHECKPOINT("Calling PRM planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | " << edgeH);
+                BOOST_TEST_CHECKPOINT("Calling PRM planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | ");
                 prmPlanner.computePath(start, goal, 100, 1);
 
-                RRTOptions rrtOptions(30, 1, sampler, sampling, edgeH);
+                RRTOptions<dim> rrtOptions(30, 1, sampler, sampling, heuristic);
                 NormalRRTPlanner<dim> normalRRTPlanner(robot, rrtOptions);
-                BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | " << edgeH);
+                BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | ");
                 normalRRTPlanner.computePath(start, goal, 100, 1);
 
                 StarRRTPlanner<dim> starRRTPlanner(robot, rrtOptions);
-                BOOST_TEST_CHECKPOINT("Calling RRT* planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | " << edgeH);
+                BOOST_TEST_CHECKPOINT("Calling RRT* planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | ");
                 starRRTPlanner.computePath(start, goal, 100, 1);
             }
         }

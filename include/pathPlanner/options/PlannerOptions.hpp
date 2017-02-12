@@ -16,10 +16,50 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/Logging.h>
-#include <pathPlanner/options/PlannerOptions.h>
+#ifndef PLANNEROPTIONS_H_
+#define PLANNEROPTIONS_H_
+
+#include <memory>
+
+#include <core/module/ModuleBase.h>
+#include <core/module/Sampling.hpp>
+#include <core/module/TrajectoryPlanner.hpp>
+#include <core/utility/heuristic/Heuristic.hpp>
 
 namespace rmpl {
+
+/*!
+* \brief   Class PlannerOptions determines all base options for the path planner
+* \author  Sascha Kaden
+* \date    2016-08-29
+*/
+template <unsigned int dim>
+class PlannerOptions {
+  public:
+    PlannerOptions(float trajectoryStepSize, SamplerMethod samplerMethod, SamplingStrategy strategy,
+                   std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph);
+
+    void setTrajectoryStepSize(float stepSize);
+    float getTrajectoryStepSize() const;
+
+    void setSamplerMethod(SamplerMethod method);
+    SamplerMethod getSamplerMethod() const;
+    void setSamplingStrategy(SamplingStrategy strategy);
+    SamplingStrategy getSamplingStrategy() const;
+
+    void setHeuristic(std::shared_ptr<Heuristic<dim>> heuristic);
+    std::shared_ptr<Heuristic<dim>> getHeuristic() const;
+
+    void setSortCountGraph(unsigned int sortAmountGraph);
+    unsigned int getSortCountGraph() const;
+
+  protected:
+    float m_trajectoryStepSize;
+    SamplerMethod m_samplerMethod;
+    SamplingStrategy m_samplingStrategy;
+    std::shared_ptr<Heuristic<dim>> m_heuristic;
+    unsigned int m_sortingCountGraph;
+};
 
 /*!
 *  \brief      Standard constructor of the class PlannerOptions
@@ -27,19 +67,18 @@ namespace rmpl {
 *  \param[in]  trajectoryMethod
 *  \param[in]  samplerMethod
 *  \param[in]  samplingMethod
-*  \param[in]  edgeHeuristic
-*  \param[in]  nodeHeuristic
+*  \param[in]  Heuristic
 *  \param[in]  sortingCountGraph
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-PlannerOptions::PlannerOptions(float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
-                               EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic, unsigned int sortingCountGraph) {
+template <unsigned int dim>
+PlannerOptions<dim>::PlannerOptions(float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
+                                    std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph) {
     setTrajectoryStepSize(trajectoryStepSize);
     m_samplingStrategy = strategy;
     m_samplerMethod = method;
-    m_edgeHeuristic = edgeHeuristic;
-    m_nodeHeuristic = nodeHeuristic;
+    m_heuristic = heuristic;
     m_sortingCountGraph = sortingCountGraph;
 }
 
@@ -49,7 +88,8 @@ PlannerOptions::PlannerOptions(float trajectoryStepSize, SamplerMethod method, S
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-void PlannerOptions::setTrajectoryStepSize(float stepSize) {
+template <unsigned int dim>
+void PlannerOptions<dim>::setTrajectoryStepSize(float stepSize) {
     if (stepSize <= 0) {
         Logging::warning("Trajectory step size was smaller than 0 and was set up to 1", "PlannerOptions");
         m_trajectoryStepSize = 1;
@@ -64,7 +104,8 @@ void PlannerOptions::setTrajectoryStepSize(float stepSize) {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-float PlannerOptions::getTrajectoryStepSize() const {
+template <unsigned int dim>
+float PlannerOptions<dim>::getTrajectoryStepSize() const {
     return m_trajectoryStepSize;
 }
 
@@ -74,7 +115,8 @@ float PlannerOptions::getTrajectoryStepSize() const {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-void PlannerOptions::setSamplerMethod(SamplerMethod method) {
+template <unsigned int dim>
+void PlannerOptions<dim>::setSamplerMethod(SamplerMethod method) {
     m_samplerMethod = method;
 }
 
@@ -84,7 +126,8 @@ void PlannerOptions::setSamplerMethod(SamplerMethod method) {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-SamplerMethod PlannerOptions::getSamplerMethod() const {
+template <unsigned int dim>
+SamplerMethod PlannerOptions<dim>::getSamplerMethod() const {
     return m_samplerMethod;
 }
 
@@ -94,7 +137,8 @@ SamplerMethod PlannerOptions::getSamplerMethod() const {
 *  \author     Sascha Kaden
 *  \date       2016-12-15
 */
-void PlannerOptions::setSamplingStrategy(SamplingStrategy strategy) {
+template <unsigned int dim>
+void PlannerOptions<dim>::setSamplingStrategy(SamplingStrategy strategy) {
     m_samplingStrategy = strategy;
 }
 
@@ -104,7 +148,8 @@ void PlannerOptions::setSamplingStrategy(SamplingStrategy strategy) {
 *  \author     Sascha Kaden
 *  \date       2016-12-15
 */
-SamplingStrategy PlannerOptions::getSamplingStrategy() const {
+template <unsigned int dim>
+SamplingStrategy PlannerOptions<dim>::getSamplingStrategy() const {
     return m_samplingStrategy;
 }
 
@@ -114,8 +159,9 @@ SamplingStrategy PlannerOptions::getSamplingStrategy() const {
 *  \author     Sascha Kaden
 *  \date       2017-01-01
 */
-void PlannerOptions::setEdgeHeuristic(EdgeHeuristic heuristic) {
-    m_edgeHeuristic = heuristic;
+template <unsigned int dim>
+void PlannerOptions<dim>::setHeuristic(std::shared_ptr<Heuristic<dim>> heuristic) {
+    m_heuristic = heuristic;
 }
 
 /*!
@@ -124,37 +170,19 @@ void PlannerOptions::setEdgeHeuristic(EdgeHeuristic heuristic) {
 *  \author     Sascha Kaden
 *  \date       2017-01-01
 */
-EdgeHeuristic PlannerOptions::getEdgeHeuristic() const {
-    return m_edgeHeuristic;
+template <unsigned int dim>
+std::shared_ptr<Heuristic<dim>> PlannerOptions<dim>::getHeuristic() const {
+    return m_heuristic;
 }
 
-/*!
-*  \brief      Sets the NodeHeuristic
-*  \param[in]  heuristic
-*  \author     Sascha Kaden
-*  \date       2017-01-01
-*/
-void PlannerOptions::setNodeHeuristic(NodeHeuristic heuristic) {
-    m_nodeHeuristic = heuristic;
-}
-
-/*!
-*  \brief      Returns the NodeHeuristic
-*  \param[out] heuristic
-*  \author     Sascha Kaden
-*  \date       2017-01-01
-*/
-NodeHeuristic PlannerOptions::getNodeHeuristic() const {
-    return m_nodeHeuristic;
-}
-
-/*!
+ /*!
 *  \brief      Sets count to sort Graph automically
 *  \param[in]  autoSort
 *  \author     Sascha Kaden
 *  \date       2017-01-05
 */
-void PlannerOptions::setSortCountGraph(unsigned int sortingCountGraph) {
+template <unsigned int dim>
+void PlannerOptions<dim>::setSortCountGraph(unsigned int sortingCountGraph) {
     m_sortingCountGraph = sortingCountGraph;
 }
 
@@ -164,8 +192,11 @@ void PlannerOptions::setSortCountGraph(unsigned int sortingCountGraph) {
 *  \author     Sascha Kaden
 *  \date       2017-01-05
 */
-unsigned int PlannerOptions::getSortCountGraph() const {
+template <unsigned int dim>
+unsigned int PlannerOptions<dim>::getSortCountGraph() const {
     return m_sortingCountGraph;
 }
 
 } /* namespace rmpl */
+
+#endif    // PLANNEROPTIONS_H_

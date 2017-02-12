@@ -22,10 +22,6 @@
 
 using namespace rmpl;
 
-std::vector<EdgeHeuristic> edgeHeuristics = {EdgeHeuristic::L2,           EdgeHeuristic::L1,
-                                             EdgeHeuristic::INF,          EdgeHeuristic::WeightVec_L2,
-                                             EdgeHeuristic::WeightVec_L1, EdgeHeuristic::WeightVec_INF};
-
 BOOST_AUTO_TEST_SUITE(constructor)
 
 template <unsigned int dim>
@@ -35,13 +31,10 @@ void testConstructor() {
     std::shared_ptr<Node<dim>> source = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVec));
     std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
 
-    for (auto edgeH : edgeHeuristics) {
-        Heuristic<dim>::setEdgeHeuristic(edgeH);
-        Edge<dim> edge(source, target);
-        BOOST_CHECK(edge.getCost() == Heuristic<dim>::calcEdgeCost(source, target));
-        BOOST_CHECK(source == edge.getSource());
-        BOOST_CHECK(target == edge.getTarget());
-    }
+    Edge<dim> edge(source, target, 1);
+    BOOST_CHECK(edge.getCost() == 1);
+    BOOST_CHECK(source == edge.getSource());
+    BOOST_CHECK(target == edge.getTarget());
 }
 
 BOOST_AUTO_TEST_CASE(standardConstructor) {
@@ -68,13 +61,10 @@ void testSourceNode() {
     std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
     std::shared_ptr<Node<dim>> sourceNew = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVecNew));
 
-    for (auto edgeH : edgeHeuristics) {
-        Heuristic<dim>::setEdgeHeuristic(edgeH);
-        Edge<dim> edge(source, target);
-        edge.setSource(sourceNew);
-        BOOST_CHECK(sourceNew == edge.getSource());
-        BOOST_CHECK(edge.getCost() == Heuristic<dim>::calcEdgeCost(sourceNew, target));
-    }
+    Edge<dim> edge(source, target, 1);
+    edge.setSource(sourceNew);
+    BOOST_CHECK(sourceNew == edge.getSource());
+    BOOST_CHECK(edge.getCost() == 1);
 }
 
 BOOST_AUTO_TEST_CASE(sourceNode) {
@@ -97,13 +87,10 @@ void testTargetNode() {
     std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
     std::shared_ptr<Node<dim>> targetNew = std::shared_ptr<Node<dim>>(new Node<dim>(targetVecNew));
 
-    for (auto edgeH : edgeHeuristics) {
-        Heuristic<dim>::setEdgeHeuristic(edgeH);
-        Edge<dim> edge(source, target);
-        edge.setTarget(targetNew);
-        BOOST_CHECK(targetNew == edge.getTarget());
-        BOOST_CHECK(edge.getCost() == Heuristic<dim>::calcEdgeCost(source, targetNew));
-    }
+    Edge<dim> edge(source, target, 1);
+    edge.setTarget(targetNew);
+    BOOST_CHECK(targetNew == edge.getTarget());
+    BOOST_CHECK(edge.getCost() == 1);
 }
 
 BOOST_AUTO_TEST_CASE(targetNode) {

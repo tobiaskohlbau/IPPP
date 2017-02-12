@@ -101,7 +101,7 @@ void testParent() {
     Node<dim> parent(Eigen::VectorXf::Constant(dim, 1, 10));
 
     std::shared_ptr<Node<dim>> ptrParent = std::make_shared<Node<dim>>(parent);
-    node.setParent(ptrParent);
+    node.setParent(ptrParent, 1);
     BOOST_CHECK(node.getParentNode() == ptrParent);
     BOOST_CHECK(node.getParentEdge()->getTarget() == ptrParent);
     node.clearParent();
@@ -126,7 +126,7 @@ void testChildes() {
     std::vector<std::shared_ptr<Node<dim>>> childes;
     for (int i = 0; i < 3; ++i) {
         childes.push_back(std::make_shared<Node<dim>>(Eigen::VectorXf::Constant(dim, 1, i)));
-        node.addChild(childes[i]);
+        node.addChild(childes[i], 1);
     }
 
     std::vector<std::shared_ptr<Node<dim>>> resultNodes = node.getChildNodes();

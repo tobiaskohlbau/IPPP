@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     Logging::setLogOutput(LogOutput::terminlAndFile);
 
     std::shared_ptr<KukaKR5> robot(new KukaKR5());
-    RRTOptions options(40, 1);
+    RRTOptions<6> options(40, 1);
     StarRRTPlanner<6> planner(robot, options);
 
     Vector6 start = utilVec::Vecf(0, 0, 0, 0, 51, 0);

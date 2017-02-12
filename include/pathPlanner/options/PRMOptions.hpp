@@ -16,9 +16,30 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <pathPlanner/options/PRMOptions.h>
+#ifndef PRMOPTIONS_H_
+#define PRMOPTIONS_H_
+
+#include <pathPlanner/options/PlannerOptions.hpp>
 
 namespace rmpl {
+
+/*!
+* \brief   Class PRMOptions determines special options for the PRMPlanner
+* \author  Sascha Kaden
+* \date    2016-08-29
+*/
+template <unsigned int dim>
+class PRMOptions : public PlannerOptions<dim> {
+  public:
+    PRMOptions(float rangeSize, float trajectoryStepSize, SamplerMethod samplerMethod = SamplerMethod::randomly,
+               SamplingStrategy strategy = SamplingStrategy::normal, std::shared_ptr<Heuristic<dim>> heuristic = std::shared_ptr<Heuristic<dim>>(new Heuristic<dim>()), unsigned int sortingCountGraph = 0);
+
+    void setRangeSize(float rangeSize);
+    float getRangeSize() const;
+
+  private:
+    float m_rangeSize;
+};
 
 /*!
 *  \brief      Standard constructor of the class PRMOptions
@@ -29,9 +50,10 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
-                       EdgeHeuristic edgeHeuristic, NodeHeuristic nodeHeuristic, unsigned int sortingCountGraph)
-    : PlannerOptions(trajectoryStepSize, method, strategy, edgeHeuristic, nodeHeuristic, sortingCountGraph) {
+template <unsigned int dim>
+PRMOptions<dim>::PRMOptions(float rangeSize, float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
+                            std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph)
+        : PlannerOptions<dim>(trajectoryStepSize, method, strategy, heuristic, sortingCountGraph) {
     setRangeSize(rangeSize);
 }
 
@@ -41,7 +63,8 @@ PRMOptions::PRMOptions(float rangeSize, float trajectoryStepSize, SamplerMethod 
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-void PRMOptions::setRangeSize(float rangeSize) {
+template <unsigned int dim>
+void PRMOptions<dim>::setRangeSize(float rangeSize) {
     if (rangeSize <= 0) {
         Logging::warning("Step size was equal or smaller than 0 and is set up to 1", "PRM options");
         m_rangeSize = 1;
@@ -56,8 +79,11 @@ void PRMOptions::setRangeSize(float rangeSize) {
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
-float PRMOptions::getRangeSize() const {
+template <unsigned int dim>
+float PRMOptions<dim>::getRangeSize() const {
     return m_rangeSize;
 }
 
 } /* namespace rmpl */
+
+#endif    // PRMOPTIONS_H_

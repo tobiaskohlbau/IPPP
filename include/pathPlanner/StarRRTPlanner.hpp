@@ -33,7 +33,7 @@ namespace rmpl {
 template <unsigned int dim>
 class StarRRTPlanner : public RRTPlanner<dim> {
   public:
-    StarRRTPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions &options)
+    StarRRTPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options)
         : RRTPlanner<dim>("RRT* Planner", robot, options) {
     }
 
@@ -86,10 +86,11 @@ void StarRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared
         return;
     }
 
-    newNode->setCost(Heuristic<dim>::calcEdgeCost(newNode, nearestNode) + nearestNode->getCost());
-    newNode->setParent(nearestNode);
+    float edgeCost = this->m_heuristic->calcEdgeCost(newNode, nearestNode);
+    newNode->setCost(edgeCost + nearestNode->getCost());
+    newNode->setParent(nearestNode, edgeCost);
     m_mutex.lock();
-    nearestNode->addChild(newNode);
+    nearestNode->addChild(newNode, edgeCost);
     m_mutex.unlock();
 
     reWire(newNode, nearestNode, nearNodes);
@@ -131,15 +132,16 @@ void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std:
 template <unsigned int dim>
 void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
                                  std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
-    float oldDist, newDist;
+    float oldDist, newDist, edgeCost;
     for (auto nearNode : nearNodes) {
         if (nearNode != parentNode) {
+            edgeCost = this->m_heuristic->calcEdgeCost(nearNode, newNode);
             oldDist = nearNode->getCost();
-            newDist = Heuristic<dim>::calcEdgeCost(nearNode, newNode) + newNode->getCost();
+            newDist = edgeCost + newNode->getCost();
             if (newDist < oldDist && m_planner->controlTrajectory(nearNode, newNode)) {
                 m_mutex.lock();
                 nearNode->setCost(newDist);
-                nearNode->setParent(newNode);
+                nearNode->setParent(newNode, edgeCost);
                 m_mutex.unlock();
             }
         }
@@ -173,7 +175,7 @@ bool StarRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
     }
 
     if (nearestNode != nullptr) {
-        goalNode->setParent(nearestNode);
+        goalNode->setParent(nearestNode, this->m_heuristic->calcEdgeCost(goalNode, nearestNode));
         goalNode->setCost(goalNode->getParentEdge()->getCost() + nearestNode->getCost());
         m_goalNode = goalNode;
         m_pathPlanned = true;

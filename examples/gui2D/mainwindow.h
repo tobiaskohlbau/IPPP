@@ -54,6 +54,7 @@ class MainWindow : public QMainWindow {
     void updateRRTStepSize(double value);
     void updateWeightVecX(double value);
     void updateWeightVecY(double value);
+    void updateWeightVecZ(double value);
   signals:
     void setNumThreads(int value);
     void setNumNodes(int value);
@@ -73,6 +74,7 @@ class MainWindow : public QMainWindow {
     void setEdgeHeuristic(int type);
     void setWeightVecX(double value);
     void setWeightVecY(double value);
+    void setWeightVecZ(double value);
 
   private:
     void viewPath();
@@ -100,6 +102,7 @@ class MainWindow : public QMainWindow {
     double m_rrtStepsize = 50;
     double m_weightVecX = 1;
     double m_weightVecY = 1;
+    double m_weightVecZ = 1;
     QString m_configPath;
 
     cv::Mat m_image;
@@ -108,6 +111,7 @@ class MainWindow : public QMainWindow {
     std::vector<rmpl::Triangle2D> m_triangles;
     std::shared_ptr<rmpl::Planner<2>> m_planner2d = nullptr;
     std::shared_ptr<rmpl::Planner<3>> m_planner3d = nullptr;
+    rmpl::Vector3 m_weightVec;
     bool m_connected = false;
     bool m_imageLoaded = false;
 };

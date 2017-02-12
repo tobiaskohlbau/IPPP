@@ -25,7 +25,7 @@ void simpleRRT() {
     robot->saveMeshConfig(utilVec::Vecf(0, 0, 0, 0, 0, 0));
     return;
 
-    RRTOptions options(30, 0.5);
+    RRTOptions<6> options(30, 0.5);
     NormalRRTPlanner<6> planner(robot, options);
     Vector6 start = utilVec::Vecf(180, 180, 180, 180, 180, 180);
     Vector6 goal = utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
@@ -63,7 +63,7 @@ void treeConnection() {
     std::shared_ptr<Jaco> robot(new Jaco());
 
     // create two trees from init and from goal
-    RRTOptions options(20, 0.5, SamplerMethod::standardDistribution);
+    RRTOptions<6> options(20, 0.5, SamplerMethod::standardDistribution);
     StarRRTPlanner<6> plannerGoalNode(robot, options);
     StarRRTPlanner<6> plannerInitNode(robot, options);
 

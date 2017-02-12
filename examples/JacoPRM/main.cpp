@@ -20,7 +20,7 @@ void printTime(clock_t begin, clock_t end) {
 int main(int argc, char** argv) {
     std::shared_ptr<Jaco> robot(new rmpl::Jaco());
 
-    PRMOptions options(30, 0.5);
+    PRMOptions<6> options(30, 0.5);
     PRMPlanner<6> planner(robot, options);
 
     clock_t begin = std::clock();
