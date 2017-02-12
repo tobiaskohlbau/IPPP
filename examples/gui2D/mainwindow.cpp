@@ -63,7 +63,7 @@ void MainWindow::computePath() {
         sampling = SamplingStrategy::nearObstacles;
 
     if (m_robotType == 1) {
-        std::shared_ptr<rmpl::Heuristic<3>> edgeH;
+        std::shared_ptr<rmpl::Heuristic<3>> edgeH = std::make_shared<rmpl::Heuristic<3>>(rmpl::Heuristic<3>());;
         if (m_edgeHeuristic == 1) {
             edgeH = std::make_shared<rmpl::HeuristicL1<3>>(rmpl::HeuristicL1<3>());
         } else if (m_edgeHeuristic == 2) {
@@ -100,7 +100,7 @@ void MainWindow::computePath() {
         Vector3 goal(m_goalX, m_goalY, m_goalPhi);
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
-        std::shared_ptr<rmpl::Heuristic<2>> edgeH;
+        std::shared_ptr<rmpl::Heuristic<2>> edgeH = std::make_shared<rmpl::Heuristic<2>>(rmpl::Heuristic<2>());
         if (m_edgeHeuristic == 1) {
             edgeH = std::make_shared<rmpl::HeuristicL1<2>>(rmpl::HeuristicL1<2>());
         } else if (m_edgeHeuristic == 2) {
