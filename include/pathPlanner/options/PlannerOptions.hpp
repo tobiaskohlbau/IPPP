@@ -21,6 +21,7 @@
 
 #include <memory>
 
+#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/module/ModuleBase.h>
 #include <core/module/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
@@ -36,11 +37,14 @@ namespace rmpl {
 template <unsigned int dim>
 class PlannerOptions {
   public:
-    PlannerOptions(float trajectoryStepSize, SamplerMethod samplerMethod, SamplingStrategy strategy,
+    PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod samplerMethod, SamplingStrategy strategy,
                    std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph);
 
     void setTrajectoryStepSize(float stepSize);
     float getTrajectoryStepSize() const;
+
+    void setCollisionDetection(std::shared_ptr<CollisionDetection<dim>> collision);
+    std::shared_ptr<CollisionDetection<dim>> getCollisionDetection() const;
 
     void setSamplerMethod(SamplerMethod method);
     SamplerMethod getSamplerMethod() const;
@@ -55,6 +59,7 @@ class PlannerOptions {
 
   protected:
     float m_trajectoryStepSize;
+    std::shared_ptr<CollisionDetection<dim>> m_collision;
     SamplerMethod m_samplerMethod;
     SamplingStrategy m_samplingStrategy;
     std::shared_ptr<Heuristic<dim>> m_heuristic;
@@ -73,12 +78,13 @@ class PlannerOptions {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-PlannerOptions<dim>::PlannerOptions(float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
+PlannerOptions<dim>::PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod method, SamplingStrategy strategy,
                                     std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph) {
     setTrajectoryStepSize(trajectoryStepSize);
+    m_collision = collision;
+    setHeuristic(heuristic);
     m_samplingStrategy = strategy;
     m_samplerMethod = method;
-    m_heuristic = heuristic;
     m_sortingCountGraph = sortingCountGraph;
 }
 
@@ -107,6 +113,16 @@ void PlannerOptions<dim>::setTrajectoryStepSize(float stepSize) {
 template <unsigned int dim>
 float PlannerOptions<dim>::getTrajectoryStepSize() const {
     return m_trajectoryStepSize;
+}
+
+template <unsigned int dim>
+void PlannerOptions<dim>::setCollisionDetection(std::shared_ptr<CollisionDetection<dim>> collision) {
+    m_collision = collision;
+}
+
+template <unsigned int dim>
+std::shared_ptr<CollisionDetection<dim>> PlannerOptions<dim>::getCollisionDetection() const {
+    return m_collision;
 }
 
 /*!
@@ -161,7 +177,10 @@ SamplingStrategy PlannerOptions<dim>::getSamplingStrategy() const {
 */
 template <unsigned int dim>
 void PlannerOptions<dim>::setHeuristic(std::shared_ptr<Heuristic<dim>> heuristic) {
-    m_heuristic = heuristic;
+    if (heuristic)
+        m_heuristic = heuristic;
+    else
+        Logging::error("Empty Heuristic passed", "PlannerOptions");
 }
 
 /*!

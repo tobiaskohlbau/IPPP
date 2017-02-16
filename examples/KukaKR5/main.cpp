@@ -6,6 +6,7 @@
 
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
+#include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/KukaKR5.h>
@@ -19,7 +20,8 @@ int main(int argc, char** argv) {
     Logging::setLogOutput(LogOutput::terminlAndFile);
 
     std::shared_ptr<KukaKR5> robot(new KukaKR5());
-    RRTOptions<6> options(40, 1);
+    std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
+    RRTOptions<6> options(40, 1, collision);
     StarRRTPlanner<6> planner(robot, options);
 
     Vector6 start = utilVec::Vecf(0, 0, 0, 0, 51, 0);

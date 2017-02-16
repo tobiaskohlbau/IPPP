@@ -46,7 +46,7 @@ link_directories(${ASSIMP_LIBRARIES}
         ${PQP_DIR}/lib)
 
 # source files
-set(SRCS)
+set(SRCS include/core/utility/UtilCollision.hpp include/robot/Model/ModelFactory.hpp include/robot/Model/ModelContainer.hpp include/robot/Model/PqpModel.h)
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(source)
 

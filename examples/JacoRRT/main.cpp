@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 
 #include <core/utility/Utility.h>
+#include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/Jaco.h>
@@ -25,7 +26,8 @@ void simpleRRT() {
     robot->saveMeshConfig(utilVec::Vecf(0, 0, 0, 0, 0, 0));
     return;
 
-    RRTOptions<6> options(30, 0.5);
+    std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
+    RRTOptions<6> options(30, 0.5, collision);
     NormalRRTPlanner<6> planner(robot, options);
     Vector6 start = utilVec::Vecf(180, 180, 180, 180, 180, 180);
     Vector6 goal = utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
@@ -63,7 +65,8 @@ void treeConnection() {
     std::shared_ptr<Jaco> robot(new Jaco());
 
     // create two trees from init and from goal
-    RRTOptions<6> options(20, 0.5, SamplerMethod::standardDistribution);
+    std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
+    RRTOptions<6> options(20, 0.5, collision, SamplerMethod::standardDistribution);
     StarRRTPlanner<6> plannerGoalNode(robot, options);
     StarRRTPlanner<6> plannerInitNode(robot, options);
 

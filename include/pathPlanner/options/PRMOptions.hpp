@@ -31,7 +31,7 @@ namespace rmpl {
 template <unsigned int dim>
 class PRMOptions : public PlannerOptions<dim> {
   public:
-    PRMOptions(float rangeSize, float trajectoryStepSize, SamplerMethod samplerMethod = SamplerMethod::randomly,
+    PRMOptions(float rangeSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod samplerMethod = SamplerMethod::randomly,
                SamplingStrategy strategy = SamplingStrategy::normal, std::shared_ptr<Heuristic<dim>> heuristic = std::shared_ptr<Heuristic<dim>>(new Heuristic<dim>()), unsigned int sortingCountGraph = 0);
 
     void setRangeSize(float rangeSize);
@@ -51,9 +51,9 @@ class PRMOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-PRMOptions<dim>::PRMOptions(float rangeSize, float trajectoryStepSize, SamplerMethod method, SamplingStrategy strategy,
+PRMOptions<dim>::PRMOptions(float rangeSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod method, SamplingStrategy strategy,
                             std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph)
-        : PlannerOptions<dim>(trajectoryStepSize, method, strategy, heuristic, sortingCountGraph) {
+        : PlannerOptions<dim>(trajectoryStepSize, collision, method, strategy, heuristic, sortingCountGraph) {
     setRangeSize(rangeSize);
 }
 
