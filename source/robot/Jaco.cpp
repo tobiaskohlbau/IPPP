@@ -35,27 +35,27 @@ Jaco::Jaco()
     m_d = utilVec::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
     m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
-    m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_base_fixed_origin.STL"));
-    std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/Jaco/link_base_fixed_origin.STL"));
+    m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/jaco2_link_base.dae"));
+    std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/Jaco/jaco2_link_base.dae"));
     Joint joint(0, 360, mesh);
     // m_joints.push_back(joint);
 
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_1_fixed_origin.STL"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/jaco2_link_1.dae"));
     joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_2_fixed_origin.STL"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/jaco2_link_2.dae"));
     joint = Joint(42, 318, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_3_fixed_origin.STL"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/jaco2_link_3.dae"));
     joint = Joint(17, 343, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_4_fixed_origin.STL"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/jaco2_link_4.dae"));
     joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_5_fixed_origin.STL"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/jaco2_link_5.dae"));
     joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/link_hand_fixed_origin.STL"));
+    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/Jaco/jaco2_link_5.dae"));
     joint = Joint(0, 360, mesh);
     m_joints.push_back(joint);
 }

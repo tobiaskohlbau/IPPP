@@ -22,6 +22,7 @@
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/StarRRTPlanner.hpp>
 #include <robot/PointRobot.h>
+#include <core/module/collisionDetection/CollisionDetection2D.hpp>
 #include <core/utility/heuristic/HeuristicL1.hpp>
 #include <core/utility/heuristic/HeuristicInf.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
@@ -63,6 +64,7 @@ BOOST_AUTO_TEST_CASE(obstacleWorkspace) {
     Vector2 minBoundary(0.0, 0.0);
     Vector2 maxBoundary(workspace.rows(), workspace.cols());
     std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
+        std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
     robot->set2DWorkspace(workspace);
     std::shared_ptr<Planner<dim>> planner;
 
@@ -73,12 +75,12 @@ BOOST_AUTO_TEST_CASE(obstacleWorkspace) {
     for (auto heuristic : heuristics) {
         for (auto sampler : samplerMethods) {
             for (auto sampling : samplingStrategies) {
-                PRMOptions<dim> prmOptions(30, 1, sampler, sampling, heuristic);
+                PRMOptions<dim> prmOptions(30, 1, collision, sampler, sampling, heuristic);
                 PRMPlanner<dim> prmPlanner (robot, prmOptions);
                 BOOST_TEST_CHECKPOINT("Calling PRM planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | ");
                 prmPlanner.computePath(start, goal, 100, 1);
 
-                RRTOptions<dim> rrtOptions(30, 1, sampler, sampling, heuristic);
+                RRTOptions<dim> rrtOptions(30, 1, collision, sampler, sampling, heuristic);
                 NormalRRTPlanner<dim> normalRRTPlanner(robot, rrtOptions);
                 BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | " );
                 normalRRTPlanner.computePath(start, goal, 100, 1);

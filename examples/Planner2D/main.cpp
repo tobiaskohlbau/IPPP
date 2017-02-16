@@ -7,6 +7,8 @@
 #include <Eigen/Core>
 
 #include <core/types.h>
+#include <core/module/collisionDetection/CollisionDetection2D.hpp>
+#include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
 #include <pathPlanner/NormalRRTPlanner.hpp>
@@ -33,8 +35,9 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(triangles, min, max));
     triangleRobot->set2DWorkspace(mat);
 
-    PRMOptions<dim> prmOptions(30, 0.5, SamplerMethod::randomly);
-    RRTOptions<dim> rrtOptions(30, 0.5, SamplerMethod::randomly, SamplingStrategy::normal);
+    std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(triangleRobot));
+    PRMOptions<dim> prmOptions(30, 0.5, collision, SamplerMethod::randomly);
+    RRTOptions<dim> rrtOptions(30, 0.5, collision, SamplerMethod::randomly, SamplingStrategy::normal);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(triangleRobot, prmOptions));
@@ -72,8 +75,9 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     std::shared_ptr<PointRobot> robot(new PointRobot(min, max));
     robot->set2DWorkspace(mat);
 
-    PRMOptions<dim> prmOptions(40, 0.5, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
-    RRTOptions<dim> rrtOptions(50, 1, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
+    std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
+    PRMOptions<dim> prmOptions(40, 0.5, collision, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
+    RRTOptions<dim> rrtOptions(50, 1, collision, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));

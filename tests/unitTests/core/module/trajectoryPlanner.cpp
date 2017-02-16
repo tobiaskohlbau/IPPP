@@ -18,6 +18,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/utility/Utility.h>
 #include <robot/Jaco.h>
@@ -29,8 +30,8 @@ BOOST_AUTO_TEST_SUITE(constructor)
 BOOST_AUTO_TEST_CASE(computeTrajectory) {
     // init TrajectoryPlanner
     const unsigned int dim = 6;
-    std::shared_ptr<Jaco> robot = std::shared_ptr<Jaco>(new Jaco());
-    std::shared_ptr<CollisionDetection<dim>> collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetection<dim>(robot));
+    std::shared_ptr<Jaco> robot(new Jaco());
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(robot));
     TrajectoryPlanner<dim> planner(0.1, collision);
 
     // test trajectories

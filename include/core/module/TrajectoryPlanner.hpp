@@ -19,7 +19,7 @@
 #ifndef TRAJECTORYPLANNER_H_
 #define TRAJECTORYPLANNER_H_
 
-#include <core/module/CollisionDetection.hpp>
+#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/module/ModuleBase.h>
 #include <core/types.h>
 

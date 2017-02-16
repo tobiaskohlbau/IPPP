@@ -23,7 +23,7 @@
 
 #include <Eigen/Core>
 
-#include <core/module/CollisionDetection.hpp>
+#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/module/ModuleBase.h>
 #include <core/module/Sampler.hpp>
 #include <core/module/TrajectoryPlanner.hpp>

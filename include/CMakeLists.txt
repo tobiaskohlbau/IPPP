@@ -21,7 +21,11 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Graph.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/CollisionDetection.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetection.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetection2D.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionPqp.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionFcl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.hpp

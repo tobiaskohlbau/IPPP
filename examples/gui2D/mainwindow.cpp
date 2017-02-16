@@ -2,7 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
-#include <core/types.h>
+#include <core/module/collisionDetection/CollisionDetection2D.hpp>
+#include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 #include <core/utility/heuristic/HeuristicL1.hpp>
 #include <core/utility/heuristic/HeuristicInf.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
@@ -82,13 +83,14 @@ void MainWindow::computePath() {
             edgeH = heuristic;
         }
 
-        RRTOptions<3> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, sampler, sampling, edgeH);
-        PRMOptions<3> prmOptions(m_prmDistance, m_trajectoryStepSize, sampler, sampling, edgeH);
-
         Vector3 minBoundary(0.0, 0.0, 0.0);
         Vector3 maxBoundary(m_workspace.rows(), m_workspace.cols(), 360);
         std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(m_triangles, minBoundary, maxBoundary));
         robot->set2DWorkspace(m_workspace);
+        std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(robot));
+
+        RRTOptions<3> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
+        PRMOptions<3> prmOptions(m_prmDistance, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
 
         if (m_plannerType == 0)
             m_planner3d = std::shared_ptr<NormalRRTPlanner<3>>(new NormalRRTPlanner<3>(robot, rrtOptions));
@@ -119,13 +121,14 @@ void MainWindow::computePath() {
             edgeH = heuristic;
         }
 
-        RRTOptions<2> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, sampler, sampling, edgeH);
-        PRMOptions<2> prmOptions(m_prmDistance, m_trajectoryStepSize, sampler, sampling, edgeH);
-
         Vector2 minBoundary(0.0, 0.0);
         Vector2 maxBoundary(m_workspace.rows(), m_workspace.cols());
         std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
         robot->set2DWorkspace(m_workspace);
+        std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
+
+        RRTOptions<2> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
+        PRMOptions<2> prmOptions(m_prmDistance, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
 
         if (m_plannerType == 0)
             m_planner2d = std::shared_ptr<NormalRRTPlanner<2>>(new NormalRRTPlanner<2>(robot, rrtOptions));
