@@ -47,9 +47,9 @@ Joint::Joint(float minBound, float maxBound) {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-Joint::Joint(float minBound, float maxBound, std::shared_ptr<MeshContainer> &mesh) {
+Joint::Joint(float minBound, float maxBound, std::shared_ptr<ModelContainer> mesh) {
     setBoundaries(minBound, maxBound);
-    m_mesh = mesh;
+    m_model = mesh;
 }
 
 /*!
@@ -58,8 +58,8 @@ Joint::Joint(float minBound, float maxBound, std::shared_ptr<MeshContainer> &mes
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-void Joint::setMesh(std::shared_ptr<MeshContainer> &mesh) {
-    m_mesh = mesh;
+void Joint::setModel(std::shared_ptr<ModelContainer> &model) {
+    m_model = model;
 }
 
 /*!
@@ -68,8 +68,8 @@ void Joint::setMesh(std::shared_ptr<MeshContainer> &mesh) {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-std::shared_ptr<MeshContainer> Joint::getMesh() {
-    return m_mesh;
+std::shared_ptr<ModelContainer> Joint::getModel() {
+    return m_model;
 }
 
 /*!

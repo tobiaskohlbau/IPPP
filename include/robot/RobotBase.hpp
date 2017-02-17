@@ -23,13 +23,12 @@
 #include <vector>
 
 #include <Eigen/Core>
-#include <PQP.h>
 
 #include <core/module/ModuleBase.h>
 #include <core/types.h>
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
-#include <robot/MeshContainer.h>
+#include <robot/model/ModelContainer.h>
 
 namespace rmpl {
 
@@ -56,11 +55,11 @@ class RobotBase : public ModuleBase {
     Vector6 getPose();
     Matrix4 getPoseMat();
 
-    void setBaseMesh(const std::shared_ptr<MeshContainer> &baseMesh);
-    std::shared_ptr<MeshContainer> getBaseMesh();
+    void setBaseModel(const std::shared_ptr<ModelContainer> &baseModel);
+    std::shared_ptr<ModelContainer> getBaseModel();
 
-    void setWorkspace(const std::shared_ptr<MeshContainer> &mesh);
-    std::shared_ptr<MeshContainer> getWorkspace();
+    void setWorkspace(const std::shared_ptr<ModelContainer> &model);
+    std::shared_ptr<ModelContainer> getWorkspace();
     void set2DWorkspace(const Eigen::MatrixXi &space);
     Eigen::MatrixXi &get2DWorkspace();
 
@@ -79,8 +78,8 @@ class RobotBase : public ModuleBase {
     Vector6 m_pose;
     Matrix4 m_poseMat;
 
-    std::shared_ptr<MeshContainer> m_baseMesh;
-    std::shared_ptr<MeshContainer> m_workspaceMesh;
+    std::shared_ptr<ModelContainer> m_baseModel;
+    std::shared_ptr<ModelContainer> m_workspaceModel;
     Eigen::MatrixXi m_2DWorkspace;
 };
 
@@ -112,8 +111,8 @@ RobotBase<dim>::RobotBase(std::string name, CollisionType collisionType, RobotTy
       m_maxBoundary(maxBoundary) {
     m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
     m_poseMat = utilGeo::poseVecToMat(m_pose);
-    m_baseMesh = nullptr;
-    m_workspaceMesh = nullptr;
+    m_baseModel = nullptr;
+    m_workspaceModel = nullptr;
 }
 
 /*!
@@ -163,8 +162,8 @@ Matrix4 RobotBase<dim>::getPoseMat() {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-void RobotBase<dim>::setBaseMesh(const std::shared_ptr<MeshContainer> &mesh) {
-    m_baseMesh = mesh;
+void RobotBase<dim>::setBaseModel(const std::shared_ptr<ModelContainer> &model) {
+    m_baseModel = model;
 }
 
 /*!
@@ -175,8 +174,8 @@ void RobotBase<dim>::setBaseMesh(const std::shared_ptr<MeshContainer> &mesh) {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-std::shared_ptr<MeshContainer> RobotBase<dim>::getBaseMesh() {
-    return m_baseMesh;
+std::shared_ptr<ModelContainer> RobotBase<dim>::getBaseModel() {
+    return m_baseModel;
 }
 
 /*!
@@ -186,8 +185,8 @@ std::shared_ptr<MeshContainer> RobotBase<dim>::getBaseMesh() {
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-void RobotBase<dim>::setWorkspace(const std::shared_ptr<MeshContainer> &mesh) {
-    m_workspaceMesh = mesh;
+void RobotBase<dim>::setWorkspace(const std::shared_ptr<ModelContainer> &model) {
+    m_workspaceModel = model;
 }
 
 /*!
@@ -197,8 +196,8 @@ void RobotBase<dim>::setWorkspace(const std::shared_ptr<MeshContainer> &mesh) {
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-std::shared_ptr<MeshContainer> RobotBase<dim>::getWorkspace() {
-    return m_workspaceMesh;
+std::shared_ptr<ModelContainer> RobotBase<dim>::getWorkspace() {
+    return m_workspaceModel;
 }
 
 /*!

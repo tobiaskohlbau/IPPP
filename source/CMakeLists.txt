@@ -23,8 +23,16 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Jaco.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Joint.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/KukaKR5.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/MeshContainer.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/CadProcessing.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryPqp.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelPqp.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/PointRobot.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/TriangleRobot2D.cpp)
+
+IF (${BUILD_FCL})
+    list(APPEND SRCS
+            ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryFcl.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFcl.cpp)
+ENDIF()
 
 set(SRCS "${SRCS}" PARENT_SCOPE)

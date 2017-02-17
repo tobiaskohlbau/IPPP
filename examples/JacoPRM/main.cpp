@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     PRMPlanner<6> planner(robot, options);
 
     clock_t begin = std::clock();
-    planner.startSamplingPhase(21000, 2);
+    planner.startSamplingPhase(21000, 4);
     planner.startPlannerPhase(2);
     clock_t end = std::clock();
     printTime(begin, end);

@@ -21,7 +21,7 @@
 
 #include <memory>
 
-#include <robot/MeshContainer.h>
+#include <robot/model/ModelContainer.h>
 
 namespace rmpl {
 
@@ -34,10 +34,10 @@ class Joint {
   public:
     Joint();
     Joint(float minBound, float maxBound);
-    Joint(float minBound, float maxBound, std::shared_ptr<MeshContainer> &mesh);
+    Joint(float minBound, float maxBound, std::shared_ptr<ModelContainer> model);
 
-    void setMesh(std::shared_ptr<MeshContainer> &mesh);
-    std::shared_ptr<MeshContainer> getMesh();
+    void setModel(std::shared_ptr<ModelContainer> &model);
+    std::shared_ptr<ModelContainer> getModel();
 
     void setBoundaries(float minBound, float maxBound);
     void getBoundaries(float &minBound, float &maxBound);
@@ -45,7 +45,7 @@ class Joint {
   private:
     float m_minBound = 0;
     float m_maxBound = 0;
-    std::shared_ptr<MeshContainer> m_mesh = nullptr;
+    std::shared_ptr<ModelContainer> m_model = nullptr;
 };
 
 } /* namespace rmpl */

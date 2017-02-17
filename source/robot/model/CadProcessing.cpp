@@ -1,0 +1,139 @@
+//-------------------------------------------------------------------------//
+//
+// Copyright 2016 Sascha Kaden
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+//-------------------------------------------------------------------------//
+
+#include "include/robot/model/CadProcessing.h"
+
+#include <core/utility/Logging.h>
+
+namespace rmpl {
+
+bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces) {
+    Assimp::Importer importer;
+    const aiScene *scene = importer.ReadFile(filepath, aiProcess_CalcTangentSpace);
+    if (!scene) {
+        Logging::error("Could not load cad", "CadProcessing");
+        return false;
+    }
+
+    if (scene->mNumMeshes == 0)
+        return false;
+
+    vertices.clear();
+    faces.clear();
+    unsigned int verticeCount;
+    for (int i = 0; i < scene->mNumMeshes; ++i) {
+        const aiMesh *mesh = scene->mMeshes[i];
+        verticeCount = vertices.size();
+        // load vertices
+        for (int j = 0; j < mesh->mNumVertices; ++j) {
+            vertices.push_back(Vector3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z));
+        }
+        // load faces
+        for (int j = 0; j < mesh->mNumFaces; ++j) {
+            if (mesh->mFaces[j].mNumIndices > 2)
+                faces.push_back(
+                        Vector3i(mesh->mFaces[j].mIndices[0] + verticeCount, mesh->mFaces[j].mIndices[1] + verticeCount,
+                                 mesh->mFaces[j].mIndices[2] + verticeCount));
+            else
+                Logging::warning("Face array is to short", "CadProcessing");
+        }
+    }
+    return true;
+}
+
+bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
+    if (filePath == "") {
+        Logging::warning("Empty output file path", "CadProcessing");
+        return false;
+    }
+
+    Assimp::Exporter exporter;
+    size_t maxFormatCount = exporter.GetExportFormatCount();
+    size_t formatCount;
+    switch(format) {
+        case ExportFormat::COLLADA : formatCount = 0; break;
+        case ExportFormat::X_FILES : formatCount = 1; break;
+        case ExportFormat::STEP : formatCount = 2; break;
+        case ExportFormat::OBJ : formatCount = 3; break;
+        case ExportFormat::STEREOLITHOGRAPHY : formatCount = 4; break;
+        case ExportFormat::STEREOLITHOGRAPHY_BINARY : formatCount = 5; break;
+        case ExportFormat::STANFORD_POLYGON_LIBRARY : formatCount = 6; break;
+        case ExportFormat::STANFORD_POLYGON_LIBRARY_BINARY : formatCount = 7; break;
+        case ExportFormat::AUTODESK_3DS : formatCount = 8; break;
+        case ExportFormat::GL_TRANSMISSION_FORMAT : formatCount = 9; break;
+        case ExportFormat::GL_TRANSMISSION_FORMAT_BINARY : formatCount = 10; break;
+        case ExportFormat::ASSIMP_BINARY : formatCount = 11; break;
+        case ExportFormat::ASSXML_DOCUMENT : formatCount = 12; break;
+        case ExportFormat::EXTENSIBLE_3D : formatCount = 13; break;
+    }
+
+    if (formatCount > maxFormatCount) {
+        Logging::warning("Selected format is not supported", "CadProcessing");
+        return false;
+    }
+
+    aiScene scene = generateScene(vertices, faces);
+
+    const aiExportFormatDesc* formatDesc = exporter.GetExportFormatDescription(formatCount);
+    exporter.Export(&scene, formatDesc->id, filePath + "." + formatDesc->fileExtension, 0);
+    return true;
+}
+
+aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
+    aiScene scene;
+
+    scene.mRootNode = new aiNode();
+
+    scene.mMaterials = new aiMaterial*[ 1 ];
+    scene.mMaterials[ 0 ] = nullptr;
+    scene.mNumMaterials = 1;
+    scene.mMaterials[ 0 ] = new aiMaterial();
+
+    scene.mMeshes = new aiMesh*[ 1 ];
+    scene.mMeshes[ 0 ] = nullptr;
+    scene.mNumMeshes = 1;
+    scene.mMeshes[ 0 ] = new aiMesh();
+    scene.mMeshes[ 0 ]->mMaterialIndex = 0;
+
+    scene.mRootNode->mMeshes = new unsigned int[ 1 ];
+    scene.mRootNode->mMeshes[ 0 ] = 0;
+    scene.mRootNode->mNumMeshes = 1;
+
+    auto pMesh = scene.mMeshes[ 0 ];
+
+    // add vertices to the mesh
+    pMesh->mVertices = new aiVector3D[ vertices.size() ];
+    pMesh->mNumVertices = vertices.size();
+    for (auto itVertice = vertices.begin(); itVertice != vertices.end(); ++itVertice) {
+        pMesh->mVertices[ itVertice - vertices.begin() ] = aiVector3D( itVertice->x(), itVertice->y(), itVertice->z());
+    }
+
+    pMesh->mFaces = new aiFace[ faces.size() ];
+    pMesh->mNumFaces = faces.size();
+    for ( auto itFace = faces.begin(); itFace != faces.end(); ++itFace ) {
+        aiFace& face = pMesh->mFaces[itFace - faces.begin()];
+
+        face.mIndices = new unsigned int[3];
+        face.mNumIndices = 3;
+        for (int i = 0; i < 3; ++i)
+            face.mIndices[i] = (*itFace)[i];
+    }
+    return scene;
+}
+
+} /* namespace rmpl */

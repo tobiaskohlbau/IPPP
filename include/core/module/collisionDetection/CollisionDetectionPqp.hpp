@@ -21,6 +21,7 @@
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/UtilCollision.hpp>
+#include <robot/model/ModelPqp.h>
 #include <robot/SerialRobot.hpp>
 
 namespace rmpl {
@@ -122,9 +123,11 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &vec) {
     utilCollision::getTrafosFromRobot<dim>(vec, robot, poseR, poseT, rot, trans);
 
     std::shared_ptr<PQP_Model> baseMesh = nullptr;
-    if (robot->getBaseMesh() != nullptr)
-        baseMesh = robot->getBaseMesh()->m_pqpModel;
-    std::vector<std::shared_ptr<PQP_Model>> jointMeshes = robot->getJointPqpModels();
+    if (robot->getBaseModel() != nullptr)
+        baseMesh = std::dynamic_pointer_cast<ModelPqp>(robot->getBaseModel())->m_pqpModel;
+    std::vector<std::shared_ptr<PQP_Model>> jointMeshes;
+    for (int i = 0; i < robot->getNbJoints(); ++i)
+         jointMeshes.push_back(std::dynamic_pointer_cast<ModelPqp>(robot->getModelFromJoint(i))->m_pqpModel);
 
     //        for (auto tmp : jointTrafos)
     //            std::cout << tmp <<std::endl;
@@ -147,13 +150,13 @@ bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &vec) {
     Vector3 poseT;
     utilGeo::decomposeT(pose, poseR, poseT);
 
-    if (m_robot->getBaseMesh() == nullptr || m_robot->getWorkspace() == nullptr)
+    if (m_robot->getBaseModel() == nullptr || m_robot->getWorkspace() == nullptr)
         return false;
 
-    std::shared_ptr<PQP_Model> baseMesh = m_robot->getBaseMesh()->m_pqpModel;
-    std::shared_ptr<PQP_Model> workspace = m_robot->getWorkspace()->getPqp();
+    std::shared_ptr<PQP_Model> baseModel = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getBaseModel())->m_pqpModel;
+    std::shared_ptr<PQP_Model> workspace = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
 
-    return checkPQP(workspace, baseMesh, m_identity, poseR, m_zeroVec, poseT);
+    return checkPQP(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT);
 }
 
 /*!
@@ -191,12 +194,12 @@ bool CollisionDetectionPqp<dim>::checkMesh(std::vector<std::shared_ptr<PQP_Model
                     std::cout << "A" << i << ": ";
                     std::cout << "Euler angles: " << std::endl << R[i] << std::endl;
                     std::cout << "Translation: " << t[i].transpose() << std::endl;
-                    robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", utilGeo::createT(R[i], t[i]));
+                    //robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", utilGeo::createT(R[i], t[i]));
                     r = R[j].eulerAngles(0, 1, 2);
                     std::cout << "A" << j << ": ";
                     std::cout << "Euler angles: " << std::endl << R[j] << std::endl;
                     std::cout << "Translation: " << t[j].transpose() << std::endl << std::endl;
-                    robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", utilGeo::createT(R[i], t[i]));
+                    //robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", utilGeo::createT(R[i], t[i]));
                 }
                 return true;
             }
@@ -205,7 +208,7 @@ bool CollisionDetectionPqp<dim>::checkMesh(std::vector<std::shared_ptr<PQP_Model
 
     // control collision with workspace
     if (m_robot->getWorkspace() != nullptr) {
-        std::shared_ptr<PQP_Model> workspace = m_robot->getWorkspace()->getPqp();
+        std::shared_ptr<PQP_Model> workspace = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
 
         if (checkPQP(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT))
             return true;
