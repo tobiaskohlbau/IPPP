@@ -7,21 +7,29 @@ sudo: required
 before_script:
   - sudo apt-get install libeigen3-dev
   - sudo apt-get install libboost-all-dev
-  - sudo apt-get install libassimp-dev
-  # libccd
-  - sudo add-apt-repository --yes ppa:libccd-debs/ppa
-  - sudo apt-get -qq update
-  - sudo apt-get -qq --yes --force-yes install libccd-dev
-  # fcl
-  - git clone https://github.com/flexible-collision-library/fcl.git fcl
-  - cd fcl
-  - git checkout 79b4530cfc3addba11dc1e165883404850e7a564
+  # assimp
+  - git clone https://github.com/assimp/assimp.git
+  - cd assimp
   - mkdir build
   - cd build
-  - cmake -DFCL_BUILD_TESTS=OFF ..
+  - cmake ..
   - make -j4
-  - sudo make install
-  - cd ../..
+  - cd /../../
+  - sudo apt-get install libassimp-dev
+#  # libccd
+#  - sudo add-apt-repository --yes ppa:libccd-debs/ppa
+#  - sudo apt-get -qq update
+#  - sudo apt-get -qq --yes --force-yes install libccd-dev
+#  # fcl
+#  - git clone https://github.com/flexible-collision-library/fcl.git fcl
+#  - cd fcl
+#  - git checkout 79b4530cfc3addba11dc1e165883404850e7a564
+#  - mkdir build
+#  - cd build
+#  - cmake -DFCL_BUILD_TESTS=OFF ..
+#  - make -j4
+#  - sudo make install
+#  - cd ../..
   # cmake
   - mkdir build
   - cd build
