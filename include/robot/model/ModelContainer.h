@@ -16,29 +16,25 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef JACO_H_
-#define JACO_H_
+#ifndef MODELCONTAINER_H
+#define MODELCONTAINER_H
 
-#include <robot/model/ModelFactoryPqp.h>
-#include <robot/SerialRobot.hpp>
+#include <memory>
+
+#include <Eigen/Core>
+
+#include <core/types.h>
 
 namespace rmpl {
 
-/*!
-* \brief   Class for the jaco robot
-* \author  Sascha Kaden
-* \date    2016-06-30
-*/
-class Jaco : public SerialRobot<6> {
-  public:
-    Jaco();
-    Vector6 directKinematic(const Vector6 &angles);
-    std::vector<Matrix4> getJointTrafos(const Vector6 &angles);
+class ModelContainer {
+public:
+    virtual bool empty() const = 0;
 
-  private:
-    Vector6 convertRealToDH(const Vector6 &realAngles);
+    std::vector<Vector3> m_vertices;
+    std::vector<Vector3i> m_faces;
 };
 
 } /* namespace rmpl */
 
-#endif /* JACO_H_ */
+#endif //MODELCONTAINER_H

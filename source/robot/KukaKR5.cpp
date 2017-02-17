@@ -19,6 +19,7 @@
 #include <robot/KukaKR5.h>
 
 #include <core/utility/Utility.h>
+#include <robot/model/ModelFactoryPqp.h>
 
 namespace rmpl {
 
@@ -37,25 +38,20 @@ KukaKR5::KukaKR5()
     m_d = utilVec::Vecf(400, 0, 0, 620, 0, 115);
     m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
 
-    m_baseMesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/KukaKR5/link0.stl"));
-
-    std::shared_ptr<MeshContainer> mesh(new MeshContainer("meshes/KukaKR5/link1.stl"));
-    Joint joint(-155, 155, mesh);
+    ModelFactoryPqp modelFactoryPqp;
+    m_baseModel = modelFactoryPqp.createModel("meshes/KukaKR5/link0.stl");
+    Joint joint;
+    joint = Joint(-155, 155, modelFactoryPqp.createModel("meshes/KukaKR5/link1.stl"));
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/KukaKR5/link2.stl"));
-    joint = Joint(-65, 180, mesh);
+    joint = Joint(-65, 180, modelFactoryPqp.createModel("meshes/KukaKR5/link2.stl"));
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/KukaKR5/link3.stl"));
-    joint = Joint(-68, 105, mesh);
+    joint = Joint(-68, 105, modelFactoryPqp.createModel("meshes/KukaKR5/link3.stl"));
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/KukaKR5/link4.stl"));
-    joint = Joint(-350, 350, mesh);
+    joint = Joint(-350, 350, modelFactoryPqp.createModel("meshes/KukaKR5/link4.stl"));
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/KukaKR5/link5.stl"));
-    joint = Joint(50, 310, mesh);
+    joint = Joint(50, 310, modelFactoryPqp.createModel("meshes/KukaKR5/link5.stl"));
     m_joints.push_back(joint);
-    mesh = std::shared_ptr<MeshContainer>(new MeshContainer("meshes/KukaKR5/link6.stl"));
-    joint = Joint(-530, 170, mesh);
+    joint = Joint(-530, 170, modelFactoryPqp.createModel("meshes/KukaKR5/link6.stl"));
     m_joints.push_back(joint);
 }
 

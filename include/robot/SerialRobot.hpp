@@ -21,6 +21,7 @@
 
 #include <robot/Joint.h>
 #include <robot/RobotBase.hpp>
+#include <robot/model/CadProcessing.h>
 
 namespace rmpl {
 
@@ -42,10 +43,8 @@ class SerialRobot : public RobotBase<dim> {
     void setJoints(std::vector<Joint> joints);
     unsigned int getNbJoints();
 
-    std::shared_ptr<MeshContainer> getMeshFromJoint(unsigned int jointIndex);
-    std::vector<std::shared_ptr<MeshContainer>> getJointMeshs();
-    std::vector<std::shared_ptr<PQP_Model>> getJointPqpModels();
-    std::vector<std::shared_ptr<FCLModel>> getJointFclModels();
+    std::shared_ptr<ModelContainer> getModelFromJoint(unsigned int jointIndex);
+    std::vector<std::shared_ptr<ModelContainer>> getJointModels();
 
     void saveMeshConfig(Vector<dim> angles);
     void saveMeshConfig(Matrix4 *As);
@@ -148,9 +147,9 @@ Vector6 SerialRobot<dim>::getTcpPosition(const std::vector<Matrix4> &trafos) {
 *  \date       2016-08-25
 */
 template <unsigned int dim>
-std::shared_ptr<MeshContainer> SerialRobot<dim>::getMeshFromJoint(unsigned int jointIndex) {
+std::shared_ptr<ModelContainer> SerialRobot<dim>::getModelFromJoint(unsigned int jointIndex) {
     if (jointIndex < m_joints.size()) {
-        return m_joints[jointIndex].getMesh();
+        return m_joints[jointIndex].getModel();
     } else {
         Logging::error("Joint index larger than joint size", this);
         return nullptr;
@@ -164,38 +163,10 @@ std::shared_ptr<MeshContainer> SerialRobot<dim>::getMeshFromJoint(unsigned int j
 *  \date       2016-08-25
 */
 template <unsigned int dim>
-std::vector<std::shared_ptr<MeshContainer>> SerialRobot<dim>::getJointMeshs() {
-    std::vector<std::shared_ptr<MeshContainer>> models;
+std::vector<std::shared_ptr<ModelContainer>> SerialRobot<dim>::getJointModels() {
+    std::vector<std::shared_ptr<ModelContainer>> models;
     for (auto joint : m_joints)
-        models.push_back(joint.getMesh());
-    return models;
-}
-
-/*!
-*  \brief      Return pqp model vector from joints
-*  \author     Sascha Kaden
-*  \param[out] vector of pqp models
-*  \date       2016-08-25
-*/
-template <unsigned int dim>
-std::vector<std::shared_ptr<PQP_Model>> SerialRobot<dim>::getJointPqpModels() {
-    std::vector<std::shared_ptr<PQP_Model>> models;
-    for (auto joint : m_joints)
-        models.push_back(joint.getMesh()->getPqp());
-    return models;
-}
-
-/*!
-*  \brief      Return fcl model vector from joints
-*  \author     Sascha Kaden
-*  \param[out] vector of fcl models
-*  \date       2016-08-25
-*/
-template <unsigned int dim>
-std::vector<std::shared_ptr<FCLModel>> SerialRobot<dim>::getJointFclModels() {
-    std::vector<std::shared_ptr<FCLModel>> models;
-    for (auto joint : m_joints)
-        models.push_back(joint.getMesh()->getFcl());
+        models.push_back(joint.getModel());
     return models;
 }
 
@@ -235,11 +206,26 @@ void SerialRobot<dim>::saveMeshConfig(Vector<dim> angles) {
 */
 template <unsigned int dim>
 void SerialRobot<dim>::saveMeshConfig(Matrix4 *As) {
-    if (this->m_baseMesh != nullptr)
-        this->m_baseMesh->saveObj("base.obj", this->m_poseMat);
+    if (this->m_baseModel != nullptr) {
+        std::vector<Eigen::Vector3f> verts;
+        for (auto vertice : this->m_baseModel->m_vertices) {
+            Eigen::Vector4f temp(utilVec::append<3>(vertice, (float)1));
+            temp = this->m_poseMat * temp;
+            verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
+        }
+        exportCad(ExportFormat::OBJ, "base", verts, this->m_baseModel->m_faces);
+    }
+        //this->m_baseModel->saveObj("base.obj", this->m_poseMat);
 
     for (int i = 0; i < dim; ++i) {
-        getMeshFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
+        std::vector<Eigen::Vector3f> verts;
+        for (auto vertice : getModelFromJoint(i)->m_vertices) {
+            Eigen::Vector4f temp(utilVec::append<3>(vertice, (float)1));
+            temp = this->m_poseMat * temp;
+            verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
+        }
+        exportCad(ExportFormat::OBJ, "link" + std::to_string(i), verts, getModelFromJoint(i)->m_faces);
+        //getModelFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
         // std::cout<< As[i] << std::endl <<std::endl;
     }
 }

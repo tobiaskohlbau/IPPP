@@ -23,7 +23,7 @@
 
 #include <core/dataObj/Node.hpp>
 #include <core/module/ModuleBase.h>
-#include <robot/MeshContainer.h>
+#include <robot/model/ModelContainer.h>
 #include <robot/RobotBase.hpp>
 
 namespace rmpl {
@@ -45,7 +45,7 @@ class CollisionDetection : public ModuleBase {
     Vector<dim> m_minBoundary, m_maxBoundary;
 
     Eigen::MatrixXi m_2DWorkspace;
-    std::shared_ptr<MeshContainer> m_workspace = nullptr;
+    std::shared_ptr<ModelContainer> m_workspace = nullptr;
 };
 
 /*!

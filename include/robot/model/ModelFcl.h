@@ -16,29 +16,25 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef JACO_H_
-#define JACO_H_
+#ifndef MODELFCL_H
+#define MODELFCL_H
 
-#include <robot/model/ModelFactoryPqp.h>
-#include <robot/SerialRobot.hpp>
+#include <fcl/fcl.h>
+
+#include <robot/model/ModelContainer.h>
 
 namespace rmpl {
 
-/*!
-* \brief   Class for the jaco robot
-* \author  Sascha Kaden
-* \date    2016-06-30
-*/
-class Jaco : public SerialRobot<6> {
-  public:
-    Jaco();
-    Vector6 directKinematic(const Vector6 &angles);
-    std::vector<Matrix4> getJointTrafos(const Vector6 &angles);
+typedef fcl::BVHModel<fcl::OBB<float>> FCLModel;
 
-  private:
-    Vector6 convertRealToDH(const Vector6 &realAngles);
+class ModelFcl : public ModelContainer {
+public:
+    ModelFcl();
+    bool empty() const;
+
+    std::shared_ptr<FCLModel> m_fclModel;
 };
 
 } /* namespace rmpl */
 
-#endif /* JACO_H_ */
+#endif //MODELFCL_H

@@ -24,7 +24,6 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetection.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetection2D.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionPqp.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionFcl.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampling.hpp
@@ -50,5 +49,10 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/StarRRTPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/RobotBase.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/SerialRobot.hpp)
+
+IF (${BUILD_FCL})
+    list(APPEND SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionFcl.hpp)
+ENDIF()
 
 set(SRCS "${SRCS}" PARENT_SCOPE)

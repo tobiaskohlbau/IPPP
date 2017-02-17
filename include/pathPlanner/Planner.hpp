@@ -19,6 +19,8 @@
 #ifndef PLANNER_H_
 #define PLANNER_H_
 
+#include <thread>
+
 #include <Eigen/Core>
 
 #include <core/dataObj/Graph.hpp>

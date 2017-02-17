@@ -25,43 +25,43 @@ SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -pthread")
 
 OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(BUILD_TESTS "Build tests" ON)
+OPTION(BUILD_FCL "Build FCL collision lib")
 
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 find_package(assimp)
 #find_package(Boost COMPONENTS thread REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(fcl REQUIRED)
 find_package(Threads REQUIRED)
 set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
 
 include_directories(${CMAKE_SOURCE_DIR}/include
-        ${ASSIMP_INCLUDE_DIR}
+        ${assimp_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
-        ${FCL_INCLUDE_DIRS}
         ${PQP_DIR}/include)
 #        ${Boost_INCLUDE_DIRS}
 
-link_directories(${ASSIMP_LIBRARIES}
-        ${PQP_DIR}/lib)
+link_directories(${PQP_DIR}/lib)
 
 # source files
-set(SRCS include/core/utility/UtilCollision.hpp include/robot/Model/ModelFactory.hpp include/robot/Model/ModelContainer.hpp include/robot/Model/PqpModel.h)
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(source)
 
 # options
+IF (${BUILD_FCL})
+    find_package(fcl REQUIRED)
+    include_directories(${FCL_INCLUDE_DIRS})
+ENDIF()
 IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)
 ENDIF()
-
 IF (${BUILD_TESTS})
     enable_testing ()
     ADD_SUBDIRECTORY(tests)
 ENDIF()
 
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP assimp fcl)
+target_link_libraries(${PROJECT_NAME} pthread PQP ${assimp_LIBRARIES} fcl)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
