@@ -51,17 +51,15 @@ if(WIN32)
     endif()
 
 else(WIN32)
-
     find_path(
             assimp_INCLUDE_DIRS
             NAMES postprocess.h scene.h version.h config.h cimport.h
-            PATHS /usr/local/include/
+            PATHS ${CMAKE_SOURCE_DIR}/../assimp/include/assimp/
     )
-
     find_library(
             assimp_LIBRARIES
             NAMES assimp
-            PATHS /usr/local/lib/
+            PATHS ${CMAKE_SOURCE_DIR}/../assimp/build/code/
     )
 
     if (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
