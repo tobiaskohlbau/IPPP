@@ -23,6 +23,12 @@ namespace rmpl {
 ModelFcl::ModelFcl() {
 }
 
+/*!
+*  \brief      Return true if model is empty
+*  \author     Sascha Kaden
+*  \param[out] state
+*  \date       2017-02-19
+*/
 bool ModelFcl::empty() const {
     if (m_fclModel.num_vertices == 0)
         return true;

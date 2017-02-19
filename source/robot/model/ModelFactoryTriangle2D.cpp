@@ -22,10 +22,22 @@
 
 namespace rmpl {
 
+/*!
+*  \brief      Standard constructor of ModelFactoryTriangle2D
+*  \author     Sascha Kaden
+*  \date       2017-02-19
+*/
 ModelFactoryTriangle2D::ModelFactoryTriangle2D() : ModelFactory("ModelFactoryTriangle"){
-
 };
 
+/*!
+*  \brief      Creates a ModelTriangle2D from the passed source cad file.
+*  \details    The model contains the vertices and faces of the loaded cad model.
+*  \author     Sascha Kaden
+*  \param[in]  filePath
+*  \param[out] smart pointer to ModelTriangle2D
+*  \date       2017-02-19
+*/
 std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::string &filePath) {
     if (filePath == "") {
         Logging::error("Empty file path", this);
@@ -50,6 +62,13 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::s
     return triangleModel;
 }
 
+/*!
+*  \brief      Creates a list of triangle models from the passed source cad files.
+*  \author     Sascha Kaden
+*  \param[in]  filePaths
+*  \param[out] list of triangle models
+*  \date       2017-02-19
+*/
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModels(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;
@@ -63,6 +82,13 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
     return models;
 }
 
+/*!
+*  \brief      Creates a triangle model from the passed list of triangles.
+*  \author     Sascha Kaden
+*  \param[in]  list of triangles
+*  \param[out] triangle model
+*  \date       2017-02-19
+*/
 std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::vector<Triangle2D> triangles) {
     std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
     triangleModel->m_triangles = triangles;

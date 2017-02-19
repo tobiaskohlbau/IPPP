@@ -31,9 +31,9 @@
 namespace rmpl {
 
 /*!
-* \brief   Class CollisionDetection checks the configuration on collision and return binary value
+* \brief   Abstract class CollisionDetection, base class of all CollisionDetections
 * \author  Sascha Kaden
-* \date    2016-05-25
+* \date    2017-02-19
 */
 template <unsigned int dim>
 class CollisionDetection : public ModuleBase {
@@ -52,9 +52,9 @@ class CollisionDetection : public ModuleBase {
 /*!
 *  \brief      Constructor of the class CollisionDetection
 *  \author     Sascha Kaden
-*  \param[in]  VREP Helper
-*  \param[in]  RobotType
-*  \date       2016-06-30
+*  \param[in]  name
+*  \param[in]  robot
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot) : ModuleBase("collisionDetection") {

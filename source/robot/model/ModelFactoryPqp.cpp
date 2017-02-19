@@ -22,10 +22,22 @@
 
 namespace rmpl {
 
+/*!
+*  \brief      Standard constructor of ModelFactoryPqp
+*  \author     Sascha Kaden
+*  \date       2017-02-19
+*/
 ModelFactoryPqp::ModelFactoryPqp() : ModelFactory("ModelFactoryPqp"){
-
 };
 
+/*!
+*  \brief      Creates an ModelPqp from the passed source cad file.
+*  \details    The model contains the vertices and faces of the loaded cad model.
+*  \author     Sascha Kaden
+*  \param[in]  filePath
+*  \param[out] smart pointer to ModelPqp
+*  \date       2017-02-19
+*/
 std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &filePath) {
     if (filePath == "") {
         Logging::error("Empty file path", this);
@@ -64,6 +76,13 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
     return pqpModel;
 }
 
+/*!
+*  \brief      Creates a list of pqp models from the passed source cad files.
+*  \author     Sascha Kaden
+*  \param[in]  filePaths
+*  \param[out] list of pqp models
+*  \date       2017-02-19
+*/
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;

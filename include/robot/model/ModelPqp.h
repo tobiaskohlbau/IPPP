@@ -25,6 +25,11 @@
 
 namespace rmpl {
 
+/*!
+* \brief   Pqp model class
+* \author  Sascha Kaden
+* \date    2017-02-19
+*/
 class ModelPqp : public ModelContainer {
 public:
     ModelPqp();

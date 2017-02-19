@@ -22,6 +22,14 @@
 
 namespace rmpl {
 
+/*!
+*  \brief      Creates an ModelFcl from the passed source cad file.
+*  \details    The model contains the vertices and faces of the loaded cad model.
+*  \author     Sascha Kaden
+*  \param[in]  filePath
+*  \param[out] smart pointer to ModelFcl
+*  \date       2017-02-19
+*/
 std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &filePath) {
     if (filePath == "") {
         Logging::error("Empty file path", this);
@@ -50,6 +58,13 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
     return fclModel;
 }
 
+/*!
+*  \brief      Creates a list of fcl models from the passed source cad files.
+*  \author     Sascha Kaden
+*  \param[in]  filePaths
+*  \param[out] list of fcl models
+*  \date       2017-02-19
+*/
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;

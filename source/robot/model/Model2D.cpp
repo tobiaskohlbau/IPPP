@@ -20,10 +20,20 @@
 
 namespace rmpl {
 
+/*!
+*  \brief      Standard constructor of Model2D
+*  \author     Sascha Kaden
+*  \date       2017-02-19
+*/
 Model2D::Model2D() {
-
 }
 
+/*!
+*  \brief      Constructor of Model2D
+*  \author     Sascha Kaden
+*  \param[in]  space
+*  \date       2017-02-19
+*/
 Model2D::Model2D(Eigen::MatrixXi space) {
     if (space.cols() == -1) {
         Logging::error("Empty space", "Model2D");
@@ -32,6 +42,12 @@ Model2D::Model2D(Eigen::MatrixXi space) {
     m_space = space;
 }
 
+/*!
+*  \brief      Return true if model is empty
+*  \author     Sascha Kaden
+*  \param[out] state
+*  \date       2017-02-19
+*/
 bool Model2D::empty() const {
     if (m_space.cols() == -1)
         return true;

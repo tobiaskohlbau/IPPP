@@ -24,6 +24,11 @@
 
 namespace rmpl {
 
+/*!
+* \brief   2D Model for Eigen::MatrixXi
+* \author  Sascha Kaden
+* \date    2017-02-19
+*/
 class Model2D : public ModelContainer {
 public:
     Model2D();

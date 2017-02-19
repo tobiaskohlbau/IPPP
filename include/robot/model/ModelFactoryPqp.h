@@ -24,6 +24,11 @@
 
 namespace rmpl {
 
+/*!
+* \brief   ModelFactory to create ModelPqp by path to source cad model
+* \author  Sascha Kaden
+* \date    2017-02-19
+*/
 class ModelFactoryPqp : public ModelFactory {
 public:
     ModelFactoryPqp();

@@ -26,9 +26,9 @@
 namespace rmpl {
 
 /*!
-* \brief   Class CollisionDetection checks the configuration on collision and return binary value
+* \brief   Class for collision detection with the fcl library
 * \author  Sascha Kaden
-* \date    2016-05-25
+* \date    2017-02-19
 */
 template <unsigned int dim>
 class CollisionDetectionFcl : public CollisionDetection<dim> {
@@ -59,9 +59,8 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
 /*!
 *  \brief      Constructor of the class CollisionDetection
 *  \author     Sascha Kaden
-*  \param[in]  VREP Helper
-*  \param[in]  RobotType
-*  \date       2016-06-30
+*  \param[in]  robot
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<RobotBase<dim>> &robot) : CollisionDetection<dim>("collisionDetection", robot) {
@@ -72,15 +71,22 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<RobotBas
 /*!
 *  \brief      Check for collision
 *  \author     Sascha Kaden
-*  \param[in]  vec
+*  \param[in]  configuration
 *  \param[out] binary result of collision (true if in collision)
-*  \date       2016-05-25
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::controlVec(const Vector<dim> &vec) {
     return controlCollisionMesh(vec);
 }
 
+/*!
+*  \brief      Differentiate between mobile and serial robot
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[out] binary result of collision (true if in collision)
+*  \date       2017-02-19
+*/
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::controlCollisionMesh(const Vector<dim> &vec) {
     if (m_robot->getRobotType() == RobotType::mobile)
@@ -92,9 +98,9 @@ bool CollisionDetectionFcl<dim>::controlCollisionMesh(const Vector<dim> &vec) {
 /*!
 *  \brief      Check collision of a trajectory of points
 *  \author     Sascha Kaden
-*  \param[in]  vector of points
+*  \param[in]  vector of configurations
 *  \param[out] binary result of collision (true if in collision)
-*  \date       2016-05-25
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::controlTrajectory(std::vector<Vector<dim>> &vecs) {
@@ -115,11 +121,11 @@ bool CollisionDetectionFcl<dim>::controlTrajectory(std::vector<Vector<dim>> &vec
 }
 
 /*!
-*  \brief      Check for collision of serial robot
+*  \brief      Check for collision of a serial robot
 *  \author     Sascha Kaden
-*  \param[in]  Vec of robot configuration
+*  \param[in]  configuration
 *  \param[out] binary result of collision
-*  \date       2016-09-02
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &vec) {
@@ -140,9 +146,9 @@ bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &vec) {
 /*!
 *  \brief      Check for collision of mobile robot (mesh with workspace)
 *  \author     Sascha Kaden
-*  \param[in]  Vec of robot configuration
+*  \param[in]  configuration
 *  \param[out] binary result of collision
-*  \date       2016-11-14
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &vec) {
@@ -161,7 +167,7 @@ bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &vec) {
 }
 
 /*!
-*  \brief      Check for collision with PQP or fcl library
+*  \brief      Check for collision with fcl library
 *  \author     Sascha Kaden
 *  \param[in]  MeshContainer one
 *  \param[in]  MeshContainer two
@@ -170,7 +176,7 @@ bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &vec) {
 *  \param[in]  translation vector one
 *  \param[in]  translation vector two
 *  \param[out] binary result of collision
-*  \date       2016-07-14
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::checkMesh(std::vector<FCLModel> &models, FCLModel &baseModel,
@@ -231,7 +237,7 @@ bool CollisionDetectionFcl<dim>::checkMesh(std::vector<FCLModel> &models, FCLMod
 *  \param[in]  translation vector one
 *  \param[in]  translation vector two
 *  \param[out] binary result of collision
-*  \date       2016-07-14
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::checkFCL(FCLModel &model1, FCLModel &model2, Matrix3 &R1,

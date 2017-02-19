@@ -24,6 +24,11 @@
 
 namespace rmpl {
 
+/*!
+* \brief   ModelFactory to create ModelFcl by path to source model or by a list of triangles
+* \author  Sascha Kaden
+* \date    2017-02-19
+*/
 class ModelFactoryTriangle2D : public ModelFactory {
 public:
     ModelFactoryTriangle2D();

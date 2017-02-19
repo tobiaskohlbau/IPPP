@@ -24,6 +24,11 @@
 
 namespace rmpl {
 
+/*!
+* \brief   ModelFactory to create ModelFcl by path to source cad model
+* \author  Sascha Kaden
+* \date    2017-02-19
+*/
 class ModelFactoryFcl : public ModelFactory {
 public:
     ModelFactoryFcl() : ModelFactory("ModelFactory"){};
