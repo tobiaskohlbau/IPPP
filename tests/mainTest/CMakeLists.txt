@@ -19,9 +19,5 @@
 set(MODULE "main")
 add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
 
-#SET(ADDITIONAL_LIBRARIES
-#    ccd
-#    fcl)
-
 ADD_RMPL_TEST(clearWorkspace "")
 ADD_RMPL_TEST(obstacleWorkspace "")
