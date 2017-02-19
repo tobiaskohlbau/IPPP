@@ -16,11 +16,11 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <robot/model/ModelTriangle.h>
+#include <robot/model/ModelTriangle2D.h>
 
 namespace rmpl {
 
-bool ModelTriangle::empty() const {
+bool ModelTriangle2D::empty() const {
     if (m_triangles.size() == 0)
         return true;
     else

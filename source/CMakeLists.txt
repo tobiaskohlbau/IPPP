@@ -26,9 +26,9 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/CadProcessing.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/Model2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryPqp.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryTriangle.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryTriangle2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelPqp.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelTriangle.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelTriangle2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/PointRobot.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/TriangleRobot2D.cpp)
 

@@ -16,17 +16,17 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <robot/model/ModelFactoryTriangle.h>
+#include <robot/model/ModelFactoryTriangle2D.h>
 
 #include <core/utility/Logging.h>
 
 namespace rmpl {
 
-ModelFactoryTriangle::ModelFactoryTriangle() : ModelFactory("ModelFactoryTriangle"){
+ModelFactoryTriangle2D::ModelFactoryTriangle2D() : ModelFactory("ModelFactoryTriangle"){
 
 };
 
-std::shared_ptr<ModelContainer> ModelFactoryTriangle::createModel(const std::string &filePath) {
+std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::string &filePath) {
     if (filePath == "") {
         Logging::error("Empty file path", this);
         return nullptr;
@@ -38,7 +38,7 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle::createModel(const std::str
         return nullptr;
     }
 
-    std::shared_ptr<ModelTriangle> triangleModel(new ModelTriangle());
+    std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
     triangleModel->m_vertices = vertices;
     triangleModel->m_faces = faces;
     for (auto face : faces) {
@@ -50,7 +50,7 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle::createModel(const std::str
     return triangleModel;
 }
 
-std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle::createModels(const std::vector<std::string> &filePaths) {
+std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModels(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;
     for (auto filePath : filePaths) {
@@ -63,8 +63,8 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle::createModels(
     return models;
 }
 
-std::shared_ptr<ModelContainer> ModelFactoryTriangle::createModel(const std::vector<Triangle2D> triangles) {
-    std::shared_ptr<ModelTriangle> triangleModel(new ModelTriangle());
+std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::vector<Triangle2D> triangles) {
+    std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
     triangleModel->m_triangles = triangles;
     return triangleModel;
 }

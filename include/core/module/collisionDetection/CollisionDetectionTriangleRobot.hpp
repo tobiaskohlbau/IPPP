@@ -62,7 +62,7 @@ CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shar
         Logging::error("Empty base model", this);
         return;
     } else {
-        m_triangles = std::dynamic_pointer_cast<ModelTriangle>(m_robot->getBaseModel())->m_triangles;
+        m_triangles = std::dynamic_pointer_cast<ModelTriangle2D>(m_robot->getBaseModel())->m_triangles;
     }
 }
 

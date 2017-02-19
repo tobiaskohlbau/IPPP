@@ -16,17 +16,17 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef MODELFACTORYTRIANGLE_H
-#define MODELFACTORYTRIANGLE_H
+#ifndef MODELFACTORYTRIANGLE2D_H
+#define MODELFACTORYTRIANGLE2D_H
 
 #include <robot/model/ModelFactory.h>
-#include <robot/model/ModelTriangle.h>
+#include <robot/model/ModelTriangle2D.h>
 
 namespace rmpl {
 
-class ModelFactoryTriangle : public ModelFactory {
+class ModelFactoryTriangle2D : public ModelFactory {
 public:
-    ModelFactoryTriangle();
+    ModelFactoryTriangle2D();
 
     std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
     std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths);
@@ -35,4 +35,4 @@ public:
 
 } /* namespace rmpl */
 
-#endif //MODELFACTORYTRIANGLE_H
+#endif //MODELFACTORYTRIANGLE2D_H
