@@ -58,9 +58,9 @@ BOOST_AUTO_TEST_CASE(clearWorkspace) {
     Vector2 minBoundary(0.0, 0.0);
     Vector2 maxBoundary(workspace.rows(), workspace.cols());
     std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
-    std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
     std::shared_ptr<ModelContainer> model(new Model2D(workspace));
     robot->setWorkspace(model);
+    std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
     std::shared_ptr<Planner<dim>> planner;
 
     Vector2 start(5, 5);
