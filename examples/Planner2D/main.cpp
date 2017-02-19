@@ -13,7 +13,7 @@
 #include <core/utility/Utility.h>
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
-#include <pathPlanner/StarRRTPlanner.hpp>
+#include <pathPlanner/RRTStarPlanner.hpp>
 #include <robot/model/ModelFactoryTriangle2D.h>
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
@@ -45,7 +45,7 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(triangleRobot, prmOptions));
-    planner = std::shared_ptr<StarRRTPlanner<dim>>(new StarRRTPlanner<dim>(triangleRobot, rrtOptions));
+    planner = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<dim>(triangleRobot, rrtOptions));
     // planner = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(triangleRobot, rrtOptions));
 
     auto startTime = std::chrono::system_clock::now();
@@ -86,7 +86,7 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));
-    planner = std::shared_ptr<StarRRTPlanner<dim>>(new StarRRTPlanner<dim>(robot, rrtOptions));
+    planner = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<dim>(robot, rrtOptions));
     // planner = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(robot, rrtOptions));
 
     // compute the tree

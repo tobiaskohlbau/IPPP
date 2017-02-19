@@ -117,7 +117,7 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 *  \param[in]  path nodes
 *  \param[in]  trajectory step size
 *  \param[in]  smoothing
-*  \param[out] path points
+*  \param[out] path configurations
 *  \date       2016-05-27
 */
 template <unsigned int dim>
@@ -169,7 +169,7 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
 *  \details    If trajectory from node to grandparent node is free, parent node will be erased.
 *  \author     Sascha Kaden
 *  \param[in]  path nodes
-*  \param[out] shortened path nodes
+*  \param[out] shorted path nodes
 *  \date       2016-05-27
 */
 template <unsigned int dim>

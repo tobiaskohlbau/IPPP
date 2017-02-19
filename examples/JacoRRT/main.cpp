@@ -7,7 +7,7 @@
 #include <core/utility/Utility.h>
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <pathPlanner/NormalRRTPlanner.hpp>
-#include <pathPlanner/StarRRTPlanner.hpp>
+#include <pathPlanner/RRTStarPlanner.hpp>
 #include <robot/Jaco.h>
 #include <ui/vrep/Helper.h>
 
@@ -66,8 +66,8 @@ void treeConnection() {
     // create two trees from init and from goal
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
     RRTOptions<6> options(20, 0.5, collision, SamplerMethod::standardDistribution);
-    StarRRTPlanner<6> plannerGoalNode(robot, options);
-    StarRRTPlanner<6> plannerInitNode(robot, options);
+    RRTStarPlanner<6> plannerGoalNode(robot, options);
+    RRTStarPlanner<6> plannerInitNode(robot, options);
 
     // set properties to the planners
     plannerInitNode.setInitNode(utilVec::Vecf(180, 180, 180, 180, 180, 180));
