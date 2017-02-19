@@ -20,12 +20,14 @@
 #define TRIANGLEMODEL_H
 
 #include <robot/model/ModelContainer.h>
+#include <core/dataObj/PointList.hpp>
 
 namespace rmpl {
 
-class TriangleModel : public ModelContainer {
+class ModelTriangle : public ModelContainer {
 public:
     bool empty() const;
+    std::vector<Triangle2D> m_triangles;
 
 };
 

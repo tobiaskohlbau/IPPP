@@ -16,17 +16,17 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <robot/model/ModelFactoryPqp.h>
+#include <robot/model/ModelFactoryTriangle.h>
 
 #include <core/utility/Logging.h>
 
 namespace rmpl {
 
-ModelFactoryPqp::ModelFactoryPqp() : ModelFactory("ModelFactoryPqp"){
+ModelFactoryTriangle::ModelFactoryTriangle() : ModelFactory("ModelFactoryTriangle"){
 
 };
 
-std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &filePath) {
+std::shared_ptr<ModelContainer> ModelFactoryTriangle::createModel(const std::string &filePath) {
     if (filePath == "") {
         Logging::error("Empty file path", this);
         return nullptr;
@@ -38,31 +38,19 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
         return nullptr;
     }
 
-    std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
-    pqpModel->m_vertices = vertices;
-    pqpModel->m_faces = faces;
-    PQP_Model pqp = pqpModel->m_pqpModel;
-    pqp.BeginModel();
-    // create pqp triangles
-    PQP_REAL p[3][3];
-    for (int i = 0; i < faces.size(); ++i) {
+    std::shared_ptr<ModelTriangle> triangleModel(new ModelTriangle());
+    triangleModel->m_vertices = vertices;
+    triangleModel->m_faces = faces;
+    for (auto face : faces) {
         // go through faces
-        for (int j = 0; j < 3; ++j) {
-            // go through face
-            int vert = faces[i][j];
-            for (int k = 0; k < 3; ++k) {
-                p[j][k] = vertices[vert][k];
-            }
-        }
-        pqp.AddTri(p[0], p[1], p[2], i);
+        Triangle2D tri(Vector2(vertices[face[0]][0], vertices[face[0]][1]), Vector2(vertices[face[1]][0], vertices[face[1]][1]), Vector2(vertices[face[2]][0], vertices[face[2]][1]));
+        triangleModel->m_triangles.push_back(tri);
     }
-    pqp.EndModel();
-    pqp.MemUsage(1);
 
-    return pqpModel;
+    return triangleModel;
 }
 
-std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const std::vector<std::string> &filePaths) {
+std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle::createModels(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;
     for (auto filePath : filePaths) {
@@ -73,6 +61,12 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const
             return std::vector<std::shared_ptr<ModelContainer>>();
     }
     return models;
+}
+
+std::shared_ptr<ModelContainer> ModelFactoryTriangle::createModel(const std::vector<Triangle2D> triangles) {
+    std::shared_ptr<ModelTriangle> triangleModel(new ModelTriangle());
+    triangleModel->m_triangles = triangles;
+    return triangleModel;
 }
 
 } /* namespace rmpl */
