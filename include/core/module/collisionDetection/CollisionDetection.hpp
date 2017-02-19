@@ -19,6 +19,8 @@
 #ifndef COLLISIONDETECTION_H_
 #define COLLISIONDETECTION_H_
 
+#include <iostream>
+
 #include <Eigen/Core>
 
 #include <core/dataObj/Node.hpp>

@@ -16,15 +16,20 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef TRIANGLEMODEL_H
-#define TRIANGLEMODEL_H
+#ifndef TRIANGLEMODEL2D_H
+#define TRIANGLEMODEL2D_H
 
 #include <robot/model/ModelContainer.h>
 #include <core/dataObj/PointList.hpp>
 
 namespace rmpl {
 
-class ModelTriangle : public ModelContainer {
+/*!
+* \brief   Triangle2D model class, contains a list of triangles, will be used from the TriangleRobot2D
+* \author  Sascha Kaden
+* \date    2017-02-19
+*/
+class ModelTriangle2D : public ModelContainer {
 public:
     bool empty() const;
     std::vector<Triangle2D> m_triangles;

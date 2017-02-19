@@ -10,7 +10,7 @@
 #include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
 #include <pathPlanner/options/PRMOptions.hpp>
-#include <robot/model/ModelFactoryTriangle.h>
+#include <robot/model/ModelFactoryTriangle2D.h>
 #include <ui/Drawing2D.hpp>
 
 using namespace rmpl;
@@ -86,7 +86,7 @@ void MainWindow::computePath() {
 
         Vector3 minBoundary(0.0, 0.0, 0.0);
         Vector3 maxBoundary(m_workspace.rows(), m_workspace.cols(), 360);
-        ModelFactoryTriangle factory;
+        ModelFactoryTriangle2D factory;
         std::shared_ptr<ModelContainer> baseModel = factory.createModel(m_triangles);
         std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, minBoundary, maxBoundary));
         std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
