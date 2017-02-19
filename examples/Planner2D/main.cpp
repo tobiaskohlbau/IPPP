@@ -51,7 +51,7 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
     Vector3 goal(400.0, 930.0, 50);
-    bool connected = planner->computePath(start, goal, 20000, 4);
+    bool connected = planner->computePath(start, goal, 20000, 8);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 

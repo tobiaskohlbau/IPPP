@@ -50,7 +50,12 @@ class CollisionDetection2D : public CollisionDetection<2> {
 *  \date       2016-06-30
 */
 CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<RobotBase<2>> &robot) : CollisionDetection<2>("CollisionDetection2D", robot) {
-    m_workspace2D = std::dynamic_pointer_cast<Model2D>(robot->getWorkspace())->m_space;
+    if (!m_robot->getWorkspace() || m_robot->getWorkspace()->empty()) {
+        Logging::error("Empty workspace model", this);
+        return;
+    } else {
+        m_workspace2D = std::dynamic_pointer_cast<Model2D>(robot->getWorkspace())->m_space;
+    }
 }
 
 /*!

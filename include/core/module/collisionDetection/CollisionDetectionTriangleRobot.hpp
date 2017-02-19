@@ -41,6 +41,7 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
     bool checkTriangleRobot(const Vector3 &vec);
 
     Eigen::MatrixXi m_workspace2D;
+    std::vector<Triangle2D> m_triangles;
 };
 
 /*!
@@ -51,7 +52,18 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
 *  \date       2016-06-30
 */
 CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shared_ptr<RobotBase<3>> &robot) : CollisionDetection("CollisionDetectionTriangleRobot", robot) {
-    m_workspace2D = std::dynamic_pointer_cast<Model2D>(robot->getWorkspace())->m_space;
+    if (!m_robot->getWorkspace() || m_robot->getWorkspace()->empty()) {
+        Logging::error("Empty workspace model", this);
+        return;
+    } else {
+        m_workspace2D = std::dynamic_pointer_cast<Model2D>(robot->getWorkspace())->m_space;
+    }
+    if (!m_robot->getBaseModel() || m_robot->getBaseModel()->empty()){
+        Logging::error("Empty base model", this);
+        return;
+    } else {
+        m_triangles = std::dynamic_pointer_cast<ModelTriangle>(m_robot->getBaseModel())->m_triangles;
+    }
 }
 
 /*!
@@ -111,7 +123,7 @@ bool CollisionDetectionTriangleRobot::checkPoint2D(float x, float y) {
 *  \date       2016-12-19
 */
 bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
-    std::vector<Triangle2D> triangles = std::dynamic_pointer_cast<ModelTriangle>(m_robot->getBaseModel())->m_triangles;
+
     VectorX vector = vec;
     vector.resize(3);
 
@@ -120,6 +132,7 @@ bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
     utilGeo::poseVecToRandT(vector, R, t);
 
     Vector2 u, temp;
+    std::vector<Triangle2D> triangles = m_triangles;
     for (auto triangle : triangles) {
         triangle.transform(R, t);
 
