@@ -43,9 +43,9 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
         verts.push_back(fcl::Vector3f(vert[0], vert[1], vert[2]));
     for (auto face : faces)
         triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
-    fclModel->m_fclModel->beginModel();
-    fclModel->m_fclModel->addSubModel(verts, triangles);
-    fclModel->m_fclModel->endModel();
+    fclModel->m_fclModel.beginModel();
+    fclModel->m_fclModel.addSubModel(verts, triangles);
+    fclModel->m_fclModel.endModel();
 
     return fclModel;
 }

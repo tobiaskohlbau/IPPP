@@ -21,11 +21,10 @@
 namespace rmpl {
 
 ModelFcl::ModelFcl() {
-    m_fclModel = std::shared_ptr<FCLModel>(new FCLModel());
 }
 
 bool ModelFcl::empty() const {
-    if (m_fclModel != nullptr)
+    if (m_fclModel.num_vertices == 0)
         return true;
     else
         return false;

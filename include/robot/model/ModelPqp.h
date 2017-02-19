@@ -30,7 +30,7 @@ public:
     ModelPqp();
     bool empty() const;
 
-    std::shared_ptr<PQP_Model> m_pqpModel;
+    PQP_Model m_pqpModel;
 };
 
 } /* namespace rmpl */

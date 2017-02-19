@@ -21,11 +21,10 @@
 namespace rmpl {
 
 ModelPqp::ModelPqp() {
-    m_pqpModel = std::shared_ptr<PQP_Model>(new PQP_Model());
 }
 
 bool ModelPqp::empty() const {
-    if (m_pqpModel != nullptr)
+    if (m_pqpModel.num_tris == 0)
         return true;
     else
         return false;

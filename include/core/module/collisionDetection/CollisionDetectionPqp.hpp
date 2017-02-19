@@ -41,10 +41,10 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
   private:
     bool checkSerialRobot(const Vector<dim> &vec);
     bool checkMobileRobot(const Vector<dim> &vec);
-    bool checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &base, Matrix3 R[],
+    bool checkMesh(std::vector<PQP_Model> &models, PQP_Model &base, Matrix3 R[],
                    Matrix3 &poseR, Vector3 t[], Vector3 &poseT);
 
-    bool checkPQP(std::shared_ptr<PQP_Model> &model1, std::shared_ptr<PQP_Model> &model2, Matrix3 &R1,
+    bool checkPQP(PQP_Model &model1, PQP_Model &model2, Matrix3 &R1,
                   Matrix3 &R2, Vector3 &t1, Vector3 &t2);
 
     Matrix3 m_identity;
@@ -122,16 +122,16 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &vec) {
     Vector3 trans[dim];
     utilCollision::getTrafosFromRobot<dim>(vec, robot, poseR, poseT, rot, trans);
 
-    std::shared_ptr<PQP_Model> baseMesh = nullptr;
+    PQP_Model baseMesh;
     if (robot->getBaseModel() != nullptr)
         baseMesh = std::dynamic_pointer_cast<ModelPqp>(robot->getBaseModel())->m_pqpModel;
-    std::vector<std::shared_ptr<PQP_Model>> jointMeshes;
+    std::vector<PQP_Model> jointMeshes;
     for (int i = 0; i < robot->getNbJoints(); ++i)
          jointMeshes.push_back(std::dynamic_pointer_cast<ModelPqp>(robot->getModelFromJoint(i))->m_pqpModel);
 
-    //        for (auto tmp : jointTrafos)
-    //            std::cout << tmp <<std::endl;
-    //        robot->saveMeshConfig(As);
+    //for (auto tmp : jointTrafos)
+    //    std::cout << tmp <<std::endl;
+    //robot->saveMeshConfig(As);
 
     return checkMesh(jointMeshes, baseMesh, rot, poseR, trans, poseT);
 }
@@ -153,8 +153,8 @@ bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &vec) {
     if (m_robot->getBaseModel() == nullptr || m_robot->getWorkspace() == nullptr)
         return false;
 
-    std::shared_ptr<PQP_Model> baseModel = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getBaseModel())->m_pqpModel;
-    std::shared_ptr<PQP_Model> workspace = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
+    PQP_Model baseModel = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getBaseModel())->m_pqpModel;
+    PQP_Model workspace = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
 
     return checkPQP(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT);
 }
@@ -172,11 +172,11 @@ bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &vec) {
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkMesh(std::vector<std::shared_ptr<PQP_Model>> &models, std::shared_ptr<PQP_Model> &baseModel,
+bool CollisionDetectionPqp<dim>::checkMesh(std::vector<PQP_Model> &models, PQP_Model &baseModel,
                                         Matrix3 R[], Matrix3 &poseR, Vector3 t[],
                                         Vector3 &poseT) {
     // control collision between baseModel and joints
-    if (baseModel != nullptr) {
+    if (baseModel.num_tris != 0) {
         for (int i = 1; i < dim; ++i) {
             if (checkPQP(baseModel, models[i], poseR, R[i], poseT, t[i]))
                 return true;
@@ -208,7 +208,7 @@ bool CollisionDetectionPqp<dim>::checkMesh(std::vector<std::shared_ptr<PQP_Model
 
     // control collision with workspace
     if (m_robot->getWorkspace() != nullptr) {
-        std::shared_ptr<PQP_Model> workspace = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
+        PQP_Model workspace = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
 
         if (checkPQP(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT))
             return true;
@@ -236,8 +236,9 @@ bool CollisionDetectionPqp<dim>::checkMesh(std::vector<std::shared_ptr<PQP_Model
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkPQP(std::shared_ptr<PQP_Model> &model1, std::shared_ptr<PQP_Model> &model2, Matrix3 &R1,
+bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model &model1, PQP_Model &model2, Matrix3 &R1,
                                        Matrix3 &R2, Vector3 &t1, Vector3 &t2) {
+
     PQP_REAL pqpR1[3][3], pqpR2[3][3], pqpT1[3], pqpT2[3];
 
     for (int i = 0; i < 3; ++i) {
@@ -250,7 +251,7 @@ bool CollisionDetectionPqp<dim>::checkPQP(std::shared_ptr<PQP_Model> &model1, st
     }
 
     PQP_CollideResult cres;
-    PQP_Collide(&cres, pqpR1, pqpT1, model1.get(), pqpR2, pqpT2, model2.get(), PQP_FIRST_CONTACT);
+    PQP_Collide(&cres, pqpR1, pqpT1, &model1, pqpR2, pqpT2, &model2, PQP_FIRST_CONTACT);
     if (cres.NumPairs() > 0)
         return true;
     else
