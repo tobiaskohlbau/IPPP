@@ -36,7 +36,7 @@ find_package(Threads REQUIRED)
 set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
 
 include_directories(${CMAKE_SOURCE_DIR}/include
-        ${assimp_INCLUDE_DIRS}
+        ${assimp_INCLUDE_DIRS}/../
         ${EIGEN3_INCLUDE_DIR}
         ${PQP_DIR}/include)
 #        ${Boost_INCLUDE_DIRS}

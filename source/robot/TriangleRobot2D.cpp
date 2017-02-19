@@ -28,7 +28,7 @@ namespace rmpl {
 *  \date       2016-11-15
 */
 TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, Vector3 minBoundary, Vector3 maxBoundary)
-    : RobotBase<3>("TriangleRobot2D", CollisionType::triangle2D, RobotType::mobile, minBoundary, maxBoundary) {
+    : RobotBase<3>("TriangleRobot2D", RobotType::mobile, minBoundary, maxBoundary) {
     setBaseModel(triangleModel);
 }
 

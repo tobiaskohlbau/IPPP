@@ -32,8 +32,6 @@
 
 namespace rmpl {
 
-enum CollisionType { fcl, pqp, point2D, triangle2D };
-
 enum RobotType { serial, mobile };
 
 /*!
@@ -47,7 +45,7 @@ class RobotBase : public ModuleBase {
     virtual ~RobotBase();
 
   protected:
-    RobotBase(std::string name, CollisionType collisionType, RobotType robotType, Vector<dim> minBoundary,
+    RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary,
               Vector<dim> maxBoundary);
 
   public:
@@ -60,17 +58,13 @@ class RobotBase : public ModuleBase {
 
     void setWorkspace(const std::shared_ptr<ModelContainer> &model);
     std::shared_ptr<ModelContainer> getWorkspace();
-    void set2DWorkspace(const Eigen::MatrixXi &space);
-    Eigen::MatrixXi &get2DWorkspace();
 
     Vector<dim> getMinBoundary() const;
     Vector<dim> getMaxBoundary() const;
     unsigned int getDim() const;
     RobotType getRobotType() const;
-    CollisionType getCollisionType() const;
 
   protected:
-    const CollisionType m_collisionType;
     const RobotType m_robotType;
     const Vector<dim> m_minBoundary;
     const Vector<dim> m_maxBoundary;
@@ -102,10 +96,9 @@ RobotBase<dim>::~RobotBase() {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-RobotBase<dim>::RobotBase(std::string name, CollisionType collisionType, RobotType robotType, Vector<dim> minBoundary,
+RobotBase<dim>::RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary,
                           Vector<dim> maxBoundary)
     : ModuleBase(name),
-      m_collisionType(collisionType),
       m_robotType(robotType),
       m_minBoundary(minBoundary),
       m_maxBoundary(maxBoundary) {
@@ -248,17 +241,6 @@ unsigned int RobotBase<dim>::getDim() const {
 template <unsigned int dim>
 RobotType RobotBase<dim>::getRobotType() const {
     return m_robotType;
-}
-
-/*!
-*  \brief      Return the collision type of the robot
-*  \author     Sascha Kaden
-*  \param[out] CollisionType
-*  \date       2016-06-30
-*/
-template <unsigned int dim>
-CollisionType RobotBase<dim>::getCollisionType() const {
-    return m_collisionType;
 }
 
 } /* namespace rmpl */

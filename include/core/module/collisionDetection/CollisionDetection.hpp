@@ -59,8 +59,6 @@ CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::
     m_robot = robot;
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();
-
-    m_workspace = m_robot->getWorkspace();
 }
 
 } /* namespace rmpl */
