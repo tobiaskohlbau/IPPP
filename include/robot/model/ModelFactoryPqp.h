@@ -26,7 +26,7 @@ namespace rmpl {
 
 class ModelFactoryPqp : public ModelFactory {
 public:
-    ModelFactoryPqp() : ModelFactory("ModelFactory"){};
+    ModelFactoryPqp();
 
     std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
     std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths);

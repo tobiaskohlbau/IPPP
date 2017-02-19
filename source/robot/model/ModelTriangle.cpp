@@ -16,23 +16,16 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef MODELFACTORYTRIANGLE_H
-#define MODELFACTORYTRIANGLE_H
-
-#include <robot/model/ModelFactory.h>
 #include <robot/model/ModelTriangle.h>
 
 namespace rmpl {
 
-class ModelFactoryTriangle : public ModelFactory {
-public:
-    ModelFactoryTriangle();
-
-    std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
-    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths);
-    std::shared_ptr<ModelContainer> createModel(const std::vector<Triangle2D> triangles);
-};
+bool ModelTriangle::empty() const {
+    if (m_triangles.size() == 0)
+        return true;
+    else
+        return false;
+}
 
 } /* namespace rmpl */
 
-#endif //MODELFACTORYTRIANGLE_H

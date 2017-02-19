@@ -14,6 +14,7 @@
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/StarRRTPlanner.hpp>
+#include <robot/model/ModelFactoryTriangle.h>
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
 
@@ -32,7 +33,9 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     std::vector<Triangle2D> triangles;
     triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0 ), Vector2(25, 50)));
     triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(0 , 50), Vector2(25, 50)));
-    std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(triangles, min, max));
+    ModelFactoryTriangle factory;
+    std::shared_ptr<ModelContainer> baseModel = factory.createModel(triangles);
+    std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(baseModel, min, max));
     triangleRobot->set2DWorkspace(mat);
 
     std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(triangleRobot));

@@ -19,7 +19,7 @@
 #ifndef TRIANGLEROBOT2D_H_
 #define TRIANGLEROBOT2D_H_
 
-#include <core/dataObj/PointList.hpp>
+#include <robot/model/ModelTriangle.h>
 #include <robot/RobotBase.hpp>
 
 namespace rmpl {
@@ -32,14 +32,7 @@ namespace rmpl {
 */
 class TriangleRobot2D : public RobotBase<3> {
   public:
-    TriangleRobot2D(std::vector<Triangle2D> triangles, Vector3 minBoundary, Vector3 maxBoundary);
-
-    bool setTriangles(std::vector<Triangle2D> &triangles);
-    bool addTriangle(Triangle2D &triangle);
-    std::vector<Triangle2D> getTriangles();
-
-  private:
-    std::vector<Triangle2D> m_triangles;
+    TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, Vector3 minBoundary, Vector3 maxBoundary);
 };
 
 } /* namespace rmpl */

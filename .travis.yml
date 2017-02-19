@@ -31,7 +31,8 @@ before_script:
 #  - sudo make install
 #  - cd ../..
   # cmake
-  - sudo mkdir build
+  - cd RobotMotionPlanner
+  - mkdir build
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=${CONFIGURATION} ..
 
