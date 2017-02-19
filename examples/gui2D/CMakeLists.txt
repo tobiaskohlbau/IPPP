@@ -21,6 +21,7 @@ find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgpr
 find_package(Qt5Widgets)
 find_package(Qt5Core)
 find_package(Qt5Gui)
+add_definitions(${QT_DEFINITIONS})
 
 include_directories(${Boost_INCLUDE_DIRS})
 

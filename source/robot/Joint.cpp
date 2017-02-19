@@ -61,7 +61,7 @@ Joint::Joint(float minBound, float maxBound, std::shared_ptr<ModelContainer> mod
 *  \date       2016-08-25
 */
 void Joint::setModel(std::shared_ptr<ModelContainer> &model) {
-    if (model->empty()) {
+    if (!model || model->empty()) {
         Logging::error("Emtpy model", "Joint");
         return;
     }
