@@ -24,6 +24,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Joint.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/KukaKR5.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/CadProcessing.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/Model2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryPqp.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryTriangle.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelPqp.cpp

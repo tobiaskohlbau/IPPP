@@ -20,6 +20,7 @@
 #define COLLISIONDETECTIONTRIANGLEROBOT_H_
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <robot/model/Model2D.h>
 #include <robot/TriangleRobot2D.h>
 
 namespace rmpl {
@@ -38,6 +39,8 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
   private:
     bool checkPoint2D(float x, float y);
     bool checkTriangleRobot(const Vector3 &vec);
+
+    Eigen::MatrixXi m_workspace2D;
 };
 
 /*!
@@ -48,6 +51,7 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
 *  \date       2016-06-30
 */
 CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shared_ptr<RobotBase<3>> &robot) : CollisionDetection("CollisionDetectionTriangleRobot", robot) {
+    m_workspace2D = std::dynamic_pointer_cast<Model2D>(robot->getWorkspace())->m_space;
 }
 
 /*!
@@ -93,7 +97,7 @@ bool CollisionDetectionTriangleRobot::checkPoint2D(float x, float y) {
         return true;
     }
 
-    if (m_2DWorkspace(x, y) < 80)
+    if (m_workspace2D(x, y) < 80)
         return true;
     else
         return false;

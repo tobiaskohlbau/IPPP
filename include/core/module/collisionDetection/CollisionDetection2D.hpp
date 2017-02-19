@@ -20,6 +20,7 @@
 #define COLLISIONDETECTION2D_H_
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <robot/model/Model2D.h>
 #include <robot/PointRobot.h>
 
 namespace rmpl {
@@ -37,6 +38,8 @@ class CollisionDetection2D : public CollisionDetection<2> {
 
   private:
     bool checkPoint2D(float x, float y);
+
+    Eigen::MatrixXi m_workspace2D;
 };
 
 /*!
@@ -47,6 +50,7 @@ class CollisionDetection2D : public CollisionDetection<2> {
 *  \date       2016-06-30
 */
 CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<RobotBase<2>> &robot) : CollisionDetection<2>("CollisionDetection2D", robot) {
+    m_workspace2D = std::dynamic_pointer_cast<Model2D>(robot->getWorkspace())->m_space;
 }
 
 /*!
@@ -92,7 +96,7 @@ bool CollisionDetection2D::checkPoint2D(float x, float y) {
         return true;
     }
 
-    if (m_2DWorkspace(x, y) < 80)
+    if (m_workspace2D(x, y) < 80)
         return true;
     else
         return false;

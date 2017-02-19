@@ -36,7 +36,8 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     ModelFactoryTriangle factory;
     std::shared_ptr<ModelContainer> baseModel = factory.createModel(triangles);
     std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(baseModel, min, max));
-    triangleRobot->set2DWorkspace(mat);
+    std::shared_ptr<ModelContainer> model(new Model2D(mat));
+    triangleRobot->setWorkspace(model);
 
     std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(triangleRobot));
     PRMOptions<dim> prmOptions(30, 0.5, collision, SamplerMethod::randomly);
@@ -76,7 +77,8 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
 void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     const unsigned int dim = 2;
     std::shared_ptr<PointRobot> robot(new PointRobot(min, max));
-    robot->set2DWorkspace(mat);
+    std::shared_ptr<ModelContainer> model(new Model2D(mat));
+    robot->setWorkspace(model);
 
     std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
     PRMOptions<dim> prmOptions(40, 0.5, collision, SamplerMethod::randomly, SamplingStrategy::nearObstacles);

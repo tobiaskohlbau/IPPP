@@ -16,26 +16,23 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef POINTROBOT_H_
-#define POINTROBOT_H_
+#ifndef MODEL2D_H
+#define MODEL2D_H
 
-#include <robot/model/Model2D.h>
-#include <robot/RobotBase.hpp>
+#include <robot/model/ModelContainer.h>
+#include <core/dataObj/PointList.hpp>
 
 namespace rmpl {
 
-/*!
-* \brief   Class for the 2D point robot
-* \author  Sascha Kaden
-* \date    2016-06-30
-*/
-class PointRobot : public RobotBase<2> {
-  public:
-    PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary);
+class Model2D : public ModelContainer {
+public:
+    Model2D();
+    Model2D(Eigen::MatrixXi space);
 
-  private:
+    bool empty() const;
+    Eigen::MatrixXi m_space;
 };
 
 } /* namespace rmpl */
 
-#endif /* POINTROBOT_H_ */
+#endif //MODEL2D_H
