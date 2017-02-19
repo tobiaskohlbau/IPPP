@@ -32,7 +32,7 @@ public:
     ModelFcl();
     bool empty() const;
 
-    std::shared_ptr<FCLModel> m_fclModel;
+    FCLModel m_fclModel;
 };
 
 } /* namespace rmpl */

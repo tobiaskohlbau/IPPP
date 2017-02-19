@@ -37,7 +37,7 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
     std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
     pqpModel->m_vertices = vertices;
     pqpModel->m_faces = faces;
-    PQP_Model pqp = *pqpModel->m_pqpModel;
+    PQP_Model pqp = pqpModel->m_pqpModel;
     pqp.BeginModel();
     // create pqp triangles
     PQP_REAL p[3][3];

@@ -15,7 +15,7 @@ before_script:
   - cmake ..
   - make -j4
   - cd /../../
-  - sudo apt-get install libassimp-dev
+#  - sudo apt-get install libassimp-dev
 #  # libccd
 #  - sudo add-apt-repository --yes ppa:libccd-debs/ppa
 #  - sudo apt-get -qq update
@@ -31,7 +31,7 @@ before_script:
 #  - sudo make install
 #  - cd ../..
   # cmake
-  - mkdir build
+  - sudo mkdir build
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=${CONFIGURATION} ..
 
