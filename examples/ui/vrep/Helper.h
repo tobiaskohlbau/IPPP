@@ -15,11 +15,11 @@ extern "C" {
 #include "v_repConst.h"
 }
 
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 
 namespace rmpl {
 
-class Helper : public ModuleBase {
+class Helper : public Identifier {
   public:
     Helper(unsigned int dim);
     void start();

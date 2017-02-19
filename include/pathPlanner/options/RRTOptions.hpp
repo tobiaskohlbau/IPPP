@@ -66,7 +66,7 @@ RRTOptions<dim>::RRTOptions(float stepSize, float trajectoryStepSize, std::share
 template <unsigned int dim>
 void RRTOptions<dim>::setStepSize(float stepSize) {
     if (stepSize <= 0) {
-        Logging::warning("Step size was smaller than 0 and was set up to 1", "RRT options");
+        Logging::warning("Step size was smaller than 0 and was set up to 1", this);
         m_stepSize = 1;
     } else {
         m_stepSize = stepSize;

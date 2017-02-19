@@ -20,7 +20,7 @@
 #define GRAPH_H_
 
 #include <core/dataObj/Node.hpp>
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <core/utility/KDTree.hpp>
 #include <core/utility/Logging.h>
 
@@ -32,7 +32,7 @@ namespace rmpl {
 * \date    2016-05-25
 */
 template <unsigned int dim>
-class Graph : public ModuleBase {
+class Graph : public Identifier {
   public:
     Graph(unsigned int sortCount);
     ~Graph();
@@ -67,7 +67,7 @@ class Graph : public ModuleBase {
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-Graph<dim>::Graph(unsigned int sortCount) : ModuleBase("Graph"), m_sortCount(sortCount) {
+Graph<dim>::Graph(unsigned int sortCount) : Identifier("Graph"), m_sortCount(sortCount) {
     m_autoSort = (sortCount != 0);
     m_kdTree = std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>());
 }

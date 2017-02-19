@@ -14,6 +14,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <Eigen/Core>
 
+#include <core/module/Identifier.h>
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/StarRRTPlanner.hpp>
@@ -24,7 +25,7 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow, public rmpl::Identifier {
     Q_OBJECT
 
   public:

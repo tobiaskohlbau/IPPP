@@ -31,8 +31,18 @@ namespace rmpl {
 template <unsigned int dim>
 class HeuristicInf : public Heuristic<dim> {
   public:
+    HeuristicInf();
     float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const override;
 };
+
+/*!
+*  \brief      Standard constructor of the class HeuristicInf
+*  \author     Sascha Kaden
+*  \date       2017-02-19
+*/
+template <unsigned int dim>
+HeuristicInf<dim>::HeuristicInf() : Heuristic<dim>("Heuristic Inf") {
+}
 
 /*!
 *  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.

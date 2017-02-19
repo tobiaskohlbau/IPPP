@@ -25,7 +25,7 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
-Model2D::Model2D() {
+Model2D::Model2D() : ModelContainer("Model2D") {
 }
 
 /*!
@@ -34,9 +34,9 @@ Model2D::Model2D() {
 *  \param[in]  space
 *  \date       2017-02-19
 */
-Model2D::Model2D(Eigen::MatrixXi space) {
+Model2D::Model2D(Eigen::MatrixXi space) : ModelContainer("Model2D") {
     if (space.cols() == -1) {
-        Logging::error("Empty space", "Model2D");
+        Logging::error("Empty space", this);
         return;
     }
     m_space = space;

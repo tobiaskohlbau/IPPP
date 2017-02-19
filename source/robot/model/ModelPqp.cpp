@@ -20,7 +20,7 @@
 
 namespace rmpl {
 
-ModelPqp::ModelPqp() {
+ModelPqp::ModelPqp() : ModelContainer("ModelPqp") {
 }
 
 /*!

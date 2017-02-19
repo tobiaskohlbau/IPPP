@@ -16,24 +16,16 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <robot/model/ModelFcl.h>
+#include <robot/model/ModelContainer.h>
 
 namespace rmpl {
 
-ModelFcl::ModelFcl() : ModelContainer("ModelFcl") {
-}
-
 /*!
-*  \brief      Return true if model is empty
+*  \brief      Standard constructor of ModelContainer
 *  \author     Sascha Kaden
-*  \param[out] state
 *  \date       2017-02-19
 */
-bool ModelFcl::empty() const {
-    if (m_fclModel.num_vertices == 0)
-        return true;
-    else
-        return false;
+ModelContainer::ModelContainer(const std::string &name) : Identifier(name) {
 }
 
 } /* namespace rmpl */

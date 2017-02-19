@@ -66,7 +66,7 @@ PRMOptions<dim>::PRMOptions(float rangeSize, float trajectoryStepSize, std::shar
 template <unsigned int dim>
 void PRMOptions<dim>::setRangeSize(float rangeSize) {
     if (rangeSize <= 0) {
-        Logging::warning("Step size was equal or smaller than 0 and is set up to 1", "PRM options");
+        Logging::warning("Step size was equal or smaller than 0 and is set up to 1", this);
         m_rangeSize = 1;
     } else {
         m_rangeSize = rangeSize;

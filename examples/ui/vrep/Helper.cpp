@@ -4,7 +4,7 @@
 
 using namespace rmpl;
 
-Helper::Helper(unsigned int dim) : ModuleBase("VREP Helper") {
+Helper::Helper(unsigned int dim) : Identifier("VREP Helper") {
     m_dim = dim;
     m_clientId = -1;
     m_jointHandles.resize(m_dim, 1);

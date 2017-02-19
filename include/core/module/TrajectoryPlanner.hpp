@@ -20,7 +20,7 @@
 #define TRAJECTORYPLANNER_H_
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <core/types.h>
 
 namespace rmpl {
@@ -31,7 +31,7 @@ namespace rmpl {
 * \date    2016-05-25
 */
 template <unsigned int dim>
-class TrajectoryPlanner : public ModuleBase {
+class TrajectoryPlanner : public Identifier {
   public:
     TrajectoryPlanner(float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision);
 
@@ -59,7 +59,7 @@ class TrajectoryPlanner : public ModuleBase {
 */
 template <unsigned int dim>
 TrajectoryPlanner<dim>::TrajectoryPlanner(float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision)
-    : ModuleBase("TrajectoryPlanner") {
+    : Identifier("TrajectoryPlanner") {
     m_collision = collision;
 
     setStepSize(stepSize);

@@ -24,7 +24,7 @@
 #include <Eigen/Core>
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <core/module/Sampler.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <robot/RobotBase.hpp>
@@ -39,7 +39,7 @@ enum SamplingStrategy { normal, nearObstacles };
 * \date    2016-12-20
 */
 template <unsigned int dim>
-class Sampling : public ModuleBase {
+class Sampling : public Identifier {
   public:
     Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
              const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplerMethod method = SamplerMethod::randomly,
@@ -69,7 +69,7 @@ class Sampling : public ModuleBase {
 template <unsigned int dim>
 Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplerMethod method, SamplingStrategy strategy)
-    : ModuleBase("Sampling") {
+    : Identifier("Sampling") {
     m_strategy = strategy;
 
     m_collision = collision;

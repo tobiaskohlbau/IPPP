@@ -15,7 +15,7 @@
 
 using namespace rmpl;
 
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), Identifier("GUI"), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
     m_widget = new QWidget();
@@ -37,22 +37,22 @@ void MainWindow::loadImage() {
     cv::Mat image = cv::imread(qFileName.toStdString(), CV_LOAD_IMAGE_GRAYSCALE);
     if (!image.data)    // Check for invalid input
     {
-        Logging::error("could not load image", "GUI");
+        Logging::error("could not load image", this);
         return;
     }
 
     m_workspace = drawing::cvToEigen(image);
     m_image = image;
     m_imageLoaded = true;
-    Logging::info("loading image was successful", "GUI");
+    Logging::info("loading image was successful", this);
 }
 
 void MainWindow::computePath() {
     if (!m_imageLoaded) {
-        Logging::error("Image was not loaded", "GUI");
+        Logging::error("Image was not loaded", this);
         return;
     }
-    Logging::info("Compute path ...", "GUI");
+    Logging::info("Compute path ...", this);
 
     SamplerMethod sampler = SamplerMethod::randomly;
     if (m_samplingStrategy == 1)
@@ -145,7 +145,7 @@ void MainWindow::computePath() {
         Vector2 goal(m_goalX, m_goalY);
         m_connected = m_planner2d->computePath(start, goal, m_numNodes, m_numThreads);
     }
-    Logging::info("... done", "GUI");
+    Logging::info("... done", this);
     viewPath();
 }
 

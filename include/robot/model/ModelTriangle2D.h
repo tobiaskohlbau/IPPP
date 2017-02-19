@@ -31,6 +31,8 @@ namespace rmpl {
 */
 class ModelTriangle2D : public ModelContainer {
 public:
+    ModelTriangle2D();
+
     bool empty() const;
     std::vector<Triangle2D> m_triangles;
 

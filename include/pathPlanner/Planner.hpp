@@ -25,7 +25,7 @@
 
 #include <core/dataObj/Graph.hpp>
 #include <core/module/collisionDetection/CollisionDetection.hpp>
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <core/module/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/types.h>
@@ -40,7 +40,7 @@ namespace rmpl {
 * \date    2016-05-27
 */
 template <unsigned int dim>
-class Planner : public ModuleBase {
+class Planner : public Identifier {
   public:
     ~Planner();
 
@@ -89,7 +89,7 @@ Planner<dim>::~Planner() {
 */
 template <unsigned int dim>
 Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options)
-    : ModuleBase(name), m_options(options), m_heuristic(options.getHeuristic()) {
+    : Identifier(name), m_options(options), m_heuristic(options.getHeuristic()) {
     m_pathPlanned = false;
 
     m_robot = robot;
