@@ -22,7 +22,7 @@
 #include <memory>
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <core/module/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/utility/heuristic/Heuristic.hpp>
@@ -35,7 +35,7 @@ namespace rmpl {
 * \date    2016-08-29
 */
 template <unsigned int dim>
-class PlannerOptions {
+class PlannerOptions : public Identifier {
   public:
     PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod samplerMethod, SamplingStrategy strategy,
                    std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph);
@@ -79,7 +79,7 @@ class PlannerOptions {
 */
 template <unsigned int dim>
 PlannerOptions<dim>::PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod method, SamplingStrategy strategy,
-                                    std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph) {
+                                    std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph) : Identifier("PlannerOptions") {
     setTrajectoryStepSize(trajectoryStepSize);
     m_collision = collision;
     setHeuristic(heuristic);
@@ -97,7 +97,7 @@ PlannerOptions<dim>::PlannerOptions(float trajectoryStepSize, std::shared_ptr<Co
 template <unsigned int dim>
 void PlannerOptions<dim>::setTrajectoryStepSize(float stepSize) {
     if (stepSize <= 0) {
-        Logging::warning("Trajectory step size was smaller than 0 and was set up to 1", "PlannerOptions");
+        Logging::warning("Trajectory step size was smaller than 0 and was set up to 1", this);
         m_trajectoryStepSize = 1;
     } else {
         m_trajectoryStepSize = stepSize;
@@ -180,7 +180,7 @@ void PlannerOptions<dim>::setHeuristic(std::shared_ptr<Heuristic<dim>> heuristic
     if (heuristic)
         m_heuristic = heuristic;
     else
-        Logging::error("Empty Heuristic passed", "PlannerOptions");
+        Logging::error("Empty Heuristic passed", this);
 }
 
 /*!

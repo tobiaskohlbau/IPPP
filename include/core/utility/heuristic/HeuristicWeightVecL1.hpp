@@ -31,6 +31,8 @@ namespace rmpl {
 template <unsigned int dim>
 class HeuristicWeightVecL1 : public Heuristic<dim> {
   public:
+    HeuristicWeightVecL1();
+    HeuristicWeightVecL1(const Vector<dim> &weightVec);
     float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const override;
 
     void setWeightVec(const Vector<dim> &vec);
@@ -39,6 +41,26 @@ class HeuristicWeightVecL1 : public Heuristic<dim> {
   private:
     Vector<dim> m_weightVec;
 };
+
+/*!
+*  \brief      Standard constructor of the class HeuristicWeightVecL1
+*  \author     Sascha Kaden
+*  \date       2017-02-19
+*/
+template <unsigned int dim>
+HeuristicWeightVecL1<dim>::HeuristicWeightVecL1() : Heuristic<dim>("Heuristic weightVecL1") {
+}
+
+/*!
+*  \brief      Constructor of the class HeuristicWeightVecL1
+*  \author     Sascha Kaden
+*  \param[in]  weightVec
+*  \date       2017-02-19
+*/
+template <unsigned int dim>
+HeuristicWeightVecL1<dim>::HeuristicWeightVecL1(const Vector<dim> &weightVec) : Heuristic<dim>("Heuristic weightVecL1") {
+    setWeightVec(weightVec);
+}
 
 /*!
 *  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.

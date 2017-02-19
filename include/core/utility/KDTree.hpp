@@ -22,7 +22,7 @@
 #include <mutex>
 
 #include <core/dataObj/Node.hpp>
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <core/utility/KDNode.hpp>
 
 namespace rmpl {
@@ -36,7 +36,7 @@ enum Direction { left, right };
 * \date    2016-05-27
 */
 template <unsigned int dim, class T>
-class KDTree : public ModuleBase {
+class KDTree : public Identifier {
   public:
     KDTree();
     KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes);
@@ -70,7 +70,7 @@ class KDTree : public ModuleBase {
 *  \date       2016-06-02
 */
 template <unsigned int dim, class T>
-KDTree<dim, T>::KDTree() : ModuleBase("KD Tree") {
+KDTree<dim, T>::KDTree() : Identifier("KD Tree") {
 }
 
 /*!
@@ -80,7 +80,7 @@ KDTree<dim, T>::KDTree() : ModuleBase("KD Tree") {
 *  \date       2016-07-18
 */
 template <unsigned int dim, class T>
-KDTree<dim, T>::KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) : ModuleBase("KD Tree") {
+KDTree<dim, T>::KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) : Identifier("KD Tree") {
     quickSort(nodes, 0, nodes.size() - 1, 0);
     m_root = std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(nodes[nodes.size() / 2]->getValues(), nodes[nodes.size() / 2]));
     m_root->axis = 0;

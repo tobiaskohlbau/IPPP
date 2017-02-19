@@ -10,7 +10,7 @@
 #include <core/types.h>
 #include <core/dataObj/Node.hpp>
 #include <core/dataObj/PointList.hpp>
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <core/utility/Logging.h>
 
 namespace rmpl {

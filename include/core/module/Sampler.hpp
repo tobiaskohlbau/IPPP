@@ -25,7 +25,7 @@
 #include <time.h>
 
 #include <core/types.h>
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <robot/RobotBase.hpp>
 
 namespace rmpl {
@@ -38,7 +38,7 @@ enum SamplerMethod { randomly, uniform, standardDistribution };
 * \date    2016-05-23
 */
 template <unsigned int dim>
-class Sampler : public ModuleBase {
+class Sampler : public Identifier {
   public:
     Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplerMethod method = SamplerMethod::randomly);
     Vector<dim> getSample();
@@ -71,7 +71,7 @@ class Sampler : public ModuleBase {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplerMethod method) : ModuleBase("Sampler") {
+Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplerMethod method) : Identifier("Sampler") {
     m_method = method;
 
     m_minBoundary = robot->getMinBoundary();

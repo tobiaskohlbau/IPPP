@@ -23,16 +23,16 @@
 #include <string>
 #include <vector>
 
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <robot/model/CadProcessing.h>
 #include <robot/model/ModelContainer.h>
 
 namespace rmpl {
 
 
-class ModelFactory : public ModuleBase {
+class ModelFactory : public Identifier {
 public:
-    ModelFactory(const std::string &name) : ModuleBase("ModelFactory"){};
+    ModelFactory(const std::string &name) : Identifier(name){};
 
     virtual std::shared_ptr<ModelContainer> createModel(const std::string &filePath) = 0;
     virtual std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths) = 0;

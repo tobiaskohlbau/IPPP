@@ -22,6 +22,7 @@
 #include <memory>
 
 #include <core/dataObj/Node.hpp>
+#include <core/module/Identifier.h>
 #include <core/types.h>
 
 namespace rmpl {
@@ -35,11 +36,22 @@ class Node;
 * \date    2017-01-02
 */
 template <unsigned int dim>
-class Heuristic {
+class Heuristic : public Identifier {
   public:
+    Heuristic(const std::string &name = "Heuristic L2");
     float calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
     virtual float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const;
 };
+
+/*!
+*  \brief      Standard constructor of the class Heuristic
+*  \author     Sascha Kaden
+*  \param[in]  name
+*  \date       2017-02-19
+*/
+template <unsigned int dim>
+Heuristic<dim>::Heuristic(const std::string &name) : Identifier(name) {
+}
 
 /*!
 *  \brief      Calculates the heuristic cost of an Edge from the source and target Node.

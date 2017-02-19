@@ -16,34 +16,35 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef MODULEBASE_H_
-#define MODULEBASE_H_
-
-#include <cstdint>
-#include <memory>
-#include <string>
+#include <core/module/Identifier.h>
 
 namespace rmpl {
 
 /*!
-* \brief   Base class of all modules, at the time it is an identifier.
-* \author  Sascha Kaden
-* \date    2016-06-02
+*  \brief      Standard deconstructor of the ModuleBase
+*  \author     Sasch Kaden
+*  \date       2016-05-30
 */
-class ModuleBase {
-  public:
-    virtual ~ModuleBase();
+Identifier::~Identifier() {
+}
 
-  protected:
-    ModuleBase(const std::string& name);
+/*!
+*  \brief      Constructor of the ModuleBase
+*  \author     Sasch Kaden
+*  \param[in]  module name
+*  \date       2016-05-30
+*/
+Identifier::Identifier(const std::string& name) : m_name(name) {
+}
 
-  public:
-    const std::string& getName();
-
-  private:
-    const std::string m_name;
-};
+/*!
+*  \brief      Return name
+*  \author     Sasch Kaden
+*  \param[out] name
+*  \date       2016-05-30
+*/
+const std::string& Identifier::getName() {
+    return m_name;
+}
 
 } /* namespace rmpl */
-
-#endif /* BASE_H_ */

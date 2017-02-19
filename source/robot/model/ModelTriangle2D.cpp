@@ -20,6 +20,9 @@
 
 namespace rmpl {
 
+ModelTriangle2D::ModelTriangle2D() : ModelContainer("ModelTriangle2D") {
+}
+
 /*!
 *  \brief      Return true if model is empty
 *  \author     Sascha Kaden

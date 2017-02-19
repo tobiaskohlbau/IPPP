@@ -97,7 +97,7 @@ std::string Logging::getOutputFile() {
 *  \author     Sasch Kaden
 *  \date       2016-10-22
 */
-void Logging::info(std::string message, ModuleBase *module) {
+void Logging::info(std::string message, Identifier *module) {
     if (module == nullptr)
         info(message, "Unknown");
     else
@@ -111,7 +111,7 @@ void Logging::info(std::string message, ModuleBase *module) {
 *  \author     Sasch Kaden
 *  \date       2016-10-22
 */
-void Logging::warning(std::string message, ModuleBase *module) {
+void Logging::warning(std::string message, Identifier *module) {
     if (module == nullptr)
         warning(message, "Unknown");
     else
@@ -125,7 +125,7 @@ void Logging::warning(std::string message, ModuleBase *module) {
 *  \author     Sasch Kaden
 *  \date       2016-10-22
 */
-void Logging::error(std::string message, ModuleBase *module) {
+void Logging::error(std::string message, Identifier *module) {
     if (module == nullptr)
         error(message, "Unknown");
     else
@@ -139,7 +139,7 @@ void Logging::error(std::string message, ModuleBase *module) {
 *  \author     Sasch Kaden
 *  \date       2016-10-22
 */
-void Logging::debug(std::string message, ModuleBase *module) {
+void Logging::debug(std::string message, Identifier *module) {
     if (m_level != LogLevel::debug)
         return;
 

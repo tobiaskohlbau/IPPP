@@ -21,7 +21,7 @@
 
 #include <mutex>
 
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 
 namespace rmpl {
 
@@ -43,10 +43,10 @@ class Logging {
     static void setOutputFile(const std::string file);
     static std::string getOutputFile();
 
-    static void info(std::string message, ModuleBase *module = nullptr);
-    static void warning(std::string message, ModuleBase *module = nullptr);
-    static void error(std::string message, ModuleBase *module = nullptr);
-    static void debug(std::string message, ModuleBase *module = nullptr);
+    static void info(std::string message, Identifier *module = nullptr);
+    static void warning(std::string message, Identifier *module = nullptr);
+    static void error(std::string message, Identifier *module = nullptr);
+    static void debug(std::string message, Identifier *module = nullptr);
 
     static void info(std::string message, std::string moduleName);
     static void warning(std::string message, std::string moduleName);

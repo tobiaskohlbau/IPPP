@@ -24,7 +24,7 @@
 
 #include <Eigen/Core>
 
-#include <core/module/ModuleBase.h>
+#include <core/module/Identifier.h>
 #include <core/types.h>
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
@@ -40,7 +40,7 @@ enum RobotType { serial, mobile };
 * \date    2016-06-30
 */
 template <unsigned int dim>
-class RobotBase : public ModuleBase {
+class RobotBase : public Identifier {
   public:
     virtual ~RobotBase();
 
@@ -98,7 +98,7 @@ RobotBase<dim>::~RobotBase() {
 template <unsigned int dim>
 RobotBase<dim>::RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary,
                           Vector<dim> maxBoundary)
-    : ModuleBase(name),
+    : Identifier(name),
       m_robotType(robotType),
       m_minBoundary(minBoundary),
       m_maxBoundary(maxBoundary) {

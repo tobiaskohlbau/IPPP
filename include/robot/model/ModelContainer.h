@@ -23,6 +23,7 @@
 
 #include <Eigen/Core>
 
+#include <core/module/Identifier.h>
 #include <core/types.h>
 
 namespace rmpl {
@@ -32,8 +33,9 @@ namespace rmpl {
 * \author  Sascha Kaden
 * \date    2017-02-19
 */
-class ModelContainer {
+class ModelContainer : public Identifier {
 public:
+    ModelContainer(const std::string &name);
     virtual bool empty() const = 0;
 
     std::vector<Vector3> m_vertices;
