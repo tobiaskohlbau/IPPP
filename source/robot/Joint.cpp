@@ -18,6 +18,8 @@
 
 #include <robot/Joint.h>
 
+#include <core/utility/Logging.h>
+
 namespace rmpl {
 
 /*!
@@ -47,9 +49,9 @@ Joint::Joint(float minBound, float maxBound) {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-Joint::Joint(float minBound, float maxBound, std::shared_ptr<ModelContainer> mesh) {
+Joint::Joint(float minBound, float maxBound, std::shared_ptr<ModelContainer> model) {
     setBoundaries(minBound, maxBound);
-    m_model = mesh;
+    setModel(model);
 }
 
 /*!
@@ -59,6 +61,10 @@ Joint::Joint(float minBound, float maxBound, std::shared_ptr<ModelContainer> mes
 *  \date       2016-08-25
 */
 void Joint::setModel(std::shared_ptr<ModelContainer> &model) {
+    if (model->empty()) {
+        Logging::error("Emtpy model", "Joint");
+        return;
+    }
     m_model = model;
 }
 

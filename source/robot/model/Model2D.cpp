@@ -16,26 +16,28 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef POINTROBOT_H_
-#define POINTROBOT_H_
-
 #include <robot/model/Model2D.h>
-#include <robot/RobotBase.hpp>
 
 namespace rmpl {
 
-/*!
-* \brief   Class for the 2D point robot
-* \author  Sascha Kaden
-* \date    2016-06-30
-*/
-class PointRobot : public RobotBase<2> {
-  public:
-    PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary);
+Model2D::Model2D() {
 
-  private:
-};
+}
+
+Model2D::Model2D(Eigen::MatrixXi space) {
+    if (space.cols() == -1) {
+        Logging::error("Empty space", "Model2D");
+        return;
+    }
+    m_space = space;
+}
+
+bool Model2D::empty() const {
+    if (m_space.cols() == -1)
+        return true;
+    else
+        return false;
+}
 
 } /* namespace rmpl */
 
-#endif /* POINTROBOT_H_ */

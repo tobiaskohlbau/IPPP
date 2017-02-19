@@ -89,7 +89,8 @@ void MainWindow::computePath() {
         ModelFactoryTriangle factory;
         std::shared_ptr<ModelContainer> baseModel = factory.createModel(m_triangles);
         std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, minBoundary, maxBoundary));
-        robot->set2DWorkspace(m_workspace);
+        std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
+        robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(robot));
 
         RRTOptions<3> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
@@ -127,7 +128,8 @@ void MainWindow::computePath() {
         Vector2 minBoundary(0.0, 0.0);
         Vector2 maxBoundary(m_workspace.rows(), m_workspace.cols());
         std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
-        robot->set2DWorkspace(m_workspace);
+        std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
+        robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
 
         RRTOptions<2> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, collision, sampler, sampling, edgeH);

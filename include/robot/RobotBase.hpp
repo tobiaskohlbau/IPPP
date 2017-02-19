@@ -157,20 +157,22 @@ Matrix4 RobotBase<dim>::getPoseMat() {
 /*!
 *  \brief      Load cad models from passed vector of strings and save them intern
 *  \author     Sascha Kaden
-*  \param[in]  vector of file strings
-*  \param[out] true if loading was feasible
+*  \param[in]  model
 *  \date       2016-06-30
 */
 template <unsigned int dim>
 void RobotBase<dim>::setBaseModel(const std::shared_ptr<ModelContainer> &model) {
+    if (model->empty()) {
+        Logging::error("Empty base model", this);
+        return;
+    }
     m_baseModel = model;
 }
 
 /*!
-*  \brief      Return PQP cad model from index
+*  \brief      Return base model
 *  \author     Sascha Kaden
-*  \param[in]  index
-*  \param[out] PQP cad model
+*  \param[out] base model
 *  \date       2016-06-30
 */
 template <unsigned int dim>
@@ -181,45 +183,27 @@ std::shared_ptr<ModelContainer> RobotBase<dim>::getBaseModel() {
 /*!
 *  \brief      Set workspace to robot
 *  \author     Sascha Kaden
-*  \param[in]  file of workspace cad
+*  \param[in]  model
 *  \date       2016-07-14
 */
 template <unsigned int dim>
 void RobotBase<dim>::setWorkspace(const std::shared_ptr<ModelContainer> &model) {
+    if (model->empty()) {
+        Logging::error("Empty workspace model", this);
+        return;
+    }
     m_workspaceModel = model;
 }
 
 /*!
 *  \brief      Return workspace of robot
 *  \author     Sascha Kaden
-*  \param[out] pointer to PQP_Model
+*  \param[out] pointer to workspace model
 *  \date       2016-07-14
 */
 template <unsigned int dim>
 std::shared_ptr<ModelContainer> RobotBase<dim>::getWorkspace() {
     return m_workspaceModel;
-}
-
-/*!
-*  \brief      Set 2D workspace to robot
-*  \author     Sascha Kaden
-*  \param[in]  2D workspace
-*  \date       2016-07-14
-*/
-template <unsigned int dim>
-void RobotBase<dim>::set2DWorkspace(const Eigen::MatrixXi &workspace) {
-    m_2DWorkspace = workspace;
-}
-
-/*!
-*  \brief      Return 2D workspace of robot
-*  \author     Sascha Kaden
-*  \param[out] 2D workspace
-*  \date       2016-07-14
-*/
-template <unsigned int dim>
-Eigen::MatrixXi &RobotBase<dim>::get2DWorkspace() {
-    return m_2DWorkspace;
 }
 
 /*!

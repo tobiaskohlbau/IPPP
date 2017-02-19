@@ -44,7 +44,6 @@ class CollisionDetection : public ModuleBase {
     std::shared_ptr<RobotBase<dim>> m_robot;
     Vector<dim> m_minBoundary, m_maxBoundary;
 
-    Eigen::MatrixXi m_2DWorkspace;
     std::shared_ptr<ModelContainer> m_workspace = nullptr;
 };
 
@@ -61,7 +60,6 @@ CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();
 
-    m_2DWorkspace = m_robot->get2DWorkspace();
     m_workspace = m_robot->getWorkspace();
 }
 

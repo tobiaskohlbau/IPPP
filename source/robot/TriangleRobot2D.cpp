@@ -29,9 +29,7 @@ namespace rmpl {
 */
 TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, Vector3 minBoundary, Vector3 maxBoundary)
     : RobotBase<3>("TriangleRobot2D", CollisionType::triangle2D, RobotType::mobile, minBoundary, maxBoundary) {
-    if (triangleModel->empty())
-        Logging::error("Empty ModelTriangle", this);
-    m_baseModel = triangleModel;
+    setBaseModel(triangleModel);
 }
 
 } /* namespace rmpl */
