@@ -8,13 +8,14 @@ before_script:
   - sudo apt-get install libeigen3-dev
   - sudo apt-get install libboost-all-dev
   # assimp
-  - git clone https://github.com/assimp/assimp.git
+  - cd ..
+  - git clone https://github.com/assimp/assimp.git assimp
   - cd assimp
   - mkdir build
   - cd build
   - cmake ..
   - make -j4
-  - cd /../../
+  - cd ../..
 #  - sudo apt-get install libassimp-dev
 #  # libccd
 #  - sudo add-apt-repository --yes ppa:libccd-debs/ppa
@@ -31,7 +32,6 @@ before_script:
 #  - sudo make install
 #  - cd ../..
   # cmake
-  - ls
   - cd RobotMotionPlanner
   - mkdir build
   - cd build
