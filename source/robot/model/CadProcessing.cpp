@@ -22,9 +22,17 @@
 
 namespace rmpl {
 
-bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces) {
+/*!
+*  \brief      Import a cad model (vertices and faces) with the assimp library
+*  \author     Sascha Kaden
+*  \param[in]  filePath
+*  \param[out] list of vertices
+*  \param[out] list of faces
+*  \date       2017-02-19
+*/
+bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces) {
     Assimp::Importer importer;
-    const aiScene *scene = importer.ReadFile(filepath, aiProcess_CalcTangentSpace);
+    const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (!scene) {
         Logging::error("Could not load cad", "CadProcessing");
         return false;
@@ -56,6 +64,14 @@ bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std:
     return true;
 }
 
+/*!
+*  \brief      Export a cad model (vertices and faces) with the assimp library
+*  \author     Sascha Kaden
+*  \param[in]  filePath
+*  \param[in]  list of vertices
+*  \param[in]  list of faces
+*  \date       2017-02-19
+*/
 bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
     if (filePath == "") {
         Logging::warning("Empty output file path", "CadProcessing");
@@ -94,6 +110,14 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
     return true;
 }
 
+/*!
+*  \brief      Generates a assimp aiScene from passed vertices and faces
+*  \author     Sascha Kaden
+*  \param[in]  list of vertices
+*  \param[in]  list of faces
+*  \param[out] scene
+*  \date       2017-02-19
+*/
 aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
     aiScene scene;
 

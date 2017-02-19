@@ -27,9 +27,9 @@
 namespace rmpl {
 
 /*!
-* \brief   Class CollisionDetection checks the configuration on collision and return binary value
+* \brief   Class collision detection with the pqp library
 * \author  Sascha Kaden
-* \date    2016-05-25
+* \date    2017-02-19
 */
 template <unsigned int dim>
 class CollisionDetectionPqp : public CollisionDetection<dim> {
@@ -59,11 +59,11 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
 };
 
 /*!
-*  \brief      Constructor of the class CollisionDetection
+*  \brief      Standard constructor of the class CollisionDetectionPqp
+*  \details    Copies all the models of the robot local to reduce calls.
 *  \author     Sascha Kaden
-*  \param[in]  VREP Helper
-*  \param[in]  RobotType
-*  \date       2016-06-30
+*  \param[in]  robot
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<RobotBase<dim>> &robot) : CollisionDetection<dim>("CollisionDetectionPQP", robot) {
@@ -106,9 +106,9 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<RobotBas
 /*!
 *  \brief      Check for collision
 *  \author     Sascha Kaden
-*  \param[in]  vec
+*  \param[in]  configuration
 *  \param[out] binary result of collision (true if in collision)
-*  \date       2016-05-25
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::controlVec(const Vector<dim> &vec) {
@@ -121,9 +121,9 @@ bool CollisionDetectionPqp<dim>::controlVec(const Vector<dim> &vec) {
 /*!
 *  \brief      Check collision of a trajectory of points
 *  \author     Sascha Kaden
-*  \param[in]  vector of points
+*  \param[in]  vector of configurations
 *  \param[out] binary result of collision (true if in collision)
-*  \date       2016-05-25
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::controlTrajectory(std::vector<Vector<dim>> &vecs) {
@@ -144,11 +144,11 @@ bool CollisionDetectionPqp<dim>::controlTrajectory(std::vector<Vector<dim>> &vec
 }
 
 /*!
-*  \brief      Check for collision of serial robot
+*  \brief      Check for collision of a serial robot
 *  \author     Sascha Kaden
-*  \param[in]  Vec of robot configuration
-*  \param[out] binary result of collision
-*  \date       2016-09-02
+*  \param[in]  configurations
+*  \param[out] binary result of collision (true if in collision)
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &vec) {
@@ -166,11 +166,11 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &vec) {
 }
 
 /*!
-*  \brief      Check for collision of mobile robot (mesh with workspace)
+*  \brief      Check for collision of a mobile robot (mesh with workspace)
 *  \author     Sascha Kaden
-*  \param[in]  Vec of robot configuration
+*  \param[in]  configuration
 *  \param[out] binary result of collision
-*  \date       2016-11-14
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &vec) {
@@ -186,16 +186,14 @@ bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &vec) {
 }
 
 /*!
-*  \brief      Check for collision with PQP or fcl library
+*  \brief      Check for collision with the PQP library
 *  \author     Sascha Kaden
-*  \param[in]  MeshContainer one
-*  \param[in]  MeshContainer two
 *  \param[in]  rotation matrix one
 *  \param[in]  rotation matrix two
 *  \param[in]  translation vector one
 *  \param[in]  translation vector two
 *  \param[out] binary result of collision
-*  \date       2016-07-14
+*  \date       2017-02-19
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT) {

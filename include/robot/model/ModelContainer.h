@@ -27,6 +27,11 @@
 
 namespace rmpl {
 
+/*!
+* \brief   Base class for all robot models
+* \author  Sascha Kaden
+* \date    2017-02-19
+*/
 class ModelContainer {
 public:
     virtual bool empty() const = 0;

@@ -20,6 +20,12 @@
 
 namespace rmpl {
 
+/*!
+*  \brief      Return true if model is empty
+*  \author     Sascha Kaden
+*  \param[out] state
+*  \date       2017-02-19
+*/
 bool ModelTriangle2D::empty() const {
     if (m_triangles.size() == 0)
         return true;

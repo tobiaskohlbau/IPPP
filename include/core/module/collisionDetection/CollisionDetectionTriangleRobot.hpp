@@ -26,9 +26,9 @@
 namespace rmpl {
 
 /*!
-* \brief   Class CollisionDetection checks the configuration on collision and return binary value
+* \brief   Collision detection class for the TriangleRobot2D
 * \author  Sascha Kaden
-* \date    2016-05-25
+* \date    2017-02-19
 */
 class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
   public:
@@ -45,11 +45,11 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
 };
 
 /*!
-*  \brief      Constructor of the class CollisionDetection
+*  \brief      Standard constructor of the class CollisionDetectionTriangleRobot
+*  \details    Creates local copy of base model and workspace of the robot
 *  \author     Sascha Kaden
-*  \param[in]  VREP Helper
-*  \param[in]  RobotType
-*  \date       2016-06-30
+*  \param[in]  robot
+*  \date       2017-02-19
 */
 CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shared_ptr<RobotBase<3>> &robot) : CollisionDetection("CollisionDetectionTriangleRobot", robot) {
     if (!m_robot->getWorkspace() || m_robot->getWorkspace()->empty()) {
@@ -69,9 +69,9 @@ CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shar
 /*!
 *  \brief      Check for collision
 *  \author     Sascha Kaden
-*  \param[in]  vec
+*  \param[in]  configuration
 *  \param[out] binary result of collision (true if in collision)
-*  \date       2016-05-25
+*  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::controlVec(const Vector3 &vec) {
     return checkTriangleRobot(vec);
@@ -80,9 +80,9 @@ bool CollisionDetectionTriangleRobot::controlVec(const Vector3 &vec) {
 /*!
 *  \brief      Check collision of a trajectory of points
 *  \author     Sascha Kaden
-*  \param[in]  vector of points
+*  \param[in]  configurations
 *  \param[out] binary result of collision (true if in collision)
-*  \date       2016-05-25
+*  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::controlTrajectory(std::vector<Vector3> &vecs) {
     if (vecs.size() == 0)
@@ -101,7 +101,7 @@ bool CollisionDetectionTriangleRobot::controlTrajectory(std::vector<Vector3> &ve
 *  \param[in]  x
 *  \param[in]  y
 *  \param[out] binary result of collision (true if in collision)
-*  \date       2016-06-30
+*  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::checkPoint2D(float x, float y) {
     if (this->m_minBoundary[0] >= x || x >= this->m_maxBoundary[0] || this->m_minBoundary[1] >= y || y >= this->m_maxBoundary[1]) {
@@ -118,9 +118,9 @@ bool CollisionDetectionTriangleRobot::checkPoint2D(float x, float y) {
 /*!
 *  \brief      Check for TriangleRobot collision
 *  \author     Sascha Kaden
-*  \param[in]  transformation Vector
+*  \param[in]  configuration
 *  \param[out] binary result of collision, true if in collision
-*  \date       2016-12-19
+*  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
 

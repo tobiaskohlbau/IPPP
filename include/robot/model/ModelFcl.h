@@ -27,6 +27,11 @@ namespace rmpl {
 
 typedef fcl::BVHModel<fcl::OBB<float>> FCLModel;
 
+/*!
+* \brief   Fcl model class
+* \author  Sascha Kaden
+* \date    2017-02-19
+*/
 class ModelFcl : public ModelContainer {
 public:
     ModelFcl();
