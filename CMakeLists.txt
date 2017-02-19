@@ -60,8 +60,10 @@ IF (${BUILD_TESTS})
     ADD_SUBDIRECTORY(tests)
 ENDIF()
 
+
+
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP ${assimp_LIBRARIES} fcl)
+target_link_libraries(${PROJECT_NAME} pthread PQP ${assimp_LIBRARIES})
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)

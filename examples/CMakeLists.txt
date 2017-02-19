@@ -20,7 +20,7 @@ SET(LIBRARIES
     pthread
     RobotMotionPlanning
     PQP
-    fcl
+    #fcl
     ${assimp_LIBRARIES})
 
 MACRO(ADD_RMPL_EXAMPLE ex_name sources ADDITIONAL_LIBRARIES)
