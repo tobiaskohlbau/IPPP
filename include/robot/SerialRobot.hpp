@@ -33,7 +33,7 @@ namespace rmpl {
 template <unsigned int dim>
 class SerialRobot : public RobotBase<dim> {
   public:
-    SerialRobot(std::string name, CollisionType type, Vector<dim> minBoundary, Vector<dim> maxBoundary);
+    SerialRobot(std::string name, Vector<dim> minBoundary, Vector<dim> maxBoundary);
 
     virtual Vector<dim> directKinematic(const Vector<dim> &angles) = 0;
     virtual std::vector<Matrix4> getJointTrafos(const Vector<dim> &angles) = 0;
@@ -66,8 +66,8 @@ class SerialRobot : public RobotBase<dim> {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-SerialRobot<dim>::SerialRobot(std::string name, CollisionType type, Vector<dim> minBoundary, Vector<dim> maxBoundary)
-    : RobotBase<dim>(name, type, RobotType::serial, minBoundary, maxBoundary) {
+SerialRobot<dim>::SerialRobot(std::string name, Vector<dim> minBoundary, Vector<dim> maxBoundary)
+    : RobotBase<dim>(name, RobotType::serial, minBoundary, maxBoundary) {
 }
 
 /*!

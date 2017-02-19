@@ -41,14 +41,19 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
   private:
     bool checkSerialRobot(const Vector<dim> &vec);
     bool checkMobileRobot(const Vector<dim> &vec);
-    bool checkMesh(std::vector<PQP_Model> &models, PQP_Model &base, Matrix3 R[],
-                   Matrix3 &poseR, Vector3 t[], Vector3 &poseT);
+    bool checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT);
 
     bool checkPQP(PQP_Model &model1, PQP_Model &model2, Matrix3 &R1,
                   Matrix3 &R2, Vector3 &t1, Vector3 &t2);
 
     Matrix3 m_identity;
     Eigen::Vector3f m_zeroVec;
+
+    PQP_Model m_baseMesh;
+    PQP_Model m_workspace;
+    bool m_baseMeshAvaible = false;
+    bool m_workspaceAvaible = false;
+    std::vector<PQP_Model> m_jointModels;
 
     using CollisionDetection<dim>::m_robot;
 };
@@ -64,6 +69,38 @@ template <unsigned int dim>
 CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<RobotBase<dim>> &robot) : CollisionDetection<dim>("CollisionDetectionPQP", robot) {
     m_identity = Matrix3::Identity(3, 3);
     m_zeroVec = Eigen::Vector3f::Zero(3, 1);
+
+    std::shared_ptr<SerialRobot<dim>> serialRobot(std::static_pointer_cast<SerialRobot<dim>>(m_robot));
+    if (m_robot->getBaseModel() != nullptr && !m_robot->getBaseModel()->empty()) {
+        m_baseMesh = std::static_pointer_cast<ModelPqp>(serialRobot->getBaseModel())->m_pqpModel;
+        m_baseMeshAvaible = true;
+    } else {
+        Logging::error("Empty base model", this);
+        return;
+    }
+
+    if (m_robot->getWorkspace() != nullptr && !m_robot->getWorkspace()->empty()) {
+        m_workspace = std::static_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
+        m_workspaceAvaible = true;
+    }
+
+    std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
+    if (!jointModels.empty()) {
+        bool emptyJoint = false;
+        for (auto model : jointModels)
+            if (!model || model->empty())
+                emptyJoint = true;
+
+        if (!emptyJoint)
+            for (int i = 0; i < dim; ++i) {
+                PQP_Model pqp = std::static_pointer_cast<ModelPqp>(serialRobot->getModelFromJoint(i))->m_pqpModel;
+                m_jointModels.push_back(pqp);
+            }
+        else
+            Logging::error("Emtpy joint model", this);
+    } else {
+        Logging::error("No joint models applied", this);
+    }
 }
 
 /*!
@@ -121,19 +158,11 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &vec) {
     Matrix3 rot[dim];
     Vector3 trans[dim];
     utilCollision::getTrafosFromRobot<dim>(vec, robot, poseR, poseT, rot, trans);
-
-    PQP_Model baseMesh;
-    if (robot->getBaseModel() != nullptr)
-        baseMesh = std::dynamic_pointer_cast<ModelPqp>(robot->getBaseModel())->m_pqpModel;
-    std::vector<PQP_Model> jointMeshes;
-    for (int i = 0; i < robot->getNbJoints(); ++i)
-         jointMeshes.push_back(std::dynamic_pointer_cast<ModelPqp>(robot->getModelFromJoint(i))->m_pqpModel);
-
     //for (auto tmp : jointTrafos)
     //    std::cout << tmp <<std::endl;
     //robot->saveMeshConfig(As);
 
-    return checkMesh(jointMeshes, baseMesh, rot, poseR, trans, poseT);
+    return checkMesh(rot, poseR, trans, poseT);
 }
 
 /*!
@@ -150,13 +179,10 @@ bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &vec) {
     Vector3 poseT;
     utilGeo::decomposeT(pose, poseR, poseT);
 
-    if (m_robot->getBaseModel() == nullptr || m_robot->getWorkspace() == nullptr)
-        return false;
-
-    PQP_Model baseModel = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getBaseModel())->m_pqpModel;
-    PQP_Model workspace = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
-
-    return checkPQP(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT);
+    if (m_baseMeshAvaible && m_workspaceAvaible)
+        return checkPQP(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT);
+    else
+        return true;
 }
 
 /*!
@@ -172,13 +198,11 @@ bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &vec) {
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkMesh(std::vector<PQP_Model> &models, PQP_Model &baseModel,
-                                        Matrix3 R[], Matrix3 &poseR, Vector3 t[],
-                                        Vector3 &poseT) {
+bool CollisionDetectionPqp<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT) {
     // control collision between baseModel and joints
-    if (baseModel.num_tris != 0) {
+    if (m_baseMeshAvaible) {
         for (int i = 1; i < dim; ++i) {
-            if (checkPQP(baseModel, models[i], poseR, R[i], poseT, t[i]))
+            if (checkPQP(m_baseMesh, m_jointModels[i], poseR, R[i], poseT, t[i]))
                 return true;
         }
     }
@@ -186,7 +210,7 @@ bool CollisionDetectionPqp<dim>::checkMesh(std::vector<PQP_Model> &models, PQP_M
     // control collision of the robot joints with themselves
     for (int i = 0; i < dim; ++i) {
         for (int j = i + 2; j < dim; ++j) {
-            if (checkPQP(models[i], models[j], R[i], R[j], t[i], t[j])) {
+            if (checkPQP(m_jointModels[i], m_jointModels[j], R[i], R[j], t[i], t[j])) {
                 if (Logging::getLogLevel() == LogLevel::debug) {
                     std::shared_ptr<SerialRobot<dim>> robot(std::static_pointer_cast<SerialRobot<dim>>(m_robot));
                     Logging::debug("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), this);
@@ -207,14 +231,12 @@ bool CollisionDetectionPqp<dim>::checkMesh(std::vector<PQP_Model> &models, PQP_M
     }
 
     // control collision with workspace
-    if (m_robot->getWorkspace() != nullptr) {
-        PQP_Model workspace = std::dynamic_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
-
-        if (checkPQP(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT))
+    if (m_workspaceAvaible) {
+        if (checkPQP(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT))
             return true;
 
         for (int i = 0; i < dim; ++i) {
-            if (checkPQP(workspace, models[i], m_identity, R[i], m_zeroVec, t[i])) {
+            if (checkPQP(m_workspace, m_jointModels[i], m_identity, R[i], m_zeroVec, t[i])) {
                 Logging::debug("Collision between workspace and link " + std::to_string(i), this);
                 return true;
             }

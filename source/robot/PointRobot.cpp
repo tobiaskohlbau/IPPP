@@ -28,7 +28,7 @@ namespace rmpl {
 *  \date       2016-06-30
 */
 PointRobot::PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary)
-    : RobotBase<2>("PointRobot", CollisionType::point2D, RobotType::mobile, minBoundary, maxBoundary) {
+    : RobotBase<2>("PointRobot", RobotType::mobile, minBoundary, maxBoundary) {
 }
 
 } /* namespace rmpl */

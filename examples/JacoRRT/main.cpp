@@ -24,7 +24,6 @@ void simpleRRT() {
     std::shared_ptr<Jaco> robot(new Jaco());
 
     robot->saveMeshConfig(utilVec::Vecf(0, 0, 0, 0, 0, 0));
-    return;
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
     RRTOptions<6> options(30, 0.5, collision);
@@ -34,7 +33,7 @@ void simpleRRT() {
 
     // compute the tree
     clock_t begin = std::clock();
-    bool connected = planner.computePath(start, goal, 25000, 2);
+    bool connected = planner.computePath(start, goal, 4000, 6);
     clock_t end = std::clock();
     printTime(begin, end);
 

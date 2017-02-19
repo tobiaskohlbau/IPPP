@@ -29,7 +29,7 @@ namespace rmpl {
 *  \date       2016-06-30
 */
 Jaco::Jaco()
-    : SerialRobot<6>("Jaco", CollisionType::pqp, utilVec::Vecf(0, 42, 17, 0, 0, 0), utilVec::Vecf(360, 318, 343, 360, 360, 360)) {
+    : SerialRobot<6>("Jaco", utilVec::Vecf(0, 42, 17, 0, 0, 0), utilVec::Vecf(360, 318, 343, 360, 360, 360)) {
     m_alpha = utilVec::Vecf(utilGeo::pi() / 2, utilGeo::pi(), utilGeo::pi() / 2, 0.95993, 0.95993, utilGeo::pi());
     m_a = utilVec::Vecf(0, 410, 0, 0, 0, 0);
     m_d = utilVec::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
@@ -39,19 +39,12 @@ Jaco::Jaco()
     ModelFactoryPqp modelFactoryPqp;
     m_baseModel = modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_base.dae");
 
-    Joint joint;
-    joint = Joint(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_1.dae"));
-    m_joints.push_back(joint);
-    joint = Joint(42, 318, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_2.dae"));
-    m_joints.push_back(joint);
-    joint = Joint(17, 343, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_3.dae"));
-    m_joints.push_back(joint);
-    joint = Joint(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_4.dae"));
-    m_joints.push_back(joint);
-    joint = Joint(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_5.dae"));
-    m_joints.push_back(joint);
-    joint = Joint(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_5.dae"));
-    m_joints.push_back(joint);
+    m_joints.push_back(Joint(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_1.dae")));
+    m_joints.push_back(Joint(42, 318, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_2.dae")));
+    m_joints.push_back(Joint(17, 343, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_3.dae")));
+    m_joints.push_back(Joint(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_4.dae")));
+    m_joints.push_back(Joint(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_5.dae")));
+    m_joints.push_back(Joint(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_5.dae")));
 }
 
 /*!
