@@ -68,10 +68,7 @@ class PRMPlanner : public Planner<dim> {
 *  \brief      Standard constructor of the class PRMPlanner
 *  \author     Sascha Kaden
 *  \param[in]  robot
-*  \param[in]  rangeSize for the nearest neighbor search from the local planner
-*  \param[in]  trajectoryStepSize
-*  \param[in]  TrajectoryMethod
-*  \param[in]  SamplerMethod
+*  \param[in]  prm options
 *  \date       2016-08-09
 */
 template <unsigned int dim>
@@ -257,7 +254,6 @@ std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Vector<dim> &vec) {
 /*!
 *  \brief      A* algorithm to find best path
 *  \author     Sascha Kaden
-*  \param[in]  start index
 *  \param[in]  source Node<dim> (start)
 *  \param[in]  target Node<dim> (goal)
 *  \param[out] result of algorithm
@@ -295,8 +291,7 @@ bool PRMPlanner<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_p
 /*!
 *  \brief      Expands the openList of the A* algorithm from the childs of the passed Node
 *  \author     Sascha Kaden
-*  \param[in]  start index
-*  \param[in]  end index
+*  \param[in]  current ndoe
 *  \date       2016-08-09
 */
 template <unsigned int dim>
@@ -333,7 +328,9 @@ std::vector<std::shared_ptr<Node<dim>>> PRMPlanner<dim>::getPathNodes() {
 /*!
 *  \brief      Return all points of the final path
 *  \author     Sascha Kaden
-*  \param[out] vecs of the path
+*  \param[in]  trajectory step size
+*  \param[in]  smoothing
+*  \param[out] configurations of the path
 *  \date       2016-05-31
 */
 template <unsigned int dim>

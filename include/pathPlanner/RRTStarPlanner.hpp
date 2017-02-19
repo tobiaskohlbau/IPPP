@@ -31,11 +31,9 @@ namespace rmpl {
 * \date    2016-05-27
 */
 template <unsigned int dim>
-class StarRRTPlanner : public RRTPlanner<dim> {
+class RRTStarPlanner : public RRTPlanner<dim> {
   public:
-    StarRRTPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options)
-        : RRTPlanner<dim>("RRT* Planner", robot, options) {
-    }
+    RRTStarPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options);
 
     bool connectGoalNode(Vector<dim> goal);
 
@@ -61,6 +59,18 @@ class StarRRTPlanner : public RRTPlanner<dim> {
 };
 
 /*!
+*  \brief      Standard constructor of the class StarRRTPlanner
+*  \author     Sascha Kaden
+*  \param[in]  robot
+*  \param[in]  options
+*  \date       2017-02-19
+*/
+template <unsigned int dim>
+RRTStarPlanner<dim>::RRTStarPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options)
+    : RRTPlanner<dim>("RRT* Planner", robot, options) {
+}
+
+/*!
 *  \brief         Computation of the new Node<dim> by the RRT* algorithm
 *  \author        Sascha Kaden
 *  \param[in]     random Vec
@@ -68,7 +78,7 @@ class StarRRTPlanner : public RRTPlanner<dim> {
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void StarRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) {
+void RRTStarPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) {
     // get nearest neighbor
     std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randVec);
     // set Node<dim> new fix fixed step size of 10
@@ -105,7 +115,7 @@ void StarRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
+void RRTStarPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
                                        std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     // get near nodes to the new node
     nearNodes = m_graph->getNearNodes(newNode, m_stepSize);
@@ -126,11 +136,11 @@ void StarRRTPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std:
 *  \author        Sascha Kaden
 *  \param[in,out] new Node
 *  \param[in,out] parent Node
-*  \param[in,out] vecotr of nearest nodes
+*  \param[in,out] vector of nearest nodes
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
+void RRTStarPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
                                  std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     float oldDist, newDist, edgeCost;
     for (auto nearNode : nearNodes) {
@@ -156,7 +166,7 @@ void StarRRTPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::share
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool StarRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
+bool RRTStarPlanner<dim>::connectGoalNode(Vector<dim> goal) {
     if (m_collision->controlVec(goal)) {
         Logging::info("Goal Node in collision", this);
         return false;

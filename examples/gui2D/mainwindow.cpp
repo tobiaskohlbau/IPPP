@@ -99,7 +99,7 @@ void MainWindow::computePath() {
         if (m_plannerType == 0)
             m_planner3d = std::shared_ptr<NormalRRTPlanner<3>>(new NormalRRTPlanner<3>(robot, rrtOptions));
         else if (m_plannerType == 1)
-            m_planner3d = std::shared_ptr<StarRRTPlanner<3>>(new StarRRTPlanner<3>(robot, rrtOptions));
+            m_planner3d = std::shared_ptr<RRTStarPlanner<3>>(new RRTStarPlanner<3>(robot, rrtOptions));
         else
             m_planner3d = std::shared_ptr<PRMPlanner<3>>(new PRMPlanner<3>(robot, prmOptions));
         Vector3 start(m_startX, m_startY, m_startPhi);
@@ -138,7 +138,7 @@ void MainWindow::computePath() {
         if (m_plannerType == 0)
             m_planner2d = std::shared_ptr<NormalRRTPlanner<2>>(new NormalRRTPlanner<2>(robot, rrtOptions));
         else if (m_plannerType == 1)
-            m_planner2d = std::shared_ptr<StarRRTPlanner<2>>(new StarRRTPlanner<2>(robot, rrtOptions));
+            m_planner2d = std::shared_ptr<RRTStarPlanner<2>>(new RRTStarPlanner<2>(robot, rrtOptions));
         else
             m_planner2d = std::shared_ptr<PRMPlanner<2>>(new PRMPlanner<2>(robot, prmOptions));
         Vector2 start(m_startX, m_startY);

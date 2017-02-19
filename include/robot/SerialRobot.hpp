@@ -60,10 +60,9 @@ class SerialRobot : public RobotBase<dim> {
 *  \brief      Constructor of the class RobotBase
 *  \author     Sascha Kaden
 *  \param[in]  name of the robot
-*  \param[in]  type of the robot
-*  \param[in]  dimensions of the robot
-*  \param[in]  number of joints of the robot
-*  \date       2016-06-30
+*  \param[in]  minimum boundary
+*  \param[in]  maximum boundary
+*  \date       2016-07-19
 */
 template <unsigned int dim>
 SerialRobot<dim>::SerialRobot(std::string name, Vector<dim> minBoundary, Vector<dim> maxBoundary)

@@ -20,7 +20,7 @@
 
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
-#include <pathPlanner/StarRRTPlanner.hpp>
+#include <pathPlanner/RRTStarPlanner.hpp>
 #include <robot/PointRobot.h>
 #include <core/module/collisionDetection/CollisionDetection2D.hpp>
 #include <core/utility/heuristic/HeuristicL1.hpp>
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(obstacleWorkspace) {
                 BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | " );
                 normalRRTPlanner.computePath(start, goal, 100, 1);
 
-                StarRRTPlanner<dim> starRRTPlanner(robot, rrtOptions);
+                RRTStarPlanner<dim> starRRTPlanner(robot, rrtOptions);
                 BOOST_TEST_CHECKPOINT("Calling RRT* planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | " );
                 starRRTPlanner.computePath(start, goal, 100, 1);
             }

@@ -68,6 +68,9 @@ class RRTPlanner : public Planner<dim> {
 /*!
 *  \brief      Constructor of the class RRTPlanner
 *  \author     Sascha Kaden
+*  \param[in]  name
+*  \param[in]  robot
+*  \param[in]  options
 *  \date       2016-05-27
 */
 template <unsigned int dim>
@@ -193,7 +196,7 @@ std::vector<std::shared_ptr<Node<dim>>> RRTPlanner<dim>::getPathNodes() {
 /*!
 *  \brief      Return all points of the final path
 *  \author     Sascha Kaden
-*  \param[out] vecs of the path
+*  \param[out] configurations of the path
 *  \date       2016-05-31
 */
 template <unsigned int dim>
@@ -216,7 +219,7 @@ std::vector<Vector<dim>> RRTPlanner<dim>::getPath(float trajectoryStepSize, bool
 *  \author     Sascha Kaden
 *  \param[in]  random Node
 *  \param[in]  nearest Node
-*  \param[out] Node<dim> new
+*  \param[out] new Node
 *  \date       2016-05-27
 */
 template <unsigned int dim>
@@ -237,7 +240,7 @@ Vector<dim> RRTPlanner<dim>::computeNodeNew(const Vector<dim> &randNode, const V
 *  \brief      Return the init Node<dim> of the RRTPlanner
 *  \author     Sascha Kaden
 *  \param[out] init Node
-* \date        2016-06-01
+*  \date       2016-06-01
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> RRTPlanner<dim>::getInitNode() {
@@ -248,7 +251,7 @@ std::shared_ptr<Node<dim>> RRTPlanner<dim>::getInitNode() {
 *  \brief      Return the goal Node<dim> of the RRTPlanner
 *  \author     Sascha Kaden
 *  \param[out] goal Node
-* \date        2016-06-01
+*  \date       2016-06-01
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> RRTPlanner<dim>::getGoalNode() {
