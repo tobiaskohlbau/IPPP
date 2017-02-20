@@ -31,7 +31,7 @@ static void getTrafosFromRobot(const Vector <dim> &vec,
                         Matrix3 &poseR, Vector3 &poseT, Matrix3 (&Rs)[dim], Vector3 (&ts)[dim]) {
     std::vector <Matrix4> jointTrafos = robot->getJointTrafos(vec);
     Matrix4 pose = robot->getPoseMat();
-    Matrix4 As[jointTrafos.size()];
+    Matrix4 As[dim];
     As[0] = pose * jointTrafos[0];
     for (int i = 1; i < jointTrafos.size(); ++i)
         As[i] = As[i - 1] * jointTrafos[i];
