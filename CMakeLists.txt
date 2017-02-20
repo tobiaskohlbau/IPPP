@@ -36,7 +36,7 @@ find_package(Threads REQUIRED)
 find_package(PQP REQUIRED)
 
 include_directories(${CMAKE_SOURCE_DIR}/include
-        ${assimp_INCLUDE_DIRS}/../
+        ${ASSIMP_INCLUDE_DIR}/../
         ${EIGEN3_INCLUDE_DIR}
         ${PQP_INCLUDE_DIR})
 #        ${Boost_INCLUDE_DIRS}
