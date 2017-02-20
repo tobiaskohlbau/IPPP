@@ -20,6 +20,7 @@
 #define CADPROCESSING_H
 
 #include <string>
+#include <vector>
 
 #include <Eigen/Core>
 #include <assimp/Importer.hpp>

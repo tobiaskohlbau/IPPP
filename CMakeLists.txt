@@ -21,7 +21,7 @@ project (RobotMotionPlanning)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -pthread")
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
 
 OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(BUILD_TESTS "Build tests" ON)
@@ -33,19 +33,19 @@ find_package(assimp)
 #find_package(Boost COMPONENTS thread REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Threads REQUIRED)
-set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
+find_package(PQP REQUIRED)
 
 include_directories(${CMAKE_SOURCE_DIR}/include
-        ${assimp_INCLUDE_DIRS}/../
+        ${ASSIMP_INCLUDE_DIR}/../
         ${EIGEN3_INCLUDE_DIR}
-        ${PQP_DIR}/include)
+        ${PQP_INCLUDE_DIR})
 #        ${Boost_INCLUDE_DIRS}
-
-link_directories(${PQP_DIR}/lib)
 
 # source files
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(source)
+
+add_definitions(-D_USE_MATH_DEFINES)
 
 # options
 IF (${BUILD_FCL})
@@ -60,10 +60,8 @@ IF (${BUILD_TESTS})
     ADD_SUBDIRECTORY(tests)
 ENDIF()
 
-
-
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP ${assimp_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${PQP_LIBRARIES} ${ASSIMP_LIBRARIES})
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
-install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
+install(DIRECTORY ${PQP_INCLUDE_DIR}/ DESTINATION PQP)

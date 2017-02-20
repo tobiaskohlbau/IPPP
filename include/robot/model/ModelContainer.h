@@ -20,6 +20,7 @@
 #define MODELCONTAINER_H
 
 #include <memory>
+#include <vector>
 
 #include <Eigen/Core>
 
