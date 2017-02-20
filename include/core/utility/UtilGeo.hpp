@@ -19,6 +19,8 @@
 #ifndef UTILGEO_H
 #define UTILGEO_H
 
+#include <cmath>
+
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
@@ -29,19 +31,19 @@ namespace rmpl {
 namespace utilGeo {
 
 constexpr float pi() {
-    return std::atan(1) * 4;
+    return M_PI;
 }
 
 constexpr float twoPi() {
-    return std::atan(1) * 8;
+	return M_PI * 2;
 }
 
 constexpr float toRad() {
-    return (std::atan(1) * 4) / 180;
+    return M_PI / 180;
 }
 
 constexpr float toDeg() {
-    return 180 / (std::atan(1) * 4);
+    return 180 / M_PI;
 }
 
 /*!

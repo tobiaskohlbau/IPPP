@@ -47,6 +47,8 @@ link_directories(${PQP_DIR}/lib)
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(source)
 
+add_definitions(-D_USE_MATH_DEFINES)
+
 # options
 IF (${BUILD_FCL})
     find_package(fcl REQUIRED)
