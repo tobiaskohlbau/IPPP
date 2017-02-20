@@ -10,7 +10,7 @@ before_script:
   - sudo apt-get install libboost-all-dev
   # assimp
   - cd ..
-  - https://github.com/SaschaKaden/RMPThirdParty.git
+  - git clone https://github.com/SaschaKaden/RMPThirdParty.git
 #  - git clone https://github.com/assimp/assimp.git assimp
 #  - cd assimp
 #  - mkdir build
