@@ -17,7 +17,7 @@ before_script:
 #  - cd build
 #  - cmake ..
 #  - make -j4
-  - cd ../..
+#  - cd ../..
 #  # libccd
 #  - sudo add-apt-repository --yes ppa:libccd-debs/ppa
 #  - sudo apt-get -qq update
