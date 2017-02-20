@@ -9,7 +9,7 @@ RMPL has the target to provide a coherent interface for path planning with a ser
 Currently available robots:
 * [Kinova Jaco](http://www.kinovarobotics.com/service-robotics/products/robot-arms/)
 * KukaKR5
-* 2D Point Robot, for test cases
+* 2D point and 2D triangle robot, for test cases
 
 The user can set up his own robot too, he has only to pass the D-H parameter and the triangle meshes (.obj).
 
@@ -22,14 +22,23 @@ Currently available algorithms:
 
 
 ## Dependencies
-For matrix manipulation the [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) library is included.
-Collision detection between triangle meshes by the [PQP](http://gamma.cs.unc.edu/SSV/) library and the [fcl](https://github.com/flexible-collision-library/fcl) library.
+* [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) for matrix manipulation 
+* [PQP](http://gamma.cs.unc.edu/SSV/)(Proximity Query Package) for collision detection between 3d meshes
+* [Assimp](http://www.assimp.org)(Open Asset Import Library) for import and export of meshes
+* [boost test framework](http://www.boost.org/doc/libs/1_63_0/libs/test/doc/html/index.html)
+* optional [FCL](https://github.com/flexible-collision-library/fcl)(Flexible Collision Library) for collision detection between 3d meshes
  
 #### Dependencies of the examples
-To show results, the [OpenCV](http://opencv.org/) library is for 2D examples included and the [QT](https://www.qt.io/) library is for the gui2D example included. 
-The results from serial robots can be tested by the [vrep](http://www.coppeliarobotics.com/) simulation (an interface for the Jaco robot is written).
+* [OpenCV](http://opencv.org/) for manipulation and illustration of 2D examples
+* [QT](https://www.qt.io/) for the user interface
+* optional [vrep](http://www.coppeliarobotics.com/) simulation
 
+
+## Getting Started
+git clone https://github.com/SaschaKaden/RobotMotionPlanner.git
+
+ 
 
 ## License
-Copyright © 2016 Sascha Kaden
+Copyright © 2017 Sascha Kaden
 Licensed under the Apache 2.0.

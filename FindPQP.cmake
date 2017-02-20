@@ -2,12 +2,12 @@ include(FindPackageHandleStandardArgs)
 
 set(PQP_ROOT_DIR "" CACHE PATH "Folder containing PQP")
 
-find_path(PQP_INCLUDE_DIR include/PQP.h
+find_path(PQP_INCLUDE_DIR PQP.h
     PATHS ${PQP_ROOT_DIR}
     PATH_SUFFIXES
     include)
 
-find_library(PQP_LIBRARY pqp
+find_library(PQP_LIBRARY PQP
     PATHS ${PQP_ROOT_DIR}
     PATH_SUFFIXES
     lib)
