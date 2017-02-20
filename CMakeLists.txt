@@ -21,7 +21,7 @@ project (RobotMotionPlanning)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -pthread")
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
 
 OPTION(BUILD_EXAMPLES "Build the examples")
 OPTION(BUILD_TESTS "Build tests" ON)
