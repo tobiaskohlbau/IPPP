@@ -54,12 +54,13 @@ else(WIN32)
     find_path(
             ASSIMP_INCLUDE_DIR
             NAMES assimp/postprocess.h assimp/scene.h assimp/version.h assimp/config.h assimp/cimport.h
-            PATHS ${CMAKE_SOURCE_DIR}/../assimp/include/
+            PATHS
+            ${CMAKE_SOURCE_DIR}/../RMPThirdParty/assimp/include/
     )
     find_library(
             ASSIMP_LIBRARIES
             NAMES assimp
-            PATHS ${CMAKE_SOURCE_DIR}/../assimp/build/code/
+            PATHS ${CMAKE_SOURCE_DIR}/../RMPThirdParty/assimp/lib/
     )
 
     if (ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARIES)
