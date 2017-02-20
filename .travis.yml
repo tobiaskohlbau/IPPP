@@ -5,6 +5,7 @@ language: cpp
 sudo: required
 
 before_script:
+  - sudo apt-get -qq update
   - sudo apt-get install libeigen3-dev
   - sudo apt-get install libboost-all-dev
   # assimp
@@ -35,7 +36,7 @@ before_script:
   - cd RobotMotionPlanner
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=${CONFIGURATION} ..
+  - cmake -DCMAKE_BUILD_TYPE=${CONFIGURATION} -DPQP_ROOT_DIR="../thirdParty/PQP_v1.3" ..
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
           make -j4 || travis_terminate 1;

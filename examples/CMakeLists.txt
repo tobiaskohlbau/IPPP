@@ -17,11 +17,10 @@
 #-------------------------------------------------------------------------//
 
 SET(LIBRARIES
-    pthread
     RobotMotionPlanning
-    PQP
+    ${PQP_LIBRARIES}
     #fcl
-    ${assimp_LIBRARIES})
+    ${ASSIMP_LIBRARIES})
 
 MACRO(ADD_RMPL_EXAMPLE ex_name sources ADDITIONAL_LIBRARIES)
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/examples ${CMAKE_CURRENT_SOURCE_DIR})
