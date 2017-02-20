@@ -33,15 +33,13 @@ find_package(assimp)
 #find_package(Boost COMPONENTS thread REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Threads REQUIRED)
-set(PQP_DIR ${CMAKE_SOURCE_DIR}/thirdParty/PQP_v1.3 CACHE PATH "PQP DIR")
+find_package(PQP REQUIRED)
 
 include_directories(${CMAKE_SOURCE_DIR}/include
         ${assimp_INCLUDE_DIRS}/../
         ${EIGEN3_INCLUDE_DIR}
-        ${PQP_DIR}/include)
+        ${PQP_INCLUDE_DIR})
 #        ${Boost_INCLUDE_DIRS}
-
-link_directories(${PQP_DIR}/lib)
 
 # source files
 ADD_SUBDIRECTORY(include)
@@ -62,10 +60,8 @@ IF (${BUILD_TESTS})
     ADD_SUBDIRECTORY(tests)
 ENDIF()
 
-
-
 add_library(${PROJECT_NAME} STATIC ${SRCS})
-target_link_libraries(${PROJECT_NAME} pthread PQP ${assimp_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${PQP_LIBRARIES} ${ASSIMP_LIBRARIES})
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
-install(DIRECTORY ${PQP_DIR}/include/ DESTINATION PQP)
+install(DIRECTORY ${PQP_INCLUDE_DIR}/ DESTINATION PQP)

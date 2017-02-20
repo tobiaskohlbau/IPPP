@@ -19,7 +19,7 @@
 SET(LIBRARIES
     pthread
     RobotMotionPlanning
-    PQP
+    ${PQP_LIBRARIES}
     #fcl
     ${assimp_LIBRARIES})
 
