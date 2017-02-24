@@ -59,11 +59,11 @@ class PlannerOptions : public Identifier {
 
   protected:
     float m_trajectoryStepSize;
-    std::shared_ptr<CollisionDetection<dim>> m_collision;
-    SamplerMethod m_samplerMethod;
-    SamplingStrategy m_samplingStrategy;
-    std::shared_ptr<Heuristic<dim>> m_heuristic;
-    unsigned int m_sortingCountGraph;
+    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
+    SamplerMethod m_samplerMethod = SamplerMethod::randomly;
+    SamplingStrategy m_samplingStrategy = SamplingStrategy::normal;
+    std::shared_ptr<Heuristic<dim>> m_heuristic = nullptr;
+    unsigned int m_sortingCountGraph = 0;
 };
 
 /*!
