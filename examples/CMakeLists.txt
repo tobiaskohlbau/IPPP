@@ -45,7 +45,13 @@ ENDMACRO()
 
 SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 list(REMOVE_ITEM SUBDIRS "ui")
+list(REMOVE_ITEM SUBDIRS "models")
+
+set(MODEL_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/models/)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/models/modelDirectory.h.in ${CMAKE_BINARY_DIR}/generated/modelDirectory.h)
+include_directories(${CMAKE_BINARY_DIR}/generated/)
 
 FOREACH(subdir ${SUBDIRS})
     ADD_SUBDIRECTORY(${subdir})
 ENDFOREACH()
+
