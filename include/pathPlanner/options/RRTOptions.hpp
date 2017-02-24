@@ -38,7 +38,7 @@ class RRTOptions : public PlannerOptions<dim> {
     float getStepSize() const;
 
   private:
-    float m_stepSize;
+    float m_stepSize = 30;
 };
 
 /*!

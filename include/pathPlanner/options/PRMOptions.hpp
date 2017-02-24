@@ -38,7 +38,7 @@ class PRMOptions : public PlannerOptions<dim> {
     float getRangeSize() const;
 
   private:
-    float m_rangeSize;
+    float m_rangeSize = 30;
 };
 
 /*!
