@@ -100,7 +100,7 @@ bool CollisionDetection2D::checkPoint2D(float x, float y) {
         return true;
     }
 
-    if (m_workspace2D(x, y) < 80)
+    if (m_workspace2D(y, x) < 80)
         return true;
     else
         return false;

@@ -5,6 +5,7 @@
 
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/core/eigen.hpp"
 #include <Eigen/Core>
 
 #include <core/types.h>
@@ -32,7 +33,7 @@ void drawTree2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &i
     static_assert(dim == 2, "Dimension has to be 2");
     for (auto &elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
-        cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
+        //cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
         if (elem->getParentNode() != nullptr) {
             cv::Point point2(elem->getParentNode()->getX(), elem->getParentNode()->getY());
             cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
@@ -56,7 +57,7 @@ void drawGraph2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &
     static_assert(dim == 2, "Dimension has to be 2");
     for (auto &elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
-        cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
+        //cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
         for (auto &child : elem->getChildNodes()) {
             if (child != nullptr) {
                 cv::Point point2(child->getX(), child->getY());
@@ -137,20 +138,10 @@ static Eigen::MatrixXi cvToEigen(cv::Mat cvMat) {
     cv::Mat dst;
     cvMat.convertTo(dst, CV_32SC1);
 
-    int rows = dst.rows;
-    int cols = dst.cols;
-    Eigen::MatrixXi eigenMat(rows, cols);
-    std::vector<int> entries;
-    int *temp;
-    for (int i = 0; i < cols; ++i) {
-        temp = dst.ptr<int>(i);
-        for (int j = 0; j < rows; ++j) {
-            entries.push_back(*temp);
-            ++temp;
-        }
-    }
-    eigenMat = Eigen::MatrixXi::Map(&entries[0], rows, cols);
-    return eigenMat;
+    Eigen::Map<Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> A_Eigen(dst.ptr<int>(), dst.rows, dst.cols);
+    Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> B = A_Eigen;
+
+    return B;
 }
 
 } /* namespace drawing */
