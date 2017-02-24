@@ -85,7 +85,7 @@ void MainWindow::computePath() {
         }
 
         Vector3 minBoundary(0.0, 0.0, 0.0);
-        Vector3 maxBoundary(m_workspace.rows(), m_workspace.cols(), 360);
+        Vector3 maxBoundary(m_workspace.cols(), m_workspace.rows(), 360);
         ModelFactoryTriangle2D factory;
         std::shared_ptr<ModelContainer> baseModel = factory.createModel(m_triangles);
         std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, minBoundary, maxBoundary));
@@ -126,7 +126,7 @@ void MainWindow::computePath() {
         }
 
         Vector2 minBoundary(0.0, 0.0);
-        Vector2 maxBoundary(m_workspace.rows(), m_workspace.cols());
+        Vector2 maxBoundary(m_workspace.cols(), m_workspace.rows());
         std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
         std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
         robot->setWorkspace(model);
