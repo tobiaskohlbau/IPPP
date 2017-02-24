@@ -6,17 +6,17 @@
 #include "opencv2/highgui/highgui.hpp"
 #include <Eigen/Core>
 
-#include <core/types.h>
 #include <core/module/collisionDetection/CollisionDetection2D.hpp>
 #include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 #include <core/utility/Logging.h>
-#include <core/utility/Utility.h>
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/RRTStarPlanner.hpp>
 #include <robot/model/ModelFactoryTriangle2D.h>
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
+
+#include <modelDirectory.h>
 
 #include <ui/Drawing2D.hpp>
 #include <ui/Writer.hpp>
@@ -117,9 +117,9 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
 }
 
 int main(int argc, char** argv) {
-    // obstacleWorkspace = cv::imread("spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    // obstacleWorkspace = cv::imread("spaces/labyrinth.png", CV_LOAD_IMAGE_GRAYSCALE);
-    obstacleWorkspace = cv::imread("spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    // obstacleWorkspace = cv::imread(getModelDirectory() + "spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
+    // obstacleWorkspace = cv::imread(getModelDirectory() + "spaces/labyrinth.png", CV_LOAD_IMAGE_GRAYSCALE);
+    obstacleWorkspace = cv::imread(getModelDirectory() + "spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
     Eigen::MatrixXi mat = drawing::cvToEigen(obstacleWorkspace);
 
     Vector2 minBoundary(0.0, 0.0);

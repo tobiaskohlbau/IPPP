@@ -1,0 +1,14 @@
+#ifndef MODELDIRECTORY_H
+#define MODELDIRECTORY_H
+
+#include <string>
+
+#define MODEL_DIRECTORY "${MODEL_DIRECTORY}"
+
+// alternatively you could add your global method getLibInterfaceVersion here
+std::string getModelDirectory()
+{
+    return std::string(MODEL_DIRECTORY);
+}
+
+#endif // MODELDIRECTORY_H
