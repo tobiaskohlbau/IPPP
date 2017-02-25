@@ -32,11 +32,3 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/vrep/Helper.cpp)
 
 ADD_RMPL_EXAMPLE(JacoPRM "${source}" "")
-
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Release/spaces)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Release/meshes)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spaces/ DESTINATION Debug/spaces)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Debug/meshes)
-
-
-

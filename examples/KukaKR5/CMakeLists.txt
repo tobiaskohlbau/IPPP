@@ -23,9 +23,3 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp)
 
 ADD_RMPL_EXAMPLE(KukaKR5 "${source}" "")
-
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Release/meshes)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meshes/ DESTINATION Debug/meshes)
-
-
-
