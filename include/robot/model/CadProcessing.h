@@ -38,6 +38,7 @@ enum class ExportFormat {COLLADA, X_FILES, STEP, OBJ, STEREOLITHOGRAPHY, STEREOL
 
 bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces);
 bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
+void transformCad(const Vector6 &config, std::vector<Vector3> &vertices);
 
 aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 
