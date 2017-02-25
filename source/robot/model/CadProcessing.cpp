@@ -19,6 +19,7 @@
 #include "include/robot/model/CadProcessing.h"
 
 #include <core/utility/Logging.h>
+#include <core/utility/UtilGeo.hpp>
 
 namespace rmpl {
 
@@ -108,6 +109,21 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
     const aiExportFormatDesc* formatDesc = exporter.GetExportFormatDescription(formatCount);
     exporter.Export(&scene, formatDesc->id, filePath + "." + formatDesc->fileExtension, 0);
     return true;
+}
+
+/*!
+*  \brief           Transform vertices with the passed configuration, Vector with position and rotation.
+*  \author          Sascha Kaden
+*  \param[in]       configuration
+*  \param[in, out]  list of vertices
+*  \date            2017-02-25
+*/
+void transformCad(const Vector6 &config, std::vector<Vector3> &vertices) {
+    Matrix3 R = utilGeo::getRotMat3D(config[3], config[4], config[6]);
+    Vector3 t(config[0], config[1], config[2]);
+    for (auto vertice : vertices) {
+        vertice = (R * vertice) + t;
+    }
 }
 
 /*!
