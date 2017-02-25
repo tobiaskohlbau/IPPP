@@ -72,7 +72,7 @@ class PointList {
     */
     template <class... Args>
     PointList(unsigned int index, T pt, Args... fargs) : PointList(index + 1, fargs...) {
-        assert(index < P -1);
+        assert(index < P - 1);
         m_p[index] = pt;
     }
 

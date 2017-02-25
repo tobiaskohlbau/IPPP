@@ -29,9 +29,8 @@
 
 namespace rmpl {
 
-
 class ModelFactory : public Identifier {
-public:
+  public:
     ModelFactory(const std::string &name) : Identifier(name){};
 
     virtual std::shared_ptr<ModelContainer> createModel(const std::string &filePath) = 0;
@@ -40,4 +39,4 @@ public:
 
 } /* namespace rmpl */
 
-#endif //MODELFACTORY_H
+#endif    // MODELFACTORY_H

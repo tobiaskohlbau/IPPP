@@ -24,10 +24,10 @@
 #include <Eigen/Core>
 
 #include <core/dataObj/Graph.hpp>
-#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/module/Identifier.h>
 #include <core/module/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
+#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/types.h>
 #include <pathPlanner/options/PlannerOptions.hpp>
 #include <robot/RobotBase.hpp>

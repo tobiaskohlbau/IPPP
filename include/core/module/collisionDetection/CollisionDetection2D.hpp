@@ -20,8 +20,8 @@
 #define COLLISIONDETECTION2D_HPP
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
-#include <robot/model/Model2D.h>
 #include <robot/PointRobot.h>
+#include <robot/model/Model2D.h>
 
 namespace rmpl {
 
@@ -48,7 +48,8 @@ class CollisionDetection2D : public CollisionDetection<2> {
 *  \param[in]  robot
 *  \date       2017-02-19
 */
-CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<RobotBase<2>> &robot) : CollisionDetection<2>("CollisionDetection2D", robot) {
+CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<RobotBase<2>> &robot)
+    : CollisionDetection<2>("CollisionDetection2D", robot) {
     if (!m_robot->getWorkspace() || m_robot->getWorkspace()->empty()) {
         Logging::error("Empty workspace model", this);
         return;

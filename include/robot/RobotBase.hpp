@@ -45,8 +45,7 @@ class RobotBase : public Identifier {
     virtual ~RobotBase();
 
   protected:
-    RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary,
-              Vector<dim> maxBoundary);
+    RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary, Vector<dim> maxBoundary);
 
   public:
     void setPose(const Vector6 &pose);
@@ -96,12 +95,8 @@ RobotBase<dim>::~RobotBase() {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-RobotBase<dim>::RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary,
-                          Vector<dim> maxBoundary)
-    : Identifier(name),
-      m_robotType(robotType),
-      m_minBoundary(minBoundary),
-      m_maxBoundary(maxBoundary) {
+RobotBase<dim>::RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary, Vector<dim> maxBoundary)
+    : Identifier(name), m_robotType(robotType), m_minBoundary(minBoundary), m_maxBoundary(maxBoundary) {
     m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
     m_poseMat = utilGeo::poseVecToMat(m_pose);
     m_baseModel = nullptr;

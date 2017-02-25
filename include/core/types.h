@@ -39,8 +39,6 @@ using Matrix3 = Eigen::Matrix3f;
 using Matrix4 = Eigen::Matrix4f;
 using MatrixX = Eigen::MatrixXf;
 
-
 } /* namespace rmpl */
 
-
-#endif //TYPES_H
+#endif    // TYPES_H

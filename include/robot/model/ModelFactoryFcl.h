@@ -30,7 +30,7 @@ namespace rmpl {
 * \date    2017-02-19
 */
 class ModelFactoryFcl : public ModelFactory {
-public:
+  public:
     ModelFactoryFcl() : ModelFactory("ModelFactory"){};
 
     std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
@@ -39,4 +39,4 @@ public:
 
 } /* namespace rmpl */
 
-#endif //MODELFACTORYFCL_H
+#endif    // MODELFACTORYFCL_H

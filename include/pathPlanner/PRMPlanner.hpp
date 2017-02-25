@@ -242,7 +242,8 @@ std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Vector<dim> &vec) {
     float dist = std::numeric_limits<float>::max();
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (m_planner->controlTrajectory(vec, *nearNodes[i]) && this->m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues()) < dist) {
+        if (m_planner->controlTrajectory(vec, *nearNodes[i]) &&
+            this->m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues()) < dist) {
             dist = this->m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues());
             nearestNode = nearNodes[i];
         }

@@ -37,4 +37,3 @@ bool ModelPqp::empty() const {
 }
 
 } /* namespace rmpl */
-

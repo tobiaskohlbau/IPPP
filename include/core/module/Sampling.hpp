@@ -23,10 +23,10 @@
 
 #include <Eigen/Core>
 
-#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/module/Identifier.h>
 #include <core/module/Sampler.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
+#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <robot/RobotBase.hpp>
 
 namespace rmpl {
@@ -100,8 +100,8 @@ Vector<dim> Sampling<dim>::getSample() {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-    Vector<dim> Sampling<dim>::sampleNearObstacle() {
-        Vector<dim> sample1 = m_sampler->getSample();
+Vector<dim> Sampling<dim>::sampleNearObstacle() {
+    Vector<dim> sample1 = m_sampler->getSample();
     if (!m_collision->controlVec(sample1)) {
         return sample1;
     } else {

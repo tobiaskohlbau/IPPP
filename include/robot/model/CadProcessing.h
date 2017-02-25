@@ -23,8 +23,8 @@
 #include <vector>
 
 #include <Eigen/Core>
-#include <assimp/Importer.hpp>
 #include <assimp/Exporter.hpp>
+#include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
@@ -32,18 +32,30 @@
 
 namespace rmpl {
 
-enum class ExportFormat {COLLADA, X_FILES, STEP, OBJ, STEREOLITHOGRAPHY, STEREOLITHOGRAPHY_BINARY, STANFORD_POLYGON_LIBRARY,
-    STANFORD_POLYGON_LIBRARY_BINARY, AUTODESK_3DS, GL_TRANSMISSION_FORMAT, GL_TRANSMISSION_FORMAT_BINARY, ASSIMP_BINARY,
-    ASSXML_DOCUMENT, EXTENSIBLE_3D};
+enum class ExportFormat {
+    COLLADA,
+    X_FILES,
+    STEP,
+    OBJ,
+    STEREOLITHOGRAPHY,
+    STEREOLITHOGRAPHY_BINARY,
+    STANFORD_POLYGON_LIBRARY,
+    STANFORD_POLYGON_LIBRARY_BINARY,
+    AUTODESK_3DS,
+    GL_TRANSMISSION_FORMAT,
+    GL_TRANSMISSION_FORMAT_BINARY,
+    ASSIMP_BINARY,
+    ASSXML_DOCUMENT,
+    EXTENSIBLE_3D
+};
 
 bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces);
-bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
+bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
+               const std::vector<Vector3i> &faces);
 void transformCad(const Vector6 &config, std::vector<Vector3> &vertices);
 
 aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 
-
 } /* namespace rmpl */
 
-
-#endif //CADPROCESSING_H
+#endif    // CADPROCESSING_H

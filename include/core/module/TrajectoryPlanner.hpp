@@ -19,8 +19,8 @@
 #ifndef TRAJECTORYPLANNER_HPP
 #define TRAJECTORYPLANNER_HPP
 
-#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/module/Identifier.h>
+#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/types.h>
 
 namespace rmpl {
@@ -131,7 +131,7 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<
     }
 
     Vector<dim> u(target - source);
-    vecs.reserve((int)(u.norm()/m_stepSize) + 1);
+    vecs.reserve((int)(u.norm() / m_stepSize) + 1);
     unsigned int divider = 2;
     for (Vector<dim> uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider)
         for (int i = 1; i < divider; i += 2)
@@ -157,8 +157,8 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector
     }
 
     Vector<dim> u(target - source);    // u = a - b
-    vecs.reserve((int)(u.norm()/m_stepSize) + 1);
-    u /= u.norm() / m_stepSize;                     // u = |u|
+    vecs.reserve((int)(u.norm() / m_stepSize) + 1);
+    u /= u.norm() / m_stepSize;    // u = |u|
     for (Vector<dim> temp(source + u); (temp - target).squaredNorm() > 1; temp += u)
         vecs.push_back(temp);
     return vecs;

@@ -56,4 +56,3 @@ bool Model2D::empty() const {
 }
 
 } /* namespace rmpl */
-

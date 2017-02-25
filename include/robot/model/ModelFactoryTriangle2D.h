@@ -30,7 +30,7 @@ namespace rmpl {
 * \date    2017-02-19
 */
 class ModelFactoryTriangle2D : public ModelFactory {
-public:
+  public:
     ModelFactoryTriangle2D();
 
     std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
@@ -40,4 +40,4 @@ public:
 
 } /* namespace rmpl */
 
-#endif //MODELFACTORYTRIANGLE2D_H
+#endif    // MODELFACTORYTRIANGLE2D_H

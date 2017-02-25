@@ -30,8 +30,7 @@ namespace rmpl {
 *  \date        2016-10-22
 */
 KukaKR5::KukaKR5()
-    : SerialRobot<6>("KukaKR5", utilVec::Vecf(-155, -65, -68, -350, 50, -530),
-                     utilVec::Vecf(155, 180, 105, 350, 310, 170)) {
+    : SerialRobot<6>("KukaKR5", utilVec::Vecf(-155, -65, -68, -350, 50, -530), utilVec::Vecf(155, 180, 105, 350, 310, 170)) {
     m_alpha = utilVec::Vecf(90, 0, 90, 90, 90, 0);
     m_alpha = utilGeo::degToRad<6>(m_alpha);
     m_a = utilVec::Vecf(180, 600, 120, 0, 0, 0);

@@ -214,7 +214,7 @@ void SerialRobot<dim>::saveMeshConfig(Matrix4 *As) {
         }
         exportCad(ExportFormat::OBJ, "base", verts, this->m_baseModel->m_faces);
     }
-        //this->m_baseModel->saveObj("base.obj", this->m_poseMat);
+    // this->m_baseModel->saveObj("base.obj", this->m_poseMat);
 
     for (int i = 0; i < dim; ++i) {
         std::vector<Eigen::Vector3f> verts;
@@ -224,7 +224,7 @@ void SerialRobot<dim>::saveMeshConfig(Matrix4 *As) {
             verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
         }
         exportCad(ExportFormat::OBJ, "link" + std::to_string(i), verts, getModelFromJoint(i)->m_faces);
-        //getModelFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
+        // getModelFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
         // std::cout<< As[i] << std::endl <<std::endl;
     }
 }
