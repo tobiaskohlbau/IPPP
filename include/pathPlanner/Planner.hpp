@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef PLANNER_H_
-#define PLANNER_H_
+#ifndef PLANNER_HPP
+#define PLANNER_HPP
 
 #include <thread>
 
@@ -188,4 +188,4 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::smoothPath(std::vector<std
 
 } /* namespace rmpl */
 
-#endif /* RRTPLANNER_H_ */
+#endif /* RRTPLANNER_HPP */

@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef COLLISIONDETECTION2D_H_
-#define COLLISIONDETECTION2D_H_
+#ifndef COLLISIONDETECTION2D_HPP
+#define COLLISIONDETECTION2D_HPP
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <robot/model/Model2D.h>
@@ -108,4 +108,4 @@ bool CollisionDetection2D::checkPoint2D(float x, float y) {
 
 } /* namespace rmpl */
 
-#endif /* COLLISIONDETECTION2D_H_ */
+#endif /* COLLISIONDETECTION2D_HPP */

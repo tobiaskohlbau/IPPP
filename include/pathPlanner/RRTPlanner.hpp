@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef RRTPLANNER_H_
-#define RRTPLANNER_H_
+#ifndef RRTPLANNER_HPP
+#define RRTPLANNER_HPP
 
 #include "Planner.hpp"
 #include <pathPlanner/options/RRTOptions.hpp>
@@ -260,4 +260,4 @@ std::shared_ptr<Node<dim>> RRTPlanner<dim>::getGoalNode() {
 
 } /* namespace rmpl */
 
-#endif /* RRTPLANNER_H_ */
+#endif /* RRTPLANNER_HPP */

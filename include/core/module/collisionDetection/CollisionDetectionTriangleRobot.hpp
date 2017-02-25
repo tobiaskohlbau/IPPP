@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef COLLISIONDETECTIONTRIANGLEROBOT_H_
-#define COLLISIONDETECTIONTRIANGLEROBOT_H_
+#ifndef COLLISIONDETECTIONTRIANGLEROBOT_HPP
+#define COLLISIONDETECTIONTRIANGLEROBOT_HPP
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <robot/model/Model2D.h>
@@ -160,4 +160,4 @@ bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
 
 } /* namespace rmpl */
 
-#endif /* COLLISIONDETECTIONTRIANGLEROBOT_H_ */
+#endif /* COLLISIONDETECTIONTRIANGLEROBOT_HPP */

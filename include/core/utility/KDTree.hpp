@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef KDTREE_H_
-#define KDTREE_H_
+#ifndef KDTREE_HPP
+#define KDTREE_HPP
 
 #include <mutex>
 
@@ -394,4 +394,4 @@ int KDTree<dim, T>::partition(std::vector<std::shared_ptr<Node<dim>>> &A, int le
 
 } /* namespace rmpl */
 
-#endif /* KDTREE_H_ */
+#endif /* KDTREE_HPP */

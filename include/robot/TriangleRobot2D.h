@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef TRIANGLEROBOT2D_H_
-#define TRIANGLEROBOT2D_H_
+#ifndef TRIANGLEROBOT2D_H
+#define TRIANGLEROBOT2D_H
 
 #include <robot/model/ModelTriangle2D.h>
 #include <robot/RobotBase.hpp>
@@ -37,4 +37,4 @@ class TriangleRobot2D : public RobotBase<3> {
 
 } /* namespace rmpl */
 
-#endif /* TRIANGLEROBOT2D_H_ */
+#endif /* TRIANGLEROBOT2D_H */

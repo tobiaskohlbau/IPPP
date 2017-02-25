@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef COLLISIONDETECTIONPQP_H_
-#define COLLISIONDETECTIONPQP_H_
+#ifndef COLLISIONDETECTIONPQP_HPP
+#define COLLISIONDETECTIONPQP_HPP
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/UtilCollision.hpp>
@@ -280,4 +280,4 @@ bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model &model1, PQP_Model &model2, 
 
 } /* namespace rmpl */
 
-#endif /* COLLISIONDETECTIONPQP_H_ */
+#endif /* COLLISIONDETECTIONPQP_HPP */

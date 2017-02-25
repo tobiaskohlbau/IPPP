@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef JOINT_H_
-#define JOINT_H_
+#ifndef JOINT_H
+#define JOINT_H
 
 #include <memory>
 
@@ -50,4 +50,4 @@ class Joint {
 
 } /* namespace rmpl */
 
-#endif    // JOINT_H_
+#endif    // JOINT_H

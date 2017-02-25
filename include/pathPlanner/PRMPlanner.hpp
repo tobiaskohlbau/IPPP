@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef PRMPLANNER_H_
-#define PRMPLANNER_H_
+#ifndef PRMPLANNER_HPP
+#define PRMPLANNER_HPP
 
 #include <pathPlanner/Planner.hpp>
 #include <pathPlanner/options/PRMOptions.hpp>
@@ -340,4 +340,4 @@ std::vector<Vector<dim>> PRMPlanner<dim>::getPath(float trajectoryStepSize, bool
 
 } /* namespace rmpl */
 
-#endif    // PRMPLANNER_H_
+#endif    // PRMPLANNER_HPP

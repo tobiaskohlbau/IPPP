@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef EDGE_H_
-#define EDGE_H_
+#ifndef EDGE_HPP
+#define EDGE_HPP
 
 #include <memory>
 
@@ -133,4 +133,4 @@ std::shared_ptr<Node<dim>> Edge<dim>::getSource() {
 
 } /* namespace rmpl */
 
-#endif /* EDGE_H_ */
+#endif /* EDGE_HPP */

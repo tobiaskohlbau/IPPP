@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef TRAJECTORYPLANNER_H_
-#define TRAJECTORYPLANNER_H_
+#ifndef TRAJECTORYPLANNER_HPP
+#define TRAJECTORYPLANNER_HPP
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/module/Identifier.h>
@@ -194,4 +194,4 @@ float TrajectoryPlanner<dim>::getStepSize() const {
 
 } /* namespace rmpl */
 
-#endif /* TRAJECTORYPLANNER_H_ */
+#endif /* TRAJECTORYPLANNER_HPP */

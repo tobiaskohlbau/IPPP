@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef COLLISIONDETECTION_H_
-#define COLLISIONDETECTION_H_
+#ifndef COLLISIONDETECTION_HPP
+#define COLLISIONDETECTION_HPP
 
 #include <iostream>
 
@@ -65,4 +65,4 @@ CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::
 
 } /* namespace rmpl */
 
-#endif /* COLLISIONDETECTION_H_ */
+#endif /* COLLISIONDETECTION_HPP */

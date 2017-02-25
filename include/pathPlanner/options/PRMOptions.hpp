@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef PRMOPTIONS_H_
-#define PRMOPTIONS_H_
+#ifndef PRMOPTIONS_HPP
+#define PRMOPTIONS_HPP
 
 #include <pathPlanner/options/PlannerOptions.hpp>
 
@@ -86,4 +86,4 @@ float PRMOptions<dim>::getRangeSize() const {
 
 } /* namespace rmpl */
 
-#endif    // PRMOPTIONS_H_
+#endif    // PRMOPTIONS_HPP

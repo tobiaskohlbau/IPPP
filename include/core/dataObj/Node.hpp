@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef NODE_H_
-#define NODE_H_
+#ifndef NODE_HPP
+#define NODE_HPP
 
 #include <assert.h>
 #include <cmath>
@@ -357,4 +357,4 @@ Vector<dim> Node<dim>::getValues() const {
 
 } /* namespace rmpl */
 
-#endif /* NODE_H_ */
+#endif /* NODE_HPP */

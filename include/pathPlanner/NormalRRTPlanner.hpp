@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef NORMALRRTPLANNER_H_
-#define NORMALRRTPLANNER_H_
+#ifndef NORMALRRTPLANNER_HPP
+#define NORMALRRTPLANNER_HPP
 
 #include <mutex>
 
@@ -129,4 +129,4 @@ bool NormalRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
 
 } /* namespace rmpl */
 
-#endif /* NORMALRRTPLANNER_H_ */
+#endif /* NORMALRRTPLANNER_HPP */

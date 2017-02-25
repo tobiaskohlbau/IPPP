@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef MODULEBASE_H_
-#define MODULEBASE_H_
+#ifndef MODULEBASE_H
+#define MODULEBASE_H
 
 #include <string>
 
@@ -44,4 +44,4 @@ class Identifier {
 
 } /* namespace rmpl */
 
-#endif /* BASE_H_ */
+#endif /* BASE_H */

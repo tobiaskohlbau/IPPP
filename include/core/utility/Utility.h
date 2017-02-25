@@ -16,10 +16,10 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef UTILITY_H_
-#define UTILITY_H_
+#ifndef UTILITY_H
+#define UTILITY_H
 
 #include <core/utility/UtilGeo.hpp>
 #include <core/utility/UtilList.hpp>
 
-#endif    // UTILITY_H_
+#endif    // UTILITY_H

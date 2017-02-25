@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef KDNODE_H_
-#define KDNODE_H_
+#ifndef KDNODE_HPP
+#define KDNODE_HPP
 
 #include <Eigen/Core>
 #include <cstdint>
@@ -58,4 +58,4 @@ KDNode<dim, T>::KDNode(const Vector<dim> &vec, const T &node) {
 }
 } /* namespace rmpl */
 
-#endif /* KDNODE_H_ */
+#endif /* KDNODE_HPP */

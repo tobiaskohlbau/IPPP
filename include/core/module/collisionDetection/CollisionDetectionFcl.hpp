@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef COLLISIONDETECTIONFCL_H_
-#define COLLISIONDETECTIONFCL_H_
+#ifndef COLLISIONDETECTIONFCL_HPP
+#define COLLISIONDETECTIONFCL_HPP
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/UtilCollision.hpp>
@@ -255,4 +255,4 @@ bool CollisionDetectionFcl<dim>::checkFCL(FCLModel &model1, FCLModel &model2, Ma
 
 } /* namespace rmpl */
 
-#endif /* COLLISIONDETECTIONFCL_H_ */
+#endif /* COLLISIONDETECTIONFCL_HPP */

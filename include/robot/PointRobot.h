@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef POINTROBOT_H_
-#define POINTROBOT_H_
+#ifndef POINTROBOT_H
+#define POINTROBOT_H
 
 #include <robot/model/Model2D.h>
 #include <robot/RobotBase.hpp>
@@ -38,4 +38,4 @@ class PointRobot : public RobotBase<2> {
 
 } /* namespace rmpl */
 
-#endif /* POINTROBOT_H_ */
+#endif /* POINTROBOT_H */

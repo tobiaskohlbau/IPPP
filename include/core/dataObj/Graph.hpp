@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef GRAPH_H_
-#define GRAPH_H_
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
 
 #include <core/dataObj/Node.hpp>
 #include <core/module/Identifier.h>
@@ -238,4 +238,4 @@ bool Graph<dim>::autoSort() const {
 
 } /* namespace rmpl */
 
-#endif /* GRAPH_H_ */
+#endif /* GRAPH_HPP */

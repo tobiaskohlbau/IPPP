@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef RRTOPTIONS_H_
-#define RRTOPTIONS_H_
+#ifndef RRTOPTIONS_HPP
+#define RRTOPTIONS_HPP
 
 #include <pathPlanner/options/PlannerOptions.hpp>
 
@@ -86,4 +86,4 @@ float RRTOptions<dim>::getStepSize() const {
 
 } /* namespace rmpl */
 
-#endif    // RRTOPTIONS_H_
+#endif    // RRTOPTIONS_HPP

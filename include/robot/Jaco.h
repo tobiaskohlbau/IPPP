@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef JACO_H_
-#define JACO_H_
+#ifndef JACO_H
+#define JACO_H
 
 #include <robot/model/ModelFactoryPqp.h>
 #include <robot/SerialRobot.hpp>
@@ -41,4 +41,4 @@ class Jaco : public SerialRobot<6> {
 
 } /* namespace rmpl */
 
-#endif /* JACO_H_ */
+#endif /* JACO_H */
