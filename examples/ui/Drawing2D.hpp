@@ -1,5 +1,5 @@
-#ifndef DRAWING2D_H_
-#define DRAWING2D_H_
+#ifndef DRAWING2D_HPP
+#define DRAWING2D_HPP
 
 #include <type_traits>
 
@@ -147,4 +147,4 @@ static Eigen::MatrixXi cvToEigen(cv::Mat cvMat) {
 } /* namespace drawing */
 } /* namespace rmpl */
 
-#endif /* DRAWING2D_H_ */
+#endif /* DRAWING2D_HPP */

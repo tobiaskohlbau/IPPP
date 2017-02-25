@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SAMPLING_H_
-#define SAMPLING_H_
+#ifndef SAMPLING_H
+#define SAMPLING_H
 
 #include <math.h>
 
@@ -135,4 +135,4 @@ bool Sampling<dim>::setMeanOfDistribution(const Vector<dim> &mean) {
 
 } /* namespace rmpl */
 
-#endif /* SAMPLING_H_ */
+#endif /* SAMPLING_H */

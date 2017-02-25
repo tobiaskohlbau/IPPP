@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef KUKAKR5_H_
-#define KUKAKR5_H_
+#ifndef KUKAKR5_H
+#define KUKAKR5_H
 
 #include <robot/SerialRobot.hpp>
 
@@ -37,4 +37,4 @@ class KukaKR5 : public SerialRobot<6> {
 
 } /* namespace rmpl */
 
-#endif /* KUKAKR5_H_ */
+#endif /* KUKAKR5_H */

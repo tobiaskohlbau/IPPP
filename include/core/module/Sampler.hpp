@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SAMPLER_H_
-#define SAMPLER_H_
+#ifndef SAMPLER_HPP
+#define SAMPLER_HPP
 
 #include <math.h>
 #include <random>
@@ -188,4 +188,4 @@ Vector<dim> Sampler<dim>::sampleRandom() {
 
 } /* namespace rmpl */
 
-#endif /* SAMPLER_H_ */
+#endif /* SAMPLER_HPP */

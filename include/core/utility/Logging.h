@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef LOGGING_H_
-#define LOGGING_H_
+#ifndef LOGGING_H
+#define LOGGING_H
 
 #include <mutex>
 
@@ -67,4 +67,4 @@ class Logging {
 
 } /* namespace rmpl */
 
-#endif    // LOGGING_H_
+#endif    // LOGGING_H

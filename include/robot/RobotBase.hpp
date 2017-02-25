@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef ROBOTBASE_H_
-#define ROBOTBASE_H_
+#ifndef ROBOTBASE_HPP
+#define ROBOTBASE_HPP
 
 #include <string>
 #include <vector>
@@ -245,4 +245,4 @@ RobotType RobotBase<dim>::getRobotType() const {
 
 } /* namespace rmpl */
 
-#endif /* ROBOTBASE_H_ */
+#endif /* ROBOTBASE_HPP */

@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SERIALROBOT_H_
-#define SERIALROBOT_H_
+#ifndef SERIALROBOT_HPP
+#define SERIALROBOT_HPP
 
 #include <robot/Joint.h>
 #include <robot/RobotBase.hpp>
@@ -231,4 +231,4 @@ void SerialRobot<dim>::saveMeshConfig(Matrix4 *As) {
 
 } /* namespace rmpl */
 
-#endif    // SERIALROBOT_H_
+#endif    // SERIALROBOT_HPP

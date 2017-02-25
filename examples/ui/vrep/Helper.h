@@ -1,5 +1,5 @@
-#ifndef HELPER_H_
-#define HELPER_H_
+#ifndef HELPER_H
+#define HELPER_H
 
 #include <math.h>
 #include <stdio.h>
@@ -36,4 +36,4 @@ class Helper : public Identifier {
 
 } /* namespace rmpl */
 
-#endif /* HELPER_H_ */
+#endif /* HELPER_H */

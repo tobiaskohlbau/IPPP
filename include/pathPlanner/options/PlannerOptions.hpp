@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef PLANNEROPTIONS_H_
-#define PLANNEROPTIONS_H_
+#ifndef PLANNEROPTIONS_HPP
+#define PLANNEROPTIONS_HPP
 
 #include <memory>
 
@@ -218,4 +218,4 @@ unsigned int PlannerOptions<dim>::getSortCountGraph() const {
 
 } /* namespace rmpl */
 
-#endif    // PLANNEROPTIONS_H_
+#endif    // PLANNEROPTIONS_HPP
