@@ -19,8 +19,8 @@
 #ifndef JACO_H
 #define JACO_H
 
-#include <robot/model/ModelFactoryPqp.h>
 #include <robot/SerialRobot.hpp>
+#include <robot/model/ModelFactoryPqp.h>
 
 namespace rmpl {
 

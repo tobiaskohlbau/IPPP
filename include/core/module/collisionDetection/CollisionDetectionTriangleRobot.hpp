@@ -20,8 +20,8 @@
 #define COLLISIONDETECTIONTRIANGLEROBOT_HPP
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
-#include <robot/model/Model2D.h>
 #include <robot/TriangleRobot2D.h>
+#include <robot/model/Model2D.h>
 
 namespace rmpl {
 
@@ -51,14 +51,15 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
 *  \param[in]  robot
 *  \date       2017-02-19
 */
-CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shared_ptr<RobotBase<3>> &robot) : CollisionDetection("CollisionDetectionTriangleRobot", robot) {
+CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shared_ptr<RobotBase<3>> &robot)
+    : CollisionDetection("CollisionDetectionTriangleRobot", robot) {
     if (!m_robot->getWorkspace() || m_robot->getWorkspace()->empty()) {
         Logging::error("Empty workspace model", this);
         return;
     } else {
         m_workspace2D = std::dynamic_pointer_cast<Model2D>(robot->getWorkspace())->m_space;
     }
-    if (!m_robot->getBaseModel() || m_robot->getBaseModel()->empty()){
+    if (!m_robot->getBaseModel() || m_robot->getBaseModel()->empty()) {
         Logging::error("Empty base model", this);
         return;
     } else {
@@ -104,7 +105,8 @@ bool CollisionDetectionTriangleRobot::controlTrajectory(std::vector<Vector3> &ve
 *  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::checkPoint2D(float x, float y) {
-    if (this->m_minBoundary[0] >= x || x >= this->m_maxBoundary[0] || this->m_minBoundary[1] >= y || y >= this->m_maxBoundary[1]) {
+    if (this->m_minBoundary[0] >= x || x >= this->m_maxBoundary[0] || this->m_minBoundary[1] >= y ||
+        y >= this->m_maxBoundary[1]) {
         Logging::debug("Point out of workspace", this);
         return true;
     }
@@ -123,7 +125,6 @@ bool CollisionDetectionTriangleRobot::checkPoint2D(float x, float y) {
 *  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
-
     VectorX vector = vec;
     vector.resize(3);
 

@@ -29,4 +29,3 @@ ModelContainer::ModelContainer(const std::string &name) : Identifier(name) {
 }
 
 } /* namespace rmpl */
-

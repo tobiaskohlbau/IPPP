@@ -37,4 +37,3 @@ bool ModelTriangle2D::empty() const {
 }
 
 } /* namespace rmpl */
-

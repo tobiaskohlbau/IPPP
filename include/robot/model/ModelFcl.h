@@ -33,7 +33,7 @@ typedef fcl::BVHModel<fcl::OBB<float>> FCLModel;
 * \date    2017-02-19
 */
 class ModelFcl : public ModelContainer {
-public:
+  public:
     ModelFcl();
     bool empty() const;
 
@@ -42,4 +42,4 @@ public:
 
 } /* namespace rmpl */
 
-#endif //MODELFCL_H
+#endif    // MODELFCL_H

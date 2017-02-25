@@ -21,10 +21,10 @@
 
 #include <memory>
 
-#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/module/Identifier.h>
 #include <core/module/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
+#include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/heuristic/Heuristic.hpp>
 
 namespace rmpl {
@@ -37,8 +37,8 @@ namespace rmpl {
 template <unsigned int dim>
 class PlannerOptions : public Identifier {
   public:
-    PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod samplerMethod, SamplingStrategy strategy,
-                   std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph);
+    PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod samplerMethod,
+                   SamplingStrategy strategy, std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph);
 
     void setTrajectoryStepSize(float stepSize);
     float getTrajectoryStepSize() const;
@@ -78,8 +78,10 @@ class PlannerOptions : public Identifier {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-PlannerOptions<dim>::PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod method, SamplingStrategy strategy,
-                                    std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph) : Identifier("PlannerOptions") {
+PlannerOptions<dim>::PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision,
+                                    SamplerMethod method, SamplingStrategy strategy, std::shared_ptr<Heuristic<dim>> heuristic,
+                                    unsigned int sortingCountGraph)
+    : Identifier("PlannerOptions") {
     setTrajectoryStepSize(trajectoryStepSize);
     m_collision = collision;
     setHeuristic(heuristic);
@@ -194,11 +196,11 @@ std::shared_ptr<Heuristic<dim>> PlannerOptions<dim>::getHeuristic() const {
     return m_heuristic;
 }
 
- /*!
-*  \brief      Sets count to sort Graph automically
-*  \param[in]  autoSort
-*  \author     Sascha Kaden
-*  \date       2017-01-05
+/*!
+* \brief      Sets count to sort Graph automically
+* \param[in]  autoSort
+* \author     Sascha Kaden
+* \date       2017-01-05
 */
 template <unsigned int dim>
 void PlannerOptions<dim>::setSortCountGraph(unsigned int sortingCountGraph) {

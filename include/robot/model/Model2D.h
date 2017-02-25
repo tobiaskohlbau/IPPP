@@ -19,8 +19,8 @@
 #ifndef MODEL2D_H
 #define MODEL2D_H
 
-#include <robot/model/ModelContainer.h>
 #include <core/dataObj/PointList.hpp>
+#include <robot/model/ModelContainer.h>
 
 namespace rmpl {
 
@@ -30,7 +30,7 @@ namespace rmpl {
 * \date    2017-02-19
 */
 class Model2D : public ModelContainer {
-public:
+  public:
     Model2D();
     Model2D(Eigen::MatrixXi space);
 
@@ -40,4 +40,4 @@ public:
 
 } /* namespace rmpl */
 
-#endif //MODEL2D_H
+#endif    // MODEL2D_H

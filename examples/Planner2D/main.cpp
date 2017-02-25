@@ -1,10 +1,7 @@
 #include <chrono>
-#include <iostream>
-#include <memory>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
-#include <Eigen/Core>
 
 #include <core/module/collisionDetection/CollisionDetection2D.hpp>
 #include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>

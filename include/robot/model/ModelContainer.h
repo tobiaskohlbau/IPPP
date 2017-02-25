@@ -35,7 +35,7 @@ namespace rmpl {
 * \date    2017-02-19
 */
 class ModelContainer : public Identifier {
-public:
+  public:
     ModelContainer(const std::string &name);
     virtual bool empty() const = 0;
 
@@ -45,4 +45,4 @@ public:
 
 } /* namespace rmpl */
 
-#endif //MODELCONTAINER_H
+#endif    // MODELCONTAINER_H

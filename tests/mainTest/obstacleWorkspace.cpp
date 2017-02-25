@@ -18,16 +18,16 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <core/module/collisionDetection/CollisionDetection2D.hpp>
+#include <core/utility/heuristic/HeuristicInf.hpp>
+#include <core/utility/heuristic/HeuristicL1.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/RRTStarPlanner.hpp>
 #include <robot/PointRobot.h>
-#include <core/module/collisionDetection/CollisionDetection2D.hpp>
-#include <core/utility/heuristic/HeuristicL1.hpp>
-#include <core/utility/heuristic/HeuristicInf.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
 
 using namespace rmpl;
 
@@ -77,17 +77,20 @@ BOOST_AUTO_TEST_CASE(obstacleWorkspace) {
         for (auto sampler : samplerMethods) {
             for (auto sampling : samplingStrategies) {
                 PRMOptions<dim> prmOptions(30, 1, collision, sampler, sampling, heuristic);
-                PRMPlanner<dim> prmPlanner (robot, prmOptions);
-                BOOST_TEST_CHECKPOINT("Calling PRM planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | ");
+                PRMPlanner<dim> prmPlanner(robot, prmOptions);
+                BOOST_TEST_CHECKPOINT("Calling PRM planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
+                                      << sampler << " | " << sampling << " | ");
                 prmPlanner.computePath(start, goal, 100, 1);
 
                 RRTOptions<dim> rrtOptions(30, 1, collision, sampler, sampling, heuristic);
                 NormalRRTPlanner<dim> normalRRTPlanner(robot, rrtOptions);
-                BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | " );
+                BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
+                                      << sampler << " | " << sampling << " | ");
                 normalRRTPlanner.computePath(start, goal, 100, 1);
 
                 RRTStarPlanner<dim> starRRTPlanner(robot, rrtOptions);
-                BOOST_TEST_CHECKPOINT("Calling RRT* planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) =" << sampler << " | " << sampling << " | " );
+                BOOST_TEST_CHECKPOINT("Calling RRT* planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
+                                      << sampler << " | " << sampling << " | ");
                 starRRTPlanner.computePath(start, goal, 100, 1);
             }
         }

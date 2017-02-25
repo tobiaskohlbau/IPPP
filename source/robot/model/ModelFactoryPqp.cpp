@@ -27,8 +27,7 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
-ModelFactoryPqp::ModelFactoryPqp() : ModelFactory("ModelFactoryPqp"){
-};
+ModelFactoryPqp::ModelFactoryPqp() : ModelFactory("ModelFactoryPqp"){};
 
 /*!
 *  \brief      Creates an ModelPqp from the passed source cad file.

@@ -19,8 +19,8 @@
 #ifndef POINTROBOT_H
 #define POINTROBOT_H
 
-#include <robot/model/Model2D.h>
 #include <robot/RobotBase.hpp>
+#include <robot/model/Model2D.h>
 
 namespace rmpl {
 

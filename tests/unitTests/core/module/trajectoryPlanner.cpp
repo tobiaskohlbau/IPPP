@@ -18,8 +18,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
+#include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <core/utility/Utility.h>
 #include <robot/Jaco.h>
 

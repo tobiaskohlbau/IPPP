@@ -19,8 +19,8 @@
 #ifndef TRIANGLEMODEL2D_H
 #define TRIANGLEMODEL2D_H
 
-#include <robot/model/ModelContainer.h>
 #include <core/dataObj/PointList.hpp>
+#include <robot/model/ModelContainer.h>
 
 namespace rmpl {
 
@@ -30,14 +30,13 @@ namespace rmpl {
 * \date    2017-02-19
 */
 class ModelTriangle2D : public ModelContainer {
-public:
+  public:
     ModelTriangle2D();
 
     bool empty() const;
     std::vector<Triangle2D> m_triangles;
-
 };
 
 } /* namespace rmpl */
 
-#endif //TRIANGLEMODEL_H
+#endif    // TRIANGLEMODEL_H

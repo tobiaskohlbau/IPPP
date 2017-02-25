@@ -19,8 +19,8 @@
 #ifndef TRIANGLEROBOT2D_H
 #define TRIANGLEROBOT2D_H
 
-#include <robot/model/ModelTriangle2D.h>
 #include <robot/RobotBase.hpp>
+#include <robot/model/ModelTriangle2D.h>
 
 namespace rmpl {
 

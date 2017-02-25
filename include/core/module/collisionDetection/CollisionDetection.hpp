@@ -25,8 +25,8 @@
 
 #include <core/dataObj/Node.hpp>
 #include <core/module/Identifier.h>
-#include <robot/model/ModelContainer.h>
 #include <robot/RobotBase.hpp>
+#include <robot/model/ModelContainer.h>
 
 namespace rmpl {
 
@@ -57,7 +57,8 @@ class CollisionDetection : public Identifier {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot) : Identifier(name) {
+CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot)
+    : Identifier(name) {
     m_robot = robot;
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();

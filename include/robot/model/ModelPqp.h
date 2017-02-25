@@ -31,7 +31,7 @@ namespace rmpl {
 * \date    2017-02-19
 */
 class ModelPqp : public ModelContainer {
-public:
+  public:
     ModelPqp();
     bool empty() const;
 
@@ -40,4 +40,4 @@ public:
 
 } /* namespace rmpl */
 
-#endif //MODELPQP_H
+#endif    // MODELPQP_H

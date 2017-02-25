@@ -27,8 +27,7 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
-ModelFactoryTriangle2D::ModelFactoryTriangle2D() : ModelFactory("ModelFactoryTriangle"){
-};
+ModelFactoryTriangle2D::ModelFactoryTriangle2D() : ModelFactory("ModelFactoryTriangle"){};
 
 /*!
 *  \brief      Creates a ModelTriangle2D from the passed source cad file.
@@ -55,7 +54,8 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::s
     triangleModel->m_faces = faces;
     for (auto face : faces) {
         // go through faces
-        Triangle2D tri(Vector2(vertices[face[0]][0], vertices[face[0]][1]), Vector2(vertices[face[1]][0], vertices[face[1]][1]), Vector2(vertices[face[2]][0], vertices[face[2]][1]));
+        Triangle2D tri(Vector2(vertices[face[0]][0], vertices[face[0]][1]), Vector2(vertices[face[1]][0], vertices[face[1]][1]),
+                       Vector2(vertices[face[2]][0], vertices[face[2]][1]));
         triangleModel->m_triangles.push_back(tri);
     }
 

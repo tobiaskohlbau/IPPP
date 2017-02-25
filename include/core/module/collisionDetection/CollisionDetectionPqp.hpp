@@ -21,8 +21,8 @@
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/UtilCollision.hpp>
-#include <robot/model/ModelPqp.h>
 #include <robot/SerialRobot.hpp>
+#include <robot/model/ModelPqp.h>
 
 namespace rmpl {
 
@@ -43,8 +43,7 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
     bool checkMobileRobot(const Vector<dim> &vec);
     bool checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT);
 
-    bool checkPQP(PQP_Model &model1, PQP_Model &model2, Matrix3 &R1,
-                  Matrix3 &R2, Vector3 &t1, Vector3 &t2);
+    bool checkPQP(PQP_Model &model1, PQP_Model &model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1, Vector3 &t2);
 
     Matrix3 m_identity;
     Eigen::Vector3f m_zeroVec;
@@ -66,7 +65,8 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<RobotBase<dim>> &robot) : CollisionDetection<dim>("CollisionDetectionPQP", robot) {
+CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<RobotBase<dim>> &robot)
+    : CollisionDetection<dim>("CollisionDetectionPQP", robot) {
     m_identity = Matrix3::Identity(3, 3);
     m_zeroVec = Eigen::Vector3f::Zero(3, 1);
 
@@ -158,9 +158,9 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &vec) {
     Matrix3 rot[dim];
     Vector3 trans[dim];
     utilCollision::getTrafosFromRobot<dim>(vec, robot, poseR, poseT, rot, trans);
-    //for (auto tmp : jointTrafos)
+    // for (auto tmp : jointTrafos)
     //    std::cout << tmp <<std::endl;
-    //robot->saveMeshConfig(As);
+    // robot->saveMeshConfig(As);
 
     return checkMesh(rot, poseR, trans, poseT);
 }
@@ -216,12 +216,12 @@ bool CollisionDetectionPqp<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 
                     std::cout << "A" << i << ": ";
                     std::cout << "Euler angles: " << std::endl << R[i] << std::endl;
                     std::cout << "Translation: " << t[i].transpose() << std::endl;
-                    //robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", utilGeo::createT(R[i], t[i]));
+                    // robot->getMeshFromJoint(i)->saveObj(std::to_string(i) + ".obj", utilGeo::createT(R[i], t[i]));
                     r = R[j].eulerAngles(0, 1, 2);
                     std::cout << "A" << j << ": ";
                     std::cout << "Euler angles: " << std::endl << R[j] << std::endl;
                     std::cout << "Translation: " << t[j].transpose() << std::endl << std::endl;
-                    //robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", utilGeo::createT(R[i], t[i]));
+                    // robot->getMeshFromJoint(j)->saveObj(std::to_string(j) + ".obj", utilGeo::createT(R[i], t[i]));
                 }
                 return true;
             }
@@ -256,9 +256,8 @@ bool CollisionDetectionPqp<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model &model1, PQP_Model &model2, Matrix3 &R1,
-                                       Matrix3 &R2, Vector3 &t1, Vector3 &t2) {
-
+bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model &model1, PQP_Model &model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1,
+                                          Vector3 &t2) {
     PQP_REAL pqpR1[3][3], pqpR2[3][3], pqpT1[3], pqpT2[3];
 
     for (int i = 0; i < 3; ++i) {

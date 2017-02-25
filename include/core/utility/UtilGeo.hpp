@@ -35,7 +35,7 @@ constexpr float pi() {
 }
 
 constexpr float twoPi() {
-	return M_PI * 2;
+    return M_PI * 2;
 }
 
 constexpr float toRad() {

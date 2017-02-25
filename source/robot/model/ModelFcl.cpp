@@ -37,4 +37,3 @@ bool ModelFcl::empty() const {
 }
 
 } /* namespace rmpl */
-

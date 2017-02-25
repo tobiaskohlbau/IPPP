@@ -24,8 +24,6 @@
 
 namespace rmpl {
 
-
-
 /*!
 * \brief   Super class of the RRTPlanner
 * \author  Sascha Kaden

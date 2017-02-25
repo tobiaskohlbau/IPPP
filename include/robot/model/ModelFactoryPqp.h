@@ -30,7 +30,7 @@ namespace rmpl {
 * \date    2017-02-19
 */
 class ModelFactoryPqp : public ModelFactory {
-public:
+  public:
     ModelFactoryPqp();
 
     std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
@@ -39,4 +39,4 @@ public:
 
 } /* namespace rmpl */
 
-#endif //MODELFACTORYPQP_H
+#endif    // MODELFACTORYPQP_H

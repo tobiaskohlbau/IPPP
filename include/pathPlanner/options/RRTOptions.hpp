@@ -31,8 +31,10 @@ namespace rmpl {
 template <unsigned int dim>
 class RRTOptions : public PlannerOptions<dim> {
   public:
-    RRTOptions(float stepSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod samplerMethod = SamplerMethod::randomly,
-               SamplingStrategy strategy = SamplingStrategy::normal, std::shared_ptr<Heuristic<dim>> heuristic = std::make_shared<Heuristic<dim>>(Heuristic<dim>()), unsigned int sortingCountGraph = 0);
+    RRTOptions(float stepSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision,
+               SamplerMethod samplerMethod = SamplerMethod::randomly, SamplingStrategy strategy = SamplingStrategy::normal,
+               std::shared_ptr<Heuristic<dim>> heuristic = std::make_shared<Heuristic<dim>>(Heuristic<dim>()),
+               unsigned int sortingCountGraph = 0);
 
     void setStepSize(float stepSize);
     float getStepSize() const;
@@ -51,9 +53,10 @@ class RRTOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-RRTOptions<dim>::RRTOptions(float stepSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod method, SamplingStrategy strategy,
-                            std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph)
-        : PlannerOptions<dim>(trajectoryStepSize, collision, method, strategy, heuristic, sortingCountGraph) {
+RRTOptions<dim>::RRTOptions(float stepSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision,
+                            SamplerMethod method, SamplingStrategy strategy, std::shared_ptr<Heuristic<dim>> heuristic,
+                            unsigned int sortingCountGraph)
+    : PlannerOptions<dim>(trajectoryStepSize, collision, method, strategy, heuristic, sortingCountGraph) {
     setStepSize(stepSize);
 }
 

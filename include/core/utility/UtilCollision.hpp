@@ -25,11 +25,10 @@
 namespace rmpl {
 namespace utilCollision {
 
-template<unsigned int dim>
-static void getTrafosFromRobot(const Vector <dim> &vec,
-                        const std::shared_ptr <rmpl::SerialRobot<dim>> &robot,
-                        Matrix3 &poseR, Vector3 &poseT, Matrix3 (&Rs)[dim], Vector3 (&ts)[dim]) {
-    std::vector <Matrix4> jointTrafos = robot->getJointTrafos(vec);
+template <unsigned int dim>
+static void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<rmpl::SerialRobot<dim>> &robot, Matrix3 &poseR,
+                               Vector3 &poseT, Matrix3 (&Rs)[dim], Vector3 (&ts)[dim]) {
+    std::vector<Matrix4> jointTrafos = robot->getJointTrafos(vec);
     Matrix4 pose = robot->getPoseMat();
     Matrix4 As[dim];
     As[0] = pose * jointTrafos[0];
@@ -41,8 +40,7 @@ static void getTrafosFromRobot(const Vector <dim> &vec,
     for (int i = 0; i < jointTrafos.size(); ++i)
         utilGeo::decomposeT(As[i], Rs[i], ts[i]);
 }
-
 }
 }
 
-#endif //UTILCOLLISION_HPP
+#endif    // UTILCOLLISION_HPP
