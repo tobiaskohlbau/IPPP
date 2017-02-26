@@ -71,7 +71,7 @@ RRTStarPlanner<dim>::RRTStarPlanner(const std::shared_ptr<RobotBase<dim>> &robot
 }
 
 /*!
-*  \brief         Computation of the new Node<dim> by the RRT* algorithm
+*  \brief         Computation of the new Node by the RRT* algorithm
 *  \author        Sascha Kaden
 *  \param[in]     random Vec
 *  \param[in,out] new Node
@@ -159,7 +159,7 @@ void RRTStarPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::share
 }
 
 /*!
-*  \brief      Connects goal Node<dim> to tree, if connection is possible
+*  \brief      Connects goal Node to tree, if connection is possible
 *  \author     Sascha Kaden
 *  \param[in]  goal Node
 *  \param[out] true, if the connection was possible
@@ -168,7 +168,7 @@ void RRTStarPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::share
 template <unsigned int dim>
 bool RRTStarPlanner<dim>::connectGoalNode(Vector<dim> goal) {
     if (m_collision->controlVec(goal)) {
-        Logging::info("Goal Node in collision", this);
+        Logging::warning("Goal Node in collision", this);
         return false;
     }
 
@@ -189,10 +189,11 @@ bool RRTStarPlanner<dim>::connectGoalNode(Vector<dim> goal) {
         goalNode->setCost(goalNode->getParentEdge()->getCost() + nearestNode->getCost());
         m_goalNode = goalNode;
         m_pathPlanned = true;
+        Logging::info("Goal could connected", this);
         return true;
     }
 
-    Logging::info("Goal could NOT connected", this);
+    Logging::warning("Goal could NOT connected", this);
     return false;
 }
 

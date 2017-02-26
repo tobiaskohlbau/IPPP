@@ -58,7 +58,6 @@ void ModelPqp::transform(const Vector6 &config) {
         m_pqpModel.AddTri(p[0], p[1], p[2], i);
     }
     m_pqpModel.EndModel();
-    m_pqpModel.MemUsage(1);
 }
 
 } /* namespace rmpl */

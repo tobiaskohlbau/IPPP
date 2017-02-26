@@ -109,7 +109,7 @@ bool RRTPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned 
 template <unsigned int dim>
 bool RRTPlanner<dim>::setInitNode(Vector<dim> start) {
     if (m_collision->controlVec(start)) {
-        Logging::warning("Init Node<dim> could not be connected", this);
+        Logging::warning("Init Node could not be connected", this);
         return false;
     }
 
@@ -131,7 +131,7 @@ bool RRTPlanner<dim>::setInitNode(Vector<dim> start) {
 template <unsigned int dim>
 bool RRTPlanner<dim>::computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads) {
     if (m_initNode == nullptr) {
-        Logging::error("Init Node<dim> is not connected", this);
+        Logging::error("Init Node is not connected", this);
         return false;
     }
 
