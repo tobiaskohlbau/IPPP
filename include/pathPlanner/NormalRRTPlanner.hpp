@@ -98,7 +98,7 @@ void NormalRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shar
 template <unsigned int dim>
 bool NormalRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
     if (m_collision->controlVec(goal)) {
-        Logging::info("Goal Node in collision", this);
+        Logging::warning("Goal Node in collision", this);
         return false;
     }
 
@@ -119,10 +119,11 @@ bool NormalRRTPlanner<dim>::connectGoalNode(Vector<dim> goal) {
         m_graph->addNode(goalNode);
         // Logging::info("Goal Node<dim> is connected", this);
         m_pathPlanned = true;
+        Logging::info("Goal could connected", this);
         return true;
     }
 
-    Logging::info("Goal could NOT connected", this);
+    Logging::warning("Goal could NOT connected", this);
 
     return false;
 }
