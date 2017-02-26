@@ -21,6 +21,14 @@
 namespace rmpl {
 
 /*!
+*  \brief      Standard deconstructor of the ModelContainer
+*  \author     Sasch Kaden
+*  \date       2017-02-19
+*/
+ModelContainer::~ModelContainer() {
+}
+
+/*!
 *  \brief      Standard constructor of ModelContainer
 *  \author     Sascha Kaden
 *  \date       2017-02-19

@@ -52,8 +52,7 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
     std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
     pqpModel->m_vertices = vertices;
     pqpModel->m_faces = faces;
-    PQP_Model pqp;
-    pqp.BeginModel();
+    pqpModel->m_pqpModel.BeginModel();
     // create pqp triangles
     PQP_REAL p[3][3];
     for (int i = 0; i < faces.size(); ++i) {
@@ -65,12 +64,10 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
                 p[j][k] = vertices[vert][k];
             }
         }
-        pqp.AddTri(p[0], p[1], p[2], i);
+        pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], i);
     }
-    pqp.EndModel();
-    pqp.MemUsage(1);
-
-    pqpModel->m_pqpModel = pqp;
+    pqpModel->m_pqpModel.EndModel();
+    pqpModel->m_pqpModel.MemUsage(1);
 
     return pqpModel;
 }
