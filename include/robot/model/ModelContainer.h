@@ -36,7 +36,12 @@ namespace rmpl {
 */
 class ModelContainer : public Identifier {
   public:
-    ModelContainer(const std::string &name);
+    virtual ~ModelContainer();
+
+  protected:
+    ModelContainer(const std::string& name);
+
+  public:
     virtual bool empty() const = 0;
 
     std::vector<Vector3> m_vertices;
