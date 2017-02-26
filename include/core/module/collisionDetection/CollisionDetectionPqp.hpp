@@ -43,16 +43,16 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
     bool checkMobileRobot(const Vector<dim> &vec);
     bool checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT);
 
-    bool checkPQP(PQP_Model &model1, PQP_Model &model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1, Vector3 &t2);
+    bool checkPQP(PQP_Model *model1, PQP_Model *model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1, Vector3 &t2);
 
     Matrix3 m_identity;
     Eigen::Vector3f m_zeroVec;
 
-    PQP_Model m_baseMesh;
-    PQP_Model m_workspace;
+    PQP_Model *m_baseMesh;
+    PQP_Model *m_workspace;
     bool m_baseMeshAvaible = false;
     bool m_workspaceAvaible = false;
-    std::vector<PQP_Model> m_jointModels;
+    std::vector<PQP_Model*> m_jointModels;
 
     using CollisionDetection<dim>::m_robot;
 };
@@ -70,9 +70,9 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<RobotBas
     m_identity = Matrix3::Identity(3, 3);
     m_zeroVec = Eigen::Vector3f::Zero(3, 1);
 
-    std::shared_ptr<SerialRobot<dim>> serialRobot(std::static_pointer_cast<SerialRobot<dim>>(m_robot));
+
     if (m_robot->getBaseModel() != nullptr && !m_robot->getBaseModel()->empty()) {
-        m_baseMesh = std::static_pointer_cast<ModelPqp>(serialRobot->getBaseModel())->m_pqpModel;
+        m_baseMesh = &std::static_pointer_cast<ModelPqp>(m_robot->getBaseModel())->m_pqpModel;
         m_baseMeshAvaible = true;
     } else {
         Logging::error("Empty base model", this);
@@ -80,26 +80,28 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<RobotBas
     }
 
     if (m_robot->getWorkspace() != nullptr && !m_robot->getWorkspace()->empty()) {
-        m_workspace = std::static_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
+        m_workspace = &std::static_pointer_cast<ModelPqp>(this->m_robot->getWorkspace())->m_pqpModel;
         m_workspaceAvaible = true;
     }
 
-    std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
-    if (!jointModels.empty()) {
-        bool emptyJoint = false;
-        for (auto model : jointModels)
-            if (!model || model->empty())
-                emptyJoint = true;
+    if (m_robot->getRobotType() == RobotType::serial) {
+        std::shared_ptr<SerialRobot<dim>> serialRobot(std::static_pointer_cast<SerialRobot<dim>>(m_robot));
+        std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
+        if (!jointModels.empty()) {
+            bool emptyJoint = false;
+            for (auto model : jointModels)
+                if (!model || model->empty())
+                    emptyJoint = true;
 
-        if (!emptyJoint)
-            for (int i = 0; i < dim; ++i) {
-                PQP_Model pqp = std::static_pointer_cast<ModelPqp>(serialRobot->getModelFromJoint(i))->m_pqpModel;
-                m_jointModels.push_back(pqp);
-            }
-        else
-            Logging::error("Emtpy joint model", this);
-    } else {
-        Logging::error("No joint models applied", this);
+            if (!emptyJoint)
+                for (int i = 0; i < dim; ++i) {
+                    m_jointModels.push_back(&std::static_pointer_cast<ModelPqp>(serialRobot->getModelFromJoint(i))->m_pqpModel);
+                }
+            else
+                Logging::error("Emtpy joint model", this);
+        } else {
+            Logging::error("No joint models applied", this);
+        }
     }
 }
 
@@ -256,7 +258,7 @@ bool CollisionDetectionPqp<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model &model1, PQP_Model &model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1,
+bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model *model1, PQP_Model *model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1,
                                           Vector3 &t2) {
     PQP_REAL pqpR1[3][3], pqpR2[3][3], pqpT1[3], pqpT2[3];
 
@@ -270,7 +272,7 @@ bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model &model1, PQP_Model &model2, 
     }
 
     PQP_CollideResult cres;
-    PQP_Collide(&cres, pqpR1, pqpT1, &model1, pqpR2, pqpT2, &model2, PQP_FIRST_CONTACT);
+    PQP_Collide(&cres, pqpR1, pqpT1, model1, pqpR2, pqpT2, model2, PQP_FIRST_CONTACT);
     if (cres.NumPairs() > 0)
         return true;
     else

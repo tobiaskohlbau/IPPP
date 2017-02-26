@@ -34,6 +34,7 @@ class ModelPqp : public ModelContainer {
   public:
     ModelPqp();
     bool empty() const;
+    void transform(const Vector6 &config);
 
     PQP_Model m_pqpModel;
 };
