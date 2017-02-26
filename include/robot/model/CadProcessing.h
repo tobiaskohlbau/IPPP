@@ -29,6 +29,7 @@
 #include <assimp/scene.h>
 
 #include <core/types.h>
+#include <core/utility/UtilList.hpp>
 
 namespace rmpl {
 
@@ -50,6 +51,7 @@ enum class ExportFormat {
 };
 
 bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces);
+bool importBYU(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces);
 bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
                const std::vector<Vector3i> &faces);
 void transformCad(const Vector6 &config, std::vector<Vector3> &vertices);
