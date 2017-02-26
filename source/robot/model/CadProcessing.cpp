@@ -18,6 +18,8 @@
 
 #include "include/robot/model/CadProcessing.h"
 
+#include <fstream>
+
 #include <core/utility/Logging.h>
 #include <core/utility/UtilGeo.hpp>
 
@@ -32,6 +34,10 @@ namespace rmpl {
 *  \date       2017-02-19
 */
 bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces) {
+    std::size_t found = filePath.find_last_of(".");
+    if (filePath.substr(found) == ".g")
+        return importBYU(filePath, vertices, faces);
+
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (!scene) {
@@ -60,6 +66,64 @@ bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std:
             else
                 Logging::warning("Face array is to short", "CadProcessing");
         }
+    }
+    return true;
+}
+
+/*!
+*  \brief      Import BYU cad model (vertices and faces)
+*  \author     Sascha Kaden
+*  \param[in]  filePath
+*  \param[out] list of vertices
+*  \param[out] list of faces
+*  \date       2017-02-19
+*/
+bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces) {
+    std::ifstream is(filePath);
+    std::string str;
+    unsigned int numBodies = 0;
+    unsigned int numVertices = 0;
+    unsigned int numFaces = 0;
+    vertices.clear();
+    faces.clear();
+
+    getline(is, str);
+    utilList::trimWhitespaces(str);
+    std::istringstream ss(str);
+    ss >> numBodies;
+    ss >> numVertices;
+    ss >> numFaces;
+    getline(is, str);
+    getline(is, str);
+    utilList::trimWhitespaces(str);
+    std::size_t found;
+    for (unsigned int i = 0; i < numVertices; ++i) {
+        Vector3 vec;
+        std::string::size_type sz;
+        for (unsigned int j = 0; j < 3; ++j) {
+            vec[j] = std::stof(str, &sz);
+            str = str.substr(sz);
+        }
+        vertices.push_back(vec);
+        if (str.size() < 2) {
+            getline(is, str);
+            utilList::trimWhitespaces(str);
+        }
+    }
+    for (unsigned int i = 0; i < numFaces; ++i) {
+        utilList::trimWhitespaces(str);
+        Vector3i vec;
+        std::string::size_type sz;
+        for (unsigned int j = 0; j < 3; ++j) {
+            vec[j] = std::stoi(str, &sz) - 1;
+            if (vec[j] < 0) {
+                vec[j] = -vec[j];
+                break;
+            }
+            str = str.substr(sz);
+        }
+        faces.push_back(vec);
+        getline(is, str);
     }
     return true;
 }
@@ -147,7 +211,7 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
 *  \date            2017-02-25
 */
 void transformCad(const Vector6 &config, std::vector<Vector3> &vertices) {
-    Matrix3 R = utilGeo::getRotMat3D(config[3], config[4], config[6]);
+    Matrix3 R = utilGeo::getRotMat3D(config[3], config[4], config[5]);
     Vector3 t(config[0], config[1], config[2]);
     for (auto vertice : vertices) {
         vertice = (R * vertice) + t;
