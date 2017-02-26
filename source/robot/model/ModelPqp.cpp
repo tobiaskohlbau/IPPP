@@ -18,6 +18,8 @@
 
 #include <robot/model/ModelPqp.h>
 
+#include <robot/model/CadProcessing.h>
+
 namespace rmpl {
 
 ModelPqp::ModelPqp() : ModelContainer("ModelPqp") {
@@ -34,6 +36,29 @@ bool ModelPqp::empty() const {
         return true;
     else
         return false;
+}
+
+void ModelPqp::transform(const Vector6 &config) {
+    if (empty())
+        return;
+    transformCad(config, m_vertices);
+
+    m_pqpModel.BeginModel();
+    // create pqp triangles
+    PQP_REAL p[3][3];
+    for (int i = 0; i < m_faces.size(); ++i) {
+        // go through faces
+        for (int j = 0; j < 3; ++j) {
+            // go through face
+            int vert = m_faces[i][j];
+            for (int k = 0; k < 3; ++k) {
+                p[j][k] = m_vertices[vert][k];
+            }
+        }
+        m_pqpModel.AddTri(p[0], p[1], p[2], i);
+    }
+    m_pqpModel.EndModel();
+    m_pqpModel.MemUsage(1);
 }
 
 } /* namespace rmpl */
