@@ -20,6 +20,7 @@
 #define UTILLIST_H
 
 #include <memory>
+#include <string>
 
 #include <core/dataObj/Node.hpp>
 
@@ -75,6 +76,14 @@ bool contains(std::vector<std::shared_ptr<Node<dim>>> &list, std::shared_ptr<Nod
         return true;
     else
         return false;
+}
+
+static void trimWhitespaces(std::string &str) {
+    size_t first = str.find_first_not_of(' ');
+    if (str.npos == first)
+        return;
+    size_t last = str.find_last_not_of(' ');
+    str = str.substr(first, (last - first + 1));
 }
 
 } /* namespace utilList */
