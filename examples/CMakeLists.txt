@@ -17,9 +17,9 @@
 #-------------------------------------------------------------------------//
 
 SET(LIBRARIES
-    RobotMotionPlanning
-    ${PQP_LIBRARIES}
-    ${ASSIMP_LIBRARIES})
+        RobotMotionPlanning
+        ${PQP_LIBRARIES}
+        ${ASSIMP_LIBRARIES})
 
 IF (${BUILD_FCL})
     LIST(APPEND LIBRARIES ${FCL_LIBRARIES})

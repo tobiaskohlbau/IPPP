@@ -16,27 +16,21 @@
 #
 #-------------------------------------------------------------------------//
 
-find_package(Boost COMPONENTS system REQUIRED)
-find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
-find_package(Qt5Widgets)
-find_package(Qt5Core)
-find_package(Qt5Gui)
-add_definitions(${QT_DEFINITIONS})
-
-include_directories(${Boost_INCLUDE_DIRS})
-
-QT5_WRAP_UI(UIS_HDRS
-        ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.ui)
+find_package(Boost COMPONENTS filesystem system REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS}
+        ${CMAKE_SOURCE_DIR}/examples)
 
 set(source
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp
-    ${UIS_HDRS})
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+        ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp
+        ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp
+        ${CMAKE_SOURCE_DIR}/examples/ui/BenchmarkReader.h
+        ${CMAKE_SOURCE_DIR}/examples/ui/BenchmarkReader.cpp)
+
+find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 
 set(ADDITIONAL_LIBRARIES
-    ${OpenCV_LIBS})
+        ${OpenCV_LIBS}
+        ${Boost_LIBRARIES})
 
-ADD_RMPL_EXAMPLE(Gui2D "${source}" "${ADDITIONAL_LIBRARIES}")
-qt5_use_modules(Gui2D Widgets Gui)
+ADD_RMPL_EXAMPLE(ParasolBenchmarks "${source}" "${ADDITIONAL_LIBRARIES}")
