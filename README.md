@@ -27,7 +27,7 @@ Currently available algorithms:
 * [Assimp](http://www.assimp.org)(Open Asset Import Library) for import and export of meshes
 * [boost test framework](http://www.boost.org/doc/libs/1_63_0/libs/test/doc/html/index.html)
 * optional [FCL](https://github.com/flexible-collision-library/fcl)(Flexible Collision Library) for collision detection between 3d meshes
- 
+
 #### Dependencies of the examples
 * [OpenCV](http://opencv.org/) for manipulation and illustration of 2D examples
 * [QT](https://www.qt.io/) for the user interface
@@ -35,9 +35,20 @@ Currently available algorithms:
 
 
 ## Getting Started
-git clone https://github.com/SaschaKaden/RobotMotionPlanner.git
+Small step for step instructions for Ubuntu.
 
- 
+* sudo apt-get install cmake
+* sudo apt-get install libeigen3-dev
+* sudo apt-get install libboost-system-dev
+* sudo apt-get install libboost-test-dev
+* sudo apt-get install libboost-filesystem-dev
+* git clone https://github.com/SaschaKaden/RobotMotionPlanner.git
+* git clone https://github.com/SaschaKaden/RMPThirdParty.git
+* cd RobotMotionPlanner
+* mkdir build
+* cd build
+* cmake -DPQP_ROOT_DIR="../../RMPThirdParty/PQP_v1.3"
+
 
 ## License
 Copyright © 2017 Sascha Kaden
