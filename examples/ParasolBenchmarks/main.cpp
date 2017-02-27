@@ -35,7 +35,7 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 
     RRTOptions<6> options(40, 3, collision);
     RRTStarPlanner<6> planner(robot, options);
-    return planner.computePath(queries[0], queries[1], 8000, 2);
+    return planner.computePath(queries[0], queries[1], 8000, 6);
 }
 
 void benchmarkAlphaPuzzle() {
