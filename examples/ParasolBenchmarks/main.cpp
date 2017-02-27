@@ -4,10 +4,13 @@
 
 #include <core/utility/UtilVec.hpp>
 #include <core/module/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
+//#include <core/module/collisionDetection/CollisionDetectionFcl.hpp>
+//#include <robot/model/ModelFactoryFcl.h>
 #include <core/utility/Logging.h>
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/RRTStarPlanner.hpp>
+
 #include <robot/model/ModelFactoryPqp.h>
 #include <robot/MobileRobot.h>
 
@@ -22,6 +25,10 @@ using namespace rmpl;
 std::string modelDir;
 
 bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentConfig config) {
+    //ModelFactoryFcl factoryFcl;
+    //std::shared_ptr<ModelContainer> robotModel = factoryFcl.createModel(benchmarkDir + config.robotFile);
+    //std::shared_ptr<ModelContainer> obstacleModel = factoryFcl.createModel(benchmarkDir + config.obstacleFile);
+    //std::static_pointer_cast<ModelFcl>(obstacleModel)->transform(config.obstacleConfig);
     ModelFactoryPqp factoryPqp;
     std::shared_ptr<ModelContainer> robotModel = factoryPqp.createModel(benchmarkDir + config.robotFile);
     std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel(benchmarkDir + config.obstacleFile);
