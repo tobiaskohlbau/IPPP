@@ -55,4 +55,9 @@ IF (${BUILD_FCL})
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionFcl.hpp)
 ENDIF()
 
+IF (${BUILD_BENCHMARK})
+    list(APPEND SRCS
+            ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionPqpBenchmark.hpp)
+ENDIF()
+
 set(SRCS "${SRCS}" PARENT_SCOPE)
