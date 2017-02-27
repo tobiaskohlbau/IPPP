@@ -22,7 +22,7 @@
 #include <memory>
 
 #include <core/module/Identifier.h>
-#include <core/module/Sampling.hpp>
+#include <core/module/sampling/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/heuristic/Heuristic.hpp>
