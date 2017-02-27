@@ -25,8 +25,8 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetection2D.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionPqp.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampler.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/Sampler.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/Heuristic.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicL1.hpp

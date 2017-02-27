@@ -24,7 +24,7 @@
 #include <Eigen/Core>
 
 #include <core/module/Identifier.h>
-#include <core/module/Sampler.hpp>
+#include <core/module/sampler/Sampler.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <robot/RobotBase.hpp>
