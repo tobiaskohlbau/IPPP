@@ -18,6 +18,8 @@
 
 #include <robot/model/ModelFcl.h>
 
+#include <robot/model/CadProcessing.h>
+
 namespace rmpl {
 
 ModelFcl::ModelFcl() : ModelContainer("ModelFcl") {
@@ -34,6 +36,21 @@ bool ModelFcl::empty() const {
         return true;
     else
         return false;
+}
+
+void ModelFcl::transform(const Vector6 &config) {
+    transformCad(config, m_vertices);
+
+    std::vector<fcl::Vector3f> verts;
+    std::vector<fcl::Triangle> triangles;
+    for (auto vert : m_vertices)
+        verts.push_back(fcl::Vector3f(vert[0], vert[1], vert[2]));
+    for (auto face : m_faces)
+        triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
+    m_fclModel = FCLModel();
+    m_fclModel.beginModel();
+    m_fclModel.addSubModel(verts, triangles);
+    m_fclModel.endModel();
 }
 
 } /* namespace rmpl */
