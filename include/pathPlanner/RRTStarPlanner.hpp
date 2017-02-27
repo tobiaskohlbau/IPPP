@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef STARRRTPLANNER_HPP
-#define STARRRTPLANNER_HPP
+#ifndef RRTSTARPLANNER_HPP
+#define RRTSTARPLANNER_HPP
 
 #include <mutex>
 
@@ -199,4 +199,4 @@ bool RRTStarPlanner<dim>::connectGoalNode(Vector<dim> goal) {
 
 } /* namespace rmpl */
 
-#endif /* STARRRTPLANNER_HPP */
+#endif /* RRTSTARPLANNER_HPP */
