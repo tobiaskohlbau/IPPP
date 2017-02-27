@@ -21,7 +21,7 @@
 
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 
-#include <atomic>
+#include <mutex>
 
 namespace rmpl {
 
@@ -35,12 +35,14 @@ class CollisionDetectionPqpBenchmark : public CollisionDetectionPqp<dim> {
   public:
     CollisionDetectionPqpBenchmark(const std::shared_ptr<RobotBase<dim>> &robot);
     bool controlVec(const Vector<dim> &vec) override;
+    bool controlTrajectory(std::vector<Vector<dim>> &vec) override;
 
     int getCount() const;
     void resetCount();
 
   private:
-    std::atomic_uint m_count = 0;
+    unsigned int m_count = 0;
+    std::mutex m_mutex;
 };
 
 /*!
@@ -63,8 +65,43 @@ CollisionDetectionPqpBenchmark<dim>::CollisionDetectionPqpBenchmark(const std::s
 */
 template <unsigned int dim>
 bool CollisionDetectionPqpBenchmark<dim>::controlVec(const Vector<dim> &vec) {
+    m_mutex.lock();
     ++m_count;
-    CollisionDetectionPqp::controlVec(vec);
+    m_mutex.unlock();
+    return CollisionDetectionPqp<dim>::controlVec(vec);
+}
+
+    /*!
+*  \brief      Check collision of a trajectory of points
+*  \author     Sascha Kaden
+*  \param[in]  vector of configurations
+*  \param[out] binary result of collision (true if in collision)
+*  \date       2017-02-19
+*/
+template <unsigned int dim>
+bool CollisionDetectionPqpBenchmark<dim>::controlTrajectory(std::vector<Vector<dim>> &vecs) {
+    if (vecs.size() == 0)
+        return false;
+
+    if (this->m_robot->getRobotType() == RobotType::mobile) {
+        for (int i = 0; i < vecs.size(); ++i) {
+            m_mutex.lock();
+            ++m_count;
+            m_mutex.unlock();
+            if (CollisionDetectionPqp<dim>::checkMobileRobot(vecs[i]))
+                return true;
+        }
+    } else {
+        for (int i = 0; i < vecs.size(); ++i) {
+            m_mutex.lock();
+            ++m_count;
+            m_mutex.unlock();
+            if (CollisionDetectionPqp<dim>::checkSerialRobot(vecs[i]))
+                return true;
+        }
+    }
+
+    return false;
 }
 
 /*!
@@ -74,7 +111,7 @@ bool CollisionDetectionPqpBenchmark<dim>::controlVec(const Vector<dim> &vec) {
 *  \date       2017-02-27
 */
 template <unsigned int dim>
-int CollisionDetectionPqpBenchmark::getCount() const {
+int CollisionDetectionPqpBenchmark<dim>::getCount() const {
     return m_count;
 }
 
@@ -84,7 +121,7 @@ int CollisionDetectionPqpBenchmark::getCount() const {
 *  \date       2017-02-27
 */
 template <unsigned int dim>
-void CollisionDetectionPqpBenchmark::resetCount() {
+void CollisionDetectionPqpBenchmark<dim>::resetCount() {
     m_count = 0;
 }
 
