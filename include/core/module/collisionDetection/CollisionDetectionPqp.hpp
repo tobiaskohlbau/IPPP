@@ -38,7 +38,7 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
     bool controlVec(const Vector<dim> &vec) override;
     bool controlTrajectory(std::vector<Vector<dim>> &vec) override;
 
-  private:
+  protected:
     bool checkSerialRobot(const Vector<dim> &vec);
     bool checkMobileRobot(const Vector<dim> &vec);
     bool checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT);

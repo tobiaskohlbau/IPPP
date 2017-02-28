@@ -26,6 +26,7 @@ add_definitions(-D_USE_MATH_DEFINES)
 option(BUILD_FCL "Build FCL collision lib")
 option(BUILD_EXAMPLES "Build the examples")
 option(BUILD_TESTS "Build tests" ON)
+option(BUILD_BENCHMARK "Build optional benchmark classes")
 
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
@@ -49,8 +50,9 @@ ADD_SUBDIRECTORY(source)
 # options
 IF (${BUILD_FCL})
     find_package(fcl REQUIRED)
+    find_package(ccd QUIET)
     include_directories(${FCL_INCLUDE_DIRS})
-    LIST(APPEND LIBRARIES ${FCL_LIBRARIES})
+    LIST(APPEND LIBRARIES ${FCL_LIBRARIES} ${CCD_LIBRARIES})
 ENDIF()
 IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)

@@ -19,9 +19,12 @@
 #ifndef COLLISIONDETECTIONFCL_HPP
 #define COLLISIONDETECTIONFCL_HPP
 
+#include <fcl/fcl.h>
+
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/UtilCollision.hpp>
 #include <robot/SerialRobot.hpp>
+#include <robot/model/ModelFcl.h>
 
 namespace rmpl {
 
@@ -41,8 +44,9 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
     bool controlCollisionMesh(const Vector<dim> &vec);
     bool checkSerialRobot(const Vector<dim> &vec);
     bool checkMobileRobot(const Vector<dim> &vec);
-    bool checkMesh(std::vector<FCLModel> &models, FCLModel &base, Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT);
-    bool checkFCL(FCLModel &model1, FCLModel &model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1, Vector3 &t2);
+    bool checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT);
+    bool checkFCL(std::shared_ptr<FCLModel> &model1, std::shared_ptr<FCLModel> &model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1,
+                  Vector3 &t2);
 
     // models for collision detection
     fcl::CollisionObject<float> *o1 = nullptr;
@@ -50,6 +54,13 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
 
     Matrix3 m_identity;
     Eigen::Vector3f m_zeroVec;
+
+    std::shared_ptr<FCLModel> m_baseMesh;
+    std::shared_ptr<FCLModel> m_workspace;
+    bool m_baseMeshAvaible = false;
+    bool m_workspaceAvaible = false;
+    std::vector<std::shared_ptr<FCLModel>> m_jointModels;
+
     using CollisionDetection<dim>::m_robot;
 };
 
@@ -64,6 +75,42 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<RobotBas
     : CollisionDetection<dim>("collisionDetection", robot) {
     m_identity = Matrix3::Identity(3, 3);
     m_zeroVec = Eigen::Vector3f::Zero(3, 1);
+
+    if (m_robot->getBaseModel() != nullptr && !m_robot->getBaseModel()->empty()) {
+        m_baseMesh =
+            std::make_shared<FCLModel>(FCLModel(std::static_pointer_cast<ModelFcl>(m_robot->getBaseModel())->m_fclModel));
+        m_baseMeshAvaible = true;
+    } else {
+        Logging::error("Empty base model", this);
+        return;
+    }
+
+    if (m_robot->getWorkspace() != nullptr && !m_robot->getWorkspace()->empty()) {
+        m_workspace =
+            std::make_shared<FCLModel>(FCLModel(std::static_pointer_cast<ModelFcl>(this->m_robot->getWorkspace())->m_fclModel));
+        m_workspaceAvaible = true;
+    }
+
+    if (m_robot->getRobotType() == RobotType::serial) {
+        std::shared_ptr<SerialRobot<dim>> serialRobot(std::static_pointer_cast<SerialRobot<dim>>(m_robot));
+        std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
+        if (!jointModels.empty()) {
+            bool emptyJoint = false;
+            for (auto model : jointModels)
+                if (!model || model->empty())
+                    emptyJoint = true;
+
+            if (!emptyJoint)
+                for (int i = 0; i < dim; ++i) {
+                    m_jointModels.push_back(std::make_shared<FCLModel>(
+                        FCLModel(std::static_pointer_cast<ModelFcl>(serialRobot->getModelFromJoint(i))->m_fclModel)));
+                }
+            else
+                Logging::error("Emtpy joint model", this);
+        } else {
+            Logging::error("No joint models applied", this);
+        }
+    }
 }
 
 /*!
@@ -134,11 +181,7 @@ bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &vec) {
     Vector3 trans[dim];
     utilCollision::getTrafosFromRobot<dim>(vec, robot, poseR, poseT, rot, trans);
 
-    FCLModel baseMesh;
-    if (robot->getBaseMesh() != nullptr)
-        baseMesh = robot->getBaseMesh()->m_fclModel;
-    std::vector<FCLModel> jointMeshes = robot->getJointModels();
-    return checkMesh(jointMeshes, baseMesh, rot, poseR, trans, poseT);
+    return checkMesh(rot, poseR, trans, poseT);
 }
 
 /*!
@@ -155,13 +198,10 @@ bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &vec) {
     Vector3 poseT;
     utilGeo::decomposeT(pose, poseR, poseT);
 
-    if (m_robot->getBaseMesh() == nullptr || m_robot->getWorkspace() == nullptr)
-        return false;
-
-    FCLModel baseMesh = m_robot->getBaseMesh()->m_fclModel;
-    FCLModel workspace = m_robot->getWorkspace()->getFcl();
-
-    return checkFCL(workspace, baseMesh, m_identity, poseR, m_zeroVec, poseT);
+    if (m_baseMeshAvaible && m_workspaceAvaible)
+        return checkFCL(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT);
+    else
+        return true;
 }
 
 /*!
@@ -177,12 +217,11 @@ bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &vec) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionFcl<dim>::checkMesh(std::vector<FCLModel> &models, FCLModel &baseModel, Matrix3 R[], Matrix3 &poseR,
-                                           Vector3 t[], Vector3 &poseT) {
+bool CollisionDetectionFcl<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT) {
     // control collision between baseModel and joints
-    if (baseModel.num_vertices != 0) {
+    if (m_baseMeshAvaible) {
         for (int i = 1; i < dim; ++i) {
-            if (checkFCL(baseModel, models[i], poseR, R[i], poseT, t[i]))
+            if (checkFCL(m_baseMesh, m_jointModels[i], poseR, R[i], poseT, t[i]))
                 return true;
         }
     }
@@ -190,7 +229,7 @@ bool CollisionDetectionFcl<dim>::checkMesh(std::vector<FCLModel> &models, FCLMod
     // control collision of the robot joints with themself
     for (int i = 0; i < dim; ++i) {
         for (int j = i + 2; j < dim; ++j) {
-            if (checkFCL(models[i], models[j], R[i], R[j], t[i], t[j])) {
+            if (checkFCL(m_jointModels[i], m_jointModels[j], R[i], R[j], t[i], t[j])) {
                 if (Logging::getLogLevel() == LogLevel::debug) {
                     Logging::debug("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), this);
                     Eigen::Vector3f r = R[i].eulerAngles(0, 1, 2);
@@ -208,14 +247,12 @@ bool CollisionDetectionFcl<dim>::checkMesh(std::vector<FCLModel> &models, FCLMod
     }
 
     // control collision with workspace
-    if (m_robot->getWorkspace() != nullptr) {
-        FCLModel workspace = m_robot->getWorkspace()->getFcl();
-
-        if (checkFCL(workspace, baseModel, m_identity, poseR, m_zeroVec, poseT))
+    if (m_workspaceAvaible) {
+        if (checkFCL(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT))
             return true;
 
         for (int i = 0; i < dim; ++i) {
-            if (checkFCL(workspace, models[i], m_identity, R[i], m_zeroVec, t[i])) {
+            if (checkFCL(m_workspace, m_jointModels[i], m_identity, R[i], m_zeroVec, t[i])) {
                 Logging::debug("Collision between workspace and link " + std::to_string(i), this);
                 return true;
             }
@@ -237,10 +274,10 @@ bool CollisionDetectionFcl<dim>::checkMesh(std::vector<FCLModel> &models, FCLMod
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionFcl<dim>::checkFCL(FCLModel &model1, FCLModel &model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1,
-                                          Vector3 &t2) {
-    o1 = new fcl::CollisionObject<float>(&model1, R1, t1);
-    o2 = new fcl::CollisionObject<float>(&model2, R2, t2);
+bool CollisionDetectionFcl<dim>::checkFCL(std::shared_ptr<FCLModel> &model1, std::shared_ptr<FCLModel> &model2, Matrix3 &R1,
+                                          Matrix3 &R2, Vector3 &t1, Vector3 &t2) {
+    o1 = new fcl::CollisionObject<float>(model1, R1, t1);
+    o2 = new fcl::CollisionObject<float>(model2, R2, t2);
     fcl::CollisionRequest<float> request;    // default setting
     fcl::CollisionResult<float> result;
     collide(o1, o2, request, result);

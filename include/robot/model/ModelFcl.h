@@ -36,6 +36,7 @@ class ModelFcl : public ModelContainer {
   public:
     ModelFcl();
     bool empty() const;
+    void transform(const Vector6 &config);
 
     FCLModel m_fclModel;
 };
