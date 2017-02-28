@@ -80,18 +80,18 @@ BOOST_AUTO_TEST_CASE(obstacleWorkspace) {
                 PRMPlanner<dim> prmPlanner(robot, prmOptions);
                 BOOST_TEST_CHECKPOINT("Calling PRM planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
                                       << sampler << " | " << sampling << " | ");
-                prmPlanner.computePath(start, goal, 100, 1);
+                prmPlanner.computePath(start, goal, 300, 1);
 
                 RRTOptions<dim> rrtOptions(30, 1, collision, sampler, sampling, heuristic);
                 NormalRRTPlanner<dim> normalRRTPlanner(robot, rrtOptions);
                 BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
                                       << sampler << " | " << sampling << " | ");
-                normalRRTPlanner.computePath(start, goal, 100, 1);
+                normalRRTPlanner.computePath(start, goal, 300, 1);
 
                 RRTStarPlanner<dim> starRRTPlanner(robot, rrtOptions);
                 BOOST_TEST_CHECKPOINT("Calling RRT* planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
                                       << sampler << " | " << sampling << " | ");
-                starRRTPlanner.computePath(start, goal, 100, 1);
+                starRRTPlanner.computePath(start, goal, 300, 1);
             }
         }
     }

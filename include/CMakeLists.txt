@@ -25,8 +25,8 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetection2D.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionPqp.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampler.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Sampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/Sampler.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/Heuristic.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicL1.hpp
@@ -53,6 +53,11 @@ list(APPEND SRCS
 IF (${BUILD_FCL})
     list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionFcl.hpp)
+ENDIF()
+
+IF (${BUILD_BENCHMARK})
+    list(APPEND SRCS
+            ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionPqpBenchmark.hpp)
 ENDIF()
 
 set(SRCS "${SRCS}" PARENT_SCOPE)
