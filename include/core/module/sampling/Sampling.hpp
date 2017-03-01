@@ -40,10 +40,11 @@ template <unsigned int dim>
 class Sampling : public Identifier {
   public:
     Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, SamplerMethod method = SamplerMethod::randomly);
+             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+             const std::shared_ptr<Sampler<dim>> &sampler);
 
     virtual Vector<dim> getSample() const;
-    bool setOrigin(const Vector<dim> &mean);
+    void setOrigin(const Vector<dim> &origin);
 
   protected:
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
@@ -61,12 +62,11 @@ class Sampling : public Identifier {
 */
 template <unsigned int dim>
 Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, SamplerMethod method)
+                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler)
     : Identifier("Sampling") {
-
     m_collision = collision;
     m_trajectory = trajectory;
-    m_sampler = std::shared_ptr<Sampler<dim>>(new Sampler<dim>(robot, method));
+    m_sampler = sampler;
 }
 
 /*!
@@ -88,8 +88,8 @@ Vector<dim> Sampling<dim>::getSample() const {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-bool Sampling<dim>::setOrigin(const Vector<dim> &mean) {
-    return m_sampler->setOrigin(mean);
+void Sampling<dim>::setOrigin(const Vector<dim> &origin) {
+    m_sampler->setOrigin(origin);
 }
 
 } /* namespace rmpl */

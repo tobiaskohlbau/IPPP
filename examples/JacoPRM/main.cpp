@@ -23,7 +23,8 @@ int main(int argc, char** argv) {
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
     std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(0.5, collision));
-    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory));
+    std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
+    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
     PRMOptions<6> options(30, collision, trajectory, sampling);
     PRMPlanner<6> planner(robot, options);
 

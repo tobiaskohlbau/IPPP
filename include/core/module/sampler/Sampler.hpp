@@ -30,8 +30,6 @@
 
 namespace rmpl {
 
-enum SamplerMethod { randomly, uniform, standardDistribution };
-
 /*!
 * \brief   Class Sampling creates sample vecs with the configurated method
 * \author  Sascha Kaden
@@ -40,25 +38,20 @@ enum SamplerMethod { randomly, uniform, standardDistribution };
 template <unsigned int dim>
 class Sampler : public Identifier {
   public:
-    Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplerMethod method = SamplerMethod::randomly);
-    Vector<dim> getSample();
+    Sampler(const std::shared_ptr<RobotBase<dim>> &robot);
+    virtual Vector<dim> getSample();
     float getRandomAngle();
 
-    bool setOrigin(const Vector <dim> &mean);
+    virtual void setOrigin(const Vector<dim> &mean);
+    Vector<dim> getOrigin() const;
 
-  private:
-    Vector<dim> sampleStandardDist();
-    Vector<dim> sampleUniform();
-    Vector<dim> sampleRandom();
-
+  protected:
     Vector<dim> m_minBoundary;
     Vector<dim> m_maxBoundary;
-    SamplerMethod m_method;
+    Vector<dim> m_origin;
 
     std::random_device rd;
     std::mt19937 m_generator;
-    std::vector<std::normal_distribution<float>> m_distNormal;
-    std::vector<std::uniform_real_distribution<float>> m_distUniform;
     std::uniform_real_distribution<float> m_distAngle;
 };
 
@@ -71,20 +64,12 @@ class Sampler : public Identifier {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplerMethod method) : Identifier("Sampler") {
-    m_method = method;
-
+Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot) : Identifier("Sampler") {
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();
+    m_origin = Eigen::Matrix<float, dim, 1>::Zero(dim, 1);
 
     m_generator = std::mt19937(rd());
-    for (unsigned int i = 0; i < dim; ++i) {
-        std::normal_distribution<float> dist1(0, 500);
-        m_distNormal.push_back(dist1);
-
-        std::uniform_real_distribution<float> dist2(m_minBoundary[i], m_maxBoundary[i]);
-        m_distUniform.push_back(dist2);
-    }
     m_distAngle = std::uniform_real_distribution<float>(0, utilGeo::twoPi());
 }
 
@@ -96,14 +81,11 @@ Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, SamplerMetho
 */
 template <unsigned int dim>
 Vector<dim> Sampler<dim>::getSample() {
-    switch (m_method) {
-        case SamplerMethod::standardDistribution:
-            return sampleStandardDist();
-        case SamplerMethod::uniform:
-            return sampleUniform();
-        default:
-            return sampleRandom();
+    Vector<dim> vec;
+    for (unsigned int i = 0; i < dim; ++i) {
+        vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
     }
+    return vec;
 }
 
 /*!
@@ -118,72 +100,25 @@ float Sampler<dim>::getRandomAngle() {
 }
 
 /*!
-*  \brief      Set the mean of the standard distribution
+*  \brief      Set the origin of the Sampler
 *  \author     Sascha Kaden
-*  \param[in]  mean of distribution
-*  \param[out] binary result
+*  \param[in]  origin
 *  \date       2016-11-14
 */
 template <unsigned int dim>
-bool Sampler<dim>::setOrigin(const Vector <dim> &mean) {
-    if (mean.rows() != dim) {
-        Logging::error("Wrong dimension of mean vector", this);
-        return false;
-    }
-
-    m_distNormal.clear();
-    for (unsigned int i = 0; i < dim; ++i) {
-        std::normal_distribution<float> distribution(mean[i], m_maxBoundary[i] - m_minBoundary[i]);
-        m_distNormal.push_back(distribution);
-    }
-    return true;
+void Sampler<dim>::setOrigin(const Vector<dim> &origin) {
+    m_origin = origin;
 }
 
 /*!
-*  \brief      Create a sample by the standard distribution and the set mean value
+*  \brief      Return the origin of the Sampler
 *  \author     Sascha Kaden
-*  \param[out] sample Vec
+*  \param[out] origin
 *  \date       2016-11-14
 */
 template <unsigned int dim>
-Vector<dim> Sampler<dim>::sampleStandardDist() {
-    Vector<dim> vec;
-    float number;
-    for (unsigned int i = 0; i < dim; ++i) {
-        do {
-            number = m_distNormal[i](m_generator);
-        } while ((number <= m_minBoundary[i]) || (number >= m_maxBoundary[i]));
-        vec[i] = number;
-    }
-    return vec;
-}
-
-/*!
-*  \brief      Create a sample by a uniform distribution
-*  \author     Sascha Kaden
-*  \param[out] sample Vec
-*  \date       2016-11-14
-*/
-template <unsigned int dim>
-Vector<dim> Sampler<dim>::sampleUniform() {
-    Vector<dim> vec;
-    for (unsigned int i = 0; i < dim; ++i)
-        vec[i] = m_distUniform[i](m_generator);
-    return vec;
-}
-
-/*!
-*  \brief      Create a random sample
-*  \author     Sascha Kaden
-*  \param[out] sample Vec
-*  \date       2016-11-14
-*/
-template <unsigned int dim>
-Vector<dim> Sampler<dim>::sampleRandom() {
-    Vector<dim> vec;
-    for (unsigned int i = 0; i < dim; ++i)
-        vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
-    return vec;
+Vector<dim> Sampler<dim>::getOrigin() const {
+    return m_origin;
 }
 
 } /* namespace rmpl */
