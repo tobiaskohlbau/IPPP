@@ -54,7 +54,7 @@ constexpr float toDeg() {
 *  \param[out] transformation matrix
 *  \date       2016-08-25
 */
-static Matrix4 createT(Matrix3 &R, Vector3 &t) {
+static Matrix4 createT(const Matrix3 &R, const Vector3 &t) {
     Matrix4 T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
     T.block<3, 1>(0, 3) = t;
@@ -69,7 +69,7 @@ static Matrix4 createT(Matrix3 &R, Vector3 &t) {
 *  \param[out] translatin matrix
 *  \date       2016-08-25
 */
-static void decomposeT(Matrix4 &T, Matrix3 &R, Vector3 &t) {
+static void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
     R = T.block<3, 3>(0, 0);
     t = T.block<3, 1>(0, 3);
 }
@@ -81,7 +81,7 @@ static void decomposeT(Matrix4 &T, Matrix3 &R, Vector3 &t) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix2 getRotMat2D(float deg) {
+static Matrix2 getRotMat2D(const float deg) {
     Eigen::Rotation2D<float> rot2(deg * toRad());
     return rot2.toRotationMatrix();
 }
@@ -95,7 +95,7 @@ static Matrix2 getRotMat2D(float deg) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix3 getRotMat3D(float degX, float degY, float degZ) {
+static Matrix3 getRotMat3D(const float degX, const float degY, const float degZ) {
     Matrix3 R;
     R = Eigen::AngleAxisf(degX * toRad(), Eigen::Vector3f::UnitX()) *
         Eigen::AngleAxisf(degY * toRad(), Eigen::Vector3f::UnitY()) * Eigen::AngleAxisf(degZ * toRad(), Eigen::Vector3f::UnitZ());
@@ -182,7 +182,7 @@ Vector<dim> degToRad(Vector<dim> deg) {
 *  \param[out] rad
 *  \date       2016-11-16
 */
-static float degToRad(float deg) {
+static float degToRad(const float deg) {
     return deg * toRad();
 }
 

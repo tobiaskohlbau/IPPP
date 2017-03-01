@@ -35,7 +35,7 @@ namespace utilVec {
 *  \date       2016-12-23
 */
 template <unsigned int dim1, unsigned int dim2>
-Vector<dim1 + dim2> append(Vector<dim1> first, Vector<dim2> second) {
+Vector<dim1 + dim2> append(const Vector<dim1> &first, const Vector<dim2> &second) {
     Vector<dim1 + dim2> vec;
     for (int i = 0; i < dim1; ++i)
         vec[i] = first[i];
@@ -53,7 +53,7 @@ Vector<dim1 + dim2> append(Vector<dim1> first, Vector<dim2> second) {
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Vector<dim + 1> append(Vector<dim> source, float add) {
+Vector<dim + 1> append(const Vector<dim> &source, const float add) {
     Vector<dim + 1> vec;
     for (int i = 0; i < dim; ++i)
         vec[i] = source[i];
@@ -104,7 +104,7 @@ static Vector6 Vecf(float x, float y, float z, float rx, float ry, float rz) {
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Vector<dim> Vecf(float data) {
+Vector<dim> Vecf(const float data) {
     Vector<dim> vec;
     for (unsigned int i = 0; i < dim; ++i)
         vec[i] = data;
@@ -119,7 +119,7 @@ Vector<dim> Vecf(float data) {
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Vector<dim> Vecf(float data[]) {
+Vector<dim> Vecf(const float data[]) {
     Vector<dim> vec;
     for (unsigned int i = 0; i < dim; ++i)
         vec[i] = data[i];
@@ -134,7 +134,7 @@ Vector<dim> Vecf(float data[]) {
 *  \param[out] result Vector
 *  \date       2016-12-23
 */
-static VectorX Vecf(unsigned int dim, float data[]) {
+static VectorX Vecf(const unsigned int dim, const float data[]) {
     VectorX vec(dim);
     for (unsigned int i = 0; i < dim; ++i)
         vec[i] = data[i];

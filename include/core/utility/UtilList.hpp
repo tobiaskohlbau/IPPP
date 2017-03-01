@@ -71,7 +71,7 @@ std::shared_ptr<Node<dim>> removeMinFromList(std::vector<std::shared_ptr<Node<di
 *  \date       2016-12-19
 */
 template <unsigned int dim>
-bool contains(std::vector<std::shared_ptr<Node<dim>>> &list, std::shared_ptr<Node<dim>> &node) {
+bool contains(const std::vector<std::shared_ptr<Node<dim>>> &list, const std::shared_ptr<Node<dim>> &node) {
     if (std::find(list.begin(), list.end(), node) != list.end())
         return true;
     else
