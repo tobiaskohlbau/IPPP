@@ -34,22 +34,22 @@ class PRMPlanner : public Planner<dim> {
   public:
     PRMPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim> &options);
 
-    bool computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads);
+    bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
 
-    void startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
-    void startPlannerPhase(unsigned int nbOfThreads = 1);
+    void startSamplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfThreads = 1);
+    void startPlannerPhase(const unsigned int nbOfThreads = 1);
 
-    bool queryPath(Vector<dim> start, Vector<dim> goal);
+    bool queryPath(const Vector<dim> start, const Vector<dim> goal);
     bool aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode);
     void expandNode(std::shared_ptr<Node<dim>> currentNode);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(float trajectoryStepSize, bool smoothing = true);
+    std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing = true);
 
   protected:
-    void samplingPhase(unsigned int nbOfNodes);
-    void plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex);
-    std::shared_ptr<Node<dim>> connectNode(Vector<dim> &node);
+    void samplingPhase(const unsigned int nbOfNodes);
+    void plannerPhase(const unsigned int startNodeIndex, const unsigned int endNodeIndex);
+    std::shared_ptr<Node<dim>> connectNode(const Vector<dim> &node);
 
     float m_rangeSize;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
@@ -88,7 +88,7 @@ PRMPlanner<dim>::PRMPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const 
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool PRMPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads) {
+bool PRMPlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads) {
     startSamplingPhase(numNodes, numThreads);
     m_graph->sortTree();
     startPlannerPhase(numThreads);
@@ -104,15 +104,16 @@ bool PRMPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned 
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRMPlanner<dim>::startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads) {
+void PRMPlanner<dim>::startSamplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfThreads) {
+    unsigned int countNodes = nbOfNodes;
     if (nbOfThreads == 1) {
         samplingPhase(nbOfNodes);
     } else {
-        nbOfNodes /= nbOfThreads;
+        countNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
         for (int i = 0; i < nbOfThreads; ++i) {
-            threads.push_back(std::thread(&PRMPlanner::samplingPhase, this, nbOfNodes));
+            threads.push_back(std::thread(&PRMPlanner::samplingPhase, this, countNodes));
         }
 
         for (int i = 0; i < nbOfThreads; ++i)
@@ -127,7 +128,7 @@ void PRMPlanner<dim>::startSamplingPhase(unsigned int nbOfNodes, unsigned int nb
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
+void PRMPlanner<dim>::samplingPhase(const unsigned int nbOfNodes) {
     Vector<dim> sample;
     for (int i = 0; i < nbOfNodes; ++i) {
         sample = m_sampling->getSample();
@@ -145,7 +146,7 @@ void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRMPlanner<dim>::startPlannerPhase(unsigned int nbOfThreads) {
+void PRMPlanner<dim>::startPlannerPhase(const unsigned int nbOfThreads) {
     unsigned int nodeCount = m_graph->size();
     if (nbOfThreads == 1) {
         plannerPhase(0, nodeCount);
@@ -171,7 +172,7 @@ void PRMPlanner<dim>::startPlannerPhase(unsigned int nbOfThreads) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex) {
+void PRMPlanner<dim>::plannerPhase(const unsigned int startNodeIndex, const unsigned int endNodeIndex) {
     if (startNodeIndex > endNodeIndex) {
         Logging::error("Start index is larger than end index", this);
         return;
@@ -202,7 +203,7 @@ void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int end
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-bool PRMPlanner<dim>::queryPath(Vector<dim> start, Vector<dim> goal) {
+bool PRMPlanner<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
     std::shared_ptr<Node<dim>> sourceNode = connectNode(start);
     std::shared_ptr<Node<dim>> targetNode = connectNode(goal);
     if (sourceNode == nullptr || targetNode == nullptr) {
@@ -238,7 +239,7 @@ bool PRMPlanner<dim>::queryPath(Vector<dim> start, Vector<dim> goal) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Vector<dim> &vec) {
+std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(const Vector<dim> &vec) {
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(vec, m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
@@ -336,7 +337,7 @@ std::vector<std::shared_ptr<Node<dim>>> PRMPlanner<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> PRMPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
+std::vector<Vector<dim>> PRMPlanner<dim>::getPath(const float trajectoryStepSize, const bool smoothing) {
     return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 

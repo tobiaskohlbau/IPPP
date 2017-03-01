@@ -25,9 +25,9 @@
 
 #include <core/dataObj/Graph.hpp>
 #include <core/module/Identifier.h>
-#include <core/module/sampling/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <core/module/sampling/Sampling.hpp>
 #include <core/types.h>
 #include <pathPlanner/options/PlannerOptions.hpp>
 #include <robot/RobotBase.hpp>
@@ -48,13 +48,14 @@ class Planner : public Identifier {
     Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options);
 
   public:
-    virtual bool computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads) = 0;
+    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
+                             const unsigned int numThreads) = 0;
 
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
-    virtual std::vector<Vector<dim>> getPath(float trajectoryStepSize, bool smoothing) = 0;
+    virtual std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
-    std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, float trajectoryStepSize,
-                                              bool smoothing);
+    std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
+                                              const float trajectoryStepSize, const bool smoothing);
 
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
@@ -121,7 +122,7 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                                        float trajectoryStepSize, bool smoothing) {
+                                                        const float trajectoryStepSize, const bool smoothing) {
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes;
     if (smoothing)
         smoothedNodes = smoothPath(nodes);

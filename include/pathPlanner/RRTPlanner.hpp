@@ -34,15 +34,15 @@ class RRTPlanner : public Planner<dim> {
   public:
     RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options);
 
-    bool computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads);
-    bool setInitNode(Vector<dim> start);
+    bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
+    bool setInitNode(const Vector<dim> start);
     bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
-    virtual bool connectGoalNode(Vector<dim> goal) = 0;
+    virtual bool connectGoalNode(const Vector<dim> goal) = 0;
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(float trajectoryStepSize, bool smoothing = true);
-    std::shared_ptr<Node<dim>> getInitNode();
-    std::shared_ptr<Node<dim>> getGoalNode();
+    std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing = true);
+    std::shared_ptr<Node<dim>> getInitNode() const;
+    std::shared_ptr<Node<dim>> getGoalNode() const;
 
   protected:
     void computeTreeThread(unsigned int nbOfNodes);
@@ -90,7 +90,8 @@ RRTPlanner<dim>::RRTPlanner(const std::string &name, const std::shared_ptr<Robot
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRTPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads) {
+bool RRTPlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
+                                  const unsigned int numThreads) {
     if (!setInitNode(start))
         return false;
 
@@ -107,7 +108,7 @@ bool RRTPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned 
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRTPlanner<dim>::setInitNode(Vector<dim> start) {
+bool RRTPlanner<dim>::setInitNode(const Vector<dim> start) {
     if (m_collision->controlVec(start)) {
         Logging::warning("Init Node could not be connected", this);
         return false;
@@ -129,20 +130,21 @@ bool RRTPlanner<dim>::setInitNode(Vector<dim> start) {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRTPlanner<dim>::computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads) {
+bool RRTPlanner<dim>::computeTree(const unsigned int nbOfNodes, const unsigned int nbOfThreads) {
     if (m_initNode == nullptr) {
         Logging::error("Init Node is not connected", this);
         return false;
     }
 
+    unsigned int countNodes = nbOfNodes;
     if (nbOfThreads == 1) {
         computeTreeThread(nbOfNodes);
     } else {
-        nbOfNodes /= nbOfThreads;
+        countNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
         for (int i = 0; i < nbOfThreads; ++i) {
-            threads.push_back(std::thread(&RRTPlanner::computeTreeThread, this, nbOfNodes));
+            threads.push_back(std::thread(&RRTPlanner::computeTreeThread, this, countNodes));
         }
 
         for (int i = 0; i < nbOfThreads; ++i)
@@ -159,7 +161,7 @@ bool RRTPlanner<dim>::computeTree(unsigned int nbOfNodes, unsigned int nbOfThrea
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-void RRTPlanner<dim>::computeTreeThread(unsigned int nbOfNodes) {
+void RRTPlanner<dim>::computeTreeThread(const unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
         Vector<dim> randVec = m_sampling->getSample();
         std::shared_ptr<Node<dim>> newNode;
@@ -198,7 +200,7 @@ std::vector<std::shared_ptr<Node<dim>>> RRTPlanner<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> RRTPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
+std::vector<Vector<dim>> RRTPlanner<dim>::getPath(const float trajectoryStepSize, const bool smoothing) {
     std::vector<Vector<dim>> path;
     if (!m_pathPlanned) {
         Logging::warning("Path is not complete", this);
@@ -241,7 +243,7 @@ Vector<dim> RRTPlanner<dim>::computeNodeNew(const Vector<dim> &randNode, const V
 *  \date       2016-06-01
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> RRTPlanner<dim>::getInitNode() {
+std::shared_ptr<Node<dim>> RRTPlanner<dim>::getInitNode() const {
     return m_initNode;
 }
 
@@ -252,7 +254,7 @@ std::shared_ptr<Node<dim>> RRTPlanner<dim>::getInitNode() {
 *  \date       2016-06-01
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> RRTPlanner<dim>::getGoalNode() {
+std::shared_ptr<Node<dim>> RRTPlanner<dim>::getGoalNode() const {
     return m_goalNode;
 }
 
