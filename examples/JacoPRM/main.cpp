@@ -22,7 +22,9 @@ int main(int argc, char** argv) {
     std::shared_ptr<Jaco> robot(new rmpl::Jaco());
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
-    PRMOptions<6> options(30, 0.5, collision);
+    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(0.5, collision));
+    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory));
+    PRMOptions<6> options(30, collision, trajectory, sampling);
     PRMPlanner<6> planner(robot, options);
 
     clock_t begin = std::clock();

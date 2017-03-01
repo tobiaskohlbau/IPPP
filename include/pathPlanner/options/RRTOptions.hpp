@@ -31,12 +31,12 @@ namespace rmpl {
 template <unsigned int dim>
 class RRTOptions : public PlannerOptions<dim> {
   public:
-    RRTOptions(float stepSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision,
-               SamplerMethod samplerMethod = SamplerMethod::randomly, SamplingStrategy strategy = SamplingStrategy::normal,
-               std::shared_ptr<Heuristic<dim>> heuristic = std::make_shared<Heuristic<dim>>(Heuristic<dim>()),
-               unsigned int sortingCountGraph = 0);
+    RRTOptions(const float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+               const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
+               const std::shared_ptr<Heuristic<dim>> &heuristic = std::make_shared<Heuristic<dim>>(Heuristic<dim>()),
+               const unsigned int sortingCountGraph = 0);
 
-    void setStepSize(float stepSize);
+    void setStepSize(const float stepSize);
     float getStepSize() const;
 
   private:
@@ -53,10 +53,11 @@ class RRTOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-RRTOptions<dim>::RRTOptions(float stepSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision,
-                            SamplerMethod method, SamplingStrategy strategy, std::shared_ptr<Heuristic<dim>> heuristic,
-                            unsigned int sortingCountGraph)
-    : PlannerOptions<dim>(trajectoryStepSize, collision, method, strategy, heuristic, sortingCountGraph) {
+RRTOptions<dim>::RRTOptions(const float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+                            const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
+                            const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<Heuristic<dim>> &heuristic,
+                            const unsigned int sortingCountGraph)
+    : PlannerOptions<dim>(collision, planner, sampling, heuristic, sortingCountGraph) {
     setStepSize(stepSize);
 }
 
@@ -67,7 +68,7 @@ RRTOptions<dim>::RRTOptions(float stepSize, float trajectoryStepSize, std::share
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-void RRTOptions<dim>::setStepSize(float stepSize) {
+void RRTOptions<dim>::setStepSize(const float stepSize) {
     if (stepSize <= 0) {
         Logging::warning("Step size was smaller than 0 and was set up to 1", this);
         m_stepSize = 1;

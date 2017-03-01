@@ -26,7 +26,9 @@ void simpleRRT() {
     robot->saveMeshConfig(utilVec::Vecf(0, 0, 0, 0, 0, 0));
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
-    RRTOptions<6> options(30, 0.5, collision);
+    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(0.5, collision));
+    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory));
+    RRTOptions<6> options(30, collision, trajectory, sampling);
     NormalRRTPlanner<6> planner(robot, options);
     Vector6 start = utilVec::Vecf(180, 180, 180, 180, 180, 180);
     Vector6 goal = utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
@@ -65,7 +67,9 @@ void treeConnection() {
 
     // create two trees from init and from goal
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
-    RRTOptions<6> options(20, 0.5, collision, SamplerMethod::standardDistribution);
+    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(0.5, collision));
+    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory));
+    RRTOptions<6> options(20, collision, trajectory, sampling);
     RRTStarPlanner<6> plannerGoalNode(robot, options);
     RRTStarPlanner<6> plannerInitNode(robot, options);
 

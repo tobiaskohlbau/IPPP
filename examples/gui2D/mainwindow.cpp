@@ -54,15 +54,15 @@ void MainWindow::computePath() {
     }
     Logging::info("Compute path ...", this);
 
-    SamplerMethod sampler = SamplerMethod::randomly;
+    SamplerMethod samplerMethod = SamplerMethod::randomly;
     if (m_samplingStrategy == 1)
-        sampler = SamplerMethod::uniform;
+        samplerMethod = SamplerMethod::uniform;
     else if (m_samplerMethod == 2)
-        sampler = SamplerMethod::standardDistribution;
+        samplerMethod = SamplerMethod::standardDistribution;
 
-    SamplingStrategy sampling = SamplingStrategy::normal;
+    SamplingStrategy samplingStrategy = SamplingStrategy::normal;
     if (m_samplingStrategy == 1)
-        sampling = SamplingStrategy::nearObstacles;
+        samplingStrategy = SamplingStrategy::nearObstacles;
 
     if (m_robotType == 1) {
         std::shared_ptr<rmpl::Heuristic<3>> edgeH = std::make_shared<rmpl::Heuristic<3>>(rmpl::Heuristic<3>());;
@@ -92,9 +92,11 @@ void MainWindow::computePath() {
         std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
         robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(robot));
+        std::shared_ptr<TrajectoryPlanner<3>> trajectory(new TrajectoryPlanner<3>(m_trajectoryStepSize, collision));
+        std::shared_ptr<Sampling<3>> sampling(new Sampling<3>(robot, collision, trajectory, samplerMethod, samplingStrategy));
 
-        RRTOptions<3> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
-        PRMOptions<3> prmOptions(m_prmDistance, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
+        RRTOptions<3> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, edgeH);
+        PRMOptions<3> prmOptions(m_prmDistance, collision, trajectory, sampling, edgeH);
 
         if (m_plannerType == 0)
             m_planner3d = std::shared_ptr<NormalRRTPlanner<3>>(new NormalRRTPlanner<3>(robot, rrtOptions));
@@ -131,9 +133,11 @@ void MainWindow::computePath() {
         std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
         robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
+        std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(m_trajectoryStepSize, collision));
+        std::shared_ptr<Sampling<2>> sampling(new Sampling<2>(robot, collision, trajectory, samplerMethod, samplingStrategy));
 
-        RRTOptions<2> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
-        PRMOptions<2> prmOptions(m_prmDistance, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
+        RRTOptions<2> rrtOptions(m_rrtStepsize, collision, trajectory, sampling);
+        PRMOptions<2> prmOptions(m_prmDistance, collision, trajectory, sampling);
 
         if (m_plannerType == 0)
             m_planner2d = std::shared_ptr<NormalRRTPlanner<2>>(new NormalRRTPlanner<2>(robot, rrtOptions));

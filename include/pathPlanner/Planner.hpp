@@ -60,7 +60,7 @@ class Planner : public Identifier {
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
 
     std::shared_ptr<TrajectoryPlanner<dim>> m_planner;
-    std::shared_ptr<Sampling<dim>> m_sampler;
+    std::shared_ptr<Sampling<dim>> m_sampling;
     std::shared_ptr<CollisionDetection<dim>> m_collision;
     std::shared_ptr<Graph<dim>> m_graph;
     std::shared_ptr<RobotBase<dim>> m_robot;
@@ -95,9 +95,8 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<d
     m_robot = robot;
     m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(options.getSortCountGraph()));
     m_collision = m_options.getCollisionDetection();
-    m_planner = std::shared_ptr<TrajectoryPlanner<dim>>(new TrajectoryPlanner<dim>(options.getTrajectoryStepSize(), m_collision));
-    m_sampler = std::shared_ptr<Sampling<dim>>(
-        new Sampling<dim>(m_robot, m_collision, m_planner, options.getSamplerMethod(), options.getSamplingStrategy()));
+    m_planner = options.getTrajectoryPlanner();
+    m_sampling = options.getSampling();
 }
 
 /*!

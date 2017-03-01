@@ -60,7 +60,7 @@ class RRTPlanner : public Planner<dim> {
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_planner;
     using Planner<dim>::m_robot;
-    using Planner<dim>::m_sampler;
+    using Planner<dim>::m_sampling;
 };
 
 /*!
@@ -114,7 +114,7 @@ bool RRTPlanner<dim>::setInitNode(Vector<dim> start) {
     }
 
     std::shared_ptr<Node<dim>> initNode(new Node<dim>(start));
-    m_sampler->setMeanOfDistribution(start);
+    m_sampling->setOrigin(start);
     m_initNode = initNode;
     m_graph->addNode(m_initNode);
     return true;
@@ -161,7 +161,7 @@ bool RRTPlanner<dim>::computeTree(unsigned int nbOfNodes, unsigned int nbOfThrea
 template <unsigned int dim>
 void RRTPlanner<dim>::computeTreeThread(unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
-        Vector<dim> randVec = m_sampler->getSample();
+        Vector<dim> randVec = m_sampling->getSample();
         std::shared_ptr<Node<dim>> newNode;
         computeRRTNode(randVec, newNode);
 

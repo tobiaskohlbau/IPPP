@@ -61,7 +61,7 @@ class PRMPlanner : public Planner<dim> {
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_planner;
     using Planner<dim>::m_robot;
-    using Planner<dim>::m_sampler;
+    using Planner<dim>::m_sampling;
 };
 
 /*!
@@ -129,7 +129,7 @@ template <unsigned int dim>
 void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
     Vector<dim> sample;
     for (int i = 0; i < nbOfNodes; ++i) {
-        sample = m_sampler->getSample();
+        sample = m_sampling->getSample();
         if (!m_collision->controlVec(sample)) {
             m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
         }
