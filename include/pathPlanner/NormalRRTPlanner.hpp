@@ -50,7 +50,7 @@ class NormalRRTPlanner : public RRTPlanner<dim> {
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_planner;
     using Planner<dim>::m_robot;
-    using Planner<dim>::m_sampler;
+    using Planner<dim>::m_sampling;
     using RRTPlanner<dim>::m_initNode;
     using RRTPlanner<dim>::m_goalNode;
     using RRTPlanner<dim>::m_stepSize;

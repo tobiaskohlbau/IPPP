@@ -46,16 +46,16 @@ class Sampling : public Identifier {
              SamplingStrategy strategy = SamplingStrategy::normal);
 
     Vector<dim> getSample();
-    bool setMeanOfDistribution(const Vector<dim> &mean);
+    bool setOrigin(const Vector<dim> &mean);
 
   private:
     Vector<dim> sampleNearObstacle();
 
     SamplingStrategy m_strategy;
 
-    std::shared_ptr<CollisionDetection<dim>> m_collision;
-    std::shared_ptr<Sampler<dim>> m_sampler;
-    std::shared_ptr<TrajectoryPlanner<dim>> m_planner;
+    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
+    std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
+    std::shared_ptr<TrajectoryPlanner<dim>> m_planner = nullptr;
 };
 
 /*!
@@ -129,8 +129,8 @@ Vector<dim> Sampling<dim>::sampleNearObstacle() {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-bool Sampling<dim>::setMeanOfDistribution(const Vector<dim> &mean) {
-    return m_sampler->setMeanOfDistribution(mean);
+bool Sampling<dim>::setOrigin(const Vector<dim> &mean) {
+    return m_sampler->setOrigin(mean);
 }
 
 } /* namespace rmpl */

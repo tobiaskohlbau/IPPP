@@ -44,7 +44,7 @@ class Sampler : public Identifier {
     Vector<dim> getSample();
     float getRandomAngle();
 
-    bool setMeanOfDistribution(const Vector<dim> &mean);
+    bool setOrigin(const Vector <dim> &mean);
 
   private:
     Vector<dim> sampleStandardDist();
@@ -125,7 +125,7 @@ float Sampler<dim>::getRandomAngle() {
 *  \date       2016-11-14
 */
 template <unsigned int dim>
-bool Sampler<dim>::setMeanOfDistribution(const Vector<dim> &mean) {
+bool Sampler<dim>::setOrigin(const Vector <dim> &mean) {
     if (mean.rows() != dim) {
         Logging::error("Wrong dimension of mean vector", this);
         return false;
