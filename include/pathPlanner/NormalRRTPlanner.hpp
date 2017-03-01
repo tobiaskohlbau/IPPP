@@ -37,7 +37,7 @@ class NormalRRTPlanner : public RRTPlanner<dim> {
         : RRTPlanner<dim>("Normal RRT Planner", robot, options) {
     }
 
-    bool connectGoalNode(Vector<dim> goal);
+    bool connectGoalNode(const Vector<dim> goal);
 
   protected:
     void computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode);

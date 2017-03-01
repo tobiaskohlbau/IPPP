@@ -41,7 +41,7 @@ class TrajectoryPlanner : public Identifier {
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
 
-    void setStepSize(float stepSize);
+    void setStepSize(const float stepSize);
     float getStepSize() const;
 
   private:
@@ -171,7 +171,7 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-void TrajectoryPlanner<dim>::setStepSize(float stepSize) {
+void TrajectoryPlanner<dim>::setStepSize(const float stepSize) {
     if (stepSize <= 0) {
         m_stepSize = 1;
         Logging::warning("Step size has to be larger than 0, it has set to 1!", this);
