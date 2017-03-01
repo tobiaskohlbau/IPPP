@@ -16,22 +16,20 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SAMPLING_H
-#define SAMPLING_H
+#ifndef SAMPLING_HPP
+#define SAMPLING_HPP
 
 #include <math.h>
 
 #include <Eigen/Core>
 
 #include <core/module/Identifier.h>
-#include <core/module/sampler/Sampler.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <core/module/sampler/Sampler.hpp>
 #include <robot/RobotBase.hpp>
 
 namespace rmpl {
-
-enum SamplingStrategy { normal, nearObstacles };
 
 /*!
 * \brief   Class Sampling creates sample Vectors with the passed strategy, for creating single Vectors the Sampler is used.
@@ -42,20 +40,15 @@ template <unsigned int dim>
 class Sampling : public Identifier {
   public:
     Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-             const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplerMethod method = SamplerMethod::randomly,
-             SamplingStrategy strategy = SamplingStrategy::normal);
+             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, SamplerMethod method = SamplerMethod::randomly);
 
-    Vector<dim> getSample();
+    virtual Vector<dim> getSample() const;
     bool setOrigin(const Vector<dim> &mean);
 
-  private:
-    Vector<dim> sampleNearObstacle();
-
-    SamplingStrategy m_strategy;
-
+  protected:
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
-    std::shared_ptr<TrajectoryPlanner<dim>> m_planner = nullptr;
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
 };
 
 /*!
@@ -68,12 +61,11 @@ class Sampling : public Identifier {
 */
 template <unsigned int dim>
 Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                        const std::shared_ptr<TrajectoryPlanner<dim>> &planner, SamplerMethod method, SamplingStrategy strategy)
+                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, SamplerMethod method)
     : Identifier("Sampling") {
-    m_strategy = strategy;
 
     m_collision = collision;
-    m_planner = planner;
+    m_trajectory = trajectory;
     m_sampler = std::shared_ptr<Sampler<dim>>(new Sampler<dim>(robot, method));
 }
 
@@ -84,41 +76,8 @@ Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std:
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Vector<dim> Sampling<dim>::getSample() {
-    if (m_strategy == SamplingStrategy::nearObstacles)
-        return sampleNearObstacle();
-    else
-        return m_sampler->getSample();
-}
-
-/*!
-*  \brief      Sample in the neighborhood of obstacles
-*  \details    If Sample is in collision, second random collision free sample will be computed and by binary search the
-*              nearest collision free sample to the first sample, will be taken.
-*  \author     Sascha Kaden
-*  \param[out] sample Vector
-*  \date       2016-12-20
-*/
-template <unsigned int dim>
-Vector<dim> Sampling<dim>::sampleNearObstacle() {
-    Vector<dim> sample1 = m_sampler->getSample();
-    if (!m_collision->controlVec(sample1)) {
-        return sample1;
-    } else {
-        Vector<dim> sample2;
-        do {
-            sample2 = m_sampler->getSample();
-        } while (m_collision->controlVec(sample2));
-        std::vector<Vector<dim>> path = m_planner->calcTrajectoryBin(sample2, sample1);
-        sample1 = path[0];
-        for (auto point : path) {
-            if (!m_collision->controlVec(point))
-                sample1 = point;
-            else
-                break;
-        }
-        return sample1;
-    }
+Vector<dim> Sampling<dim>::getSample() const {
+    return m_sampler->getSample();
 }
 
 /*!
@@ -135,4 +94,4 @@ bool Sampling<dim>::setOrigin(const Vector<dim> &mean) {
 
 } /* namespace rmpl */
 
-#endif /* SAMPLING_H */
+#endif /* SAMPLING_HPP */

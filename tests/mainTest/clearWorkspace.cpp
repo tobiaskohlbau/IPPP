@@ -19,6 +19,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <core/module/collisionDetection/CollisionDetection2D.hpp>
+#include <core/module/sampling/SamplingNearObstacle.hpp>
 #include <core/utility/heuristic/HeuristicInf.hpp>
 #include <core/utility/heuristic/HeuristicL1.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
@@ -50,10 +51,6 @@ BOOST_AUTO_TEST_CASE(clearWorkspace) {
     samplerMethods.push_back(SamplerMethod::uniform);
     samplerMethods.push_back(SamplerMethod::standardDistribution);
 
-    std::vector<SamplingStrategy> samplingStrategies;
-    samplingStrategies.push_back(SamplingStrategy::normal);
-    samplingStrategies.push_back(SamplingStrategy::nearObstacles);
-
     Eigen::MatrixXi workspace = Eigen::MatrixXi::Constant(100, 100, 250);
     Vector2 minBoundary(0.0, 0.0);
     Vector2 maxBoundary(workspace.rows(), workspace.cols());
@@ -62,7 +59,9 @@ BOOST_AUTO_TEST_CASE(clearWorkspace) {
     robot->setWorkspace(model);
     std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
     std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(1.5, collision));
-    std::shared_ptr<Sampling<2>> sampling(new Sampling<2>(robot, collision, trajectory));
+    std::vector<std::shared_ptr<Sampling<2>>> samplings;
+    samplings.push_back(std::shared_ptr<Sampling<dim>>(new Sampling<2>(robot, collision, trajectory)));
+    samplings.push_back(std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<2>(robot, collision, trajectory)));
     std::shared_ptr<Planner<dim>> planner;
 
     Vector2 start(5, 5);
@@ -71,7 +70,7 @@ BOOST_AUTO_TEST_CASE(clearWorkspace) {
     BOOST_TEST_CHECKPOINT("Options order: sampler, sampling, edgeHeuristic");
     for (auto heuristic : heuristics) {
 //        for (auto sampler : samplerMethods) {
-//            for (auto sampling : samplingStrategies) {
+            for (auto sampling : samplings) {
                 PRMOptions<dim> prmOptions(30, collision, trajectory, sampling, heuristic);
                 PRMPlanner<dim> prmPlanner(robot, prmOptions);
 //                BOOST_TEST_CHECKPOINT("Calling PRM planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
@@ -89,7 +88,7 @@ BOOST_AUTO_TEST_CASE(clearWorkspace) {
 //                                      << sampler << " | " << sampling << " | ");
                 starRRTPlanner.computePath(start, goal, 500, 2);
 //            }
-//        }
+        }
     }
 }
 

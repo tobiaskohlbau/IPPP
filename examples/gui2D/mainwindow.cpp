@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <core/module/collisionDetection/CollisionDetection2D.hpp>
 #include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>
+#include <core/module/sampling/SamplingNearObstacle.hpp>
 #include <core/utility/heuristic/HeuristicL1.hpp>
 #include <core/utility/heuristic/HeuristicInf.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
@@ -60,10 +61,6 @@ void MainWindow::computePath() {
     else if (m_samplerMethod == 2)
         samplerMethod = SamplerMethod::standardDistribution;
 
-    SamplingStrategy samplingStrategy = SamplingStrategy::normal;
-    if (m_samplingStrategy == 1)
-        samplingStrategy = SamplingStrategy::nearObstacles;
-
     if (m_robotType == 1) {
         std::shared_ptr<rmpl::Heuristic<3>> edgeH = std::make_shared<rmpl::Heuristic<3>>(rmpl::Heuristic<3>());;
         if (m_edgeHeuristic == 1) {
@@ -93,7 +90,9 @@ void MainWindow::computePath() {
         robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(robot));
         std::shared_ptr<TrajectoryPlanner<3>> trajectory(new TrajectoryPlanner<3>(m_trajectoryStepSize, collision));
-        std::shared_ptr<Sampling<3>> sampling(new Sampling<3>(robot, collision, trajectory, samplerMethod, samplingStrategy));
+        std::shared_ptr<Sampling<3>> sampling(new Sampling<3>(robot, collision, trajectory, samplerMethod));
+        if (m_samplingStrategy == 1)
+            sampling = std::shared_ptr<Sampling<3>>(new SamplingNearObstacle<3>(robot, collision, trajectory, samplerMethod));
 
         RRTOptions<3> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, edgeH);
         PRMOptions<3> prmOptions(m_prmDistance, collision, trajectory, sampling, edgeH);
@@ -134,7 +133,9 @@ void MainWindow::computePath() {
         robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
         std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(m_trajectoryStepSize, collision));
-        std::shared_ptr<Sampling<2>> sampling(new Sampling<2>(robot, collision, trajectory, samplerMethod, samplingStrategy));
+        std::shared_ptr<Sampling<2>> sampling(new Sampling<2>(robot, collision, trajectory, samplerMethod));
+        if (m_samplingStrategy == 1)
+            sampling = std::shared_ptr<Sampling<2>>(new SamplingNearObstacle<2>(robot, collision, trajectory, samplerMethod));
 
         RRTOptions<2> rrtOptions(m_rrtStepsize, collision, trajectory, sampling);
         PRMOptions<2> prmOptions(m_prmDistance, collision, trajectory, sampling);
