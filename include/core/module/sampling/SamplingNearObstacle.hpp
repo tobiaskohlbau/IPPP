@@ -32,7 +32,7 @@ template <unsigned int dim>
 class SamplingNearObstacle : public Sampling<dim> {
   public:
     SamplingNearObstacle(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, SamplerMethod method = SamplerMethod::randomly);
+             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
 
     Vector<dim> getSample() const override;
 
@@ -51,8 +51,8 @@ class SamplingNearObstacle : public Sampling<dim> {
 */
 template <unsigned int dim>
 SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, SamplerMethod method)
-    : Sampling<dim>(robot, collision, trajectory, method) {
+                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler)
+    : Sampling<dim>(robot, collision, trajectory, sampler) {
 }
 
 /*!
