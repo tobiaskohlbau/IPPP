@@ -111,8 +111,9 @@ void PRMPlanner<dim>::startSamplingPhase(unsigned int nbOfNodes, unsigned int nb
         nbOfNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (int i = 0; i < nbOfThreads; ++i)
+        for (int i = 0; i < nbOfThreads; ++i) {
             threads.push_back(std::thread(&PRMPlanner::samplingPhase, this, nbOfNodes));
+        }
 
         for (int i = 0; i < nbOfThreads; ++i)
             threads[i].join();
