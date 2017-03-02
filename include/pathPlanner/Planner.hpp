@@ -136,8 +136,9 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     for (int i = 0; i < smoothedNodes.size() - 1; ++i) {
         std::vector<Vector<dim>> tempVecs =
             m_planner->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues());
-        for (auto vec : tempVecs)
+        for (auto vec : tempVecs) {
             path.push_back(vec);
+        }
     }
 
     if (trajectoryStepSize < m_planner->getStepSize()) {
@@ -157,9 +158,9 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
             }
         }
 
-        if (newPath.back() != path.back())
+        if (newPath.back() != path.back()) {
             newPath.push_back(path.back());
-
+        }
         path = newPath;
     }
     return path;

@@ -49,10 +49,11 @@ Model2D::Model2D(Eigen::MatrixXi space) : ModelContainer("Model2D") {
 *  \date       2017-02-19
 */
 bool Model2D::empty() const {
-    if (m_space.cols() == -1)
+    if (m_space.cols() == -1) {
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 } /* namespace rmpl */

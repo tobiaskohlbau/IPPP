@@ -99,8 +99,9 @@ KDTree<dim, T>::KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) : Identif
 */
 template <unsigned int dim, class T>
 KDTree<dim, T>::~KDTree() {
-    if (m_root != nullptr)
+    if (m_root != nullptr) {
         removeNode(m_root);
+    }
 }
 
 template <unsigned int dim, class T>
@@ -159,10 +160,11 @@ void KDTree<dim, T>::addNode(const Vector<dim> &vec, const T &node) {
     shrKDNode->axis = cd;
     shrKDNode->value = shrKDNode->vec[cd];
     m_mutex.lock();
-    if (dir == left)
+    if (dir == left) {
         last->left = shrKDNode;
-    else
+    } else {
         last->right = shrKDNode;
+    }
     m_mutex.unlock();
 }
 
@@ -201,9 +203,9 @@ std::shared_ptr<KDNode<dim, T>> KDTree<dim, T>::insert(std::shared_ptr<KDNode<di
 */
 template <unsigned int dim, class T>
 T KDTree<dim, T>::searchNearestNeighbor(const Vector<dim> &vec) {
-    if (m_root == nullptr)
+    if (m_root == nullptr) {
         return nullptr;
-
+    }
     std::shared_ptr<KDNode<dim, T>> node;
     float bestDist = std::numeric_limits<float>::max();
     NNS(vec, m_root, node, bestDist);
@@ -221,9 +223,9 @@ T KDTree<dim, T>::searchNearestNeighbor(const Vector<dim> &vec) {
 template <unsigned int dim, class T>
 std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &vec, float range) {
     std::vector<T> nodes;
-    if (m_root == nullptr)
+    if (m_root == nullptr) {
         return nodes;
-
+    }
     std::vector<std::shared_ptr<KDNode<dim, T>>> kdNodes;
     float sqRange = range * range;
     Vector<dim> maxBoundary = vec;
@@ -261,15 +263,19 @@ void KDTree<dim, T>::NNS(const Vector<dim> &vec, std::shared_ptr<KDNode<dim, T>>
         return;
     } else {
         if (vec[node->axis] <= node->value) {
-            if (vec[node->axis] - bestDist <= node->value && node->left != nullptr)
+            if (vec[node->axis] - bestDist <= node->value && node->left != nullptr) {
                 NNS(vec, node->left, refNode, bestDist);
-            if (vec[node->axis] + bestDist > node->value && node->right != nullptr)
+            }
+            if (vec[node->axis] + bestDist > node->value && node->right != nullptr) {
                 NNS(vec, node->right, refNode, bestDist);
+            }
         } else {
-            if (vec[node->axis] + bestDist > node->value && node->right != nullptr)
+            if (vec[node->axis] + bestDist > node->value && node->right != nullptr) {
                 NNS(vec, node->right, refNode, bestDist);
-            if (vec[node->axis] - bestDist <= node->value && node->left != nullptr)
+            }
+            if (vec[node->axis] - bestDist <= node->value && node->left != nullptr) {
                 NNS(vec, node->left, refNode, bestDist);
+            }
         }
     }
 }

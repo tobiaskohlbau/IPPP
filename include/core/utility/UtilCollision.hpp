@@ -32,13 +32,14 @@ static void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<rmp
     Matrix4 pose = robot->getPoseMat();
     Matrix4 As[dim];
     As[0] = pose * jointTrafos[0];
-    for (int i = 1; i < jointTrafos.size(); ++i)
+    for (int i = 1; i < jointTrafos.size(); ++i) {
         As[i] = As[i - 1] * jointTrafos[i];
-
+    }
     utilGeo::decomposeT(pose, poseR, poseT);
 
-    for (int i = 0; i < jointTrafos.size(); ++i)
+    for (int i = 0; i < jointTrafos.size(); ++i) {
         utilGeo::decomposeT(As[i], Rs[i], ts[i]);
+    }
 }
 }
 }

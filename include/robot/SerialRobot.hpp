@@ -130,9 +130,9 @@ Vector6 SerialRobot<dim>::getTcpPosition(const std::vector<Matrix4> &trafos) {
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
     Matrix4 robotToTcp = trafos[0];
-    for (int i = 1; i < 6; ++i)
+    for (int i = 1; i < 6; ++i) {
         robotToTcp *= trafos[i];
-
+    }
     Matrix4 basisToTcp = this->m_poseMat * robotToTcp;
 
     return utilGeo::poseMatToVec(basisToTcp);
@@ -164,8 +164,9 @@ std::shared_ptr<ModelContainer> SerialRobot<dim>::getModelFromJoint(unsigned int
 template <unsigned int dim>
 std::vector<std::shared_ptr<ModelContainer>> SerialRobot<dim>::getJointModels() {
     std::vector<std::shared_ptr<ModelContainer>> models;
-    for (auto joint : m_joints)
+    for (auto joint : m_joints) {
         models.push_back(joint.getModel());
+    }
     return models;
 }
 
@@ -191,9 +192,9 @@ void SerialRobot<dim>::saveMeshConfig(Vector<dim> angles) {
     std::vector<Matrix4> jointTrafos = getJointTrafos(angles);
     Matrix4 As[dim];
     As[0] = this->m_poseMat * jointTrafos[0];
-    for (int i = 1; i < jointTrafos.size(); ++i)
+    for (int i = 1; i < jointTrafos.size(); ++i) {
         As[i] = As[i - 1] * jointTrafos[i];
-
+    }
     saveMeshConfig(As);
 }
 

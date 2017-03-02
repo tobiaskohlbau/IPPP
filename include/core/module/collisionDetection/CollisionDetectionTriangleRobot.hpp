@@ -86,13 +86,14 @@ bool CollisionDetectionTriangleRobot::controlVec(const Vector3 &vec) {
 *  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::controlTrajectory(std::vector<Vector3> &vecs) {
-    if (vecs.size() == 0)
+    if (vecs.size() == 0) {
         return false;
-
-    for (int i = 0; i < vecs.size(); ++i)
-        if (checkTriangleRobot(vecs[i]))
+    }
+    for (int i = 0; i < vecs.size(); ++i) {
+        if (checkTriangleRobot(vecs[i])) {
             return true;
-
+        }
+    }
     return false;
 }
 
@@ -111,10 +112,11 @@ bool CollisionDetectionTriangleRobot::checkPoint2D(float x, float y) {
         return true;
     }
 
-    if (m_workspace2D(x, y) < 80)
+    if (m_workspace2D(x, y) < 80) {
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 /*!
@@ -139,23 +141,26 @@ bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
 
         u = triangle.getP(2) - triangle.getP(1);
         u /= u.norm();
-        for (temp = triangle.getP(1) + u; (temp - triangle.getP(2)).squaredNorm() > 2; temp += u)
-            if (checkPoint2D(temp[0], temp[1]))
+        for (temp = triangle.getP(1) + u; (temp - triangle.getP(2)).squaredNorm() > 2; temp += u) {
+            if (checkPoint2D(temp[0], temp[1])) {
                 return true;
-
+            }
+        }
         u = triangle.getP(3) - triangle.getP(1);
         u /= u.norm();
-        for (temp = triangle.getP(1) + u; (temp - triangle.getP(3)).squaredNorm() > 2; temp += u)
-            if (checkPoint2D(temp[0], temp[1]))
+        for (temp = triangle.getP(1) + u; (temp - triangle.getP(3)).squaredNorm() > 2; temp += u) {
+            if (checkPoint2D(temp[0], temp[1])) {
                 return true;
-
+            }
+        }
         u = triangle.getP(3) - triangle.getP(2);
         u /= u.norm();
-        for (temp = triangle.getP(2) + u; (temp - triangle.getP(3)).squaredNorm() > 2; temp += u)
-            if (checkPoint2D(temp[0], temp[1]))
+        for (temp = triangle.getP(2) + u; (temp - triangle.getP(3)).squaredNorm() > 2; temp += u) {
+            if (checkPoint2D(temp[0], temp[1])) {
                 return true;
+            }
+        }
     }
-
     return false;
 }
 
