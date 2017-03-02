@@ -21,7 +21,10 @@ int main(int argc, char** argv) {
 
     std::shared_ptr<KukaKR5> robot(new KukaKR5());
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
-    RRTOptions<6> options(40, 1, collision);
+    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(1, collision));
+    std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
+    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
+    RRTOptions<6> options(40, collision, trajectory, sampling);
     RRTStarPlanner<6> planner(robot, options);
 
     Vector6 start = utilVec::Vecf(0, 0, 0, 0, 51, 0);

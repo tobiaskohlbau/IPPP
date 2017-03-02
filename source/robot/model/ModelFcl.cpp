@@ -32,10 +32,11 @@ ModelFcl::ModelFcl() : ModelContainer("ModelFcl") {
 *  \date       2017-02-19
 */
 bool ModelFcl::empty() const {
-    if (m_fclModel.num_vertices == 0)
+    if (m_fclModel.num_vertices == 0) {
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 void ModelFcl::transform(const Vector6 &config) {
@@ -43,10 +44,12 @@ void ModelFcl::transform(const Vector6 &config) {
 
     std::vector<fcl::Vector3f> verts;
     std::vector<fcl::Triangle> triangles;
-    for (auto vert : m_vertices)
+    for (auto vert : m_vertices) {
         verts.push_back(fcl::Vector3f(vert[0], vert[1], vert[2]));
-    for (auto face : m_faces)
+    }
+    for (auto face : m_faces) {
         triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
+    }
     m_fclModel = FCLModel();
     m_fclModel.beginModel();
     m_fclModel.addSubModel(verts, triangles);

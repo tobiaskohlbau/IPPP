@@ -77,13 +77,14 @@ bool CollisionDetection2D::controlVec(const Vector2 &vec) {
 *  \date       2016-05-25
 */
 bool CollisionDetection2D::controlTrajectory(std::vector<Vector2> &vecs) {
-    if (vecs.size() == 0)
+    if (vecs.size() == 0) {
         return false;
-
-    for (int i = 0; i < vecs.size(); ++i)
-        if (checkPoint2D(vecs[i][0], vecs[i][1]))
+    }
+    for (int i = 0; i < vecs.size(); ++i) {
+        if (checkPoint2D(vecs[i][0], vecs[i][1])) {
             return true;
-
+        }
+    }
     return false;
 }
 
@@ -101,10 +102,11 @@ bool CollisionDetection2D::checkPoint2D(float x, float y) {
         return true;
     }
 
-    if (m_workspace2D(y, x) < 80)
+    if (m_workspace2D(y, x) < 80) {
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 } /* namespace rmpl */

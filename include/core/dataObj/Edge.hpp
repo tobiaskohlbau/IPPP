@@ -36,15 +36,15 @@ class Node;
 template <unsigned int dim>
 class Edge {
   public:
-    Edge(std::shared_ptr<Node<dim>> &source, std::shared_ptr<Node<dim>> &target, float cost);
+    Edge(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target, const float cost);
 
-    void setCost(float cost);
+    void setCost(const float cost);
     float getCost() const;
 
-    void setSource(std::shared_ptr<Node<dim>> &source);
-    std::shared_ptr<Node<dim>> getSource();
-    void setTarget(std::shared_ptr<Node<dim>> &target);
-    std::shared_ptr<Node<dim>> getTarget();
+    void setSource(const std::shared_ptr<Node<dim>> &source);
+    std::shared_ptr<Node<dim>> getSource() const ;
+    void setTarget(const std::shared_ptr<Node<dim>> &target);
+    std::shared_ptr<Node<dim>> getTarget() const ;
 
   private:
     std::shared_ptr<Node<dim>> m_source = nullptr;
@@ -60,7 +60,7 @@ class Edge {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-Edge<dim>::Edge(std::shared_ptr<Node<dim>> &source, std::shared_ptr<Node<dim>> &target, float cost) {
+Edge<dim>::Edge(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target, const float cost) {
     m_source = source;
     m_target = target;
     m_cost = cost;
@@ -72,7 +72,7 @@ Edge<dim>::Edge(std::shared_ptr<Node<dim>> &source, std::shared_ptr<Node<dim>> &
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-void Edge<dim>::setCost(float cost) {
+void Edge<dim>::setCost(const float cost) {
     m_cost = cost;
 }
 
@@ -94,7 +94,7 @@ float Edge<dim>::getCost() const {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-void Edge<dim>::setTarget(std::shared_ptr<Node<dim>> &target) {
+void Edge<dim>::setTarget(const std::shared_ptr<Node<dim>> &target) {
     m_target = target;
 }
 
@@ -105,7 +105,7 @@ void Edge<dim>::setTarget(std::shared_ptr<Node<dim>> &target) {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> Edge<dim>::getTarget() {
+std::shared_ptr<Node<dim>> Edge<dim>::getTarget() const {
     return m_target;
 }
 
@@ -116,7 +116,7 @@ std::shared_ptr<Node<dim>> Edge<dim>::getTarget() {
 *  \date       2016-12-16
 */
 template <unsigned int dim>
-void Edge<dim>::setSource(std::shared_ptr<Node<dim>> &source) {
+void Edge<dim>::setSource(const std::shared_ptr<Node<dim>> &source) {
     m_source = source;
 }
 
@@ -127,7 +127,7 @@ void Edge<dim>::setSource(std::shared_ptr<Node<dim>> &source) {
 *  \date       2016-12-16
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> Edge<dim>::getSource() {
+std::shared_ptr<Node<dim>> Edge<dim>::getSource() const {
     return m_source;
 }
 

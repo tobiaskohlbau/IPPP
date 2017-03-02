@@ -74,10 +74,11 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
     std::shared_ptr<ModelContainer> model;
     for (auto filePath : filePaths) {
         model = createModel(filePath);
-        if (model)
+        if (model) {
             models.push_back(model);
-        else
+        } else {
             return std::vector<std::shared_ptr<ModelContainer>>();
+        }
     }
     return models;
 }

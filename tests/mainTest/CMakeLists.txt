@@ -20,4 +20,4 @@ set(MODULE "main")
 add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
 
 ADD_RMPL_TEST(clearWorkspace "")
-ADD_RMPL_TEST(obstacleWorkspace "")
+#ADD_RMPL_TEST(obstacleWorkspace "")

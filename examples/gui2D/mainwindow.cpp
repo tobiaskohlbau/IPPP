@@ -4,6 +4,9 @@
 #include <QFileDialog>
 #include <core/module/collisionDetection/CollisionDetection2D.hpp>
 #include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>
+#include <core/module/sampler/SamplerNormalDist.hpp>
+#include <core/module/sampler/SamplerUniform.hpp>
+#include <core/module/sampling/SamplingNearObstacle.hpp>
 #include <core/utility/heuristic/HeuristicL1.hpp>
 #include <core/utility/heuristic/HeuristicInf.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
@@ -54,32 +57,23 @@ void MainWindow::computePath() {
     }
     Logging::info("Compute path ...", this);
 
-    SamplerMethod sampler = SamplerMethod::randomly;
-    if (m_samplingStrategy == 1)
-        sampler = SamplerMethod::uniform;
-    else if (m_samplerMethod == 2)
-        sampler = SamplerMethod::standardDistribution;
-
-    SamplingStrategy sampling = SamplingStrategy::normal;
-    if (m_samplingStrategy == 1)
-        sampling = SamplingStrategy::nearObstacles;
-
     if (m_robotType == 1) {
-        std::shared_ptr<rmpl::Heuristic<3>> edgeH = std::make_shared<rmpl::Heuristic<3>>(rmpl::Heuristic<3>());;
+        const unsigned int dim = 3;
+        std::shared_ptr<rmpl::Heuristic<dim>> edgeH = std::make_shared<rmpl::Heuristic<dim>>(rmpl::Heuristic<dim>());;
         if (m_edgeHeuristic == 1) {
-            edgeH = std::make_shared<rmpl::HeuristicL1<3>>(rmpl::HeuristicL1<3>());
+            edgeH = std::make_shared<rmpl::HeuristicL1<dim>>(rmpl::HeuristicL1<dim>());
         } else if (m_edgeHeuristic == 2) {
-            edgeH = std::make_shared<rmpl::HeuristicInf<3>>(rmpl::HeuristicInf<3>());
+            edgeH = std::make_shared<rmpl::HeuristicInf<dim>>(rmpl::HeuristicInf<dim>());
         } else if (m_edgeHeuristic == 3) {
-            std::shared_ptr<HeuristicWeightVecL2<3>> heuristic(new rmpl::HeuristicWeightVecL2<3>());
+            std::shared_ptr<HeuristicWeightVecL2<dim>> heuristic(new rmpl::HeuristicWeightVecL2<dim>());
             heuristic->setWeightVec(m_weightVec);
             edgeH = heuristic;
         } else if (m_edgeHeuristic == 4) {
-            std::shared_ptr<HeuristicWeightVecL1<3>> heuristic(new rmpl::HeuristicWeightVecL1<3>());
+            std::shared_ptr<HeuristicWeightVecL1<dim>> heuristic(new rmpl::HeuristicWeightVecL1<dim>());
             heuristic->setWeightVec(m_weightVec);
             edgeH = heuristic;
         } else if (m_edgeHeuristic == 5) {
-            std::shared_ptr<HeuristicWeightVecInf<3>> heuristic(new rmpl::HeuristicWeightVecInf<3>());
+            std::shared_ptr<HeuristicWeightVecInf<dim>> heuristic(new rmpl::HeuristicWeightVecInf<dim>());
             heuristic->setWeightVec(m_weightVec);
             edgeH = heuristic;
         }
@@ -91,32 +85,44 @@ void MainWindow::computePath() {
         std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, minBoundary, maxBoundary));
         std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
         robot->setWorkspace(model);
-        std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(robot));
+        std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(robot));
+        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(m_trajectoryStepSize, collision));
 
-        RRTOptions<3> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
-        PRMOptions<3> prmOptions(m_prmDistance, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
+        std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
+        if (m_samplingStrategy == 1)
+            sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(robot));
+        else if (m_samplerMethod == 2)
+            sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(robot));
+
+        std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(robot, collision, trajectory, sampler));
+        if (m_samplingStrategy == 1)
+            sampling = std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<3>(robot, collision, trajectory, sampler));
+
+        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, edgeH);
+        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, edgeH);
 
         if (m_plannerType == 0)
-            m_planner3d = std::shared_ptr<NormalRRTPlanner<3>>(new NormalRRTPlanner<3>(robot, rrtOptions));
+            m_planner3d = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<3>(robot, rrtOptions));
         else if (m_plannerType == 1)
-            m_planner3d = std::shared_ptr<RRTStarPlanner<3>>(new RRTStarPlanner<3>(robot, rrtOptions));
+            m_planner3d = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<3>(robot, rrtOptions));
         else
-            m_planner3d = std::shared_ptr<PRMPlanner<3>>(new PRMPlanner<3>(robot, prmOptions));
+            m_planner3d = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<3>(robot, prmOptions));
         Vector3 start(m_startX, m_startY, m_startPhi);
         Vector3 goal(m_goalX, m_goalY, m_goalPhi);
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
-        std::shared_ptr<rmpl::Heuristic<2>> edgeH = std::make_shared<rmpl::Heuristic<2>>(rmpl::Heuristic<2>());
+        const unsigned int dim = 2;
+        std::shared_ptr<rmpl::Heuristic<dim>> edgeH = std::make_shared<rmpl::Heuristic<dim>>(rmpl::Heuristic<dim>());
         if (m_edgeHeuristic == 1) {
-            edgeH = std::make_shared<rmpl::HeuristicL1<2>>(rmpl::HeuristicL1<2>());
+            edgeH = std::make_shared<rmpl::HeuristicL1<dim>>(rmpl::HeuristicL1<dim>());
         } else if (m_edgeHeuristic == 2) {
-            edgeH = std::make_shared<rmpl::HeuristicInf<2>>(rmpl::HeuristicInf<2>());
+            edgeH = std::make_shared<rmpl::HeuristicInf<dim>>(rmpl::HeuristicInf<dim>());
         } else if (m_edgeHeuristic == 3) {
-            std::shared_ptr<HeuristicWeightVecL2<2>> heuristic(new rmpl::HeuristicWeightVecL2<2>());
+            std::shared_ptr<HeuristicWeightVecL2<dim>> heuristic(new rmpl::HeuristicWeightVecL2<dim>());
             heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
             edgeH = heuristic;
         } else if (m_edgeHeuristic == 4) {
-            std::shared_ptr<HeuristicWeightVecL1<2>> heuristic(new rmpl::HeuristicWeightVecL1<2>());
+            std::shared_ptr<HeuristicWeightVecL1<dim>> heuristic(new rmpl::HeuristicWeightVecL1<dim>());
             heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
             edgeH = heuristic;
         } else if (m_edgeHeuristic == 5) {
@@ -130,17 +136,28 @@ void MainWindow::computePath() {
         std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
         std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
         robot->setWorkspace(model);
-        std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
+        std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(robot));
+        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(m_trajectoryStepSize, collision));
+        std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
 
-        RRTOptions<2> rrtOptions(m_rrtStepsize, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
-        PRMOptions<2> prmOptions(m_prmDistance, m_trajectoryStepSize, collision, sampler, sampling, edgeH);
+        if (m_samplingStrategy == 1)
+            sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(robot));
+        else if (m_samplerMethod == 2)
+            sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(robot));
+
+        std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(robot, collision, trajectory, sampler));
+        if (m_samplingStrategy == 1)
+            sampling = std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<dim>(robot, collision, trajectory, sampler));
+
+        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling);
+        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling);
 
         if (m_plannerType == 0)
-            m_planner2d = std::shared_ptr<NormalRRTPlanner<2>>(new NormalRRTPlanner<2>(robot, rrtOptions));
+            m_planner2d = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(robot, rrtOptions));
         else if (m_plannerType == 1)
-            m_planner2d = std::shared_ptr<RRTStarPlanner<2>>(new RRTStarPlanner<2>(robot, rrtOptions));
+            m_planner2d = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<dim>(robot, rrtOptions));
         else
-            m_planner2d = std::shared_ptr<PRMPlanner<2>>(new PRMPlanner<2>(robot, prmOptions));
+            m_planner2d = std::shared_ptr<PRMPlanner<2>>(new PRMPlanner<dim>(robot, prmOptions));
         Vector2 start(m_startX, m_startY);
         Vector2 goal(m_goalX, m_goalY);
         m_connected = m_planner2d->computePath(start, goal, m_numNodes, m_numThreads);

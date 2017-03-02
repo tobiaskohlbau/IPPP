@@ -33,7 +33,7 @@ namespace rmpl {
 template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
-    TrajectoryPlanner(float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision);
+    TrajectoryPlanner(const float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision);
 
     bool controlTrajectory(const Node<dim> &source, const Node<dim> &target);
     bool controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
@@ -41,7 +41,7 @@ class TrajectoryPlanner : public Identifier {
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
 
-    void setStepSize(float stepSize);
+    void setStepSize(const float stepSize);
     float getStepSize() const;
 
   private:
@@ -59,9 +59,7 @@ class TrajectoryPlanner : public Identifier {
 */
 template <unsigned int dim>
 TrajectoryPlanner<dim>::TrajectoryPlanner(float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision)
-    : Identifier("TrajectoryPlanner") {
-    m_collision = collision;
-
+    : Identifier("TrajectoryPlanner"), m_collision(collision) {
     setStepSize(stepSize);
 }
 
@@ -108,9 +106,9 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const Vector<dim> &source, const 
     }
 
     std::vector<Vector<dim>> path = calcTrajectoryBin(source, target);
-    if (m_collision->controlTrajectory(path))
+    if (m_collision->controlTrajectory(path)) {
         return false;
-
+    }
     return true;
 }
 
@@ -133,10 +131,11 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<
     Vector<dim> u(target - source);
     vecs.reserve((int)(u.norm() / m_stepSize) + 1);
     unsigned int divider = 2;
-    for (Vector<dim> uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider)
-        for (int i = 1; i < divider; i += 2)
+    for (Vector<dim> uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider) {
+        for (int i = 1; i < divider; i += 2) {
             vecs.push_back(source + (uTemp * i));
-
+        }
+    }
     return vecs;
 }
 
@@ -159,8 +158,9 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector
     Vector<dim> u(target - source);    // u = a - b
     vecs.reserve((int)(u.norm() / m_stepSize) + 1);
     u /= u.norm() / m_stepSize;    // u = |u|
-    for (Vector<dim> temp(source + u); (temp - target).squaredNorm() > 1; temp += u)
+    for (Vector<dim> temp(source + u); (temp - target).squaredNorm() > 1; temp += u) {
         vecs.push_back(temp);
+    }
     return vecs;
 }
 
@@ -171,7 +171,7 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-void TrajectoryPlanner<dim>::setStepSize(float stepSize) {
+void TrajectoryPlanner<dim>::setStepSize(const float stepSize) {
     if (stepSize <= 0) {
         m_stepSize = 1;
         Logging::warning("Step size has to be larger than 0, it has set to 1!", this);

@@ -30,10 +30,11 @@ ModelTriangle2D::ModelTriangle2D() : ModelContainer("ModelTriangle2D") {
 *  \date       2017-02-19
 */
 bool ModelTriangle2D::empty() const {
-    if (m_triangles.size() == 0)
+    if (m_triangles.size() == 0) {
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 } /* namespace rmpl */

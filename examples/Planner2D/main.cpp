@@ -5,7 +5,7 @@
 
 #include <core/module/collisionDetection/CollisionDetection2D.hpp>
 #include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>
-#include <core/utility/Logging.h>
+#include <core/module/sampling/SamplingNearObstacle.hpp>
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/RRTStarPlanner.hpp>
@@ -32,18 +32,21 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(0 , 50), Vector2(25, 50)));
     ModelFactoryTriangle2D factory;
     std::shared_ptr<ModelContainer> baseModel = factory.createModel(triangles);
-    std::shared_ptr<TriangleRobot2D> triangleRobot(new TriangleRobot2D(baseModel, min, max));
+    std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, min, max));
     std::shared_ptr<ModelContainer> model(new Model2D(mat));
-    triangleRobot->setWorkspace(model);
+    robot->setWorkspace(model);
 
-    std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(triangleRobot));
-    PRMOptions<dim> prmOptions(30, 0.5, collision, SamplerMethod::randomly);
-    RRTOptions<dim> rrtOptions(30, 0.5, collision, SamplerMethod::randomly, SamplingStrategy::normal);
+    std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(robot));
+    std::shared_ptr<TrajectoryPlanner<3>> trajectory(new TrajectoryPlanner<3>(0.5, collision));
+    std::shared_ptr<Sampler<3>> sampler(new Sampler<3>(robot));
+    std::shared_ptr<Sampling<3>> sampling(new SamplingNearObstacle<3>(robot, collision, trajectory, sampler));
+    PRMOptions<dim> prmOptions(30, collision, trajectory, sampling);
+    RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
-    // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(triangleRobot, prmOptions));
-    planner = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<dim>(triangleRobot, rrtOptions));
-    // planner = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(triangleRobot, rrtOptions));
+    // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));
+    planner = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<dim>(robot, rrtOptions));
+    // planner = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(robot, rrtOptions));
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
@@ -78,8 +81,11 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     robot->setWorkspace(model);
 
     std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
-    PRMOptions<dim> prmOptions(40, 0.5, collision, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
-    RRTOptions<dim> rrtOptions(50, 1, collision, SamplerMethod::randomly, SamplingStrategy::nearObstacles);
+    std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(1.5, collision));
+    std::shared_ptr<Sampler<2>> sampler(new Sampler<2>(robot));
+    std::shared_ptr<Sampling<2>> sampling(new SamplingNearObstacle<2>(robot, collision, trajectory, sampler));
+    PRMOptions<dim> prmOptions(40, collision, trajectory, sampling);
+    RRTOptions<dim> rrtOptions(50, collision, trajectory, sampling);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));
