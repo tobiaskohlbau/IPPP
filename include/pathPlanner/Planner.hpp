@@ -50,6 +50,7 @@ class Planner : public Identifier {
   public:
     virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
                              const unsigned int numThreads) = 0;
+    virtual bool expand(const unsigned int numNode, const unsigned int numthreads) = 0;
 
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
     virtual std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing) = 0;
