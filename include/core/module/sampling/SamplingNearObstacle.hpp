@@ -24,7 +24,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Class Sampling creates sample Vectors with the passed strategy, for creating single Vectors the Sampler is used.
+* \brief   Class SamplingNearObstacle creates samples with the passed Sampler and if they in collision free samples in neighborhood will found.
 * \author  Sascha Kaden
 * \date    2016-12-20
 */
@@ -45,8 +45,9 @@ class SamplingNearObstacle : public Sampling<dim> {
 *  \brief      Constructor of the class Sampling
 *  \author     Sascha Kaden
 *  \param[in]  robot
-*  \param[in]  SamplerMethod
-*  \param[in]  SamplingStrategy
+*  \param[in]  CollisionDetection
+*  \param[in]  TrajectoryPlanner
+*  \param[in]  Sampler
 *  \date       2016-12-20
 */
 template <unsigned int dim>

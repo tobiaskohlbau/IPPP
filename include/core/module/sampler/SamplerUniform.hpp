@@ -24,7 +24,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Class Sampling creates sample vecs with the configurated method
+* \brief   Class SamplerUniform creates uniform samples, area is from the robot boundaries defined.
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
@@ -39,11 +39,9 @@ class SamplerUniform : public Sampler<dim> {
 };
 
 /*!
-*  \brief      Constructor of the class Sampling
+*  \brief      Constructor of the class SamplerUniform
 *  \author     Sascha Kaden
 *  \param[in]  robot
-*  \param[in]  SamplerMethod
-*  \param[in]  SamplingStrategy
 *  \date       2016-05-24
 */
 template <unsigned int dim>
@@ -57,7 +55,7 @@ SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<RobotBase<dim>> &robot
 /*!
 *  \brief      Return uniform sample
 *  \author     Sascha Kaden
-*  \param[out] sample Vec
+*  \param[out] sample
 *  \date       2016-05-24
 */
 template <unsigned int dim>
