@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef UTILVEC_H
-#define UTILVEC_H
+#ifndef UTILVEC_HPP
+#define UTILVEC_HPP
 
 #include <Eigen/Core>
 
@@ -37,10 +37,12 @@ namespace utilVec {
 template <unsigned int dim1, unsigned int dim2>
 Vector<dim1 + dim2> append(const Vector<dim1> &first, const Vector<dim2> &second) {
     Vector<dim1 + dim2> vec;
-    for (int i = 0; i < dim1; ++i)
+    for (int i = 0; i < dim1; ++i) {
         vec[i] = first[i];
-    for (int i = 0; i < dim2; ++i)
+    }
+    for (int i = 0; i < dim2; ++i) {
         vec[dim1 + i] = second[i];
+    }
     return vec;
 }
 
@@ -55,8 +57,9 @@ Vector<dim1 + dim2> append(const Vector<dim1> &first, const Vector<dim2> &second
 template <unsigned int dim>
 Vector<dim + 1> append(const Vector<dim> &source, const float add) {
     Vector<dim + 1> vec;
-    for (int i = 0; i < dim; ++i)
+    for (int i = 0; i < dim; ++i) {
         vec[i] = source[i];
+    }
     vec[dim] = add;
     return vec;
 }
@@ -106,8 +109,9 @@ static Vector6 Vecf(float x, float y, float z, float rx, float ry, float rz) {
 template <unsigned int dim>
 Vector<dim> Vecf(const float data) {
     Vector<dim> vec;
-    for (unsigned int i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data;
+    }
     return vec;
 }
 
@@ -121,8 +125,9 @@ Vector<dim> Vecf(const float data) {
 template <unsigned int dim>
 Vector<dim> Vecf(const float data[]) {
     Vector<dim> vec;
-    for (unsigned int i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data[i];
+    }
     return vec;
 }
 
@@ -136,12 +141,13 @@ Vector<dim> Vecf(const float data[]) {
 */
 static VectorX Vecf(const unsigned int dim, const float data[]) {
     VectorX vec(dim);
-    for (unsigned int i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data[i];
+    }
     return vec;
 }
 
 } /* namespace utilVec */
 } /* namespace rmpl */
 
-#endif    // UTILVEC_H
+#endif    // UTILVEC_HPP

@@ -84,8 +84,9 @@ class Node {
 */
 template <unsigned int dim>
 Node<dim>::Node() {
-    for (int i = 0; i < dim; ++i)
+    for (int i = 0; i < dim; ++i) {
         m_vec[i] = NAN;
+    }
 }
 
 /*!
@@ -218,8 +219,9 @@ bool Node<dim>::empty() const {
 */
 template <unsigned int dim>
 void Node<dim>::setCost(const float cost) {
-    if (cost >= 0)
+    if (cost >= 0) {
         m_cost = cost;
+    }
 }
 
 /*!
@@ -230,8 +232,9 @@ void Node<dim>::setCost(const float cost) {
 */
 template <unsigned int dim>
 void Node<dim>::addCost(const float cost) {
-    if (cost >= 0)
+    if (cost >= 0) {
         m_cost += cost;
+    }
 }
 
 /*!
@@ -267,10 +270,11 @@ void Node<dim>::setParent(const std::shared_ptr<Node> &parent, const float edgeC
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Node<dim>::getParentNode() const {
-    if (!m_parent)
+    if (!m_parent) {
         return nullptr;
-    else
+    } else {
         return m_parent->getTarget();
+    }
 }
 
 /*!
@@ -317,9 +321,9 @@ void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child, const float ed
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChildNodes() const {
     std::vector<std::shared_ptr<Node>> childNodes;
-    for (auto child : m_childes)
+    for (auto child : m_childes) {
         childNodes.push_back(child->getTarget());
-
+    }
     return childNodes;
 }
 

@@ -32,12 +32,14 @@ using Vector5 = Eigen::Matrix<float, 5, 1>;
 using Vector6 = Eigen::Matrix<float, 6, 1>;
 using VectorX = Eigen::Matrix<float, Eigen::Dynamic, 1>;
 
-using Vector3i = Eigen::Matrix<int, 3, 1>;
 
+template <unsigned int dim>
+using Matrix = Eigen::Matrix<float, dim, dim>;
 using Matrix2 = Eigen::Matrix2f;
 using Matrix3 = Eigen::Matrix3f;
 using Matrix4 = Eigen::Matrix4f;
 using MatrixX = Eigen::MatrixXf;
+using Vector3i = Eigen::Matrix<int, 3, 1>;
 
 } /* namespace rmpl */
 

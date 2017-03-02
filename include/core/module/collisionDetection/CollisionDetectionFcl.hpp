@@ -96,17 +96,19 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<RobotBas
         std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
         if (!jointModels.empty()) {
             bool emptyJoint = false;
-            for (auto model : jointModels)
-                if (!model || model->empty())
+            for (auto model : jointModels) {
+                if (!model || model->empty()) {
                     emptyJoint = true;
-
-            if (!emptyJoint)
+                }
+            }
+            if (!emptyJoint) {
                 for (int i = 0; i < dim; ++i) {
                     m_jointModels.push_back(std::make_shared<FCLModel>(
                         FCLModel(std::static_pointer_cast<ModelFcl>(serialRobot->getModelFromJoint(i))->m_fclModel)));
                 }
-            else
+            } else {
                 Logging::error("Emtpy joint model", this);
+            }
         } else {
             Logging::error("No joint models applied", this);
         }
@@ -134,10 +136,11 @@ bool CollisionDetectionFcl<dim>::controlVec(const Vector<dim> &vec) {
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::controlCollisionMesh(const Vector<dim> &vec) {
-    if (m_robot->getRobotType() == RobotType::mobile)
+    if (m_robot->getRobotType() == RobotType::mobile) {
         return checkMobileRobot(vec);
-    else
+    } else {
         return checkSerialRobot(vec);
+    }
 }
 
 /*!
@@ -149,17 +152,20 @@ bool CollisionDetectionFcl<dim>::controlCollisionMesh(const Vector<dim> &vec) {
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::controlTrajectory(std::vector<Vector<dim>> &vecs) {
-    if (vecs.size() == 0)
+    if (vecs.size() == 0) {
         return false;
+    }
 
     if (m_robot->getRobotType() == RobotType::mobile) {
         for (int i = 0; i < vecs.size(); ++i)
             if (checkMobileRobot(vecs[i]))
                 return true;
     } else {
-        for (int i = 0; i < vecs.size(); ++i)
-            if (checkSerialRobot(vecs[i]))
+        for (int i = 0; i < vecs.size(); ++i) {
+            if (checkSerialRobot(vecs[i])) {
                 return true;
+            }
+        }
     }
 
     return false;
@@ -198,10 +204,11 @@ bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &vec) {
     Vector3 poseT;
     utilGeo::decomposeT(pose, poseR, poseT);
 
-    if (m_baseMeshAvaible && m_workspaceAvaible)
+    if (m_baseMeshAvaible && m_workspaceAvaible) {
         return checkFCL(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT);
-    else
+    } else {
         return true;
+    }
 }
 
 /*!
@@ -221,11 +228,11 @@ bool CollisionDetectionFcl<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 
     // control collision between baseModel and joints
     if (m_baseMeshAvaible) {
         for (int i = 1; i < dim; ++i) {
-            if (checkFCL(m_baseMesh, m_jointModels[i], poseR, R[i], poseT, t[i]))
+            if (checkFCL(m_baseMesh, m_jointModels[i], poseR, R[i], poseT, t[i])) {
                 return true;
+            }
         }
     }
-
     // control collision of the robot joints with themself
     for (int i = 0; i < dim; ++i) {
         for (int j = i + 2; j < dim; ++j) {
@@ -248,9 +255,9 @@ bool CollisionDetectionFcl<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 
 
     // control collision with workspace
     if (m_workspaceAvaible) {
-        if (checkFCL(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT))
+        if (checkFCL(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT)) {
             return true;
-
+        }
         for (int i = 0; i < dim; ++i) {
             if (checkFCL(m_workspace, m_jointModels[i], m_identity, R[i], m_zeroVec, t[i])) {
                 Logging::debug("Collision between workspace and link " + std::to_string(i), this);

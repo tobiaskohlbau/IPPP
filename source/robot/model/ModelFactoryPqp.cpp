@@ -67,9 +67,9 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
         pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], i);
     }
     pqpModel->m_pqpModel.EndModel();
-    if (Logging::getLogLevel() == LogLevel::debug)
+    if (Logging::getLogLevel() == LogLevel::debug) {
         pqpModel->m_pqpModel.MemUsage(1);
-
+    }
     return pqpModel;
 }
 

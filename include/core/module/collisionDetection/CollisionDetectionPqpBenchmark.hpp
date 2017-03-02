@@ -71,7 +71,7 @@ bool CollisionDetectionPqpBenchmark<dim>::controlVec(const Vector<dim> &vec) {
     return CollisionDetectionPqp<dim>::controlVec(vec);
 }
 
-    /*!
+/*!
 *  \brief      Check collision of a trajectory of points
 *  \author     Sascha Kaden
 *  \param[in]  vector of configurations
@@ -88,16 +88,18 @@ bool CollisionDetectionPqpBenchmark<dim>::controlTrajectory(std::vector<Vector<d
             m_mutex.lock();
             ++m_count;
             m_mutex.unlock();
-            if (CollisionDetectionPqp<dim>::checkMobileRobot(vecs[i]))
+            if (CollisionDetectionPqp<dim>::checkMobileRobot(vecs[i])) {
                 return true;
+            }
         }
     } else {
         for (int i = 0; i < vecs.size(); ++i) {
             m_mutex.lock();
             ++m_count;
             m_mutex.unlock();
-            if (CollisionDetectionPqp<dim>::checkSerialRobot(vecs[i]))
+            if (CollisionDetectionPqp<dim>::checkSerialRobot(vecs[i])) {
                 return true;
+            }
         }
     }
 

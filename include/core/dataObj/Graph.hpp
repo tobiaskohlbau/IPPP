@@ -98,8 +98,9 @@ void Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_mutex.lock();
     m_nodes.push_back(node);
     m_mutex.unlock();
-    if (m_autoSort && (m_nodes.size() % m_sortCount) == 0)
+    if (m_autoSort && (m_nodes.size() % m_sortCount) == 0) {
         sortTree();
+    }
 }
 
 /*!
@@ -198,7 +199,6 @@ void Graph<dim>::sortTree() {
     std::lock_guard<std::mutex> lock(m_mutex);
     std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>> kdTree =
         std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>(m_nodes));
-    ;
     m_kdTree = kdTree;
     Logging::info("KD Tree has been sorted and have: " + std::to_string(m_nodes.size()) + " Nodes", this);
 }

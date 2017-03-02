@@ -32,15 +32,17 @@ ModelPqp::ModelPqp() : ModelContainer("ModelPqp") {
 *  \date       2017-02-19
 */
 bool ModelPqp::empty() const {
-    if (m_pqpModel.num_tris == 0)
+    if (m_pqpModel.num_tris == 0) {
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 void ModelPqp::transform(const Vector6 &config) {
-    if (empty())
+    if (empty()) {
         return;
+    }
     transformCad(config, m_vertices);
 
     m_pqpModel.BeginModel();

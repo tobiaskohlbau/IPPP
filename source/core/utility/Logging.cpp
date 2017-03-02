@@ -75,8 +75,9 @@ LogOutput Logging::getLogOutput() {
 *  \date       2016-11-14
 */
 void Logging::setOutputFile(const std::string file) {
-    if (file == "")
+    if (file == "") {
         return;
+    }
     m_file = file;
 }
 
@@ -98,10 +99,11 @@ std::string Logging::getOutputFile() {
 *  \date       2016-10-22
 */
 void Logging::info(std::string message, Identifier *module) {
-    if (module == nullptr)
+    if (module == nullptr) {
         info(message, "Unknown");
-    else
+    } else {
         info(message, module->getName());
+    }
 }
 
 /*!
@@ -112,10 +114,11 @@ void Logging::info(std::string message, Identifier *module) {
 *  \date       2016-10-22
 */
 void Logging::warning(std::string message, Identifier *module) {
-    if (module == nullptr)
+    if (module == nullptr) {
         warning(message, "Unknown");
-    else
+    } else {
         warning(message, module->getName());
+    }
 }
 
 /*!
@@ -126,10 +129,11 @@ void Logging::warning(std::string message, Identifier *module) {
 *  \date       2016-10-22
 */
 void Logging::error(std::string message, Identifier *module) {
-    if (module == nullptr)
+    if (module == nullptr) {
         error(message, "Unknown");
-    else
+    } else {
         error(message, module->getName());
+    }
 }
 
 /*!
@@ -140,13 +144,14 @@ void Logging::error(std::string message, Identifier *module) {
 *  \date       2016-10-22
 */
 void Logging::debug(std::string message, Identifier *module) {
-    if (m_level != LogLevel::debug)
+    if (m_level != LogLevel::debug) {
         return;
-
-    if (module == nullptr)
+    }
+    if (module == nullptr) {
         debug(message, "Unknown");
-    else
+    } else {
         debug(message, module->getName());
+    }
 }
 
 /*!
@@ -190,8 +195,9 @@ void Logging::error(std::string message, std::string moduleName) {
 *  \date       2016-10-22
 */
 void Logging::debug(std::string message, std::string moduleName) {
-    if (m_level == LogLevel::debug)
+    if (m_level == LogLevel::debug) {
         sendString("Debug " + moduleName + ": " + message);
+    }
 }
 
 /*!
@@ -201,8 +207,9 @@ void Logging::debug(std::string message, std::string moduleName) {
 *  \date       2016-11-14
 */
 void Logging::sendString(std::string message) {
-    if (!m_level)
+    if (!m_level) {
         return;
+    }
     m_mutex.lock();
     if (m_output == LogOutput::file) {
         writeToFile(message);
@@ -232,8 +239,9 @@ void Logging::printToTerminal(std::string message) {
 *  \date       2016-11-14
 */
 void Logging::writeToFile(std::string message) {
-    if (m_file == "")
+    if (m_file == "") {
         return;
+    }
     std::ofstream myfile;
     myfile.open(m_file, std::ios_base::app);
     if (myfile.is_open()) {

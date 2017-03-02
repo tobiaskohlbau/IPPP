@@ -93,9 +93,9 @@ RRTPlanner<dim>::RRTPlanner(const std::string &name, const std::shared_ptr<Robot
 template <unsigned int dim>
 bool RRTPlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
                                   const unsigned int numThreads) {
-    if (!setInitNode(start))
+    if (!setInitNode(start)) {
         return false;
-
+    }
     computeTree(numNodes, numThreads);
 
     return connectGoalNode(goal);
