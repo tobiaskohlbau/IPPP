@@ -35,6 +35,7 @@ class RRTPlanner : public Planner<dim> {
     RRTPlanner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options);
 
     bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
+    bool expand(const unsigned int numNodes, const unsigned int numThreads);
     bool setInitNode(const Vector<dim> start);
     bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     virtual bool connectGoalNode(const Vector<dim> goal) = 0;
@@ -50,9 +51,9 @@ class RRTPlanner : public Planner<dim> {
     Vector<dim> computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode);
 
     // variables
-    float m_stepSize;
-    std::shared_ptr<Node<dim>> m_initNode;
-    std::shared_ptr<Node<dim>> m_goalNode;
+    float m_stepSize = 1;
+    std::shared_ptr<Node<dim>> m_initNode = nullptr;
+    std::shared_ptr<Node<dim>> m_goalNode = nullptr;
 
     using Planner<dim>::m_collision;
     using Planner<dim>::m_graph;
@@ -101,7 +102,20 @@ bool RRTPlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goa
 }
 
 /*!
-*  \brief      Set init Node<dim> of the RRTPlanner
+*  \brief      Expands tree, if init Node is set.
+*  \author     Sascha Kaden
+*  \param[in]  number of samples
+*  \param[in]  number of threads
+*  \param[out] true, if init node is set
+*  \date       2017-03-01
+*/
+template <unsigned int dim>
+bool RRTPlanner<dim>::expand(const unsigned int numNodes, const unsigned int numThreads) {
+    computeTree(numNodes, numThreads);
+}
+
+/*!
+*  \brief      Set init Node of the RRTPlanner
 *  \author     Sascha Kaden
 *  \param[in]  initial Node
 *  \param[out] true, if set was possible
@@ -109,14 +123,23 @@ bool RRTPlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goa
 */
 template <unsigned int dim>
 bool RRTPlanner<dim>::setInitNode(const Vector<dim> start) {
+    if (m_initNode) {
+        if (start == m_initNode->getValues()) {
+            Logging::info("Equal start node, tree will be expanded", this);
+            return true;
+        } else {
+            Logging::info("New start node, new tree will be created", this);
+            m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(m_options.getSortCountGraph()));
+        }
+    }
+
     if (m_collision->controlVec(start)) {
         Logging::warning("Init Node could not be connected", this);
         return false;
     }
 
-    std::shared_ptr<Node<dim>> initNode(new Node<dim>(start));
     m_sampling->setOrigin(start);
-    m_initNode = initNode;
+    m_initNode = std::shared_ptr<Node<dim>>(new Node<dim>(start));
     m_graph->addNode(m_initNode);
     return true;
 }
@@ -147,8 +170,9 @@ bool RRTPlanner<dim>::computeTree(const unsigned int nbOfNodes, const unsigned i
             threads.push_back(std::thread(&RRTPlanner::computeTreeThread, this, countNodes));
         }
 
-        for (int i = 0; i < nbOfThreads; ++i)
+        for (int i = 0; i < nbOfThreads; ++i) {
             threads[i].join();
+        }
     }
 
     return true;
@@ -167,8 +191,9 @@ void RRTPlanner<dim>::computeTreeThread(const unsigned int nbOfNodes) {
         std::shared_ptr<Node<dim>> newNode;
         computeRRTNode(randVec, newNode);
 
-        if (newNode == nullptr)
+        if (newNode == nullptr) {
             continue;
+        }
         m_graph->addNode(newNode);
     }
 }
@@ -182,12 +207,14 @@ void RRTPlanner<dim>::computeTreeThread(const unsigned int nbOfNodes) {
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> RRTPlanner<dim>::getPathNodes() {
     std::vector<std::shared_ptr<Node<dim>>> nodes;
-    if (!m_pathPlanned)
+    if (!m_pathPlanned) {
         return nodes;
+    }
 
     nodes.push_back(m_goalNode);
-    for (std::shared_ptr<Node<dim>> temp = m_goalNode->getParentNode(); temp != nullptr; temp = temp->getParentNode())
+    for (std::shared_ptr<Node<dim>> temp = m_goalNode->getParentNode(); temp != nullptr; temp = temp->getParentNode()) {
         nodes.push_back(temp);
+    }
 
     Logging::info("Path has: " + std::to_string(nodes.size()) + " nodes", this);
     return nodes;
@@ -224,8 +251,9 @@ std::vector<Vector<dim>> RRTPlanner<dim>::getPath(const float trajectoryStepSize
 */
 template <unsigned int dim>
 Vector<dim> RRTPlanner<dim>::computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode) {
-    if ((randNode - nearestNode).norm() < m_stepSize)
+    if ((randNode - nearestNode).norm() < m_stepSize) {
         return randNode;
+    }
 
     // p = a + k * (b-a)
     // ||u|| = ||b - a||
