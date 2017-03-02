@@ -31,7 +31,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Class Sampling creates sample vecs with the configurated method
+* \brief   Base class of all Sampler modules, return random samples.
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
@@ -56,11 +56,9 @@ class Sampler : public Identifier {
 };
 
 /*!
-*  \brief      Constructor of the class Sampling
+*  \brief      Constructor of the base Sampler class
 *  \author     Sascha Kaden
 *  \param[in]  robot
-*  \param[in]  SamplerMethod
-*  \param[in]  SamplingStrategy
 *  \date       2016-05-24
 */
 template <unsigned int dim>
@@ -74,9 +72,9 @@ Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot) : Identifier
 }
 
 /*!
-*  \brief      Return sample by specified SamplerMethod
+*  \brief      Return random sample
 *  \author     Sascha Kaden
-*  \param[out] sample Vec
+*  \param[out] sample
 *  \date       2016-05-24
 */
 template <unsigned int dim>

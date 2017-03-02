@@ -24,7 +24,7 @@
 namespace rmpl {
 
 /*!
-* \brief   Class Sampling creates sample vecs with the configurated method
+* \brief   Class SamplerNormalDist create samples by a normal distribution.
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
@@ -40,11 +40,9 @@ class SamplerNormalDist : public Sampler<dim> {
 };
 
 /*!
-*  \brief      Constructor of the class Sampling
+*  \brief      Constructor of the class SamplerNormalDist
 *  \author     Sascha Kaden
 *  \param[in]  robot
-*  \param[in]  SamplerMethod
-*  \param[in]  SamplingStrategy
 *  \date       2016-05-24
 */
 template <unsigned int dim>
@@ -57,9 +55,9 @@ SamplerNormalDist<dim>::SamplerNormalDist(const std::shared_ptr<RobotBase<dim>> 
 }
 
 /*!
-*  \brief      Return uniform sample
+*  \brief      Return sample by a normal distribution
 *  \author     Sascha Kaden
-*  \param[out] sample Vec
+*  \param[out] sample
 *  \date       2016-05-24
 */
 template <unsigned int dim>
@@ -76,10 +74,9 @@ Vector<dim> SamplerNormalDist<dim>::getSample() {
 }
 
 /*!
-*  \brief      Set the mean of the standard distribution
+*  \brief      Set the origin of the normal distribution
 *  \author     Sascha Kaden
-*  \param[in]  mean of distribution
-*  \param[out] binary result
+*  \param[in]  origin
 *  \date       2016-11-14
 */
 template <unsigned int dim>

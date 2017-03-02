@@ -56,8 +56,9 @@ class Sampling : public Identifier {
 *  \brief      Constructor of the class Sampling
 *  \author     Sascha Kaden
 *  \param[in]  robot
-*  \param[in]  SamplerMethod
-*  \param[in]  SamplingStrategy
+*  \param[in]  CollisionDetection
+*  \param[in]  TrajectoryPlanner
+*  \param[in]  Sampler
 *  \date       2016-12-20
 */
 template <unsigned int dim>
@@ -70,7 +71,7 @@ Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std:
 }
 
 /*!
-*  \brief      Return sample by the specified SamplingStrategy
+*  \brief      Return sample
 *  \author     Sascha Kaden
 *  \param[out] sample Vec
 *  \date       2016-12-20
@@ -81,10 +82,9 @@ Vector<dim> Sampling<dim>::getSample() const {
 }
 
 /*!
-*  \brief      Set the mean of the standard distribution of the Sampler
+*  \brief      Set the origin of the Sampler
 *  \author     Sascha Kaden
-*  \param[in]  mean of distribution
-*  \param[out] binary result
+*  \param[in]  origin
 *  \date       2016-12-20
 */
 template <unsigned int dim>
