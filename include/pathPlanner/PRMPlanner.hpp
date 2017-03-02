@@ -34,22 +34,23 @@ class PRMPlanner : public Planner<dim> {
   public:
     PRMPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim> &options);
 
-    bool computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads);
+    bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
+    bool expand(const unsigned int numNodes, const unsigned int numThreads);
 
-    void startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
-    void startPlannerPhase(unsigned int nbOfThreads = 1);
+    void startSamplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfThreads = 1);
+    void startPlannerPhase(const unsigned int nbOfThreads = 1);
 
-    bool queryPath(Vector<dim> start, Vector<dim> goal);
+    bool queryPath(const Vector<dim> start, const Vector<dim> goal);
     bool aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode);
     void expandNode(std::shared_ptr<Node<dim>> currentNode);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(float trajectoryStepSize, bool smoothing = true);
+    std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing = true);
 
   protected:
-    void samplingPhase(unsigned int nbOfNodes);
-    void plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex);
-    std::shared_ptr<Node<dim>> connectNode(Vector<dim> &node);
+    void samplingPhase(const unsigned int nbOfNodes);
+    void plannerPhase(const unsigned int startNodeIndex, const unsigned int endNodeIndex);
+    std::shared_ptr<Node<dim>> connectNode(const Vector<dim> &node);
 
     float m_rangeSize;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
@@ -61,7 +62,8 @@ class PRMPlanner : public Planner<dim> {
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_planner;
     using Planner<dim>::m_robot;
-    using Planner<dim>::m_sampler;
+    using Planner<dim>::m_sampling;
+    using Planner<dim>::m_heuristic;
 };
 
 /*!
@@ -78,7 +80,7 @@ PRMPlanner<dim>::PRMPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const 
 }
 
 /*!
-*  \brief      Compute path from start Node<dim> to goal Node<dim> with passed number of samples and threads
+*  \brief      Compute path from start Node to goal Node<dim> with passed number of samples and threads
 *  \author     Sascha Kaden
 *  \param[in]  start Node
 *  \param[in]  goal Node
@@ -88,12 +90,26 @@ PRMPlanner<dim>::PRMPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const 
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool PRMPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned int numNodes, unsigned int numThreads) {
+bool PRMPlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads) {
+    expand(numNodes, numThreads);
+
+    return queryPath(start, goal);
+}
+
+/*!
+*  \brief      Expands graph
+*  \author     Sascha Kaden
+*  \param[in]  number of samples
+*  \param[in]  number of threads
+*  \param[out] error flag
+*  \date       2017-03-01
+*/
+template <unsigned int dim>
+bool PRMPlanner<dim>::expand(const unsigned int numNodes, const unsigned int numThreads) {
     startSamplingPhase(numNodes, numThreads);
     m_graph->sortTree();
     startPlannerPhase(numThreads);
-
-    return queryPath(start, goal);
+    return true;
 }
 
 /*!
@@ -104,19 +120,21 @@ bool PRMPlanner<dim>::computePath(Vector<dim> start, Vector<dim> goal, unsigned 
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRMPlanner<dim>::startSamplingPhase(unsigned int nbOfNodes, unsigned int nbOfThreads) {
+void PRMPlanner<dim>::startSamplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfThreads) {
+    unsigned int countNodes = nbOfNodes;
     if (nbOfThreads == 1) {
         samplingPhase(nbOfNodes);
     } else {
-        nbOfNodes /= nbOfThreads;
+        countNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
         for (int i = 0; i < nbOfThreads; ++i) {
-            threads.push_back(std::thread(&PRMPlanner::samplingPhase, this, nbOfNodes));
+            threads.push_back(std::thread(&PRMPlanner::samplingPhase, this, countNodes));
         }
 
-        for (int i = 0; i < nbOfThreads; ++i)
+        for (int i = 0; i < nbOfThreads; ++i) {
             threads[i].join();
+        }
     }
 }
 
@@ -127,10 +145,10 @@ void PRMPlanner<dim>::startSamplingPhase(unsigned int nbOfNodes, unsigned int nb
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
+void PRMPlanner<dim>::samplingPhase(const unsigned int nbOfNodes) {
     Vector<dim> sample;
     for (int i = 0; i < nbOfNodes; ++i) {
-        sample = m_sampler->getSample();
+        sample = m_sampling->getSample();
         if (!m_collision->controlVec(sample)) {
             m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
         }
@@ -145,7 +163,7 @@ void PRMPlanner<dim>::samplingPhase(unsigned int nbOfNodes) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRMPlanner<dim>::startPlannerPhase(unsigned int nbOfThreads) {
+void PRMPlanner<dim>::startPlannerPhase(const unsigned int nbOfThreads) {
     unsigned int nodeCount = m_graph->size();
     if (nbOfThreads == 1) {
         plannerPhase(0, nodeCount);
@@ -157,8 +175,9 @@ void PRMPlanner<dim>::startPlannerPhase(unsigned int nbOfThreads) {
             threads.push_back(std::thread(&PRMPlanner::plannerPhase, this, i * threadAmount, (i + 1) * threadAmount));
         }
 
-        for (int i = 0; i < nbOfThreads; ++i)
+        for (int i = 0; i < nbOfThreads; ++i) {
             threads[i].join();
+        }
     }
 }
 
@@ -171,7 +190,7 @@ void PRMPlanner<dim>::startPlannerPhase(unsigned int nbOfThreads) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int endNodeIndex) {
+void PRMPlanner<dim>::plannerPhase(const unsigned int startNodeIndex, const unsigned int endNodeIndex) {
     if (startNodeIndex > endNodeIndex) {
         Logging::error("Start index is larger than end index", this);
         return;
@@ -186,8 +205,9 @@ void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int end
     for (auto node = nodes.begin() + startNodeIndex; node != nodes.begin() + endNodeIndex; ++node) {
         std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
-            if (m_planner->controlTrajectory((*node)->getValues(), nearNode->getValues()))
-                (*node)->addChild(nearNode, this->m_heuristic->calcEdgeCost(nearNode, (*node)));
+            if (m_planner->controlTrajectory((*node)->getValues(), nearNode->getValues())) {
+                (*node)->addChild(nearNode, m_heuristic->calcEdgeCost(nearNode, (*node)));
+            }
         }
     }
 }
@@ -202,7 +222,7 @@ void PRMPlanner<dim>::plannerPhase(unsigned int startNodeIndex, unsigned int end
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-bool PRMPlanner<dim>::queryPath(Vector<dim> start, Vector<dim> goal) {
+bool PRMPlanner<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
     std::shared_ptr<Node<dim>> sourceNode = connectNode(start);
     std::shared_ptr<Node<dim>> targetNode = connectNode(goal);
     if (sourceNode == nullptr || targetNode == nullptr) {
@@ -238,14 +258,14 @@ bool PRMPlanner<dim>::queryPath(Vector<dim> start, Vector<dim> goal) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(Vector<dim> &vec) {
+std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(const Vector<dim> &vec) {
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(vec, m_rangeSize * 3);
     float dist = std::numeric_limits<float>::max();
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (m_planner->controlTrajectory(vec, *nearNodes[i]) &&
-            this->m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues()) < dist) {
-            dist = this->m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues());
+            m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues()) < dist) {
+            dist = m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues());
             nearestNode = nearNodes[i];
         }
     }
@@ -269,7 +289,7 @@ bool PRMPlanner<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_p
     std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
     for (int i = 0; i < edges.size(); ++i) {
         edges[i]->getTarget()->setCost(edges[i]->getCost());
-        edges[i]->getTarget()->setParent(sourceNode, this->m_heuristic->calcEdgeCost(edges[i]->getTarget(), sourceNode));
+        edges[i]->getTarget()->setParent(sourceNode, m_heuristic->calcEdgeCost(edges[i]->getTarget(), sourceNode));
         m_openList.push_back(edges[i]->getTarget());
     }
     m_closedList.push_back(sourceNode);
@@ -279,9 +299,9 @@ bool PRMPlanner<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_p
     while (!m_openList.empty()) {
         currentNode = utilList::removeMinFromList(m_openList);
 
-        if (currentNode == targetNode)
+        if (currentNode == targetNode) {
             return true;
-
+        }
         m_closedList.push_back(currentNode);
         ++count;
 
@@ -300,19 +320,20 @@ template <unsigned int dim>
 void PRMPlanner<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
     float dist, edgeCost;
     for (auto successor : currentNode->getChildNodes()) {
-        if (utilList::contains(m_closedList, successor))
+        if (utilList::contains(m_closedList, successor)) {
             continue;
-
-        edgeCost = this->m_heuristic->calcEdgeCost(currentNode, successor);
+        }
+        edgeCost = m_heuristic->calcEdgeCost(currentNode, successor);
         dist = currentNode->getCost() + edgeCost;
 
-        if (utilList::contains(m_openList, successor) && dist >= successor->getCost())
+        if (utilList::contains(m_openList, successor) && dist >= successor->getCost()) {
             continue;
-
+        }
         successor->setParent(currentNode, edgeCost);
         successor->setCost(dist);
-        if (!utilList::contains(m_openList, successor))
+        if (!utilList::contains(m_openList, successor)) {
             m_openList.push_back(successor);
+        }
     }
 }
 
@@ -336,7 +357,7 @@ std::vector<std::shared_ptr<Node<dim>>> PRMPlanner<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> PRMPlanner<dim>::getPath(float trajectoryStepSize, bool smoothing) {
+std::vector<Vector<dim>> PRMPlanner<dim>::getPath(const float trajectoryStepSize, const bool smoothing) {
     return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 

@@ -43,8 +43,11 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     robot->setWorkspace(obstacleModel);
     robot->setBaseModel(robotModel);
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqpBenchmark<6>(robot));
+    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(3, collision));
+    std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
+    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
 
-    RRTOptions<6> options(40, 3, collision);
+    RRTOptions<6> options(40, collision, trajectory, sampling);
     RRTStarPlanner<6> planner(robot, options);
 
     // change query angle from rad to deg

@@ -31,12 +31,12 @@ namespace rmpl {
 template <unsigned int dim>
 class PRMOptions : public PlannerOptions<dim> {
   public:
-    PRMOptions(float rangeSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision,
-               SamplerMethod samplerMethod = SamplerMethod::randomly, SamplingStrategy strategy = SamplingStrategy::normal,
-               std::shared_ptr<Heuristic<dim>> heuristic = std::shared_ptr<Heuristic<dim>>(new Heuristic<dim>()),
-               unsigned int sortingCountGraph = 0);
+    PRMOptions(const float rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+               const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
+               const std::shared_ptr<Heuristic<dim>> &heuristic = std::shared_ptr<Heuristic<dim>>(new Heuristic<dim>()),
+               const unsigned int sortingCountGraph = 0);
 
-    void setRangeSize(float rangeSize);
+    void setRangeSize(const float rangeSize);
     float getRangeSize() const;
 
   private:
@@ -53,10 +53,10 @@ class PRMOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-PRMOptions<dim>::PRMOptions(float rangeSize, float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision,
-                            SamplerMethod method, SamplingStrategy strategy, std::shared_ptr<Heuristic<dim>> heuristic,
-                            unsigned int sortingCountGraph)
-    : PlannerOptions<dim>(trajectoryStepSize, collision, method, strategy, heuristic, sortingCountGraph) {
+PRMOptions<dim>::PRMOptions(const float rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
+                            const std::shared_ptr<Sampling<dim>> &sampling,
+                            const std::shared_ptr<Heuristic<dim>> &heuristic, const unsigned int sortingCountGraph)
+    : PlannerOptions<dim>(collision, planner, sampling, heuristic, sortingCountGraph) {
     setRangeSize(rangeSize);
 }
 
@@ -67,7 +67,7 @@ PRMOptions<dim>::PRMOptions(float rangeSize, float trajectoryStepSize, std::shar
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-void PRMOptions<dim>::setRangeSize(float rangeSize) {
+void PRMOptions<dim>::setRangeSize(const float rangeSize) {
     if (rangeSize <= 0) {
         Logging::warning("Step size was equal or smaller than 0 and is set up to 1", this);
         m_rangeSize = 1;

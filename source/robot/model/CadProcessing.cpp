@@ -35,9 +35,9 @@ namespace rmpl {
 */
 bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces) {
     std::size_t found = filePath.find_last_of(".");
-    if (filePath.substr(found) == ".g")
+    if (filePath.substr(found) == ".g") {
         return importBYU(filePath, vertices, faces);
-
+    }
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (!scene) {
@@ -45,9 +45,9 @@ bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std:
         return false;
     }
 
-    if (scene->mNumMeshes == 0)
+    if (scene->mNumMeshes == 0) {
         return false;
-
+    }
     vertices.clear();
     faces.clear();
     unsigned int verticeCount;
@@ -60,11 +60,12 @@ bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std:
         }
         // load faces
         for (int j = 0; j < mesh->mNumFaces; ++j) {
-            if (mesh->mFaces[j].mNumIndices > 2)
+            if (mesh->mFaces[j].mNumIndices > 2) {
                 faces.push_back(Vector3i(mesh->mFaces[j].mIndices[0] + verticeCount, mesh->mFaces[j].mIndices[1] + verticeCount,
                                          mesh->mFaces[j].mIndices[2] + verticeCount));
-            else
+            } else {
                 Logging::warning("Face array is to short", "CadProcessing");
+            }
         }
     }
     return true;
@@ -262,8 +263,9 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
 
         face.mIndices = new unsigned int[3];
         face.mNumIndices = 3;
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 3; ++i) {
             face.mIndices[i] = (*itFace)[i];
+        }
     }
     return scene;
 }

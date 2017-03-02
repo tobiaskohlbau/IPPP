@@ -35,7 +35,7 @@ class RRTStarPlanner : public RRTPlanner<dim> {
   public:
     RRTStarPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options);
 
-    bool connectGoalNode(Vector<dim> goal);
+    bool connectGoalNode(const Vector<dim> goal);
 
   protected:
     void computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode);
@@ -52,7 +52,7 @@ class RRTStarPlanner : public RRTPlanner<dim> {
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_planner;
     using Planner<dim>::m_robot;
-    using Planner<dim>::m_sampler;
+    using Planner<dim>::m_sampling;
     using RRTPlanner<dim>::m_initNode;
     using RRTPlanner<dim>::m_goalNode;
     using RRTPlanner<dim>::m_stepSize;

@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef UTILLIST_H
-#define UTILLIST_H
+#ifndef UTILLIST_HPP
+#define UTILLIST_HPP
 
 #include <memory>
 #include <string>
@@ -56,9 +56,9 @@ std::shared_ptr<Node<dim>> removeMinFromList(std::vector<std::shared_ptr<Node<di
             min = list[i]->getCost();
         }
     }
-    if (minNode != nullptr)
+    if (minNode != nullptr) {
         eraseFromList(list, minNode);
-
+    }
     return minNode;
 }
 
@@ -71,17 +71,19 @@ std::shared_ptr<Node<dim>> removeMinFromList(std::vector<std::shared_ptr<Node<di
 *  \date       2016-12-19
 */
 template <unsigned int dim>
-bool contains(std::vector<std::shared_ptr<Node<dim>>> &list, std::shared_ptr<Node<dim>> &node) {
-    if (std::find(list.begin(), list.end(), node) != list.end())
+bool contains(const std::vector<std::shared_ptr<Node<dim>>> &list, const std::shared_ptr<Node<dim>> &node) {
+    if (std::find(list.begin(), list.end(), node) != list.end()) {
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 static void trimWhitespaces(std::string &str) {
     size_t first = str.find_first_not_of(' ');
-    if (str.npos == first)
+    if (str.npos == first) {
         return;
+    }
     size_t last = str.find_last_not_of(' ');
     str = str.substr(first, (last - first + 1));
 }
@@ -89,4 +91,4 @@ static void trimWhitespaces(std::string &str) {
 } /* namespace utilList */
 } /* namespace rmpl */
 
-#endif    // UTILLIST_H
+#endif    // UTILLIST_HPP

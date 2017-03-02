@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef UTILGEO_H
-#define UTILGEO_H
+#ifndef UTILGEO_HPP
+#define UTILGEO_HPP
 
 #include <cmath>
 
@@ -54,7 +54,7 @@ constexpr float toDeg() {
 *  \param[out] transformation matrix
 *  \date       2016-08-25
 */
-static Matrix4 createT(Matrix3 &R, Vector3 &t) {
+static Matrix4 createT(const Matrix3 &R, const Vector3 &t) {
     Matrix4 T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
     T.block<3, 1>(0, 3) = t;
@@ -69,7 +69,7 @@ static Matrix4 createT(Matrix3 &R, Vector3 &t) {
 *  \param[out] translatin matrix
 *  \date       2016-08-25
 */
-static void decomposeT(Matrix4 &T, Matrix3 &R, Vector3 &t) {
+static void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
     R = T.block<3, 3>(0, 0);
     t = T.block<3, 1>(0, 3);
 }
@@ -81,7 +81,7 @@ static void decomposeT(Matrix4 &T, Matrix3 &R, Vector3 &t) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix2 getRotMat2D(float deg) {
+static Matrix2 getRotMat2D(const float deg) {
     Eigen::Rotation2D<float> rot2(deg * toRad());
     return rot2.toRotationMatrix();
 }
@@ -95,7 +95,7 @@ static Matrix2 getRotMat2D(float deg) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix3 getRotMat3D(float degX, float degY, float degZ) {
+static Matrix3 getRotMat3D(const float degX, const float degY, const float degZ) {
     Matrix3 R;
     R = Eigen::AngleAxisf(degX * toRad(), Eigen::Vector3f::UnitX()) *
         Eigen::AngleAxisf(degY * toRad(), Eigen::Vector3f::UnitY()) * Eigen::AngleAxisf(degZ * toRad(), Eigen::Vector3f::UnitZ());
@@ -126,8 +126,9 @@ static void poseVecToRandT(const Vector3 &pose, Matrix2 &R, Vector2 &t) {
 */
 static void poseVecToRandT(const Vector6 &pose, Matrix3 &R, Vector3 &t) {
     R = getRotMat3D(pose[3], pose[4], pose[5]);
-    for (unsigned int i = 0; i < 3; ++i)
+    for (unsigned int i = 0; i < 3; ++i) {
         t(i) = pose[i];
+    }
 }
 
 /*!
@@ -141,8 +142,9 @@ static Matrix4 poseVecToMat(const Vector6 &pose) {
     Matrix3 R = getRotMat3D(pose[3], pose[4], pose[5]);
     Matrix4 T = Eigen::Matrix4f::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 3; ++i) {
         T(i, 3) = pose[i];
+    }
     return T;
 }
 
@@ -156,8 +158,9 @@ static Matrix4 poseVecToMat(const Vector6 &pose) {
 static Vector6 poseMatToVec(const Matrix4 &pose) {
     Vector3 vec(pose.block<3, 1>(0, 3));
     Vector3 euler(pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2));
-    for (unsigned int i = 0; i < 3; ++i)
+    for (unsigned int i = 0; i < 3; ++i) {
         euler(i, 0) *= toDeg();
+    }
     return utilVec::append<3, 3>(vec, euler);
 }
 
@@ -170,8 +173,9 @@ static Vector6 poseMatToVec(const Matrix4 &pose) {
 */
 template <unsigned int dim>
 Vector<dim> degToRad(Vector<dim> deg) {
-    for (unsigned int i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < dim; ++i) {
         deg[i] *= toRad();
+    }
     return deg;
 }
 
@@ -182,11 +186,11 @@ Vector<dim> degToRad(Vector<dim> deg) {
 *  \param[out] rad
 *  \date       2016-11-16
 */
-static float degToRad(float deg) {
+static float degToRad(const float deg) {
     return deg * toRad();
 }
 
 } /* namespace utilGeo */
 } /* namespace rmpl */
 
-#endif    // UTILGEO_H
+#endif    // UTILGEO_HPP

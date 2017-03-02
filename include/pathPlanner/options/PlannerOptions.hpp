@@ -22,9 +22,9 @@
 #include <memory>
 
 #include <core/module/Identifier.h>
-#include <core/module/sampling/Sampling.hpp>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <core/module/sampling/Sampling.hpp>
 #include <core/utility/heuristic/Heuristic.hpp>
 
 namespace rmpl {
@@ -37,31 +37,30 @@ namespace rmpl {
 template <unsigned int dim>
 class PlannerOptions : public Identifier {
   public:
-    PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision, SamplerMethod samplerMethod,
-                   SamplingStrategy strategy, std::shared_ptr<Heuristic<dim>> heuristic, unsigned int sortingCountGraph);
+    PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
+                   const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
+                   const std::shared_ptr<Heuristic<dim>> &heuristic, const unsigned int sortingCountGraph);
 
-    void setTrajectoryStepSize(float stepSize);
-    float getTrajectoryStepSize() const;
+    void setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &planner);
+    std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner() const;
 
-    void setCollisionDetection(std::shared_ptr<CollisionDetection<dim>> collision);
+    void setCollisionDetection(const std::shared_ptr<CollisionDetection<dim>> &collision);
     std::shared_ptr<CollisionDetection<dim>> getCollisionDetection() const;
 
-    void setSamplerMethod(SamplerMethod method);
-    SamplerMethod getSamplerMethod() const;
-    void setSamplingStrategy(SamplingStrategy strategy);
-    SamplingStrategy getSamplingStrategy() const;
+    void setSampling(const std::shared_ptr<Sampling<dim>> &sampling);
+    std::shared_ptr<Sampling<dim>> getSampling() const;
 
-    void setHeuristic(std::shared_ptr<Heuristic<dim>> heuristic);
+    void setHeuristic(const std::shared_ptr<Heuristic<dim>> &heuristic);
     std::shared_ptr<Heuristic<dim>> getHeuristic() const;
 
-    void setSortCountGraph(unsigned int sortAmountGraph);
+    void setSortCountGraph(const unsigned int sortAmountGraph);
     unsigned int getSortCountGraph() const;
 
   protected:
     float m_trajectoryStepSize;
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-    SamplerMethod m_samplerMethod = SamplerMethod::randomly;
-    SamplingStrategy m_samplingStrategy = SamplingStrategy::normal;
+    std::shared_ptr<TrajectoryPlanner<dim>> m_planner = nullptr;
+    std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
     std::shared_ptr<Heuristic<dim>> m_heuristic = nullptr;
     unsigned int m_sortingCountGraph = 0;
 };
@@ -78,15 +77,15 @@ class PlannerOptions : public Identifier {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-PlannerOptions<dim>::PlannerOptions(float trajectoryStepSize, std::shared_ptr<CollisionDetection<dim>> collision,
-                                    SamplerMethod method, SamplingStrategy strategy, std::shared_ptr<Heuristic<dim>> heuristic,
-                                    unsigned int sortingCountGraph)
+PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                    const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
+                                    const std::shared_ptr<Sampling<dim>> &sampling,
+                                    const std::shared_ptr<Heuristic<dim>> &heuristic, const unsigned int sortingCountGraph)
     : Identifier("PlannerOptions") {
-    setTrajectoryStepSize(trajectoryStepSize);
     m_collision = collision;
-    setHeuristic(heuristic);
-    m_samplingStrategy = strategy;
-    m_samplerMethod = method;
+    m_planner = planner;
+    m_heuristic = heuristic;
+    m_sampling = sampling;
     m_sortingCountGraph = sortingCountGraph;
 }
 
@@ -97,13 +96,8 @@ PlannerOptions<dim>::PlannerOptions(float trajectoryStepSize, std::shared_ptr<Co
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setTrajectoryStepSize(float stepSize) {
-    if (stepSize <= 0) {
-        Logging::warning("Trajectory step size was smaller than 0 and was set up to 1", this);
-        m_trajectoryStepSize = 1;
-    } else {
-        m_trajectoryStepSize = stepSize;
-    }
+void PlannerOptions<dim>::setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &planner) {
+    m_planner = planner;
 }
 
 /*!
@@ -113,12 +107,12 @@ void PlannerOptions<dim>::setTrajectoryStepSize(float stepSize) {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-float PlannerOptions<dim>::getTrajectoryStepSize() const {
-    return m_trajectoryStepSize;
+std::shared_ptr<TrajectoryPlanner<dim>> PlannerOptions<dim>::getTrajectoryPlanner() const {
+    return m_planner;
 }
 
 template <unsigned int dim>
-void PlannerOptions<dim>::setCollisionDetection(std::shared_ptr<CollisionDetection<dim>> collision) {
+void PlannerOptions<dim>::setCollisionDetection(const std::shared_ptr<CollisionDetection<dim>> &collision) {
     m_collision = collision;
 }
 
@@ -128,47 +122,25 @@ std::shared_ptr<CollisionDetection<dim>> PlannerOptions<dim>::getCollisionDetect
 }
 
 /*!
-*  \brief      Sets the sampling method
-*  \param[in]  method
-*  \author     Sascha Kaden
-*  \date       2016-08-29
-*/
-template <unsigned int dim>
-void PlannerOptions<dim>::setSamplerMethod(SamplerMethod method) {
-    m_samplerMethod = method;
-}
-
-/*!
-*  \brief      Returns the sampling method
-*  \param[out] method
-*  \author     Sascha Kaden
-*  \date       2016-08-29
-*/
-template <unsigned int dim>
-SamplerMethod PlannerOptions<dim>::getSamplerMethod() const {
-    return m_samplerMethod;
-}
-
-/*!
-*  \brief      Sets the sampling strategy
+*  \brief      Sets the Sampling
 *  \param[in]  strategy
 *  \author     Sascha Kaden
 *  \date       2016-12-15
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setSamplingStrategy(SamplingStrategy strategy) {
-    m_samplingStrategy = strategy;
+void PlannerOptions<dim>::setSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
+    m_sampling = sampling;
 }
 
 /*!
-*  \brief      Returns the strategy method
-*  \param[out] strategy
+*  \brief      Returns the Sampling
+*  \param[out] sampling
 *  \author     Sascha Kaden
 *  \date       2016-12-15
 */
 template <unsigned int dim>
-SamplingStrategy PlannerOptions<dim>::getSamplingStrategy() const {
-    return m_samplingStrategy;
+std::shared_ptr<Sampling<dim>> PlannerOptions<dim>::getSampling() const {
+    return m_sampling;
 }
 
 /*!
@@ -178,11 +150,8 @@ SamplingStrategy PlannerOptions<dim>::getSamplingStrategy() const {
 *  \date       2017-01-01
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setHeuristic(std::shared_ptr<Heuristic<dim>> heuristic) {
-    if (heuristic)
-        m_heuristic = heuristic;
-    else
-        Logging::error("Empty Heuristic passed", this);
+void PlannerOptions<dim>::setHeuristic(const std::shared_ptr<Heuristic<dim>> &heuristic) {
+    m_heuristic = heuristic;
 }
 
 /*!
@@ -203,7 +172,7 @@ std::shared_ptr<Heuristic<dim>> PlannerOptions<dim>::getHeuristic() const {
 * \date       2017-01-05
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setSortCountGraph(unsigned int sortingCountGraph) {
+void PlannerOptions<dim>::setSortCountGraph(const unsigned int sortingCountGraph) {
     m_sortingCountGraph = sortingCountGraph;
 }
 
