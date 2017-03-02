@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->openGLWidget->addVisualiser(_visualizer);
+    //_visualizer.setTriangles();
 }
 
 MainWindow::~MainWindow()
