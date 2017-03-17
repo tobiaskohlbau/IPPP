@@ -29,7 +29,7 @@ option(BUILD_TESTS "Build tests" ON)
 option(BUILD_BENCHMARK "Build optional benchmark classes")
 
 # external libraries
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 find_package(assimp)
 find_package(Eigen3 REQUIRED)
 find_package(PQP REQUIRED)
