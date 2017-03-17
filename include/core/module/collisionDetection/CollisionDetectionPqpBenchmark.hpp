@@ -21,6 +21,7 @@
 
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 
+#include <chrono>
 #include <mutex>
 
 namespace rmpl {
@@ -40,9 +41,14 @@ class CollisionDetectionPqpBenchmark : public CollisionDetectionPqp<dim> {
     int getCount() const;
     void resetCount();
 
+    void resetComputationTimes();
+    std::chrono::nanoseconds getMeanComputationTime() const;
+
   private:
     unsigned int m_count = 0;
-    std::mutex m_mutex;
+    std::vector<std::chrono::nanoseconds> m_computationTimes;
+    std::mutex m_mutexCount;
+    std::mutex m_mutexTime;
 };
 
 /*!
@@ -65,10 +71,16 @@ CollisionDetectionPqpBenchmark<dim>::CollisionDetectionPqpBenchmark(const std::s
 */
 template <unsigned int dim>
 bool CollisionDetectionPqpBenchmark<dim>::controlVec(const Vector<dim> &vec) {
-    m_mutex.lock();
+    m_mutexCount.lock();
     ++m_count;
-    m_mutex.unlock();
-    return CollisionDetectionPqp<dim>::controlVec(vec);
+    m_mutexCount.unlock();
+    auto startTime = std::chrono::system_clock::now();
+    bool result = CollisionDetectionPqp<dim>::controlVec(vec);
+    m_mutexTime.lock();
+    m_computationTimes.push_back(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now() - startTime));
+    m_mutexTime.unlock();
+    return result;
 }
 
 /*!
@@ -85,19 +97,31 @@ bool CollisionDetectionPqpBenchmark<dim>::controlTrajectory(std::vector<Vector<d
 
     if (this->m_robot->getRobotType() == RobotType::mobile) {
         for (int i = 0; i < vecs.size(); ++i) {
-            m_mutex.lock();
+            m_mutexCount.lock();
             ++m_count;
-            m_mutex.unlock();
-            if (CollisionDetectionPqp<dim>::checkMobileRobot(vecs[i])) {
+            m_mutexCount.unlock();
+            auto startTime = std::chrono::system_clock::now();
+            bool result = CollisionDetectionPqp<dim>::checkMobileRobot(vecs[i]);
+            m_mutexTime.lock();
+            m_computationTimes.push_back(
+                std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now() - startTime));
+            m_mutexTime.unlock();
+            if (result) {
                 return true;
             }
         }
     } else {
         for (int i = 0; i < vecs.size(); ++i) {
-            m_mutex.lock();
+            m_mutexCount.lock();
             ++m_count;
-            m_mutex.unlock();
-            if (CollisionDetectionPqp<dim>::checkSerialRobot(vecs[i])) {
+            m_mutexCount.unlock();
+            auto startTime = std::chrono::system_clock::now();
+            bool result = CollisionDetectionPqp<dim>::checkSerialRobot(vecs[i]);
+            m_mutexTime.lock();
+            m_computationTimes.push_back(
+                std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now() - startTime));
+            m_mutexTime.unlock();
+            if (result) {
                 return true;
             }
         }
@@ -125,6 +149,36 @@ int CollisionDetectionPqpBenchmark<dim>::getCount() const {
 template <unsigned int dim>
 void CollisionDetectionPqpBenchmark<dim>::resetCount() {
     m_count = 0;
+}
+
+/*!
+*  \brief      Reset collision detection computation times
+*  \author     Sascha Kaden
+*  \date       2017-03-17
+*/
+template <unsigned int dim>
+void CollisionDetectionPqpBenchmark<dim>::resetComputationTimes() {
+    m_computationTimes.clear();
+}
+
+/*!
+*  \brief      Return the mean time of all computations
+*  \author     Sascha Kaden
+*  \param[out] mean computation time
+*  \date       2017-03-17
+*/
+template <unsigned int dim>
+std::chrono::nanoseconds CollisionDetectionPqpBenchmark<dim>::getMeanComputationTime() const {
+    std::chrono::nanoseconds duration;
+    if (m_computationTimes.empty())
+        return duration;
+
+    duration = m_computationTimes[0];
+    for (int i = 1; i < m_computationTimes.size(); ++i) {
+        duration += m_computationTimes[i];
+    }
+    duration /= m_computationTimes.size();
+    return duration;
 }
 
 } /* namespace rmpl */
