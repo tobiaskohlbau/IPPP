@@ -2,8 +2,8 @@
 #include <iostream>
 #include <memory>
 
-#include <core/utility/UtilVec.hpp>
 #include <core/module/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
+#include <core/utility/UtilVec.hpp>
 //#include <core/module/collisionDetection/CollisionDetectionFcl.hpp>
 //#include <robot/model/ModelFactoryFcl.h>
 #include <core/utility/Logging.h>
@@ -11,8 +11,8 @@
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/RRTStarPlanner.hpp>
 
-#include <robot/model/ModelFactoryPqp.h>
 #include <robot/MobileRobot.h>
+#include <robot/model/ModelFactoryPqp.h>
 
 #include <modelDirectory.h>
 
@@ -25,10 +25,10 @@ using namespace rmpl;
 std::string modelDir;
 
 bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentConfig config) {
-    //ModelFactoryFcl factoryFcl;
-    //std::shared_ptr<ModelContainer> robotModel = factoryFcl.createModel(benchmarkDir + config.robotFile);
-    //std::shared_ptr<ModelContainer> obstacleModel = factoryFcl.createModel(benchmarkDir + config.obstacleFile);
-    //std::static_pointer_cast<ModelFcl>(obstacleModel)->transform(config.obstacleConfig);
+    // ModelFactoryFcl factoryFcl;
+    // std::shared_ptr<ModelContainer> robotModel = factoryFcl.createModel(benchmarkDir + config.robotFile);
+    // std::shared_ptr<ModelContainer> obstacleModel = factoryFcl.createModel(benchmarkDir + config.obstacleFile);
+    // std::static_pointer_cast<ModelFcl>(obstacleModel)->transform(config.obstacleConfig);
     ModelFactoryPqp factoryPqp;
     std::shared_ptr<ModelContainer> robotModel = factoryPqp.createModel(benchmarkDir + config.robotFile);
     std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel(benchmarkDir + config.obstacleFile);
@@ -57,8 +57,16 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
         }
     }
 
-    bool result =  planner.computePath(queries[0], queries[1], 8000, 6);
-    std::cout << std::static_pointer_cast<CollisionDetectionPqpBenchmark<6>>(collision)->getCount() << std::endl;
+    auto startTime = std::chrono::system_clock::now();
+    bool result = planner.computePath(queries[0], queries[1], 8000, 6);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
+    std::cout << "Computation time: " << duration.count() / 1000.0 << std::endl;
+
+    std::shared_ptr<CollisionDetectionPqpBenchmark<6>> collisionDetectionPqpBenchmark =
+        std::static_pointer_cast<CollisionDetectionPqpBenchmark<6>>(collision);
+    std::cout << "Collision count: " << collisionDetectionPqpBenchmark->getCount() << std::endl;
+    std::cout << "Mean collision computation time: " << collisionDetectionPqpBenchmark->getMeanComputationTime().count() / 1000.0
+              << " micro seconds" << std::endl;
     return result;
 }
 
@@ -67,13 +75,14 @@ void benchmarkAlphaPuzzle() {
     std::string envPath = puzzleDir + "alpha.env";
     std::string queryPath = puzzleDir + "alpha.query";
 
+    Logging::info("AlphaPuzzle:");
     EnvironmentConfig config = readEnvironment(envPath);
     bool result = computePath(puzzleDir, queryPath, config);
 
     if (result)
-        Logging::info("Path of AlphaPuzzle could be planned");
+        Logging::info("could be planned");
     else
-        Logging::warning("Path of AlphaPuzzle could NOT be planned");
+        Logging::warning("could NOT be planned");
 }
 
 void benchmarkFlange() {
@@ -81,13 +90,14 @@ void benchmarkFlange() {
     std::string envPath = flangeDir + "flange.env";
     std::string queryPath = flangeDir + "flange.query";
 
+    Logging::info("Flange:");
     EnvironmentConfig config = readEnvironment(envPath);
     bool result = computePath(flangeDir, queryPath, config);
 
     if (result)
-        Logging::info("Path of Flange could be planned");
+        Logging::info("could be planned");
     else
-        Logging::warning("Path of Flange could NOT be planned");
+        Logging::warning("could NOT be planned");
 }
 
 void benchmarkHedgehog() {
@@ -95,13 +105,14 @@ void benchmarkHedgehog() {
     std::string envPath = hedgehogDir + "hedgehog.env";
     std::string queryPath = hedgehogDir + "hedgehog.query";
 
+    Logging::info("Hedgehog:");
     EnvironmentConfig config = readEnvironment(envPath);
     bool result = computePath(hedgehogDir, queryPath, config);
 
     if (result)
-        Logging::info("Path of Hedgehog could be planned");
+        Logging::info("could be planned");
     else
-        Logging::warning("Path of Hedgehog could NOT be planned");
+        Logging::warning("could NOT be planned");
 }
 
 int main(int argc, char** argv) {
