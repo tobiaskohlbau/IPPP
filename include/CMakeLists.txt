@@ -26,8 +26,9 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionPqp.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/Sampler.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerUniform.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerLinear.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerNormalDist.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerUniform.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SeedSampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/SamplingNearObstacle.hpp
