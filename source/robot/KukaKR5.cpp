@@ -30,7 +30,8 @@ namespace rmpl {
 *  \date        2016-10-22
 */
 KukaKR5::KukaKR5()
-    : SerialRobot<6>("KukaKR5", utilVec::Vecf(-155, -65, -68, -350, 50, -530), utilVec::Vecf(155, 180, 105, 350, 310, 170)) {
+    : SerialRobot<6>("KukaKR5", utilVec::Vecf(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -utilGeo::twoPi()),
+                     utilVec::Vecf(2.70526, utilGeo::pi(), 1.8326, 6.10865, 5.41052, 2.96706)) {
     m_alpha = utilVec::Vecf(90, 0, 90, 90, 90, 0);
     m_alpha = utilGeo::degToRad<6>(m_alpha);
     m_a = utilVec::Vecf(180, 600, 120, 0, 0, 0);
@@ -40,17 +41,23 @@ KukaKR5::KukaKR5()
     ModelFactoryPqp modelFactoryPqp;
     m_baseModel = modelFactoryPqp.createModel("meshes/KukaKR5/link0.stl");
     Joint joint;
-    joint = Joint(-155, 155, modelFactoryPqp.createModel("meshes/KukaKR5/link1.stl"));
+    // -155, 155
+    joint = Joint(-2.70526, 2.70526, modelFactoryPqp.createModel("meshes/KukaKR5/link1.stl"));
     m_joints.push_back(joint);
-    joint = Joint(-65, 180, modelFactoryPqp.createModel("meshes/KukaKR5/link2.stl"));
+    // -65, 180
+    joint = Joint(-1.13446, utilGeo::pi(), modelFactoryPqp.createModel("meshes/KukaKR5/link2.stl"));
     m_joints.push_back(joint);
-    joint = Joint(-68, 105, modelFactoryPqp.createModel("meshes/KukaKR5/link3.stl"));
+    // -68, 105
+    joint = Joint(-1.18682, 1.8326, modelFactoryPqp.createModel("meshes/KukaKR5/link3.stl"));
     m_joints.push_back(joint);
-    joint = Joint(-350, 350, modelFactoryPqp.createModel("meshes/KukaKR5/link4.stl"));
+    // -350, 350
+    joint = Joint(-6.10865, 6.10865, modelFactoryPqp.createModel("meshes/KukaKR5/link4.stl"));
     m_joints.push_back(joint);
-    joint = Joint(50, 310, modelFactoryPqp.createModel("meshes/KukaKR5/link5.stl"));
+    // 50, 310
+    joint = Joint(0.872665, 5.41052, modelFactoryPqp.createModel("meshes/KukaKR5/link5.stl"));
     m_joints.push_back(joint);
-    joint = Joint(-530, 170, modelFactoryPqp.createModel("meshes/KukaKR5/link6.stl"));
+    // -360, 170
+    joint = Joint(-utilGeo::twoPi(), 2.96706, modelFactoryPqp.createModel("meshes/KukaKR5/link6.stl"));
     m_joints.push_back(joint);
 }
 

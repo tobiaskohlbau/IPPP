@@ -32,8 +32,6 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     ModelFactoryPqp factoryPqp;
     std::shared_ptr<ModelContainer> robotModel = factoryPqp.createModel(benchmarkDir + config.robotFile);
     std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel(benchmarkDir + config.obstacleFile);
-    for (int i = 3; i < 6; ++i)
-        config.obstacleConfig[i] *= utilGeo::toDeg();
     std::static_pointer_cast<ModelPqp>(obstacleModel)->transform(config.obstacleConfig);
     // save models as obj
     exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
@@ -42,7 +40,8 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::vector<Vector6> queries = readQuery(queryPath);
 
     Vector6 minBoundary = utilVec::Vecf(config.minBoundary[0], config.minBoundary[1], config.minBoundary[2], 0, 0, 0);
-    Vector6 maxBoundary = utilVec::Vecf(config.maxBoundary[0], config.maxBoundary[1], config.maxBoundary[2], 360, 360, 360);
+    Vector6 maxBoundary = utilVec::Vecf(config.maxBoundary[0], config.maxBoundary[1], config.maxBoundary[2], utilGeo::twoPi(),
+                                        utilGeo::twoPi(), utilGeo::twoPi());
     std::shared_ptr<RobotBase<6>> robot(new MobileRobot<6>(minBoundary, maxBoundary));
     robot->setWorkspace(obstacleModel);
     robot->setBaseModel(robotModel);
@@ -60,24 +59,18 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     RRTStarPlanner<6> planner(robot, options);
     RRTStarPlanner<6> plannerBenchmark(robot, optionsBenchmark);
 
-    // change query angle from rad to deg
-    for (auto query : queries) {
-        for (int i = 3; i < 6; ++i) {
-            query[i] *= utilGeo::toDeg();
-        }
-    }
     std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[0]);
     exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
 
     auto startTime = std::chrono::system_clock::now();
     bool result = planner.computePath(queries[0], queries[1], 8000, 24);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
-    std::cout << "Computation time: " << duration.count() / 1000.0 << std::endl;
 
     if (result) {
         plannerBenchmark.computePath(queries[0], queries[1], 8000, 24);
     }
 
+    std::cout << "Computation time: " << duration.count() / 1000.0 << std::endl;
     std::shared_ptr<CollisionDetectionPqpBenchmark<6>> collisionDetectionPqpBenchmark =
         std::static_pointer_cast<CollisionDetectionPqpBenchmark<6>>(collisionBenchmark);
     std::cout << "Collision count: " << collisionDetectionPqpBenchmark->getCount() << std::endl;
@@ -133,9 +126,9 @@ void benchmarkHedgehog() {
 
 int main(int argc, char** argv) {
     modelDir = getModelDirectory();
-    //benchmarkFlange();
+    // benchmarkFlange();
     benchmarkAlphaPuzzle();
-    //benchmarkHedgehog();
+     benchmarkHedgehog();
 
     return 0;
 }
