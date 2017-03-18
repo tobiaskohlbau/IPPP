@@ -38,7 +38,7 @@ class RRTStarPlanner : public RRTPlanner<dim> {
     bool connectGoalNode(const Vector<dim> goal);
 
   protected:
-    void computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode);
+    std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec);
     void chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
                       std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
     void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
@@ -78,22 +78,20 @@ RRTStarPlanner<dim>::RRTStarPlanner(const std::shared_ptr<RobotBase<dim>> &robot
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void RRTStarPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) {
+std::shared_ptr<Node<dim>> RRTStarPlanner<dim>::computeRRTNode(const Vector<dim> &randVec) {
     // get nearest neighbor
     std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randVec);
     // set Node<dim> new fix fixed step size of 10
     Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
-    newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
+    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
 
     std::vector<std::shared_ptr<Node<dim>>> nearNodes;
     chooseParent(newNode, nearestNode, nearNodes);
 
     if (m_collision->controlVec(newNode->getValues())) {
-        newNode = nullptr;
-        return;
+        return nullptr;
     } else if (!m_planner->controlTrajectory(newNode, nearestNode)) {
-        newNode = nullptr;
-        return;
+        return nullptr;
     }
 
     float edgeCost = this->m_heuristic->calcEdgeCost(newNode, nearestNode);
@@ -104,6 +102,7 @@ void RRTStarPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared
     m_mutex.unlock();
 
     reWire(newNode, nearestNode, nearNodes);
+    return newNode;
 }
 
 /*!

@@ -40,7 +40,7 @@ class NormalRRTPlanner : public RRTPlanner<dim> {
     bool connectGoalNode(const Vector<dim> goal);
 
   protected:
-    void computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode);
+    std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec);
 
     std::mutex m_mutex;
 
@@ -64,20 +64,18 @@ class NormalRRTPlanner : public RRTPlanner<dim> {
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void NormalRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) {
+std::shared_ptr<Node<dim>> NormalRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec) {
     // get nearest neighbor
     std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randVec);
 
     // compute Node<dim> new with fixed step size
     Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
-    newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
+    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
 
     if (m_collision->controlVec(newNode->getValues())) {
-        newNode = nullptr;
-        return;
+        return nullptr;
     } else if (!m_planner->controlTrajectory(newNode->getValues(), nearestNode->getValues())) {
-        newNode = nullptr;
-        return;
+        return nullptr;
     }
 
     float edgeCost = this->m_heuristic->calcEdgeCost(nearestNode, newNode);
@@ -86,6 +84,7 @@ void NormalRRTPlanner<dim>::computeRRTNode(const Vector<dim> &randVec, std::shar
     m_mutex.lock();
     nearestNode->addChild(newNode, edgeCost);
     m_mutex.unlock();
+    return newNode;
 }
 
 /*!
