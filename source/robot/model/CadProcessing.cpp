@@ -89,8 +89,6 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
     unsigned int numBodies = 0;
     unsigned int numVertices = 0;
     unsigned int numFaces = 0;
-    vertices.clear();
-    faces.clear();
 
     getline(is, str);
     utilList::trimWhitespaces(str);
@@ -98,6 +96,11 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
     ss >> numBodies;
     ss >> numVertices;
     ss >> numFaces;
+    vertices.clear();
+    faces.clear();
+    vertices.reserve(numVertices);
+    faces.reserve(numFaces);
+
     getline(is, str);
     getline(is, str);
     utilList::trimWhitespaces(str);
@@ -219,6 +222,9 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
 *  \date            2017-02-25
 */
 void transformCad(const Vector6 &config, std::vector<Vector3> &vertices) {
+    if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0) {
+        return;
+    }
     Matrix3 R;
     Vector3 t;
     utilGeo::poseVecToRandT(config, R, t);
@@ -292,19 +298,19 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
     // add vertices to the mesh
     pMesh->mVertices = new aiVector3D[vertices.size()];
     pMesh->mNumVertices = vertices.size();
-    for (auto itVertice = vertices.begin(); itVertice != vertices.end(); ++itVertice) {
-        pMesh->mVertices[itVertice - vertices.begin()] = aiVector3D(itVertice->x(), itVertice->y(), itVertice->z());
+    for (unsigned int i = 0; i < vertices.size(); ++i) {
+        pMesh->mVertices[i] = aiVector3D(vertices[i].x(), vertices[i].y(), vertices[i].z());
     }
 
     pMesh->mFaces = new aiFace[faces.size()];
     pMesh->mNumFaces = faces.size();
-    for (auto itFace = faces.begin(); itFace != faces.end(); ++itFace) {
-        aiFace &face = pMesh->mFaces[itFace - faces.begin()];
+    for (unsigned int i = 0; i < faces.size(); ++i) {
+        aiFace &face = pMesh->mFaces[i];
 
         face.mIndices = new unsigned int[3];
         face.mNumIndices = 3;
-        for (int i = 0; i < 3; ++i) {
-            face.mIndices[i] = (*itFace)[i];
+        for (int j = 0; j < 3; ++j) {
+            face.mIndices[j] = faces[i][j];
         }
     }
     return scene;
