@@ -164,6 +164,16 @@ static Vector6 poseMatToVec(const Matrix4 &pose) {
     return utilVec::append<3, 3>(vec, euler);
 }
 
+static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3) {
+    Vector3 v = p2 - p1;
+    Vector3 w = p3 - p1;
+    float nx = (v[1] * w[2]) - (v[2] * w[1]);
+    float ny = (v[2] * w[0]) - (v[0] * w[2]);
+    float nz = (v[0] * w[1]) - (v[1] * w[0]);
+    Vector3 normal(nx, ny, nz);
+    return normal.normalized();
+}
+
 /*!
 *  \brief      Convert Vec of deg angles to Vec of rad
 *  \author     Sascha Kaden

@@ -46,6 +46,7 @@ class ModelContainer : public Identifier {
 
     std::vector<Vector3> m_vertices;
     std::vector<Vector3i> m_faces;
+    std::vector<Vector3> m_normals;
 };
 
 } /* namespace rmpl */

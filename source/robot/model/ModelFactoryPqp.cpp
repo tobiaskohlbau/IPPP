@@ -44,7 +44,8 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
     }
     std::vector<Vector3> vertices;
     std::vector<Vector3i> faces;
-    if (!importCad(filePath, vertices, faces)) {
+    std::vector<Vector3> normals;
+    if (!importCad(filePath, vertices, faces, normals)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
