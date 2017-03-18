@@ -79,7 +79,7 @@ Graph<dim>::Graph(const unsigned int sortCount) : Identifier("Graph"), m_sortCou
 */
 template <unsigned int dim>
 Graph<dim>::~Graph() {
-    for (auto node : m_nodes) {
+    for (auto &&node : m_nodes) {
         node->clearParent();
         node->clearChildes();
         node = nullptr;

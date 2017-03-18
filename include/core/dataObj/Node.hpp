@@ -321,7 +321,7 @@ void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child, const float ed
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChildNodes() const {
     std::vector<std::shared_ptr<Node>> childNodes;
-    for (auto child : m_childes) {
+    for (auto &&child : m_childes) {
         childNodes.push_back(child->getTarget());
     }
     return childNodes;

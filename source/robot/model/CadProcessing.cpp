@@ -218,15 +218,13 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
 *  \param[in, out]  list of vertices
 *  \date            2017-02-25
 */
-std::vector<Vector3> transformCad(const Vector6 &config, const std::vector<Vector3> &vertices) {
-    std::vector<Vector3> newVertices;
-    newVertices.reserve(vertices.size());
-    Matrix3 R = utilGeo::getRotMat3D(config[3], config[4], config[5]);
-    Vector3 t(config[0], config[1], config[2]);
-    for (auto vertex : vertices) {
-        newVertices.push_back((R * vertex) + t);
+void transformCad(const Vector6 &config, std::vector<Vector3> &vertices) {
+    Matrix3 R;
+    Vector3 t;
+    utilGeo::poseVecToRandT(config, R, t);
+    for (auto &&vertex : vertices) {
+        vertex = (R * vertex) + t;
     }
-    return newVertices;
 }
 
 std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
