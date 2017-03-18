@@ -106,13 +106,12 @@ bool CollisionDetectionTriangleRobot::controlTrajectory(std::vector<Vector3> &ve
 *  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::checkPoint2D(float x, float y) {
-    if (this->m_minBoundary[0] >= x || x >= this->m_maxBoundary[0] || this->m_minBoundary[1] >= y ||
-        y >= this->m_maxBoundary[1]) {
+    if (m_minBoundary[0] >= x || x >= m_maxBoundary[0] || m_minBoundary[1] >= y || y >= m_maxBoundary[1]) {
         Logging::debug("Point out of workspace", this);
         return true;
     }
 
-    if (m_workspace2D(x, y) < 80) {
+    if (m_workspace2D(y, x) < 80) {
         return true;
     } else {
         return false;

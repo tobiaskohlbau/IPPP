@@ -38,6 +38,10 @@ constexpr float twoPi() {
     return M_PI * 2;
 }
 
+constexpr float halfPi() {
+    return M_PI / 2;
+}
+
 constexpr float toRad() {
     return M_PI / 180;
 }
@@ -81,9 +85,9 @@ static void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix2 getRotMat2D(const float deg) {
-    Eigen::Rotation2D<float> rot2(deg * toRad());
-    return rot2.toRotationMatrix();
+static Matrix2 getRotMat2D(const float rad) {
+    Eigen::Rotation2D<float> R(rad);
+    return R.toRotationMatrix();
 }
 
 /*!
@@ -95,10 +99,10 @@ static Matrix2 getRotMat2D(const float deg) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix3 getRotMat3D(const float degX, const float degY, const float degZ) {
+static Matrix3 getRotMat3D(const float radX, const float radY, const float radZ) {
     Matrix3 R;
-    R = Eigen::AngleAxisf(degX * toRad(), Eigen::Vector3f::UnitX()) *
-        Eigen::AngleAxisf(degY * toRad(), Eigen::Vector3f::UnitY()) * Eigen::AngleAxisf(degZ * toRad(), Eigen::Vector3f::UnitZ());
+    R = Eigen::AngleAxisf(radX, Eigen::Vector3f::UnitX()) * Eigen::AngleAxisf(radY, Eigen::Vector3f::UnitY()) *
+        Eigen::AngleAxisf(radZ, Eigen::Vector3f::UnitZ());
     return R;
 }
 
@@ -158,9 +162,6 @@ static Matrix4 poseVecToMat(const Vector6 &pose) {
 static Vector6 poseMatToVec(const Matrix4 &pose) {
     Vector3 vec(pose.block<3, 1>(0, 3));
     Vector3 euler(pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2));
-    for (unsigned int i = 0; i < 3; ++i) {
-        euler(i, 0) *= toDeg();
-    }
     return utilVec::append<3, 3>(vec, euler);
 }
 

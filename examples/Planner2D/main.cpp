@@ -26,7 +26,7 @@ cv::Mat obstacleWorkspace;
 void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     const unsigned int dim = 3;
     Vector3 min = utilVec::append<2>(minimum, 0.0);
-    Vector3 max = utilVec::append<2>(maximum, 360.0);
+    Vector3 max = utilVec::append<2>(maximum, utilGeo::twoPi());
 
     std::vector<Triangle2D> triangles;
     triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0 ), Vector2(25, 50)));
@@ -51,7 +51,7 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
-    Vector3 goal(400.0, 930.0, 50);
+    Vector3 goal(400.0, 930.0, 50*utilGeo::toRad());
     bool connected = planner->computePath(start, goal, 20000, 8);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;

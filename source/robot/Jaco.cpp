@@ -69,12 +69,11 @@ Vector6 Jaco::directKinematic(const Vector6 &angles) {
 std::vector<Matrix4> Jaco::getJointTrafos(const Vector6 &angles) {
     // transform form jaco physical angles to dh angles
     Vector6 dhAngles = convertRealToDH(angles);
-    Vector6 rads = utilGeo::degToRad<6>(dhAngles);
 
     std::vector<Matrix4> trafos;
     // create transformation matrizes
     for (int i = 0; i < 6; ++i) {
-        trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));
+        trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], dhAngles[i]));
     }
     return trafos;
 }
@@ -90,10 +89,10 @@ std::vector<Matrix4> Jaco::getJointTrafos(const Vector6 &angles) {
 Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) {
     Vector6 dhAngles(realAngles);
     dhAngles[0] = -realAngles[0];
-    dhAngles[1] = realAngles[1] - 90;
-    dhAngles[2] = realAngles[2] + 90;
-    dhAngles[4] = realAngles[4] - 180;
-    dhAngles[5] = realAngles[5] + 100;
+    dhAngles[1] = realAngles[1] - utilGeo::halfPi();
+    dhAngles[2] = realAngles[2] + utilGeo::halfPi();
+    dhAngles[4] = realAngles[4] - utilGeo::pi();
+    dhAngles[5] = realAngles[5] + utilGeo::pi();
 
     return dhAngles;
 }

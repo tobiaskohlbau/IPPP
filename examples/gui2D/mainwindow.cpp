@@ -79,7 +79,7 @@ void MainWindow::computePath() {
         }
 
         Vector3 minBoundary(0.0, 0.0, 0.0);
-        Vector3 maxBoundary(m_workspace.cols(), m_workspace.rows(), 360);
+        Vector3 maxBoundary(m_workspace.cols(), m_workspace.rows(), utilGeo::twoPi());
         ModelFactoryTriangle2D factory;
         std::shared_ptr<ModelContainer> baseModel = factory.createModel(m_triangles);
         std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, minBoundary, maxBoundary));
@@ -107,8 +107,8 @@ void MainWindow::computePath() {
             m_planner3d = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<3>(robot, rrtOptions));
         else
             m_planner3d = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<3>(robot, prmOptions));
-        Vector3 start(m_startX, m_startY, m_startPhi);
-        Vector3 goal(m_goalX, m_goalY, m_goalPhi);
+        Vector3 start(m_startX, m_startY, m_startPhi*utilGeo::toRad());
+        Vector3 goal(m_goalX, m_goalY, m_goalPhi*utilGeo::toRad());
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
         const unsigned int dim = 2;

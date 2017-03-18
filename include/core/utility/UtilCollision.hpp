@@ -41,7 +41,8 @@ static void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<rmp
         utilGeo::decomposeT(As[i], Rs[i], ts[i]);
     }
 }
-}
-}
+
+} /* namespace utilCollision */
+} /* namespace rmpl */
 
 #endif    // UTILCOLLISION_HPP
