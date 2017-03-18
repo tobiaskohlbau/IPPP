@@ -47,7 +47,7 @@ class RRTPlanner : public Planner<dim> {
 
   protected:
     void computeTreeThread(unsigned int nbOfNodes);
-    virtual void computeRRTNode(const Vector<dim> &randVec, std::shared_ptr<Node<dim>> &newNode) = 0;
+    virtual std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec) = 0;
     Vector<dim> computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode);
 
     // variables
@@ -188,8 +188,7 @@ template <unsigned int dim>
 void RRTPlanner<dim>::computeTreeThread(const unsigned int nbOfNodes) {
     for (int i = 0; i < nbOfNodes; ++i) {
         Vector<dim> randVec = m_sampling->getSample();
-        std::shared_ptr<Node<dim>> newNode;
-        computeRRTNode(randVec, newNode);
+        std::shared_ptr<Node<dim>> newNode = computeRRTNode(randVec);
 
         if (newNode == nullptr) {
             continue;
