@@ -190,6 +190,21 @@ Vector<dim> degToRad(Vector<dim> deg) {
 }
 
 /*!
+*  \brief      Convert Vec of rad angles to Vec of deg
+*  \author     Sascha Kaden
+*  \param[in]  Vector of rad
+*  \param[out] Vector of deg
+*  \date       2016-07-07
+*/
+template <unsigned int dim>
+Vector<dim> radToDeg(Vector<dim> rad) {
+    for (unsigned int i = 0; i < dim; ++i) {
+        rad[i] *= toDeg();
+    }
+    return rad;
+}
+
+/*!
 *  \brief      Convert degree to radian
 *  \author     Sascha Kaden
 *  \param[in]  deg

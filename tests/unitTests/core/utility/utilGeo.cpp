@@ -97,10 +97,33 @@ BOOST_AUTO_TEST_CASE(degToRad) {
     float a2[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
     VectorX deg = utilVec::Vecf(11, a1);
     VectorX rad = utilVec::Vecf(11, a2);
-    VectorX temp = utilGeo::degToRad<11>(deg);
+    VectorX temp1 = utilGeo::degToRad<11>(deg);
+    Vector<11> temp2;
+    for (int i = 0; i < 11; ++i)
+        temp2[i] = deg[i] * utilGeo::toRad();
     for (int i = 0; i < deg.rows(); ++i) {
-        BOOST_CHECK(rad[i] <= temp[i] + 0.0001);
-        BOOST_CHECK(rad[i] >= temp[i] - 0.0001);
+        BOOST_CHECK(rad[i] <= temp1[i] + 0.0001);
+        BOOST_CHECK(rad[i] >= temp1[i] - 0.0001);
+        BOOST_CHECK(rad[i] <= temp2[i] + 0.0001);
+        BOOST_CHECK(rad[i] >= temp2[i] - 0.0001);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(radToDeg) {
+    float pi = utilGeo::pi();
+    float a1[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
+    float a2[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
+    VectorX rad = utilVec::Vecf(11, a1);
+    VectorX deg = utilVec::Vecf(11, a2);
+    VectorX temp1 = utilGeo::radToDeg<11>(rad);
+    Vector<11> temp2;
+    for (int i = 0; i < 11; ++i)
+        temp2[i] = rad[i] * utilGeo::toDeg();
+    for (int i = 0; i < deg.rows(); ++i) {
+        BOOST_CHECK(deg[i] <= temp1[i] + 0.0001);
+        BOOST_CHECK(deg[i] >= temp1[i] - 0.0001);
+        BOOST_CHECK(deg[i] <= temp2[i] + 0.0001);
+        BOOST_CHECK(deg[i] >= temp2[i] - 0.0001);
     }
 }
 
