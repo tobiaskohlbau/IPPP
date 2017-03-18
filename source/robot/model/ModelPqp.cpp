@@ -43,7 +43,7 @@ void ModelPqp::transform(const Vector6 &config) {
     if (empty()) {
         return;
     }
-    m_vertices = transformCad(config, m_vertices);
+    transformCad(config, m_vertices);
 
     m_pqpModel.BeginModel();
     // create pqp triangles
