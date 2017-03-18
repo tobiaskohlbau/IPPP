@@ -40,6 +40,10 @@ bool ModelPqp::empty() const {
 }
 
 void ModelPqp::transform(const Vector6 &config) {
+    if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0) {
+        return;
+    }
+
     if (empty()) {
         return;
     }
