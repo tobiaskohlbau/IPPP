@@ -52,6 +52,10 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<TrajectoryPlanner<6>> trajectoryBenchmark(new TrajectoryPlanner<6>(3, collisionBenchmark));
     std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
     std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
+    for (int i = 3; i < 6; ++i) {
+        config.obstacleConfig[i] *= utilGeo::toRad();
+    }
+
     std::shared_ptr<Sampling<6>> samplingBenchmark(new Sampling<6>(robot, collisionBenchmark, trajectoryBenchmark, sampler));
 
     RRTOptions<6> options(40, collision, trajectory, sampling);
@@ -59,11 +63,11 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     RRTStarPlanner<6> planner(robot, options);
     RRTStarPlanner<6> plannerBenchmark(robot, optionsBenchmark);
 
-    std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[0]);
-    exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
+    //std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[1]);
+    //exportCad(ExportFormat::OBJ, "robotStart", robotModel->m_vertices, robotModel->m_faces);
 
     auto startTime = std::chrono::system_clock::now();
-    bool result = planner.computePath(queries[0], queries[1], 8000, 24);
+    bool result = planner.computePath(queries[0], queries[1], 8000, 18);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
 
     if (result) {
@@ -74,8 +78,8 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<CollisionDetectionPqpBenchmark<6>> collisionDetectionPqpBenchmark =
         std::static_pointer_cast<CollisionDetectionPqpBenchmark<6>>(collisionBenchmark);
     std::cout << "Collision count: " << collisionDetectionPqpBenchmark->getCount() << std::endl;
-    std::cout << "Mean collision computation time: " << collisionDetectionPqpBenchmark->getMeanComputationTime().count() / 1000.0
-              << " micro seconds" << std::endl;
+    std::cout << "Mean collision computation time: " << collisionDetectionPqpBenchmark->getMeanComputationTime().count()
+              << " nano seconds" << std::endl;
     return result;
 }
 
@@ -92,6 +96,7 @@ void benchmarkAlphaPuzzle() {
         Logging::info("could be planned");
     else
         Logging::warning("could NOT be planned");
+    std::cout << std::endl;
 }
 
 void benchmarkFlange() {
@@ -107,6 +112,7 @@ void benchmarkFlange() {
         Logging::info("could be planned");
     else
         Logging::warning("could NOT be planned");
+    std::cout << std::endl;
 }
 
 void benchmarkHedgehog() {
@@ -122,13 +128,14 @@ void benchmarkHedgehog() {
         Logging::info("could be planned");
     else
         Logging::warning("could NOT be planned");
+    std::cout << std::endl;
 }
 
 int main(int argc, char** argv) {
     modelDir = getModelDirectory();
-    // benchmarkFlange();
+    benchmarkFlange();
     benchmarkAlphaPuzzle();
-     benchmarkHedgehog();
+    benchmarkHedgehog();
 
     return 0;
 }
