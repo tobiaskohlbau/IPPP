@@ -32,9 +32,13 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     ModelFactoryPqp factoryPqp;
     std::shared_ptr<ModelContainer> robotModel = factoryPqp.createModel(benchmarkDir + config.robotFile);
     std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel(benchmarkDir + config.obstacleFile);
-    std::static_pointer_cast<ModelPqp>(obstacleModel)->transform(config.obstacleConfig);
     for (int i = 3; i < 6; ++i)
         config.obstacleConfig[i] *= utilGeo::toDeg();
+    std::static_pointer_cast<ModelPqp>(obstacleModel)->transform(config.obstacleConfig);
+    // save models as obj
+    exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
+    exportCad(ExportFormat::OBJ, "obstacle", obstacleModel->m_vertices, obstacleModel->m_faces);
+
     std::vector<Vector6> queries = readQuery(queryPath);
 
     Vector6 minBoundary = utilVec::Vecf(config.minBoundary[0], config.minBoundary[1], config.minBoundary[2], 0, 0, 0);
@@ -42,13 +46,19 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<RobotBase<6>> robot(new MobileRobot<6>(minBoundary, maxBoundary));
     robot->setWorkspace(obstacleModel);
     robot->setBaseModel(robotModel);
-    std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqpBenchmark<6>(robot));
+
+    std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
+    std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(robot));
     std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(3, collision));
+    std::shared_ptr<TrajectoryPlanner<6>> trajectoryBenchmark(new TrajectoryPlanner<6>(3, collisionBenchmark));
     std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
     std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
+    std::shared_ptr<Sampling<6>> samplingBenchmark(new Sampling<6>(robot, collisionBenchmark, trajectoryBenchmark, sampler));
 
     RRTOptions<6> options(40, collision, trajectory, sampling);
+    RRTOptions<6> optionsBenchmark(40, collisionBenchmark, trajectoryBenchmark, samplingBenchmark);
     RRTStarPlanner<6> planner(robot, options);
+    RRTStarPlanner<6> plannerBenchmark(robot, optionsBenchmark);
 
     // change query angle from rad to deg
     for (auto query : queries) {
@@ -56,14 +66,20 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
             query[i] *= utilGeo::toDeg();
         }
     }
+    std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[0]);
+    exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
 
     auto startTime = std::chrono::system_clock::now();
-    bool result = planner.computePath(queries[0], queries[1], 8000, 6);
+    bool result = planner.computePath(queries[0], queries[1], 8000, 24);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << duration.count() / 1000.0 << std::endl;
 
+    if (result) {
+        plannerBenchmark.computePath(queries[0], queries[1], 8000, 24);
+    }
+
     std::shared_ptr<CollisionDetectionPqpBenchmark<6>> collisionDetectionPqpBenchmark =
-        std::static_pointer_cast<CollisionDetectionPqpBenchmark<6>>(collision);
+        std::static_pointer_cast<CollisionDetectionPqpBenchmark<6>>(collisionBenchmark);
     std::cout << "Collision count: " << collisionDetectionPqpBenchmark->getCount() << std::endl;
     std::cout << "Mean collision computation time: " << collisionDetectionPqpBenchmark->getMeanComputationTime().count() / 1000.0
               << " micro seconds" << std::endl;
@@ -117,9 +133,9 @@ void benchmarkHedgehog() {
 
 int main(int argc, char** argv) {
     modelDir = getModelDirectory();
-    benchmarkFlange();
+    //benchmarkFlange();
     benchmarkAlphaPuzzle();
-    benchmarkHedgehog();
+    //benchmarkHedgehog();
 
     return 0;
 }

@@ -33,11 +33,13 @@ namespace rmpl {
 *  \param[out] list of faces
 *  \date       2017-02-19
 */
-bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces) {
+bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces,
+               std::vector<Vector3> &normals) {
     std::size_t found = filePath.find_last_of(".");
     if (filePath.substr(found) == ".g") {
-        return importBYU(filePath, vertices, faces);
+        return importBYU(filePath, vertices, faces, normals);
     }
+
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (!scene) {
@@ -68,6 +70,7 @@ bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std:
             }
         }
     }
+    normals = computeNormals(vertices, faces);
     return true;
 }
 
@@ -79,7 +82,8 @@ bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std:
 *  \param[out] list of faces
 *  \date       2017-02-19
 */
-bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces) {
+bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces,
+               std::vector<Vector3> &normals) {
     std::ifstream is(filePath);
     std::string str;
     unsigned int numBodies = 0;
@@ -116,16 +120,19 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
         Vector3i vec;
         std::string::size_type sz;
         for (unsigned int j = 0; j < 3; ++j) {
-            vec[j] = std::stoi(str, &sz) - 1;
+            vec[j] = std::stoi(str, &sz);
             if (vec[j] < 0) {
-                vec[j] = -vec[j];
+                vec[j] = -vec[j] - 1;
                 break;
             }
+            vec[j] -= 1;
             str = str.substr(sz);
         }
         faces.push_back(vec);
         getline(is, str);
     }
+    normals = computeNormals(vertices, faces);
+
     return true;
 }
 
@@ -211,12 +218,47 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
 *  \param[in, out]  list of vertices
 *  \date            2017-02-25
 */
-void transformCad(const Vector6 &config, std::vector<Vector3> &vertices) {
+std::vector<Vector3> transformCad(const Vector6 &config, const std::vector<Vector3> &vertices) {
+    std::vector<Vector3> newVertices;
+    newVertices.reserve(vertices.size());
     Matrix3 R = utilGeo::getRotMat3D(config[3], config[4], config[5]);
     Vector3 t(config[0], config[1], config[2]);
-    for (auto vertice : vertices) {
-        vertice = (R * vertice) + t;
+    for (auto vertex : vertices) {
+        newVertices.push_back((R * vertex) + t);
     }
+    return newVertices;
+}
+
+std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
+    std::vector<Vector3> normals;
+    if (vertices.empty() || faces.empty()) {
+        return normals;
+    }
+
+    for (auto face : faces) {
+        normals.push_back(utilGeo::computeNormal(vertices[face[0]], vertices[face[1]], vertices[face[2]]));
+    }
+    // sort normal list
+    struct {
+        bool operator()(Vector3 a, Vector3 b) {
+            return a.x() < b.x();
+        }
+    } customCompare;
+    std::sort(normals.begin(), normals.end(), customCompare);
+
+    // remove duplicates
+    for (auto normal = normals.begin(); normal != normals.end(); ++normal) {
+        int i = 1;
+        while(normal+i != normals.end() && normal->x() - (normal+i)->x() == 0) {
+            if ((*normal - *(normal + i)).norm() < 0.0001) {
+                normals.erase(normal + i);
+            }
+            else {
+                ++i;
+            }
+        }
+    }
+    return normals;
 }
 
 /*!

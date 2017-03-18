@@ -50,11 +50,12 @@ enum class ExportFormat {
     EXTENSIBLE_3D
 };
 
-bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces);
-bool importBYU(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces);
+bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces, std::vector<Vector3> &normals);
+bool importBYU(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces, std::vector<Vector3> &normals);
 bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
                const std::vector<Vector3i> &faces);
-void transformCad(const Vector6 &config, std::vector<Vector3> &vertices);
+std::vector<Vector3> transformCad(const Vector6 &config, const std::vector<Vector3> &vertices);
+std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 
 aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 
