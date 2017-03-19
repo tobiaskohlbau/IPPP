@@ -45,7 +45,7 @@ class RobotBase : public Identifier {
     virtual ~RobotBase();
 
   protected:
-    RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary, Vector<dim> maxBoundary);
+    RobotBase(const std::string &name, RobotType robotType, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary);
 
   public:
     void setPose(const Vector6 &pose);
@@ -73,7 +73,6 @@ class RobotBase : public Identifier {
 
     std::shared_ptr<ModelContainer> m_baseModel;
     std::shared_ptr<ModelContainer> m_workspaceModel;
-    Eigen::MatrixXi m_2DWorkspace;
 };
 
 /*!
@@ -95,7 +94,7 @@ RobotBase<dim>::~RobotBase() {
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-RobotBase<dim>::RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary, Vector<dim> maxBoundary)
+RobotBase<dim>::RobotBase(const std::string &name, RobotType robotType, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary)
     : Identifier(name), m_robotType(robotType), m_minBoundary(minBoundary), m_maxBoundary(maxBoundary) {
     m_pose = util::Vecf(0, 0, 0, 0, 0, 0);
     m_poseMat = util::poseVecToMat(m_pose);
