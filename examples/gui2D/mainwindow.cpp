@@ -87,7 +87,7 @@ void MainWindow::computePath() {
         std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
         robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(robot));
-        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(m_trajectoryStepSize, collision));
+        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, m_trajectoryStepSize));
 
         std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
         if (m_samplingStrategy == 1)
@@ -138,7 +138,7 @@ void MainWindow::computePath() {
         std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
         robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(robot));
-        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(m_trajectoryStepSize, collision));
+        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, m_trajectoryStepSize));
         std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
 
         if (m_samplingStrategy == 1)

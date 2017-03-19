@@ -2,19 +2,18 @@
 #include <iostream>
 #include <memory>
 
+#include <gperftools/profiler.h>
+
+#include <modelDirectory.h>
 #include <core/module/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
 #include <core/utility/UtilVec.hpp>
-//#include <core/module/collisionDetection/CollisionDetectionFcl.hpp>
-//#include <robot/model/ModelFactoryFcl.h>
-#include <core/utility/Logging.h>
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/RRTStarPlanner.hpp>
-
 #include <robot/MobileRobot.h>
 #include <robot/model/ModelFactoryPqp.h>
-
-#include <modelDirectory.h>
+//#include <core/module/collisionDetection/CollisionDetectionFcl.hpp>
+//#include <robot/model/ModelFactoryFcl.h>
 
 #include <ui/BenchmarkReader.h>
 #include <ui/Drawing2D.hpp>
@@ -34,8 +33,8 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel(benchmarkDir + config.obstacleFile);
     std::static_pointer_cast<ModelPqp>(obstacleModel)->transform(config.obstacleConfig);
     // save models as obj
-    exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
-    exportCad(ExportFormat::OBJ, "obstacle", obstacleModel->m_vertices, obstacleModel->m_faces);
+    //exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
+    //exportCad(ExportFormat::OBJ, "obstacle", obstacleModel->m_vertices, obstacleModel->m_faces);
 
     std::vector<Vector6> queries = readQuery(queryPath);
 
@@ -48,8 +47,8 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
     std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(robot));
-    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(3, collision));
-    std::shared_ptr<TrajectoryPlanner<6>> trajectoryBenchmark(new TrajectoryPlanner<6>(3, collisionBenchmark));
+    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(collision, 3));
+    std::shared_ptr<TrajectoryPlanner<6>> trajectoryBenchmark(new TrajectoryPlanner<6>(collisionBenchmark, 3));
     std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
     std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
     for (int i = 3; i < 6; ++i) {
@@ -67,11 +66,11 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     //exportCad(ExportFormat::OBJ, "robotStart", robotModel->m_vertices, robotModel->m_faces);
 
     auto startTime = std::chrono::system_clock::now();
-    bool result = planner.computePath(queries[0], queries[1], 8000, 18);
+    bool result = planner.computePath(queries[0], queries[1], 8000, 1);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
 
     if (result) {
-        plannerBenchmark.computePath(queries[0], queries[1], 8000, 18);
+        plannerBenchmark.computePath(queries[0], queries[1], 8000, 1);
     }
 
     std::cout << "Computation time: " << duration.count() / 1000.0 << std::endl;
@@ -132,10 +131,11 @@ void benchmarkHedgehog() {
 }
 
 int main(int argc, char** argv) {
+    ProfilerStart("/tmp/cpu.prof");
     modelDir = getModelDirectory();
     benchmarkFlange();
-    benchmarkAlphaPuzzle();
-    benchmarkHedgehog();
-
+    //benchmarkAlphaPuzzle();
+    //benchmarkHedgehog();
+    ProfilerStop();
     return 0;
 }
