@@ -57,7 +57,6 @@ class PlannerOptions : public Identifier {
     unsigned int getSortCountGraph() const;
 
   protected:
-    float m_trajectoryStepSize;
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<TrajectoryPlanner<dim>> m_planner = nullptr;
     std::shared_ptr<Sampling<dim>> m_sampling = nullptr;

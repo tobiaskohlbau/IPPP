@@ -33,7 +33,7 @@ namespace rmpl {
 template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
-    TrajectoryPlanner(const float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision);
+    TrajectoryPlanner(const std::shared_ptr<CollisionDetection<dim>> &collision, const float stepSize = 1);
 
     bool controlTrajectory(const Node<dim> &source, const Node<dim> &target);
     bool controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
@@ -45,8 +45,8 @@ class TrajectoryPlanner : public Identifier {
     float getStepSize() const;
 
   private:
-    float m_stepSize;
-    float m_sqStepSize;
+    float m_stepSize = 1;
+    float m_sqStepSize = 1;
     std::shared_ptr<CollisionDetection<dim>> m_collision;
 };
 
@@ -58,7 +58,7 @@ class TrajectoryPlanner : public Identifier {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-TrajectoryPlanner<dim>::TrajectoryPlanner(float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision)
+TrajectoryPlanner<dim>::TrajectoryPlanner(const std::shared_ptr<CollisionDetection<dim>> &collision, const float stepSize)
     : Identifier("TrajectoryPlanner"), m_collision(collision) {
     setStepSize(stepSize);
 }

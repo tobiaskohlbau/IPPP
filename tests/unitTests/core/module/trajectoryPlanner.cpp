@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     const unsigned int dim = 6;
     std::shared_ptr<Jaco> robot(new Jaco());
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(robot));
-    TrajectoryPlanner<dim> planner(0.1, collision);
+    TrajectoryPlanner<dim> planner(collision, 0.1);
 
     // test trajectories
     Vector6 init = util::Vecf(0, 0, 0, 0, 0, 0);

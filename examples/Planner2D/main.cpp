@@ -38,7 +38,7 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     robot->setWorkspace(model);
 
     std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(robot));
-    std::shared_ptr<TrajectoryPlanner<3>> trajectory(new TrajectoryPlanner<3>(0.5, collision));
+    std::shared_ptr<TrajectoryPlanner<3>> trajectory(new TrajectoryPlanner<3>(collision));
     std::shared_ptr<Sampler<3>> sampler(new SeedSampler<3>(robot));
     std::shared_ptr<Sampling<3>> sampling(new SamplingNearObstacle<3>(robot, collision, trajectory, sampler));
     PRMOptions<dim> prmOptions(30, collision, trajectory, sampling);
@@ -82,7 +82,7 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     robot->setWorkspace(model);
 
     std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
-    std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(1.5, collision));
+    std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(collision));
     std::shared_ptr<Sampler<2>> sampler(new SeedSampler<2>(robot));
     std::shared_ptr<Sampling<2>> sampling(new SamplingNearObstacle<2>(robot, collision, trajectory, sampler));
     PRMOptions<dim> prmOptions(40, collision, trajectory, sampling);
