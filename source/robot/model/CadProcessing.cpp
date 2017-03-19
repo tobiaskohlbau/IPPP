@@ -91,7 +91,7 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
     unsigned int numFaces = 0;
 
     getline(is, str);
-    utilList::trimWhitespaces(str);
+    util::trimWhitespaces(str);
     std::istringstream ss(str);
     ss >> numBodies;
     ss >> numVertices;
@@ -103,7 +103,7 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
 
     getline(is, str);
     getline(is, str);
-    utilList::trimWhitespaces(str);
+    util::trimWhitespaces(str);
     std::size_t found;
     for (unsigned int i = 0; i < numVertices; ++i) {
         Vector3 vec;
@@ -115,11 +115,11 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
         vertices.push_back(vec);
         if (str.size() < 2) {
             getline(is, str);
-            utilList::trimWhitespaces(str);
+            util::trimWhitespaces(str);
         }
     }
     for (unsigned int i = 0; i < numFaces; ++i) {
-        utilList::trimWhitespaces(str);
+        util::trimWhitespaces(str);
         Vector3i vec;
         std::string::size_type sz;
         for (unsigned int j = 0; j < 3; ++j) {
@@ -227,7 +227,7 @@ void transformCad(const Vector6 &config, std::vector<Vector3> &vertices) {
     }
     Matrix3 R;
     Vector3 t;
-    utilGeo::poseVecToRandT(config, R, t);
+    util::poseVecToRandT(config, R, t);
     for (auto &&vertex : vertices) {
         vertex = (R * vertex) + t;
     }
@@ -240,7 +240,7 @@ std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const 
     }
 
     for (auto face : faces) {
-        normals.push_back(utilGeo::computeNormal(vertices[face[0]], vertices[face[1]], vertices[face[2]]));
+        normals.push_back(util::computeNormal(vertices[face[0]], vertices[face[1]], vertices[face[2]]));
     }
     // sort normal list
     struct {

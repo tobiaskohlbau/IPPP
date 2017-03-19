@@ -39,9 +39,9 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 
     std::vector<Vector6> queries = readQuery(queryPath);
 
-    Vector6 minBoundary = utilVec::Vecf(config.minBoundary[0], config.minBoundary[1], config.minBoundary[2], 0, 0, 0);
-    Vector6 maxBoundary = utilVec::Vecf(config.maxBoundary[0], config.maxBoundary[1], config.maxBoundary[2], utilGeo::twoPi(),
-                                        utilGeo::twoPi(), utilGeo::twoPi());
+    Vector6 minBoundary = util::Vecf(config.minBoundary[0], config.minBoundary[1], config.minBoundary[2], 0, 0, 0);
+    Vector6 maxBoundary = util::Vecf(config.maxBoundary[0], config.maxBoundary[1], config.maxBoundary[2], util::twoPi(),
+                                        util::twoPi(), util::twoPi());
     std::shared_ptr<RobotBase<6>> robot(new MobileRobot<6>(minBoundary, maxBoundary));
     robot->setWorkspace(obstacleModel);
     robot->setBaseModel(robotModel);
@@ -53,7 +53,7 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
     std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
     for (int i = 3; i < 6; ++i) {
-        config.obstacleConfig[i] *= utilGeo::toRad();
+        config.obstacleConfig[i] *= util::toRad();
     }
 
     std::shared_ptr<Sampling<6>> samplingBenchmark(new Sampling<6>(robot, collisionBenchmark, trajectoryBenchmark, sampler));
@@ -71,7 +71,7 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
 
     if (result) {
-        plannerBenchmark.computePath(queries[0], queries[1], 8000, 24);
+        plannerBenchmark.computePath(queries[0], queries[1], 8000, 18);
     }
 
     std::cout << "Computation time: " << duration.count() / 1000.0 << std::endl;

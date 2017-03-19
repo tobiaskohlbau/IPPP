@@ -82,8 +82,8 @@ BOOST_AUTO_TEST_CASE(vectorConstructor) {
     Node<2> node2(Vector2(0, 1));
     Node<3> node3(Vector3(0, 1, 2));
     Node<4> node4(Vector4(0, 1, 2, 3));
-    Node<5> node5(utilVec::Vecf(0, 1, 2, 3, 4));
-    Node<6> node6(utilVec::Vecf(0, 1, 2, 3, 4, 5));
+    Node<5> node5(util::Vecf(0, 1, 2, 3, 4));
+    Node<6> node6(util::Vecf(0, 1, 2, 3, 4, 5));
     testVectorConstructor<2>(node2);
     testVectorConstructor<3>(node3);
     testVectorConstructor<4>(node4);
@@ -130,14 +130,14 @@ void testChildes() {
     }
 
     std::vector<std::shared_ptr<Node<dim>>> resultNodes = node.getChildNodes();
-    BOOST_CHECK(utilList::contains(resultNodes, childes[0]));
-    BOOST_CHECK(utilList::contains(resultNodes, childes[1]));
-    BOOST_CHECK(utilList::contains(resultNodes, childes[2]));
+    BOOST_CHECK(util::contains(resultNodes, childes[0]));
+    BOOST_CHECK(util::contains(resultNodes, childes[1]));
+    BOOST_CHECK(util::contains(resultNodes, childes[2]));
 
     std::vector<std::shared_ptr<Edge<dim>>> resultEdges = node.getChildEdges();
-    BOOST_CHECK(utilList::contains(childes, resultEdges[0]->getTarget()));
-    BOOST_CHECK(utilList::contains(childes, resultEdges[1]->getTarget()));
-    BOOST_CHECK(utilList::contains(childes, resultEdges[2]->getTarget()));
+    BOOST_CHECK(util::contains(childes, resultEdges[0]->getTarget()));
+    BOOST_CHECK(util::contains(childes, resultEdges[1]->getTarget()));
+    BOOST_CHECK(util::contains(childes, resultEdges[2]->getTarget()));
     node.clearChildes();
     BOOST_CHECK(node.getChildNodes().size() == 0);
     BOOST_CHECK(node.getChildEdges().size() == 0);

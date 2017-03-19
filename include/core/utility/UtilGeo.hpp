@@ -28,7 +28,7 @@
 #include <core/utility/UtilVec.hpp>
 
 namespace rmpl {
-namespace utilGeo {
+namespace util {
 
 constexpr float pi() {
     return M_PI;
@@ -162,7 +162,7 @@ static Matrix4 poseVecToMat(const Vector6 &pose) {
 static Vector6 poseMatToVec(const Matrix4 &pose) {
     Vector3 vec(pose.block<3, 1>(0, 3));
     Vector3 euler(pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2));
-    return utilVec::append<3, 3>(vec, euler);
+    return util::append<3, 3>(vec, euler);
 }
 
 static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3) {
@@ -216,7 +216,7 @@ static float degToRad(const float deg) {
     return deg * toRad();
 }
 
-} /* namespace utilGeo */
+} /* namespace util */
 } /* namespace rmpl */
 
 #endif    // UTILGEO_HPP

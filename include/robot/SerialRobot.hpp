@@ -135,7 +135,7 @@ Vector6 SerialRobot<dim>::getTcpPosition(const std::vector<Matrix4> &trafos) {
     }
     Matrix4 basisToTcp = this->m_poseMat * robotToTcp;
 
-    return utilGeo::poseMatToVec(basisToTcp);
+    return util::poseMatToVec(basisToTcp);
 }
 
 /*!
@@ -209,7 +209,7 @@ void SerialRobot<dim>::saveMeshConfig(Matrix4 *As) {
     if (this->m_baseModel != nullptr) {
         std::vector<Eigen::Vector3f> verts;
         for (auto vertice : this->m_baseModel->m_vertices) {
-            Eigen::Vector4f temp(utilVec::append<3>(vertice, (float)1));
+            Eigen::Vector4f temp(util::append<3>(vertice, (float)1));
             temp = this->m_poseMat * temp;
             verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
         }
@@ -220,7 +220,7 @@ void SerialRobot<dim>::saveMeshConfig(Matrix4 *As) {
     for (int i = 0; i < dim; ++i) {
         std::vector<Eigen::Vector3f> verts;
         for (auto vertice : getModelFromJoint(i)->m_vertices) {
-            Eigen::Vector4f temp(utilVec::append<3>(vertice, (float)1));
+            Eigen::Vector4f temp(util::append<3>(vertice, (float)1));
             temp = this->m_poseMat * temp;
             verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
         }

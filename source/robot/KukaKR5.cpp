@@ -30,13 +30,13 @@ namespace rmpl {
 *  \date        2016-10-22
 */
 KukaKR5::KukaKR5()
-    : SerialRobot<6>("KukaKR5", utilVec::Vecf(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -utilGeo::twoPi()),
-                     utilVec::Vecf(2.70526, utilGeo::pi(), 1.8326, 6.10865, 5.41052, 2.96706)) {
-    m_alpha = utilVec::Vecf(90, 0, 90, 90, 90, 0);
-    m_alpha = utilGeo::degToRad<6>(m_alpha);
-    m_a = utilVec::Vecf(180, 600, 120, 0, 0, 0);
-    m_d = utilVec::Vecf(400, 0, 0, 620, 0, 115);
-    m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
+    : SerialRobot<6>("KukaKR5", util::Vecf(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -util::twoPi()),
+                     util::Vecf(2.70526, util::pi(), 1.8326, 6.10865, 5.41052, 2.96706)) {
+    m_alpha = util::Vecf(90, 0, 90, 90, 90, 0);
+    m_alpha = util::degToRad<6>(m_alpha);
+    m_a = util::Vecf(180, 600, 120, 0, 0, 0);
+    m_d = util::Vecf(400, 0, 0, 620, 0, 115);
+    m_pose = util::Vecf(0, 0, 0, 0, 0, 0);
 
     ModelFactoryPqp modelFactoryPqp;
     m_baseModel = modelFactoryPqp.createModel("meshes/KukaKR5/link0.stl");
@@ -45,7 +45,7 @@ KukaKR5::KukaKR5()
     joint = Joint(-2.70526, 2.70526, modelFactoryPqp.createModel("meshes/KukaKR5/link1.stl"));
     m_joints.push_back(joint);
     // -65, 180
-    joint = Joint(-1.13446, utilGeo::pi(), modelFactoryPqp.createModel("meshes/KukaKR5/link2.stl"));
+    joint = Joint(-1.13446, util::pi(), modelFactoryPqp.createModel("meshes/KukaKR5/link2.stl"));
     m_joints.push_back(joint);
     // -68, 105
     joint = Joint(-1.18682, 1.8326, modelFactoryPqp.createModel("meshes/KukaKR5/link3.stl"));
@@ -57,7 +57,7 @@ KukaKR5::KukaKR5()
     joint = Joint(0.872665, 5.41052, modelFactoryPqp.createModel("meshes/KukaKR5/link5.stl"));
     m_joints.push_back(joint);
     // -360, 170
-    joint = Joint(-utilGeo::twoPi(), 2.96706, modelFactoryPqp.createModel("meshes/KukaKR5/link6.stl"));
+    joint = Joint(-util::twoPi(), 2.96706, modelFactoryPqp.createModel("meshes/KukaKR5/link6.stl"));
     m_joints.push_back(joint);
 }
 
@@ -82,7 +82,7 @@ Vector6 KukaKR5::directKinematic(const Vector6 &angles) {
 *  \date       2016-10-22
 */
 std::vector<Matrix4> KukaKR5::getJointTrafos(const Vector6 &angles) {
-    Vector6 rads = utilGeo::degToRad<6>(angles);
+    Vector6 rads = util::degToRad<6>(angles);
 
     std::vector<Matrix4> trafos;
     for (int i = 0; i < 6; ++i) {

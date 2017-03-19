@@ -23,7 +23,7 @@ void printTime(clock_t begin, clock_t end) {
 void simpleRRT() {
     std::shared_ptr<Jaco> robot(new Jaco());
 
-    robot->saveMeshConfig(utilVec::Vecf(0, 0, 0, 0, 0, 0));
+    robot->saveMeshConfig(util::Vecf(0, 0, 0, 0, 0, 0));
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
     std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(0.5, collision));
@@ -31,8 +31,8 @@ void simpleRRT() {
     std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
     RRTOptions<6> options(30, collision, trajectory, sampling);
     NormalRRTPlanner<6> planner(robot, options);
-    Vector6 start = utilVec::Vecf(180, 180, 180, 180, 180, 180);
-    Vector6 goal = utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
+    Vector6 start = util::Vecf(180, 180, 180, 180, 180, 180);
+    Vector6 goal = util::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
 
     // compute the tree
     clock_t begin = std::clock();
@@ -76,8 +76,8 @@ void treeConnection() {
     RRTStarPlanner<6> plannerInitNode(robot, options);
 
     // set properties to the planners
-    plannerInitNode.setInitNode(utilVec::Vecf(180, 180, 180, 180, 180, 180));
-    plannerGoalNode.setInitNode(utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
+    plannerInitNode.setInitNode(util::Vecf(180, 180, 180, 180, 180, 180));
+    plannerGoalNode.setInitNode(util::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     // compute the tree
     clock_t begin = std::clock();
