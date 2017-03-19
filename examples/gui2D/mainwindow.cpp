@@ -7,11 +7,11 @@
 #include <core/module/sampler/SamplerNormalDist.hpp>
 #include <core/module/sampler/SamplerUniform.hpp>
 #include <core/module/sampling/SamplingNearObstacle.hpp>
-#include <core/utility/heuristic/HeuristicL1.hpp>
 #include <core/utility/heuristic/HeuristicInf.hpp>
+#include <core/utility/heuristic/HeuristicL1.hpp>
+#include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
 #include <pathPlanner/options/PRMOptions.hpp>
 #include <robot/model/ModelFactoryTriangle2D.h>
 #include <ui/Drawing2D.hpp>
@@ -26,8 +26,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), Identifier("GUI")
     m_layout = new QVBoxLayout();
     m_widget->setLayout(m_layout);
 
-    m_triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0 ), Vector2(25, 50)));
-    m_triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(0 , 50), Vector2(25, 50)));
+    m_triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0), Vector2(25, 50)));
+    m_triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(0, 50), Vector2(25, 50)));
 }
 
 MainWindow::~MainWindow() {
@@ -59,7 +59,8 @@ void MainWindow::computePath() {
 
     if (m_robotType == 1) {
         const unsigned int dim = 3;
-        std::shared_ptr<rmpl::Heuristic<dim>> edgeH = std::make_shared<rmpl::Heuristic<dim>>(rmpl::Heuristic<dim>());;
+        std::shared_ptr<rmpl::Heuristic<dim>> edgeH = std::make_shared<rmpl::Heuristic<dim>>(rmpl::Heuristic<dim>());
+        ;
         if (m_edgeHeuristic == 1) {
             edgeH = std::make_shared<rmpl::HeuristicL1<dim>>(rmpl::HeuristicL1<dim>());
         } else if (m_edgeHeuristic == 2) {
@@ -79,7 +80,7 @@ void MainWindow::computePath() {
         }
 
         Vector3 minBoundary(0.0, 0.0, 0.0);
-        Vector3 maxBoundary(m_workspace.cols(), m_workspace.rows(), utilGeo::twoPi());
+        Vector3 maxBoundary(m_workspace.cols(), m_workspace.rows(), util::twoPi());
         ModelFactoryTriangle2D factory;
         std::shared_ptr<ModelContainer> baseModel = factory.createModel(m_triangles);
         std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, minBoundary, maxBoundary));
@@ -107,8 +108,8 @@ void MainWindow::computePath() {
             m_planner3d = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<3>(robot, rrtOptions));
         else
             m_planner3d = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<3>(robot, prmOptions));
-        Vector3 start(m_startX, m_startY, m_startPhi*utilGeo::toRad());
-        Vector3 goal(m_goalX, m_goalY, m_goalPhi*utilGeo::toRad());
+        Vector3 start(m_startX, m_startY, m_startPhi * util::toRad());
+        Vector3 goal(m_goalX, m_goalY, m_goalPhi * util::toRad());
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
         const unsigned int dim = 2;
@@ -174,8 +175,7 @@ void MainWindow::viewPath() {
         if (m_connected) {
             std::vector<Vector3> path = m_planner3d->getPath(80, true);
             drawing::drawTrianglePath(path, m_triangles, image, Eigen::Vector3i(0, 0, 255), 2);
-        }
-        else {
+        } else {
             return;
         }
     } else {
@@ -193,11 +193,11 @@ void MainWindow::viewPath() {
     scene->addPixmap(qPixmap);
     scene->setSceneRect(qPixmap.rect());
 
-    QLayoutItem* item = m_widget->layout()->takeAt( 0 );
+    QLayoutItem* item = m_widget->layout()->takeAt(0);
     if (item != NULL)
         delete item->widget();
 
-    QGraphicsView * view = new QGraphicsView(scene);
+    QGraphicsView* view = new QGraphicsView(scene);
     m_layout->addWidget(view);
     m_widget->show();
 }
@@ -355,13 +355,13 @@ void MainWindow::updateEdgeHeuristic(int type) {
 }
 void MainWindow::updateWeightVecX(double value) {
     m_weightVecX = value;
-    m_weightVec= Vector3(m_weightVecX, m_weightVecY, m_weightVecZ);
+    m_weightVec = Vector3(m_weightVecX, m_weightVecY, m_weightVecZ);
 }
 void MainWindow::updateWeightVecY(double value) {
     m_weightVecY = value;
-    m_weightVec= Vector3(m_weightVecX, m_weightVecY, m_weightVecZ);
+    m_weightVec = Vector3(m_weightVecX, m_weightVecY, m_weightVecZ);
 }
 void MainWindow::updateWeightVecZ(double value) {
     m_weightVecY = value;
-    m_weightVec= Vector3(m_weightVecX, m_weightVecY, m_weightVecZ);
+    m_weightVec = Vector3(m_weightVecX, m_weightVecY, m_weightVecZ);
 }

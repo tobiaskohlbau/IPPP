@@ -28,12 +28,12 @@ namespace rmpl {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco() : SerialRobot<6>("Jaco", utilVec::Vecf(0, 42, 17, 0, 0, 0), utilVec::Vecf(360, 318, 343, 360, 360, 360)) {
-    m_alpha = utilVec::Vecf(utilGeo::pi() / 2, utilGeo::pi(), utilGeo::pi() / 2, 0.95993, 0.95993, utilGeo::pi());
-    m_a = utilVec::Vecf(0, 410, 0, 0, 0, 0);
-    m_d = utilVec::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
+Jaco::Jaco() : SerialRobot<6>("Jaco", util::Vecf(0, 42, 17, 0, 0, 0), util::Vecf(360, 318, 343, 360, 360, 360)) {
+    m_alpha = util::Vecf(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993, 0.95993, util::pi());
+    m_a = util::Vecf(0, 410, 0, 0, 0, 0);
+    m_d = util::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
-    m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
+    m_pose = util::Vecf(0, 0, 0, 0, 0, 0);
 
     ModelFactoryPqp modelFactoryPqp;
     m_baseModel = modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_base.dae");
@@ -89,10 +89,10 @@ std::vector<Matrix4> Jaco::getJointTrafos(const Vector6 &angles) {
 Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) {
     Vector6 dhAngles(realAngles);
     dhAngles[0] = -realAngles[0];
-    dhAngles[1] = realAngles[1] - utilGeo::halfPi();
-    dhAngles[2] = realAngles[2] + utilGeo::halfPi();
-    dhAngles[4] = realAngles[4] - utilGeo::pi();
-    dhAngles[5] = realAngles[5] + utilGeo::pi();
+    dhAngles[1] = realAngles[1] - util::halfPi();
+    dhAngles[2] = realAngles[2] + util::halfPi();
+    dhAngles[4] = realAngles[4] - util::pi();
+    dhAngles[5] = realAngles[5] + util::pi();
 
     return dhAngles;
 }

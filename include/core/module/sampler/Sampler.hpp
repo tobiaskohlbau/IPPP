@@ -68,7 +68,7 @@ Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot) : Identifier
     m_origin = Eigen::Matrix<float, dim, 1>::Zero(dim, 1);
 
     m_generator = std::mt19937(rd());
-    m_distAngle = std::uniform_real_distribution<float>(0, utilGeo::twoPi());
+    m_distAngle = std::uniform_real_distribution<float>(0, util::twoPi());
 }
 
 /*!

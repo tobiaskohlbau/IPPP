@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     printTime(begin, end);
 
     bool connected =
-        planner.queryPath(utilVec::Vecf(180, 180, 180, 180, 180, 180), utilVec::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
+        planner.queryPath(util::Vecf(180, 180, 180, 180, 180, 180), util::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     std::vector<std::shared_ptr<Node<6>>> nodes = planner.getGraphNodes();
     std::vector<Vector6> graphPoints;

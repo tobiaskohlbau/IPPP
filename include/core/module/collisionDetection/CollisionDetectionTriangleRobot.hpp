@@ -131,7 +131,7 @@ bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
 
     Matrix2 R;
     Vector2 t;
-    utilGeo::poseVecToRandT(vector, R, t);
+        util::poseVecToRandT(vector, R, t);
 
     Vector2 u, temp;
     std::vector<Triangle2D> triangles = m_triangles;

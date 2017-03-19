@@ -140,7 +140,7 @@ Node<dim>::Node(float x, float y, float z, float rx) {
 */
 template <unsigned int dim>
 Node<dim>::Node(float x, float y, float z, float rx, float ry) {
-    m_vec = utilVec::Vecf(x, y, z, rx, ry);
+    m_vec = util::Vecf(x, y, z, rx, ry);
 }
 
 /*!
@@ -156,7 +156,7 @@ Node<dim>::Node(float x, float y, float z, float rx, float ry) {
 */
 template <unsigned int dim>
 Node<dim>::Node(float x, float y, float z, float rx, float ry, float rz) {
-    m_vec = utilVec::Vecf(x, y, z, rx, ry, rz);
+    m_vec = util::Vecf(x, y, z, rx, ry, rz);
 }
 
 /*!

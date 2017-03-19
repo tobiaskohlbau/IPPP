@@ -90,17 +90,17 @@ BOOST_AUTO_TEST_CASE(nearestNeighbor) {
 
 template <unsigned int dim>
 void contains(std::vector<std::shared_ptr<Node<dim>>> result, std::vector<std::shared_ptr<Node<dim>>> nodes) {
-    BOOST_CHECK(utilList::contains(result, nodes[2]));
-    BOOST_CHECK(utilList::contains(result, nodes[3]));
-    BOOST_CHECK(utilList::contains(result, nodes[5]));
-    BOOST_CHECK(utilList::contains(result, nodes[6]));
+    BOOST_CHECK(util::contains(result, nodes[2]));
+    BOOST_CHECK(util::contains(result, nodes[3]));
+    BOOST_CHECK(util::contains(result, nodes[5]));
+    BOOST_CHECK(util::contains(result, nodes[6]));
 
-    BOOST_CHECK(!utilList::contains(result, nodes[0]));
-    BOOST_CHECK(!utilList::contains(result, nodes[1]));
-    BOOST_CHECK(!utilList::contains(result, nodes[4]));
-    BOOST_CHECK(!utilList::contains(result, nodes[7]));
-    BOOST_CHECK(!utilList::contains(result, nodes[8]));
-    BOOST_CHECK(!utilList::contains(result, nodes[9]));
+    BOOST_CHECK(!util::contains(result, nodes[0]));
+    BOOST_CHECK(!util::contains(result, nodes[1]));
+    BOOST_CHECK(!util::contains(result, nodes[4]));
+    BOOST_CHECK(!util::contains(result, nodes[7]));
+    BOOST_CHECK(!util::contains(result, nodes[8]));
+    BOOST_CHECK(!util::contains(result, nodes[9]));
 }
 
 template <unsigned int dim>

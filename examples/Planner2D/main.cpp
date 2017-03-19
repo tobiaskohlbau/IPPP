@@ -10,9 +10,9 @@
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/PRMPlanner.hpp>
 #include <pathPlanner/RRTStarPlanner.hpp>
-#include <robot/model/ModelFactoryTriangle2D.h>
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
+#include <robot/model/ModelFactoryTriangle2D.h>
 
 #include <modelDirectory.h>
 
@@ -25,12 +25,12 @@ cv::Mat obstacleWorkspace;
 
 void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     const unsigned int dim = 3;
-    Vector3 min = utilVec::append<2>(minimum, 0.0);
-    Vector3 max = utilVec::append<2>(maximum, utilGeo::twoPi());
+    Vector3 min = util::append<2>(minimum, 0.0);
+    Vector3 max = util::append<2>(maximum, util::twoPi());
 
     std::vector<Triangle2D> triangles;
-    triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0 ), Vector2(25, 50)));
-    triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(0 , 50), Vector2(25, 50)));
+    triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0), Vector2(25, 50)));
+    triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(0, 50), Vector2(25, 50)));
     ModelFactoryTriangle2D factory;
     std::shared_ptr<ModelContainer> baseModel = factory.createModel(triangles);
     std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, min, max));
@@ -51,7 +51,7 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
-    Vector3 goal(400.0, 930.0, 50*utilGeo::toRad());
+    Vector3 goal(400.0, 930.0, 50 * util::toRad());
     bool connected = planner->computePath(start, goal, 20000, 8);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;

@@ -97,8 +97,8 @@ RobotBase<dim>::~RobotBase() {
 template <unsigned int dim>
 RobotBase<dim>::RobotBase(std::string name, RobotType robotType, Vector<dim> minBoundary, Vector<dim> maxBoundary)
     : Identifier(name), m_robotType(robotType), m_minBoundary(minBoundary), m_maxBoundary(maxBoundary) {
-    m_pose = utilVec::Vecf(0, 0, 0, 0, 0, 0);
-    m_poseMat = utilGeo::poseVecToMat(m_pose);
+    m_pose = util::Vecf(0, 0, 0, 0, 0, 0);
+    m_poseMat = util::poseVecToMat(m_pose);
     m_baseModel = nullptr;
     m_workspaceModel = nullptr;
 }
@@ -117,7 +117,7 @@ void RobotBase<dim>::setPose(const Vector6 &pose) {
     }
 
     m_pose = pose;
-    m_poseMat = utilGeo::poseVecToMat(pose);
+    m_poseMat = util::poseVecToMat(pose);
 }
 
 /*!

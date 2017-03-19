@@ -297,7 +297,7 @@ bool PRMPlanner<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_p
     int count = 0;
     std::shared_ptr<Node<dim>> currentNode;
     while (!m_openList.empty()) {
-        currentNode = utilList::removeMinFromList(m_openList);
+        currentNode = util::removeMinFromList(m_openList);
 
         if (currentNode == targetNode) {
             return true;
@@ -320,18 +320,18 @@ template <unsigned int dim>
 void PRMPlanner<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
     float dist, edgeCost;
     for (auto successor : currentNode->getChildNodes()) {
-        if (utilList::contains(m_closedList, successor)) {
+        if (util::contains(m_closedList, successor)) {
             continue;
         }
         edgeCost = m_heuristic->calcEdgeCost(currentNode, successor);
         dist = currentNode->getCost() + edgeCost;
 
-        if (utilList::contains(m_openList, successor) && dist >= successor->getCost()) {
+        if (util::contains(m_openList, successor) && dist >= successor->getCost()) {
             continue;
         }
         successor->setParent(currentNode, edgeCost);
         successor->setCost(dist);
-        if (!utilList::contains(m_openList, successor)) {
+        if (!util::contains(m_openList, successor)) {
             m_openList.push_back(successor);
         }
     }

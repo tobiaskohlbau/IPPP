@@ -27,9 +27,9 @@ int main(int argc, char** argv) {
     RRTOptions<6> options(40, collision, trajectory, sampling);
     RRTStarPlanner<6> planner(robot, options);
 
-    Vector6 start = utilVec::Vecf(0, 0, 0, 0, 51, 0);
+    Vector6 start = util::Vecf(0, 0, 0, 0, 51, 0);
     robot->saveMeshConfig(start);
-    Vector6 goal = utilVec::Vecf(150, -60, 90, 0, 82.7, 75.5);
+    Vector6 goal = util::Vecf(150, -60, 90, 0, 82.7, 75.5);
 
     auto startTime = std::chrono::system_clock::now();
     bool connected = planner.computePath(start, goal, 25000, 2);
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
             std::vector<Matrix4> jointTrafos = robot->getJointTrafos(angle);
             std::vector<Vector6> tmp;
             for (auto joint : jointTrafos)
-                tmp.push_back(utilGeo::poseMatToVec(joint));
+                tmp.push_back(util::poseMatToVec(joint));
             vecs.push_back(tmp);
         }
         writer::writeTrafosToFile(vecs, "trafos.txt");

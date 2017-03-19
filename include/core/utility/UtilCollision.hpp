@@ -23,7 +23,7 @@
 #include <robot/SerialRobot.hpp>
 
 namespace rmpl {
-namespace utilCollision {
+namespace util {
 
 template <unsigned int dim>
 static void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<rmpl::SerialRobot<dim>> &robot, Matrix3 &poseR,
@@ -35,14 +35,14 @@ static void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<rmp
     for (int i = 1; i < jointTrafos.size(); ++i) {
         As[i] = As[i - 1] * jointTrafos[i];
     }
-    utilGeo::decomposeT(pose, poseR, poseT);
+    util::decomposeT(pose, poseR, poseT);
 
     for (int i = 0; i < jointTrafos.size(); ++i) {
-        utilGeo::decomposeT(As[i], Rs[i], ts[i]);
+        util::decomposeT(As[i], Rs[i], ts[i]);
     }
 }
 
-} /* namespace utilCollision */
+} /* namespace util */
 } /* namespace rmpl */
 
 #endif    // UTILCOLLISION_HPP

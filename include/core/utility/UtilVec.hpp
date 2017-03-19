@@ -24,7 +24,7 @@
 #include <core/types.h>
 
 namespace rmpl {
-namespace utilVec {
+namespace util {
 
 /*!
 *  \brief      Appends the second Vector to the first one and returns the result Vector.
@@ -147,7 +147,7 @@ static VectorX Vecf(const unsigned int dim, const float data[]) {
     return vec;
 }
 
-} /* namespace utilVec */
+} /* namespace util */
 } /* namespace rmpl */
 
 #endif    // UTILVEC_HPP

@@ -25,7 +25,7 @@
 #include <core/dataObj/Node.hpp>
 
 namespace rmpl {
-namespace utilList {
+namespace util {
 
 /*!
 *  \brief      Removes Node by reference object
@@ -88,7 +88,7 @@ static void trimWhitespaces(std::string &str) {
     str = str.substr(first, (last - first + 1));
 }
 
-} /* namespace utilList */
+} /* namespace util */
 } /* namespace rmpl */
 
 #endif    // UTILLIST_HPP

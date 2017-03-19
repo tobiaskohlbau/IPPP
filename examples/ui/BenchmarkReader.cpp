@@ -74,7 +74,7 @@ EnvironmentConfig readEnvironment(const std::string &file) {
                 str = str.substr(str.find_first_of(")") + 1);
             }
 
-            utilList::trimWhitespaces(str);
+            util::trimWhitespaces(str);
             std::string::size_type sz;
             for (int i = 0; i < 6; ++i) {
                 config.obstacleConfig[i] = std::stof(str, &sz);
@@ -99,7 +99,7 @@ std::vector<Vector6> readQuery(const std::string &path) {
     std::ifstream is(path);
     std::string str;
     while (getline(is, str)) {
-        utilList::trimWhitespaces(str);
+        util::trimWhitespaces(str);
         if (str == "")
             continue;
 
