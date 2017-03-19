@@ -37,18 +37,10 @@ Currently available algorithms:
 ## Getting Started
 Small step for step instructions for Ubuntu.
 
-* sudo apt-get install cmake
-* sudo apt-get install libeigen3-dev
-* sudo apt-get install libboost-system-dev
-* sudo apt-get install libboost-test-dev
-* sudo apt-get install libboost-filesystem-dev
-* git clone https://github.com/SaschaKaden/RobotMotionPlanner.git
-* git clone https://github.com/SaschaKaden/RMPThirdParty.git
-* cd RobotMotionPlanner
-* mkdir build
-* cd build
-* cmake -DPQP_ROOT_DIR="../../RMPThirdParty/PQP_v1.3"
-
+* `sudo apt-get install cmake libeigen3-dev libboost-system-dev libboost-test-dev libboost-filesystem-dev`
+* `git clone https://github.com/SaschaKaden/RobotMotionPlanner.git`
+* `git clone https://github.com/SaschaKaden/RMPThirdParty.git`
+* `cd RobotMotionPlanner && mkdir build && cd build && cmake -DPQP_ROOT_DIR="../../RMPThirdParty/PQP_v1.3"`
 
 ## License
 Copyright © 2017 Sascha Kaden
