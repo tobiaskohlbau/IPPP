@@ -48,8 +48,8 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
     Matrix3 m_identity;
     Eigen::Vector3f m_zeroVec;
 
-    PQP_Model *m_baseMesh;
-    PQP_Model *m_workspace;
+    PQP_Model *m_baseMesh = nullptr;
+    PQP_Model *m_workspace = nullptr;
     bool m_baseMeshAvaible = false;
     bool m_workspaceAvaible = false;
     std::vector<PQP_Model *> m_jointModels;
