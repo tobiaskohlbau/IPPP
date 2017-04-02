@@ -283,6 +283,7 @@ std::shared_ptr<Node<dim>> PRMPlanner<dim>::connectNode(const Vector<dim> &vec) 
 */
 template <unsigned int dim>
 bool PRMPlanner<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode) {
+    m_graph->clearQueryParents();
     m_closedList.clear();
     m_openList.clear();
 
