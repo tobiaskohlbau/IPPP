@@ -96,6 +96,10 @@ bool RRTPlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goa
     if (!setInitNode(start)) {
         return false;
     }
+    if (m_collision->controlVec(goal)) {
+        Logging::error("Goal Node in collision", this);
+        return false;
+    }
     computeTree(numNodes, numThreads);
 
     return connectGoalNode(goal);
