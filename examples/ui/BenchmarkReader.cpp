@@ -42,8 +42,8 @@ EnvironmentConfig readEnvironment(const std::string &file) {
     std::string str;
     while (getline(is, str)) {
         if (boost::contains(str, "Boundary Box")) {
-            unsigned firstLim = str.find("[");
-            unsigned lastLim = str.find("]");
+            size_t firstLim = str.find("[");
+			size_t lastLim = str.find("]");
             std::string box = str.substr(firstLim + 1, lastLim);
 
             std::size_t found = box.find_first_of(";");

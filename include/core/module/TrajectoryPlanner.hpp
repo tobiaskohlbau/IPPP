@@ -132,7 +132,7 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<
     vecs.reserve((int)(u.norm() / m_stepSize) + 1);
     unsigned int divider = 2;
     for (Vector<dim> uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider) {
-        for (int i = 1; i < divider; i += 2) {
+        for (unsigned int i = 1; i < divider; i += 2) {
             vecs.push_back(source + (uTemp * i));
         }
     }

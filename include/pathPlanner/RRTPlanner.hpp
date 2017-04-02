@@ -111,7 +111,7 @@ bool RRTPlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goa
 */
 template <unsigned int dim>
 bool RRTPlanner<dim>::expand(const unsigned int numNodes, const unsigned int numThreads) {
-    computeTree(numNodes, numThreads);
+    return computeTree(numNodes, numThreads);
 }
 
 /*!
@@ -166,11 +166,11 @@ bool RRTPlanner<dim>::computeTree(const unsigned int nbOfNodes, const unsigned i
         countNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (int i = 0; i < nbOfThreads; ++i) {
+        for (unsigned int i = 0; i < nbOfThreads; ++i) {
             threads.push_back(std::thread(&RRTPlanner::computeTreeThread, this, countNodes));
         }
 
-        for (int i = 0; i < nbOfThreads; ++i) {
+        for (unsigned int i = 0; i < nbOfThreads; ++i) {
             threads[i].join();
         }
     }
@@ -186,7 +186,7 @@ bool RRTPlanner<dim>::computeTree(const unsigned int nbOfNodes, const unsigned i
 */
 template <unsigned int dim>
 void RRTPlanner<dim>::computeTreeThread(const unsigned int nbOfNodes) {
-    for (int i = 0; i < nbOfNodes; ++i) {
+    for (unsigned int i = 0; i < nbOfNodes; ++i) {
         Vector<dim> randVec = m_sampling->getSample();
         std::shared_ptr<Node<dim>> newNode = computeRRTNode(randVec);
 
