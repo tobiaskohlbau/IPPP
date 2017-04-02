@@ -65,7 +65,16 @@ template <unsigned int dim>
 Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot) : Identifier("Sampler") {
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();
-    m_origin = Eigen::Matrix<float, dim, 1>::Zero(dim, 1);
+    Vector6 pose = robot->getPose();
+    if (dim <= 6) {
+        for (int i = 0; i < dim; ++i) {
+            m_origin[i] = pose[i];
+        }
+    } else {
+        for (int i = 0; i < 6; ++i) {
+            m_origin[i] = pose[i];
+        }
+    }
 
     m_generator = std::mt19937(rd());
     m_distAngle = std::uniform_real_distribution<float>(0, util::twoPi());

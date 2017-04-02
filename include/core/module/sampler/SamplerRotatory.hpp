@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SAMPLERLINEAR_HPP
-#define SAMPLERLINEAR_HPP
+#ifndef SAMPLERROTATORY_HPP
+#define SAMPLERROTATORY_HPP
 
 #include <core/module/sampler/Sampler.hpp>
 
@@ -29,12 +29,10 @@ namespace rmpl {
 * \date    2016-05-23
 */
 template <unsigned int dim>
-class SamplerLinear : public Sampler<dim> {
+class SamplerRotatory : public Sampler<dim> {
   public:
-    SamplerLinear(const std::shared_ptr<RobotBase<dim>> &robot);
+    SamplerRotatory(const std::shared_ptr<RobotBase<dim>> &robot);
     Vector<dim> getSample() override;
-
-  private:
 };
 
 /*!
@@ -44,7 +42,7 @@ class SamplerLinear : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerLinear<dim>::SamplerLinear(const std::shared_ptr<RobotBase<dim>> &robot) : Sampler<dim>(robot) {
+SamplerRotatory<dim>::SamplerRotatory(const std::shared_ptr<RobotBase<dim>> &robot) : Sampler<dim>(robot) {
 }
 
 /*!
@@ -54,14 +52,14 @@ SamplerLinear<dim>::SamplerLinear(const std::shared_ptr<RobotBase<dim>> &robot) 
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Vector<dim> SamplerLinear<dim>::getSample() {
+Vector<dim> SamplerRotatory<dim>::getSample() {
     Vector<dim> vec;
     if (dim == 6) {
         for (unsigned int i = 0; i < 3; ++i) {
-            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
+            vec[i] = m_origin[i];
         }
         for (unsigned int i = 3; i < 6; ++i) {
-            vec[i] = this->m_origin[i - 3];
+            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
         }
     } else {
         for (unsigned int i = 0; i < dim; ++i) {
@@ -71,6 +69,9 @@ Vector<dim> SamplerLinear<dim>::getSample() {
     return vec;
 }
 
+template <unsigned int dim>
+void SamplerRotatory<dim>::setPosition(const Vector3 pos) {}
+
 } /* namespace rmpl */
 
-#endif /* SAMPLERLINEAR_HPP */
+#endif /* SAMPLERROTATORY_HPP */
