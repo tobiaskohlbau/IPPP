@@ -16,12 +16,12 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef RRTSTARPLANNER_HPP
-#define RRTSTARPLANNER_HPP
+#ifndef RRTSTAR_HPP
+#define RRTSTAR_HPP
 
 #include <mutex>
 
-#include "RRTPlanner.hpp"
+#include "RRT.hpp"
 
 namespace rmpl {
 
@@ -31,9 +31,9 @@ namespace rmpl {
 * \date    2016-05-27
 */
 template <unsigned int dim>
-class RRTStarPlanner : public RRTPlanner<dim> {
+class RRTStar : public RRT<dim> {
   public:
-    RRTStarPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options);
+    RRTStar(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options);
 
     bool connectGoalNode(const Vector<dim> goal);
 
@@ -44,8 +44,6 @@ class RRTStarPlanner : public RRTPlanner<dim> {
     void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
                 std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
-    std::mutex m_mutex;
-
     using Planner<dim>::m_collision;
     using Planner<dim>::m_graph;
     using Planner<dim>::m_options;
@@ -53,9 +51,10 @@ class RRTStarPlanner : public RRTPlanner<dim> {
     using Planner<dim>::m_planner;
     using Planner<dim>::m_robot;
     using Planner<dim>::m_sampling;
-    using RRTPlanner<dim>::m_initNode;
-    using RRTPlanner<dim>::m_goalNode;
-    using RRTPlanner<dim>::m_stepSize;
+    using RRT<dim>::m_initNode;
+    using RRT<dim>::m_goalNode;
+    using RRT<dim>::m_stepSize;
+    using RRT<dim>::m_mutex;
 };
 
 /*!
@@ -66,8 +65,8 @@ class RRTStarPlanner : public RRTPlanner<dim> {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-RRTStarPlanner<dim>::RRTStarPlanner(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options)
-    : RRTPlanner<dim>("RRT* Planner", robot, options) {
+RRTStar<dim>::RRTStar(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options)
+    : RRT<dim>(robot, options, "RRT*") {
 }
 
 /*!
@@ -78,7 +77,7 @@ RRTStarPlanner<dim>::RRTStarPlanner(const std::shared_ptr<RobotBase<dim>> &robot
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> RRTStarPlanner<dim>::computeRRTNode(const Vector<dim> &randVec) {
+std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randVec) {
     // get nearest neighbor
     std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randVec);
     // set Node<dim> new fix fixed step size of 10
@@ -114,7 +113,7 @@ std::shared_ptr<Node<dim>> RRTStarPlanner<dim>::computeRRTNode(const Vector<dim>
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void RRTStarPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
+void RRTStar<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
                                        std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     // get near nodes to the new node
     nearNodes = m_graph->getNearNodes(newNode, m_stepSize);
@@ -139,7 +138,7 @@ void RRTStarPlanner<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std:
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-void RRTStarPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
+void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
                                  std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     float oldDist, newDist, edgeCost;
     for (auto nearNode : nearNodes) {
@@ -165,7 +164,7 @@ void RRTStarPlanner<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::share
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRTStarPlanner<dim>::connectGoalNode(Vector<dim> goal) {
+bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
     if (m_collision->controlVec(goal)) {
         Logging::warning("Goal Node in collision", this);
         return false;
@@ -198,4 +197,4 @@ bool RRTStarPlanner<dim>::connectGoalNode(Vector<dim> goal) {
 
 } /* namespace rmpl */
 
-#endif /* RRTSTARPLANNER_HPP */
+#endif /* RRTSTAR_HPP */

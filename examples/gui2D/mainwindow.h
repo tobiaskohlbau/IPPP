@@ -15,9 +15,8 @@
 #include <Eigen/Core>
 
 #include <core/module/Identifier.h>
-#include <pathPlanner/NormalRRTPlanner.hpp>
-#include <pathPlanner/PRMPlanner.hpp>
-#include <pathPlanner/RRTStarPlanner.hpp>
+#include <pathPlanner/PRM.hpp>
+#include <pathPlanner/RRTStar.hpp>
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
 

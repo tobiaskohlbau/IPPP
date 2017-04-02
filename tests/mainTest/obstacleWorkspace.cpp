@@ -24,9 +24,9 @@
 #include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
-#include <pathPlanner/NormalRRTPlanner.hpp>
-#include <pathPlanner/PRMPlanner.hpp>
-#include <pathPlanner/RRTStarPlanner.hpp>
+#include <pathPlanner/NormalRRT.hpp>
+#include <pathPlanner/PRM.hpp>
+#include <pathPlanner/RRTStar.hpp>
 #include <robot/PointRobot.h>
 
 using namespace rmpl;
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE(obstacleWorkspace) {
                 prmPlanner.computePath(start, goal, 300, 1);
 
                 RRTOptions<dim> rrtOptions(30, 1, collision, sampler, sampling, heuristic);
-                NormalRRTPlanner<dim> normalRRTPlanner(robot, rrtOptions);
+                RRT<dim> normalRRTPlanner(robot, rrtOptions);
                 BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
                                       << sampler << " | " << sampling << " | ");
                 normalRRTPlanner.computePath(start, goal, 300, 1);

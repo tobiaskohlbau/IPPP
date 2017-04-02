@@ -6,8 +6,7 @@
 
 #include <core/utility/Utility.h>
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
-#include <pathPlanner/NormalRRTPlanner.hpp>
-#include <pathPlanner/RRTStarPlanner.hpp>
+#include <pathPlanner/RRTStar.hpp>
 #include <robot/Jaco.h>
 
 #include <ui/Writer.hpp>
@@ -29,7 +28,7 @@ void simpleRRT() {
     std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
     std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
     RRTOptions<6> options(30, collision, trajectory, sampling);
-    NormalRRTPlanner<6> planner(robot, options);
+    RRT<6> planner(robot, options);
     Vector6 start = util::Vecf(180, 180, 180, 180, 180, 180);
     Vector6 goal = util::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
 
@@ -71,8 +70,8 @@ void treeConnection() {
     std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
     std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
     RRTOptions<6> options(20, collision, trajectory, sampling);
-    RRTStarPlanner<6> plannerGoalNode(robot, options);
-    RRTStarPlanner<6> plannerInitNode(robot, options);
+    RRTStar<6> plannerGoalNode(robot, options);
+    RRTStar<6> plannerInitNode(robot, options);
 
     // set properties to the planners
     plannerInitNode.setInitNode(util::Vecf(180, 180, 180, 180, 180, 180));
