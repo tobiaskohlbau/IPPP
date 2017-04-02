@@ -49,9 +49,13 @@ class Graph : public Identifier {
 
     void sortTree();
 
-    unsigned int size() const;
+	size_t size() const;
     unsigned int getSortCount() const;
     bool autoSort() const;
+
+	void clearParents();
+	void clearQueryParents();
+	void clearChildes();
 
   private:
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;
@@ -81,6 +85,7 @@ template <unsigned int dim>
 Graph<dim>::~Graph() {
     for (auto &&node : m_nodes) {
         node->clearParent();
+		node->clearQueryParent();
         node->clearChildes();
         node = nullptr;
     }
@@ -210,7 +215,7 @@ void Graph<dim>::sortTree() {
 * \date       2016-08-09
 */
 template <unsigned int dim>
-unsigned int Graph<dim>::size() const {
+size_t Graph<dim>::size() const {
     return m_nodes.size();
 }
 
@@ -234,6 +239,27 @@ unsigned int Graph<dim>::getSortCount() const {
 template <unsigned int dim>
 bool Graph<dim>::autoSort() const {
     return m_autoSort;
+}
+
+template <unsigned int dim>
+void Graph<dim>::clearParents() {
+	for (auto &&node : m_nodes) {
+		node.clearParent();
+	}
+}
+
+template <unsigned int dim>
+void Graph<dim>::clearQueryParents() {
+	for (auto &&node : m_nodes) {
+		node.clearQueryParent();
+	}
+}
+
+template <unsigned int dim>
+void Graph<dim>::clearChildes() {
+	for (auto &&node : m_nodes) {
+		node.clearChildes();
+	}
 }
 
 } /* namespace rmpl */

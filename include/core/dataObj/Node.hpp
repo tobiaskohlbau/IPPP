@@ -61,7 +61,11 @@ class Node {
     void setParent(const std::shared_ptr<Node> &parent, const float edgeCost);
     std::shared_ptr<Node> getParentNode() const;
     std::shared_ptr<Edge<dim>> getParentEdge() const;
-    void clearParent();
+	void clearParent();
+	void setQueryParent(const std::shared_ptr<Node> &parent, const float edgeCost);
+	std::shared_ptr<Node> getQueryParentNode() const;
+	std::shared_ptr<Edge<dim>> getQueryParentEdge() const;
+    void clearQueryParent();
     void addChild(const std::shared_ptr<Node> &child, const float edgeCost);
     std::vector<std::shared_ptr<Node>> getChildNodes() const;
     std::vector<std::shared_ptr<Edge<dim>>> getChildEdges() const;
@@ -74,6 +78,7 @@ class Node {
     float m_cost = -1;
 
     std::shared_ptr<Edge<dim>> m_parent = nullptr;
+    std::shared_ptr<Edge<dim>> m_queryParent = nullptr;
     std::vector<std::shared_ptr<Edge<dim>>> m_childes;
 };
 
@@ -295,7 +300,58 @@ std::shared_ptr<Edge<dim>> Node<dim>::getParentEdge() const {
 */
 template <unsigned int dim>
 void Node<dim>::clearParent() {
-    m_parent = nullptr;
+	m_parent = nullptr;
+}
+
+/*!
+*  \brief      Set query parent of the Node
+*  \author     Sascha Kaden
+*  \param[in]  shared_ptr query parent Node
+*  \date       2016-07-15
+*/
+template <unsigned int dim>
+void Node<dim>::setQueryParent(const std::shared_ptr<Node> &queryParent, const float edgeCost) {
+	if (!queryParent->empty()) {
+		std::shared_ptr<Node> node = std::make_shared<Node>(*this);
+		m_queryParent = std::shared_ptr<Edge<dim>>(new Edge<dim>(node, queryParent, edgeCost));
+	}
+}
+
+/*!
+*  \brief      Return query parent Node
+*  \author     Sascha Kaden
+*  \param[out] shared_ptr of query parent Node
+*  \date       2016-07-15
+*/
+template <unsigned int dim>
+std::shared_ptr<Node<dim>> Node<dim>::getQueryParentNode() const {
+	if (!m_queryParent) {
+		return nullptr;
+	}
+	else {
+		return m_queryParent->getTarget();
+	}
+}
+
+/*!
+*  \brief      Return query parent Edge
+*  \author     Sascha Kaden
+*  \param[out] Edge
+*  \date       2016-10-22
+*/
+template <unsigned int dim>
+std::shared_ptr<Edge<dim>> Node<dim>::getQueryParentEdge() const {
+	return m_queryParent;
+}
+
+/*!
+*  \brief      Removes the parent and set it as nullptr
+*  \author     Sascha Kaden
+*  \date       2016-07-15
+*/
+template <unsigned int dim>
+void Node<dim>::clearQueryParent() {
+	m_queryParent = nullptr;
 }
 
 /*!

@@ -128,11 +128,11 @@ void PRMPlanner<dim>::startSamplingPhase(const unsigned int nbOfNodes, const uns
         countNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (int i = 0; i < nbOfThreads; ++i) {
+        for (unsigned int i = 0; i < nbOfThreads; ++i) {
             threads.push_back(std::thread(&PRMPlanner::samplingPhase, this, countNodes));
         }
 
-        for (int i = 0; i < nbOfThreads; ++i) {
+        for (unsigned int i = 0; i < nbOfThreads; ++i) {
             threads[i].join();
         }
     }
@@ -147,7 +147,7 @@ void PRMPlanner<dim>::startSamplingPhase(const unsigned int nbOfNodes, const uns
 template <unsigned int dim>
 void PRMPlanner<dim>::samplingPhase(const unsigned int nbOfNodes) {
     Vector<dim> sample;
-    for (int i = 0; i < nbOfNodes; ++i) {
+    for (unsigned int i = 0; i < nbOfNodes; ++i) {
         sample = m_sampling->getSample();
         if (!m_collision->controlVec(sample)) {
             m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
@@ -171,11 +171,11 @@ void PRMPlanner<dim>::startPlannerPhase(const unsigned int nbOfThreads) {
         unsigned int threadAmount = nodeCount / nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (int i = 0; i < nbOfThreads; ++i) {
+        for (unsigned int i = 0; i < nbOfThreads; ++i) {
             threads.push_back(std::thread(&PRMPlanner::plannerPhase, this, i * threadAmount, (i + 1) * threadAmount));
         }
 
-        for (int i = 0; i < nbOfThreads; ++i) {
+        for (unsigned int i = 0; i < nbOfThreads; ++i) {
             threads[i].join();
         }
     }
@@ -240,7 +240,7 @@ bool PRMPlanner<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal)
         while (temp != nullptr) {
             ++count;
             m_nodePath.push_back(temp);
-            temp = temp->getParentNode();
+            temp = temp->getQueryParentNode();
         }
         m_nodePath.push_back(std::shared_ptr<Node<dim>>(new Node<dim>(start)));
         return true;
@@ -289,7 +289,7 @@ bool PRMPlanner<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_p
     std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
     for (int i = 0; i < edges.size(); ++i) {
         edges[i]->getTarget()->setCost(edges[i]->getCost());
-        edges[i]->getTarget()->setParent(sourceNode, m_heuristic->calcEdgeCost(edges[i]->getTarget(), sourceNode));
+        edges[i]->getTarget()->setQueryParent(sourceNode, m_heuristic->calcEdgeCost(edges[i]->getTarget(), sourceNode));
         m_openList.push_back(edges[i]->getTarget());
     }
     m_closedList.push_back(sourceNode);
@@ -329,7 +329,7 @@ void PRMPlanner<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
         if (util::contains(m_openList, successor) && dist >= successor->getCost()) {
             continue;
         }
-        successor->setParent(currentNode, edgeCost);
+        successor->setQueryParent(currentNode, edgeCost);
         successor->setCost(dist);
         if (!util::contains(m_openList, successor)) {
             m_openList.push_back(successor);
