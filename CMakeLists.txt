@@ -30,7 +30,7 @@ option(BUILD_BENCHMARK "Build optional benchmark classes")
 
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
-find_package(assimp)
+find_package(assimp REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(PQP REQUIRED)
 find_package(Threads REQUIRED)

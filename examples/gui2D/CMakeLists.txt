@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------//
 
 find_package(Boost COMPONENTS system REQUIRED)
-find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
 find_package(Qt5Widgets)
 find_package(Qt5Core)
 find_package(Qt5Gui)

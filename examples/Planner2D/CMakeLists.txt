@@ -21,7 +21,7 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp
     ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp)
 
-find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
 
 set(ADDITIONAL_LIBRARIES
     ${OpenCV_LIBS})
