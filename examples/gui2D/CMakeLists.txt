@@ -17,7 +17,15 @@
 #-------------------------------------------------------------------------//
 
 find_package(Boost COMPONENTS system REQUIRED)
-find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
+find_package(OpenCV REQUIRED)
+if (OpenCV_VERSION VERSION_LESS "2.4.8")
+    message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.8+")
+elseif(OpenCV_VERSION VERSION_LESS "3.0.0")
+    find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+else()
+    find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
+endif()
+
 find_package(Qt5Widgets)
 find_package(Qt5Core)
 find_package(Qt5Gui)
