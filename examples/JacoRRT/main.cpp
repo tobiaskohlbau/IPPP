@@ -9,7 +9,6 @@
 #include <pathPlanner/NormalRRTPlanner.hpp>
 #include <pathPlanner/RRTStarPlanner.hpp>
 #include <robot/Jaco.h>
-#include <ui/vrep/Helper.h>
 
 #include <ui/Writer.hpp>
 
@@ -56,10 +55,10 @@ void simpleRRT() {
             pathPoints.push_back(robot->directKinematic(angles));
         writer::appendVecsToFile<6>(pathPoints, "example.ASC", 10);
 
-        Helper vrep(6);
-        vrep.start();
-        for (auto angles : pathAngles)
-            vrep.setPos(angles);
+        //Helper vrep(6);
+        //vrep.start();
+        //for (auto angles : pathAngles)
+        //    vrep.setPos(angles);
     }
 }
 

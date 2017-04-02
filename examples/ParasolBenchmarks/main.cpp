@@ -2,7 +2,7 @@
 #include <iostream>
 #include <memory>
 
-#include <gperftools/profiler.h>
+//#include <gperftools/profiler.h>
 
 #include <modelDirectory.h>
 #include <core/module/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
@@ -131,11 +131,11 @@ void benchmarkHedgehog() {
 }
 
 int main(int argc, char** argv) {
-    ProfilerStart("/tmp/cpu.prof");
+    //ProfilerStart("/tmp/cpu.prof");
     modelDir = getModelDirectory();
     benchmarkFlange();
     //benchmarkAlphaPuzzle();
     //benchmarkHedgehog();
-    ProfilerStop();
+    //ProfilerStop();
     return 0;
 }

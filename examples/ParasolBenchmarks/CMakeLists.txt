@@ -18,8 +18,8 @@
 
 find_package(Boost COMPONENTS filesystem system REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS}
-        ${CMAKE_SOURCE_DIR}/examples
-        /usr/include)
+        ${CMAKE_SOURCE_DIR}/examples)
+        #/usr/include)
 
 set(source
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
@@ -32,11 +32,11 @@ find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgpro
 
 set(ADDITIONAL_LIBRARIES
         ${OpenCV_LIBS}
-        ${Boost_LIBRARIES}
-        profiler
-        tcmalloc)
+        ${Boost_LIBRARIES})
+        #profiler
+        #tcmalloc)
 
-link_directories(/usr/lib)
+#link_directories(/usr/lib)
 
 
 ADD_RMPL_EXAMPLE(ParasolBenchmarks "${source}" "${ADDITIONAL_LIBRARIES}")
