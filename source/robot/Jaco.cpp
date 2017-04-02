@@ -29,7 +29,7 @@ namespace rmpl {
 *  \date       2016-06-30
 */
 Jaco::Jaco() : SerialRobot<6>("Jaco", util::Vecf(0, 42, 17, 0, 0, 0), util::Vecf(360, 318, 343, 360, 360, 360)) {
-    m_alpha = util::Vecf(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993, 0.95993, util::pi());
+    m_alpha = util::Vecf(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());
     m_a = util::Vecf(0, 410, 0, 0, 0, 0);
     m_d = util::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 

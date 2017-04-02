@@ -177,7 +177,7 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes) {
     unsigned int i = 0;
-    unsigned int countNodes = nodes.size() - 2;
+    auto countNodes = nodes.size() - 2;
     while (i < countNodes) {
         while (i < countNodes && m_planner->controlTrajectory(nodes[i]->getValues(), nodes[i + 2]->getValues())) {
             nodes.erase(nodes.begin() + i + 1);

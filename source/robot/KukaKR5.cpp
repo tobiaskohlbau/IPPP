@@ -31,7 +31,7 @@ namespace rmpl {
 */
 KukaKR5::KukaKR5()
     : SerialRobot<6>("KukaKR5", util::Vecf(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -util::twoPi()),
-                     util::Vecf(2.70526, util::pi(), 1.8326, 6.10865, 5.41052, 2.96706)) {
+                     util::Vecf(2.70526, util::pi(), 1.8326f, 6.10865f, 5.41052f, 2.96706f)) {
     m_alpha = util::Vecf(90, 0, 90, 90, 90, 0);
     m_alpha = util::degToRad<6>(m_alpha);
     m_a = util::Vecf(180, 600, 120, 0, 0, 0);
@@ -42,22 +42,22 @@ KukaKR5::KukaKR5()
     m_baseModel = modelFactoryPqp.createModel("meshes/KukaKR5/link0.stl");
     Joint joint;
     // -155, 155
-    joint = Joint(-2.70526, 2.70526, modelFactoryPqp.createModel("meshes/KukaKR5/link1.stl"));
+    joint = Joint(-2.70526f, 2.70526f, modelFactoryPqp.createModel("meshes/KukaKR5/link1.stl"));
     m_joints.push_back(joint);
     // -65, 180
-    joint = Joint(-1.13446, util::pi(), modelFactoryPqp.createModel("meshes/KukaKR5/link2.stl"));
+    joint = Joint(-1.13446f, util::pi(), modelFactoryPqp.createModel("meshes/KukaKR5/link2.stl"));
     m_joints.push_back(joint);
     // -68, 105
-    joint = Joint(-1.18682, 1.8326, modelFactoryPqp.createModel("meshes/KukaKR5/link3.stl"));
+    joint = Joint(-1.18682f, 1.8326f, modelFactoryPqp.createModel("meshes/KukaKR5/link3.stl"));
     m_joints.push_back(joint);
     // -350, 350
-    joint = Joint(-6.10865, 6.10865, modelFactoryPqp.createModel("meshes/KukaKR5/link4.stl"));
+    joint = Joint(-6.10865f, 6.10865f, modelFactoryPqp.createModel("meshes/KukaKR5/link4.stl"));
     m_joints.push_back(joint);
     // 50, 310
-    joint = Joint(0.872665, 5.41052, modelFactoryPqp.createModel("meshes/KukaKR5/link5.stl"));
+    joint = Joint(0.872665f, 5.41052f, modelFactoryPqp.createModel("meshes/KukaKR5/link5.stl"));
     m_joints.push_back(joint);
     // -360, 170
-    joint = Joint(-util::twoPi(), 2.96706, modelFactoryPqp.createModel("meshes/KukaKR5/link6.stl"));
+    joint = Joint(-util::twoPi(), 2.96706f, modelFactoryPqp.createModel("meshes/KukaKR5/link6.stl"));
     m_joints.push_back(joint);
 }
 

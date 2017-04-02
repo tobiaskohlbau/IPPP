@@ -52,16 +52,16 @@ bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std:
     }
     vertices.clear();
     faces.clear();
-    unsigned int verticeCount;
-    for (int i = 0; i < scene->mNumMeshes; ++i) {
+    size_t verticeCount;
+    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
         const aiMesh *mesh = scene->mMeshes[i];
         verticeCount = vertices.size();
         // load vertices
-        for (int j = 0; j < mesh->mNumVertices; ++j) {
+        for (unsigned int j = 0; j < mesh->mNumVertices; ++j) {
             vertices.push_back(Vector3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z));
         }
         // load faces
-        for (int j = 0; j < mesh->mNumFaces; ++j) {
+        for (unsigned int j = 0; j < mesh->mNumFaces; ++j) {
             if (mesh->mFaces[j].mNumIndices > 2) {
                 faces.push_back(Vector3i(mesh->mFaces[j].mIndices[0] + verticeCount, mesh->mFaces[j].mIndices[1] + verticeCount,
                                          mesh->mFaces[j].mIndices[2] + verticeCount));
@@ -104,7 +104,6 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
     getline(is, str);
     getline(is, str);
     util::trimWhitespaces(str);
-    std::size_t found;
     for (unsigned int i = 0; i < numVertices; ++i) {
         Vector3 vec;
         std::string::size_type sz;
@@ -298,13 +297,13 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
     // add vertices to the mesh
     pMesh->mVertices = new aiVector3D[vertices.size()];
     pMesh->mNumVertices = vertices.size();
-    for (unsigned int i = 0; i < vertices.size(); ++i) {
+    for (size_t i = 0; i < vertices.size(); ++i) {
         pMesh->mVertices[i] = aiVector3D(vertices[i].x(), vertices[i].y(), vertices[i].z());
     }
 
     pMesh->mFaces = new aiFace[faces.size()];
     pMesh->mNumFaces = faces.size();
-    for (unsigned int i = 0; i < faces.size(); ++i) {
+    for (size_t i = 0; i < faces.size(); ++i) {
         aiFace &face = pMesh->mFaces[i];
 
         face.mIndices = new unsigned int[3];
