@@ -244,21 +244,21 @@ bool Graph<dim>::autoSort() const {
 template <unsigned int dim>
 void Graph<dim>::clearParents() {
 	for (auto &&node : m_nodes) {
-		node.clearParent();
+		node->clearParent();
 	}
 }
 
 template <unsigned int dim>
 void Graph<dim>::clearQueryParents() {
 	for (auto &&node : m_nodes) {
-		node.clearQueryParent();
+		node->clearQueryParent();
 	}
 }
 
 template <unsigned int dim>
 void Graph<dim>::clearChildes() {
 	for (auto &&node : m_nodes) {
-		node.clearChildes();
+		node->clearChildes();
 	}
 }
 
