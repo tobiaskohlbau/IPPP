@@ -1,9 +1,12 @@
-html/
 .project
-*.txt.user
-*~
-*.txt.user
-*.idea
 
+*~
+*.idea
+*.log
+*.txt.user
+*.txt.user
+
+build/
 cmake-build-debug/
 cmake-build-release/
+html/
