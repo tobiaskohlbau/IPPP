@@ -7,8 +7,7 @@
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
-#include <pathPlanner/NormalRRTPlanner.hpp>
-#include <pathPlanner/RRTStarPlanner.hpp>
+#include <pathPlanner/RRTStar.hpp>
 #include <robot/KukaKR5.h>
 
 #include <ui/Writer.hpp>
@@ -25,7 +24,7 @@ int main(int argc, char** argv) {
     std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
     std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
     RRTOptions<6> options(40, collision, trajectory, sampling);
-    RRTStarPlanner<6> planner(robot, options);
+    RRTStar<6> planner(robot, options);
 
     Vector6 start = util::Vecf(0, 0, 0, 0, 51, 0);
     robot->saveMeshConfig(start);

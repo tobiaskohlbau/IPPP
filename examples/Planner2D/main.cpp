@@ -7,9 +7,8 @@
 #include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 #include <core/module/sampler/SeedSampler.hpp>
 #include <core/module/sampling/SamplingNearObstacle.hpp>
-#include <pathPlanner/NormalRRTPlanner.hpp>
-#include <pathPlanner/PRMPlanner.hpp>
-#include <pathPlanner/RRTStarPlanner.hpp>
+#include <pathPlanner/PRM.hpp>
+#include <pathPlanner/RRTStar.hpp>
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
 #include <robot/model/ModelFactoryTriangle2D.h>
@@ -45,9 +44,9 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
-    // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));
-    planner = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<dim>(robot, rrtOptions));
-    // planner = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(robot, rrtOptions));
+    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
+    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
+    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
@@ -89,9 +88,9 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     RRTOptions<dim> rrtOptions(50, collision, trajectory, sampling);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
-    // planner = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<dim>(robot, prmOptions));
-    planner = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<dim>(robot, rrtOptions));
-    // planner = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(robot, rrtOptions));
+    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
+    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
+    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();

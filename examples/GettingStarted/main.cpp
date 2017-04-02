@@ -2,9 +2,8 @@
 #include <memory>
 
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
-#include <pathPlanner/NormalRRTPlanner.hpp>
-#include <pathPlanner/PRMPlanner.hpp>
-#include <pathPlanner/RRTStarPlanner.hpp>
+#include <pathPlanner/RRTStar.hpp>
+#include <pathPlanner/PRM.hpp>
 #include <robot/MobileRobot.h>
 #include <robot/model/ModelFactoryPqp.h>
 
@@ -48,7 +47,7 @@ int main(int argc, char** argv) {
     float rrtStepSize = 30;
     RRTOptions<6> options(rrtStepSize, collision, trajectory, sampling);
     // create the path planner
-    RRTStarPlanner<6> pathPlanner(robot, options);
+    RRTStar<6> pathPlanner(robot, options);
 
     // define start and goal position, angles has to be in rad
     Vector<dim> start = util::Vecf(78.240253, 24.147785, -8.133371, 0.286451, 0.769112, 0.706202);

@@ -7,9 +7,8 @@
 #include <modelDirectory.h>
 #include <core/module/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
 #include <core/utility/UtilVec.hpp>
-#include <pathPlanner/NormalRRTPlanner.hpp>
-#include <pathPlanner/PRMPlanner.hpp>
-#include <pathPlanner/RRTStarPlanner.hpp>
+#include <pathPlanner/PRM.hpp>
+#include <pathPlanner/RRTStar.hpp>
 #include <robot/MobileRobot.h>
 #include <robot/model/ModelFactoryPqp.h>
 //#include <core/module/collisionDetection/CollisionDetectionFcl.hpp>
@@ -59,8 +58,8 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 
     RRTOptions<6> options(40, collision, trajectory, sampling);
     RRTOptions<6> optionsBenchmark(40, collisionBenchmark, trajectoryBenchmark, samplingBenchmark);
-    RRTStarPlanner<6> planner(robot, options);
-    RRTStarPlanner<6> plannerBenchmark(robot, optionsBenchmark);
+    RRTStar<6> planner(robot, options);
+    RRTStar<6> plannerBenchmark(robot, optionsBenchmark);
 
     //std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[1]);
     //exportCad(ExportFormat::OBJ, "robotStart", robotModel->m_vertices, robotModel->m_faces);

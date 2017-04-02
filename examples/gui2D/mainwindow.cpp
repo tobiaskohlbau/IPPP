@@ -103,11 +103,11 @@ void MainWindow::computePath() {
         PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, edgeH);
 
         if (m_plannerType == 0)
-            m_planner3d = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<3>(robot, rrtOptions));
+            m_planner3d = std::shared_ptr<RRT<dim>>(new RRT<3>(robot, rrtOptions));
         else if (m_plannerType == 1)
-            m_planner3d = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<3>(robot, rrtOptions));
+            m_planner3d = std::shared_ptr<RRTStar<dim>>(new RRTStar<3>(robot, rrtOptions));
         else
-            m_planner3d = std::shared_ptr<PRMPlanner<dim>>(new PRMPlanner<3>(robot, prmOptions));
+            m_planner3d = std::shared_ptr<PRM<dim>>(new PRM<3>(robot, prmOptions));
         Vector3 start(m_startX, m_startY, m_startPhi * util::toRad());
         Vector3 goal(m_goalX, m_goalY, m_goalPhi * util::toRad());
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
@@ -154,11 +154,11 @@ void MainWindow::computePath() {
         PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling);
 
         if (m_plannerType == 0)
-            m_planner2d = std::shared_ptr<NormalRRTPlanner<dim>>(new NormalRRTPlanner<dim>(robot, rrtOptions));
+            m_planner2d = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
         else if (m_plannerType == 1)
-            m_planner2d = std::shared_ptr<RRTStarPlanner<dim>>(new RRTStarPlanner<dim>(robot, rrtOptions));
+            m_planner2d = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
         else
-            m_planner2d = std::shared_ptr<PRMPlanner<2>>(new PRMPlanner<dim>(robot, prmOptions));
+            m_planner2d = std::shared_ptr<PRM<2>>(new PRM<dim>(robot, prmOptions));
         Vector2 start(m_startX, m_startY);
         Vector2 goal(m_goalX, m_goalY);
         m_connected = m_planner2d->computePath(start, goal, m_numNodes, m_numThreads);
