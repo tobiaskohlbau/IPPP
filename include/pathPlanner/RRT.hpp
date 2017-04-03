@@ -63,7 +63,7 @@ class RRT : public Planner<dim> {
     using Planner<dim>::m_graph;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
-    using Planner<dim>::m_planner;
+    using Planner<dim>::m_trajectory;
     using Planner<dim>::m_robot;
     using Planner<dim>::m_sampling;
 };
@@ -224,7 +224,7 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
 
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (auto node : nearNodes) {
-        if (m_planner->controlTrajectory(goal, node->getValues())) {
+        if (m_trajectory->controlTrajectory(goal, node->getValues())) {
             nearestNode = node;
             break;
         }
@@ -263,7 +263,7 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randVec) 
 
     if (m_collision->controlVec(newNode->getValues())) {
         return nullptr;
-    } else if (!m_planner->controlTrajectory(newNode->getValues(), nearestNode->getValues())) {
+    } else if (!m_trajectory->controlTrajectory(newNode->getValues(), nearestNode->getValues())) {
         return nullptr;
     }
 

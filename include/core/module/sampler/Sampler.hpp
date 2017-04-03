@@ -41,6 +41,7 @@ class Sampler : public Identifier {
     Sampler(const std::shared_ptr<RobotBase<dim>> &robot);
     virtual Vector<dim> getSample();
     float getRandomAngle();
+    float getRandomNumber();
 
     virtual void setOrigin(const Vector<dim> &mean);
     Vector<dim> getOrigin() const;
@@ -53,6 +54,7 @@ class Sampler : public Identifier {
     std::random_device rd;
     std::mt19937 m_generator;
     std::uniform_real_distribution<float> m_distAngle;
+    std::uniform_real_distribution<float> m_distNumber;
 };
 
 /*!
@@ -78,6 +80,7 @@ Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot) : Identifier
 
     m_generator = std::mt19937(rd());
     m_distAngle = std::uniform_real_distribution<float>(0, util::twoPi());
+    m_distNumber = std::uniform_real_distribution<float>(0, 1.0);
 }
 
 /*!
@@ -104,6 +107,17 @@ Vector<dim> Sampler<dim>::getSample() {
 template <unsigned int dim>
 float Sampler<dim>::getRandomAngle() {
     return m_distAngle(m_generator);
+}
+
+/*!
+*  \brief      Return random number between 0 and 1
+*  \author     Sascha Kaden
+*  \param[out] random number
+*  \date       2017-04-03
+*/
+template <unsigned int dim>
+float Sampler<dim>::getRandomNumber() {
+    return m_distNumber(m_generator);
 }
 
 /*!
