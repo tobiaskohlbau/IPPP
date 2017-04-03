@@ -60,7 +60,7 @@ class PRM : public Planner<dim> {
     using Planner<dim>::m_graph;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
-    using Planner<dim>::m_planner;
+    using Planner<dim>::m_trajectory;
     using Planner<dim>::m_robot;
     using Planner<dim>::m_sampling;
     using Planner<dim>::m_heuristic;
@@ -80,7 +80,7 @@ PRM<dim>::PRM(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim
 }
 
 /*!
-*  \brief      Compute path from start Node to goal Node<dim> with passed number of samples and threads
+*  \brief      Compute path from start Node to goal Node with passed number of samples and threads
 *  \author     Sascha Kaden
 *  \param[in]  start Node
 *  \param[in]  goal Node
@@ -157,9 +157,9 @@ void PRM<dim>::samplingPhase(const unsigned int nbOfNodes) {
 
 /*!
 *  \brief      Local planning phase of the PRMPlanner.
-*  \details    Add the nearest neighbors of a Node<dim> as childs.
+*  \details    Add the nearest neighbors of a Node as childes.
 *  \author     Sascha Kaden
-*  \param[in]  number threads
+*  \param[in]  number of threads
 *  \date       2016-08-09
 */
 template <unsigned int dim>
@@ -183,7 +183,7 @@ void PRM<dim>::startPlannerPhase(const unsigned int nbOfThreads) {
 
 /*!
 *  \brief      Local planning thread function
-*  \details    Searchs the nearest neighbors between the given indexes and adds them as childs
+*  \details    Searchs the nearest neighbors between the given indexes and adds them as childes
 *  \author     Sascha Kaden
 *  \param[in]  start index
 *  \param[in]  end index
@@ -205,7 +205,7 @@ void PRM<dim>::plannerPhase(const unsigned int startNodeIndex, const unsigned in
     for (auto node = nodes.begin() + startNodeIndex; node != nodes.begin() + endNodeIndex; ++node) {
         std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
-            if (m_planner->controlTrajectory((*node)->getValues(), nearNode->getValues())) {
+            if (m_trajectory->controlTrajectory((*node)->getValues(), nearNode->getValues())) {
                 (*node)->addChild(nearNode, m_heuristic->calcEdgeCost(nearNode, (*node)));
             }
         }
@@ -226,7 +226,7 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
     std::shared_ptr<Node<dim>> sourceNode = connectNode(start);
     std::shared_ptr<Node<dim>> targetNode = connectNode(goal);
     if (sourceNode == nullptr || targetNode == nullptr) {
-        Logging::info("Start or goal Node<dim> could not be connected", this);
+        Logging::info("Start or goal Node could not be connected", this);
         return false;
     }
 
@@ -251,7 +251,7 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
 }
 
 /*!
-*  \brief      Try to find nearest Node<dim> of the graph to the passed Node
+*  \brief      Try to find nearest Node of the graph to the passed Node
 *  \author     Sascha Kaden
 *  \param[in]  Node
 *  \param[in]  nearest Node
@@ -263,7 +263,7 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &vec) {
     float dist = std::numeric_limits<float>::max();
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (m_planner->controlTrajectory(vec, *nearNodes[i]) &&
+        if (m_trajectory->controlTrajectory(vec, *nearNodes[i]) &&
             m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues()) < dist) {
             dist = m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues());
             nearestNode = nearNodes[i];
@@ -276,8 +276,8 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &vec) {
 /*!
 *  \brief      A* algorithm to find best path
 *  \author     Sascha Kaden
-*  \param[in]  source Node<dim> (start)
-*  \param[in]  target Node<dim> (goal)
+*  \param[in]  source Node (start)
+*  \param[in]  target Node (goal)
 *  \param[out] result of algorithm
 *  \date       2016-08-09
 */
@@ -312,7 +312,7 @@ bool PRM<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node
 }
 
 /*!
-*  \brief      Expands the openList of the A* algorithm from the childs of the passed Node
+*  \brief      Expands the openList of the A* algorithm from the childes of the passed Node
 *  \author     Sascha Kaden
 *  \param[in]  current ndoe
 *  \date       2016-08-09

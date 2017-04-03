@@ -52,6 +52,7 @@ class Planner : public Identifier {
                              const unsigned int numThreads) = 0;
     virtual bool expand(const unsigned int numNode, const unsigned int numthreads) = 0;
 
+    std::shared_ptr<Graph<dim>> getGraph();
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
     virtual std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
@@ -61,7 +62,7 @@ class Planner : public Identifier {
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
 
-    std::shared_ptr<TrajectoryPlanner<dim>> m_planner;
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory;
     std::shared_ptr<Sampling<dim>> m_sampling;
     std::shared_ptr<CollisionDetection<dim>> m_collision;
     std::shared_ptr<Graph<dim>> m_graph;
@@ -97,8 +98,13 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<d
     m_robot = robot;
     m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(options.getSortCountGraph()));
     m_collision = m_options.getCollisionDetection();
-    m_planner = options.getTrajectoryPlanner();
+    m_trajectory = options.getTrajectoryPlanner();
     m_sampling = options.getSampling();
+}
+
+template <unsigned int dim>
+std::shared_ptr<Graph<dim>> Planner<dim>::getGraph() {
+    return m_graph;
 }
 
 /*!
@@ -135,17 +141,17 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     std::vector<Vector<dim>> path;
     for (int i = 0; i < smoothedNodes.size() - 1; ++i) {
         std::vector<Vector<dim>> tempVecs =
-            m_planner->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues());
+            m_trajectory->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues());
         for (auto vec : tempVecs) {
             path.push_back(vec);
         }
     }
 
-    if (trajectoryStepSize < m_planner->getStepSize()) {
+    if (trajectoryStepSize < m_trajectory->getStepSize()) {
         Logging::info("Passed trajectory step size is smaller than the step of the planner! Path has step size of the planner",
                       this);
-    } else if (trajectoryStepSize > m_planner->getStepSize()) {
-        unsigned int steps = trajectoryStepSize / m_planner->getStepSize();
+    } else if (trajectoryStepSize > m_trajectory->getStepSize()) {
+        unsigned int steps = trajectoryStepSize / m_trajectory->getStepSize();
         std::vector<Vector<dim>> newPath;
         newPath.push_back(path[0]);
         unsigned int j = 0;
@@ -179,7 +185,7 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::smoothPath(std::vector<std
     unsigned int i = 0;
     auto countNodes = nodes.size() - 2;
     while (i < countNodes) {
-        while (i < countNodes && m_planner->controlTrajectory(nodes[i]->getValues(), nodes[i + 2]->getValues())) {
+        while (i < countNodes && m_trajectory->controlTrajectory(nodes[i]->getValues(), nodes[i + 2]->getValues())) {
             nodes.erase(nodes.begin() + i + 1);
             --countNodes;
         }

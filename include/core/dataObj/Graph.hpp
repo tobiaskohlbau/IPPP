@@ -38,6 +38,8 @@ class Graph : public Identifier {
     ~Graph();
 
     void addNode(const std::shared_ptr<Node<dim>> &node);
+    void addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &nodes);
+    std::shared_ptr<Node<dim>> getNode(const unsigned int index) const;
     std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
 
     std::shared_ptr<Node<dim>> getNearestNode(const Vector<dim> &vec) const;
@@ -49,13 +51,23 @@ class Graph : public Identifier {
 
     void sortTree();
 
+    bool empty() const;
 	size_t size() const;
     unsigned int getSortCount() const;
     bool autoSort() const;
+    void preserveNodePtr();
 
 	void clearParents();
 	void clearQueryParents();
 	void clearChildes();
+
+    bool operator<(std::shared_ptr<Graph<dim>> const &a) {
+        if (a->getNode(0) && this->getNode(0)) {
+            return a->getNode(0)->getValues().norm() < this->getNode(0)->getValues().norm();
+        } else {
+            return false;
+        }
+    }
 
   private:
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;
@@ -63,6 +75,7 @@ class Graph : public Identifier {
     std::mutex m_mutex;
     const unsigned int m_sortCount;
     bool m_autoSort = false;
+    bool m_preserveNodePtr = false;
 };
 
 /*!
@@ -83,11 +96,13 @@ Graph<dim>::Graph(const unsigned int sortCount) : Identifier("Graph"), m_sortCou
 */
 template <unsigned int dim>
 Graph<dim>::~Graph() {
-    for (auto &&node : m_nodes) {
-        node->clearParent();
-		node->clearQueryParent();
-        node->clearChildes();
-        node = nullptr;
+    if (!m_preserveNodePtr) {
+        for (auto &&node : m_nodes) {
+            node->clearParent();
+            node->clearQueryParent();
+            node->clearChildes();
+            node = nullptr;
+        }
     }
 }
 
@@ -105,6 +120,35 @@ void Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_mutex.unlock();
     if (m_autoSort && (m_nodes.size() % m_sortCount) == 0) {
         sortTree();
+    }
+}
+
+/*!
+* \brief      Add Node list to the graph
+* \author     Sascha Kaden
+* \param[in]  Node list
+* \date       2017-04-03
+*/
+template <unsigned int dim>
+void Graph<dim>::addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &nodes) {
+    for (auto node : nodes) {
+        addNode(node);
+    }
+}
+
+/*!
+* \brief      Return Node from index
+* \author     Sascha Kaden
+* \param[in]  Node
+* \date       2017-04-03
+*/
+template <unsigned int dim>
+std::shared_ptr<Node<dim>> Graph<dim>::getNode(const unsigned int index) const {
+    if (index < m_nodes.size()) {
+        return m_nodes[index];
+    }
+    else {
+        return nullptr;
     }
 }
 
@@ -209,6 +253,21 @@ void Graph<dim>::sortTree() {
 }
 
 /*!
+* \brief      Return true if Graph is empty
+* \author     Sascha Kaden
+* \param[out] state of Graph
+* \date       2017-04-03
+*/
+template <unsigned int dim>
+bool Graph<dim>::empty() const {
+    if (m_nodes.size() == 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/*!
 * \brief      Return size of the graph
 * \author     Sascha Kaden
 * \param[out] size of Node vector
@@ -241,6 +300,11 @@ bool Graph<dim>::autoSort() const {
     return m_autoSort;
 }
 
+/*!
+* \brief      Clear all parent pointer from the nodes
+* \author     Sascha Kaden
+* \date       2017-04-03
+*/
 template <unsigned int dim>
 void Graph<dim>::clearParents() {
 	for (auto &&node : m_nodes) {
@@ -248,6 +312,11 @@ void Graph<dim>::clearParents() {
 	}
 }
 
+/*!
+* \brief      Clear all query parent pointer from the nodes
+* \author     Sascha Kaden
+* \date       2017-04-03
+*/
 template <unsigned int dim>
 void Graph<dim>::clearQueryParents() {
 	for (auto &&node : m_nodes) {
@@ -255,11 +324,26 @@ void Graph<dim>::clearQueryParents() {
 	}
 }
 
+/*!
+* \brief      Clear all child pointer from the nodes
+* \author     Sascha Kaden
+* \date       2017-04-03
+*/
 template <unsigned int dim>
 void Graph<dim>::clearChildes() {
 	for (auto &&node : m_nodes) {
 		node->clearChildes();
 	}
+}
+
+/*!
+* \brief      Set node pointer preserve flag, to prevent clearing from node pointer at destruction of the Graph
+* \author     Sascha Kaden
+* \date       2017-04-03
+*/
+template <unsigned int dim>
+void Graph<dim>::preserveNodePtr() {
+    m_preserveNodePtr = true;
 }
 
 } /* namespace rmpl */

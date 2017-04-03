@@ -79,6 +79,12 @@ bool contains(const std::vector<std::shared_ptr<Node<dim>>> &list, const std::sh
     }
 }
 
+/*!
+*  \brief         Remove whitespaces from string
+*  \author        Sascha Kaden
+*  \param[in,out] string
+*  \date          2016-12-19
+*/
 static void trimWhitespaces(std::string &str) {
     size_t first = str.find_first_not_of(' ');
     if (str.npos == first) {

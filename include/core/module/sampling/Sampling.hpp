@@ -44,6 +44,7 @@ class Sampling : public Identifier {
              const std::shared_ptr<Sampler<dim>> &sampler);
 
     virtual Vector<dim> getSample() const;
+    float getRandomNumber() const;
     void setOrigin(const Vector<dim> &origin);
 
   protected:
@@ -79,6 +80,17 @@ Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std:
 template <unsigned int dim>
 Vector<dim> Sampling<dim>::getSample() const {
     return m_sampler->getSample();
+}
+
+/*!
+*  \brief      Return random number between 0 and 1
+*  \author     Sascha Kaden
+*  \param[out] random number
+*  \date       2017-04-03
+*/
+template <unsigned int dim>
+float Sampling<dim>::getRandomNumber() const {
+    return m_sampler->getRandomNumber();
 }
 
 /*!
