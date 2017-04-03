@@ -48,10 +48,12 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/SRTOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/Planner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/PRM.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRT.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStar.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/SRT.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/RobotBase.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/SerialRobot.hpp)
 

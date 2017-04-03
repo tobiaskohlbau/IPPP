@@ -9,6 +9,7 @@
 #include <core/module/sampling/SamplingNearObstacle.hpp>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
+#include <pathPlanner/SRT.hpp>
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
 #include <robot/model/ModelFactoryTriangle2D.h>
@@ -42,11 +43,13 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     std::shared_ptr<Sampling<3>> sampling(new SamplingNearObstacle<3>(robot, collision, trajectory, sampler));
     PRMOptions<dim> prmOptions(30, collision, trajectory, sampling);
     RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling);
+    SRTOptions<dim> srtOptions(20, collision, trajectory, sampling);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
-    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
+    // planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
+    planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions));
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
@@ -86,11 +89,13 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     std::shared_ptr<Sampling<2>> sampling(new SamplingNearObstacle<2>(robot, collision, trajectory, sampler));
     PRMOptions<dim> prmOptions(40, collision, trajectory, sampling);
     RRTOptions<dim> rrtOptions(50, collision, trajectory, sampling);
+    SRTOptions<dim> srtOptions(20, collision, trajectory, sampling);
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
-    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
+    // planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
+    planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
