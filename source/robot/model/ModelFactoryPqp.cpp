@@ -49,9 +49,7 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
-    Vector3 minBoundary, maxBoundary;
-    computeBoundingBox(pqpModel->m_vertices, minBoundary, maxBoundary);
-    pqpModel->setBoundingBox(minBoundary, maxBoundary);
+    pqpModel->m_boundingBox = computeBoundingBox(pqpModel->m_vertices);
 
     // create PQP model
     pqpModel->m_pqpModel.BeginModel();

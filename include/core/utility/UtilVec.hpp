@@ -27,7 +27,25 @@ namespace rmpl {
 namespace util {
 
 /*!
-*  \brief      Check whether the vector is empty (contains onlz NaN values)
+*  \brief      Check whether the vector is empty (contains only NaN values)
+*  \author     Sascha Kaden
+*  \param[in]  Vector
+*  \param[out] result, true if vector is empty
+*  \date       2017-04-04
+*/
+static bool empty(const Vector3 &vec) {
+    bool status = true;
+    for (unsigned int i = 0; i < 3; ++i) {
+        if (!std::isnan(vec[i])) {
+            status = false;
+            break;
+        }
+    }
+    return status;
+}
+
+/*!
+*  \brief      Check whether the vector is empty (contains only NaN values)
 *  \author     Sascha Kaden
 *  \param[in]  Vector
 *  \param[out] result, true if vector is empty

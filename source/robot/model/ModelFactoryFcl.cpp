@@ -44,9 +44,7 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
-    Vector3 minBoundary, maxBoundary;
-    computeBoundingBox(pqpModel->m_vertices, minBoundary, maxBoundary);
-    fclModel->setBoundingBox(minBoundary, maxBoundary);
+    fclModel->m_boundingBox = computeBoundingBox(fclModel->m_vertices);
 
     std::vector<fcl::Vector3f> vertices;
     std::vector<fcl::Triangle> triangles;
