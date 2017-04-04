@@ -45,7 +45,7 @@ class SeedSampler : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SeedSampler<dim>::SeedSampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &seed) : Sampler<dim>(robot) {
+SeedSampler<dim>::SeedSampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &seed) : Sampler<dim>(robot, "SeedSampler") {
     std::seed_seq seed_seq(seed.begin(), seed.end());
     m_randomEngine = std::minstd_rand0(seed_seq);
 }

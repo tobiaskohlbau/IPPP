@@ -44,7 +44,7 @@ class SamplerLinear : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerLinear<dim>::SamplerLinear(const std::shared_ptr<RobotBase<dim>> &robot) : Sampler<dim>(robot) {
+SamplerLinear<dim>::SamplerLinear(const std::shared_ptr<RobotBase<dim>> &robot) : Sampler<dim>(robot, "LinearSampler") {
 }
 
 /*!

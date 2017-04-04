@@ -42,7 +42,7 @@ class SamplerRotatory : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerRotatory<dim>::SamplerRotatory(const std::shared_ptr<RobotBase<dim>> &robot) : Sampler<dim>(robot) {
+SamplerRotatory<dim>::SamplerRotatory(const std::shared_ptr<RobotBase<dim>> &robot) : Sampler<dim>(robot, "SamplerRotatory") {
 }
 
 /*!
