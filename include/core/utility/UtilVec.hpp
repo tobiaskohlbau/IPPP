@@ -27,6 +27,25 @@ namespace rmpl {
 namespace util {
 
 /*!
+*  \brief      Check whether the vector is empty (contains onlz NaN values)
+*  \author     Sascha Kaden
+*  \param[in]  Vector
+*  \param[out] result, true if vector is empty
+*  \date       2017-04-04
+*/
+template <unsigned int dim>
+bool emtpy(const Vector<dim> &vec) {
+    bool status = true;
+    for (unsigned int i = 0; i < dim; ++i) {
+        if (!std::isnan(vec[i])) {
+            status = false;
+            break;
+        }
+    }
+    return status;
+}
+
+/*!
 *  \brief      Appends the second Vector to the first one and returns the result Vector.
 *  \author     Sascha Kaden
 *  \param[in]  first Vector
@@ -143,6 +162,21 @@ static VectorX Vecf(const unsigned int dim, const float data[]) {
     VectorX vec(dim);
     for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data[i];
+    }
+    return vec;
+}
+
+/*!
+*  \brief      Creates a NaN Vector
+*  \author     Sascha Kaden
+*  \param[out] result NaN Vector
+*  \date       2017-04-04
+*/
+template <unsigned int dim>
+Vector<dim> NaNVector() {
+    Vector<dim> vec;
+    for (unsigned int i = 0; i < dim; ++i) {
+        vec[i] = std::nanf("1");
     }
     return vec;
 }
