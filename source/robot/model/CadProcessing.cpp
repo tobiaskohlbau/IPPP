@@ -232,6 +232,14 @@ void transformCad(const Vector6 &config, std::vector<Vector3> &vertices) {
     }
 }
 
+/*!
+*  \brief      Compute the normals from the passed vertices and faces, duplicates are removed.
+*  \author     Sascha Kaden
+*  \param[in]  vertices
+*  \param[in]  faces
+*  \param[out] normals
+*  \date       2017-02-25
+*/
 std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
     std::vector<Vector3> normals;
     if (vertices.empty() || faces.empty()) {
@@ -252,16 +260,40 @@ std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const 
     // remove duplicates
     for (auto normal = normals.begin(); normal != normals.end(); ++normal) {
         int i = 1;
-        while(normal+i != normals.end() && normal->x() - (normal+i)->x() == 0) {
+        while (normal + i != normals.end() && normal->x() - (normal + i)->x() == 0) {
             if ((*normal - *(normal + i)).norm() < 0.0001) {
                 normals.erase(normal + i);
-            }
-            else {
+            } else {
                 ++i;
             }
         }
     }
     return normals;
+}
+
+/*!
+*  \brief      Compute the bounding box from the passed vertices and return minimum and maximum Boundary.
+*  \author     Sascha Kaden
+*  \param[in]  vertices
+*  \param[out] minimum boundary
+*  \param[out] maximum boundary
+*  \date       2017-04-04
+*/
+void computeBoundingBox(const std::vector<Vector3> &vertices, Vector3 &minBoundary, Vector3 &maxBoundary) {
+    float min = std::numeric_limits<float>::min();
+    float max = std::numeric_limits<float>::max();
+    minBoundary = Vector3(max, max, max);
+    maxBoundary = Vector3(min, min, min);
+
+    for (auto vertex : vertices) {
+        for (unsigned int i = 0; i < 3; ++i) {
+            if (vertex[i] < minBoundary[i]) {
+                minBoundary[i] = vertex[i];
+            } else if (vertex[i] > maxBoundary[i]) {
+                maxBoundary[i] = vertex[i];
+            }
+        }
+    }
 }
 
 /*!

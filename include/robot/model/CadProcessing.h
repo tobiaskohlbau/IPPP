@@ -54,8 +54,10 @@ bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std:
 bool importBYU(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces, std::vector<Vector3> &normals);
 bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
                const std::vector<Vector3i> &faces);
+
 void transformCad(const Vector6 &config, std::vector<Vector3> &vertices);
 std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
+void computeBoundingBox(const std::vector<Vector3> &vertices, Vector3 &minBoundary, Vector3 &maxBoundary);
 
 aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 

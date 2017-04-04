@@ -16,13 +16,14 @@
 //
 //-------------------------------------------------------------------------//
 
+#include <core/utility/Logging.h>
 #include <robot/model/ModelContainer.h>
 
 namespace rmpl {
 
 /*!
 *  \brief      Standard deconstructor of the ModelContainer
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2017-02-19
 */
 ModelContainer::~ModelContainer() {
@@ -33,7 +34,30 @@ ModelContainer::~ModelContainer() {
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
-ModelContainer::ModelContainer(const std::string &name) : Identifier(name) {
+ModelContainer::ModelContainer(const std::string &name, const Vector3 &minBoundary, const Vector3 &maxBoundary)
+    : Identifier(name) {
+}
+
+/*!
+*  \brief      Standard constructor of ModelContainer
+*  \author     Sascha Kaden
+*  \date       2017-02-19
+*/
+void ModelContainer::setBoundingBox(const Vector3 &minBoundary, const Vector3 &maxBoundary) {
+    bool equivalentBoundaries = true;
+    for (unsigned int i = 0; i < 3; ++i) {
+        if (minBoundary[i] != maxBoundary[i]) {
+            equivalentBoundaries = false;
+            break;
+        }
+    }
+    if (equivalentBoundaries) {
+        Logging::error("Boundaries are equivalent", this);
+        return;
+    }
+
+    m_minBounding = minBoundary;
+    m_maxBounding = maxBoundary;
 }
 
 } /* namespace rmpl */
