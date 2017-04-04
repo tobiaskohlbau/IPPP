@@ -279,11 +279,11 @@ std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const 
 *  \param[out] maximum boundary
 *  \date       2017-04-04
 */
-void computeBoundingBox(const std::vector<Vector3> &vertices, Vector3 &minBoundary, Vector3 &maxBoundary) {
+BoundingBox computeBoundingBox(const std::vector<Vector3> &vertices) {
     float min = std::numeric_limits<float>::min();
     float max = std::numeric_limits<float>::max();
-    minBoundary = Vector3(max, max, max);
-    maxBoundary = Vector3(min, min, min);
+    Vector3 minBoundary(max, max, max);
+    Vector3 maxBoundary(min, min, min);
 
     for (auto vertex : vertices) {
         for (unsigned int i = 0; i < 3; ++i) {
@@ -294,6 +294,7 @@ void computeBoundingBox(const std::vector<Vector3> &vertices, Vector3 &minBounda
             }
         }
     }
+    return BoundingBox(minBoundary, maxBoundary);
 }
 
 /*!

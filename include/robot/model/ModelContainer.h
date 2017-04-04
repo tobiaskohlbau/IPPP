@@ -24,8 +24,10 @@
 
 #include <Eigen/Core>
 
-#include <core/module/Identifier.h>
 #include <core/types.h>
+#include <core/module/Identifier.h>
+#include <core/utility/UtilVec.hpp>
+#include <robot/model/BoundingBox.h>
 
 namespace rmpl {
 
@@ -39,23 +41,15 @@ class ModelContainer : public Identifier {
     virtual ~ModelContainer();
 
   protected:
-    ModelContainer(const std::string &name, const Vector3 &minBoundary = Vector3(0, 0, 0),
-                   const Vector3 &maxBoundary = Vector3(1, 1, 1));
+    ModelContainer(const std::string &name, const BoundingBox &boundingBox = BoundingBox());
 
   public:
     virtual bool empty() const = 0;
-    void setBoundingBox(const Vector3 &minBoundary, const Vector3 &maxBoundary);
-    Vector3 getMinBoundary() const;
-    Vector3 getMaxBoundary() const;
 
     std::vector<Vector3> m_vertices;
     std::vector<Vector3i> m_faces;
     std::vector<Vector3> m_normals;
-
-  protected:
-    // bounding box minimum and maximum
-    Vector3 m_minBounding;
-    Vector3 m_maxBounding;
+    BoundingBox m_boundingBox;
 };
 
 } /* namespace rmpl */

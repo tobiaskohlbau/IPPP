@@ -23,6 +23,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Jaco.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Joint.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/KukaKR5.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/BoundingBox.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/CadProcessing.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelContainer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/Model2D.cpp

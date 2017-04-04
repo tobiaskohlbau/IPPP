@@ -16,26 +16,29 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/Logging.h>
-#include <robot/model/ModelContainer.h>
+#ifndef BOUNDINGBOX_H
+#define BOUNDINGBOX_H
+
+#include <core/types.h>
+#include <core/utility/UtilVec.hpp>
 
 namespace rmpl {
 
-/*!
-*  \brief      Standard destructor of the ModelContainer
-*  \author     Sascha Kaden
-*  \date       2017-02-19
-*/
-ModelContainer::~ModelContainer() {
-}
+class BoundingBox {
+public:
+    BoundingBox();
+    BoundingBox(const Vector3 &minBoundary, const Vector3 &maxBoundary);
 
-/*!
-*  \brief      Standard constructor of ModelContainer
-*  \author     Sascha Kaden
-*  \date       2017-02-19
-*/
-ModelContainer::ModelContainer(const std::string &name, const BoundingBox &boundingBox)
-    : Identifier(name), m_boundingBox(boundingBox) {
-}
+    Vector3 getMinBoundary() const;
+    Vector3 getMaxBoundary() const;
+    float getDiameter() const;
+    bool intersect(const BoundingBox &box);
+
+private:
+    Vector3 m_minBoundary;
+    Vector3 m_maxBoundary;
+};
 
 } /* namespace rmpl */
+
+#endif //BOUNDINGBOX_H
