@@ -42,27 +42,28 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
         Logging::error("Empty file path", this);
         return nullptr;
     }
-    std::vector<Vector3> vertices;
-    std::vector<Vector3i> faces;
-    std::vector<Vector3> normals;
-    if (!importCad(filePath, vertices, faces, normals)) {
+
+    // create model container properties
+    std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
+    if (!importCad(filePath, pqpModel->m_vertices, pqpModel->m_faces, pqpModel->m_normals)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
+    Vector3 minBoundary, maxBoundary;
+    computeBoundingBox(pqpModel->m_vertices, minBoundary, maxBoundary);
+    pqpModel->setBoundingBox(minBoundary, maxBoundary);
 
-    std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
-    pqpModel->m_vertices = vertices;
-    pqpModel->m_faces = faces;
+    // create PQP model
     pqpModel->m_pqpModel.BeginModel();
     // create pqp triangles
     PQP_REAL p[3][3];
-    for (int i = 0; i < faces.size(); ++i) {
+    for (int i = 0; i < pqpModel->m_faces.size(); ++i) {
         // go through faces
         for (int j = 0; j < 3; ++j) {
             // go through face
-            int vert = faces[i][j];
+            int vertex = pqpModel->m_faces[i][j];
             for (int k = 0; k < 3; ++k) {
-                p[j][k] = vertices[vert][k];
+                p[j][k] = pqpModel->m_faces[vertex][k];
             }
         }
         pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], i);

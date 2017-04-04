@@ -18,8 +18,6 @@
 
 #include <robot/model/ModelFactoryTriangle2D.h>
 
-#include <core/utility/Logging.h>
-
 namespace rmpl {
 
 /*!
@@ -42,21 +40,20 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::s
         Logging::error("Empty file path", this);
         return nullptr;
     }
-    std::vector<Vector3> vertices;
-    std::vector<Vector3i> faces;
-    std::vector<Vector3> normals;
-    if (!importCad(filePath, vertices, faces, normals)) {
+
+    std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
+    if (!importCad(filePath, triangleModel->m_vertices, triangleModel->m_faces, triangleModel->m_normals)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
+    Vector3 minBoundary, maxBoundary;
+    computeBoundingBox(triangleModel->m_vertices, minBoundary, maxBoundary);
+    triangleModel->setBoundingBox(minBoundary, maxBoundary);
 
-    std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
-    triangleModel->m_vertices = vertices;
-    triangleModel->m_faces = faces;
-    for (auto face : faces) {
-        // go through faces
-        Triangle2D tri(Vector2(vertices[face[0]][0], vertices[face[0]][1]), Vector2(vertices[face[1]][0], vertices[face[1]][1]),
-                       Vector2(vertices[face[2]][0], vertices[face[2]][1]));
+    for (auto face : triangleModel->m_faces) {
+        Triangle2D tri(Vector2(triangleModel->m_vertices[face[0]][0], triangleModel->m_vertices[face[0]][1]),
+                       Vector2(triangleModel->m_vertices[face[1]][0], triangleModel->m_vertices[face[1]][1]),
+                       Vector2(triangleModel->m_vertices[face[2]][0], triangleModel->m_vertices[face[2]][1]));
         triangleModel->m_triangles.push_back(tri);
     }
 

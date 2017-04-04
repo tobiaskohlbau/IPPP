@@ -37,22 +37,25 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
     }
     std::vector<Vector3> vertices;
     std::vector<Vector3i> faces;
-    if (!importCad(filePath, vertices, faces)) {
+
+
+    std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
+    if (!importCad(filePath, fclModel->m_vertices, fclModel->m_faces, fclModel->m_normals)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
+    Vector3 minBoundary, maxBoundary;
+    computeBoundingBox(pqpModel->m_vertices, minBoundary, maxBoundary);
+    fclModel->setBoundingBox(minBoundary, maxBoundary);
 
-    std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
-    fclModel->m_vertices = vertices;
-    fclModel->m_faces = faces;
-    std::vector<fcl::Vector3f> verts;
+    std::vector<fcl::Vector3f> vertices;
     std::vector<fcl::Triangle> triangles;
-    for (auto vert : vertices)
-        verts.push_back(fcl::Vector3f(vert[0], vert[1], vert[2]));
-    for (auto face : faces)
+    for (auto vertex : pqpModel->m_vertices)
+        vertices.push_back(fcl::Vector3f(vertex[0], vertex[1], vertex[2]));
+    for (auto face : fclModel->m_faces)
         triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
     fclModel->m_fclModel.beginModel();
-    fclModel->m_fclModel.addSubModel(verts, triangles);
+    fclModel->m_fclModel.addSubModel(vertices, triangles);
     fclModel->m_fclModel.endModel();
 
     return fclModel;
