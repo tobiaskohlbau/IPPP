@@ -38,7 +38,7 @@ namespace rmpl {
 template <unsigned int dim>
 class Sampler : public Identifier {
   public:
-    Sampler(const std::shared_ptr<RobotBase<dim>> &robot);
+    Sampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &name = "Sampler");
     virtual Vector<dim> getSample();
     float getRandomAngle();
     float getRandomNumber();
@@ -64,7 +64,7 @@ class Sampler : public Identifier {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot) : Identifier("Sampler") {
+Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &name) : Identifier(name) {
     m_minBoundary = robot->getMinBoundary();
     m_maxBoundary = robot->getMaxBoundary();
     Vector6 pose = robot->getPose();
