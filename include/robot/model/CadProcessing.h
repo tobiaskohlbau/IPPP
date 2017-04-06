@@ -51,12 +51,15 @@ enum class ExportFormat {
     EXTENSIBLE_3D
 };
 
-bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces, std::vector<Vector3> &normals);
-bool importBYU(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces, std::vector<Vector3> &normals);
+bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces,
+               std::vector<Vector3> &normals);
+bool importBYU(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces,
+               std::vector<Vector3> &normals);
 bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
                const std::vector<Vector3i> &faces);
 
-void transformCad(const Vector6 &config, std::vector<Vector3> &vertices);
+void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices);
+void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices);
 std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 BoundingBox computeBoundingBox(const std::vector<Vector3> &vertices);
 

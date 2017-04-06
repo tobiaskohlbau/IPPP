@@ -22,6 +22,11 @@
 
 namespace rmpl {
 
+/*!
+*  \brief   Standard constructor of the ModelPqp
+*  \author  Sascha Kaden
+*  \date    2017-04-07
+*/
 ModelPqp::ModelPqp() : ModelContainer("ModelPqp") {
 }
 
@@ -39,6 +44,12 @@ bool ModelPqp::empty() const {
     }
 }
 
+/*!
+*  \brief      Transform the internal pqp model with the passed configuration.
+*  \author     Sascha Kaden
+*  \param[in]  config
+*  \date       2017-04-04
+*/
 void ModelPqp::transform(const Vector6 &config) {
     if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0) {
         return;
@@ -47,8 +58,32 @@ void ModelPqp::transform(const Vector6 &config) {
     if (empty()) {
         return;
     }
-    transformCad(config, m_vertices);
+    transformVertices(config, m_vertices);
 
+    updatePqpModel();
+}
+
+/*!
+*  \brief      Transform the internal pqp model with the passed transformation matrix.
+*  \author     Sascha Kaden
+*  \param[in]  transformation matrix
+*  \date       2017-04-04
+*/
+void ModelPqp::transform(const Matrix4 &T) {
+    if (empty()) {
+        return;
+    }
+    transformVertices(T, m_vertices);
+
+    updatePqpModel();
+}
+
+/*!
+*  \brief   Update the internal pqp model with the internal vertices.
+*  \author  Sascha Kaden
+*  \date    2017-04-04
+*/
+void ModelPqp::updatePqpModel() {
     m_pqpModel.BeginModel();
     // create pqp triangles
     PQP_REAL p[3][3];

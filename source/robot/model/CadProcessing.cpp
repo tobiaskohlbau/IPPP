@@ -220,13 +220,29 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
 *  \param[in, out]  list of vertices
 *  \date            2017-02-25
 */
-void transformCad(const Vector6 &config, std::vector<Vector3> &vertices) {
+void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices) {
     if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0) {
         return;
     }
     Matrix3 R;
     Vector3 t;
     util::poseVecToRandT(config, R, t);
+    for (auto &&vertex : vertices) {
+        vertex = (R * vertex) + t;
+    }
+}
+
+/*!
+*  \brief           Transform vertices with the passed transformation matrix.
+*  \author          Sascha Kaden
+*  \param[in]       transformation matrix
+*  \param[in, out]  list of vertices
+*  \date            2017-04-07
+*/
+void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices) {
+    Matrix3 R;
+    Vector3 t;
+    util::decomposeT(T, R, t);
     for (auto &&vertex : vertices) {
         vertex = (R * vertex) + t;
     }

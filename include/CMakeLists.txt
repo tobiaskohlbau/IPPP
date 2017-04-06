@@ -31,7 +31,6 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerNormalDist.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerUniform.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SeedSampler.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/MatingVectorSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/SamplingNearObstacle.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.hpp
@@ -44,6 +43,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDTree.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilGeo.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilIO.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilVec.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp

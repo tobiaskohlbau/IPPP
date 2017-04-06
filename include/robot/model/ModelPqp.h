@@ -35,8 +35,12 @@ class ModelPqp : public ModelContainer {
     ModelPqp();
     bool empty() const;
     void transform(const Vector6 &config);
+    void transform(const Matrix4 &T);
 
     PQP_Model m_pqpModel;
+
+  private:
+    void updatePqpModel();
 };
 
 } /* namespace rmpl */

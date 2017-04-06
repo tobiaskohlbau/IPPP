@@ -79,6 +79,14 @@ bool contains(const std::vector<std::shared_ptr<Node<dim>>> &list, const std::sh
     }
 }
 
+static bool contains(const std::string &string, const std::string &subject) {
+    if (string.find(subject) != std::string::npos) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 /*!
 *  \brief         Remove whitespaces from string
 *  \author        Sascha Kaden
