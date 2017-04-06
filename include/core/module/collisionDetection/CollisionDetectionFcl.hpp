@@ -199,10 +199,9 @@ bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &vec) {
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &vec) {
-    Matrix4 pose = m_robot->getPoseMat();
     Matrix3 poseR;
     Vector3 poseT;
-    utilGeo::decomposeT(pose, poseR, poseT);
+    util::poseVecToRandT(vec, poseR, poseT);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {
         return checkFCL(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT);
