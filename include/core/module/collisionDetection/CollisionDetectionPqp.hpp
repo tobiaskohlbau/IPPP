@@ -182,10 +182,9 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &vec) {
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &vec) {
-    Matrix4 pose = m_robot->getPoseMat();
     Matrix3 poseR;
     Vector3 poseT;
-    util::decomposeT(pose, poseR, poseT);
+    util::poseVecToRandT(vec, poseR, poseT);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {
         return checkPQP(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT);
