@@ -34,7 +34,7 @@ class SamplingNearObstacle : public Sampling<dim> {
     SamplingNearObstacle(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
              const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
 
-    Vector<dim> getSample() const override;
+    Vector<dim> getSample() override;
 
     using Sampling<dim>::m_sampler;
     using Sampling<dim>::m_collision;
@@ -65,7 +65,7 @@ SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<RobotBase<
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Vector<dim> SamplingNearObstacle<dim>::getSample() const {
+Vector<dim> SamplingNearObstacle<dim>::getSample() {
     Vector<dim> sample1 = m_sampler->getSample();
     if (!m_collision->controlVec(sample1)) {
         return sample1;
