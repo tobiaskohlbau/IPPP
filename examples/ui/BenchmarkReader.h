@@ -22,7 +22,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/filesystem.hpp>
 #include <Eigen/Core>
 
 #include <core/types.h>

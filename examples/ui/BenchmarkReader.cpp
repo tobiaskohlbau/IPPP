@@ -21,16 +21,13 @@
 #include <fstream>
 #include <iostream>
 
-#include <boost/algorithm/string/predicate.hpp>
-
 #include <core/utility/Logging.h>
 #include <core/utility/UtilList.hpp>
 
 namespace rmpl {
-namespace fs = boost::filesystem;
 
 EnvironmentConfig readEnvironment(const std::string &file) {
-    std::string extension = fs::extension(file);
+    std::string extension = file.substr(file.find_last_of("."));
     if (extension != ".env") {
         Logging::error("Wrong file type", "BenchmarkReader");
         return EnvironmentConfig();
@@ -41,7 +38,8 @@ EnvironmentConfig readEnvironment(const std::string &file) {
     std::ifstream is(file);
     std::string str;
     while (getline(is, str)) {
-        if (boost::contains(str, "Boundary Box")) {
+
+        if (util::contains(str, "Boundary Box")) {
             size_t firstLim = str.find("[");
 			size_t lastLim = str.find("]");
             std::string box = str.substr(firstLim + 1, lastLim);
@@ -62,15 +60,15 @@ EnvironmentConfig readEnvironment(const std::string &file) {
             ++sz;
             config.maxBoundary[count] = std::stof(box.substr(sz));
 
-        } else if (boost::contains(str, "Passive")) {
+        } else if (util::contains(str, "Passive")) {
             getline(is, str);
-            if (boost::contains(str, "#"))
+            if (util::contains(str, "#"))
                 getline(is, str);
             std::size_t found = str.find_first_of(" ");
             config.obstacleFile = str.substr(0, found);
 
             str = str.substr(found + 1);
-            if (boost::contains(str, "-c")) {
+            if (util::contains(str, "-c")) {
                 str = str.substr(str.find_first_of(")") + 1);
             }
 
@@ -81,11 +79,11 @@ EnvironmentConfig readEnvironment(const std::string &file) {
                 if (sz < str.size())
                     str = str.substr(sz + 1);
             }
-        } else if (boost::contains(str, "Active")) {
+        } else if (util::contains(str, "Active")) {
             getline(is, str);
             config.numOfRobots = std::stoi(str);
             getline(is, str);
-            if (boost::contains(str, "#"))
+            if (util::contains(str, "#"))
                 getline(is, str);
             std::size_t found = str.find_first_of(" ");
             config.robotFile = str.substr(0, found);
