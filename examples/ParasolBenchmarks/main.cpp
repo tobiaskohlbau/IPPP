@@ -4,9 +4,9 @@
 
 //#include <gperftools/profiler.h>
 
-#include <modelDirectory.h>
 #include <core/module/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
 #include <core/utility/UtilVec.hpp>
+#include <modelDirectory.h>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
 #include <robot/MobileRobot.h>
@@ -15,7 +15,6 @@
 //#include <robot/model/ModelFactoryFcl.h>
 
 #include <ui/BenchmarkReader.h>
-#include <ui/Drawing2D.hpp>
 #include <ui/Writer.hpp>
 
 using namespace rmpl;
@@ -32,14 +31,14 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel(benchmarkDir + config.obstacleFile);
     std::static_pointer_cast<ModelPqp>(obstacleModel)->transform(config.obstacleConfig);
     // save models as obj
-    //exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
-    //exportCad(ExportFormat::OBJ, "obstacle", obstacleModel->m_vertices, obstacleModel->m_faces);
+    // exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
+    // exportCad(ExportFormat::OBJ, "obstacle", obstacleModel->m_vertices, obstacleModel->m_faces);
 
     std::vector<Vector6> queries = readQuery(queryPath);
 
     Vector6 minBoundary = util::Vecf(config.minBoundary[0], config.minBoundary[1], config.minBoundary[2], 0, 0, 0);
     Vector6 maxBoundary = util::Vecf(config.maxBoundary[0], config.maxBoundary[1], config.maxBoundary[2], util::twoPi(),
-                                        util::twoPi(), util::twoPi());
+                                     util::twoPi(), util::twoPi());
     std::shared_ptr<RobotBase<6>> robot(new MobileRobot<6>(minBoundary, maxBoundary));
     robot->setWorkspace(obstacleModel);
     robot->setBaseModel(robotModel);
@@ -61,15 +60,15 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     RRTStar<6> planner(robot, options);
     RRTStar<6> plannerBenchmark(robot, optionsBenchmark);
 
-    //std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[1]);
-    //exportCad(ExportFormat::OBJ, "robotStart", robotModel->m_vertices, robotModel->m_faces);
+    // std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[1]);
+    // exportCad(ExportFormat::OBJ, "robotStart", robotModel->m_vertices, robotModel->m_faces);
 
     auto startTime = std::chrono::system_clock::now();
-    bool result = planner.computePath(queries[0], queries[1], 8000, 1);
+    bool result = planner.computePath(queries[0], queries[1], 8000, 10);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
 
     if (result) {
-        plannerBenchmark.computePath(queries[0], queries[1], 8000, 1);
+        plannerBenchmark.computePath(queries[0], queries[1], 8000, 10);
     }
 
     std::cout << "Computation time: " << duration.count() / 1000.0 << std::endl;
@@ -130,11 +129,11 @@ void benchmarkHedgehog() {
 }
 
 int main(int argc, char** argv) {
-    //ProfilerStart("/tmp/cpu.prof");
+    // ProfilerStart("/tmp/cpu.prof");
     modelDir = getModelDirectory();
     benchmarkFlange();
-    //benchmarkAlphaPuzzle();
-    //benchmarkHedgehog();
-    //ProfilerStop();
+    benchmarkAlphaPuzzle();
+    benchmarkHedgehog();
+    // ProfilerStop();
     return 0;
 }
