@@ -43,7 +43,7 @@ class Sampling : public Identifier {
              const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
              const std::shared_ptr<Sampler<dim>> &sampler);
 
-    virtual Vector<dim> getSample() const;
+    virtual Vector<dim> getSample();
     float getRandomNumber() const;
     void setOrigin(const Vector<dim> &origin);
 
@@ -78,7 +78,7 @@ Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std:
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Vector<dim> Sampling<dim>::getSample() const {
+Vector<dim> Sampling<dim>::getSample() {
     return m_sampler->getSample();
 }
 
