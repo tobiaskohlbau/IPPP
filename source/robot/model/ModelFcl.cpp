@@ -39,20 +39,53 @@ bool ModelFcl::empty() const {
     }
 }
 
-void ModelFcl::transform(const Vector6 &config) {
+/*!
+*  \brief      Transform the internal fcl model with the passed transformation matrix.
+*  \author     Sascha Kaden
+*  \param[in]  transformation matrix
+*  \date       2017-04-04
+*/
+void ModelFcl::transformModel(const Matrix4 &T) {
+    if (empty()) {
+        return;
+    }
     transformCad(config, m_vertices);
+    m_boundingBox = computeBoundingBox(m_vertices);
 
-    std::vector<fcl::Vector3f> verts;
+    updateFclModel();
+}
+
+/*!
+*  \brief      Transform the internal fcl model with the passed configuration.
+*  \author     Sascha Kaden
+*  \param[in]  config
+*  \date       2017-04-04
+*/
+void ModelFcl::transformModel(const Vector6 &config) {
+    if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0) {
+        return;
+    }
+    if (empty()) {
+        return;
+    }
+    transformVertices(config, m_vertices);
+    m_boundingBox = computeBoundingBox(m_vertices);
+
+    updateFclModel();
+}
+
+void ModelFcl::updateFclModel() {
+    std::vector<fcl::Vector3> vertices;
     std::vector<fcl::Triangle> triangles;
-    for (auto vert : m_vertices) {
-        verts.push_back(fcl::Vector3f(vert[0], vert[1], vert[2]));
+    for (auto vertex : m_vertices) {
+        vertices.push_back(fcl::Vector3f(vertex[0], vertex[1], vertex[2]));
     }
     for (auto face : m_faces) {
         triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
     }
     m_fclModel = FCLModel();
     m_fclModel.beginModel();
-    m_fclModel.addSubModel(verts, triangles);
+    m_fclModel.addSubModel(vertices, triangles);
     m_fclModel.endModel();
 }
 

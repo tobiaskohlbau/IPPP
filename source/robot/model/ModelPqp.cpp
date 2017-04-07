@@ -50,15 +50,15 @@ bool ModelPqp::empty() const {
 *  \param[in]  config
 *  \date       2017-04-04
 */
-void ModelPqp::transform(const Vector6 &config) {
+void ModelPqp::transformModel(const Vector6 &config) {
     if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0) {
         return;
     }
-
     if (empty()) {
         return;
     }
     transformVertices(config, m_vertices);
+    m_boundingBox = computeBoundingBox(m_vertices);
 
     updatePqpModel();
 }
@@ -69,11 +69,12 @@ void ModelPqp::transform(const Vector6 &config) {
 *  \param[in]  transformation matrix
 *  \date       2017-04-04
 */
-void ModelPqp::transform(const Matrix4 &T) {
+void ModelPqp::transformModel(const Matrix4 &T) {
     if (empty()) {
         return;
     }
     transformVertices(T, m_vertices);
+    m_boundingBox = computeBoundingBox(m_vertices);
 
     updatePqpModel();
 }

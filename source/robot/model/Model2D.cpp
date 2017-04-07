@@ -56,4 +56,10 @@ bool Model2D::empty() const {
     }
 }
 
+void Model2D::transformModel(const Matrix4 &T) {
+}
+
+void Model2D::transformModel(const Vector6 &config) {
+}
+
 } /* namespace rmpl */

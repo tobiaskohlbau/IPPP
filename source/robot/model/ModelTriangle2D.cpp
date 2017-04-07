@@ -37,4 +37,22 @@ bool ModelTriangle2D::empty() const {
     }
 }
 
+void ModelTriangle2D::transformModel(const Matrix4 &T) {
+    Matrix2 R;
+    Vector2 t;
+    Matrix3 transformation = T.block<3, 3>(0, 0);
+    util::decomposeT(transformation, R, t);
+    for (auto triangle : m_triangles) {
+        triangle.transform(R, t);
+    }
+}
+
+void ModelTriangle2D::transformModel(const Vector6 &config) {
+    Matrix2 R = util::getRotMat2D(config[2]);
+    Vector2 t(config[0], config[1]);
+    for (auto triangle : m_triangles) {
+        triangle.transform(R, t);
+    }
+}
+
 } /* namespace rmpl */
