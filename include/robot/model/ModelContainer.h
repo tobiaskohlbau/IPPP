@@ -45,6 +45,8 @@ class ModelContainer : public Identifier {
 
   public:
     virtual bool empty() const = 0;
+    virtual void transformModel(const Matrix4 &T) = 0;
+    virtual void transformModel(const Vector6 &config) = 0;
 
     std::vector<Vector3> m_vertices;
     std::vector<Vector3i> m_faces;

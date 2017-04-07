@@ -33,8 +33,10 @@ class Model2D : public ModelContainer {
   public:
     Model2D();
     Model2D(Eigen::MatrixXi space);
-
     bool empty() const;
+    void transformModel(const Matrix4 &T);
+    void transformModel(const Vector6 &config);
+
     Eigen::MatrixXi m_space;
 };
 

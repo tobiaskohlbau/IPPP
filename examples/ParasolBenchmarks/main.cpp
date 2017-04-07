@@ -29,7 +29,7 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     ModelFactoryPqp factoryPqp;
     std::shared_ptr<ModelContainer> robotModel = factoryPqp.createModel(benchmarkDir + config.robotFile);
     std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel(benchmarkDir + config.obstacleFile);
-    std::static_pointer_cast<ModelPqp>(obstacleModel)->transform(config.obstacleConfig);
+    obstacleModel->transformModel(config.obstacleConfig);
     // save models as obj
     // exportCad(ExportFormat::OBJ, "robot", robotModel->m_vertices, robotModel->m_faces);
     // exportCad(ExportFormat::OBJ, "obstacle", obstacleModel->m_vertices, obstacleModel->m_faces);

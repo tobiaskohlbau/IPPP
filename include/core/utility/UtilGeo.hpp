@@ -70,12 +70,25 @@ static Matrix4 createT(const Matrix3 &R, const Vector3 &t) {
 *  \author     Sascha Kaden
 *  \param[in]  transformation matrix
 *  \param[out] rotation matrix
-*  \param[out] translatin matrix
+*  \param[out] translation matrix
 *  \date       2016-08-25
 */
 static void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
     R = T.block<3, 3>(0, 0);
     t = T.block<3, 1>(0, 3);
+}
+
+/*!
+*  \brief      Decompose transformation matrix T in rotation R and translation t
+*  \author     Sascha Kaden
+*  \param[in]  transformation matrix
+*  \param[out] rotation matrix
+*  \param[out] translation matrix
+*  \date       2016-08-25
+*/
+static void decomposeT(const Matrix3 &T, Matrix2 &R, Vector2 &t) {
+    R = T.block<2, 2>(0, 0);
+    t = T.block<2, 1>(0, 2);
 }
 
 /*!

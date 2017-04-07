@@ -36,9 +36,13 @@ class ModelFcl : public ModelContainer {
   public:
     ModelFcl();
     bool empty() const;
-    void transform(const Vector6 &config);
+    void transformModel(const Matrix4 &T);
+    void transformModel(const Vector6 &config);
 
     FCLModel m_fclModel;
+
+  private:
+    void updateFclModel();
 };
 
 } /* namespace rmpl */

@@ -116,6 +116,22 @@ class PointList {
             m_p[i] = R * m_p[i] + t;
     }
 
+    /*!
+    *  \brief      Transform Pointlist itself by passed transformation matrix.
+    *  \param[in]  transformation matrix T
+    *  \author     Sascha Kaden
+    *  \date       2016-12-19
+    */
+    void transform(const MatrixX &trafo) {
+        assert(trafo.rows() == m_p[0].rows() + 1);
+        MatrixX R;
+        T t;
+        util::decomposeT(trafo, R, t);
+
+        for (unsigned int i = 0; i < P; ++i)
+            m_p[i] = R * m_p[i] + t;
+    }
+
   private:
     T m_p[P];
 };

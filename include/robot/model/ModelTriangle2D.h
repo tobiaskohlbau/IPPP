@@ -32,8 +32,10 @@ namespace rmpl {
 class ModelTriangle2D : public ModelContainer {
   public:
     ModelTriangle2D();
-
     bool empty() const;
+    void transformModel(const Matrix4 &T);
+    void transformModel(const Vector6 &config);
+
     std::vector<Triangle2D> m_triangles;
 };
 
