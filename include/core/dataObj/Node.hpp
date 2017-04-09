@@ -262,8 +262,8 @@ float Node<dim>::getCost() const {
 template <unsigned int dim>
 void Node<dim>::setParent(const std::shared_ptr<Node> &parent, const float edgeCost) {
     if (!parent->empty()) {
-        std::shared_ptr<Node> node = std::make_shared<Node>(*this);
-        m_parent = std::shared_ptr<Edge<dim>>(new Edge<dim>(node, parent, edgeCost));
+        std::shared_ptr<Edge<dim>> edge(new Edge<dim>(std::make_shared<Node>(*this), parent, edgeCost));
+        m_parent = edge;
     }
 }
 
@@ -312,8 +312,8 @@ void Node<dim>::clearParent() {
 template <unsigned int dim>
 void Node<dim>::setQueryParent(const std::shared_ptr<Node> &queryParent, const float edgeCost) {
 	if (!queryParent->empty()) {
-		std::shared_ptr<Node> node = std::make_shared<Node>(*this);
-		m_queryParent = std::shared_ptr<Edge<dim>>(new Edge<dim>(node, queryParent, edgeCost));
+        std::shared_ptr<Edge<dim>> edge(new Edge<dim>(std::make_shared<Node>(*this), queryParent, edgeCost));
+		m_queryParent = edge;
 	}
 }
 
@@ -363,8 +363,8 @@ void Node<dim>::clearQueryParent() {
 template <unsigned int dim>
 void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child, const float edgeCost) {
     if (!child->empty()) {
-        std::shared_ptr<Node> node = std::make_shared<Node>(*this);
-        m_childes.push_back(std::shared_ptr<Edge<dim>>(new Edge<dim>(node, child, edgeCost)));
+        std::shared_ptr<Edge<dim>> edge(new Edge<dim>(std::make_shared<Node>(*this), child, edgeCost));
+        m_childes.push_back(edge);
     }
 }
 
@@ -395,7 +395,7 @@ std::vector<std::shared_ptr<Edge<dim>>> Node<dim>::getChildEdges() const {
 }
 
 /*!
-*  \brief      Clear list of childs
+*  \brief      Clear list of childes
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */

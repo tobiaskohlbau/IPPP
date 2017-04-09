@@ -101,6 +101,7 @@ template <unsigned int dim, class T>
 KDTree<dim, T>::~KDTree() {
     if (m_root != nullptr) {
         removeNode(m_root);
+        m_root = nullptr;
     }
 }
 
@@ -132,8 +133,8 @@ void KDTree<dim, T>::addNode(const Vector<dim> &vec, const T &node) {
     }
     // insert(shrKDNode, m_root, 0);
 
-    std::shared_ptr<KDNode<dim, T>> leaf, last;
-    last = m_root;
+    std::shared_ptr<KDNode<dim, T>> leaf = nullptr;
+    std::shared_ptr<KDNode<dim, T>> last(m_root);
     Direction dir;
     if (shrKDNode->vec[0] < m_root->vec[0]) {
         leaf = m_root->left;
@@ -157,9 +158,9 @@ void KDTree<dim, T>::addNode(const Vector<dim> &vec, const T &node) {
     }
 
     // TODO: add control for mutex, if leaf is no nullptr
+    m_mutex.lock();
     shrKDNode->axis = cd;
     shrKDNode->value = shrKDNode->vec[cd];
-    m_mutex.lock();
     if (dir == left) {
         last->left = shrKDNode;
     } else {
