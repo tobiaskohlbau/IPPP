@@ -56,16 +56,11 @@ void testElementConstructor(Node<dim> node) {
 }
 
 BOOST_AUTO_TEST_CASE(elementConstructor) {
-    Node<2> node2(0, 1);
-    Node<3> node3(0, 1, 2);
-    Node<4> node4(0, 1, 2, 3);
-    Node<5> node5(0, 1, 2, 3, 4);
-    Node<6> node6(0, 1, 2, 3, 4, 5);
-    testElementConstructor<2>(node2);
-    testElementConstructor<3>(node3);
-    testElementConstructor<4>(node4);
-    testElementConstructor<5>(node5);
-    testElementConstructor<6>(node6);
+    testElementConstructor<2>(Node<2>(0, 1));
+    testElementConstructor<3>(Node<3>(0, 1, 2));
+    testElementConstructor<4>(Node<4>(0, 1, 2, 3));
+    testElementConstructor<5>(Node<5>(0, 1, 2, 3, 4));
+    testElementConstructor<6>(Node<6>(0, 1, 2, 3, 4, 5));
 }
 
 template <unsigned int dim>

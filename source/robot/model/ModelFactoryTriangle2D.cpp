@@ -46,7 +46,7 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::s
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
-    triangleModel->m_boundingBox = computeBoundingBox(triangleModel->m_vertices);
+    triangleModel->m_boundingBox = computeAABB(triangleModel->m_vertices);
 
     for (auto face : triangleModel->m_faces) {
         Triangle2D tri(Vector2(triangleModel->m_vertices[face[0]][0], triangleModel->m_vertices[face[0]][1]),

@@ -30,7 +30,6 @@
 
 #include <core/types.h>
 #include <core/utility/UtilList.hpp>
-#include <robot/model/BoundingBox.h>
 
 namespace rmpl {
 
@@ -61,7 +60,7 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices);
 void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices);
 std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
-BoundingBox computeBoundingBox(const std::vector<Vector3> &vertices);
+AABB computeAABB(const std::vector<Vector3> &vertices);
 
 aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 
