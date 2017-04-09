@@ -265,25 +265,8 @@ std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const 
     for (auto face : faces) {
         normals.push_back(util::computeNormal(vertices[face[0]], vertices[face[1]], vertices[face[2]]));
     }
-    // sort normal list
-    struct {
-        bool operator()(Vector3 a, Vector3 b) {
-            return a.x() < b.x();
-        }
-    } customCompare;
-    std::sort(normals.begin(), normals.end(), customCompare);
+    util::removeDuplicates(normals);
 
-    // remove duplicates
-    for (auto normal = normals.begin(); normal != normals.end(); ++normal) {
-        int i = 1;
-        while (normal + i != normals.end() && normal->x() - (normal + i)->x() == 0) {
-            if ((*normal - *(normal + i)).norm() < 0.0001) {
-                normals.erase(normal + i);
-            } else {
-                ++i;
-            }
-        }
-    }
     return normals;
 }
 
@@ -295,7 +278,7 @@ std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const 
 *  \param[out] maximum boundary
 *  \date       2017-04-04
 */
-BoundingBox computeBoundingBox(const std::vector<Vector3> &vertices) {
+AABB computeAABB(const std::vector<Vector3> &vertices) {
     float min = std::numeric_limits<float>::min();
     float max = std::numeric_limits<float>::max();
     Vector3 minBoundary(max, max, max);
@@ -310,7 +293,7 @@ BoundingBox computeBoundingBox(const std::vector<Vector3> &vertices) {
             }
         }
     }
-    return BoundingBox(minBoundary, maxBoundary);
+    return AABB(minBoundary, maxBoundary);
 }
 
 /*!

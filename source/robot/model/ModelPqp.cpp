@@ -58,7 +58,7 @@ void ModelPqp::transformModel(const Vector6 &config) {
         return;
     }
     transformVertices(config, m_vertices);
-    m_boundingBox = computeBoundingBox(m_vertices);
+    m_boundingBox = computeAABB(m_vertices);
 
     updatePqpModel();
 }
@@ -74,7 +74,7 @@ void ModelPqp::transformModel(const Matrix4 &T) {
         return;
     }
     transformVertices(T, m_vertices);
-    m_boundingBox = computeBoundingBox(m_vertices);
+    m_boundingBox = computeAABB(m_vertices);
 
     updatePqpModel();
 }

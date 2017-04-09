@@ -27,7 +27,6 @@
 #include <core/types.h>
 #include <core/module/Identifier.h>
 #include <core/utility/UtilVec.hpp>
-#include <robot/model/BoundingBox.h>
 
 namespace rmpl {
 
@@ -41,7 +40,7 @@ class ModelContainer : public Identifier {
     virtual ~ModelContainer();
 
   protected:
-    ModelContainer(const std::string &name, const BoundingBox &boundingBox = BoundingBox());
+    ModelContainer(const std::string &name, const AABB &boundingBox = AABB());
 
   public:
     virtual bool empty() const = 0;
@@ -51,7 +50,7 @@ class ModelContainer : public Identifier {
     std::vector<Vector3> m_vertices;
     std::vector<Vector3i> m_faces;
     std::vector<Vector3> m_normals;
-    BoundingBox m_boundingBox;
+    AABB m_boundingBox;
 };
 
 } /* namespace rmpl */

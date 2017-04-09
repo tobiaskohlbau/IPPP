@@ -49,7 +49,7 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
-    pqpModel->m_boundingBox = computeBoundingBox(pqpModel->m_vertices);
+    pqpModel->m_boundingBox = computeAABB(pqpModel->m_vertices);
 
     // create PQP model
     pqpModel->m_pqpModel.BeginModel();

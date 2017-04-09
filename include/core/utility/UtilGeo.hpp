@@ -178,6 +178,15 @@ static Vector6 poseMatToVec(const Matrix4 &pose) {
     return util::append<3, 3>(vec, euler);
 }
 
+/*!
+*  \brief      Compute the normal from the plane of three points.
+*  \author     Sascha Kaden
+*  \param[in]  point one
+*  \param[in]  point two
+*  \param[in]  point three
+*  \param[out] normal Vector
+*  \date       2017-04-07
+*/
 static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3) {
     Vector3 v = p2 - p1;
     Vector3 w = p3 - p1;
@@ -186,6 +195,34 @@ static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3
     float nz = (v[0] * w[1]) - (v[1] * w[0]);
     Vector3 normal(nx, ny, nz);
     return normal.normalized();
+}
+
+/*!
+*  \brief      Remove duplicate vectors from the passed reference list.
+*  \author     Sascha Kaden
+*  \param[in]  list of vectors
+*  \date       2017-04-07
+*/
+static Vector3 removeDuplicates(std::vector<Vector3> &vectors) {
+    // sort vector list
+    struct {
+        bool operator()(Vector3 a, Vector3 b) {
+            return a.x() < b.x();
+        }
+    } customCompare;
+    std::sort(vectors.begin(), vectors.end(), customCompare);
+
+    // remove duplicates
+    for (auto vec = vectors.begin(); vec != vectors.end(); ++vec) {
+        int i = 1;
+        while (vec + i != vectors.end() && vec->x() - (vec + i)->x() < 0.01) {
+            if ((*vec - *(vec + i)).squaredNorm() < 0.0001) {
+                vectors.erase(vec + i);
+            } else {
+                ++i;
+            }
+        }
+    }
 }
 
 /*!

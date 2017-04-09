@@ -20,6 +20,7 @@
 #define TYPES_H
 
 #include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 namespace rmpl {
 
@@ -40,6 +41,8 @@ using Matrix3 = Eigen::Matrix3f;
 using Matrix4 = Eigen::Matrix4f;
 using MatrixX = Eigen::MatrixXf;
 using Vector3i = Eigen::Matrix<int, 3, 1>;
+
+using AABB = Eigen::AlignedBox<float, 3>;
 
 } /* namespace rmpl */
 
