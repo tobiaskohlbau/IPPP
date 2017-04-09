@@ -98,10 +98,12 @@ template <unsigned int dim>
 Graph<dim>::~Graph() {
     if (!m_preserveNodePtr) {
         for (auto &&node : m_nodes) {
-            node->clearParent();
-            node->clearQueryParent();
-            node->clearChildes();
-            node = nullptr;
+            if (node) {
+                node->clearParent();
+                node->clearQueryParent();
+                node->clearChildes();
+                node = nullptr;
+            }
         }
     }
 }
@@ -114,8 +116,8 @@ Graph<dim>::~Graph() {
 */
 template <unsigned int dim>
 void Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
-    m_kdTree->addNode(node->getValues(), node);
     m_mutex.lock();
+    m_kdTree->addNode(node->getValues(), node);
     m_nodes.push_back(node);
     m_mutex.unlock();
     if (m_autoSort && (m_nodes.size() % m_sortCount) == 0) {
