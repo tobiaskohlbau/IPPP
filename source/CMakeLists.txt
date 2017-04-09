@@ -19,7 +19,6 @@
 list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Identifier.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Logging.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/MatingVectorFactory.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Jaco.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/Joint.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/robot/KukaKR5.cpp
