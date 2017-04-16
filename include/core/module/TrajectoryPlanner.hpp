@@ -38,6 +38,7 @@ class TrajectoryPlanner : public Identifier {
     bool controlTrajectory(const Node<dim> &source, const Node<dim> &target);
     bool controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
     bool controlTrajectory(const Vector<dim> &source, const Vector<dim> &target);
+    Vector<dim> controlTrajCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
 
@@ -54,7 +55,7 @@ class TrajectoryPlanner : public Identifier {
 *  \brief      Constructor of the class TrajectoryPlanner
 *  \author     Sascha Kaden
 *  \param[in]  TrajectoryMethod
-*  \param[in]  pointer to ColllisionDetection instance
+*  \param[in]  pointer to CollisionDetection instance
 *  \date       2016-05-25
 */
 template <unsigned int dim>
@@ -100,11 +101,6 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const std::shared_ptr<Node<dim>> 
 */
 template <unsigned int dim>
 bool TrajectoryPlanner<dim>::controlTrajectory(const Vector<dim> &source, const Vector<dim> &target) {
-    if (source.rows() != target.rows()) {
-        Logging::error("Nodes/Vecs have different dimensions", this);
-        return false;
-    }
-
     std::vector<Vector<dim>> path = calcTrajectoryBin(source, target);
     if (m_collision->controlTrajectory(path)) {
         return false;
@@ -113,7 +109,35 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const Vector<dim> &source, const 
 }
 
 /*!
+*  \brief      Control the linear trajectory and return the last collision free point 
+*  \author     Sascha Kaden
+*  \param[in]  source Vector
+*  \param[in]  target Vector
+*  \param[out] last collision free point (NaN Vector, if no point is free)  
+*  \date       2016-05-31
+*/
+template <unsigned int dim>
+Vector<dim> TrajectoryPlanner<dim>::controlTrajCont(const Vector<dim> &source, const Vector<dim> &target) {
+    std::vector<Vector<dim>> path = calcTrajectoryCont(source, target);
+    path.push_back(target);
+    unsigned int count = -1;
+    for (auto point : path) {
+        if (m_collision->controlVec(point)) {
+            break;
+        } else {
+            ++count;
+        }
+    }
+    if (count == -1) {
+        return util::NaNVector<dim>();
+    } else {
+        return path[count];
+    }
+}
+
+/*!
 *  \brief      Compute the binary (section wise) trajectory between source and target. Return vector of points.
+*  \details    The trajectory doesn't contain source or target vector.
 *  \author     Sascha Kaden
 *  \param[in]  source Vector
 *  \param[in]  target Vector
@@ -123,10 +147,6 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const Vector<dim> &source, const 
 template <unsigned int dim>
 std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) {
     std::vector<Vector<dim>> vecs;
-    if (source.rows() != target.rows()) {
-        Logging::error("Vecs have different dimensions", this);
-        return vecs;
-    }
 
     Vector<dim> u(target - source);
     vecs.reserve((int)(u.norm() / m_stepSize) + 1);
@@ -141,6 +161,7 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<
 
 /*!
 *  \brief      Compute the continuous trajectory between source and target. Return vector of points.
+*  \details    The trajectory doesn't contain source or target vector.
 *  \author     Sascha Kaden
 *  \param[in]  source Vector
 *  \param[in]  target Vector
@@ -150,10 +171,6 @@ std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<
 template <unsigned int dim>
 std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) {
     std::vector<Vector<dim>> vecs;
-    if (source.rows() != target.rows()) {
-        Logging::error("Vecs have different dimensions", this);
-        return vecs;
-    }
 
     Vector<dim> u(target - source);    // u = a - b
     vecs.reserve((int)(u.norm() / m_stepSize) + 1);
