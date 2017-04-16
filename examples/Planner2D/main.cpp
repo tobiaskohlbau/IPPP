@@ -10,7 +10,7 @@
 #include <core/module/sampling/SamplingNearObstacle.hpp>
 
 #include <pathPlanner/PRM.hpp>
-#include <pathPlanner/RRTStar.hpp>
+#include <pathPlanner/RRTStarContTraj.hpp>
 #include <pathPlanner/SRT.hpp>
 #include <robot/PointRobot.h>
 #include <robot/TriangleRobot2D.h>
@@ -49,9 +49,9 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
 
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
-    // planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
+     planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
-    planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions));
+    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions));
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
@@ -96,6 +96,7 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     std::shared_ptr<rmpl::Planner<dim>> planner;
     // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
      planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
+    // planner = std::shared_ptr<RRTStarContTraj<dim>>(new RRTStarContTraj<dim>(robot, rrtOptions));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
     // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions));
 
