@@ -52,7 +52,7 @@ static bool empty(const Vector3 &vec) {
 *  \date       2017-04-04
 */
 template <unsigned int dim>
-bool emtpy(const Vector<dim> &vec) {
+bool empty(const Vector<dim> &vec) {
     bool status = true;
     for (unsigned int i = 0; i < dim; ++i) {
         if (!std::isnan(vec[i])) {

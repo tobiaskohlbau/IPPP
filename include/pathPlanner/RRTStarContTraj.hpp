@@ -83,7 +83,7 @@ std::shared_ptr<Node<dim>> RRTStarContTraj<dim>::computeRRTNode(const Vector<dim
 
     newVec = m_trajectory->controlTrajCont(nearestNode->getValues(), newVec);
 
-    if (util::empty(newVec)) {
+    if (util::empty<dim>(newVec)) {
         return nullptr;
     }
 
