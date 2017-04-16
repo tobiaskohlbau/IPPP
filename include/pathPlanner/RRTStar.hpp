@@ -39,8 +39,8 @@ class RRTStar : public RRT<dim> {
 
   protected:
     std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec);
-    void chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
-                      std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
+    virtual void chooseParent(const Vector<dim> &newVec, std::shared_ptr<Node<dim>> &nearestNode,
+                              std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
     void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
                 std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
@@ -70,11 +70,11 @@ RRTStar<dim>::RRTStar(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOpt
 }
 
 /*!
-*  \brief         Computation of the new Node by the RRT* algorithm
-*  \author        Sascha Kaden
-*  \param[in]     random Vec
-*  \param[in,out] new Node
-*  \date          2016-06-02
+*  \brief      Computation of the new Node by the RRT* algorithm
+*  \author     Sascha Kaden
+*  \param[in]  random Vec
+*  \param[in]  new Node
+*  \date       2017-04-16
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randVec) {
@@ -82,17 +82,17 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randV
     std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randVec);
     // set Node<dim> new fix fixed step size of 10
     Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
-    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
-
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes;
-    chooseParent(newNode, nearestNode, nearNodes);
-
-    if (m_collision->controlVec(newNode->getValues())) {
+    if (m_collision->controlVec(newVec)) {
         return nullptr;
-    } else if (!m_trajectory->controlTrajectory(newNode, nearestNode)) {
+    }
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes;
+    chooseParent(newVec, nearestNode, nearNodes);
+
+    if (!m_trajectory->controlTrajectory(newVec, nearestNode->getValues())) {
         return nullptr;
     }
 
+    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
     float edgeCost = this->m_heuristic->calcEdgeCost(newNode, nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);
@@ -107,23 +107,23 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randV
 /*!
 *  \brief         Choose parent algorithm from the RRT* algorithm
 *  \author        Sascha Kaden
-*  \param[in,out] new Node
+*  \param[in]     new Node
 *  \param[in,out] nearest Node
-*  \param[in,out] vecotr of nearest nodes
-*  \date          2016-06-02
+*  \param[out]    vector of nearest nodes
+*  \date          2017-04-16
 */
 template <unsigned int dim>
-void RRTStar<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
-                                       std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
+void RRTStar<dim>::chooseParent(const Vector<dim> &newVec, std::shared_ptr<Node<dim>> &nearestNode,
+                                std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     // get near nodes to the new node
-    nearNodes = m_graph->getNearNodes(newNode, m_stepSize);
+    nearNodes = m_graph->getNearNodes(newVec, m_stepSize);
 
     float nearestNodeCost = nearestNode->getCost();
-    for (int i = 0; i < nearNodes.size(); ++i) {
-        if (nearNodes[i]->getCost() < nearestNodeCost) {
-            if (m_trajectory->controlTrajectory(newNode, nearNodes[i])) {
-                nearestNodeCost = nearNodes[i]->getCost();
-                nearestNode = nearNodes[i];
+    for (auto nearNode : nearNodes) {
+        if (nearNode->getCost() < nearestNodeCost) {
+            if (m_trajectory->controlTrajectory(newVec, nearNode->getValues())) {
+                nearestNodeCost = nearNode->getCost();
+                nearestNode = nearNode;
             }
         }
     }
@@ -139,7 +139,7 @@ void RRTStar<dim>::chooseParent(std::shared_ptr<Node<dim>> &newNode, std::shared
 */
 template <unsigned int dim>
 void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
-                                 std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
+                          std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     float oldDist, newDist, edgeCost;
     for (auto nearNode : nearNodes) {
         if (nearNode != parentNode) {

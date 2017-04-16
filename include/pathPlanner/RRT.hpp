@@ -80,8 +80,6 @@ template <unsigned int dim>
 RRT<dim>::RRT(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options, const std::string &name)
     : Planner<dim>("RRT", robot, options) {
     m_stepSize = options.getStepSize();
-    m_initNode = nullptr;
-    m_goalNode = nullptr;
 }
 
 /*!
@@ -246,11 +244,11 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
 }
 
 /*!
-*  \brief         Computation of the new Node<dim> by the normal RRT algorithm
-*  \author        Sascha Kaden
-*  \param[in]     random Vec
-*  \param[in,out] new Node
-*  \date          2016-06-02
+*  \brief      Computation of the new Node<dim> by the normal RRT algorithm
+*  \author     Sascha Kaden
+*  \param[in]  random Vec
+*  \param[out] new Node
+*  \date       2016-06-02
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randVec) {
@@ -263,7 +261,7 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randVec) 
 
     if (m_collision->controlVec(newNode->getValues())) {
         return nullptr;
-    } else if (!m_trajectory->controlTrajectory(newNode->getValues(), nearestNode->getValues())) {
+    } else if (!m_trajectory->controlTrajectory(newNode, nearestNode)) {
         return nullptr;
     }
 
