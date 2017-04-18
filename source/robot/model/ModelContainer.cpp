@@ -35,7 +35,7 @@ ModelContainer::~ModelContainer() {
 *  \date       2017-02-19
 */
 ModelContainer::ModelContainer(const std::string &name, const AABB &boundingBox)
-    : Identifier(name), m_boundingBox(boundingBox) {
+    : Identifier(name) {
 }
 
 } /* namespace rmpl */

@@ -57,8 +57,8 @@ void ModelPqp::transformModel(const Vector6 &config) {
     if (empty()) {
         return;
     }
-    transformVertices(config, m_vertices);
-    m_boundingBox = computeAABB(m_vertices);
+    transformVertices(config, m_mesh.vertices);
+    m_mesh.aabb = computeAABB(m_mesh);
 
     updatePqpModel();
 }
@@ -73,8 +73,8 @@ void ModelPqp::transformModel(const Matrix4 &T) {
     if (empty()) {
         return;
     }
-    transformVertices(T, m_vertices);
-    m_boundingBox = computeAABB(m_vertices);
+    transformVertices(T, m_mesh.vertices);
+    m_mesh.aabb = computeAABB(m_mesh);
 
     updatePqpModel();
 }
@@ -88,13 +88,13 @@ void ModelPqp::updatePqpModel() {
     m_pqpModel.BeginModel();
     // create pqp triangles
     PQP_REAL p[3][3];
-    for (int i = 0; i < m_faces.size(); ++i) {
+    for (int i = 0; i < m_mesh.faces.size(); ++i) {
         // go through faces
         for (int j = 0; j < 3; ++j) {
             // go through face
-            int vert = m_faces[i][j];
+            int vert = m_mesh.faces[i][j];
             for (int k = 0; k < 3; ++k) {
-                p[j][k] = m_vertices[vert][k];
+                p[j][k] = m_mesh.vertices[vert][k];
             }
         }
         m_pqpModel.AddTri(p[0], p[1], p[2], i);
