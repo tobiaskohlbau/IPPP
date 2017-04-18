@@ -50,16 +50,17 @@ class Graph : public Identifier {
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, const float distance) const;
 
     void sortTree();
+    bool eraseNode(const std::shared_ptr<Node<dim>> &node);
 
     bool empty() const;
-	size_t size() const;
+    size_t size() const;
     unsigned int getSortCount() const;
     bool autoSort() const;
     void preserveNodePtr();
 
-	void clearParents();
-	void clearQueryParents();
-	void clearChildes();
+    void clearParents();
+    void clearQueryParents();
+    void clearChildes();
 
     bool operator<(std::shared_ptr<Graph<dim>> const &a) {
         if (a->getNode(0) && this->getNode(0)) {
@@ -148,8 +149,7 @@ template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const unsigned int index) const {
     if (index < m_nodes.size()) {
         return m_nodes[index];
-    }
-    else {
+    } else {
         return nullptr;
     }
 }
@@ -255,6 +255,26 @@ void Graph<dim>::sortTree() {
 }
 
 /*!
+* \brief      Remove Node from Graph, erasing from the vector of Nodes
+* \details    KDTree has to be sorted after erasing of the Nodes.
+* \author     Sascha Kaden
+* \param[in]  Node pointer
+* \param[out] true, if node was found and erased
+* \date       2017-04-18
+*/
+template <unsigned int dim>
+bool Graph<dim>::eraseNode(const std::shared_ptr<Node<dim>> &node) {
+    for (auto &&graphNode : m_nodes) {
+        if (graphNode == node) {
+            m_nodes.erase(graphNode);
+            return true;
+        }
+    }
+    return false;
+    // Todo: add removing Node at KDTree
+}
+
+/*!
 * \brief      Return true if Graph is empty
 * \author     Sascha Kaden
 * \param[out] state of Graph
@@ -309,9 +329,9 @@ bool Graph<dim>::autoSort() const {
 */
 template <unsigned int dim>
 void Graph<dim>::clearParents() {
-	for (auto &&node : m_nodes) {
-		node->clearParent();
-	}
+    for (auto &&node : m_nodes) {
+        node->clearParent();
+    }
 }
 
 /*!
@@ -321,9 +341,9 @@ void Graph<dim>::clearParents() {
 */
 template <unsigned int dim>
 void Graph<dim>::clearQueryParents() {
-	for (auto &&node : m_nodes) {
-		node->clearQueryParent();
-	}
+    for (auto &&node : m_nodes) {
+        node->clearQueryParent();
+    }
 }
 
 /*!
@@ -333,9 +353,9 @@ void Graph<dim>::clearQueryParents() {
 */
 template <unsigned int dim>
 void Graph<dim>::clearChildes() {
-	for (auto &&node : m_nodes) {
-		node->clearChildes();
-	}
+    for (auto &&node : m_nodes) {
+        node->clearChildes();
+    }
 }
 
 /*!
