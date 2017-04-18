@@ -19,14 +19,10 @@
 #ifndef MODELCONTAINER_H
 #define MODELCONTAINER_H
 
-#include <memory>
-#include <vector>
-
-#include <Eigen/Core>
-
-#include <core/types.h>
 #include <core/module/Identifier.h>
 #include <core/utility/UtilVec.hpp>
+
+#include <robot/model/Mesh.h>
 
 namespace rmpl {
 
@@ -47,10 +43,7 @@ class ModelContainer : public Identifier {
     virtual void transformModel(const Matrix4 &T) = 0;
     virtual void transformModel(const Vector6 &config) = 0;
 
-    std::vector<Vector3> m_vertices;
-    std::vector<Vector3i> m_faces;
-    std::vector<Vector3> m_normals;
-    AABB m_boundingBox;
+    Mesh m_mesh;
 };
 
 } /* namespace rmpl */

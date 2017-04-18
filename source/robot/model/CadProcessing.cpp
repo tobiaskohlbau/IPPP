@@ -29,15 +29,13 @@ namespace rmpl {
 *  \brief      Import a cad model (vertices and faces) with the assimp library
 *  \author     Sascha Kaden
 *  \param[in]  filePath
-*  \param[out] list of vertices
-*  \param[out] list of faces
+*  \param[out] Mesh
 *  \date       2017-02-19
 */
-bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces,
-               std::vector<Vector3> &normals) {
+bool importMesh(const std::string &filePath, Mesh &mesh) {
     std::size_t found = filePath.find_last_of(".");
     if (filePath.substr(found) == ".g") {
-        return importBYU(filePath, vertices, faces, normals);
+        return importBYU(filePath, mesh);
     }
 
     Assimp::Importer importer;
@@ -50,27 +48,72 @@ bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std:
     if (scene->mNumMeshes == 0) {
         return false;
     }
-    vertices.clear();
-    faces.clear();
+    mesh.vertices.clear();
+    mesh.faces.clear();
     size_t verticeCount;
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        const aiMesh *mesh = scene->mMeshes[i];
-        verticeCount = vertices.size();
+        const aiMesh *aiMesh = scene->mMeshes[i];
+        verticeCount = mesh.vertices.size();
         // load vertices
-        for (unsigned int j = 0; j < mesh->mNumVertices; ++j) {
-            vertices.push_back(Vector3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z));
+        for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
+            mesh.vertices.push_back(Vector3(aiMesh->mVertices[j].x, aiMesh->mVertices[j].y, aiMesh->mVertices[j].z));
         }
         // load faces
-        for (unsigned int j = 0; j < mesh->mNumFaces; ++j) {
-            if (mesh->mFaces[j].mNumIndices > 2) {
-                faces.push_back(Vector3i(mesh->mFaces[j].mIndices[0] + verticeCount, mesh->mFaces[j].mIndices[1] + verticeCount,
-                                         mesh->mFaces[j].mIndices[2] + verticeCount));
+        for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
+            if (aiMesh->mFaces[j].mNumIndices > 2) {
+                mesh.faces.push_back(Vector3i(aiMesh->mFaces[j].mIndices[0] + verticeCount,
+                                              aiMesh->mFaces[j].mIndices[1] + verticeCount,
+                                              aiMesh->mFaces[j].mIndices[2] + verticeCount));
             } else {
                 Logging::warning("Face array is to short", "CadProcessing");
             }
         }
     }
-    normals = computeNormals(vertices, faces);
+    mesh.normals = computeNormals(mesh.vertices, mesh.faces);
+    return true;
+}
+
+/*!
+*  \brief      Import meshes (vertices and faces) with the assimp library
+*  \author     Sascha Kaden
+*  \param[in]  filePath
+*  \param[out] Mesh
+*  \date       2017-02-19
+*/
+bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes) {
+    Assimp::Importer importer;
+    const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
+    if (!scene) {
+        Logging::error("Could not load cad", "CadProcessing");
+        return false;
+    }
+
+    if (scene->mNumMeshes == 0) {
+        return false;
+    }
+    meshes.clear();
+
+    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
+        const aiMesh *aiMesh = scene->mMeshes[i];
+        Mesh mesh;
+        // load vertices
+        for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
+            mesh.vertices.push_back(Vector3(aiMesh->mVertices[j].x, aiMesh->mVertices[j].y, aiMesh->mVertices[j].z));
+        }
+        // load faces
+        for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
+            if (aiMesh->mFaces[j].mNumIndices > 2) {
+                mesh.faces.push_back(
+                    Vector3i(aiMesh->mFaces[j].mIndices[0], aiMesh->mFaces[j].mIndices[1], aiMesh->mFaces[j].mIndices[2]));
+            } else {
+                Logging::warning("Face array is to short", "CadProcessing");
+            }
+        }
+        meshes.push_back(mesh);
+    }
+    for (auto &&mesh : meshes) {
+        mesh.normals = computeNormals(mesh.vertices, mesh.faces);
+    }
     return true;
 }
 
@@ -82,8 +125,7 @@ bool importCad(const std::string &filePath, std::vector<Vector3> &vertices, std:
 *  \param[out] list of faces
 *  \date       2017-02-19
 */
-bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces,
-               std::vector<Vector3> &normals) {
+bool importBYU(const std::string &filePath, Mesh &mesh) {
     std::ifstream is(filePath);
     std::string str;
     unsigned int numBodies = 0;
@@ -96,10 +138,10 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
     ss >> numBodies;
     ss >> numVertices;
     ss >> numFaces;
-    vertices.clear();
-    faces.clear();
-    vertices.reserve(numVertices);
-    faces.reserve(numFaces);
+    mesh.vertices.clear();
+    mesh.faces.clear();
+    mesh.vertices.reserve(numVertices);
+    mesh.faces.reserve(numFaces);
 
     getline(is, str);
     getline(is, str);
@@ -111,7 +153,7 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
             vec[j] = std::stof(str, &sz);
             str = str.substr(sz);
         }
-        vertices.push_back(vec);
+        mesh.vertices.push_back(vec);
         if (str.size() < 2) {
             getline(is, str);
             util::trimWhitespaces(str);
@@ -130,10 +172,10 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
             vec[j] -= 1;
             str = str.substr(sz);
         }
-        faces.push_back(vec);
+        mesh.faces.push_back(vec);
         getline(is, str);
     }
-    normals = computeNormals(vertices, faces);
+    mesh.normals = computeNormals(mesh.vertices, mesh.faces);
 
     return true;
 }
@@ -141,13 +183,26 @@ bool importBYU(const std::string &filePath, std::vector<Vector3> &vertices, std:
 /*!
 *  \brief      Export a cad model (vertices and faces) with the assimp library
 *  \author     Sascha Kaden
+*  \param[in]  format
 *  \param[in]  filePath
 *  \param[in]  list of vertices
 *  \param[in]  list of faces
 *  \date       2017-02-19
 */
-bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
-               const std::vector<Vector3i> &faces) {
+bool exportCad(ExportFormat format, const std::string &filePath, const Mesh &mesh) {
+    return exportCad(format, filePath, mesh.vertices, mesh.faces);
+}
+
+/*!
+*  \brief      Export a cad model (vertices and faces) with the assimp library
+*  \author     Sascha Kaden
+*  \param[in]  format
+*  \param[in]  filePath
+*  \param[in]  list of vertices
+*  \param[in]  list of faces
+*  \date       2017-02-19
+*/
+bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
     if (filePath == "") {
         Logging::warning("Empty output file path", "CadProcessing");
         return false;
@@ -271,11 +326,10 @@ std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const 
 }
 
 /*!
-*  \brief      Compute the bounding box from the passed vertices and return minimum and maximum Boundary.
+*  \brief      Compute the bounding box from the passed vertices and return AABB bounding box.
 *  \author     Sascha Kaden
 *  \param[in]  vertices
-*  \param[out] minimum boundary
-*  \param[out] maximum boundary
+*  \param[out] AABB bounding box
 *  \date       2017-04-04
 */
 AABB computeAABB(const std::vector<Vector3> &vertices) {
@@ -294,6 +348,17 @@ AABB computeAABB(const std::vector<Vector3> &vertices) {
         }
     }
     return AABB(minBoundary, maxBoundary);
+}
+
+/*!
+*  \brief      Compute the bounding box from the passed vertices and return AABB bounding box.
+*  \author     Sascha Kaden
+*  \param[in]  CadModel
+*  \param[out] AABB bounding box
+*  \date       2017-04-18
+*/
+AABB computeAABB(const Mesh &mesh) {
+    return computeAABB(mesh.vertices);
 }
 
 /*!

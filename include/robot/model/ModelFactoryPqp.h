@@ -34,6 +34,7 @@ class ModelFactoryPqp : public ModelFactory {
     ModelFactoryPqp();
 
     std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
+    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::string &filePath);
     std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths);
 };
 

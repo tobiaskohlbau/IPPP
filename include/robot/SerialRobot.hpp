@@ -208,23 +208,23 @@ template <unsigned int dim>
 void SerialRobot<dim>::saveMeshConfig(Matrix4 *As) {
     if (this->m_baseModel != nullptr) {
         std::vector<Eigen::Vector3f> verts;
-        for (auto vertice : this->m_baseModel->m_vertices) {
+        for (auto vertice : this->m_baseModel->m_mesh.vertices) {
             Eigen::Vector4f temp(util::append<3>(vertice, (float)1));
             temp = this->m_poseMat * temp;
             verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
         }
-        exportCad(ExportFormat::OBJ, "base", verts, this->m_baseModel->m_faces);
+        exportCad(ExportFormat::OBJ, "base", verts, this->m_baseModel->m_mesh.faces);
     }
     // this->m_baseModel->saveObj("base.obj", this->m_poseMat);
 
     for (int i = 0; i < dim; ++i) {
         std::vector<Eigen::Vector3f> verts;
-        for (auto vertice : getModelFromJoint(i)->m_vertices) {
+        for (auto vertice : getModelFromJoint(i)->m_mesh.vertices) {
             Eigen::Vector4f temp(util::append<3>(vertice, (float)1));
             temp = this->m_poseMat * temp;
             verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
         }
-        exportCad(ExportFormat::OBJ, "link" + std::to_string(i), verts, getModelFromJoint(i)->m_faces);
+        exportCad(ExportFormat::OBJ, "link" + std::to_string(i), verts, getModelFromJoint(i)->m_mesh.faces);
         // getModelFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
         // std::cout<< As[i] << std::endl <<std::endl;
     }

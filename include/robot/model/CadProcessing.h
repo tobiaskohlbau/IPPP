@@ -30,6 +30,7 @@
 
 #include <core/types.h>
 #include <core/utility/UtilList.hpp>
+#include <robot/model/Mesh.h>
 
 namespace rmpl {
 
@@ -50,17 +51,18 @@ enum class ExportFormat {
     EXTENSIBLE_3D
 };
 
-bool importCad(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces,
-               std::vector<Vector3> &normals);
-bool importBYU(const std::string &filepath, std::vector<Vector3> &vertices, std::vector<Vector3i> &faces,
-               std::vector<Vector3> &normals);
-bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
-               const std::vector<Vector3i> &faces);
+bool importMesh(const std::string &filePath, Mesh &mesh);
+bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes);
+bool importBYU(const std::string &filePath, Mesh &mesh);
+bool exportCad(ExportFormat format, const std::string &filePath, const Mesh &mesh);
+bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
+
 
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices);
 void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices);
 std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 AABB computeAABB(const std::vector<Vector3> &vertices);
+AABB computeAABB(const Mesh &mesh);
 
 aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 

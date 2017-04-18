@@ -16,6 +16,23 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/Utility.h>
+#ifndef MESH_H
+#define MESH_H
 
+#include <vector>
 
+#include <core/types.h>
+
+namespace rmpl {
+
+class Mesh {
+public:
+    std::vector<Vector3> vertices;
+    std::vector<Vector3i> faces;
+    std::vector<Vector3> normals;
+    AABB aabb;
+};
+
+} /* namespace rmpl */
+
+#endif //MESH_H

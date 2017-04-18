@@ -45,23 +45,23 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
 
     // create model container properties
     std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
-    if (!importCad(filePath, pqpModel->m_vertices, pqpModel->m_faces, pqpModel->m_normals)) {
+    if (!importMesh(filePath, pqpModel->m_mesh)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
-    pqpModel->m_boundingBox = computeAABB(pqpModel->m_vertices);
+    pqpModel->m_mesh.aabb = computeAABB(pqpModel->m_mesh);
 
     // create PQP model
     pqpModel->m_pqpModel.BeginModel();
     // create pqp triangles
     PQP_REAL p[3][3];
-    for (int i = 0; i < pqpModel->m_faces.size(); ++i) {
+    for (int i = 0; i < pqpModel->m_mesh.faces.size(); ++i) {
         // go through faces
         for (int j = 0; j < 3; ++j) {
             // go through face
-            int vertex = pqpModel->m_faces[i][j];
+            int vertex = pqpModel->m_mesh.faces[i][j];
             for (int k = 0; k < 3; ++k) {
-                p[j][k] = pqpModel->m_faces[vertex][k];
+                p[j][k] = pqpModel->m_mesh.faces[vertex][k];
             }
         }
         pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], i);
@@ -71,6 +71,49 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
         pqpModel->m_pqpModel.MemUsage(1);
     }
     return pqpModel;
+}
+
+std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const std::string &filePath) {
+    std::vector<std::shared_ptr<ModelContainer>> models;
+    if (filePath == "") {
+        Logging::error("Empty file path", this);
+        return models;
+    }
+    // create model container properties
+    std::vector<Mesh> meshes;
+
+    if (!importMeshes(filePath, meshes)) {
+        Logging::error("Could not load mesh", this);
+        return models;
+    }
+
+    for (auto mesh : meshes) {
+        std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
+        pqpModel->m_mesh = mesh;
+        pqpModel->m_mesh.aabb = computeAABB(pqpModel->m_mesh);
+
+        // create PQP model
+        pqpModel->m_pqpModel.BeginModel();
+        // create pqp triangles
+        PQP_REAL p[3][3];
+        for (int i = 0; i < pqpModel->m_mesh.faces.size(); ++i) {
+            // go through faces
+            for (int j = 0; j < 3; ++j) {
+                // go through face
+                int vertex = pqpModel->m_mesh.faces[i][j];
+                for (int k = 0; k < 3; ++k) {
+                    p[j][k] = pqpModel->m_mesh.faces[vertex][k];
+                }
+            }
+            pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], i);
+        }
+        pqpModel->m_pqpModel.EndModel();
+        if (Logging::getLogLevel() == LogLevel::debug) {
+            pqpModel->m_pqpModel.MemUsage(1);
+        }
+        models.push_back(pqpModel);
+    }
+    return models;
 }
 
 /*!

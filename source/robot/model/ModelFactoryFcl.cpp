@@ -59,6 +59,10 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
     return fclModel;
 }
 
+std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const std::string &filePath) {
+
+}
+
 /*!
 *  \brief      Creates a list of fcl models from the passed source cad files.
 *  \author     Sascha Kaden
