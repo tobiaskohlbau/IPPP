@@ -23,7 +23,7 @@
 
 #include <core/dataObj/Node.hpp>
 #include <core/module/Identifier.h>
-#include <core/utility/KDNode.hpp>
+#include <core/dataObj/KDNode.hpp>
 
 namespace rmpl {
 
@@ -40,10 +40,12 @@ class KDTree : public Identifier {
   public:
     KDTree();
     KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes);
+
     ~KDTree();
-    void removeNode(std::shared_ptr<KDNode<dim, T>> node);
+    void removeNodes(std::shared_ptr<KDNode<dim, T>> node);
 
     void addNode(const Vector<dim> &vec, const T &node);
+
     T searchNearestNeighbor(const Vector<dim> &vec);
     std::vector<T> searchRange(const Vector<dim> &vec, float range);
 
@@ -100,19 +102,25 @@ KDTree<dim, T>::KDTree(std::vector<std::shared_ptr<Node<dim>>> &nodes) : Identif
 template <unsigned int dim, class T>
 KDTree<dim, T>::~KDTree() {
     if (m_root != nullptr) {
-        removeNode(m_root);
+        removeNodes(m_root);
         m_root = nullptr;
     }
 }
 
+/*!
+*  \brief      Remove the Nodes recursively to the leaf, by setting left and right pointer as nullptr
+*  \param[in]  start node
+*  \author     Sascha Kaden
+*  \date       2017-01-07
+*/
 template <unsigned int dim, class T>
-void KDTree<dim, T>::removeNode(std::shared_ptr<KDNode<dim, T>> node) {
+void KDTree<dim, T>::removeNodes(std::shared_ptr<KDNode<dim, T>> node) {
     if (node->left != nullptr) {
-        removeNode(node->left);
+        removeNodes(node->left);
         node->left = nullptr;
     }
     if (node->right != nullptr) {
-        removeNode(node->right);
+        removeNodes(node->right);
         node->right = nullptr;
     }
 };
