@@ -19,6 +19,7 @@
 list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Edge.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Graph.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetection.hpp
@@ -40,7 +41,6 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicWeightVecL1.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicWeightVecL2.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicWeightVecInf.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDTree.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilGeo.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilIO.hpp
