@@ -26,7 +26,7 @@ namespace rmpl {
 namespace util {
 
 template <unsigned int dim>
-static void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<rmpl::SerialRobot<dim>> &robot, Matrix3 &poseR,
+void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<SerialRobot<dim>> &robot, Matrix3 &poseR,
                                Vector3 &poseT, Matrix3 (&Rs)[dim], Vector3 (&ts)[dim]) {
     std::vector<Matrix4> jointTrafos = robot->getJointTrafos(vec);
     Matrix4 pose = robot->getPoseMat();

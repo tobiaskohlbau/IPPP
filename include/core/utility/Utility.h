@@ -20,6 +20,8 @@
 #define UTILITY_H
 
 #include <core/utility/UtilGeo.hpp>
+#include <core/utility/UtilIO.hpp>
 #include <core/utility/UtilList.hpp>
+#include <core/utility/UtilVec.hpp>
 
 #endif    // UTILITY_H
