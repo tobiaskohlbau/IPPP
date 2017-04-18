@@ -95,12 +95,12 @@ std::shared_ptr<Node<dim>> RRTStarContTraj<dim>::computeRRTNode(const Vector<dim
     nearestNode->addChild(newNode, edgeCost);
     m_mutex.unlock();
 
-    //reWire(newNode, nearestNode, nearNodes);
+    // reWire(newNode, nearestNode, nearNodes);
     return newNode;
 }
 
 /*!
-*  \brief         Choose parent algorithm from the RRT* algorithm
+*  \brief         Choose parent with the lowest cost
 *  \author        Sascha Kaden
 *  \param[in]     new Node
 *  \param[in,out] nearest Node
