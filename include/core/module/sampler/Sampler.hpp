@@ -26,7 +26,7 @@
 
 #include <core/module/Identifier.h>
 #include <core/types.h>
-#include <robot/RobotBase.hpp>
+#include <environment/RobotBase.hpp>
 
 namespace ippp {
 

@@ -9,10 +9,10 @@
 #include <modelDirectory.h>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
-#include <robot/MobileRobot.h>
-#include <robot/model/ModelFactoryPqp.h>
+#include <environment/MobileRobot.h>
+#include <environment/model/ModelFactoryPqp.h>
 //#include <core/module/collisionDetection/CollisionDetectionFcl.hpp>
-//#include <robot/model/ModelFactoryFcl.h>
+//#include <environment/model/ModelFactoryFcl.h>
 
 #include <ui/BenchmarkReader.h>
 #include <ui/Writer.hpp>

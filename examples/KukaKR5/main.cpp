@@ -8,7 +8,7 @@
 #include <core/utility/Utility.h>
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <pathPlanner/RRTStar.hpp>
-#include <robot/KukaKR5.h>
+#include <environment/KukaKR5.h>
 
 #include <ui/Writer.hpp>
 

@@ -4,8 +4,8 @@
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <pathPlanner/RRTStar.hpp>
 #include <pathPlanner/PRM.hpp>
-#include <robot/MobileRobot.h>
-#include <robot/model/ModelFactoryPqp.h>
+#include <environment/MobileRobot.h>
+#include <environment/model/ModelFactoryPqp.h>
 
 #include <modelDirectory.h>
 

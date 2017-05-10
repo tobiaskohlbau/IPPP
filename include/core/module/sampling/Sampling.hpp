@@ -27,7 +27,7 @@
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/module/sampler/Sampler.hpp>
-#include <robot/RobotBase.hpp>
+#include <environment/RobotBase.hpp>
 
 namespace ippp {
 

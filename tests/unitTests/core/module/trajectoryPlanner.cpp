@@ -21,7 +21,7 @@
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <core/utility/Utility.h>
-#include <robot/Jaco.h>
+#include <environment/Jaco.h>
 
 using namespace ippp;
 

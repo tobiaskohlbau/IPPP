@@ -25,8 +25,8 @@
 
 #include <core/dataObj/Node.hpp>
 #include <core/module/Identifier.h>
-#include <robot/RobotBase.hpp>
-#include <robot/model/ModelContainer.h>
+#include <environment/RobotBase.hpp>
+#include <environment/model/ModelContainer.h>
 
 namespace ippp {
 

@@ -21,8 +21,8 @@
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/UtilCollision.hpp>
-#include <robot/SerialRobot.hpp>
-#include <robot/model/ModelPqp.h>
+#include <environment/SerialRobot.hpp>
+#include <environment/model/ModelPqp.h>
 
 namespace ippp {
 

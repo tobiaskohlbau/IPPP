@@ -23,8 +23,8 @@
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/UtilCollision.hpp>
-#include <robot/SerialRobot.hpp>
-#include <robot/model/ModelFcl.h>
+#include <environment/SerialRobot.hpp>
+#include <environment/model/ModelFcl.h>
 
 namespace ippp {
 

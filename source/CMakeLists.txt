@@ -19,23 +19,23 @@
 list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Identifier.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Logging.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/Jaco.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/Joint.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/KukaKR5.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/CadProcessing.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelContainer.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/Model2D.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryPqp.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryTriangle2D.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelPqp.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelTriangle2D.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/PointRobot.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/TriangleRobot2D.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/Jaco.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/Joint.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/KukaKR5.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/CadProcessing.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelContainer.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/Model2D.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryPqp.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryTriangle2D.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelPqp.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelTriangle2D.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/PointRobot.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/TriangleRobot2D.cpp)
 
 IF (${BUILD_FCL})
     list(APPEND SRCS
-            ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFactoryFcl.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/robot/model/ModelFcl.cpp)
+            ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryFcl.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFcl.cpp)
 ENDIF()
 
 set(SRCS "${SRCS}" PARENT_SCOPE)

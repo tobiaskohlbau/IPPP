@@ -16,33 +16,25 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef UTILCOLLISION_HPP
-#define UTILCOLLISION_HPP
+#ifndef KUKAKR5_H
+#define KUKAKR5_H
 
-#include <core/utility/UtilGeo.hpp>
 #include <environment/SerialRobot.hpp>
 
 namespace ippp {
-namespace util {
 
-template <unsigned int dim>
-void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<SerialRobot<dim>> &robot, Matrix3 &poseR,
-                               Vector3 &poseT, Matrix3 (&Rs)[dim], Vector3 (&ts)[dim]) {
-    std::vector<Matrix4> jointTrafos = robot->getJointTrafos(vec);
-    Matrix4 pose = robot->getPoseMat();
-    Matrix4 As[dim];
-    As[0] = pose * jointTrafos[0];
-    for (int i = 1; i < jointTrafos.size(); ++i) {
-        As[i] = As[i - 1] * jointTrafos[i];
-    }
-    util::decomposeT(pose, poseR, poseT);
+/*!
+* \brief   Class for the Kuka KR5 robot
+* \author  Sascha Kaden
+* \date    2016-10-22
+*/
+class KukaKR5 : public SerialRobot<6> {
+  public:
+    KukaKR5();
+    Vector6 directKinematic(const Vector6 &angles);
+    std::vector<Matrix4> getJointTrafos(const Vector6 &angles);
+};
 
-    for (int i = 0; i < jointTrafos.size(); ++i) {
-        util::decomposeT(As[i], Rs[i], ts[i]);
-    }
-}
-
-} /* namespace util */
 } /* namespace ippp */
 
-#endif    // UTILCOLLISION_HPP
+#endif /* KUKAKR5_H */

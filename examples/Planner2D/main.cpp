@@ -12,9 +12,9 @@
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStarContTraj.hpp>
 #include <pathPlanner/SRT.hpp>
-#include <robot/PointRobot.h>
-#include <robot/TriangleRobot2D.h>
-#include <robot/model/ModelFactoryTriangle2D.h>
+#include <environment/PointRobot.h>
+#include <environment/TriangleRobot2D.h>
+#include <environment/model/ModelFactoryTriangle2D.h>
 
 #include <modelDirectory.h>
 
