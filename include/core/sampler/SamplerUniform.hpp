@@ -19,7 +19,7 @@
 #ifndef SAMPLERUNIFORM_HPP
 #define SAMPLERUNIFORM_HPP
 
-#include <core/module/sampler/Sampler.hpp>
+#include <core/sampler/Sampler.hpp>
 
 namespace ippp {
 

@@ -21,11 +21,11 @@
 
 #include <memory>
 
-#include <core/module/Identifier.h>
-#include <core/module/TrajectoryPlanner.hpp>
-#include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <core/Identifier.h>
+#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <core/collisionDetection/CollisionDetection.hpp>
 #include <core/distanceMetrics/DistanceMetric.hpp>
-#include <core/module/sampling/Sampling.hpp>
+#include <core/sampling/Sampling.hpp>
 
 namespace ippp {
 

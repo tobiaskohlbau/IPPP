@@ -3,11 +3,11 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-#include <core/module/collisionDetection/CollisionDetection2D.hpp>
-#include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>
+#include <core/collisionDetection/CollisionDetection2D.hpp>
+#include <core/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 
-#include <core/module/sampler/SeedSampler.hpp>
-#include <core/module/sampling/SamplingNearObstacle.hpp>
+#include <core/sampler/SeedSampler.hpp>
+#include <core/sampling/SamplingNearObstacle.hpp>
 
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStarContTraj.hpp>

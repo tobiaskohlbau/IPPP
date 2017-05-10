@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include <core/module/Identifier.h>
+#include <core/Identifier.h>
 #include <environment/model/CadProcessing.h>
 #include <environment/model/ModelContainer.h>
 

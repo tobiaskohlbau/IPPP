@@ -19,7 +19,7 @@
 #ifndef COLLISIONDETECTIONPQP_HPP
 #define COLLISIONDETECTIONPQP_HPP
 
-#include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <core/collisionDetection/CollisionDetection.hpp>
 #include <core/utility/UtilCollision.hpp>
 #include <environment/SerialRobot.hpp>
 #include <environment/model/ModelPqp.h>

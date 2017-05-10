@@ -1,7 +1,7 @@
 #include <iostream>
 #include <memory>
 
-#include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
+#include <core/collisionDetection/CollisionDetectionPqp.hpp>
 #include <pathPlanner/RRTStar.hpp>
 #include <pathPlanner/PRM.hpp>
 #include <environment/MobileRobot.h>

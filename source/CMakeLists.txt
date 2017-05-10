@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------//
 
 list(APPEND SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/Identifier.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/Identifier.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Logging.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/Jaco.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/Joint.cpp

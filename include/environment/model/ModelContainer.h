@@ -19,7 +19,7 @@
 #ifndef MODELCONTAINER_H
 #define MODELCONTAINER_H
 
-#include <core/module/Identifier.h>
+#include <core/Identifier.h>
 #include <core/utility/UtilVec.hpp>
 
 #include <environment/model/Mesh.h>

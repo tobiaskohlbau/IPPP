@@ -20,7 +20,7 @@
 #define GRAPH_HPP
 
 #include <core/dataObj/Node.hpp>
-#include <core/module/Identifier.h>
+#include <core/Identifier.h>
 #include <core/utility/KDTree.hpp>
 #include <core/utility/Logging.h>
 

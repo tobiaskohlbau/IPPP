@@ -2,11 +2,11 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
-#include <core/module/collisionDetection/CollisionDetection2D.hpp>
-#include <core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp>
-#include <core/module/sampler/SamplerNormalDist.hpp>
-#include <core/module/sampler/SamplerUniform.hpp>
-#include <core/module/sampling/SamplingNearObstacle.hpp>
+#include <core/collisionDetection/CollisionDetection2D.hpp>
+#include <core/collisionDetection/CollisionDetectionTriangleRobot.hpp>
+#include <core/sampler/SamplerNormalDist.hpp>
+#include <core/sampler/SamplerUniform.hpp>
+#include <core/sampling/SamplingNearObstacle.hpp>
 #include <core/distanceMetrics/InfMetric.hpp>
 #include <core/distanceMetrics/L1Metric.hpp>
 #include <core/distanceMetrics/WeightVecInfMetric.hpp>

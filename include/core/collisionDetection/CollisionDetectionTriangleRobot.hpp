@@ -19,7 +19,7 @@
 #ifndef COLLISIONDETECTIONTRIANGLEROBOT_HPP
 #define COLLISIONDETECTIONTRIANGLEROBOT_HPP
 
-#include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <core/collisionDetection/CollisionDetection.hpp>
 #include <environment/TriangleRobot2D.h>
 #include <environment/model/Model2D.h>
 

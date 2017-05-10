@@ -23,10 +23,10 @@
 
 #include <Eigen/Core>
 
-#include <core/module/Identifier.h>
-#include <core/module/TrajectoryPlanner.hpp>
-#include <core/module/collisionDetection/CollisionDetection.hpp>
-#include <core/module/sampler/Sampler.hpp>
+#include <core/Identifier.h>
+#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <core/collisionDetection/CollisionDetection.hpp>
+#include <core/sampler/Sampler.hpp>
 #include <environment/RobotBase.hpp>
 
 namespace ippp {

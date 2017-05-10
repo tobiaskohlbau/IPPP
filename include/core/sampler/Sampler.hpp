@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <core/module/Identifier.h>
+#include <core/Identifier.h>
 #include <core/types.h>
 #include <environment/RobotBase.hpp>
 

@@ -22,7 +22,7 @@
 #include <memory>
 
 #include <core/dataObj/Node.hpp>
-#include <core/module/Identifier.h>
+#include <core/Identifier.h>
 #include <core/types.h>
 
 namespace ippp {

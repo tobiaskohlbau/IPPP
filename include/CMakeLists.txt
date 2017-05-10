@@ -22,19 +22,19 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetection.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetection2D.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionPqp.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionTriangleRobot.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/Sampler.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerLinear.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerRotatory.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerNormalDist.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SamplerUniform.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampler/SeedSampler.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/Sampling.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/SamplingNearObstacle.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection2D.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqp.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionTriangleRobot.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/Sampler.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerLinear.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerRotatory.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerNormalDist.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerUniform.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SeedSampler.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/Sampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/TrajectoryPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/DistanceMetric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L1Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/InfMetric.hpp
@@ -61,12 +61,12 @@ list(APPEND SRCS
 
 IF (${BUILD_FCL})
     list(APPEND SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionFcl.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionFcl.hpp)
 ENDIF()
 
 IF (${BUILD_BENCHMARK})
     list(APPEND SRCS
-            ${CMAKE_CURRENT_SOURCE_DIR}/core/module/collisionDetection/CollisionDetectionPqpBenchmark.hpp)
+            ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqpBenchmark.hpp)
 ENDIF()
 
 set(SRCS "${SRCS}" PARENT_SCOPE)

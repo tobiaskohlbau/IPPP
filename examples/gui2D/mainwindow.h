@@ -14,7 +14,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <Eigen/Core>
 
-#include <core/module/Identifier.h>
+#include <core/Identifier.h>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
 #include <environment/PointRobot.h>

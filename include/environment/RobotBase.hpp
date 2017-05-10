@@ -24,7 +24,7 @@
 
 #include <Eigen/Core>
 
-#include <core/module/Identifier.h>
+#include <core/Identifier.h>
 #include <core/types.h>
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
