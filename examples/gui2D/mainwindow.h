@@ -17,8 +17,8 @@
 #include <core/module/Identifier.h>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
-#include <robot/PointRobot.h>
-#include <robot/TriangleRobot2D.h>
+#include <environment/PointRobot.h>
+#include <environment/TriangleRobot2D.h>
 
 namespace Ui {
 class MainWindow;

@@ -16,33 +16,20 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef UTILCOLLISION_HPP
-#define UTILCOLLISION_HPP
+#ifndef MOBILEROBOT_H
+#define MOBILEROBOT_H
 
-#include <core/utility/UtilGeo.hpp>
-#include <environment/SerialRobot.hpp>
+#include <environment/RobotBase.hpp>
 
 namespace ippp {
-namespace util {
 
 template <unsigned int dim>
-void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<SerialRobot<dim>> &robot, Matrix3 &poseR,
-                               Vector3 &poseT, Matrix3 (&Rs)[dim], Vector3 (&ts)[dim]) {
-    std::vector<Matrix4> jointTrafos = robot->getJointTrafos(vec);
-    Matrix4 pose = robot->getPoseMat();
-    Matrix4 As[dim];
-    As[0] = pose * jointTrafos[0];
-    for (int i = 1; i < jointTrafos.size(); ++i) {
-        As[i] = As[i - 1] * jointTrafos[i];
-    }
-    util::decomposeT(pose, poseR, poseT);
+class MobileRobot : public RobotBase<dim> {
+  public:
+    MobileRobot(Vector<dim> minBoundary, Vector<dim> maxBoundary)
+        : RobotBase<dim>("MobileRobot", RobotType::mobile, minBoundary, maxBoundary){};
+};
 
-    for (int i = 0; i < jointTrafos.size(); ++i) {
-        util::decomposeT(As[i], Rs[i], ts[i]);
-    }
-}
-
-} /* namespace util */
 } /* namespace ippp */
 
-#endif    // UTILCOLLISION_HPP
+#endif    // MOBILEROBOT_H

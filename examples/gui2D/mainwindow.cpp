@@ -13,7 +13,7 @@
 #include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
 #include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
 #include <pathPlanner/options/PRMOptions.hpp>
-#include <robot/model/ModelFactoryTriangle2D.h>
+#include <environment/model/ModelFactoryTriangle2D.h>
 #include <ui/Drawing2D.hpp>
 
 using namespace ippp;

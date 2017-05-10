@@ -7,7 +7,7 @@
 #include <core/utility/Utility.h>
 #include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
 #include <pathPlanner/RRTStar.hpp>
-#include <robot/Jaco.h>
+#include <environment/Jaco.h>
 
 #include <ui/Writer.hpp>
 

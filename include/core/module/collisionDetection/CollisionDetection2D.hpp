@@ -20,8 +20,8 @@
 #define COLLISIONDETECTION2D_HPP
 
 #include <core/module/collisionDetection/CollisionDetection.hpp>
-#include <robot/PointRobot.h>
-#include <robot/model/Model2D.h>
+#include <environment/PointRobot.h>
+#include <environment/model/Model2D.h>
 
 namespace ippp {
 

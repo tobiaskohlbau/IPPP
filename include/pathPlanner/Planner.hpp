@@ -30,7 +30,7 @@
 #include <core/module/sampling/Sampling.hpp>
 #include <core/types.h>
 #include <pathPlanner/options/PlannerOptions.hpp>
-#include <robot/RobotBase.hpp>
+#include <environment/RobotBase.hpp>
 
 namespace ippp {
 

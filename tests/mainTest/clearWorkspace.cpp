@@ -29,7 +29,7 @@
 #include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
-#include <robot/PointRobot.h>
+#include <environment/PointRobot.h>
 
 using namespace ippp;
 

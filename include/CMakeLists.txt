@@ -56,8 +56,8 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStar.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStarContTraj.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/SRT.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/RobotBase.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/robot/SerialRobot.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/RobotBase.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/SerialRobot.hpp)
 
 IF (${BUILD_FCL})
     list(APPEND SRCS
