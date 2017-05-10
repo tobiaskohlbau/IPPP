@@ -24,8 +24,8 @@
 #include <core/module/Identifier.h>
 #include <core/module/TrajectoryPlanner.hpp>
 #include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <core/distanceMetrics/DistanceMetric.hpp>
 #include <core/module/sampling/Sampling.hpp>
-#include <core/utility/heuristic/Heuristic.hpp>
 
 namespace ippp {
 
@@ -39,7 +39,7 @@ class PlannerOptions : public Identifier {
   public:
     PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
                    const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
-                   const std::shared_ptr<Heuristic<dim>> &heuristic, const unsigned int sortingCountGraph);
+                   const std::shared_ptr<DistanceMetric<dim>> &metric, const unsigned int sortingCountGraph);
 
     void setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &planner);
     std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner() const;
@@ -50,8 +50,8 @@ class PlannerOptions : public Identifier {
     void setSampling(const std::shared_ptr<Sampling<dim>> &sampling);
     std::shared_ptr<Sampling<dim>> getSampling() const;
 
-    void setHeuristic(const std::shared_ptr<Heuristic<dim>> &heuristic);
-    std::shared_ptr<Heuristic<dim>> getHeuristic() const;
+    void setDistanceMetric(const std::shared_ptr<DistanceMetric<dim>> &metric);
+    std::shared_ptr<DistanceMetric<dim>> getDistanceMetric() const;
 
     void setSortCountGraph(const unsigned int sortAmountGraph);
     unsigned int getSortCountGraph() const;
@@ -60,7 +60,7 @@ class PlannerOptions : public Identifier {
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<TrajectoryPlanner<dim>> m_planner = nullptr;
     std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
-    std::shared_ptr<Heuristic<dim>> m_heuristic = nullptr;
+    std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
     unsigned int m_sortingCountGraph = 0;
 };
 
@@ -70,7 +70,7 @@ class PlannerOptions : public Identifier {
 *  \param[in]  trajectoryMethod
 *  \param[in]  samplerMethod
 *  \param[in]  samplingMethod
-*  \param[in]  Heuristic
+*  \param[in]  DistanceMetric
 *  \param[in]  sortingCountGraph
 *  \author     Sascha Kaden
 *  \date       2016-08-29
@@ -79,11 +79,11 @@ template <unsigned int dim>
 PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
                                     const std::shared_ptr<Sampling<dim>> &sampling,
-                                    const std::shared_ptr<Heuristic<dim>> &heuristic, const unsigned int sortingCountGraph)
+                                    const std::shared_ptr<DistanceMetric<dim>> &metric, const unsigned int sortingCountGraph)
     : Identifier("PlannerOptions") {
     m_collision = collision;
     m_planner = planner;
-    m_heuristic = heuristic;
+    m_metric = metric;
     m_sampling = sampling;
     m_sortingCountGraph = sortingCountGraph;
 }
@@ -143,25 +143,25 @@ std::shared_ptr<Sampling<dim>> PlannerOptions<dim>::getSampling() const {
 }
 
 /*!
-*  \brief      Sets the EdgeHeuristic
-*  \param[in]  heuristic
+*  \brief      Sets the DistanceMetric
+*  \param[in]  metric
 *  \author     Sascha Kaden
 *  \date       2017-01-01
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setHeuristic(const std::shared_ptr<Heuristic<dim>> &heuristic) {
-    m_heuristic = heuristic;
+void PlannerOptions<dim>::setDistanceMetric(const std::shared_ptr<DistanceMetric<dim>> &metric) {
+    m_metric = metric;
 }
 
 /*!
-*  \brief      Returns the EdgeHeuristic
-*  \param[out] heuristic
+*  \brief      Returns the DistanceMetric
+*  \param[out] metric
 *  \author     Sascha Kaden
 *  \date       2017-01-01
 */
 template <unsigned int dim>
-std::shared_ptr<Heuristic<dim>> PlannerOptions<dim>::getHeuristic() const {
-    return m_heuristic;
+std::shared_ptr<DistanceMetric<dim>> PlannerOptions<dim>::getDistanceMetric() const {
+    return m_metric;
 }
 
 /*!

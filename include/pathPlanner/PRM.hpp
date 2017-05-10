@@ -63,7 +63,7 @@ class PRM : public Planner<dim> {
     using Planner<dim>::m_trajectory;
     using Planner<dim>::m_robot;
     using Planner<dim>::m_sampling;
-    using Planner<dim>::m_heuristic;
+    using Planner<dim>::m_metric;
 };
 
 /*!
@@ -206,7 +206,7 @@ void PRM<dim>::plannerPhase(const unsigned int startNodeIndex, const unsigned in
         std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
             if (m_trajectory->controlTrajectory((*node)->getValues(), nearNode->getValues())) {
-                (*node)->addChild(nearNode, m_heuristic->calcEdgeCost(nearNode, (*node)));
+                (*node)->addChild(nearNode, m_metric->calcEdgeCost(nearNode, (*node)));
             }
         }
     }
@@ -264,8 +264,8 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &vec) {
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (m_trajectory->controlTrajectory(vec, *nearNodes[i]) &&
-            m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues()) < dist) {
-            dist = m_heuristic->calcEdgeCost(vec, nearNodes[i]->getValues());
+            m_metric->calcEdgeCost(vec, nearNodes[i]->getValues()) < dist) {
+            dist = m_metric->calcEdgeCost(vec, nearNodes[i]->getValues());
             nearestNode = nearNodes[i];
         }
     }
@@ -290,7 +290,7 @@ bool PRM<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node
     std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
     for (int i = 0; i < edges.size(); ++i) {
         edges[i]->getTarget()->setCost(edges[i]->getCost());
-        edges[i]->getTarget()->setQueryParent(sourceNode, m_heuristic->calcEdgeCost(edges[i]->getTarget(), sourceNode));
+        edges[i]->getTarget()->setQueryParent(sourceNode, m_metric->calcEdgeCost(edges[i]->getTarget(), sourceNode));
         m_openList.push_back(edges[i]->getTarget());
     }
     m_closedList.push_back(sourceNode);
@@ -324,7 +324,7 @@ void PRM<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
         if (util::contains(m_closedList, successor)) {
             continue;
         }
-        edgeCost = m_heuristic->calcEdgeCost(currentNode, successor);
+        edgeCost = m_metric->calcEdgeCost(currentNode, successor);
         dist = currentNode->getCost() + edgeCost;
 
         if (util::contains(m_openList, successor) && dist >= successor->getCost()) {

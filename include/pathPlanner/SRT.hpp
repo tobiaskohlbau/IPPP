@@ -67,7 +67,7 @@ class SRT : public Planner<dim> {
     using Planner<dim>::m_trajectory;
     using Planner<dim>::m_robot;
     using Planner<dim>::m_sampling;
-    using Planner<dim>::m_heuristic;
+    using Planner<dim>::m_metric;
 };
 
 /*!
@@ -217,8 +217,8 @@ bool SRT<dim>::plannerPhase(std::vector<std::shared_ptr<Graph<dim>>> &trees) {
             std::shared_ptr<Node<dim>> node = graph->getNode(count);
             std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(node);
             if (m_trajectory->controlTrajectory(node, nearestNode)) {
-                node->addChild(nearestNode, m_heuristic->calcEdgeCost(node, nearestNode));
-                nearestNode->addChild(node, m_heuristic->calcEdgeCost(nearestNode, node));
+                node->addChild(nearestNode, m_metric->calcEdgeCost(node, nearestNode));
+                nearestNode->addChild(node, m_metric->calcEdgeCost(nearestNode, node));
                 m_graph->addNodeList(graph->getNodes());
                 m_graph->sortTree();
                 ++connectionCount;
@@ -292,7 +292,7 @@ bool SRT<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node
     std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
     for (int i = 0; i < edges.size(); ++i) {
         edges[i]->getTarget()->setCost(edges[i]->getCost());
-        edges[i]->getTarget()->setQueryParent(sourceNode, m_heuristic->calcEdgeCost(edges[i]->getTarget(), sourceNode));
+        edges[i]->getTarget()->setQueryParent(sourceNode, m_metric->calcEdgeCost(edges[i]->getTarget(), sourceNode));
         m_openList.push_back(edges[i]->getTarget());
     }
     m_closedList.push_back(sourceNode);
@@ -326,7 +326,7 @@ void SRT<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
         if (util::contains(m_closedList, successor)) {
             continue;
         }
-        edgeCost = m_heuristic->calcEdgeCost(currentNode, successor);
+        edgeCost = m_metric->calcEdgeCost(currentNode, successor);
         dist = currentNode->getCost() + edgeCost;
 
         if (util::contains(m_openList, successor) && dist >= successor->getCost()) {
@@ -343,7 +343,7 @@ void SRT<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
         if (util::contains(m_closedList, successor)) {
             return;
         }
-        edgeCost = m_heuristic->calcEdgeCost(currentNode, successor);
+        edgeCost = m_metric->calcEdgeCost(currentNode, successor);
         dist = currentNode->getCost() + edgeCost;
 
         if (util::contains(m_openList, successor) && dist >= successor->getCost()) {

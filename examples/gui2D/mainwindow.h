@@ -97,7 +97,7 @@ class MainWindow : public QMainWindow, public ippp::Identifier {
     double m_trajectoryStepSize = 1;
     unsigned int m_samplerMethod = 0;
     unsigned int m_samplingStrategy = 0;
-    unsigned int m_edgeHeuristic = 0;
+    unsigned int m_metric = 0;
     double m_prmDistance = 50;
     double m_rrtStepsize = 50;
     double m_weightVecX = 1;

@@ -7,11 +7,11 @@
 #include <core/module/sampler/SamplerNormalDist.hpp>
 #include <core/module/sampler/SamplerUniform.hpp>
 #include <core/module/sampling/SamplingNearObstacle.hpp>
-#include <core/utility/heuristic/HeuristicInf.hpp>
-#include <core/utility/heuristic/HeuristicL1.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
+#include <core/distanceMetrics/InfMetric.hpp>
+#include <core/distanceMetrics/L1Metric.hpp>
+#include <core/distanceMetrics/WeightVecInfMetric.hpp>
+#include <core/distanceMetrics/WeightVecL1Metric.hpp>
+#include <core/distanceMetrics/WeightVecL2Metric.hpp>
 #include <pathPlanner/options/PRMOptions.hpp>
 #include <environment/model/ModelFactoryTriangle2D.h>
 #include <ui/Drawing2D.hpp>
@@ -59,24 +59,24 @@ void MainWindow::computePath() {
 
     if (m_robotType == 1) {
         const unsigned int dim = 3;
-        std::shared_ptr<ippp::Heuristic<dim>> edgeH = std::make_shared<ippp::Heuristic<dim>>(ippp::Heuristic<dim>());
+        std::shared_ptr<ippp::DistanceMetric<dim>> edgeH = std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
         ;
-        if (m_edgeHeuristic == 1) {
-            edgeH = std::make_shared<ippp::HeuristicL1<dim>>(ippp::HeuristicL1<dim>());
-        } else if (m_edgeHeuristic == 2) {
-            edgeH = std::make_shared<ippp::HeuristicInf<dim>>(ippp::HeuristicInf<dim>());
-        } else if (m_edgeHeuristic == 3) {
-            std::shared_ptr<HeuristicWeightVecL2<dim>> heuristic(new ippp::HeuristicWeightVecL2<dim>());
-            heuristic->setWeightVec(m_weightVec);
-            edgeH = heuristic;
-        } else if (m_edgeHeuristic == 4) {
-            std::shared_ptr<HeuristicWeightVecL1<dim>> heuristic(new ippp::HeuristicWeightVecL1<dim>());
-            heuristic->setWeightVec(m_weightVec);
-            edgeH = heuristic;
-        } else if (m_edgeHeuristic == 5) {
-            std::shared_ptr<HeuristicWeightVecInf<dim>> heuristic(new ippp::HeuristicWeightVecInf<dim>());
-            heuristic->setWeightVec(m_weightVec);
-            edgeH = heuristic;
+        if (m_metric == 1) {
+            edgeH = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
+        } else if (m_metric == 2) {
+            edgeH = std::make_shared<ippp::InfMetric<dim>>(ippp::InfMetric<dim>());
+        } else if (m_metric == 3) {
+            std::shared_ptr<WeightVecL2Metric<dim>> metric(new ippp::WeightVecL2Metric<dim>());
+            metric->setWeightVec(m_weightVec);
+            edgeH = metric;
+        } else if (m_metric == 4) {
+            std::shared_ptr<WeightVecL1Metric<dim>> metric(new ippp::WeightVecL1Metric<dim>());
+            metric->setWeightVec(m_weightVec);
+            edgeH = metric;
+        } else if (m_metric == 5) {
+            std::shared_ptr<WeightVecInfMetric<dim>> metric(new ippp::WeightVecInfMetric<dim>());
+            metric->setWeightVec(m_weightVec);
+            edgeH = metric;
         }
 
         Vector3 minBoundary(0.0, 0.0, 0.0);
@@ -113,23 +113,23 @@ void MainWindow::computePath() {
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
         const unsigned int dim = 2;
-        std::shared_ptr<ippp::Heuristic<dim>> edgeH = std::make_shared<ippp::Heuristic<dim>>(ippp::Heuristic<dim>());
-        if (m_edgeHeuristic == 1) {
-            edgeH = std::make_shared<ippp::HeuristicL1<dim>>(ippp::HeuristicL1<dim>());
-        } else if (m_edgeHeuristic == 2) {
-            edgeH = std::make_shared<ippp::HeuristicInf<dim>>(ippp::HeuristicInf<dim>());
-        } else if (m_edgeHeuristic == 3) {
-            std::shared_ptr<HeuristicWeightVecL2<dim>> heuristic(new ippp::HeuristicWeightVecL2<dim>());
-            heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
-            edgeH = heuristic;
-        } else if (m_edgeHeuristic == 4) {
-            std::shared_ptr<HeuristicWeightVecL1<dim>> heuristic(new ippp::HeuristicWeightVecL1<dim>());
-            heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
-            edgeH = heuristic;
-        } else if (m_edgeHeuristic == 5) {
-            std::shared_ptr<HeuristicWeightVecInf<2>> heuristic(new ippp::HeuristicWeightVecInf<2>());
-            heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
-            edgeH = heuristic;
+        std::shared_ptr<ippp::DistanceMetric<dim>> edgeH = std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
+        if (m_metric == 1) {
+            edgeH = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
+        } else if (m_metric == 2) {
+            edgeH = std::make_shared<ippp::InfMetric<dim>>(ippp::InfMetric<dim>());
+        } else if (m_metric == 3) {
+            std::shared_ptr<WeightVecL2Metric<dim>> metric(new ippp::WeightVecL2Metric<dim>());
+            metric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
+            edgeH = metric;
+        } else if (m_metric == 4) {
+            std::shared_ptr<WeightVecL1Metric<dim>> metric(new ippp::WeightVecL1Metric<dim>());
+            metric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
+            edgeH = metric;
+        } else if (m_metric == 5) {
+            std::shared_ptr<WeightVecInfMetric<2>> metric(new ippp::WeightVecInfMetric<2>());
+            metric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
+            edgeH = metric;
         }
 
         Vector2 minBoundary(0.0, 0.0);
@@ -272,7 +272,7 @@ void MainWindow::loadConfig() {
     setGoalX(m_goalX);
     setGoalY(m_goalY);
     setGoalPhi(m_goalPhi);
-    setEdgeHeuristic(m_edgeHeuristic);
+    setEdgeHeuristic(m_metric);
     setWeightVecX(m_weightVecX);
     setWeightVecY(m_weightVecY);
     setWeightVecZ(m_weightVecZ);
@@ -296,7 +296,7 @@ void MainWindow::saveConfig() {
     pt.put("goalX", m_goalX);
     pt.put("goalY", m_goalY);
     pt.put("goalPhi", m_goalPhi);
-    pt.put("edgeHeuristic", m_edgeHeuristic);
+    pt.put("edgeHeuristic", m_metric);
     pt.put("weightVecX", m_weightVecX);
     pt.put("weightVecY", m_weightVecY);
     pt.put("weightVecZ", m_weightVecZ);
@@ -351,7 +351,7 @@ void MainWindow::updateGoalPhi(double value) {
     m_goalPhi = value;
 }
 void MainWindow::updateEdgeHeuristic(int type) {
-    m_edgeHeuristic = type;
+    m_metric = type;
 }
 void MainWindow::updateWeightVecX(double value) {
     m_weightVecX = value;
