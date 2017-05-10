@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 #include <core/types.h>
 
-namespace rmpl {
+namespace ippp {
 namespace util {
 
 /*!
@@ -200,6 +200,6 @@ Vector<dim> NaNVector() {
 }
 
 } /* namespace util */
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // UTILVEC_HPP

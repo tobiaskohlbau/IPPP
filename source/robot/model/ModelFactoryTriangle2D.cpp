@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 #include <robot/model/ModelFactoryTriangle2D.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief      Standard constructor of ModelFactoryTriangle2D
@@ -119,4 +119,4 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::v
     return triangleModel;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

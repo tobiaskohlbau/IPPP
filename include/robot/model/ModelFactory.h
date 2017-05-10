@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 #include <robot/model/CadProcessing.h>
 #include <robot/model/ModelContainer.h>
 
-namespace rmpl {
+namespace ippp {
 
 class ModelFactory : public Identifier {
   public:
@@ -38,6 +38,6 @@ class ModelFactory : public Identifier {
     virtual std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths) = 0;
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // MODELFACTORY_H

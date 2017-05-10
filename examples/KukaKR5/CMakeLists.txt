@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2016 Sascha Kaden
+# Copyright 2017 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,4 +22,4 @@ set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp)
 
-ADD_RMPL_EXAMPLE(KukaKR5 "${source}" "")
+ADD_IPPP_EXAMPLE(KukaKR5 "${source}" "")

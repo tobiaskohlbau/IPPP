@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 #include <robot/TriangleRobot2D.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief      Standard constructor of the 2D TriangleRobot
@@ -30,4 +30,4 @@ TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangle
     setBaseModel(triangleModel);
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

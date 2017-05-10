@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@
 
 #include <pathPlanner/options/PlannerOptions.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
-* \brief   Class PRMOptions determines special options for the PRMPlanner
+* \brief   Class PRMOptions determines special options for the Pipppanner
 * \author  Sascha Kaden
 * \date    2016-08-29
 */
@@ -61,7 +61,7 @@ PRMOptions<dim>::PRMOptions(const float rangeSize, const std::shared_ptr<Collisi
 }
 
 /*!
-*  \brief      Sets the range size of the local planner from the PRMPlanner
+*  \brief      Sets the range size of the local planner from the Pipppanner
 *  \param[in]  rangeSize
 *  \author     Sascha Kaden
 *  \date       2016-08-29
@@ -77,7 +77,7 @@ void PRMOptions<dim>::setRangeSize(const float rangeSize) {
 }
 
 /*!
-*  \brief      Returns the range size of the local planner from the PRMPlanner
+*  \brief      Returns the range size of the local planner from the Pipppanner
 *  \param[out] rangeSize
 *  \author     Sascha Kaden
 *  \date       2016-08-29
@@ -87,6 +87,6 @@ float PRMOptions<dim>::getRangeSize() const {
     return m_rangeSize;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // PRMOPTIONS_HPP

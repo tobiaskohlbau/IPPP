@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <pathPlanner/options/PlannerOptions.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class SRTOptions determines special options for the SRT planner
@@ -62,7 +62,7 @@ SRTOptions<dim>::SRTOptions(const unsigned int nbOfTrees, const std::shared_ptr<
 }
 
 /*!
-*  \brief      Sets the range size of the local planner from the PRMPlanner
+*  \brief      Sets the range size of the local planner from the Pipppanner
 *  \param[in]  rangeSize
 *  \author     Sascha Kaden
 *  \date       2017-04-02
@@ -78,7 +78,7 @@ void SRTOptions<dim>::setNbOfTrees(const unsigned int nbOfTrees) {
 }
 
 /*!
-*  \brief      Returns the range size of the local planner from the PRMPlanner
+*  \brief      Returns the range size of the local planner from the Pipppanner
 *  \param[out] rangeSize
 *  \author     Sascha Kaden
 *  \date       2017-04-02
@@ -88,6 +88,6 @@ unsigned int SRTOptions<dim>::getNbOfTrees() const {
     return m_nbOfTrees;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // SRTOPTIONS_HPP

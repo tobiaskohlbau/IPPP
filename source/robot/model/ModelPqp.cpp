@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include <robot/model/CadProcessing.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief   Standard constructor of the ModelPqp
@@ -102,4 +102,4 @@ void ModelPqp::updatePqpModel() {
     m_pqpModel.EndModel();
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

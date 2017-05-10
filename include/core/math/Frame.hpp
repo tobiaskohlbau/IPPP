@@ -11,7 +11,7 @@
 
 #include <include/core/types.h>
 
-namespace rmpl { namespace math {
+namespace ippp { namespace math {
 
 /*
 template<typename T, std::size_t Dim>

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <core/module/sampler/Sampler.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   SamplerLinear creates random samples with fixed orientation for 6 dimensional robots.
@@ -72,6 +72,6 @@ Vector<dim> SamplerRotatory<dim>::getSample() {
 template <unsigned int dim>
 void SamplerRotatory<dim>::setPosition(const Vector3 pos) {}
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* SAMPLERROTATORY_HPP */

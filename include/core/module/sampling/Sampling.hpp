@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
 #include <core/module/sampler/Sampler.hpp>
 #include <robot/RobotBase.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class Sampling creates sample Vectors with the passed strategy, for creating single Vectors the Sampler is used.
@@ -104,6 +104,6 @@ void Sampling<dim>::setOrigin(const Vector<dim> &origin) {
     m_sampler->setOrigin(origin);
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* SAMPLING_HPP */

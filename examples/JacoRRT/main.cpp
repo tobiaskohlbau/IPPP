@@ -11,7 +11,7 @@
 
 #include <ui/Writer.hpp>
 
-using namespace rmpl;
+using namespace ippp;
 
 void printTime(clock_t begin, clock_t end) {
     float elapsed_secs = float(end - begin) / CLOCKS_PER_SEC;

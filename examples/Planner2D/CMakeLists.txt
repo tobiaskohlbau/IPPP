@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2016 Sascha Kaden
+# Copyright 2017 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp)
 
 find_package(OpenCV REQUIRED)
-if (OpenCV_VERSION VERSION_LESS "2.4.8")
-    message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.8+")
+if (OpenCV_VERSION VERSION_LESS "2.4.0")
+    message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
 elseif(OpenCV_VERSION VERSION_LESS "3.0.0")
     find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 else()
@@ -33,4 +33,4 @@ endif()
 set(ADDITIONAL_LIBRARIES
     ${OpenCV_LIBS})
 
-ADD_RMPL_EXAMPLE(Planner2D "${source}" "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_EXAMPLE(Planner2D "${source}" "${ADDITIONAL_LIBRARIES}")

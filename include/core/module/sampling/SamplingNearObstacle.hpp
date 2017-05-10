@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <core/module/sampling/Sampling.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class SamplingNearObstacle creates samples with the passed Sampler and if they in collision free samples in neighborhood will found.
@@ -86,6 +86,6 @@ Vector<dim> SamplingNearObstacle<dim>::getSample() {
     }
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* SAMPLINGNEAROBSTACLE_HPP */

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <core/module/sampler/Sampler.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class SamplerNormalDist create samples by a normal distribution.
@@ -88,6 +88,6 @@ void SamplerNormalDist<dim>::setOrigin(const Vector<dim> &origin) {
     }
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* SAMPLERNORMALDIST_HPP */

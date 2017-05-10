@@ -10,7 +10,7 @@
 #include <modelDirectory.h>
 
 // set namespace of the motion planner lib
-using namespace rmpl;
+using namespace ippp;
 
 int main(int argc, char** argv) {
     // specify the dimension for the motion planning

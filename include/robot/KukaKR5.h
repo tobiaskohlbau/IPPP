@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <robot/SerialRobot.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class for the Kuka KR5 robot
@@ -35,6 +35,6 @@ class KukaKR5 : public SerialRobot<6> {
     std::vector<Matrix4> getJointTrafos(const Vector6 &angles);
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* KUKAKR5_H */

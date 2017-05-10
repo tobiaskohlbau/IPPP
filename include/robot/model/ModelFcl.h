@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 #include <robot/model/ModelContainer.h>
 
-namespace rmpl {
+namespace ippp {
 
 typedef fcl::BVHModel<fcl::OBB<float>> FCLModel;
 
@@ -45,6 +45,6 @@ class ModelFcl : public ModelContainer {
     void updateFclModel();
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // MODELFCL_H

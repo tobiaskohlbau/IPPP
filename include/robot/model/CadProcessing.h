@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@
 #include <core/utility/UtilList.hpp>
 #include <robot/model/Mesh.h>
 
-namespace rmpl {
+namespace ippp {
 
 enum class ExportFormat {
     COLLADA,
@@ -66,6 +66,6 @@ AABB computeAABB(const Mesh &mesh);
 
 aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // CADPROCESSING_H

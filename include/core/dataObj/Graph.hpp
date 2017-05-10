@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 #include <core/utility/KDTree.hpp>
 #include <core/utility/Logging.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class Graph contain all nodes of the planner and offers the nearest neighbor and range search through a KDTree.
@@ -368,6 +368,6 @@ void Graph<dim>::preserveNodePtr() {
     m_preserveNodePtr = true;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* GRAPH_HPP */

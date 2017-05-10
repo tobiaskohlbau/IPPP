@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 #include <robot/SerialRobot.hpp>
 #include <robot/model/ModelPqp.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class collision detection with the pqp library
@@ -287,6 +287,6 @@ bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model *model1, PQP_Model *model2, 
     }
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* COLLISIONDETECTIONPQP_HPP */

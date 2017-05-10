@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2016 Sascha Kaden
+# Copyright 2017 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,4 +23,4 @@ include_directories(${Boost_INCLUDE_DIRS}
 set(source
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
-ADD_RMPL_EXAMPLE(GettingStarted "${source}" "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_EXAMPLE(GettingStarted "${source}" "${ADDITIONAL_LIBRARIES}")

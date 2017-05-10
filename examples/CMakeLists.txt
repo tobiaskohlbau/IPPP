@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2016 Sascha Kaden
+# Copyright 2017 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ IF (${BUILD_FCL})
     LIST(APPEND LIBRARIES ${FCL_LIBRARIES})
 ENDIF()
 
-MACRO(ADD_RMPL_EXAMPLE ex_name sources ADDITIONAL_LIBRARIES)
+MACRO(ADD_IPPP_EXAMPLE ex_name sources ADDITIONAL_LIBRARIES)
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/examples ${CMAKE_CURRENT_SOURCE_DIR})
     ADD_EXECUTABLE(${ex_name} ${sources})
     TARGET_LINK_LIBRARIES(${ex_name} ${LIBRARIES} ${ADDITIONAL_LIBRARIES})

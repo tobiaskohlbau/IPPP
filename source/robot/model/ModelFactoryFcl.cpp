@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include <core/utility/Logging.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief      Creates an ModelFcl from the passed source cad file.
@@ -83,4 +83,4 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const
     return models;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@
 #include <pathPlanner/Planner.hpp>
 #include <pathPlanner/options/PRMOptions.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
-* \brief   Class PRMPlanner
+* \brief   Class Pipppanner
 * \author  Sascha Kaden
 * \date    2016-08-09
 */
@@ -67,7 +67,7 @@ class PRM : public Planner<dim> {
 };
 
 /*!
-*  \brief      Standard constructor of the class PRMPlanner
+*  \brief      Standard constructor of the class Pipppanner
 *  \author     Sascha Kaden
 *  \param[in]  robot
 *  \param[in]  prm options
@@ -113,7 +113,7 @@ bool PRM<dim>::expand(const unsigned int numNodes, const unsigned int numThreads
 }
 
 /*!
-*  \brief      Sampling phase of the PRMPlanner
+*  \brief      Sampling phase of the Pipppanner
 *  \author     Sascha Kaden
 *  \param[in]  number of Nodes to be sampled
 *  \param[in]  number of threads
@@ -156,7 +156,7 @@ void PRM<dim>::samplingPhase(const unsigned int nbOfNodes) {
 }
 
 /*!
-*  \brief      Local planning phase of the PRMPlanner.
+*  \brief      Local planning phase of the Pipppanner.
 *  \details    Add the nearest neighbors of a Node as childes.
 *  \author     Sascha Kaden
 *  \param[in]  number of threads
@@ -362,6 +362,6 @@ std::vector<Vector<dim>> PRM<dim>::getPath(const float trajectoryStepSize, const
     return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // PRM_HPP

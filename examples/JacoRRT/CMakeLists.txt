@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2016 Sascha Kaden
+# Copyright 2017 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,6 +31,6 @@ set(source
     #${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApiPlatform.c
     #${CMAKE_SOURCE_DIR}/examples/ui/vrep/Helper.cpp)
 
-ADD_RMPL_EXAMPLE(JacoRRT "${source}" "")
+ADD_IPPP_EXAMPLE(JacoRRT "${source}" "")
 
 

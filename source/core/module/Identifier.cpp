@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 #include <core/module/Identifier.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief      Standard deconstructor of the ModuleBase
@@ -47,4 +47,4 @@ const std::string& Identifier::getName() {
     return m_name;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

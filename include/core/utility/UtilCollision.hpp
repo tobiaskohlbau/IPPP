@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <core/utility/UtilGeo.hpp>
 #include <robot/SerialRobot.hpp>
 
-namespace rmpl {
+namespace ippp {
 namespace util {
 
 template <unsigned int dim>
@@ -43,6 +43,6 @@ void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<SerialRobo
 }
 
 } /* namespace util */
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // UTILCOLLISION_HPP

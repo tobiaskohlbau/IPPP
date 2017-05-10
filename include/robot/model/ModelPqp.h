@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 #include <PQP.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Pqp model class
@@ -43,6 +43,6 @@ class ModelPqp : public ModelContainer {
     void updatePqpModel();
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // MODELPQP_H

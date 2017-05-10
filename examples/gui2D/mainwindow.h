@@ -24,7 +24,7 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow, public rmpl::Identifier {
+class MainWindow : public QMainWindow, public ippp::Identifier {
     Q_OBJECT
 
   public:
@@ -108,10 +108,10 @@ class MainWindow : public QMainWindow, public rmpl::Identifier {
     cv::Mat m_image;
     Eigen::MatrixXi m_workspace;
 
-    std::vector<rmpl::Triangle2D> m_triangles;
-    std::shared_ptr<rmpl::Planner<2>> m_planner2d = nullptr;
-    std::shared_ptr<rmpl::Planner<3>> m_planner3d = nullptr;
-    rmpl::Vector3 m_weightVec;
+    std::vector<ippp::Triangle2D> m_triangles;
+    std::shared_ptr<ippp::Planner<2>> m_planner2d = nullptr;
+    std::shared_ptr<ippp::Planner<3>> m_planner3d = nullptr;
+    ippp::Vector3 m_weightVec;
     bool m_connected = false;
     bool m_imageLoaded = false;
 };

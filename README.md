@@ -1,9 +1,10 @@
-# Robot Motion Planner Library
+# IPPP -- Interchangeable Probalistic Path Planning
 
 [![Build Status](https://travis-ci.org/SaschaKaden/RobotMotionPlanner.svg?branch=master)](https://travis-ci.org/SaschaKaden/RobotMotionPlanner)
 [![Coverity Status](https://scan.coverity.com/projects/9839/badge.svg)](https://scan.coverity.com/projects/saschakaden-robotmotionplanner)
 
-RMPL has the target to provide a coherent interface for path planning with a serial robot.
+IPPP has the target to provide a coherent interchangeable for path planning with a serial or mobile robots.
+All important modules can be changed from the user.
 
 ## Robots
 Currently available robots:
@@ -11,7 +12,7 @@ Currently available robots:
 * KukaKR5
 * 2D point and 2D triangle robot, for test cases
 
-The user can set up his own robot too, he has only to pass the D-H parameter and the triangle meshes (.obj).
+All robots are based on a container interface, therefore the user can build his own robots.
 
 
 ## Planning algorithm
@@ -19,6 +20,7 @@ Currently available algorithms:
 * RRT
 * RRT*
 * sPRM
+* SRT
 
 
 ## Dependencies
@@ -41,6 +43,9 @@ Small step for step instructions for Ubuntu.
 * `git clone https://github.com/SaschaKaden/RobotMotionPlanner.git`
 * `git clone https://github.com/SaschaKaden/RMPThirdParty.git`
 * `cd RobotMotionPlanner && mkdir build && cd build && cmake -DPQP_ROOT_DIR="../../RMPThirdParty/PQP_v1.3"`
+
+In the examples directory is a small commented Getting Started project.
+
 
 ## License
 Copyright © 2017 Sascha Kaden

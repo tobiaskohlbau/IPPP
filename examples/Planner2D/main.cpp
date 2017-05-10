@@ -21,7 +21,7 @@
 #include <ui/Drawing2D.hpp>
 #include <ui/Writer.hpp>
 
-using namespace rmpl;
+using namespace ippp;
 
 cv::Mat obstacleWorkspace;
 
@@ -47,7 +47,7 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling);
     SRTOptions<dim> srtOptions(20, collision, trajectory, sampling);
 
-    std::shared_ptr<rmpl::Planner<dim>> planner;
+    std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
      planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
@@ -93,7 +93,7 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     RRTOptions<dim> rrtOptions(50, collision, trajectory, sampling);
     SRTOptions<dim> srtOptions(20, collision, trajectory, sampling);
 
-    std::shared_ptr<rmpl::Planner<dim>> planner;
+    std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
      planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
     // planner = std::shared_ptr<RRTStarContTraj<dim>>(new RRTStarContTraj<dim>(robot, rrtOptions));

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <pathPlanner/options/PlannerOptions.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class RRTOptions determines special options for the RRTPlanner
@@ -88,6 +88,6 @@ float RRTOptions<dim>::getStepSize() const {
     return m_stepSize;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // RRTOPTIONS_HPP

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <robot/RobotBase.hpp>
 #include <robot/model/CadProcessing.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Base class of all serial robots
@@ -230,6 +230,6 @@ void SerialRobot<dim>::saveMeshConfig(Matrix4 *As) {
     }
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // SERIALROBOT_HPP

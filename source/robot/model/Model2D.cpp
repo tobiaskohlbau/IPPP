@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 #include <robot/model/Model2D.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief      Standard constructor of Model2D
@@ -62,4 +62,4 @@ void Model2D::transformModel(const Matrix4 &T) {
 void Model2D::transformModel(const Vector6 &config) {
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

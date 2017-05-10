@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 #include <core/utility/Logging.h>
 #include <robot/model/ModelContainer.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief      Standard destructor of the ModelContainer
@@ -38,4 +38,4 @@ ModelContainer::ModelContainer(const std::string &name, const AABB &boundingBox)
     : Identifier(name) {
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

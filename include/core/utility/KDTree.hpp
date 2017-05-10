@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 #include <core/module/Identifier.h>
 #include <core/dataObj/KDNode.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 enum Direction { left, right };
 
@@ -407,6 +407,6 @@ int KDTree<dim, T>::partition(std::vector<std::shared_ptr<Node<dim>>> &A, int le
     return i;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* KDTREE_HPP */

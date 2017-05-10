@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <pathPlanner/RRTStar.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class of the RRTStarContTraj, adaption of the RRT* path planner.
@@ -122,6 +122,6 @@ void RRTStarContTraj<dim>::chooseParent(const Vector<dim> &newVec, std::shared_p
     }
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* RRTSTARCONTTRAJ_HPP */

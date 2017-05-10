@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <core/utility/Logging.h>
 #include <core/utility/UtilGeo.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief      Import a cad model (vertices and faces) with the assimp library
@@ -412,4 +412,4 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
     return scene;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

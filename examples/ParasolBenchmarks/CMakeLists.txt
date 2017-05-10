@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2016 Sascha Kaden
+# Copyright 2017 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,4 +30,4 @@ set(source
 
 #link_directories(/usr/lib)
 
-ADD_RMPL_EXAMPLE(ParasolBenchmarks "${source}" "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_EXAMPLE(ParasolBenchmarks "${source}" "${ADDITIONAL_LIBRARIES}")

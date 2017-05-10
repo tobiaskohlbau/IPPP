@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
 #include <core/types.h>
 #include <robot/RobotBase.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Base class of all Sampler modules, return random samples.
@@ -142,6 +142,6 @@ Vector<dim> Sampler<dim>::getOrigin() const {
     return m_origin;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* SAMPLER_HPP */

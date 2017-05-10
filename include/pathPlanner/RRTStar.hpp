@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 #include "RRT.hpp"
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class of the StarRRTPlanner
@@ -195,6 +195,6 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
     return false;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* RRTSTAR_HPP */

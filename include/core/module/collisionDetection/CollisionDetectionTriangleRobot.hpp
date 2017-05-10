@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <robot/TriangleRobot2D.h>
 #include <robot/model/Model2D.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Collision detection class for the TriangleRobot2D
@@ -163,6 +163,6 @@ bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
     return false;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* COLLISIONDETECTIONTRIANGLEROBOT_HPP */
