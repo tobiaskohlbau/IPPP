@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2016 Sascha Kaden
+# Copyright 2017 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ ENDIF()
 
 ADD_DEFINITIONS("-DBOOST_TEST_MAIN")
 
-MACRO(ADD_RMPL_TEST TEST_NAME ADDITIONAL_LIBRARIES)
+MACRO(ADD_IPPP_TEST TEST_NAME ADDITIONAL_LIBRARIES)
     SET(EXE_NAME Test_${MODULE}_${TEST_NAME})
 
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
@@ -40,7 +40,7 @@ MACRO(ADD_RMPL_TEST TEST_NAME ADDITIONAL_LIBRARIES)
     SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES
             FAIL_REGULAR_EXPRESSION "FAILED")
 
-ENDMACRO(ADD_RMPL_TEST TEST_NAME)
+ENDMACRO(ADD_IPPP_TEST TEST_NAME)
 
 # from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
 MACRO(SUBDIRLIST result curdir)

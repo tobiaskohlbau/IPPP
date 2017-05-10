@@ -2,7 +2,7 @@
 
 #include <core/utility/Logging.h>
 
-using namespace rmpl;
+using namespace ippp;
 
 Helper::Helper(unsigned int dim) : Identifier("VREP Helper") {
     m_dim = dim;

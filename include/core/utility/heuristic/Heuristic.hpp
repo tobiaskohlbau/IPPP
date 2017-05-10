@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 #include <core/module/Identifier.h>
 #include <core/types.h>
 
-namespace rmpl {
+namespace ippp {
 
 template <unsigned int dim>
 class Node;
@@ -79,6 +79,6 @@ float Heuristic<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> 
     return (source - target).norm();
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // HEURISTIC_H

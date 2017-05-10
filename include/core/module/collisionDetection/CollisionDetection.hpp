@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
 #include <robot/RobotBase.hpp>
 #include <robot/model/ModelContainer.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Abstract class CollisionDetection, base class of all CollisionDetections
@@ -64,6 +64,6 @@ CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::
     m_maxBoundary = robot->getMaxBoundary();
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* COLLISIONDETECTION_HPP */

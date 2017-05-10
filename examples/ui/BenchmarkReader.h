@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 
 #include <core/types.h>
 
-namespace rmpl {
+namespace ippp {
 
 typedef struct EnvironmentConfig {
     Vector3 minBoundary;
@@ -40,6 +40,6 @@ typedef struct EnvironmentConfig {
 EnvironmentConfig readEnvironment(const std::string &path);
 std::vector<Vector6> readQuery(const std::string &path);
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif //BENCHMARKREADER_H

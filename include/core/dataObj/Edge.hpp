@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 #include <core/dataObj/Node.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 template <unsigned int dim>
 class Node;
@@ -131,6 +131,6 @@ std::shared_ptr<Node<dim>> Edge<dim>::getSource() const {
     return m_source;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* EDGE_HPP */

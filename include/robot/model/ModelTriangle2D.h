@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <core/dataObj/PointList.hpp>
 #include <robot/model/ModelContainer.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Triangle2D model class, contains a list of triangles, will be used from the TriangleRobot2D
@@ -39,6 +39,6 @@ class ModelTriangle2D : public ModelContainer {
     std::vector<Triangle2D> m_triangles;
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // TRIANGLEMODEL_H

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 #include <robot/model/ModelContainer.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Joint class contains the boundaries of a joint and the MeshContainer from it
@@ -48,6 +48,6 @@ class Joint {
     std::shared_ptr<ModelContainer> m_model = nullptr;
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // JOINT_H

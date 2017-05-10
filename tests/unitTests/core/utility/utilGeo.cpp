@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 
 #include <core/utility/Utility.h>
 
-using namespace rmpl;
+using namespace ippp;
 using namespace Eigen;
 
 BOOST_AUTO_TEST_SUITE(staticFunctions)

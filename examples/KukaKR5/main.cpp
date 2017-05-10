@@ -12,7 +12,7 @@
 
 #include <ui/Writer.hpp>
 
-using namespace rmpl;
+using namespace ippp;
 
 int main(int argc, char** argv) {
     Logging::setOutputFile("output.txt");

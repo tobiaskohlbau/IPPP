@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 #include <pathPlanner/Planner.hpp>
 #include <pathPlanner/options/SRTOptions.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class SRT "Sampling Based Roadmap of Trees"
@@ -125,7 +125,7 @@ bool SRT<dim>::expand(const unsigned int numNodes, const unsigned int numThreads
 }
 
 /*!
-*  \brief      Sampling phase of the PRMPlanner
+*  \brief      Sampling phase of the Pipppanner
 *  \author     Sascha Kaden
 *  \param[in]  number of Nodes to be sampled
 *  \param[in]  number of threads
@@ -381,6 +381,6 @@ std::vector<Vector<dim>> SRT<dim>::getPath(const float trajectoryStepSize, const
     return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // SRT_HPP

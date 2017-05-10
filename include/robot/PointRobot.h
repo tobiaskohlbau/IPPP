@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <robot/RobotBase.hpp>
 #include <robot/model/Model2D.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class for the 2D point robot
@@ -36,6 +36,6 @@ class PointRobot : public RobotBase<2> {
   private:
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* POINTROBOT_H */

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <robot/model/ModelFactory.h>
 #include <robot/model/ModelTriangle2D.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   ModelFactory to create ModelFcl by path to source model or by a list of triangles
@@ -39,6 +39,6 @@ class ModelFactoryTriangle2D : public ModelFactory {
     std::shared_ptr<ModelContainer> createModel(const std::vector<Triangle2D> triangles);
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // MODELFACTORYTRIANGLE2D_H

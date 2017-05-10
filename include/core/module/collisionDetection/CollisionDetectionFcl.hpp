@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 #include <robot/SerialRobot.hpp>
 #include <robot/model/ModelFcl.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class for collision detection with the fcl library
@@ -293,6 +293,6 @@ bool CollisionDetectionFcl<dim>::checkFCL(std::shared_ptr<FCLModel> &model1, std
     return result.isCollision();
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* COLLISIONDETECTIONFCL_HPP */

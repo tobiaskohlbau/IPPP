@@ -14,7 +14,7 @@
 #include <core/module/Identifier.h>
 #include <core/utility/Logging.h>
 
-namespace rmpl {
+namespace ippp {
 namespace drawing {
 
 /*!
@@ -145,6 +145,6 @@ static Eigen::MatrixXi cvToEigen(cv::Mat cvMat) {
 }
 
 } /* namespace drawing */
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* DRAWING2D_HPP */

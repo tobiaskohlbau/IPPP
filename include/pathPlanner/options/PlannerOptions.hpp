@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 #include <core/module/sampling/Sampling.hpp>
 #include <core/utility/heuristic/Heuristic.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class PlannerOptions determines all base options for the path planner
@@ -186,6 +186,6 @@ unsigned int PlannerOptions<dim>::getSortCountGraph() const {
     return m_sortingCountGraph;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // PLANNEROPTIONS_HPP

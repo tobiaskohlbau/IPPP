@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include <core/utility/Logging.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief      Constructor of the 2D PointRobot
@@ -31,4 +31,4 @@ PointRobot::PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary)
     : RobotBase<2>("PointRobot", RobotType::mobile, minBoundary, maxBoundary) {
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

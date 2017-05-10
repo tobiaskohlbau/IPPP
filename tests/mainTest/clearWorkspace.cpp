@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@
 #include <pathPlanner/RRTStar.hpp>
 #include <robot/PointRobot.h>
 
-using namespace rmpl;
+using namespace ippp;
 
 BOOST_AUTO_TEST_SUITE(constructor)
 

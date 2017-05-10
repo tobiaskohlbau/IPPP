@@ -16,7 +16,7 @@
 #include <robot/model/ModelFactoryTriangle2D.h>
 #include <ui/Drawing2D.hpp>
 
-using namespace rmpl;
+using namespace ippp;
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), Identifier("GUI"), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -59,22 +59,22 @@ void MainWindow::computePath() {
 
     if (m_robotType == 1) {
         const unsigned int dim = 3;
-        std::shared_ptr<rmpl::Heuristic<dim>> edgeH = std::make_shared<rmpl::Heuristic<dim>>(rmpl::Heuristic<dim>());
+        std::shared_ptr<ippp::Heuristic<dim>> edgeH = std::make_shared<ippp::Heuristic<dim>>(ippp::Heuristic<dim>());
         ;
         if (m_edgeHeuristic == 1) {
-            edgeH = std::make_shared<rmpl::HeuristicL1<dim>>(rmpl::HeuristicL1<dim>());
+            edgeH = std::make_shared<ippp::HeuristicL1<dim>>(ippp::HeuristicL1<dim>());
         } else if (m_edgeHeuristic == 2) {
-            edgeH = std::make_shared<rmpl::HeuristicInf<dim>>(rmpl::HeuristicInf<dim>());
+            edgeH = std::make_shared<ippp::HeuristicInf<dim>>(ippp::HeuristicInf<dim>());
         } else if (m_edgeHeuristic == 3) {
-            std::shared_ptr<HeuristicWeightVecL2<dim>> heuristic(new rmpl::HeuristicWeightVecL2<dim>());
+            std::shared_ptr<HeuristicWeightVecL2<dim>> heuristic(new ippp::HeuristicWeightVecL2<dim>());
             heuristic->setWeightVec(m_weightVec);
             edgeH = heuristic;
         } else if (m_edgeHeuristic == 4) {
-            std::shared_ptr<HeuristicWeightVecL1<dim>> heuristic(new rmpl::HeuristicWeightVecL1<dim>());
+            std::shared_ptr<HeuristicWeightVecL1<dim>> heuristic(new ippp::HeuristicWeightVecL1<dim>());
             heuristic->setWeightVec(m_weightVec);
             edgeH = heuristic;
         } else if (m_edgeHeuristic == 5) {
-            std::shared_ptr<HeuristicWeightVecInf<dim>> heuristic(new rmpl::HeuristicWeightVecInf<dim>());
+            std::shared_ptr<HeuristicWeightVecInf<dim>> heuristic(new ippp::HeuristicWeightVecInf<dim>());
             heuristic->setWeightVec(m_weightVec);
             edgeH = heuristic;
         }
@@ -113,21 +113,21 @@ void MainWindow::computePath() {
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
         const unsigned int dim = 2;
-        std::shared_ptr<rmpl::Heuristic<dim>> edgeH = std::make_shared<rmpl::Heuristic<dim>>(rmpl::Heuristic<dim>());
+        std::shared_ptr<ippp::Heuristic<dim>> edgeH = std::make_shared<ippp::Heuristic<dim>>(ippp::Heuristic<dim>());
         if (m_edgeHeuristic == 1) {
-            edgeH = std::make_shared<rmpl::HeuristicL1<dim>>(rmpl::HeuristicL1<dim>());
+            edgeH = std::make_shared<ippp::HeuristicL1<dim>>(ippp::HeuristicL1<dim>());
         } else if (m_edgeHeuristic == 2) {
-            edgeH = std::make_shared<rmpl::HeuristicInf<dim>>(rmpl::HeuristicInf<dim>());
+            edgeH = std::make_shared<ippp::HeuristicInf<dim>>(ippp::HeuristicInf<dim>());
         } else if (m_edgeHeuristic == 3) {
-            std::shared_ptr<HeuristicWeightVecL2<dim>> heuristic(new rmpl::HeuristicWeightVecL2<dim>());
+            std::shared_ptr<HeuristicWeightVecL2<dim>> heuristic(new ippp::HeuristicWeightVecL2<dim>());
             heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
             edgeH = heuristic;
         } else if (m_edgeHeuristic == 4) {
-            std::shared_ptr<HeuristicWeightVecL1<dim>> heuristic(new rmpl::HeuristicWeightVecL1<dim>());
+            std::shared_ptr<HeuristicWeightVecL1<dim>> heuristic(new ippp::HeuristicWeightVecL1<dim>());
             heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
             edgeH = heuristic;
         } else if (m_edgeHeuristic == 5) {
-            std::shared_ptr<HeuristicWeightVecInf<2>> heuristic(new rmpl::HeuristicWeightVecInf<2>());
+            std::shared_ptr<HeuristicWeightVecInf<2>> heuristic(new ippp::HeuristicWeightVecInf<2>());
             heuristic->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
             edgeH = heuristic;
         }

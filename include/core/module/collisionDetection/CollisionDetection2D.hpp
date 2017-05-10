@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <robot/PointRobot.h>
 #include <robot/model/Model2D.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class for 2D collision detection of an point robot.
@@ -109,6 +109,6 @@ bool CollisionDetection2D::checkPoint2D(float x, float y) {
     }
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* COLLISIONDETECTION2D_HPP */

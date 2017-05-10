@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2016 Sascha Kaden
+# Copyright 2017 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(OpenCV REQUIRED)
-if (OpenCV_VERSION VERSION_LESS "2.4.8")
-    message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.8+")
+if (OpenCV_VERSION VERSION_LESS "2.4.0")
+    message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
 elseif(OpenCV_VERSION VERSION_LESS "3.0.0")
     find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 else()
@@ -46,5 +46,5 @@ set(source
 set(ADDITIONAL_LIBRARIES
     ${OpenCV_LIBS})
 
-ADD_RMPL_EXAMPLE(Gui2D "${source}" "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_EXAMPLE(Gui2D "${source}" "${ADDITIONAL_LIBRARIES}")
 qt5_use_modules(Gui2D Widgets Gui)

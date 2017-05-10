@@ -17,7 +17,7 @@ extern "C" {
 
 #include <core/module/Identifier.h>
 
-namespace rmpl {
+namespace ippp {
 
 class Helper : public Identifier {
   public:
@@ -34,6 +34,6 @@ class Helper : public Identifier {
     bool m_started;
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* HELPER_H */

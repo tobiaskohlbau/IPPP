@@ -17,7 +17,7 @@
 #include <ui/BenchmarkReader.h>
 #include <ui/Writer.hpp>
 
-using namespace rmpl;
+using namespace ippp;
 
 std::string modelDir;
 

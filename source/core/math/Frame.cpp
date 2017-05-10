@@ -4,7 +4,7 @@
 
 #include <include/core/math/Frame.hpp>
 
-namespace rmpl {
+namespace ippp {
 namespace math {
 
 /// Constructor.

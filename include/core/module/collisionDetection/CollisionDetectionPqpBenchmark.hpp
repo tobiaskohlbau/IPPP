@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 #include <chrono>
 #include <mutex>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class collision detection with the pqp library and extra benchmark methods.
@@ -169,6 +169,6 @@ std::chrono::duration<double> CollisionDetectionPqpBenchmark<dim>::getMeanComput
     return duration;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* COLLISIONDETECTIONPQPBENCHMARK_HPP */

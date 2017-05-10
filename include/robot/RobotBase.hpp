@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
 #include <core/utility/Utility.h>
 #include <robot/model/ModelContainer.h>
 
-namespace rmpl {
+namespace ippp {
 
 enum RobotType { serial, mobile };
 
@@ -237,6 +237,6 @@ RobotType RobotBase<dim>::getRobotType() const {
     return m_robotType;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* ROBOTBASE_HPP */

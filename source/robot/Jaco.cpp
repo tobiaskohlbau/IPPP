@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include <core/utility/Utility.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 *  \brief      Constructor of the Jaco robot
@@ -97,4 +97,4 @@ Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) {
     return dhAngles;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

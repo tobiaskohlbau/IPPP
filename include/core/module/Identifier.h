@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <string>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Base class of all modules, at the time it is an identifier.
@@ -42,6 +42,6 @@ class Identifier {
     const std::string m_name;
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* BASE_H */

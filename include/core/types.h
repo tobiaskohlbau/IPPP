@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
-namespace rmpl {
+namespace ippp {
 
 template <unsigned int dim>
 using Vector = Eigen::Matrix<float, dim, 1>;
@@ -44,6 +44,6 @@ using Vector3i = Eigen::Matrix<int, 3, 1>;
 
 using AABB = Eigen::AlignedBox<float, 3>;
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // TYPES_H

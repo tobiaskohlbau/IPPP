@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <Eigen/Core>
 #include <cstdint>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class KDNode is the node object of the KDTree
@@ -56,6 +56,6 @@ KDNode<dim, T>::KDNode(const Vector<dim> &vec, const T &node) {
     this->vec = vec;
     this->node = node;
 }
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* KDNODE_HPP */

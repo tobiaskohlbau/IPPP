@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 #include <core/utility/Logging.h>
 #include <core/utility/UtilList.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 EnvironmentConfig readEnvironment(const std::string &file) {
     std::string extension = file.substr(file.find_last_of("."));
@@ -117,4 +117,4 @@ std::vector<Vector6> readQuery(const std::string &path) {
 }
 
 
-} /* namespace rmpl */
+} /* namespace ippp */

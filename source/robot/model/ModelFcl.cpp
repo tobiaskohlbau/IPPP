@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include <robot/model/CadProcessing.h>
 
-namespace rmpl {
+namespace ippp {
 
 ModelFcl::ModelFcl() : ModelContainer("ModelFcl") {
 }
@@ -89,4 +89,4 @@ void ModelFcl::updateFclModel() {
     m_fclModel.endModel();
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

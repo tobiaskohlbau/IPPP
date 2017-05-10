@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace rmpl {
+namespace ippp {
 
 LogLevel Logging::m_level = LogLevel::all;
 LogOutput Logging::m_output = LogOutput::terminal;
@@ -250,4 +250,4 @@ void Logging::writeToFile(std::string message) {
     }
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */

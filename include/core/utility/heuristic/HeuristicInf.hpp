@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <core/utility/heuristic/Heuristic.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Static class for the computation of heuristic costs from Edge
@@ -57,6 +57,6 @@ float HeuristicInf<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<di
     return (source - target).maxCoeff();
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // HEURISTICINF_H

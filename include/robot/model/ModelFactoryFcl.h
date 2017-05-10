@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <robot/model/ModelFactory.h>
 #include <robot/model/ModelFcl.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   ModelFactory to create ModelFcl by path to source cad model
@@ -38,6 +38,6 @@ class ModelFactoryFcl : public ModelFactory {
     std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths);
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // MODELFACTORYFCL_H

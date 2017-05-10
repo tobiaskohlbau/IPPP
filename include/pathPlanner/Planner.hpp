@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@
 #include <pathPlanner/options/PlannerOptions.hpp>
 #include <robot/RobotBase.hpp>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Super class of all path planners
@@ -194,6 +194,6 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::smoothPath(std::vector<std
     return nodes;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* RRTPLANNER_HPP */

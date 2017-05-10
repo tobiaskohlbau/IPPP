@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <core/utility/Logging.h>
 #include <core/utility/Utility.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Data structure for 2D or 3D point list
@@ -149,6 +149,6 @@ typedef PointList<Vector3, 6> Hexagon3D;
 typedef PointList<Vector2, 7> Heptagon2D;
 typedef PointList<Vector3, 7> Heptagon3D;
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // POINTLIST_H

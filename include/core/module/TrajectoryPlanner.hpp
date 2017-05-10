@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <core/module/collisionDetection/CollisionDetection.hpp>
 #include <core/types.h>
 
-namespace rmpl {
+namespace ippp {
 
 /*!
 * \brief   Class TrajectoryPlanner plans between the passed nodes/vecs. Start and end point aren't part of the path.
@@ -209,6 +209,6 @@ float TrajectoryPlanner<dim>::getStepSize() const {
     return m_stepSize;
 }
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif /* TRAJECTORYPLANNER_HPP */

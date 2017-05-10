@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2016 Sascha Kaden
+// Copyright 2017 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 #include <core/module/Identifier.h>
 
-namespace rmpl {
+namespace ippp {
 
 enum LogLevel { none, debug, all };
 enum LogOutput { terminal, file, terminlAndFile };
@@ -65,6 +65,6 @@ class Logging {
     static std::mutex m_mutex;
 };
 
-} /* namespace rmpl */
+} /* namespace ippp */
 
 #endif    // LOGGING_H

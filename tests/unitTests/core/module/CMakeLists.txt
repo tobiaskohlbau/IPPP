@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2016 Sascha Kaden
+# Copyright 2017 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,4 +19,4 @@
 set(MODULE "core_module")
 add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
 
-ADD_RMPL_TEST(trajectoryPlanner "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_TEST(trajectoryPlanner "${ADDITIONAL_LIBRARIES}")
