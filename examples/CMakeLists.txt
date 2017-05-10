@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------//
 
 SET(LIBRARIES
-        RobotMotionPlanning
+        IPPP
         ${PQP_LIBRARIES}
         ${ASSIMP_LIBRARIES})
 
