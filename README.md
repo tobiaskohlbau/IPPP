@@ -1,7 +1,7 @@
 # IPPP -- Interchangeable Probalistic Path Planning
 
-[![Build Status](https://travis-ci.org/SaschaKaden/RobotMotionPlanner.svg?branch=master)](https://travis-ci.org/SaschaKaden/RobotMotionPlanner)
-[![Coverity Status](https://scan.coverity.com/projects/9839/badge.svg)](https://scan.coverity.com/projects/saschakaden-robotmotionplanner)
+[![Build Status](https://travis-ci.org/SaschaKaden/IPPP.svg?branch=master)](https://travis-ci.org/SaschaKaden/IPPP)
+[![Coverity Status](https://scan.coverity.com/projects/9839/badge.svg)](https://scan.coverity.com/projects/saschakaden-ippp)
 
 IPPP has the target to provide a coherent interchangeable for path planning with a serial or mobile robots.
 All important modules can be changed from the user.
