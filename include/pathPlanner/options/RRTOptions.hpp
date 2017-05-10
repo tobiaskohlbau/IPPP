@@ -33,7 +33,7 @@ class RRTOptions : public PlannerOptions<dim> {
   public:
     RRTOptions(const float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
-               const std::shared_ptr<Heuristic<dim>> &heuristic = std::make_shared<Heuristic<dim>>(Heuristic<dim>()),
+               const std::shared_ptr<DistanceMetric<dim>> &metric = std::make_shared<DistanceMetric<dim>>(DistanceMetric<dim>()),
                const unsigned int sortingCountGraph = 0);
 
     void setStepSize(const float stepSize);
@@ -55,9 +55,9 @@ class RRTOptions : public PlannerOptions<dim> {
 template <unsigned int dim>
 RRTOptions<dim>::RRTOptions(const float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                             const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
-                            const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<Heuristic<dim>> &heuristic,
+                            const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<DistanceMetric<dim>> &metric,
                             const unsigned int sortingCountGraph)
-    : PlannerOptions<dim>(collision, planner, sampling, heuristic, sortingCountGraph) {
+    : PlannerOptions<dim>(collision, planner, sampling, metric, sortingCountGraph) {
     setStepSize(stepSize);
 }
 

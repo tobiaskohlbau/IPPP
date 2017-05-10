@@ -35,12 +35,12 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/sampling/SamplingNearObstacle.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/module/TrajectoryPlanner.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/Heuristic.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicL1.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicInf.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicWeightVecL1.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicWeightVecL2.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/heuristic/HeuristicWeightVecInf.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/DistanceMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L1Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/InfMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL1Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL2Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecInfMetric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDTree.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilGeo.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilIO.hpp

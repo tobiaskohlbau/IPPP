@@ -16,47 +16,47 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef HEURISTICL1_H
-#define HEURISTICL1_H
+#ifndef INFMETRIC_HPP
+#define INFMETRIC_HPP
 
-#include <core/utility/heuristic/Heuristic.hpp>
+#include <core/distanceMetrics/DistanceMetric.hpp>
 
 namespace ippp {
 
 /*!
-* \brief   Static class for the computation of heuristic costs from Edge
+* \brief   Static class for the computation of distance costs from Edge
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
 template <unsigned int dim>
-class HeuristicL1 : public Heuristic<dim> {
+class InfMetric : public DistanceMetric<dim> {
   public:
-    HeuristicL1();
+    InfMetric();
     float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const override;
 };
 
 /*!
-*  \brief      Standard constructor of the class HeuristicL1.
+*  \brief      Standard constructor of the class InfMetric
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-HeuristicL1<dim>::HeuristicL1() : Heuristic<dim>("Heuristic L1") {
+InfMetric<dim>::InfMetric() : DistanceMetric<dim>("Inf Metric") {
 }
 
 /*!
-*  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.
+*  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
-*  \param[out] heuristic cost
+*  \param[out] distance cost
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float HeuristicL1<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
-    return (source - target).sum();
+float InfMetric<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).maxCoeff();
 }
 
 } /* namespace ippp */
 
-#endif    // HEURISTICL1_H
+#endif    // INFMETRIC_HPP

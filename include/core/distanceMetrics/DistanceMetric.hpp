@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef HEURISTIC_H
-#define HEURISTIC_H
+#ifndef DISTANCEMETRIC_HPP
+#define DISTANCEMETRIC_HPP
 
 #include <memory>
 
@@ -31,54 +31,54 @@ template <unsigned int dim>
 class Node;
 
 /*!
-* \brief   Virtual class for the computation of heuristic costs from Edge
+* \brief   Virtual class for the computation of distance costs from an Edge
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
 template <unsigned int dim>
-class Heuristic : public Identifier {
+class DistanceMetric : public Identifier {
   public:
-    Heuristic(const std::string &name = "Heuristic L2");
+    DistanceMetric(const std::string &name = "L2 Metric");
     float calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
     virtual float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const;
 };
 
 /*!
-*  \brief      Standard constructor of the class Heuristic
+*  \brief      Standard constructor of the class DistanceMetric
 *  \author     Sascha Kaden
 *  \param[in]  name
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-Heuristic<dim>::Heuristic(const std::string &name) : Identifier(name) {
+DistanceMetric<dim>::DistanceMetric(const std::string &name) : Identifier(name) {
 }
 
 /*!
-*  \brief      Calculates the heuristic cost of an Edge from the source and target Node.
+*  \brief      Calculates the distance cost of an Edge from the source and target Node.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
-*  \param[out] heuristic cost
+*  \param[out] distance cost
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float Heuristic<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const {
+float DistanceMetric<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const {
     return calcEdgeCost(source->getValues(), target->getValues());
 }
 
 /*!
-*  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.
+*  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
-*  \param[out] heuristic cost
+*  \param[out] distance cost
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float Heuristic<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
+float DistanceMetric<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).norm();
 }
 
 } /* namespace ippp */
 
-#endif    // HEURISTIC_H
+#endif    // DISTANCEMETRIC_HPP

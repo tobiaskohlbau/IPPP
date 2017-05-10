@@ -22,11 +22,11 @@
 #include <core/module/sampler/SamplerNormalDist.hpp>
 #include <core/module/sampler/SamplerUniform.hpp>
 #include <core/module/sampling/SamplingNearObstacle.hpp>
-#include <core/utility/heuristic/HeuristicInf.hpp>
-#include <core/utility/heuristic/HeuristicL1.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
+#include <core/distanceMetrics/InfMetric.hpp>
+#include <core/distanceMetrics/L1Metric.hpp>
+#include <core/distanceMetrics/WeightVecInfMetric.hpp>
+#include <core/distanceMetrics/WeightVecL1Metric.hpp>
+#include <core/distanceMetrics/WeightVecL2Metric.hpp>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
 #include <environment/PointRobot.h>
@@ -39,13 +39,13 @@ BOOST_AUTO_TEST_CASE(clearWorkspace) {
     const unsigned int dim = 2;
     Logging::setLogLevel(LogLevel::none);
 
-    std::vector<std::shared_ptr<Heuristic<dim>>> heuristics;
-    heuristics.push_back(std::make_shared<Heuristic<dim>>(Heuristic<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicL1<dim>>(HeuristicL1<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicInf<dim>>(HeuristicInf<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicWeightVecL2<dim>>(HeuristicWeightVecL2<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicWeightVecL1<dim>>(HeuristicWeightVecL1<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicWeightVecInf<dim>>(HeuristicWeightVecInf<dim>()));
+    std::vector<std::shared_ptr<DistanceMetric<dim>>> metrics;
+    metrics.push_back(std::make_shared<DistanceMetric<dim>>(DistanceMetric<dim>()));
+    metrics.push_back(std::make_shared<L1Metric<dim>>(L1Metric<dim>()));
+    metrics.push_back(std::make_shared<InfMetric<dim>>(InfMetric<dim>()));
+    metrics.push_back(std::make_shared<WeightVecL2Metric<dim>>(WeightVecL2Metric<dim>()));
+    metrics.push_back(std::make_shared<WeightVecL1Metric<dim>>(WeightVecL1Metric<dim>()));
+    metrics.push_back(std::make_shared<WeightVecInfMetric<dim>>(WeightVecInfMetric<dim>()));
 
     Eigen::MatrixXi workspace = Eigen::MatrixXi::Constant(100, 100, 250);
     Vector2 minBoundary(0.0, 0.0);
@@ -70,15 +70,15 @@ BOOST_AUTO_TEST_CASE(clearWorkspace) {
     Vector2 start(5, 5);
     Vector2 goal(95, 95);
 
-    BOOST_TEST_CHECKPOINT("Options order: sampler, sampling, edgeHeuristic");
-    for (auto heuristic : heuristics) {
+    BOOST_TEST_CHECKPOINT("Options order: sampler, sampling, distanceMetric");
+    for (auto metric : metrics) {
         for (auto sampling : samplings) {
-            PRMOptions<dim> prmOptions(30, collision, trajectory, sampling, heuristic);
+            PRMOptions<dim> prmOptions(30, collision, trajectory, sampling, metric);
             PRMPlanner<dim> prmPlanner(robot, prmOptions);
             BOOST_TEST_CHECKPOINT("Calling PRM planning");
             prmPlanner.computePath(start, goal, 500, 2);
 
-            RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling, heuristic);
+            RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling, metric);
             RRT<dim> normalRRTPlanner(robot, rrtOptions);
             BOOST_TEST_CHECKPOINT("Calling normal RRT planning");
             normalRRTPlanner.computePath(start, goal, 500, 2);

@@ -68,7 +68,7 @@ class Planner : public Identifier {
     std::shared_ptr<Graph<dim>> m_graph;
     std::shared_ptr<RobotBase<dim>> m_robot;
 
-    const std::shared_ptr<Heuristic<dim>> m_heuristic;
+    const std::shared_ptr<DistanceMetric<dim>> m_metric;
     const PlannerOptions<dim> m_options;
     bool m_pathPlanned;
 };
@@ -92,7 +92,7 @@ Planner<dim>::~Planner() {
 */
 template <unsigned int dim>
 Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options)
-    : Identifier(name), m_options(options), m_heuristic(options.getHeuristic()) {
+    : Identifier(name), m_options(options), m_metric(options.getDistanceMetric()) {
     m_pathPlanned = false;
 
     m_robot = robot;

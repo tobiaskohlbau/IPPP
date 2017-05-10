@@ -16,23 +16,23 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef HEURISTICWEIGHTVECL1_H
-#define HEURISTICWEIGHTVECL1_H
+#ifndef WEIGHTVECINFMETRIC_HPP
+#define WEIGHTVECINFMETRIC_HPP
 
-#include <core/utility/heuristic/Heuristic.hpp>
+#include <core/distanceMetrics/DistanceMetric.hpp>
 
 namespace ippp {
 
 /*!
-* \brief   Static class for the computation of heuristic costs from Edge
+* \brief   Static class for the computation of distance costs from an Edge
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
 template <unsigned int dim>
-class HeuristicWeightVecL1 : public Heuristic<dim> {
+class WeightVecInfMetric : public DistanceMetric<dim> {
   public:
-    HeuristicWeightVecL1();
-    HeuristicWeightVecL1(const Vector<dim> &weightVec);
+    WeightVecInfMetric();
+    WeightVecInfMetric(const Vector<dim> &weightVec);
     float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const override;
 
     void setWeightVec(const Vector<dim> &vec);
@@ -43,36 +43,36 @@ class HeuristicWeightVecL1 : public Heuristic<dim> {
 };
 
 /*!
-*  \brief      Standard constructor of the class HeuristicWeightVecL1
+*  \brief      Standard constructor of the class WeightVecInfMetric
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-HeuristicWeightVecL1<dim>::HeuristicWeightVecL1() : Heuristic<dim>("Heuristic weightVecL1") {
+WeightVecInfMetric<dim>::WeightVecInfMetric() : DistanceMetric<dim>("weightVecInf metric") {
 }
 
 /*!
-*  \brief      Constructor of the class HeuristicWeightVecL1
+*  \brief      Standard constructor of the class WeightVecInfMetric
 *  \author     Sascha Kaden
 *  \param[in]  weightVec
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-HeuristicWeightVecL1<dim>::HeuristicWeightVecL1(const Vector<dim> &weightVec) : Heuristic<dim>("Heuristic weightVecL1") {
+WeightVecInfMetric<dim>::WeightVecInfMetric(const Vector<dim> &weightVec) : DistanceMetric<dim>("weightVecInf metric") {
     setWeightVec(weightVec);
 }
 
 /*!
-*  \brief      Calculates the heuristic cost of an Edge from the source and target Node by the specified heuristic.
+*  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
-*  \param[out] heuristic cost
+*  \param[out] distance cost
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float HeuristicWeightVecL1<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
-    return (source - target).cwiseProduct(m_weightVec).sum();
+float WeightVecInfMetric<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).cwiseProduct(m_weightVec).maxCoeff();
 }
 
 /*!
@@ -82,7 +82,7 @@ float HeuristicWeightVecL1<dim>::calcEdgeCost(const Vector<dim> &source, const V
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-void HeuristicWeightVecL1<dim>::setWeightVec(const Vector<dim> &vec) {
+void WeightVecInfMetric<dim>::setWeightVec(const Vector<dim> &vec) {
     m_weightVec = vec;
 }
 
@@ -93,10 +93,10 @@ void HeuristicWeightVecL1<dim>::setWeightVec(const Vector<dim> &vec) {
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-Vector<dim> HeuristicWeightVecL1<dim>::getWeightVec() const {
+Vector<dim> WeightVecInfMetric<dim>::getWeightVec() const {
     return m_weightVec;
 }
 
 } /* namespace ippp */
 
-#endif    // HEURISTICWEIGHTVECL1_H
+#endif    // WEIGHTVECINFMETRIC_HPP

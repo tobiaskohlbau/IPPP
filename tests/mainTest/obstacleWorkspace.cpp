@@ -19,11 +19,11 @@
 #include <boost/test/unit_test.hpp>
 
 #include <core/module/collisionDetection/CollisionDetection2D.hpp>
-#include <core/utility/heuristic/HeuristicInf.hpp>
-#include <core/utility/heuristic/HeuristicL1.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecInf.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecL1.hpp>
-#include <core/utility/heuristic/HeuristicWeightVecL2.hpp>
+#include <core/distanceMetrics/InfMetric.hpp>
+#include <core/distanceMetrics/L1Metric.hpp>
+#include <core/distanceMetrics/WeightVecInfMetric.hpp>
+#include <core/distanceMetrics/WeightVecL1Metric.hpp>
+#include <core/distanceMetrics/WeightVecL2Metric.hpp>
 #include <pathPlanner/NormalRRT.hpp>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
@@ -37,13 +37,13 @@ BOOST_AUTO_TEST_CASE(obstacleWorkspace) {
     const unsigned int dim = 2;
     Logging::setLogLevel(LogLevel::none);
 
-    std::vector<std::shared_ptr<Heuristic<dim>>> heuristics;
-    heuristics.push_back(std::make_shared<Heuristic<dim>>(Heuristic<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicL1<dim>>(HeuristicL1<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicInf<dim>>(HeuristicInf<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicWeightVecL2<dim>>(HeuristicWeightVecL2<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicWeightVecL1<dim>>(HeuristicWeightVecL1<dim>()));
-    heuristics.push_back(std::make_shared<HeuristicWeightVecInf<dim>>(HeuristicWeightVecInf<dim>()));
+    std::vector<std::shared_ptr<DistanceMetric<dim>>> metrics;
+    metrics.push_back(std::make_shared<DistanceMetric<dim>>(DistanceMetric<dim>()));
+    metrics.push_back(std::make_shared<L1Metric<dim>>(L1Metric<dim>()));
+    metrics.push_back(std::make_shared<InfMetric<dim>>(InfMetric<dim>()));
+    metrics.push_back(std::make_shared<WeightVecL2Metric<dim>>(WeightVecL2Metric<dim>()));
+    metrics.push_back(std::make_shared<WeightVecL1Metric<dim>>(WeightVecL1Metric<dim>()));
+    metrics.push_back(std::make_shared<WeightVecInfMetric<dim>>(WeightVecInfMetric<dim>()));
 
     std::vector<SamplerMethod> samplerMethods;
     samplerMethods.push_back(SamplerMethod::randomly);
@@ -72,24 +72,24 @@ BOOST_AUTO_TEST_CASE(obstacleWorkspace) {
     Vector2 start(5, 5);
     Vector2 goal(95, 95);
 
-    BOOST_TEST_CHECKPOINT("Options order: sampler, sampling, edgeHeuristic");
-    for (auto heuristic : heuristics) {
+    BOOST_TEST_CHECKPOINT("Options order: sampler, sampling, distanceMetric");
+    for (auto metric : metrics) {
         for (auto sampler : samplerMethods) {
             for (auto sampling : samplingStrategies) {
-                PRMOptions<dim> prmOptions(30, 1, collision, sampler, sampling, heuristic);
+                PRMOptions<dim> prmOptions(30, 1, collision, sampler, sampling, metric);
                 PRMPlanner<dim> prmPlanner(robot, prmOptions);
-                BOOST_TEST_CHECKPOINT("Calling PRM planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
+                BOOST_TEST_CHECKPOINT("Calling PRM planning with (SamplerMethod | SamplingStrategy | distanceMetric) ="
                                       << sampler << " | " << sampling << " | ");
                 prmPlanner.computePath(start, goal, 300, 1);
 
-                RRTOptions<dim> rrtOptions(30, 1, collision, sampler, sampling, heuristic);
+                RRTOptions<dim> rrtOptions(30, 1, collision, sampler, sampling, metric);
                 RRT<dim> normalRRTPlanner(robot, rrtOptions);
-                BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
+                BOOST_TEST_CHECKPOINT("Calling normal RRT planning with (SamplerMethod | SamplingStrategy | distanceMetric) ="
                                       << sampler << " | " << sampling << " | ");
                 normalRRTPlanner.computePath(start, goal, 300, 1);
 
                 RRTStarPlanner<dim> starRRTPlanner(robot, rrtOptions);
-                BOOST_TEST_CHECKPOINT("Calling RRT* planning with (SamplerMethod | SamplingStrategy | EdgeHeuristic) ="
+                BOOST_TEST_CHECKPOINT("Calling RRT* planning with (SamplerMethod | SamplingStrategy | distanceMetric) ="
                                       << sampler << " | " << sampling << " | ");
                 starRRTPlanner.computePath(start, goal, 300, 1);
             }

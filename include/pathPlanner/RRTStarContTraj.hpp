@@ -88,7 +88,7 @@ std::shared_ptr<Node<dim>> RRTStarContTraj<dim>::computeRRTNode(const Vector<dim
     }
 
     std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
-    float edgeCost = this->m_heuristic->calcEdgeCost(newNode, nearestNode);
+    float edgeCost = this->m_metric->calcEdgeCost(newNode, nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);
     m_mutex.lock();
