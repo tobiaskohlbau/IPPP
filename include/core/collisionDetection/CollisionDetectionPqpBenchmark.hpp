@@ -19,7 +19,7 @@
 #ifndef COLLISIONDETECTIONPQPBENCHMARK_HPP
 #define COLLISIONDETECTIONPQPBENCHMARK_HPP
 
-#include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
+#include <core/collisionDetection/CollisionDetectionPqp.hpp>
 
 #include <chrono>
 #include <mutex>

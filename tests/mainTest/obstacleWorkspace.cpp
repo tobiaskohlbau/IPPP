@@ -18,7 +18,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/module/collisionDetection/CollisionDetection2D.hpp>
+#include <core/collisionDetection/CollisionDetection2D.hpp>
 #include <core/distanceMetrics/InfMetric.hpp>
 #include <core/distanceMetrics/L1Metric.hpp>
 #include <core/distanceMetrics/WeightVecInfMetric.hpp>

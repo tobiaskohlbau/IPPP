@@ -5,7 +5,7 @@
 #include <Eigen/Core>
 
 #include <core/utility/Utility.h>
-#include <core/module/collisionDetection/CollisionDetectionPqp.hpp>
+#include <core/collisionDetection/CollisionDetectionPqp.hpp>
 #include <pathPlanner/RRTStar.hpp>
 #include <environment/Jaco.h>
 

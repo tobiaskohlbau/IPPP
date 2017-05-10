@@ -19,7 +19,7 @@
 #ifndef SAMPLINGNEAROBSTACLE_HPP
 #define SAMPLINGNEAROBSTACLE_HPP
 
-#include <core/module/sampling/Sampling.hpp>
+#include <core/sampling/Sampling.hpp>
 
 namespace ippp {
 

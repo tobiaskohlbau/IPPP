@@ -19,7 +19,7 @@
 #ifndef COLLISIONDETECTION2D_HPP
 #define COLLISIONDETECTION2D_HPP
 
-#include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <core/collisionDetection/CollisionDetection.hpp>
 #include <environment/PointRobot.h>
 #include <environment/model/Model2D.h>
 

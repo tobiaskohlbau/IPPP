@@ -15,7 +15,7 @@ extern "C" {
 #include "v_repConst.h"
 }
 
-#include <core/module/Identifier.h>
+#include <core/Identifier.h>
 
 namespace ippp {
 

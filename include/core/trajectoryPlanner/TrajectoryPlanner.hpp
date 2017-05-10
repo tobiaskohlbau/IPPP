@@ -19,8 +19,8 @@
 #ifndef TRAJECTORYPLANNER_HPP
 #define TRAJECTORYPLANNER_HPP
 
-#include <core/module/Identifier.h>
-#include <core/module/collisionDetection/CollisionDetection.hpp>
+#include <core/Identifier.h>
+#include <core/collisionDetection/CollisionDetection.hpp>
 #include <core/types.h>
 
 namespace ippp {

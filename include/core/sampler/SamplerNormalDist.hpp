@@ -19,7 +19,7 @@
 #ifndef SAMPLERNORMALDIST_HPP
 #define SAMPLERNORMALDIST_HPP
 
-#include <core/module/sampler/Sampler.hpp>
+#include <core/sampler/Sampler.hpp>
 
 namespace ippp {
 

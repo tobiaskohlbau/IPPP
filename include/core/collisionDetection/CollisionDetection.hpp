@@ -24,7 +24,7 @@
 #include <Eigen/Core>
 
 #include <core/dataObj/Node.hpp>
-#include <core/module/Identifier.h>
+#include <core/Identifier.h>
 #include <environment/RobotBase.hpp>
 #include <environment/model/ModelContainer.h>
 

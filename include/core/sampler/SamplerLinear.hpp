@@ -16,55 +16,61 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SEEDSAMPLER_HPP
-#define SEEDSAMPLER_HPP
+#ifndef SAMPLERLINEAR_HPP
+#define SAMPLERLINEAR_HPP
 
-#include <core/module/sampler/Sampler.hpp>
+#include <core/sampler/Sampler.hpp>
 
 namespace ippp {
 
 /*!
-* \brief   SeedSampler creates random samples with the passed seed. If no seed is passed, standard seed will be used.
+* \brief   SamplerLinear creates random samples with fixed orientation for 6 dimensional robots.
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
 template <unsigned int dim>
-class SeedSampler : public Sampler<dim> {
+class SamplerLinear : public Sampler<dim> {
   public:
-    SeedSampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &seed = "akls23fd43253haosrel234lh234kj2g3h42g");
-    virtual Vector<dim> getSample() override;
+    SamplerLinear(const std::shared_ptr<RobotBase<dim>> &robot);
+    Vector<dim> getSample() override;
 
-  protected:
-    std::minstd_rand0 m_randomEngine;
+  private:
 };
 
 /*!
-*  \brief      Constructor of the SeedSampler
+*  \brief      Constructor of the base Sampler class
 *  \author     Sascha Kaden
 *  \param[in]  robot
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SeedSampler<dim>::SeedSampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &seed) : Sampler<dim>(robot, "SeedSampler") {
-    std::seed_seq seed_seq(seed.begin(), seed.end());
-    m_randomEngine = std::minstd_rand0(seed_seq);
+SamplerLinear<dim>::SamplerLinear(const std::shared_ptr<RobotBase<dim>> &robot) : Sampler<dim>(robot, "LinearSampler") {
 }
 
 /*!
-*  \brief      Return random seed sample
+*  \brief      Return random sample
 *  \author     Sascha Kaden
 *  \param[out] sample
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Vector<dim> SeedSampler<dim>::getSample() {
+Vector<dim> SamplerLinear<dim>::getSample() {
     Vector<dim> vec;
-    for (unsigned int i = 0; i < dim; ++i) {
-        vec[i] = this->m_minBoundary[i] + (float)(m_randomEngine() % (int)(this->m_maxBoundary[i] - this->m_minBoundary[i]));
+    if (dim == 6) {
+        for (unsigned int i = 0; i < 3; ++i) {
+            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
+        }
+        for (unsigned int i = 3; i < 6; ++i) {
+            vec[i] = this->m_origin[i - 3];
+        }
+    } else {
+        for (unsigned int i = 0; i < dim; ++i) {
+            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
+        }
     }
     return vec;
 }
 
 } /* namespace ippp */
 
-#endif /* SEEDSAMPLER_HPP */
+#endif /* SAMPLERLINEAR_HPP */
