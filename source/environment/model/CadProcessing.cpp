@@ -30,7 +30,7 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \param[in]  filePath
 *  \param[out] Mesh
-*  \date       2017-02-19
+*  \date       2017-05-09
 */
 bool importMesh(const std::string &filePath, Mesh &mesh) {
     std::size_t found = filePath.find_last_of(".");
@@ -38,37 +38,22 @@ bool importMesh(const std::string &filePath, Mesh &mesh) {
         return importBYU(filePath, mesh);
     }
 
-    Assimp::Importer importer;
-    const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
-    if (!scene) {
-        Logging::error("Could not load cad", "CadProcessing");
+    std::vector<Mesh> meshes;
+    if (!importMeshes(filePath, meshes)) {
         return false;
     }
 
-    if (scene->mNumMeshes == 0) {
-        return false;
-    }
-    mesh.vertices.clear();
-    mesh.faces.clear();
     size_t verticeCount;
-    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        const aiMesh *aiMesh = scene->mMeshes[i];
+    for (auto tmpMesh : meshes) {
         verticeCount = mesh.vertices.size();
-        // load vertices
-        for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
-            mesh.vertices.push_back(Vector3(aiMesh->mVertices[j].x, aiMesh->mVertices[j].y, aiMesh->mVertices[j].z));
+        for (auto vertex : tmpMesh.vertices) {
+            mesh.vertices.push_back(vertex);
         }
-        // load faces
-        for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
-            if (aiMesh->mFaces[j].mNumIndices > 2) {
-                mesh.faces.push_back(Vector3i(aiMesh->mFaces[j].mIndices[0] + verticeCount,
-                                              aiMesh->mFaces[j].mIndices[1] + verticeCount,
-                                              aiMesh->mFaces[j].mIndices[2] + verticeCount));
-            } else {
-                Logging::warning("Face array is to short", "CadProcessing");
-            }
+        for (auto face : tmpMesh.faces) {
+            mesh.faces.push_back(Vector3i(face[0] + verticeCount, face[1] + verticeCount, face[2] + verticeCount));
         }
     }
+
     mesh.normals = computeNormals(mesh.vertices, mesh.faces);
     return true;
 }
@@ -78,7 +63,7 @@ bool importMesh(const std::string &filePath, Mesh &mesh) {
 *  \author     Sascha Kaden
 *  \param[in]  filePath
 *  \param[out] Mesh
-*  \date       2017-02-19
+*  \date       2017-05-09
 */
 bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes) {
     Assimp::Importer importer;
@@ -93,28 +78,55 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes) {
     }
     meshes.clear();
 
-    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        const aiMesh *aiMesh = scene->mMeshes[i];
+    aiMatrix4x4 trafo;
+    aiIdentityMatrix4(&trafo);
+    getMeshes(scene, scene->mRootNode, &trafo, meshes);
+
+    for (auto mesh : meshes) {
+        mesh.normals = computeNormals(mesh.vertices, mesh.faces);
+    }
+
+    return true;
+}
+
+/*!
+*  \brief      Go through the scene nodes and load and transform all meshes them.
+*  \author     Sascha Kaden
+*  \param[in]  scene
+*  \param[in]  node
+*  \param[in]  transformation
+*  \param[out] vector of meshes
+*  \date       2017-05-09
+*/
+void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4* trafo, std::vector<Mesh> &meshes) {
+    aiMatrix4x4 prevTrafo;
+
+    prevTrafo = *trafo;
+    aiMultiplyMatrix4(trafo,&node->mTransformation);
+
+    for (int i = 0; i < node->mNumMeshes; ++i) {
         Mesh mesh;
-        // load vertices
-        for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
-            mesh.vertices.push_back(Vector3(aiMesh->mVertices[j].x, aiMesh->mVertices[j].y, aiMesh->mVertices[j].z));
+        const aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
+        for (int j = 0; j < aimesh->mNumVertices; ++j) {
+            aiVector3D vertex = aimesh->mVertices[j];
+            aiTransformVecByMatrix4(&vertex,trafo);
+            mesh.vertices.push_back(Vector3(vertex.x, vertex.y, vertex.z));
         }
-        // load faces
-        for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
-            if (aiMesh->mFaces[j].mNumIndices > 2) {
+        for (int j = 0; j < aimesh->mNumFaces; ++j) {
+            if (aimesh->mFaces[j].mNumIndices > 2) {
                 mesh.faces.push_back(
-                    Vector3i(aiMesh->mFaces[j].mIndices[0], aiMesh->mFaces[j].mIndices[1], aiMesh->mFaces[j].mIndices[2]));
+                    Vector3i(aimesh->mFaces[j].mIndices[0], aimesh->mFaces[j].mIndices[1], aimesh->mFaces[j].mIndices[2]));
             } else {
                 Logging::warning("Face array is to short", "CadProcessing");
             }
         }
         meshes.push_back(mesh);
     }
-    for (auto &&mesh : meshes) {
-        mesh.normals = computeNormals(mesh.vertices, mesh.faces);
+
+    for (int i = 0; i < node->mNumChildren; ++i) {
+        getMeshes(scene, node->mChildren[i],trafo, meshes);
     }
-    return true;
+    *trafo = prevTrafo;
 }
 
 /*!
@@ -264,7 +276,7 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
     aiScene scene = generateScene(vertices, faces);
 
     const aiExportFormatDesc *formatDesc = exporter.GetExportFormatDescription(formatCount);
-    exporter.Export(&scene, formatDesc->id, filePath + "." + formatDesc->fileExtension, 0);
+    exporter.Export(&scene, formatDesc->id, filePath + "." + formatDesc->fileExtension, aiProcess_Triangulate);
     return true;
 }
 

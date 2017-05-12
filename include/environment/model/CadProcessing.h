@@ -23,6 +23,7 @@
 #include <vector>
 
 #include <Eigen/Core>
+#include <assimp/cimport.h>
 #include <assimp/Exporter.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -53,6 +54,7 @@ enum class ExportFormat {
 
 bool importMesh(const std::string &filePath, Mesh &mesh);
 bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes);
+void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4* trafo, std::vector<Mesh> &meshes);
 bool importBYU(const std::string &filePath, Mesh &mesh);
 bool exportCad(ExportFormat format, const std::string &filePath, const Mesh &mesh);
 bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
