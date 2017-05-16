@@ -32,7 +32,7 @@ namespace ippp {
 template <unsigned int dim>
 class PRM : public Planner<dim> {
   public:
-    PRM(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim> &options);
+    PRM(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph);
 
     bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
     bool expand(const unsigned int numNodes, const unsigned int numThreads);
@@ -74,8 +74,9 @@ class PRM : public Planner<dim> {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-PRM<dim>::PRM(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim> &options)
-    : Planner<dim>("PRM", robot, options) {
+PRM<dim>::PRM(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim> &options,
+              const std::shared_ptr<Graph<dim>> &graph)
+    : Planner<dim>("PRM", robot, options, graph) {
     m_rangeSize = options.getRangeSize();
 }
 
@@ -90,7 +91,8 @@ PRM<dim>::PRM(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads) {
+bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
+                           const unsigned int numThreads) {
     expand(numNodes, numThreads);
 
     return queryPath(start, goal);
@@ -224,18 +226,18 @@ void PRM<dim>::plannerPhase(const unsigned int startNodeIndex, const unsigned in
 template <unsigned int dim>
 bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
     std::shared_ptr<Node<dim>> sourceNode = connectNode(start);
-    std::shared_ptr<Node<dim>> targetNode = connectNode(goal);
-    if (sourceNode == nullptr || targetNode == nullptr) {
+    std::shared_ptr<Node<dim>> goalNode = connectNode(goal);
+    if (sourceNode == nullptr || goalNode == nullptr) {
         Logging::info("Start or goal Node could not be connected", this);
         return false;
     }
 
-    bool pathPlanned = aStar(sourceNode, targetNode);
+    bool pathPlanned = aStar(sourceNode, goalNode);
 
     if (pathPlanned) {
         Logging::info("Path could be planned", this);
         m_nodePath.push_back(std::shared_ptr<Node<dim>>(new Node<dim>(goal)));
-        std::shared_ptr<Node<dim>> temp = targetNode;
+        std::shared_ptr<Node<dim>> temp = goalNode;
         int count = 0;
         while (temp != nullptr) {
             ++count;
@@ -277,7 +279,7 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &vec) {
 *  \brief      A* algorithm to find best path
 *  \author     Sascha Kaden
 *  \param[in]  source Node (start)
-*  \param[in]  target Node (goal)
+*  \param[in]  goal Node (goal)
 *  \param[out] result of algorithm
 *  \date       2016-08-09
 */

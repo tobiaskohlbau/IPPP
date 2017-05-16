@@ -33,8 +33,7 @@ class PRMOptions : public PlannerOptions<dim> {
   public:
     PRMOptions(const float rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
-               const std::shared_ptr<DistanceMetric<dim>> &DistanceMetric = std::shared_ptr<DistanceMetric<dim>>(new DistanceMetric<dim>()),
-               const unsigned int sortingCountGraph = 0);
+               const std::shared_ptr<DistanceMetric<dim>> &DistanceMetric);
 
     void setRangeSize(const float rangeSize);
     float getRangeSize() const;
@@ -53,10 +52,10 @@ class PRMOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-PRMOptions<dim>::PRMOptions(const float rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
-                            const std::shared_ptr<Sampling<dim>> &sampling,
-                            const std::shared_ptr<DistanceMetric<dim>> &metric, const unsigned int sortingCountGraph)
-    : PlannerOptions<dim>(collision, planner, sampling, metric, sortingCountGraph) {
+PRMOptions<dim>::PRMOptions(const float rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+                            const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
+                            const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<DistanceMetric<dim>> &metric)
+    : PlannerOptions<dim>(collision, planner, sampling, metric) {
     setRangeSize(rangeSize);
 }
 

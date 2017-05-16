@@ -6,11 +6,11 @@
 
 #include <core/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
 #include <core/utility/UtilVec.hpp>
+#include <environment/MobileRobot.h>
+#include <environment/model/ModelFactoryPqp.h>
 #include <modelDirectory.h>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
-#include <environment/MobileRobot.h>
-#include <environment/model/ModelFactoryPqp.h>
 //#include <core/collisionDetection/CollisionDetectionFcl.hpp>
 //#include <environment/model/ModelFactoryFcl.h>
 
@@ -22,6 +22,7 @@ using namespace ippp;
 std::string modelDir;
 
 bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentConfig config) {
+    const unsigned int dim = 6;
     // ModelFactoryFcl factoryFcl;
     // std::shared_ptr<ModelContainer> robotModel = factoryFcl.createModel(benchmarkDir + config.robotFile);
     // std::shared_ptr<ModelContainer> obstacleModel = factoryFcl.createModel(benchmarkDir + config.obstacleFile);
@@ -55,10 +56,17 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 
     std::shared_ptr<Sampling<6>> samplingBenchmark(new Sampling<6>(robot, collisionBenchmark, trajectoryBenchmark, sampler));
 
-    RRTOptions<6> options(40, collision, trajectory, sampling);
-    RRTOptions<6> optionsBenchmark(40, collisionBenchmark, trajectoryBenchmark, samplingBenchmark);
-    RRTStar<6> planner(robot, options);
-    RRTStar<6> plannerBenchmark(robot, optionsBenchmark);
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    RRTOptions<6> options(40, collision, trajectory, sampling, distanceMetric);
+    RRTOptions<6> optionsBenchmark(40, collisionBenchmark, trajectoryBenchmark, samplingBenchmark, distanceMetric);
+
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
+    std::shared_ptr<Graph<dim>> graphBenchmark(new Graph<dim>(0, neighborFinder));
+
+    RRTStar<6> planner(robot, options, graph);
+    RRTStar<6> plannerBenchmark(robot, optionsBenchmark, graphBenchmark);
 
     // std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[1]);
     // exportCad(ExportFormat::OBJ, "robotStart", robotModel->m_vertices, robotModel->m_faces);
@@ -129,11 +137,21 @@ void benchmarkHedgehog() {
 }
 
 int main(int argc, char** argv) {
+    std::vector<Mesh> meshes;
+    bool result = importMeshes("/users/skaden/Downloads/box.dae", meshes);
+    if (result) {
+        int count = 1;
+        for (auto mesh : meshes) {
+            exportCad(ExportFormat::OBJ, "cube" + std::to_string(count), mesh);
+            ++count;
+        }
+    }
+
     // ProfilerStart("/tmp/cpu.prof");
     modelDir = getModelDirectory();
-    benchmarkFlange();
-    benchmarkAlphaPuzzle();
-    benchmarkHedgehog();
+    // benchmarkFlange();
+    // benchmarkAlphaPuzzle();
+    // benchmarkHedgehog();
     // ProfilerStop();
     return 0;
 }

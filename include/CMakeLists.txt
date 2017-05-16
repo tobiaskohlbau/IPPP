@@ -26,6 +26,15 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection2D.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqp.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionTriangleRobot.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/DistanceMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L1Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/InfMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL1Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL2Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecInfMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/BruteForceNF.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/KDTree.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/NeighborFinder.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/Sampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerLinear.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerRotatory.hpp
@@ -35,13 +44,6 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/TrajectoryPlanner.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/DistanceMetric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L1Metric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/InfMetric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL1Metric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL2Metric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecInfMetric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/KDTree.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilGeo.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilIO.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilList.hpp

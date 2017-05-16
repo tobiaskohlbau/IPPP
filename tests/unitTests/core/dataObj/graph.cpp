@@ -27,12 +27,16 @@ BOOST_AUTO_TEST_SUITE(constructor)
 
 template <unsigned int dim>
 void testConstructor() {
-    Graph<dim> graph1(0);
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+
+    Graph<dim> graph1(0, neighborFinder);
     BOOST_CHECK(graph1.autoSort() == false);
     BOOST_CHECK(graph1.getSortCount() == 0);
     BOOST_CHECK(graph1.size() == 0);
 
-    Graph<dim> graph2(10);
+    Graph<dim> graph2(10, neighborFinder);
     BOOST_CHECK(graph2.autoSort() == true);
     BOOST_CHECK(graph2.getSortCount() == 10);
     BOOST_CHECK(graph2.size() == 0);
@@ -55,7 +59,10 @@ BOOST_AUTO_TEST_SUITE(search)
 
 template <unsigned int dim>
 void NNS() {
-    Graph<dim> graph1(0);
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder1(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    Graph<dim> graph1(0, neighborFinder1);
     std::vector<Vector<dim>> vecs;
     std::vector<std::shared_ptr<Node<dim>>> nodes;
     for (int i = 0; i < 10; ++i) {
@@ -69,7 +76,9 @@ void NNS() {
     BOOST_CHECK(nodes[0] == graph1.getNearestNode(*(nodes[0])));
     BOOST_CHECK(nodes[0] == graph1.getNearestNode(vecs[0]));
 
-    Graph<dim> graph2(0);
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder2(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    Graph<dim> graph2(0, neighborFinder2);
     for (int i = 1; i < 10; ++i)
         graph2.addNode(nodes[i]);
     BOOST_CHECK(nodes[1] == graph2.getNearestNode(nodes[0]));
@@ -105,7 +114,10 @@ void contains(std::vector<std::shared_ptr<Node<dim>>> result, std::vector<std::s
 
 template <unsigned int dim>
 void RS() {
-    Graph<dim> graph1(0);
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder1(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    Graph<dim> graph1(0, neighborFinder1);
     std::vector<Vector<dim>> vecs;
     std::vector<std::shared_ptr<Node<dim>>> nodes;
     for (int i = 0; i < 10; ++i) {

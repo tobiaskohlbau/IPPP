@@ -2,10 +2,10 @@
 #include <memory>
 
 #include <core/collisionDetection/CollisionDetectionPqp.hpp>
-#include <pathPlanner/RRTStar.hpp>
-#include <pathPlanner/PRM.hpp>
 #include <environment/MobileRobot.h>
 #include <environment/model/ModelFactoryPqp.h>
+#include <pathPlanner/PRM.hpp>
+#include <pathPlanner/RRTStar.hpp>
 
 #include <modelDirectory.h>
 
@@ -42,12 +42,19 @@ int main(int argc, char** argv) {
     // create the sampling module with the sampler
     std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
     std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(robot, collision, trajectory, sampler));
+    // create the distance metric
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
 
     // define the options of the path planner with the modules
     float rrtStepSize = 30;
-    RRTOptions<6> options(rrtStepSize, collision, trajectory, sampling);
+    RRTOptions<6> options(rrtStepSize, collision, trajectory, sampling, distanceMetric);
+    // create the neighbor finder for the graph
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    // create the graph of the planner
+    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
     // create the path planner
-    RRTStar<6> pathPlanner(robot, options);
+    RRTStar<6> pathPlanner(robot, options, graph);
 
     // define start and goal position, angles has to be in rad
     Vector<dim> start = util::Vecf(78.240253, 24.147785, -8.133371, 0.286451, 0.769112, 0.706202);
@@ -58,7 +65,6 @@ int main(int argc, char** argv) {
     unsigned int numThreads = 4;
     // compute path
     bool result = pathPlanner.computePath(start, goal, numNodes, numThreads);
-
 
     if (result) {
         std::vector<Vector<dim>> path = pathPlanner.getPath(1, true);

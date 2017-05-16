@@ -23,14 +23,14 @@
 
 #include <Eigen/Core>
 
-#include <core/dataObj/Graph.hpp>
 #include <core/Identifier.h>
-#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <core/collisionDetection/CollisionDetection.hpp>
+#include <core/dataObj/Graph.hpp>
 #include <core/sampling/Sampling.hpp>
+#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <core/types.h>
-#include <pathPlanner/options/PlannerOptions.hpp>
 #include <environment/RobotBase.hpp>
+#include <pathPlanner/options/PlannerOptions.hpp>
 
 namespace ippp {
 
@@ -45,7 +45,8 @@ class Planner : public Identifier {
     ~Planner();
 
   protected:
-    Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options);
+    Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options,
+            const std::shared_ptr<Graph<dim>> &graph);
 
   public:
     virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
@@ -91,17 +92,24 @@ Planner<dim>::~Planner() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options)
+Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options,
+                      const std::shared_ptr<Graph<dim>> &graph)
     : Identifier(name), m_options(options), m_metric(options.getDistanceMetric()) {
     m_pathPlanned = false;
 
     m_robot = robot;
-    m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(options.getSortCountGraph()));
+    m_graph = graph;
     m_collision = m_options.getCollisionDetection();
     m_trajectory = options.getTrajectoryPlanner();
     m_sampling = options.getSampling();
 }
 
+/*!
+*  \brief      Return the graph of the path planner
+*  \author     Sascha Kaden
+*  \param[out] Graph
+*  \date       2016-09-27
+*/
 template <unsigned int dim>
 std::shared_ptr<Graph<dim>> Planner<dim>::getGraph() {
     return m_graph;

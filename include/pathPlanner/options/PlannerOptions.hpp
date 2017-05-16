@@ -22,10 +22,10 @@
 #include <memory>
 
 #include <core/Identifier.h>
-#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <core/collisionDetection/CollisionDetection.hpp>
 #include <core/distanceMetrics/DistanceMetric.hpp>
 #include <core/sampling/Sampling.hpp>
+#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 
 namespace ippp {
 
@@ -39,7 +39,7 @@ class PlannerOptions : public Identifier {
   public:
     PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
                    const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
-                   const std::shared_ptr<DistanceMetric<dim>> &metric, const unsigned int sortingCountGraph);
+                   const std::shared_ptr<DistanceMetric<dim>> &metric);
 
     void setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &planner);
     std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner() const;
@@ -53,15 +53,11 @@ class PlannerOptions : public Identifier {
     void setDistanceMetric(const std::shared_ptr<DistanceMetric<dim>> &metric);
     std::shared_ptr<DistanceMetric<dim>> getDistanceMetric() const;
 
-    void setSortCountGraph(const unsigned int sortAmountGraph);
-    unsigned int getSortCountGraph() const;
-
   protected:
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<TrajectoryPlanner<dim>> m_planner = nullptr;
     std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
-    unsigned int m_sortingCountGraph = 0;
 };
 
 /*!
@@ -71,7 +67,6 @@ class PlannerOptions : public Identifier {
 *  \param[in]  samplerMethod
 *  \param[in]  samplingMethod
 *  \param[in]  DistanceMetric
-*  \param[in]  sortingCountGraph
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
@@ -79,13 +74,12 @@ template <unsigned int dim>
 PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
                                     const std::shared_ptr<Sampling<dim>> &sampling,
-                                    const std::shared_ptr<DistanceMetric<dim>> &metric, const unsigned int sortingCountGraph)
+                                    const std::shared_ptr<DistanceMetric<dim>> &metric)
     : Identifier("PlannerOptions") {
     m_collision = collision;
     m_planner = planner;
     m_metric = metric;
     m_sampling = sampling;
-    m_sortingCountGraph = sortingCountGraph;
 }
 
 /*!
@@ -110,11 +104,23 @@ std::shared_ptr<TrajectoryPlanner<dim>> PlannerOptions<dim>::getTrajectoryPlanne
     return m_planner;
 }
 
+/*!
+*  \brief      Set the collision detection
+*  \param[in]  collision detection
+*  \author     Sascha Kaden
+*  \date       2016-01-29
+*/
 template <unsigned int dim>
 void PlannerOptions<dim>::setCollisionDetection(const std::shared_ptr<CollisionDetection<dim>> &collision) {
     m_collision = collision;
 }
 
+/*!
+*  \brief      Returns the collision detection
+*  \param[out] collision detection
+*  \author     Sascha Kaden
+*  \date       2016-01-29
+*/
 template <unsigned int dim>
 std::shared_ptr<CollisionDetection<dim>> PlannerOptions<dim>::getCollisionDetection() const {
     return m_collision;
@@ -162,28 +168,6 @@ void PlannerOptions<dim>::setDistanceMetric(const std::shared_ptr<DistanceMetric
 template <unsigned int dim>
 std::shared_ptr<DistanceMetric<dim>> PlannerOptions<dim>::getDistanceMetric() const {
     return m_metric;
-}
-
-/*!
-* \brief      Sets count to sort Graph automically
-* \param[in]  autoSort
-* \author     Sascha Kaden
-* \date       2017-01-05
-*/
-template <unsigned int dim>
-void PlannerOptions<dim>::setSortCountGraph(const unsigned int sortingCountGraph) {
-    m_sortingCountGraph = sortingCountGraph;
-}
-
-/*!
-*  \brief      Returns count to sort Graph automically
-*  \param[out] autoSort
-*  \author     Sascha Kaden
-*  \date       2017-01-05
-*/
-template <unsigned int dim>
-unsigned int PlannerOptions<dim>::getSortCountGraph() const {
-    return m_sortingCountGraph;
 }
 
 } /* namespace ippp */

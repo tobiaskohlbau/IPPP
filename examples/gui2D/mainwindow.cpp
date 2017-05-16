@@ -4,16 +4,16 @@
 #include <QFileDialog>
 #include <core/collisionDetection/CollisionDetection2D.hpp>
 #include <core/collisionDetection/CollisionDetectionTriangleRobot.hpp>
-#include <core/sampler/SamplerNormalDist.hpp>
-#include <core/sampler/SamplerUniform.hpp>
-#include <core/sampling/SamplingNearObstacle.hpp>
 #include <core/distanceMetrics/InfMetric.hpp>
 #include <core/distanceMetrics/L1Metric.hpp>
 #include <core/distanceMetrics/WeightVecInfMetric.hpp>
 #include <core/distanceMetrics/WeightVecL1Metric.hpp>
 #include <core/distanceMetrics/WeightVecL2Metric.hpp>
-#include <pathPlanner/options/PRMOptions.hpp>
+#include <core/sampler/SamplerNormalDist.hpp>
+#include <core/sampler/SamplerUniform.hpp>
+#include <core/sampling/SamplingNearObstacle.hpp>
 #include <environment/model/ModelFactoryTriangle2D.h>
+#include <pathPlanner/options/PRMOptions.hpp>
 #include <ui/Drawing2D.hpp>
 
 using namespace ippp;
@@ -59,7 +59,8 @@ void MainWindow::computePath() {
 
     if (m_robotType == 1) {
         const unsigned int dim = 3;
-        std::shared_ptr<ippp::DistanceMetric<dim>> edgeH = std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
+        std::shared_ptr<ippp::DistanceMetric<dim>> edgeH =
+            std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
         ;
         if (m_metric == 1) {
             edgeH = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
@@ -102,18 +103,24 @@ void MainWindow::computePath() {
         RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, edgeH);
         PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, edgeH);
 
+        std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
+            new KDTree<dim, std::shared_ptr<Node<dim>>>(edgeH));
+        // create the graph of the planner
+        std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
+
         if (m_plannerType == 0)
-            m_planner3d = std::shared_ptr<RRT<dim>>(new RRT<3>(robot, rrtOptions));
+            m_planner3d = std::shared_ptr<RRT<dim>>(new RRT<3>(robot, rrtOptions, graph));
         else if (m_plannerType == 1)
-            m_planner3d = std::shared_ptr<RRTStar<dim>>(new RRTStar<3>(robot, rrtOptions));
+            m_planner3d = std::shared_ptr<RRTStar<dim>>(new RRTStar<3>(robot, rrtOptions, graph));
         else
-            m_planner3d = std::shared_ptr<PRM<dim>>(new PRM<3>(robot, prmOptions));
+            m_planner3d = std::shared_ptr<PRM<dim>>(new PRM<3>(robot, prmOptions, graph));
         Vector3 start(m_startX, m_startY, m_startPhi * util::toRad());
         Vector3 goal(m_goalX, m_goalY, m_goalPhi * util::toRad());
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
         const unsigned int dim = 2;
-        std::shared_ptr<ippp::DistanceMetric<dim>> edgeH = std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
+        std::shared_ptr<ippp::DistanceMetric<dim>> edgeH =
+            std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
         if (m_metric == 1) {
             edgeH = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
         } else if (m_metric == 2) {
@@ -150,15 +157,20 @@ void MainWindow::computePath() {
         if (m_samplingStrategy == 1)
             sampling = std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<dim>(robot, collision, trajectory, sampler));
 
-        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling);
-        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling);
+        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, edgeH);
+        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, edgeH);
+
+        std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
+            new KDTree<dim, std::shared_ptr<Node<dim>>>(edgeH));
+        // create the graph of the planner
+        std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
 
         if (m_plannerType == 0)
-            m_planner2d = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
+            m_planner2d = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions, graph));
         else if (m_plannerType == 1)
-            m_planner2d = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
+            m_planner2d = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions, graph));
         else
-            m_planner2d = std::shared_ptr<PRM<2>>(new PRM<dim>(robot, prmOptions));
+            m_planner2d = std::shared_ptr<PRM<2>>(new PRM<dim>(robot, prmOptions, graph));
         Vector2 start(m_startX, m_startY);
         Vector2 goal(m_goalX, m_goalY);
         m_connected = m_planner2d->computePath(start, goal, m_numNodes, m_numThreads);
@@ -235,6 +247,8 @@ QImage MainWindow::convertCvMat(cv::Mat inMat) {
 
 void MainWindow::loadConfig() {
     QString qFileName = QFileDialog::getOpenFileName(this, tr("Open Config"), "/home", tr("Config Files (*.js *.json)"));
+    if (qFileName == "")
+        return;
     boost::property_tree::ptree pt;
     boost::property_tree::read_json(qFileName.toStdString(), pt);
 
