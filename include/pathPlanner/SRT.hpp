@@ -34,7 +34,7 @@ namespace ippp {
 template <unsigned int dim>
 class SRT : public Planner<dim> {
   public:
-    SRT(const std::shared_ptr<RobotBase<dim>> &robot, const SRTOptions<dim> &options);
+    SRT(const std::shared_ptr<RobotBase<dim>> &robot, const SRTOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph);
 
     bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
     bool expand(const unsigned int numNodes, const unsigned int numThreads);
@@ -78,8 +78,9 @@ class SRT : public Planner<dim> {
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-SRT<dim>::SRT(const std::shared_ptr<RobotBase<dim>> &robot, const SRTOptions<dim> &options)
-    : Planner<dim>("SRT", robot, options) {
+SRT<dim>::SRT(const std::shared_ptr<RobotBase<dim>> &robot, const SRTOptions<dim> &options,
+              const std::shared_ptr<Graph<dim>> &graph)
+    : Planner<dim>("SRT", robot, options, graph) {
     m_nbOfTrees = options.getNbOfTrees();
 }
 
@@ -94,7 +95,8 @@ SRT<dim>::SRT(const std::shared_ptr<RobotBase<dim>> &robot, const SRTOptions<dim
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads) {
+bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
+                           const unsigned int numThreads) {
     if (m_collision->controlVec(start)) {
         Logging::error("Start Node in collision", this);
         return false;
@@ -161,7 +163,7 @@ void SRT<dim>::samplingPhase(const unsigned int nbOfNodes, const unsigned int nb
     Vector<dim> sample;
     for (unsigned int i = 0; i < nbOfTrees; ++i) {
         sample = m_sampling->getSample();
-        while(m_collision->controlVec(sample)) {
+        while (m_collision->controlVec(sample)) {
             sample = m_sampling->getSample();
         }
         std::shared_ptr<Graph<dim>> graph = computeTree(nbOfNodes, sample);

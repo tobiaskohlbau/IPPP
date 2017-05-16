@@ -19,9 +19,9 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
-#include <core/dataObj/Node.hpp>
 #include <core/Identifier.h>
-#include <core/utility/KDTree.hpp>
+#include <core/dataObj/Node.hpp>
+#include <core/neighborFinders/KDTree.hpp>
 #include <core/utility/Logging.h>
 
 namespace ippp {
@@ -34,7 +34,7 @@ namespace ippp {
 template <unsigned int dim>
 class Graph : public Identifier {
   public:
-    Graph(const unsigned int sortCount);
+    Graph(const unsigned int sortCount, const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder);
     ~Graph();
 
     void addNode(const std::shared_ptr<Node<dim>> &node);
@@ -62,6 +62,8 @@ class Graph : public Identifier {
     void clearQueryParents();
     void clearChildes();
 
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
+
     bool operator<(std::shared_ptr<Graph<dim>> const &a) {
         if (a->getNode(0) && this->getNode(0)) {
             return a->getNode(0)->getValues().norm() < this->getNode(0)->getValues().norm();
@@ -72,9 +74,9 @@ class Graph : public Identifier {
 
   private:
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;
-    std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>> m_kdTree;
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr;
     std::mutex m_mutex;
-    const unsigned int m_sortCount;
+    const unsigned int m_sortCount = 0;
     bool m_autoSort = false;
     bool m_preserveNodePtr = false;
 };
@@ -85,9 +87,11 @@ class Graph : public Identifier {
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-Graph<dim>::Graph(const unsigned int sortCount) : Identifier("Graph"), m_sortCount(sortCount) {
+Graph<dim>::Graph(const unsigned int sortCount,
+                  const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder)
+    : Identifier("Graph"), m_sortCount(sortCount) {
     m_autoSort = (sortCount != 0);
-    m_kdTree = std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>());
+    m_neighborFinder = neighborFinder;
 }
 
 /*!
@@ -118,7 +122,7 @@ Graph<dim>::~Graph() {
 template <unsigned int dim>
 void Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_mutex.lock();
-    m_kdTree->addNode(node->getValues(), node);
+    m_neighborFinder->addNode(node->getValues(), node);
     m_nodes.push_back(node);
     m_mutex.unlock();
     if (m_autoSort && (m_nodes.size() % m_sortCount) == 0) {
@@ -174,7 +178,7 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() const {
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Vector<dim> &vec) const {
-    return m_kdTree->searchNearestNeighbor(vec);
+    return m_neighborFinder->searchNearestNeighbor(vec);
 }
 
 /*!
@@ -186,7 +190,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Vector<dim> &vec) co
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> &node) const {
-    return m_kdTree->searchNearestNeighbor(node.getValues());
+    return m_neighborFinder->searchNearestNeighbor(node.getValues());
 }
 
 /*!
@@ -198,7 +202,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> &node) con
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const std::shared_ptr<Node<dim>> &node) const {
-    return m_kdTree->searchNearestNeighbor(node->getValues());
+    return m_neighborFinder->searchNearestNeighbor(node->getValues());
 }
 
 /*!
@@ -211,7 +215,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const std::shared_ptr<Node
 */
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Vector<dim> &vec, const float range) const {
-    return m_kdTree->searchRange(vec, range);
+    return m_neighborFinder->searchRange(vec, range);
 }
 
 /*!
@@ -224,7 +228,7 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Vector<di
 */
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Node<dim> &node, const float range) const {
-    return m_kdTree->searchRange(node.getValues(), range);
+    return m_neighborFinder->searchRange(node.getValues(), range);
 }
 
 /*!
@@ -237,20 +241,18 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Node<dim>
 */
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shared_ptr<Node<dim>> node, const float range) const {
-    return m_kdTree->searchRange(node->getValues(), range);
+    return m_neighborFinder->searchRange(node->getValues(), range);
 }
 
 /*!
-* \brief      Creates a new sorted KDTree and set them as member
+* \brief      Rebase the NeighborFinder with the node list from the graph.
 * \author     Sascha Kaden
 * \date       2017-01-09
 */
 template <unsigned int dim>
 void Graph<dim>::sortTree() {
     std::lock_guard<std::mutex> lock(m_mutex);
-    std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>> kdTree =
-        std::shared_ptr<KDTree<dim, std::shared_ptr<Node<dim>>>>(new KDTree<dim, std::shared_ptr<Node<dim>>>(m_nodes));
-    m_kdTree = kdTree;
+    m_neighborFinder->rebaseSorted(m_nodes);
     Logging::info("KD Tree has been sorted and have: " + std::to_string(m_nodes.size()) + " Nodes", this);
 }
 
@@ -366,6 +368,11 @@ void Graph<dim>::clearChildes() {
 template <unsigned int dim>
 void Graph<dim>::preserveNodePtr() {
     m_preserveNodePtr = true;
+}
+
+template <unsigned int dim>
+std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> Graph<dim>::getNeighborFinder() {
+    return m_neighborFinder;
 }
 
 } /* namespace ippp */

@@ -33,8 +33,7 @@ class SRTOptions : public PlannerOptions<dim> {
   public:
     SRTOptions(const unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
-               const std::shared_ptr<DistanceMetric<dim>> &metric = std::shared_ptr<DistanceMetric<dim>>(new DistanceMetric<dim>()),
-               const unsigned int sortingCountGraph = 0);
+               const std::shared_ptr<DistanceMetric<dim>> &metric);
 
     void setNbOfTrees(const unsigned int nbOfTrees);
     unsigned int getNbOfTrees() const;
@@ -55,14 +54,13 @@ class SRTOptions : public PlannerOptions<dim> {
 template <unsigned int dim>
 SRTOptions<dim>::SRTOptions(const unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
                             const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
-                            const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<DistanceMetric<dim>> &metric,
-                            const unsigned int sortingCountGraph)
-    : PlannerOptions<dim>(collision, planner, sampling, metric, sortingCountGraph) {
+                            const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<DistanceMetric<dim>> &metric)
+    : PlannerOptions<dim>(collision, planner, sampling, metric) {
     setNbOfTrees(nbOfTrees);
 }
 
 /*!
-*  \brief      Sets the range size of the local planner from the Pipppanner
+*  \brief      Sets the range size of the local planner
 *  \param[in]  rangeSize
 *  \author     Sascha Kaden
 *  \date       2017-04-02
@@ -78,7 +76,7 @@ void SRTOptions<dim>::setNbOfTrees(const unsigned int nbOfTrees) {
 }
 
 /*!
-*  \brief      Returns the range size of the local planner from the Pipppanner
+*  \brief      Returns the range size of the local planner
 *  \param[out] rangeSize
 *  \author     Sascha Kaden
 *  \date       2017-04-02

@@ -5,16 +5,16 @@
 
 #include <core/collisionDetection/CollisionDetection2D.hpp>
 #include <core/collisionDetection/CollisionDetectionTriangleRobot.hpp>
-
+#include <core/neighborFinders/BruteForceNF.hpp>
+#include <core/sampler/SamplerUniform.hpp>
 #include <core/sampler/SeedSampler.hpp>
 #include <core/sampling/SamplingNearObstacle.hpp>
-
-#include <pathPlanner/PRM.hpp>
-#include <pathPlanner/RRTStarContTraj.hpp>
-#include <pathPlanner/SRT.hpp>
 #include <environment/PointRobot.h>
 #include <environment/TriangleRobot2D.h>
 #include <environment/model/ModelFactoryTriangle2D.h>
+#include <pathPlanner/PRM.hpp>
+#include <pathPlanner/RRTStarContTraj.hpp>
+#include <pathPlanner/SRT.hpp>
 
 #include <modelDirectory.h>
 
@@ -43,15 +43,21 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     std::shared_ptr<TrajectoryPlanner<3>> trajectory(new TrajectoryPlanner<3>(collision));
     std::shared_ptr<Sampler<3>> sampler(new SeedSampler<3>(robot));
     std::shared_ptr<Sampling<3>> sampling(new SamplingNearObstacle<3>(robot, collision, trajectory, sampler));
-    PRMOptions<dim> prmOptions(30, collision, trajectory, sampling);
-    RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling);
-    SRTOptions<dim> srtOptions(20, collision, trajectory, sampling);
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+
+    PRMOptions<dim> prmOptions(30, collision, trajectory, sampling, distanceMetric);
+    RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling, distanceMetric);
+    SRTOptions<dim> srtOptions(20, collision, trajectory, sampling, distanceMetric);
+
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
-     planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
-    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
-    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions));
+    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions, graph));
+    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions, graph));
+    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions, graph));
+    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions, graph));
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
@@ -87,24 +93,30 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
 
     std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
     std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(collision));
-    std::shared_ptr<Sampler<2>> sampler(new SeedSampler<2>(robot));
+    std::shared_ptr<Sampler<2>> sampler(new SamplerUniform<2>(robot));
     std::shared_ptr<Sampling<2>> sampling(new SamplingNearObstacle<2>(robot, collision, trajectory, sampler));
-    PRMOptions<dim> prmOptions(40, collision, trajectory, sampling);
-    RRTOptions<dim> rrtOptions(50, collision, trajectory, sampling);
-    SRTOptions<dim> srtOptions(20, collision, trajectory, sampling);
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+
+    PRMOptions<dim> prmOptions(40, collision, trajectory, sampling, distanceMetric);
+    RRTOptions<dim> rrtOptions(50, collision, trajectory, sampling, distanceMetric);
+    SRTOptions<dim> srtOptions(20, collision, trajectory, sampling, distanceMetric);
+
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
+        new BruteForceNF<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions));
-     planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions));
-    // planner = std::shared_ptr<RRTStarContTraj<dim>>(new RRTStarContTraj<dim>(robot, rrtOptions));
-    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions));
-    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions));
+    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions, graph));
+    // planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions, graph));
+    // planner = std::shared_ptr<RRTStarContTraj<dim>>(new RRTStarContTraj<dim>(robot, rrtOptions, graph));
+    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions, graph));
+    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions, graph));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(50.0, 30.0);
     Vector2 goal(870.0, 870.0);
-    bool connected = planner->computePath(start, goal, 5200, 2);
+    bool connected = planner->computePath(start, goal, 4000, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();

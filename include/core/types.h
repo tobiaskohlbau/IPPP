@@ -19,11 +19,14 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <memory>
+
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
 namespace ippp {
 
+// Eigen variables
 template <unsigned int dim>
 using Vector = Eigen::Matrix<float, dim, 1>;
 using Vector2 = Eigen::Matrix<float, 2, 1>;
@@ -32,7 +35,6 @@ using Vector4 = Eigen::Matrix<float, 4, 1>;
 using Vector5 = Eigen::Matrix<float, 5, 1>;
 using Vector6 = Eigen::Matrix<float, 6, 1>;
 using VectorX = Eigen::Matrix<float, Eigen::Dynamic, 1>;
-
 
 template <unsigned int dim>
 using Matrix = Eigen::Matrix<float, dim, dim>;

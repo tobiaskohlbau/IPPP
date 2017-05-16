@@ -34,7 +34,8 @@ namespace ippp {
 template <unsigned int dim>
 class RRT : public Planner<dim> {
   public:
-    RRT(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options, const std::string &name = "RRT");
+    RRT(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph,
+        const std::string &name = "RRT");
 
     bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
     bool expand(const unsigned int numNodes, const unsigned int numThreads);
@@ -77,8 +78,9 @@ class RRT : public Planner<dim> {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-RRT<dim>::RRT(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options, const std::string &name)
-    : Planner<dim>("RRT", robot, options) {
+RRT<dim>::RRT(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options,
+              const std::shared_ptr<Graph<dim>> &graph, const std::string &name)
+    : Planner<dim>(name, robot, options, graph) {
     m_stepSize = options.getStepSize();
 }
 
@@ -135,7 +137,8 @@ bool RRT<dim>::setInitNode(const Vector<dim> start) {
             return true;
         } else {
             Logging::info("New start node, new tree will be created", this);
-            m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(m_options.getSortCountGraph()));
+            m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(m_graph->getSortCount(), m_graph->getNeighborFinder()));
+            m_graph->sortTree();
         }
     }
 

@@ -4,10 +4,10 @@
 
 #include <Eigen/Core>
 
-#include <core/utility/Utility.h>
 #include <core/collisionDetection/CollisionDetectionPqp.hpp>
-#include <pathPlanner/RRTStar.hpp>
+#include <core/utility/Utility.h>
 #include <environment/Jaco.h>
+#include <pathPlanner/RRTStar.hpp>
 
 #include <ui/Writer.hpp>
 
@@ -19,16 +19,23 @@ void printTime(clock_t begin, clock_t end) {
 }
 
 void simpleRRT() {
+    const unsigned int dim = 6;
     std::shared_ptr<Jaco> robot(new Jaco());
 
     robot->saveMeshConfig(util::Vecf(0, 0, 0, 0, 0, 0));
 
-    std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
-    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(collision, 0.5));
-    std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
-    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
-    RRTOptions<6> options(30, collision, trajectory, sampling);
-    RRT<6> planner(robot, options);
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(robot));
+    std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, 0.5));
+    std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
+    std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(robot, collision, trajectory, sampler));
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+
+    RRTOptions<dim> options(30, collision, trajectory, sampling, distanceMetric);
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(4000, neighborFinder));
+
+    RRT<dim> planner(robot, options, graph);
     Vector6 start = util::Vecf(180, 180, 180, 180, 180, 180);
     Vector6 goal = util::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
 
@@ -38,12 +45,12 @@ void simpleRRT() {
     clock_t end = std::clock();
     printTime(begin, end);
 
-    std::vector<std::shared_ptr<Node<6>>> nodes = planner.getGraphNodes();
+    std::vector<std::shared_ptr<Node<dim>>> nodes = planner.getGraphNodes();
     std::vector<Vector6> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
-    writer::writeVecsToFile<6>(graphPoints, "example.ASC", 10);
+    writer::writeVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
@@ -52,26 +59,36 @@ void simpleRRT() {
         std::vector<Vector6> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
-        writer::appendVecsToFile<6>(pathPoints, "example.ASC", 10);
+        writer::appendVecsToFile<dim>(pathPoints, "example.ASC", 10);
 
-        //Helper vrep(6);
-        //vrep.start();
-        //for (auto angles : pathAngles)
+        // Helper vrep(dim);
+        // vrep.start();
+        // for (auto angles : pathAngles)
         //    vrep.setPos(angles);
     }
 }
 
 void treeConnection() {
+    const unsigned int dim = 6;
     std::shared_ptr<Jaco> robot(new Jaco());
 
     // create two trees from init and from goal
-    std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
-    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(collision, 0.5));
-    std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
-    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
-    RRTOptions<6> options(20, collision, trajectory, sampling);
-    RRTStar<6> plannerGoalNode(robot, options);
-    RRTStar<6> plannerInitNode(robot, options);
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(robot));
+    std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, 0.5));
+    std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
+    std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(robot, collision, trajectory, sampler));
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    RRTOptions<dim> options(20, collision, trajectory, sampling, distanceMetric);
+
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinderInit(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinderGoal(
+        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    std::shared_ptr<Graph<dim>> graphInit(new Graph<dim>(4000, neighborFinderInit));
+    std::shared_ptr<Graph<dim>> graphGoal(new Graph<dim>(4000, neighborFinderGoal));
+
+    RRTStar<dim> plannerGoalNode(robot, options, graphInit);
+    RRTStar<dim> plannerInitNode(robot, options, graphGoal);
 
     // set properties to the planners
     plannerInitNode.setInitNode(util::Vecf(180, 180, 180, 180, 180, 180));
@@ -89,31 +106,31 @@ void treeConnection() {
     bool connected = false;
     float minCost = std::numeric_limits<float>::max();
     for (int i = 0; i < 10000; ++i) {
-//        Vec<float> sample = plannerInitNode.getSamplePoint();
-//
-//        bool planner1Connected = plannerInitNode.connectGoalNode(sample);
-//        bool planner2Connected = plannerGoalNode.connectGoalNode(sample);
-//        if (planner1Connected && planner2Connected) {
-//            float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
-//            if (cost < minCost) {
-//                goal = sample;
-//                connected = true;
-//            }
-//        }
+        //        Vec<float> sample = plannerInitNode.getSamplePoint();
+        //
+        //        bool planner1Connected = plannerInitNode.connectGoalNode(sample);
+        //        bool planner2Connected = plannerGoalNode.connectGoalNode(sample);
+        //        if (planner1Connected && planner2Connected) {
+        //            float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
+        //            if (cost < minCost) {
+        //                goal = sample;
+        //                connected = true;
+        //            }
+        //        }
     }
 
-    std::vector<std::shared_ptr<Node<6>>> nodes = plannerInitNode.getGraphNodes();
+    std::vector<std::shared_ptr<Node<dim>>> nodes = plannerInitNode.getGraphNodes();
     std::vector<Vector6> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
-    writer::writeVecsToFile<6>(graphPoints, "example.ASC", 10);
+    writer::writeVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     nodes = plannerGoalNode.getGraphNodes();
     std::cout << "Goal Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
         graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
-    writer::appendVecsToFile<6>(graphPoints, "example.ASC", 10);
+    writer::appendVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
@@ -127,7 +144,7 @@ void treeConnection() {
         std::vector<Vector6> pathPoints;
         for (auto angles : pathAngles)
             pathPoints.push_back(robot->directKinematic(angles));
-        writer::appendVecsToFile<6>(pathPoints, "example.ASC", 10);
+        writer::appendVecsToFile<dim>(pathPoints, "example.ASC", 10);
 
         // for (int i = 0; i < pathPoints.size(); ++i)
         //    vrep->setPos(pathAngles[i]);
