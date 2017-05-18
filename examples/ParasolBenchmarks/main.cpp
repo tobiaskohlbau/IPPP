@@ -6,8 +6,8 @@
 
 #include <core/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
 #include <core/utility/UtilVec.hpp>
-#include <environment/MobileRobot.h>
 #include <environment/model/ModelFactoryPqp.h>
+#include <environment/robot/MobileRobot.h>
 #include <modelDirectory.h>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
@@ -40,21 +40,24 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     Vector6 minBoundary = util::Vecf(config.minBoundary[0], config.minBoundary[1], config.minBoundary[2], 0, 0, 0);
     Vector6 maxBoundary = util::Vecf(config.maxBoundary[0], config.maxBoundary[1], config.maxBoundary[2], util::twoPi(),
                                      util::twoPi(), util::twoPi());
-    std::shared_ptr<RobotBase<6>> robot(new MobileRobot<6>(minBoundary, maxBoundary));
-    robot->setWorkspace(obstacleModel);
+    std::shared_ptr<RobotBase> robot(new MobileRobot(6, minBoundary, maxBoundary));
     robot->setBaseModel(robotModel);
 
-    std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(robot));
-    std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(robot));
+    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
+    environment->addObstacle(obstacleModel);
+
+    std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(environment));
+    std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(environment));
     std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(collision, 3));
     std::shared_ptr<TrajectoryPlanner<6>> trajectoryBenchmark(new TrajectoryPlanner<6>(collisionBenchmark, 3));
-    std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(robot));
-    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(robot, collision, trajectory, sampler));
+    std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(environment));
+    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(environment, collision, trajectory, sampler));
     for (int i = 3; i < 6; ++i) {
         config.obstacleConfig[i] *= util::toRad();
     }
 
-    std::shared_ptr<Sampling<6>> samplingBenchmark(new Sampling<6>(robot, collisionBenchmark, trajectoryBenchmark, sampler));
+    std::shared_ptr<Sampling<6>> samplingBenchmark(
+        new Sampling<6>(environment, collisionBenchmark, trajectoryBenchmark, sampler));
 
     std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
     RRTOptions<6> options(40, collision, trajectory, sampling, distanceMetric);
@@ -65,8 +68,8 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
     std::shared_ptr<Graph<dim>> graphBenchmark(new Graph<dim>(0, neighborFinder));
 
-    RRTStar<6> planner(robot, options, graph);
-    RRTStar<6> plannerBenchmark(robot, optionsBenchmark, graphBenchmark);
+    RRTStar<6> planner(environment, options, graph);
+    RRTStar<6> plannerBenchmark(environment, optionsBenchmark, graphBenchmark);
 
     // std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[1]);
     // exportCad(ExportFormat::OBJ, "robotStart", robotModel->m_vertices, robotModel->m_faces);
@@ -93,14 +96,14 @@ void benchmarkAlphaPuzzle() {
     std::string envPath = puzzleDir + "alpha.env";
     std::string queryPath = puzzleDir + "alpha.query";
 
-    Logging::info("AlphaPuzzle:");
+    std::cout << "AlphaPuzzle:" << std::endl;
     EnvironmentConfig config = readEnvironment(envPath);
     bool result = computePath(puzzleDir, queryPath, config);
 
     if (result)
-        Logging::info("could be planned");
+        std::cout << "could be planned" << std::endl;
     else
-        Logging::warning("could NOT be planned");
+        std::cout << "could NOT be planned" << std::endl;
     std::cout << std::endl;
 }
 
@@ -109,14 +112,14 @@ void benchmarkFlange() {
     std::string envPath = flangeDir + "flange.env";
     std::string queryPath = flangeDir + "flange.query";
 
-    Logging::info("Flange:");
+    std::cout << "Flange:" << std::endl;
     EnvironmentConfig config = readEnvironment(envPath);
     bool result = computePath(flangeDir, queryPath, config);
 
     if (result)
-        Logging::info("could be planned");
+        std::cout << "could be planned" << std::endl;
     else
-        Logging::warning("could NOT be planned");
+        std::cout << "could NOT be planned" << std::endl;
     std::cout << std::endl;
 }
 
@@ -125,24 +128,24 @@ void benchmarkHedgehog() {
     std::string envPath = hedgehogDir + "hedgehog.env";
     std::string queryPath = hedgehogDir + "hedgehog.query";
 
-    Logging::info("Hedgehog:");
+    std::cout << "Hedgehog:" << std::endl;
     EnvironmentConfig config = readEnvironment(envPath);
     bool result = computePath(hedgehogDir, queryPath, config);
 
     if (result)
-        Logging::info("could be planned");
+        std::cout << "could be planned" << std::endl;
     else
-        Logging::warning("could NOT be planned");
+        std::cout << "could NOT be planned" << std::endl;
     std::cout << std::endl;
 }
 
 int main(int argc, char** argv) {
     std::vector<Mesh> meshes;
-    bool result = importMeshes("/users/skaden/Downloads/box.dae", meshes);
+    bool result = cad::importMeshes("/users/skaden/Downloads/box.dae", meshes);
     if (result) {
         int count = 1;
         for (auto mesh : meshes) {
-            exportCad(ExportFormat::OBJ, "cube" + std::to_string(count), mesh);
+            cad::exportCad(cad::ExportFormat::OBJ, "cube" + std::to_string(count), mesh);
             ++count;
         }
     }

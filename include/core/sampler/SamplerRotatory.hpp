@@ -31,7 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class SamplerRotatory : public Sampler<dim> {
   public:
-    SamplerRotatory(const std::shared_ptr<RobotBase<dim>> &robot);
+    SamplerRotatory(const std::shared_ptr<Environment> &environment);
     Vector<dim> getSample() override;
 };
 
@@ -42,7 +42,8 @@ class SamplerRotatory : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerRotatory<dim>::SamplerRotatory(const std::shared_ptr<RobotBase<dim>> &robot) : Sampler<dim>(robot, "SamplerRotatory") {
+SamplerRotatory<dim>::SamplerRotatory(const std::shared_ptr<Environment> &environment)
+    : Sampler<dim>(environment, "SamplerRotatory") {
 }
 
 /*!
@@ -70,7 +71,8 @@ Vector<dim> SamplerRotatory<dim>::getSample() {
 }
 
 template <unsigned int dim>
-void SamplerRotatory<dim>::setPosition(const Vector3 pos) {}
+void SamplerRotatory<dim>::setPosition(const Vector3 pos) {
+}
 
 } /* namespace ippp */
 

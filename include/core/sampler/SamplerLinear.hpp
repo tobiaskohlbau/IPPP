@@ -31,7 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class SamplerLinear : public Sampler<dim> {
   public:
-    SamplerLinear(const std::shared_ptr<RobotBase<dim>> &robot);
+    SamplerLinear(const std::shared_ptr<Environment> &environment);
     Vector<dim> getSample() override;
 
   private:
@@ -44,7 +44,7 @@ class SamplerLinear : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerLinear<dim>::SamplerLinear(const std::shared_ptr<RobotBase<dim>> &robot) : Sampler<dim>(robot, "LinearSampler") {
+SamplerLinear<dim>::SamplerLinear(const std::shared_ptr<Environment> &environment) : Sampler<dim>(environment, "LinearSampler") {
 }
 
 /*!

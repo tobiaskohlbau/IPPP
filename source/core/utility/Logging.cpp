@@ -137,6 +137,51 @@ void Logging::error(std::string message, Identifier *module) {
 }
 
 /*!
+*  \brief      Info logging with module for identificaion
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
+void Logging::info(std::string message, const Identifier *module) {
+    if (module == nullptr) {
+        info(message, "Unknown");
+    } else {
+        info(message, module->getName());
+    }
+}
+
+/*!
+*  \brief      Warning logging with module for identificaion
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
+void Logging::warning(std::string message, const Identifier *module) {
+    if (module == nullptr) {
+        warning(message, "Unknown");
+    } else {
+        warning(message, module->getName());
+    }
+}
+
+/*!
+*  \brief      Error logging with module for identificaion
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sasch Kaden
+*  \date       2016-10-22
+*/
+void Logging::error(std::string message, const Identifier *module) {
+    if (module == nullptr) {
+        error(message, "Unknown");
+    } else {
+        error(message, module->getName());
+    }
+}
+
+/*!
 *  \brief      Debug logging with module for identificaion
 *  \param[in]  message
 *  \param[in]  module pointer

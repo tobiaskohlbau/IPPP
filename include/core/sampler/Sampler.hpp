@@ -26,7 +26,7 @@
 
 #include <core/Identifier.h>
 #include <core/types.h>
-#include <environment/RobotBase.hpp>
+#include <environment/Environment.h>
 
 namespace ippp {
 
@@ -38,7 +38,7 @@ namespace ippp {
 template <unsigned int dim>
 class Sampler : public Identifier {
   public:
-    Sampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &name = "Sampler");
+    Sampler(const std::shared_ptr<Environment> &environment, const std::string &name = "Sampler");
     virtual Vector<dim> getSample();
     float getRandomAngle();
     float getRandomNumber();
@@ -64,10 +64,10 @@ class Sampler : public Identifier {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Sampler<dim>::Sampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &name) : Identifier(name) {
-    m_minBoundary = robot->getMinBoundary();
-    m_maxBoundary = robot->getMaxBoundary();
-    Vector6 pose = robot->getPose();
+Sampler<dim>::Sampler(const std::shared_ptr<Environment> &environment, const std::string &name) : Identifier(name) {
+    m_minBoundary = environment->getRobot()->getMinBoundary();
+    m_maxBoundary = environment->getRobot()->getMaxBoundary();
+    Vector6 pose = environment->getRobot()->getPose();
     if (dim <= 6) {
         for (int i = 0; i < dim; ++i) {
             m_origin[i] = pose[i];

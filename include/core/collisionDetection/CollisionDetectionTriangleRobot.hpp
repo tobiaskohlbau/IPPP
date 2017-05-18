@@ -20,8 +20,8 @@
 #define COLLISIONDETECTIONTRIANGLEROBOT_HPP
 
 #include <core/collisionDetection/CollisionDetection.hpp>
-#include <environment/TriangleRobot2D.h>
-#include <environment/model/Model2D.h>
+#include <environment/model/CadProcessing.h>
+#include <environment/robot/TriangleRobot2D.h>
 
 namespace ippp {
 
@@ -32,7 +32,7 @@ namespace ippp {
 */
 class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
   public:
-    CollisionDetectionTriangleRobot(const std::shared_ptr<RobotBase<3>> &robot);
+    CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment);
     bool controlVec(const Vector3 &vec) override;
     bool controlTrajectory(std::vector<Vector3> &vec) override;
 
@@ -42,6 +42,8 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
 
     Eigen::MatrixXi m_workspace2D;
     std::vector<Triangle2D> m_triangles;
+    Vector2 m_minBoundary;
+    Vector2 m_maxBoundary;
 };
 
 /*!
@@ -51,20 +53,33 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
 *  \param[in]  robot
 *  \date       2017-02-19
 */
-CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shared_ptr<RobotBase<3>> &robot)
-    : CollisionDetection("CollisionDetectionTriangleRobot", robot) {
-    if (!m_robot->getWorkspace() || m_robot->getWorkspace()->empty()) {
-        Logging::error("Empty workspace model", this);
+CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment)
+    : CollisionDetection("CollisionDetectionTriangleRobot", environment) {
+    if (!m_environment->getObstacleNum() == 0) {
+        Logging::warning("Empty workspace", this);
         return;
-    } else {
-        m_workspace2D = std::dynamic_pointer_cast<Model2D>(robot->getWorkspace())->m_space;
     }
-    if (!m_robot->getBaseModel() || m_robot->getBaseModel()->empty()) {
+
+    // create workspace from the 2d triangles
+    m_workspace2D = cad::create2dspace(m_environment->getBoundary(), 255);
+    std::vector<std::shared_ptr<ModelContainer>> obstacles = m_environment->getObstacles();
+    for (auto &obstacle : obstacles) {
+        auto model = std::dynamic_pointer_cast<ModelTriangle2D>(obstacle);
+        cad::drawTriangles(m_workspace2D, model->m_triangles, 0);
+    }
+
+    auto robot = m_environment->getRobot();
+    if (!robot->getBaseModel() || robot->getBaseModel()->empty()) {
         Logging::error("Empty base model", this);
         return;
     } else {
-        m_triangles = std::dynamic_pointer_cast<ModelTriangle2D>(m_robot->getBaseModel())->m_triangles;
+        m_triangles = std::dynamic_pointer_cast<ModelTriangle2D>(robot->getBaseModel())->m_triangles;
     }
+
+    // set boundaries
+    auto bound = m_environment->getBoundary();
+    m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
+    m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
 }
 
 /*!
@@ -131,7 +146,7 @@ bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
 
     Matrix2 R;
     Vector2 t;
-        util::poseVecToRandT(vector, R, t);
+    util::poseVecToRandT(vector, R, t);
 
     Vector2 u, temp;
     std::vector<Triangle2D> triangles = m_triangles;

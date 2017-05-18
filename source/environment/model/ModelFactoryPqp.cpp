@@ -45,11 +45,11 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
 
     // create model container properties
     std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
-    if (!importMesh(filePath, pqpModel->m_mesh)) {
+    if (!cad::importMesh(filePath, pqpModel->m_mesh)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
-    pqpModel->m_mesh.aabb = computeAABB(pqpModel->m_mesh);
+    pqpModel->m_mesh.aabb = cad::computeAABB(pqpModel->m_mesh);
 
     // create PQP model
     pqpModel->m_pqpModel.BeginModel();
@@ -82,7 +82,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const
     // create model container properties
     std::vector<Mesh> meshes;
 
-    if (!importMeshes(filePath, meshes)) {
+    if (!cad::importMeshes(filePath, meshes)) {
         Logging::error("Could not load mesh", this);
         return models;
     }
@@ -90,7 +90,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const
     for (auto mesh : meshes) {
         std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
         pqpModel->m_mesh = mesh;
-        pqpModel->m_mesh.aabb = computeAABB(pqpModel->m_mesh);
+        pqpModel->m_mesh.aabb = cad::computeAABB(pqpModel->m_mesh);
 
         // create PQP model
         pqpModel->m_pqpModel.BeginModel();

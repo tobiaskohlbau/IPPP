@@ -31,7 +31,8 @@ namespace ippp {
 template <unsigned int dim>
 class SeedSampler : public Sampler<dim> {
   public:
-    SeedSampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &seed = "akls23fd43253haosrel234lh234kj2g3h42g");
+    SeedSampler(const std::shared_ptr<Environment> &environment,
+                const std::string &seed = "akls23fd43253haosrel234lh234kj2g3h42g");
     virtual Vector<dim> getSample() override;
 
   protected:
@@ -45,7 +46,8 @@ class SeedSampler : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SeedSampler<dim>::SeedSampler(const std::shared_ptr<RobotBase<dim>> &robot, const std::string &seed) : Sampler<dim>(robot, "SeedSampler") {
+SeedSampler<dim>::SeedSampler(const std::shared_ptr<Environment> &environment, const std::string &seed)
+    : Sampler<dim>(environment, "SeedSampler") {
     std::seed_seq seed_seq(seed.begin(), seed.end());
     m_randomEngine = std::minstd_rand0(seed_seq);
 }

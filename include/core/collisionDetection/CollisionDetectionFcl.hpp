@@ -36,7 +36,7 @@ namespace ippp {
 template <unsigned int dim>
 class CollisionDetectionFcl : public CollisionDetection<dim> {
   public:
-    CollisionDetectionFcl(const std::shared_ptr<RobotBase<dim>> &robot);
+    CollisionDetectionFcl(const std::shared_ptr<RobotBase> &robot);
     bool controlVec(const Vector<dim> &vec);
     bool controlTrajectory(std::vector<Vector<dim>> &vec);
 
@@ -71,7 +71,7 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<RobotBase<dim>> &robot)
+CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<RobotBase> &robot)
     : CollisionDetection<dim>("collisionDetection", robot) {
     m_identity = Matrix3::Identity(3, 3);
     m_zeroVec = Eigen::Vector3f::Zero(3, 1);

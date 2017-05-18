@@ -57,27 +57,27 @@ void MainWindow::computePath() {
     }
     Logging::info("Compute path ...", this);
 
-    if (m_robotType == 1) {
+    if (m_robotTypeLabel == 1) {
         const unsigned int dim = 3;
-        std::shared_ptr<ippp::DistanceMetric<dim>> edgeH =
+        std::shared_ptr<ippp::DistanceMetric<dim>> metric =
             std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
         ;
-        if (m_metric == 1) {
-            edgeH = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
-        } else if (m_metric == 2) {
-            edgeH = std::make_shared<ippp::InfMetric<dim>>(ippp::InfMetric<dim>());
-        } else if (m_metric == 3) {
-            std::shared_ptr<WeightVecL2Metric<dim>> metric(new ippp::WeightVecL2Metric<dim>());
-            metric->setWeightVec(m_weightVec);
-            edgeH = metric;
-        } else if (m_metric == 4) {
-            std::shared_ptr<WeightVecL1Metric<dim>> metric(new ippp::WeightVecL1Metric<dim>());
-            metric->setWeightVec(m_weightVec);
-            edgeH = metric;
-        } else if (m_metric == 5) {
-            std::shared_ptr<WeightVecInfMetric<dim>> metric(new ippp::WeightVecInfMetric<dim>());
-            metric->setWeightVec(m_weightVec);
-            edgeH = metric;
+        if (m_metricLabel == 1) {
+            metric = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
+        } else if (m_metricLabel == 2) {
+            metric = std::make_shared<ippp::InfMetric<dim>>(ippp::InfMetric<dim>());
+        } else if (m_metricLabel == 3) {
+            std::shared_ptr<WeightVecL2Metric<dim>> tempMetric(new ippp::WeightVecL2Metric<dim>());
+            tempMetric->setWeightVec(m_weightVec);
+            metric = tempMetric;
+        } else if (m_metricLabel == 4) {
+            std::shared_ptr<WeightVecL1Metric<dim>> tempMetric(new ippp::WeightVecL1Metric<dim>());
+            tempMetric->setWeightVec(m_weightVec);
+            metric = tempMetric;
+        } else if (m_metricLabel == 5) {
+            std::shared_ptr<WeightVecInfMetric<dim>> tempMetric(new ippp::WeightVecInfMetric<dim>());
+            tempMetric->setWeightVec(m_weightVec);
+            metric = tempMetric;
         }
 
         Vector3 minBoundary(0.0, 0.0, 0.0);
@@ -85,92 +85,99 @@ void MainWindow::computePath() {
         ModelFactoryTriangle2D factory;
         std::shared_ptr<ModelContainer> baseModel = factory.createModel(m_triangles);
         std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, minBoundary, maxBoundary));
-        std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
-        robot->setWorkspace(model);
-        std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(robot));
+        std::shared_ptr<Environment> environment(
+            new Environment(2, AABB(Vector3(-1500, -1500, -1500), Vector3(1500, 1500, 1500)), robot));
+
+        //        std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
+        //        robot->setWorkspace(model);
+        std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(environment));
         std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, m_trajectoryStepSize));
 
-        std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
+        std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(environment));
         if (m_samplingStrategy == 1)
-            sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(robot));
+            sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(environment));
         else if (m_samplerMethod == 2)
-            sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(robot));
+            sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(environment));
 
-        std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(robot, collision, trajectory, sampler));
+        std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(environment, collision, trajectory, sampler));
         if (m_samplingStrategy == 1)
-            sampling = std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<3>(robot, collision, trajectory, sampler));
+            sampling = std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<3>(environment, collision, trajectory, sampler));
 
-        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, edgeH);
-        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, edgeH);
+        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, metric);
+        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, metric);
 
         std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
-            new KDTree<dim, std::shared_ptr<Node<dim>>>(edgeH));
+            new KDTree<dim, std::shared_ptr<Node<dim>>>(metric));
         // create the graph of the planner
         std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
 
-        if (m_plannerType == 0)
-            m_planner3d = std::shared_ptr<RRT<dim>>(new RRT<3>(robot, rrtOptions, graph));
-        else if (m_plannerType == 1)
-            m_planner3d = std::shared_ptr<RRTStar<dim>>(new RRTStar<3>(robot, rrtOptions, graph));
+        if (m_plannerTypeLabel == 0)
+            m_planner3d = std::shared_ptr<RRT<dim>>(new RRT<3>(environment, rrtOptions, graph));
+        else if (m_plannerTypeLabel == 1)
+            m_planner3d = std::shared_ptr<RRTStar<dim>>(new RRTStar<3>(environment, rrtOptions, graph));
         else
-            m_planner3d = std::shared_ptr<PRM<dim>>(new PRM<3>(robot, prmOptions, graph));
+            m_planner3d = std::shared_ptr<PRM<dim>>(new PRM<3>(environment, prmOptions, graph));
         Vector3 start(m_startX, m_startY, m_startPhi * util::toRad());
         Vector3 goal(m_goalX, m_goalY, m_goalPhi * util::toRad());
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
         const unsigned int dim = 2;
-        std::shared_ptr<ippp::DistanceMetric<dim>> edgeH =
+        std::shared_ptr<ippp::DistanceMetric<dim>> metric =
             std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
-        if (m_metric == 1) {
-            edgeH = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
-        } else if (m_metric == 2) {
-            edgeH = std::make_shared<ippp::InfMetric<dim>>(ippp::InfMetric<dim>());
-        } else if (m_metric == 3) {
-            std::shared_ptr<WeightVecL2Metric<dim>> metric(new ippp::WeightVecL2Metric<dim>());
-            metric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
-            edgeH = metric;
-        } else if (m_metric == 4) {
-            std::shared_ptr<WeightVecL1Metric<dim>> metric(new ippp::WeightVecL1Metric<dim>());
-            metric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
-            edgeH = metric;
-        } else if (m_metric == 5) {
-            std::shared_ptr<WeightVecInfMetric<2>> metric(new ippp::WeightVecInfMetric<2>());
-            metric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
-            edgeH = metric;
+        if (m_metricLabel == 1) {
+            metric = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
+        } else if (m_metricLabel == 2) {
+            metric = std::make_shared<ippp::InfMetric<dim>>(ippp::InfMetric<dim>());
+        } else if (m_metricLabel == 3) {
+            std::shared_ptr<WeightVecL2Metric<dim>> tempMetric(new ippp::WeightVecL2Metric<dim>());
+            tempMetric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
+            metric = tempMetric;
+        } else if (m_metricLabel == 4) {
+            std::shared_ptr<WeightVecL1Metric<dim>> tempMetric(new ippp::WeightVecL1Metric<dim>());
+            tempMetric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
+            metric = tempMetric;
+        } else if (m_metricLabel == 5) {
+            std::shared_ptr<WeightVecInfMetric<2>> tempMetric(new ippp::WeightVecInfMetric<2>());
+            tempMetric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
+            metric = tempMetric;
         }
 
         Vector2 minBoundary(0.0, 0.0);
         Vector2 maxBoundary(m_workspace.cols(), m_workspace.rows());
         std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
-        std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
-        robot->setWorkspace(model);
-        std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(robot));
+        std::shared_ptr<Environment> environment(
+            new Environment(2, AABB(Vector3(-1500, -1500, -1500), Vector3(1500, 1500, 1500)), robot));
+
+        //        std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
+        //        robot->setWorkspace(model);
+
+        std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(environment));
         std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, m_trajectoryStepSize));
-        std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
+        std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(environment));
 
         if (m_samplingStrategy == 1)
-            sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(robot));
+            sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(environment));
         else if (m_samplerMethod == 2)
-            sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(robot));
+            sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(environment));
 
-        std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(robot, collision, trajectory, sampler));
+        std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(environment, collision, trajectory, sampler));
         if (m_samplingStrategy == 1)
-            sampling = std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<dim>(robot, collision, trajectory, sampler));
+            sampling = std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<dim>(environment, collision, trajectory, sampler));
 
-        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, edgeH);
-        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, edgeH);
+        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, metric);
+        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, metric);
 
         std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
-            new KDTree<dim, std::shared_ptr<Node<dim>>>(edgeH));
+            new KDTree<dim, std::shared_ptr<Node<dim>>>(metric));
         // create the graph of the planner
         std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
 
-        if (m_plannerType == 0)
-            m_planner2d = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions, graph));
-        else if (m_plannerType == 1)
-            m_planner2d = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions, graph));
+        if (m_plannerTypeLabel == 0)
+            m_planner2d = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, rrtOptions, graph));
+        else if (m_plannerTypeLabel == 1)
+            m_planner2d = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, rrtOptions, graph));
         else
-            m_planner2d = std::shared_ptr<PRM<2>>(new PRM<dim>(robot, prmOptions, graph));
+            m_planner2d = std::shared_ptr<PRM<2>>(new PRM<dim>(environment, prmOptions, graph));
         Vector2 start(m_startX, m_startY);
         Vector2 goal(m_goalX, m_goalY);
         m_connected = m_planner2d->computePath(start, goal, m_numNodes, m_numThreads);
@@ -183,7 +190,7 @@ void MainWindow::viewPath() {
     cv::Mat image = m_image.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    if (m_robotType == 1) {
+    if (m_robotTypeLabel == 1) {
         if (m_connected) {
             std::vector<Vector3> path = m_planner3d->getPath(80, true);
             drawing::drawTrianglePath(path, m_triangles, image, Eigen::Vector3i(0, 0, 255), 2);
@@ -273,8 +280,8 @@ void MainWindow::loadConfig() {
 
     setNumThreads(m_numThreads);
     setNumNodes(m_numNodes);
-    setPlannerType(m_plannerType);
-    setRobotType(m_robotType);
+    setPlannerType(m_plannerTypeLabel);
+    setRobotType(m_robotTypeLabel);
     setTrajectoryStepSize(m_trajectoryStepSize);
     setSamplerMethod(m_samplerMethod);
     setSamplingStrategy(m_samplingStrategy);
@@ -286,7 +293,7 @@ void MainWindow::loadConfig() {
     setGoalX(m_goalX);
     setGoalY(m_goalY);
     setGoalPhi(m_goalPhi);
-    setEdgeHeuristic(m_metric);
+    setEdgeHeuristic(m_metricLabel);
     setWeightVecX(m_weightVecX);
     setWeightVecY(m_weightVecY);
     setWeightVecZ(m_weightVecZ);
@@ -297,8 +304,8 @@ void MainWindow::saveConfig() {
 
     pt.put("numThreads", m_numThreads);
     pt.put("numNodes", m_numNodes);
-    pt.put("plannerType", m_plannerType);
-    pt.put("robotType", m_robotType);
+    pt.put("plannerType", m_plannerTypeLabel);
+    pt.put("robotType", m_robotTypeLabel);
     pt.put("trajectoryStepSize", m_trajectoryStepSize);
     pt.put("samplerMethod", m_samplerMethod);
     pt.put("samplingStrategy", m_samplingStrategy);
@@ -310,7 +317,7 @@ void MainWindow::saveConfig() {
     pt.put("goalX", m_goalX);
     pt.put("goalY", m_goalY);
     pt.put("goalPhi", m_goalPhi);
-    pt.put("edgeHeuristic", m_metric);
+    pt.put("edgeHeuristic", m_metricLabel);
     pt.put("weightVecX", m_weightVecX);
     pt.put("weightVecY", m_weightVecY);
     pt.put("weightVecZ", m_weightVecZ);
@@ -326,10 +333,10 @@ void MainWindow::updateNodes(int num) {
     m_numNodes = num;
 }
 void MainWindow::updatePlannerType(int type) {
-    m_plannerType = type;
+    m_plannerTypeLabel = type;
 }
 void MainWindow::updateRobotType(int type) {
-    m_robotType = type;
+    m_robotTypeLabel = type;
 }
 void MainWindow::updateTrajectoryStepSize(double value) {
     m_trajectoryStepSize = value;
@@ -365,7 +372,7 @@ void MainWindow::updateGoalPhi(double value) {
     m_goalPhi = value;
 }
 void MainWindow::updateEdgeHeuristic(int type) {
-    m_metric = type;
+    m_metricLabel = type;
 }
 void MainWindow::updateWeightVecX(double value) {
     m_weightVecX = value;

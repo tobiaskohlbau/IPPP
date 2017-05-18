@@ -34,7 +34,7 @@ namespace ippp {
 template <unsigned int dim>
 class CollisionDetectionPqpBenchmark : public CollisionDetectionPqp<dim> {
   public:
-    CollisionDetectionPqpBenchmark(const std::shared_ptr<RobotBase<dim>> &robot);
+    CollisionDetectionPqpBenchmark(const std::shared_ptr<Environment> &environment);
     bool controlVec(const Vector<dim> &vec) override;
     bool controlTrajectory(std::vector<Vector<dim>> &vec) override;
 
@@ -51,7 +51,6 @@ class CollisionDetectionPqpBenchmark : public CollisionDetectionPqp<dim> {
     std::mutex m_mutexTime;
 };
 
-
 /*!
 *  \brief      Standard constructor of the class CollisionDetectionPqpBenchmark
 *  \author     Sascha Kaden
@@ -59,8 +58,8 @@ class CollisionDetectionPqpBenchmark : public CollisionDetectionPqp<dim> {
 *  \date       2017-02-27
 */
 template <unsigned int dim>
-CollisionDetectionPqpBenchmark<dim>::CollisionDetectionPqpBenchmark(const std::shared_ptr<RobotBase<dim>> &robot)
-    : CollisionDetectionPqp<dim>(robot) {
+CollisionDetectionPqpBenchmark<dim>::CollisionDetectionPqpBenchmark(const std::shared_ptr<Environment> &environment)
+    : CollisionDetectionPqp<dim>(environment) {
 }
 
 /*!
@@ -95,7 +94,7 @@ bool CollisionDetectionPqpBenchmark<dim>::controlTrajectory(std::vector<Vector<d
     if (vecs.size() == 0)
         return false;
 
-    if (this->m_robot->getRobotType() == RobotType::mobile) {
+    if (this->m_environment->getRobot()->getRobotType() == RobotType::mobile) {
         for (int i = 0; i < vecs.size(); ++i) {
             m_mutexCount.lock();
             ++m_count;

@@ -27,8 +27,8 @@ namespace ippp {
 
 /*!
 * \brief   Data structure for 2D or 3D point list
-* \details Typedefs has to be used otherwise the variadic template constructor will not be working.
-*          Number of input points have to be the size of the PointList
+* \details Typedefs has to be used otherwise the variadic template constructor will not work.
+*          Number of input points have to be the size of the PointList.
 * \author  Sascha Kaden
 * \date    2016-12-19
 */

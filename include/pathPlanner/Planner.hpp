@@ -29,7 +29,7 @@
 #include <core/sampling/Sampling.hpp>
 #include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <core/types.h>
-#include <environment/RobotBase.hpp>
+#include <environment/Environment.h>
 #include <pathPlanner/options/PlannerOptions.hpp>
 
 namespace ippp {
@@ -45,7 +45,7 @@ class Planner : public Identifier {
     ~Planner();
 
   protected:
-    Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options,
+    Planner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
             const std::shared_ptr<Graph<dim>> &graph);
 
   public:
@@ -67,7 +67,7 @@ class Planner : public Identifier {
     std::shared_ptr<Sampling<dim>> m_sampling;
     std::shared_ptr<CollisionDetection<dim>> m_collision;
     std::shared_ptr<Graph<dim>> m_graph;
-    std::shared_ptr<RobotBase<dim>> m_robot;
+    std::shared_ptr<Environment> m_environment;
 
     const std::shared_ptr<DistanceMetric<dim>> m_metric;
     const PlannerOptions<dim> m_options;
@@ -92,12 +92,12 @@ Planner<dim>::~Planner() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-Planner<dim>::Planner(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot, const PlannerOptions<dim> &options,
-                      const std::shared_ptr<Graph<dim>> &graph)
+Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment> &environment,
+                      const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
     : Identifier(name), m_options(options), m_metric(options.getDistanceMetric()) {
     m_pathPlanned = false;
 
-    m_robot = robot;
+    m_environment = environment;
     m_graph = graph;
     m_collision = m_options.getCollisionDetection();
     m_trajectory = options.getTrajectoryPlanner();

@@ -16,29 +16,25 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef JACO_H
-#define JACO_H
+#ifndef KUKAKR5_H
+#define KUKAKR5_H
 
-#include <environment/SerialRobot.hpp>
-#include <environment/model/ModelFactoryPqp.h>
+#include <environment/robot/SerialRobot.h>
 
 namespace ippp {
 
 /*!
-* \brief   Class for the jaco robot
+* \brief   Class for the Kuka KR5 robot
 * \author  Sascha Kaden
-* \date    2016-06-30
+* \date    2016-10-22
 */
-class Jaco : public SerialRobot<6> {
+class KukaKR5 : public SerialRobot {
   public:
-    Jaco();
+    KukaKR5();
     Vector6 directKinematic(const Vector6 &angles);
     std::vector<Matrix4> getJointTrafos(const Vector6 &angles);
-
-  private:
-    Vector6 convertRealToDH(const Vector6 &realAngles);
 };
 
 } /* namespace ippp */
 
-#endif /* JACO_H */
+#endif /* KUKAKR5_H */

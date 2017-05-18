@@ -1,13 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <QVBoxLayout>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <QMainWindow>
 #include <QLabel>
+#include <QMainWindow>
+#include <QVBoxLayout>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -15,10 +15,10 @@
 #include <Eigen/Core>
 
 #include <core/Identifier.h>
+#include <environment/robot/PointRobot.h>
+#include <environment/robot/TriangleRobot2D.h>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>
-#include <environment/PointRobot.h>
-#include <environment/TriangleRobot2D.h>
 
 namespace Ui {
 class MainWindow;
@@ -82,12 +82,12 @@ class MainWindow : public QMainWindow, public ippp::Identifier {
 
     Ui::MainWindow *ui;
     QWidget *m_widget;
-    QLayout * m_layout;
+    QLayout *m_layout;
 
     unsigned int m_numThreads = 2;
     unsigned int m_numNodes = 5000;
-    unsigned int m_plannerType = 0;
-    unsigned int m_robotType = 0;
+    unsigned int m_plannerTypeLabel = 0;
+    unsigned int m_robotTypeLabel = 0;
     int m_startX = 30;
     int m_startY = 30;
     double m_startPhi = 0;
@@ -97,7 +97,7 @@ class MainWindow : public QMainWindow, public ippp::Identifier {
     double m_trajectoryStepSize = 1;
     unsigned int m_samplerMethod = 0;
     unsigned int m_samplingStrategy = 0;
-    unsigned int m_metric = 0;
+    unsigned int m_metricLabel = 0;
     double m_prmDistance = 50;
     double m_rrtStepsize = 50;
     double m_weightVecX = 1;

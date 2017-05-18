@@ -43,7 +43,7 @@ Identifier::Identifier(const std::string& name) : m_name(name) {
 *  \param[out] name
 *  \date       2016-05-30
 */
-const std::string& Identifier::getName() {
+const std::string& Identifier::getName() const {
     return m_name;
 }
 

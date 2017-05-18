@@ -6,7 +6,7 @@
 
 #include <core/collisionDetection/CollisionDetectionPqp.hpp>
 #include <core/utility/Utility.h>
-#include <environment/Jaco.h>
+#include <environment/robot/Jaco.h>
 #include <pathPlanner/RRTStar.hpp>
 
 #include <ui/Writer.hpp>
@@ -21,13 +21,15 @@ void printTime(clock_t begin, clock_t end) {
 void simpleRRT() {
     const unsigned int dim = 6;
     std::shared_ptr<Jaco> robot(new Jaco());
+    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
+    // environment->addObstacle(obstacleModel);
 
     robot->saveMeshConfig(util::Vecf(0, 0, 0, 0, 0, 0));
 
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(robot));
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, 0.5));
-    std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
-    std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(robot, collision, trajectory, sampler));
+    std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(environment));
+    std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(environment, collision, trajectory, sampler));
     std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
 
     RRTOptions<dim> options(30, collision, trajectory, sampling, distanceMetric);
@@ -35,7 +37,7 @@ void simpleRRT() {
         new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
     std::shared_ptr<Graph<dim>> graph(new Graph<dim>(4000, neighborFinder));
 
-    RRT<dim> planner(robot, options, graph);
+    RRT<dim> planner(environment, options, graph);
     Vector6 start = util::Vecf(180, 180, 180, 180, 180, 180);
     Vector6 goal = util::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
 
@@ -49,7 +51,7 @@ void simpleRRT() {
     std::vector<Vector6> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
-        graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
+        graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(nodes[i]->getValues()));
     writer::writeVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     if (connected) {
@@ -58,7 +60,7 @@ void simpleRRT() {
 
         std::vector<Vector6> pathPoints;
         for (auto angles : pathAngles)
-            pathPoints.push_back(robot->directKinematic(angles));
+            pathPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(angles));
         writer::appendVecsToFile<dim>(pathPoints, "example.ASC", 10);
 
         // Helper vrep(dim);
@@ -70,13 +72,15 @@ void simpleRRT() {
 
 void treeConnection() {
     const unsigned int dim = 6;
-    std::shared_ptr<Jaco> robot(new Jaco());
+    std::shared_ptr<RobotBase> robot(new Jaco());
+    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
+    // environment->addObstacle(obstacleModel);
 
     // create two trees from init and from goal
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(robot));
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, 0.5));
-    std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(robot));
-    std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(robot, collision, trajectory, sampler));
+    std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(environment));
+    std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(environment, collision, trajectory, sampler));
     std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
     RRTOptions<dim> options(20, collision, trajectory, sampling, distanceMetric);
 
@@ -87,8 +91,8 @@ void treeConnection() {
     std::shared_ptr<Graph<dim>> graphInit(new Graph<dim>(4000, neighborFinderInit));
     std::shared_ptr<Graph<dim>> graphGoal(new Graph<dim>(4000, neighborFinderGoal));
 
-    RRTStar<dim> plannerGoalNode(robot, options, graphInit);
-    RRTStar<dim> plannerInitNode(robot, options, graphGoal);
+    RRTStar<dim> plannerGoalNode(environment, options, graphInit);
+    RRTStar<dim> plannerInitNode(environment, options, graphGoal);
 
     // set properties to the planners
     plannerInitNode.setInitNode(util::Vecf(180, 180, 180, 180, 180, 180));
@@ -123,13 +127,13 @@ void treeConnection() {
     std::vector<Vector6> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
-        graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
+        graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(nodes[i]->getValues()));
     writer::writeVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     nodes = plannerGoalNode.getGraphNodes();
     std::cout << "Goal Graph has: " << nodes.size() << "nodes" << std::endl;
     for (int i = 0; i < nodes.size(); ++i)
-        graphPoints.push_back(robot->directKinematic(nodes[i]->getValues()));
+        graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(nodes[i]->getValues()));
     writer::appendVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     if (connected) {
@@ -143,7 +147,7 @@ void treeConnection() {
 
         std::vector<Vector6> pathPoints;
         for (auto angles : pathAngles)
-            pathPoints.push_back(robot->directKinematic(angles));
+            pathPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(angles));
         writer::appendVecsToFile<dim>(pathPoints, "example.ASC", 10);
 
         // for (int i = 0; i < pathPoints.size(); ++i)

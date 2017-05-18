@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/Joint.h>
+#include <environment/robot/Joint.h>
 
 #include <core/utility/Logging.h>
 

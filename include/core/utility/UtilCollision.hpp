@@ -20,26 +20,29 @@
 #define UTILCOLLISION_HPP
 
 #include <core/utility/UtilGeo.hpp>
-#include <environment/SerialRobot.hpp>
+#include <environment/robot/SerialRobot.h>
 
 namespace ippp {
 namespace util {
 
-template <unsigned int dim>
-void getTrafosFromRobot(const Vector<dim> &vec, const std::shared_ptr<SerialRobot<dim>> &robot, Matrix3 &poseR,
-                               Vector3 &poseT, Matrix3 (&Rs)[dim], Vector3 (&ts)[dim]) {
+std::pair<std::vector<Matrix3>, std::vector<Vector3>> getTrafosFromRobot(const VectorX &vec,
+                                                                         const std::shared_ptr<SerialRobot> &robot,
+                                                                         Matrix3 &poseR, Vector3 &poseT) {
     std::vector<Matrix4> jointTrafos = robot->getJointTrafos(vec);
     Matrix4 pose = robot->getPoseMat();
-    Matrix4 As[dim];
+    Matrix4 As[robot->getDim()];
     As[0] = pose * jointTrafos[0];
     for (int i = 1; i < jointTrafos.size(); ++i) {
         As[i] = As[i - 1] * jointTrafos[i];
     }
     util::decomposeT(pose, poseR, poseT);
 
+    std::vector<Matrix3> rots(jointTrafos.size());
+    std::vector<Vector3> trans(jointTrafos.size());
     for (int i = 0; i < jointTrafos.size(); ++i) {
-        util::decomposeT(As[i], Rs[i], ts[i]);
+        util::decomposeT(As[i], rots[i], trans[i]);
     }
+    return std::make_pair(rots, trans);
 }
 
 } /* namespace util */
