@@ -25,19 +25,19 @@
 namespace ippp {
 
 /*!
-* \brief   2D Model for Eigen::MatrixXi
+* \brief   2D Model for 2D PointList
 * \author  Sascha Kaden
 * \date    2017-02-19
 */
 class Model2D : public ModelContainer {
   public:
     Model2D();
-    Model2D(Eigen::MatrixXi space);
+    Model2D(const std::vector<Triangle2D> triangles);
     bool empty() const;
     void transformModel(const Matrix4 &T);
     void transformModel(const Vector6 &config);
 
-    Eigen::MatrixXi m_space;
+    std::vector<Triangle2D> m_triangles;
 };
 
 } /* namespace ippp */

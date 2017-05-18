@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/Jaco.h>
+#include <environment/robot/Jaco.h>
 
 #include <core/utility/Utility.h>
 
@@ -28,7 +28,7 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco() : SerialRobot<6>("Jaco", util::Vecf(0, 42, 17, 0, 0, 0), util::Vecf(360, 318, 343, 360, 360, 360)) {
+Jaco::Jaco() : SerialRobot("Jaco", 6, util::Vecf(0, 42, 17, 0, 0, 0), util::Vecf(360, 318, 343, 360, 360, 360)) {
     m_alpha = util::Vecf(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());
     m_a = util::Vecf(0, 410, 0, 0, 0, 0);
     m_d = util::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
@@ -53,7 +53,7 @@ Jaco::Jaco() : SerialRobot<6>("Jaco", util::Vecf(0, 42, 17, 0, 0, 0), util::Vecf
 *  \param[out] euclidean position Vec
 *  \date       2016-08-25
 */
-Vector6 Jaco::directKinematic(const Vector6 &angles) {
+Vector6 Jaco::directKinematic(const VectorX &angles) {
     std::vector<Matrix4> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos);
@@ -66,7 +66,7 @@ Vector6 Jaco::directKinematic(const Vector6 &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-14
 */
-std::vector<Matrix4> Jaco::getJointTrafos(const Vector6 &angles) {
+std::vector<Matrix4> Jaco::getJointTrafos(const VectorX &angles) {
     // transform form jaco physical angles to dh angles
     Vector6 dhAngles = convertRealToDH(angles);
 

@@ -18,10 +18,10 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <core/collisionDetection/CollisionDetectionPqp.hpp>
+#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <core/utility/Utility.h>
-#include <environment/Jaco.h>
+#include <environment/robot/Jaco.h>
 
 using namespace ippp;
 
@@ -31,7 +31,8 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     // init TrajectoryPlanner
     const unsigned int dim = 6;
     std::shared_ptr<Jaco> robot(new Jaco());
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(robot));
+    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     TrajectoryPlanner<dim> planner(collision, 0.1);
 
     // test trajectories

@@ -16,25 +16,29 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef TRIANGLEROBOT2D_H
-#define TRIANGLEROBOT2D_H
+#ifndef JACO_H
+#define JACO_H
 
-#include <environment/RobotBase.hpp>
-#include <environment/model/ModelTriangle2D.h>
+#include <environment/model/ModelFactoryPqp.h>
+#include <environment/robot/SerialRobot.h>
 
 namespace ippp {
 
 /*!
-* \brief   Class for the 2D trianlge robot.
-* \details The robot contains the list of triangles, which defines his body.
+* \brief   Class for the jaco robot
 * \author  Sascha Kaden
-* \date    2016-11-14
+* \date    2016-06-30
 */
-class TriangleRobot2D : public RobotBase<3> {
+class Jaco : public SerialRobot {
   public:
-    TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, Vector3 minBoundary, Vector3 maxBoundary);
+    Jaco();
+    Vector6 directKinematic(const VectorX &angles);
+    std::vector<Matrix4> getJointTrafos(const VectorX &angles);
+
+  private:
+    Vector6 convertRealToDH(const Vector6 &realAngles);
 };
 
 } /* namespace ippp */
 
-#endif /* TRIANGLEROBOT2D_H */
+#endif /* JACO_H */

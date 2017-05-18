@@ -34,12 +34,12 @@ Model2D::Model2D() : ModelContainer("Model2D") {
 *  \param[in]  space
 *  \date       2017-02-19
 */
-Model2D::Model2D(Eigen::MatrixXi space) : ModelContainer("Model2D") {
-    if (space.cols() == -1) {
-        Logging::error("Empty space", this);
+Model2D::Model2D(std::vector<Triangle2D> triangles) : ModelContainer("Model2D") {
+    if (triangles.empty()) {
+        Logging::error("Empty triangle list", this);
         return;
     }
-    m_space = space;
+    m_triangles = triangles;
 }
 
 /*!
@@ -49,7 +49,7 @@ Model2D::Model2D(Eigen::MatrixXi space) : ModelContainer("Model2D") {
 *  \date       2017-02-19
 */
 bool Model2D::empty() const {
-    if (m_space.cols() == -1) {
+    if (m_triangles.empty()) {
         return true;
     } else {
         return false;

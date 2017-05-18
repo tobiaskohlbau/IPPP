@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/KukaKR5.h>
+#include <environment/robot/KukaKR5.h>
 
 #include <core/utility/Utility.h>
 #include <environment/model/ModelFactoryPqp.h>
@@ -30,8 +30,8 @@ namespace ippp {
 *  \date        2016-10-22
 */
 KukaKR5::KukaKR5()
-    : SerialRobot<6>("KukaKR5", util::Vecf(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -util::twoPi()),
-                     util::Vecf(2.70526, util::pi(), 1.8326f, 6.10865f, 5.41052f, 2.96706f)) {
+    : SerialRobot("KukaKR5", 6, util::Vecf(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -util::twoPi()),
+                  util::Vecf(2.70526, util::pi(), 1.8326f, 6.10865f, 5.41052f, 2.96706f)) {
     m_alpha = util::Vecf(90, 0, 90, 90, 90, 0);
     m_alpha = util::degToRad<6>(m_alpha);
     m_a = util::Vecf(180, 600, 120, 0, 0, 0);

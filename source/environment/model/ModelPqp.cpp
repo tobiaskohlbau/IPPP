@@ -57,8 +57,8 @@ void ModelPqp::transformModel(const Vector6 &config) {
     if (empty()) {
         return;
     }
-    transformVertices(config, m_mesh.vertices);
-    m_mesh.aabb = computeAABB(m_mesh);
+    cad::transformVertices(config, m_mesh.vertices);
+    m_mesh.aabb = cad::computeAABB(m_mesh);
 
     updatePqpModel();
 }
@@ -73,8 +73,8 @@ void ModelPqp::transformModel(const Matrix4 &T) {
     if (empty()) {
         return;
     }
-    transformVertices(T, m_mesh.vertices);
-    m_mesh.aabb = computeAABB(m_mesh);
+    cad::transformVertices(T, m_mesh.vertices);
+    m_mesh.aabb = cad::computeAABB(m_mesh);
 
     updatePqpModel();
 }

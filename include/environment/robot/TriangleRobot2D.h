@@ -16,25 +16,25 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef KUKAKR5_H
-#define KUKAKR5_H
+#ifndef TRIANGLEROBOT2D_H
+#define TRIANGLEROBOT2D_H
 
-#include <environment/SerialRobot.hpp>
+#include <environment/model/ModelTriangle2D.h>
+#include <environment/robot/RobotBase.h>
 
 namespace ippp {
 
 /*!
-* \brief   Class for the Kuka KR5 robot
+* \brief   Class for the 2D trianlge robot.
+* \details The robot contains the list of triangles, which defines his body.
 * \author  Sascha Kaden
-* \date    2016-10-22
+* \date    2016-11-14
 */
-class KukaKR5 : public SerialRobot<6> {
+class TriangleRobot2D : public RobotBase {
   public:
-    KukaKR5();
-    Vector6 directKinematic(const Vector6 &angles);
-    std::vector<Matrix4> getJointTrafos(const Vector6 &angles);
+    TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, Vector3 minBoundary, Vector3 maxBoundary);
 };
 
 } /* namespace ippp */
 
-#endif /* KUKAKR5_H */
+#endif /* TRIANGLEROBOT2D_H */

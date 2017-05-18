@@ -24,15 +24,17 @@
 namespace ippp {
 
 /*!
-* \brief   Class SamplingNearObstacle creates samples with the passed Sampler and if they in collision free samples in neighborhood will found.
+* \brief   Class SamplingNearObstacle creates samples with the passed Sampler and if they in collision free samples in
+* neighborhood will found.
 * \author  Sascha Kaden
 * \date    2016-12-20
 */
 template <unsigned int dim>
 class SamplingNearObstacle : public Sampling<dim> {
   public:
-    SamplingNearObstacle(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
+    SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
+                         const std::shared_ptr<CollisionDetection<dim>> &collision,
+                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
 
     Vector<dim> getSample() override;
 
@@ -51,9 +53,11 @@ class SamplingNearObstacle : public Sampling<dim> {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler)
-    : Sampling<dim>(robot, collision, trajectory, sampler) {
+SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
+                                                const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                                                const std::shared_ptr<Sampler<dim>> &sampler)
+    : Sampling<dim>(environment, collision, trajectory, sampler) {
 }
 
 /*!

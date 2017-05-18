@@ -36,7 +36,7 @@ class Identifier {
     Identifier(const std::string& name);
 
   public:
-    const std::string& getName();
+    const std::string& getName() const;
 
   private:
     const std::string m_name;

@@ -34,7 +34,7 @@ namespace ippp {
 template <unsigned int dim>
 class RRT : public Planner<dim> {
   public:
-    RRT(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph,
+    RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph,
         const std::string &name = "RRT");
 
     bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
@@ -65,7 +65,7 @@ class RRT : public Planner<dim> {
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_robot;
+    using Planner<dim>::m_environment;
     using Planner<dim>::m_sampling;
 };
 
@@ -78,9 +78,9 @@ class RRT : public Planner<dim> {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-RRT<dim>::RRT(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options,
+RRT<dim>::RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
               const std::shared_ptr<Graph<dim>> &graph, const std::string &name)
-    : Planner<dim>(name, robot, options, graph) {
+    : Planner<dim>(name, environment, options, graph) {
     m_stepSize = options.getStepSize();
 }
 

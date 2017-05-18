@@ -19,8 +19,8 @@
 #ifndef POINTROBOT_H
 #define POINTROBOT_H
 
-#include <environment/RobotBase.hpp>
 #include <environment/model/Model2D.h>
+#include <environment/robot/RobotBase.h>
 
 namespace ippp {
 
@@ -29,7 +29,7 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
-class PointRobot : public RobotBase<2> {
+class PointRobot : public RobotBase {
   public:
     PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary);
 

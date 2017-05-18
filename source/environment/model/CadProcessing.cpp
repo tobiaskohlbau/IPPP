@@ -24,6 +24,7 @@
 #include <core/utility/UtilGeo.hpp>
 
 namespace ippp {
+namespace cad {
 
 /*!
 *  \brief      Import a cad model (vertices and faces) with the assimp library
@@ -98,18 +99,18 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes) {
 *  \param[out] vector of meshes
 *  \date       2017-05-09
 */
-void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4* trafo, std::vector<Mesh> &meshes) {
+void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std::vector<Mesh> &meshes) {
     aiMatrix4x4 prevTrafo;
 
     prevTrafo = *trafo;
-    aiMultiplyMatrix4(trafo,&node->mTransformation);
+    aiMultiplyMatrix4(trafo, &node->mTransformation);
 
     for (int i = 0; i < node->mNumMeshes; ++i) {
         Mesh mesh;
-        const aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
+        const aiMesh *aimesh = scene->mMeshes[node->mMeshes[i]];
         for (int j = 0; j < aimesh->mNumVertices; ++j) {
             aiVector3D vertex = aimesh->mVertices[j];
-            aiTransformVecByMatrix4(&vertex,trafo);
+            aiTransformVecByMatrix4(&vertex, trafo);
             mesh.vertices.push_back(Vector3(vertex.x, vertex.y, vertex.z));
         }
         for (int j = 0; j < aimesh->mNumFaces; ++j) {
@@ -124,7 +125,7 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4* trafo, std
     }
 
     for (int i = 0; i < node->mNumChildren; ++i) {
-        getMeshes(scene, node->mChildren[i],trafo, meshes);
+        getMeshes(scene, node->mChildren[i], trafo, meshes);
     }
     *trafo = prevTrafo;
 }
@@ -214,7 +215,8 @@ bool exportCad(ExportFormat format, const std::string &filePath, const Mesh &mes
 *  \param[in]  list of faces
 *  \date       2017-02-19
 */
-bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
+bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
+               const std::vector<Vector3i> &faces) {
     if (filePath == "") {
         Logging::warning("Empty output file path", "CadProcessing");
         return false;
@@ -278,6 +280,42 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
     const aiExportFormatDesc *formatDesc = exporter.GetExportFormatDescription(formatCount);
     exporter.Export(&scene, formatDesc->id, filePath + "." + formatDesc->fileExtension, aiProcess_Triangulate);
     return true;
+}
+
+Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue) {
+    Vector3 dia = boundary.diagonal();
+    Eigen::MatrixXi space = Eigen::MatrixXi::Constant(dia[1], dia[2], fillValue);
+    return space;
+}
+
+void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue) {
+    for (auto triangle : triangles) {
+        std::vector<Vector2> points;
+        for (int i = 0; i < 3; ++i) {
+            points.push_back(triangle.getP(i));
+            struct Vector2Sorter {
+                bool operator()(const Vector2 &lhs, const Vector2 &rhs) const {
+                    return lhs[1] < rhs[1];
+                }
+            };
+            Vector2 v1 = points[0];
+            Vector2 v2 = points[1];
+            Vector2 v3 = points[2];
+            std::sort(std::begin(points), std::end(points), Vector2Sorter());
+            if (v2[1] == v3[1]) {
+                fillBottomFlatTriangle(space, v1, v2, v3, fillValue);
+            }
+            /* check for trivial case of top-flat triangle */
+            else if (v1[1] == v2[1]) {
+                fillTopFlatTriangle(space, v1, v2, v3, fillValue);
+            } else {
+                /* general case - split the triangle in a topflat and bottom-flat one */
+                Vector2 v4(v1[0] + ((float)(v2[1] - v1[1]) / (float)(v3[1] - v1[1])) * (v3[0] - v1[0]), v2[1]);
+                fillBottomFlatTriangle(space, v1, v2, v4, fillValue);
+                fillTopFlatTriangle(space, v2, v4, v3, fillValue);
+            }
+        }
+    }
 }
 
 /*!
@@ -423,5 +461,44 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
     }
     return scene;
 }
+
+void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value) {
+    float invslope1 = (v2[0] - v1[0]) / (v2[1] - v1[1]);
+    float invslope2 = (v3[0] - v1[0]) / (v3[1] - v1[1]);
+
+    float curx1 = v1[0];
+    float curx2 = v1[0];
+
+    for (int scanlineY = v1[1]; scanlineY <= v2[1]; scanlineY++) {
+        drawLine(space, (int)curx1, (int)curx2, scanlineY, value);
+        curx1 += invslope1;
+        curx2 += invslope2;
+    }
+}
+
+void fillTopFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value) {
+    float invslope1 = (v3[0] - v1[0]) / (v3[1] - v1[1]);
+    float invslope2 = (v3[0] - v2[0]) / (v3[1] - v2[1]);
+
+    float curx1 = v3[0];
+    float curx2 = v3[0];
+
+    for (int scanlineY = v3[1]; scanlineY > v1[1]; scanlineY--) {
+        drawLine(space, (int)curx1, (int)curx2, scanlineY, value);
+        curx1 -= invslope1;
+        curx2 -= invslope2;
+    }
+}
+
+void drawLine(Eigen::MatrixXi &space, int x1, int x2, int y, int value) {
+    if (x1 > x2) {
+        std::swap(x1, x2);
+    }
+    for (int x = x1; x <= x2; ++x) {
+        space(y, x) = value;
+    }
+}
+
+} /* namespace cad */
 
 } /* namespace ippp */

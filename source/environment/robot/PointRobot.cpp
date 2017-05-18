@@ -16,18 +16,19 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/TriangleRobot2D.h>
+#include <environment/robot/PointRobot.h>
+
+#include <core/utility/Logging.h>
 
 namespace ippp {
 
 /*!
-*  \brief      Standard constructor of the 2D TriangleRobot
+*  \brief      Constructor of the 2D PointRobot
 *  \author     Sascha Kaden
-*  \date       2016-11-15
+*  \date       2016-06-30
 */
-TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, Vector3 minBoundary, Vector3 maxBoundary)
-    : RobotBase<3>("TriangleRobot2D", RobotType::mobile, minBoundary, maxBoundary) {
-    setBaseModel(triangleModel);
+PointRobot::PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary)
+    : RobotBase("PointRobot", 2, RobotType::mobile, minBoundary, maxBoundary) {
 }
 
 } /* namespace ippp */

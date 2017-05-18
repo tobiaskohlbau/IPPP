@@ -33,7 +33,7 @@ namespace ippp {
 template <unsigned int dim>
 class RRTStar : public RRT<dim> {
   public:
-    RRTStar(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options,
+    RRTStar(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
             const std::shared_ptr<Graph<dim>> &graph);
 
     bool connectGoalNode(const Vector<dim> goal);
@@ -50,7 +50,7 @@ class RRTStar : public RRT<dim> {
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_robot;
+    using Planner<dim>::m_environment;
     using Planner<dim>::m_sampling;
     using RRT<dim>::m_initNode;
     using RRT<dim>::m_goalNode;
@@ -66,9 +66,9 @@ class RRTStar : public RRT<dim> {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-RRTStar<dim>::RRTStar(const std::shared_ptr<RobotBase<dim>> &robot, const RRTOptions<dim> &options,
+RRTStar<dim>::RRTStar(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
                       const std::shared_ptr<Graph<dim>> &graph)
-    : RRT<dim>(robot, options, graph, "RRT*") {
+    : RRT<dim>(environment, options, graph, "RRT*") {
 }
 
 /*!

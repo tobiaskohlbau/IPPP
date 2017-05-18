@@ -24,10 +24,10 @@
 #include <Eigen/Core>
 
 #include <core/Identifier.h>
-#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <core/collisionDetection/CollisionDetection.hpp>
 #include <core/sampler/Sampler.hpp>
-#include <environment/RobotBase.hpp>
+#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <environment/Environment.h>
 
 namespace ippp {
 
@@ -39,9 +39,8 @@ namespace ippp {
 template <unsigned int dim>
 class Sampling : public Identifier {
   public:
-    Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
-             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-             const std::shared_ptr<Sampler<dim>> &sampler);
+    Sampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
+             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
 
     virtual Vector<dim> getSample();
     float getRandomNumber() const;
@@ -63,7 +62,8 @@ class Sampling : public Identifier {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Sampling<dim>::Sampling(const std::shared_ptr<RobotBase<dim>> &robot, const std::shared_ptr<CollisionDetection<dim>> &collision,
+Sampling<dim>::Sampling(const std::shared_ptr<Environment> &environment,
+                        const std::shared_ptr<CollisionDetection<dim>> &collision,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler)
     : Identifier("Sampling") {
     m_collision = collision;

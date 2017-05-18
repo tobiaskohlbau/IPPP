@@ -16,19 +16,19 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/PointRobot.h>
+#ifndef MOBILEROBOT_H
+#define MOBILEROBOT_H
 
-#include <core/utility/Logging.h>
+#include <environment/robot/RobotBase.h>
 
 namespace ippp {
 
-/*!
-*  \brief      Constructor of the 2D PointRobot
-*  \author     Sascha Kaden
-*  \date       2016-06-30
-*/
-PointRobot::PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary)
-    : RobotBase<2>("PointRobot", RobotType::mobile, minBoundary, maxBoundary) {
-}
+class MobileRobot : public RobotBase {
+  public:
+    MobileRobot(const unsigned int dim, VectorX minBoundary, VectorX maxBoundary)
+        : RobotBase("MobileRobot", dim, RobotType::mobile, minBoundary, maxBoundary){};
+};
 
 } /* namespace ippp */
+
+#endif    // MOBILEROBOT_H

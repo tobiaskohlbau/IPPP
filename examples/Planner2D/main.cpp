@@ -9,9 +9,9 @@
 #include <core/sampler/SamplerUniform.hpp>
 #include <core/sampler/SeedSampler.hpp>
 #include <core/sampling/SamplingNearObstacle.hpp>
-#include <environment/PointRobot.h>
-#include <environment/TriangleRobot2D.h>
 #include <environment/model/ModelFactoryTriangle2D.h>
+#include <environment/robot/PointRobot.h>
+#include <environment/robot/TriangleRobot2D.h>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStarContTraj.hpp>
 #include <pathPlanner/SRT.hpp>
@@ -36,13 +36,15 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     ModelFactoryTriangle2D factory;
     std::shared_ptr<ModelContainer> baseModel = factory.createModel(triangles);
     std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, min, max));
-    std::shared_ptr<ModelContainer> model(new Model2D(mat));
-    robot->setWorkspace(model);
+    std::shared_ptr<Environment> environment(
+        new Environment(2, AABB(Vector3(-1500, -1500, -1500), Vector3(1500, 1500, 1500)), robot));
+    // std::shared_ptr<ModelContainer> model(new Model2D(mat));
+    // robot->setWorkspace(model);
 
-    std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(robot));
+    std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(environment));
     std::shared_ptr<TrajectoryPlanner<3>> trajectory(new TrajectoryPlanner<3>(collision));
-    std::shared_ptr<Sampler<3>> sampler(new SeedSampler<3>(robot));
-    std::shared_ptr<Sampling<3>> sampling(new SamplingNearObstacle<3>(robot, collision, trajectory, sampler));
+    std::shared_ptr<Sampler<3>> sampler(new SeedSampler<3>(environment));
+    std::shared_ptr<Sampling<3>> sampling(new SamplingNearObstacle<3>(environment, collision, trajectory, sampler));
     std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
 
     PRMOptions<dim> prmOptions(30, collision, trajectory, sampling, distanceMetric);
@@ -55,7 +57,7 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions, graph));
-    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions, graph));
+    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, rrtOptions, graph));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions, graph));
     // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions, graph));
 
@@ -88,13 +90,15 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
 void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     const unsigned int dim = 2;
     std::shared_ptr<PointRobot> robot(new PointRobot(min, max));
-    std::shared_ptr<ModelContainer> model(new Model2D(mat));
-    robot->setWorkspace(model);
+    std::shared_ptr<Environment> environment(
+        new Environment(2, AABB(Vector3(-1500, -1500, -1500), Vector3(1500, 1500, 1500)), robot));
+    // std::shared_ptr<ModelContainer> model(new Model2D(mat));
+    // robot->setWorkspace(model);
 
-    std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
+    std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(environment));
     std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(collision));
-    std::shared_ptr<Sampler<2>> sampler(new SamplerUniform<2>(robot));
-    std::shared_ptr<Sampling<2>> sampling(new SamplingNearObstacle<2>(robot, collision, trajectory, sampler));
+    std::shared_ptr<Sampler<2>> sampler(new SamplerUniform<2>(environment));
+    std::shared_ptr<Sampling<2>> sampling(new SamplingNearObstacle<2>(environment, collision, trajectory, sampler));
     std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
 
     PRMOptions<dim> prmOptions(40, collision, trajectory, sampling, distanceMetric);
@@ -106,7 +110,7 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
     std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions, graph));
+    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, prmOptions, graph));
     // planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions, graph));
     // planner = std::shared_ptr<RRTStarContTraj<dim>>(new RRTStarContTraj<dim>(robot, rrtOptions, graph));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions, graph));

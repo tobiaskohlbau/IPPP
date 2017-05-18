@@ -32,7 +32,8 @@ namespace ippp {
 template <unsigned int dim>
 class PRM : public Planner<dim> {
   public:
-    PRM(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph);
+    PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<dim> &options,
+        const std::shared_ptr<Graph<dim>> &graph);
 
     bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
     bool expand(const unsigned int numNodes, const unsigned int numThreads);
@@ -61,7 +62,7 @@ class PRM : public Planner<dim> {
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_robot;
+    using Planner<dim>::m_environment;
     using Planner<dim>::m_sampling;
     using Planner<dim>::m_metric;
 };
@@ -74,9 +75,9 @@ class PRM : public Planner<dim> {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-PRM<dim>::PRM(const std::shared_ptr<RobotBase<dim>> &robot, const PRMOptions<dim> &options,
+PRM<dim>::PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<dim> &options,
               const std::shared_ptr<Graph<dim>> &graph)
-    : Planner<dim>("PRM", robot, options, graph) {
+    : Planner<dim>("PRM", environment, options, graph) {
     m_rangeSize = options.getRangeSize();
 }
 

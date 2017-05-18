@@ -48,6 +48,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilIO.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilVec.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilCollision.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.hpp
@@ -57,9 +58,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRT.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStar.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStarContTraj.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/SRT.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/RobotBase.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/SerialRobot.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/SRT.hpp)
 
 IF (${BUILD_FCL})
     list(APPEND SRCS

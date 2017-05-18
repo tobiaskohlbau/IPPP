@@ -16,20 +16,18 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef MOBILEROBOT_H
-#define MOBILEROBOT_H
-
-#include <environment/RobotBase.hpp>
+#include <environment/robot/TriangleRobot2D.h>
 
 namespace ippp {
 
-template <unsigned int dim>
-class MobileRobot : public RobotBase<dim> {
-  public:
-    MobileRobot(Vector<dim> minBoundary, Vector<dim> maxBoundary)
-        : RobotBase<dim>("MobileRobot", RobotType::mobile, minBoundary, maxBoundary){};
-};
+/*!
+*  \brief      Standard constructor of the 2D TriangleRobot
+*  \author     Sascha Kaden
+*  \date       2016-11-15
+*/
+TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, Vector3 minBoundary, Vector3 maxBoundary)
+    : RobotBase("TriangleRobot2D", 3, RobotType::mobile, minBoundary, maxBoundary) {
+    setBaseModel(triangleModel);
+}
 
 } /* namespace ippp */
-
-#endif    // MOBILEROBOT_H

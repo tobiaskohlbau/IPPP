@@ -22,18 +22,19 @@
 #include <string>
 #include <vector>
 
-#include <Eigen/Core>
-#include <assimp/cimport.h>
 #include <assimp/Exporter.hpp>
 #include <assimp/Importer.hpp>
+#include <assimp/cimport.h>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
+#include <core/dataObj/PointList.hpp>
 #include <core/types.h>
 #include <core/utility/UtilList.hpp>
 #include <environment/model/Mesh.h>
 
 namespace ippp {
+namespace cad {
 
 enum class ExportFormat {
     COLLADA,
@@ -54,11 +55,14 @@ enum class ExportFormat {
 
 bool importMesh(const std::string &filePath, Mesh &mesh);
 bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes);
-void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4* trafo, std::vector<Mesh> &meshes);
+void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std::vector<Mesh> &meshes);
 bool importBYU(const std::string &filePath, Mesh &mesh);
 bool exportCad(ExportFormat format, const std::string &filePath, const Mesh &mesh);
-bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
+bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
+               const std::vector<Vector3i> &faces);
 
+Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue);
+void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue);
 
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices);
 void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices);
@@ -67,6 +71,11 @@ AABB computeAABB(const std::vector<Vector3> &vertices);
 AABB computeAABB(const Mesh &mesh);
 
 aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
+void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
+void fillTopFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
+void drawLine(Eigen::MatrixXi &space, int x1, int x2, int y, int value);
+
+} /* namespace cad */
 
 } /* namespace ippp */
 

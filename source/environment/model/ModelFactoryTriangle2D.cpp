@@ -42,11 +42,11 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::s
     }
 
     std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
-    if (!importMesh(filePath, triangleModel->m_mesh)) {
+    if (!cad::importMesh(filePath, triangleModel->m_mesh)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
-    triangleModel->m_mesh.aabb = computeAABB(triangleModel->m_mesh);
+    triangleModel->m_mesh.aabb = cad::computeAABB(triangleModel->m_mesh);
 
     for (auto face : triangleModel->m_mesh.faces) {
         Triangle2D tri(Vector2(triangleModel->m_mesh.vertices[face[0]][0], triangleModel->m_mesh.vertices[face[0]][1]),
@@ -65,7 +65,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
         return models;
     }
     std::vector<Mesh> meshes;
-    if (!importMeshes(filePath, meshes)) {
+    if (!cad::importMeshes(filePath, meshes)) {
         Logging::error("Could not load mesh", this);
         return models;
     }
@@ -73,7 +73,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
     for (auto mesh : meshes) {
         std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
         triangleModel->m_mesh = mesh;
-        triangleModel->m_mesh.aabb = computeAABB(mesh);
+        triangleModel->m_mesh.aabb = cad::computeAABB(mesh);
         for (auto face : triangleModel->m_mesh.faces) {
             Triangle2D tri(Vector2(triangleModel->m_mesh.vertices[face[0]][0], triangleModel->m_mesh.vertices[face[0]][1]),
                            Vector2(triangleModel->m_mesh.vertices[face[1]][0], triangleModel->m_mesh.vertices[face[1]][1]),

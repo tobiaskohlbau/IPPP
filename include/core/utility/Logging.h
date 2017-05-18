@@ -48,6 +48,11 @@ class Logging {
     static void error(std::string message, Identifier *module = nullptr);
     static void debug(std::string message, Identifier *module = nullptr);
 
+    static void info(std::string message, const Identifier *module = nullptr);
+    static void warning(std::string message, const  Identifier *module = nullptr);
+    static void error(std::string message, const  Identifier *module = nullptr);
+    static void debug(std::string message, const  Identifier *module = nullptr);
+
     static void info(std::string message, std::string moduleName);
     static void warning(std::string message, std::string moduleName);
     static void error(std::string message, std::string moduleName);

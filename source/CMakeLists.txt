@@ -19,18 +19,21 @@
 list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/Identifier.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Logging.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/Jaco.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/Joint.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/KukaKR5.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/Environment.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/Jaco.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/Joint.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/KukaKR5.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/PointRobot.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/RobotBase.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/SerialRobot.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/TriangleRobot2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/CadProcessing.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelContainer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/Model2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryPqp.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryTriangle2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelPqp.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelTriangle2D.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/PointRobot.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/TriangleRobot2D.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelTriangle2D.cpp)
 
 IF (${BUILD_FCL})
     list(APPEND SRCS

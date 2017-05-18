@@ -20,8 +20,9 @@
 #define COLLISIONDETECTION2D_HPP
 
 #include <core/collisionDetection/CollisionDetection.hpp>
-#include <environment/PointRobot.h>
-#include <environment/model/Model2D.h>
+#include <environment/model/CadProcessing.h>
+#include <environment/model/ModelTriangle2D.h>
+#include <environment/robot/PointRobot.h>
 
 namespace ippp {
 
@@ -32,13 +33,15 @@ namespace ippp {
 */
 class CollisionDetection2D : public CollisionDetection<2> {
   public:
-    CollisionDetection2D(const std::shared_ptr<RobotBase<2>> &robot);
+    CollisionDetection2D(const std::shared_ptr<Environment> &environment);
     bool controlVec(const Vector2 &vec) override;
     bool controlTrajectory(std::vector<Vector2> &vec) override;
 
   private:
     bool checkPoint2D(float x, float y);
 
+    Vector2 m_minBoundary;
+    Vector2 m_maxBoundary;
     Eigen::MatrixXi m_workspace2D;
 };
 
@@ -48,14 +51,25 @@ class CollisionDetection2D : public CollisionDetection<2> {
 *  \param[in]  robot
 *  \date       2017-02-19
 */
-CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<RobotBase<2>> &robot)
-    : CollisionDetection<2>("CollisionDetection2D", robot) {
-    if (!m_robot->getWorkspace() || m_robot->getWorkspace()->empty()) {
-        Logging::error("Empty workspace model", this);
+CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<Environment> &environment)
+    : CollisionDetection<2>("CollisionDetection2D", environment) {
+    if (!m_environment->getObstacleNum() == 0) {
+        Logging::warning("Empty workspace", this);
         return;
-    } else {
-        m_workspace2D = std::dynamic_pointer_cast<Model2D>(robot->getWorkspace())->m_space;
     }
+
+    // create workspace from the 2d triangles
+    m_workspace2D = cad::create2dspace(m_environment->getBoundary(), 255);
+    std::vector<std::shared_ptr<ModelContainer>> obstacles = m_environment->getObstacles();
+    for (auto &obstacle : obstacles) {
+        auto model = std::dynamic_pointer_cast<ModelTriangle2D>(obstacle);
+        cad::drawTriangles(m_workspace2D, model->m_triangles, 0);
+    }
+
+    // set boundaries
+    auto bound = m_environment->getBoundary();
+    m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
+    m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
 }
 
 /*!

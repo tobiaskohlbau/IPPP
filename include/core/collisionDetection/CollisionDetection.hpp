@@ -19,14 +19,10 @@
 #ifndef COLLISIONDETECTION_HPP
 #define COLLISIONDETECTION_HPP
 
-#include <iostream>
-
 #include <Eigen/Core>
 
 #include <core/dataObj/Node.hpp>
-#include <core/Identifier.h>
-#include <environment/RobotBase.hpp>
-#include <environment/model/ModelContainer.h>
+#include <environment/Environment.h>
 
 namespace ippp {
 
@@ -38,15 +34,12 @@ namespace ippp {
 template <unsigned int dim>
 class CollisionDetection : public Identifier {
   public:
-    CollisionDetection(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot);
+    CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment);
     virtual bool controlVec(const Vector<dim> &vec) = 0;
     virtual bool controlTrajectory(std::vector<Vector<dim>> &vec) = 0;
 
   protected:
-    std::shared_ptr<RobotBase<dim>> m_robot;
-    Vector<dim> m_minBoundary, m_maxBoundary;
-
-    std::shared_ptr<ModelContainer> m_workspace = nullptr;
+    const std::shared_ptr<Environment> m_environment;
 };
 
 /*!
@@ -57,11 +50,8 @@ class CollisionDetection : public Identifier {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::shared_ptr<RobotBase<dim>> &robot)
-    : Identifier(name) {
-    m_robot = robot;
-    m_minBoundary = robot->getMinBoundary();
-    m_maxBoundary = robot->getMaxBoundary();
+CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment)
+    : Identifier(name), m_environment(environment) {
 }
 
 } /* namespace ippp */

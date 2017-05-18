@@ -34,7 +34,8 @@ namespace ippp {
 template <unsigned int dim>
 class SRT : public Planner<dim> {
   public:
-    SRT(const std::shared_ptr<RobotBase<dim>> &robot, const SRTOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph);
+    SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<dim> &options,
+        const std::shared_ptr<Graph<dim>> &graph);
 
     bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
     bool expand(const unsigned int numNodes, const unsigned int numThreads);
@@ -65,7 +66,7 @@ class SRT : public Planner<dim> {
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_robot;
+    using Planner<dim>::m_environment;
     using Planner<dim>::m_sampling;
     using Planner<dim>::m_metric;
 };
@@ -78,9 +79,9 @@ class SRT : public Planner<dim> {
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-SRT<dim>::SRT(const std::shared_ptr<RobotBase<dim>> &robot, const SRTOptions<dim> &options,
+SRT<dim>::SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<dim> &options,
               const std::shared_ptr<Graph<dim>> &graph)
-    : Planner<dim>("SRT", robot, options, graph) {
+    : Planner<dim>("SRT", environment, options, graph) {
     m_nbOfTrees = options.getNbOfTrees();
 }
 
@@ -183,7 +184,7 @@ void SRT<dim>::samplingPhase(const unsigned int nbOfNodes, const unsigned int nb
 template <unsigned int dim>
 std::shared_ptr<Graph<dim>> SRT<dim>::computeTree(const unsigned int nbOfNodes, const Vector<dim> &origin) {
     RRTOptions<dim> rrtOptions(30, m_collision, m_trajectory, m_sampling);
-    RRT<dim> rrt(m_robot, rrtOptions);
+    RRT<dim> rrt(m_environment, rrtOptions);
     rrt.setInitNode(origin);
     rrt.expand(nbOfNodes, 1);
     return rrt.getGraph();
