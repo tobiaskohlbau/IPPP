@@ -283,7 +283,7 @@ std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &vec, float range) 
 template <unsigned int dim, class T>
 void KDTree<dim, T>::NNS(const Vector<dim> &vec, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode,
                          float &bestDist) {
-    float dist = this->m_metric->calcEdgeCost(vec, node->vec);
+    float dist = this->m_metric->calcDist(vec, node->vec);
     if (dist < bestDist && vec != node->vec) {
         bestDist = dist;
         refNode = node;
@@ -327,7 +327,7 @@ void KDTree<dim, T>::RS(const Vector<dim> &vec, std::shared_ptr<KDNode<dim, T>> 
     if (node == nullptr) {
         return;
     }
-    if (this->m_metric->calcEdgeCost(vec, node->vec) < range && vec != node->vec) {
+    if (this->m_metric->calcDist(vec, node->vec) < range && vec != node->vec) {
         refNodes.push_back(node);
     }
     if (vec[node->axis] < maxBoundary[node->axis] && vec[node->axis] < minBoundary[node->axis]) {

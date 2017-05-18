@@ -121,8 +121,8 @@ T BruteForceNF<dim, T>::searchNearestNeighbor(const Vector<dim> &vec) {
     double minDist = std::numeric_limits<double>::max();
     T nodePtr = nullptr;
     for (auto node : m_nodes) {
-        if (this->m_metric->calcEdgeCost(vec, node.first) < minDist && vec != node.first) {
-            minDist = this->m_metric->calcEdgeCost(vec, node.first);
+        if (this->m_metric->calcDist(vec, node.first) < minDist && vec != node.first) {
+            minDist = this->m_metric->calcDist(vec, node.first);
             nodePtr = node.second;
         }
     }
@@ -142,7 +142,7 @@ std::vector<T> BruteForceNF<dim, T>::searchRange(const Vector<dim> &vec, float r
     std::vector<T> nodePtrs;
 
     for (auto node : m_nodes) {
-        if (this->m_metric->calcEdgeCost(vec, node.first) < range && vec != node.first) {
+        if (this->m_metric->calcDist(vec, node.first) < range && vec != node.first) {
             nodePtrs.push_back(node.second);
         }
     }

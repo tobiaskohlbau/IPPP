@@ -21,8 +21,8 @@
 
 #include <memory>
 
-#include <core/dataObj/Node.hpp>
 #include <core/Identifier.h>
+#include <core/dataObj/Node.hpp>
 #include <core/types.h>
 
 namespace ippp {
@@ -39,8 +39,8 @@ template <unsigned int dim>
 class DistanceMetric : public Identifier {
   public:
     DistanceMetric(const std::string &name = "L2 Metric");
-    float calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
-    virtual float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const;
+    float calcDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
+    virtual float calcDist(const Vector<dim> &source, const Vector<dim> &target) const;
 };
 
 /*!
@@ -62,8 +62,8 @@ DistanceMetric<dim>::DistanceMetric(const std::string &name) : Identifier(name) 
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float DistanceMetric<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const {
-    return calcEdgeCost(source->getValues(), target->getValues());
+float DistanceMetric<dim>::calcDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const {
+    return calcDist(source->getValues(), target->getValues());
 }
 
 /*!
@@ -75,7 +75,7 @@ float DistanceMetric<dim>::calcEdgeCost(const std::shared_ptr<Node<dim>> &source
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float DistanceMetric<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
+float DistanceMetric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).norm();
 }
 

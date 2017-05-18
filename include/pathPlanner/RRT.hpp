@@ -232,7 +232,7 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
     }
 
     if (nearestNode != nullptr) {
-        goalNode->setParent(nearestNode, this->m_metric->calcEdgeCost(nearestNode, goalNode));
+        goalNode->setParent(nearestNode, this->m_metric->calcDist(nearestNode, goalNode));
         m_goalNode = goalNode;
         m_graph->addNode(goalNode);
         // Logging::info("Goal Node<dim> is connected", this);
@@ -268,7 +268,7 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randVec) 
         return nullptr;
     }
 
-    float edgeCost = this->m_metric->calcEdgeCost(nearestNode, newNode);
+    float edgeCost = this->m_metric->calcDist(nearestNode, newNode);
     newNode->setParent(nearestNode, edgeCost);
 
     m_mutex.lock();

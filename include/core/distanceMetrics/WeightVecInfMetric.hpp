@@ -33,7 +33,7 @@ class WeightVecInfMetric : public DistanceMetric<dim> {
   public:
     WeightVecInfMetric();
     WeightVecInfMetric(const Vector<dim> &weightVec);
-    float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const override;
+    float calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
 
     void setWeightVec(const Vector<dim> &vec);
     Vector<dim> getWeightVec() const;
@@ -71,7 +71,7 @@ WeightVecInfMetric<dim>::WeightVecInfMetric(const Vector<dim> &weightVec) : Dist
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float WeightVecInfMetric<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
+float WeightVecInfMetric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).cwiseProduct(m_weightVec).maxCoeff();
 }
 

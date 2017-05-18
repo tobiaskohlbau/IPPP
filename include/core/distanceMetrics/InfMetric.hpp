@@ -32,7 +32,7 @@ template <unsigned int dim>
 class InfMetric : public DistanceMetric<dim> {
   public:
     InfMetric();
-    float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const override;
+    float calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
 };
 
 /*!
@@ -53,7 +53,7 @@ InfMetric<dim>::InfMetric() : DistanceMetric<dim>("Inf Metric") {
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float InfMetric<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
+float InfMetric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).maxCoeff();
 }
 
