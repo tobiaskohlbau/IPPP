@@ -32,7 +32,7 @@ template <unsigned int dim>
 class L1Metric : public DistanceMetric<dim> {
   public:
     L1Metric();
-    float calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const override;
+    float calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
 };
 
 /*!
@@ -53,7 +53,7 @@ L1Metric<dim>::L1Metric() : DistanceMetric<dim>("L1 Metric") {
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float L1Metric<dim>::calcEdgeCost(const Vector<dim> &source, const Vector<dim> &target) const {
+float L1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).sum();
 }
 

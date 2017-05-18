@@ -95,7 +95,7 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randV
     }
 
     std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
-    float edgeCost = this->m_metric->calcEdgeCost(newNode, nearestNode);
+    float edgeCost = this->m_metric->calcDist(newNode, nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);
     m_mutex.lock();
@@ -145,7 +145,7 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
     float oldDist, newDist, edgeCost;
     for (auto nearNode : nearNodes) {
         if (nearNode != parentNode) {
-            edgeCost = this->m_metric->calcEdgeCost(nearNode, newNode);
+            edgeCost = this->m_metric->calcDist(nearNode, newNode);
             oldDist = nearNode->getCost();
             newDist = edgeCost + newNode->getCost();
             if (newDist < oldDist && m_trajectory->controlTrajectory(nearNode, newNode)) {
@@ -185,7 +185,7 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
     }
 
     if (nearestNode != nullptr) {
-        goalNode->setParent(nearestNode, this->m_metric->calcEdgeCost(goalNode, nearestNode));
+        goalNode->setParent(nearestNode, this->m_metric->calcDist(goalNode, nearestNode));
         goalNode->setCost(goalNode->getParentEdge()->getCost() + nearestNode->getCost());
         m_goalNode = goalNode;
         m_pathPlanned = true;
