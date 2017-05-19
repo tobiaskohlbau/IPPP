@@ -195,9 +195,13 @@ bool RRT<dim>::computeTree(const unsigned int nbOfNodes, const unsigned int nbOf
 */
 template <unsigned int dim>
 void RRT<dim>::computeTreeThread(const unsigned int nbOfNodes) {
+    Vector<dim> sample;
     for (unsigned int i = 0; i < nbOfNodes; ++i) {
-        Vector<dim> randVec = m_sampling->getSample();
-        std::shared_ptr<Node<dim>> newNode = computeRRTNode(randVec);
+        sample = m_sampling->getSample();
+        if (util::empty<dim>(sample))
+            continue;
+
+        std::shared_ptr<Node<dim>> newNode = computeRRTNode(sample);
 
         if (newNode == nullptr) {
             continue;

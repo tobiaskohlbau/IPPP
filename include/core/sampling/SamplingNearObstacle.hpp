@@ -34,10 +34,13 @@ class SamplingNearObstacle : public Sampling<dim> {
   public:
     SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
                          const std::shared_ptr<CollisionDetection<dim>> &collision,
-                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
+                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
+                         const unsigned int attempts = 10);
 
     Vector<dim> getSample() override;
 
+  private:
+    using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
     using Sampling<dim>::m_collision;
     using Sampling<dim>::m_trajectory;
@@ -56,8 +59,8 @@ template <unsigned int dim>
 SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
                                                 const std::shared_ptr<CollisionDetection<dim>> &collision,
                                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                                const std::shared_ptr<Sampler<dim>> &sampler)
-    : Sampling<dim>(environment, collision, trajectory, sampler) {
+                                                const std::shared_ptr<Sampler<dim>> &sampler, const unsigned int attempts)
+    : Sampling<dim>(environment, collision, trajectory, sampler, attempts, "SamplingNearObstacle") {
 }
 
 /*!

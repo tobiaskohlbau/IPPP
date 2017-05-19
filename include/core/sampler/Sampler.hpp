@@ -42,6 +42,7 @@ class Sampler : public Identifier {
     virtual Vector<dim> getSample();
     float getRandomAngle();
     float getRandomNumber();
+    Vector<dim> getRandomRay();
 
     virtual void setOrigin(const Vector<dim> &mean);
     Vector<dim> getOrigin() const;
@@ -118,6 +119,21 @@ float Sampler<dim>::getRandomAngle() {
 template <unsigned int dim>
 float Sampler<dim>::getRandomNumber() {
     return m_distNumber(m_generator);
+}
+
+/*!
+*  \brief      Return random normalized ray.
+*  \author     Sascha Kaden
+*  \param[out] random ray
+*  \date       2017-04-03
+*/
+template <unsigned int dim>
+Vector<dim> Sampler<dim>::getRandomRay() {
+    Vector<dim> ray;
+    for (unsigned int i = 0; i < dim; ++i) {
+        ray[i] = m_generator();
+    }
+    return ray.normalized();
 }
 
 /*!
