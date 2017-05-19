@@ -14,11 +14,9 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <Eigen/Core>
 
-#include <core/Identifier.h>
-#include <environment/robot/PointRobot.h>
-#include <environment/robot/TriangleRobot2D.h>
-#include <pathPlanner/PRM.hpp>
-#include <pathPlanner/RRTStar.hpp>
+#include <Core>
+#include <Environment>
+#include <Planner>
 
 namespace Ui {
 class MainWindow;

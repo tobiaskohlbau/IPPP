@@ -23,9 +23,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection2D.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqp.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionTriangleRobot.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/DistanceMetric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L1Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/InfMetric.hpp
@@ -41,6 +39,8 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerNormalDist.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerUniform.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SeedSampler.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/BridgeSampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/TrajectoryPlanner.hpp

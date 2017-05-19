@@ -2,18 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
-#include <core/collisionDetection/CollisionDetection2D.hpp>
-#include <core/collisionDetection/CollisionDetectionTriangleRobot.hpp>
-#include <core/distanceMetrics/InfMetric.hpp>
-#include <core/distanceMetrics/L1Metric.hpp>
-#include <core/distanceMetrics/WeightVecInfMetric.hpp>
-#include <core/distanceMetrics/WeightVecL1Metric.hpp>
-#include <core/distanceMetrics/WeightVecL2Metric.hpp>
-#include <core/sampler/SamplerNormalDist.hpp>
-#include <core/sampler/SamplerUniform.hpp>
-#include <core/sampling/SamplingNearObstacle.hpp>
-#include <environment/model/ModelFactoryTriangle2D.h>
-#include <pathPlanner/options/PRMOptions.hpp>
+
 #include <ui/Drawing2D.hpp>
 
 using namespace ippp;

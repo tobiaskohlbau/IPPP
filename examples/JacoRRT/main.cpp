@@ -4,10 +4,9 @@
 
 #include <Eigen/Core>
 
-#include <core/collisionDetection/CollisionDetectionPqp.hpp>
-#include <core/utility/Utility.h>
-#include <environment/robot/Jaco.h>
-#include <pathPlanner/RRTStar.hpp>
+#include <Core>
+#include <Environment>
+#include <Planner>
 
 #include <ui/Writer.hpp>
 

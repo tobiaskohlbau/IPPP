@@ -1,11 +1,8 @@
 #include <memory>
 
-#include <core/collisionDetection/CollisionDetectionPqp.hpp>
-#include <environment/Environment.h>
-#include <environment/model/ModelFactoryPqp.h>
-#include <environment/robot/MobileRobot.h>
-#include <pathPlanner/PRM.hpp>
-#include <pathPlanner/RRTStar.hpp>
+#include <Core>
+#include <Environment>
+#include <Planner>
 
 #include <modelDirectory.h>
 
