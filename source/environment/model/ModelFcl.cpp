@@ -18,7 +18,7 @@
 
 #include <environment/model/ModelFcl.h>
 
-#include <environment/model/CadProcessing.h>
+#include <environment/CadProcessing.h>
 
 namespace ippp {
 
