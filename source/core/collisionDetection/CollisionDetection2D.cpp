@@ -16,34 +16,9 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef COLLISIONDETECTION2D_HPP
-#define COLLISIONDETECTION2D_HPP
-
-#include <core/collisionDetection/CollisionDetection.hpp>
-#include <environment/model/CadProcessing.h>
-#include <environment/model/ModelTriangle2D.h>
-#include <environment/robot/PointRobot.h>
+#include <core/collisionDetection/CollisionDetection2D.h>
 
 namespace ippp {
-
-/*!
-* \brief   Class for 2D collision detection of an point robot.
-* \author  Sascha Kaden
-* \date    2017-02-19
-*/
-class CollisionDetection2D : public CollisionDetection<2> {
-  public:
-    CollisionDetection2D(const std::shared_ptr<Environment> &environment);
-    bool controlVec(const Vector2 &vec) override;
-    bool controlTrajectory(std::vector<Vector2> &vec) override;
-
-  private:
-    bool checkPoint2D(float x, float y);
-
-    Vector2 m_minBoundary;
-    Vector2 m_maxBoundary;
-    Eigen::MatrixXi m_workspace2D;
-};
 
 /*!
 *  \brief      Constructor of the class CollisionDetection2D
@@ -76,7 +51,7 @@ CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<Environment> &e
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision)
+*  \param[out] binary result of collision (true if in collision or vec is empty)
 *  \date       2016-05-25
 */
 bool CollisionDetection2D::controlVec(const Vector2 &vec) {
@@ -124,5 +99,3 @@ bool CollisionDetection2D::checkPoint2D(float x, float y) {
 }
 
 } /* namespace ippp */
-
-#endif /* COLLISIONDETECTION2D_HPP */

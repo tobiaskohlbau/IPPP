@@ -16,35 +16,9 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef COLLISIONDETECTIONTRIANGLEROBOT_HPP
-#define COLLISIONDETECTIONTRIANGLEROBOT_HPP
-
-#include <core/collisionDetection/CollisionDetection.hpp>
-#include <environment/model/CadProcessing.h>
-#include <environment/robot/TriangleRobot2D.h>
+#include <core/collisionDetection/CollisionDetectionTriangleRobot.h>
 
 namespace ippp {
-
-/*!
-* \brief   Collision detection class for the TriangleRobot2D
-* \author  Sascha Kaden
-* \date    2017-02-19
-*/
-class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
-  public:
-    CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment);
-    bool controlVec(const Vector3 &vec) override;
-    bool controlTrajectory(std::vector<Vector3> &vec) override;
-
-  private:
-    bool checkPoint2D(float x, float y);
-    bool checkTriangleRobot(const Vector3 &vec);
-
-    Eigen::MatrixXi m_workspace2D;
-    std::vector<Triangle2D> m_triangles;
-    Vector2 m_minBoundary;
-    Vector2 m_maxBoundary;
-};
 
 /*!
 *  \brief      Standard constructor of the class CollisionDetectionTriangleRobot
@@ -179,5 +153,3 @@ bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
 }
 
 } /* namespace ippp */
-
-#endif /* COLLISIONDETECTIONTRIANGLEROBOT_HPP */
