@@ -1,0 +1,57 @@
+//-------------------------------------------------------------------------//
+//
+// Copyright 2017 Sascha Kaden
+//
+// Licensed under the Apache License, Version 2.0 (the >License>);
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an >AS IS> BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+//-------------------------------------------------------------------------//
+
+#include <core/Identifier.h>
+#include <core/types.h>
+
+#include <core/collisionDetection/CollisionDetection2D.h>
+#include <core/collisionDetection/CollisionDetectionPqp.hpp>
+#include <core/collisionDetection/CollisionDetectionTriangleRobot.h>
+
+#include <core/dataObj/Edge.hpp>
+#include <core/dataObj/Graph.hpp>
+#include <core/dataObj/Node.hpp>
+#include <core/dataObj/PointList.hpp>
+
+#include <core/distanceMetrics/DistanceMetric.hpp>
+#include <core/distanceMetrics/InfMetric.hpp>
+#include <core/distanceMetrics/L1Metric.hpp>
+#include <core/distanceMetrics/WeightVecInfMetric.hpp>
+#include <core/distanceMetrics/WeightVecL1Metric.hpp>
+#include <core/distanceMetrics/WeightVecL2Metric.hpp>
+
+#include <core/neighborFinders/BruteForceNF.hpp>
+#include <core/neighborFinders/KDTree.hpp>
+
+#include <core/sampler/Sampler.hpp>
+#include <core/sampler/SamplerNormalDist.hpp>
+#include <core/sampler/SamplerUniform.hpp>
+#include <core/sampler/SeedSampler.hpp>
+
+#include <core/sampling/BridgeSampling.hpp>
+#include <core/sampling/GaussianSampling.hpp>
+#include <core/sampling/Sampling.hpp>
+#include <core/sampling/SamplingNearObstacle.hpp>
+
+#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
+
+#include <core/utility/Logging.h>
+#include <core/utility/UtilGeo.hpp>
+#include <core/utility/UtilIO.hpp>
+#include <core/utility/UtilList.hpp>
+#include <core/utility/UtilVec.hpp>

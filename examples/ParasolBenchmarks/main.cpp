@@ -4,16 +4,14 @@
 
 //#include <gperftools/profiler.h>
 
+#include <Core>
+#include <Environment>
+#include <Planner>
 #include <core/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
-#include <core/utility/UtilVec.hpp>
-#include <environment/model/ModelFactoryPqp.h>
-#include <environment/robot/MobileRobot.h>
-#include <modelDirectory.h>
-#include <pathPlanner/PRM.hpp>
-#include <pathPlanner/RRTStar.hpp>
 //#include <core/collisionDetection/CollisionDetectionFcl.hpp>
 //#include <environment/model/ModelFactoryFcl.h>
 
+#include <modelDirectory.h>
 #include <ui/BenchmarkReader.h>
 #include <ui/Writer.hpp>
 

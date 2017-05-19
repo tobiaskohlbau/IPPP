@@ -3,21 +3,11 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-#include <core/collisionDetection/CollisionDetection2D.hpp>
-#include <core/collisionDetection/CollisionDetectionTriangleRobot.hpp>
-#include <core/neighborFinders/BruteForceNF.hpp>
-#include <core/sampler/SamplerUniform.hpp>
-#include <core/sampler/SeedSampler.hpp>
-#include <core/sampling/SamplingNearObstacle.hpp>
-#include <environment/model/ModelFactoryTriangle2D.h>
-#include <environment/robot/PointRobot.h>
-#include <environment/robot/TriangleRobot2D.h>
-#include <pathPlanner/PRM.hpp>
-#include <pathPlanner/RRTStarContTraj.hpp>
-#include <pathPlanner/SRT.hpp>
+#include <Core>
+#include <Environment>
+#include <Planner>
 
 #include <modelDirectory.h>
-
 #include <ui/Drawing2D.hpp>
 #include <ui/Writer.hpp>
 
