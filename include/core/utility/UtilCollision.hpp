@@ -25,9 +25,9 @@
 namespace ippp {
 namespace util {
 
-std::pair<std::vector<Matrix3>, std::vector<Vector3>> getTrafosFromRobot(const VectorX &vec,
-                                                                         const std::shared_ptr<SerialRobot> &robot,
-                                                                         Matrix3 &poseR, Vector3 &poseT) {
+static std::pair<std::vector<Matrix3>, std::vector<Vector3>> getTrafosFromRobot(const VectorX &vec,
+                                                                                const std::shared_ptr<SerialRobot> &robot,
+                                                                                Matrix3 &poseR, Vector3 &poseT) {
     std::vector<Matrix4> jointTrafos = robot->getJointTrafos(vec);
     Matrix4 pose = robot->getPoseMat();
     Matrix4 As[robot->getDim()];

@@ -152,6 +152,9 @@ void PRM<dim>::samplingPhase(const unsigned int nbOfNodes) {
     Vector<dim> sample;
     for (unsigned int i = 0; i < nbOfNodes; ++i) {
         sample = m_sampling->getSample();
+        if (util::empty<dim>(sample))
+            continue;
+
         if (!m_collision->controlVec(sample)) {
             m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
         }

@@ -163,10 +163,10 @@ template <unsigned int dim>
 void SRT<dim>::samplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfTrees) {
     Vector<dim> sample;
     for (unsigned int i = 0; i < nbOfTrees; ++i) {
-        sample = m_sampling->getSample();
-        while (m_collision->controlVec(sample)) {
+        do {
             sample = m_sampling->getSample();
-        }
+        } while (util::empty<dim>(sample) || m_collision->controlVec(sample));
+
         std::shared_ptr<Graph<dim>> graph = computeTree(nbOfNodes, sample);
         m_mutex.lock();
         m_treeGraphs.push_back(graph);
