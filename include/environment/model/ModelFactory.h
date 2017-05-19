@@ -24,7 +24,7 @@
 #include <vector>
 
 #include <core/Identifier.h>
-#include <environment/model/CadProcessing.h>
+#include <environment/CadProcessing.h>
 #include <environment/model/ModelContainer.h>
 
 namespace ippp {
