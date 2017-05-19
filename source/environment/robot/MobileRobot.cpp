@@ -16,18 +16,12 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef MOBILEROBOT_H
-#define MOBILEROBOT_H
-
-#include <environment/robot/RobotBase.h>
+#include <environment/robot/MobileRobot.h>
 
 namespace ippp {
 
-class MobileRobot : public RobotBase {
-  public:
-    MobileRobot(const unsigned int dim, VectorX minBoundary, VectorX maxBoundary);
-};
+MobileRobot::MobileRobot(const unsigned int dim, VectorX minBoundary, VectorX maxBoundary)
+    : RobotBase("MobileRobot", dim, RobotType::mobile, minBoundary, maxBoundary) {
+}
 
 } /* namespace ippp */
-
-#endif    // MOBILEROBOT_H
