@@ -139,7 +139,7 @@ void benchmarkHedgehog() {
 
 int main(int argc, char** argv) {
     std::vector<Mesh> meshes;
-    bool result = cad::importMeshes("/users/skaden/Downloads/box.dae", meshes);
+    bool result = cad::importMeshes("/users/skaden/Downloads/GearAssembly.stl", meshes);
     if (result) {
         int count = 1;
         for (auto mesh : meshes) {

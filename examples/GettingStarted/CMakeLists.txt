@@ -21,6 +21,7 @@ include_directories(${Boost_INCLUDE_DIRS}
         ${CMAKE_SOURCE_DIR}/examples)
 
 set(source
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../ui/ModuleCreator.hpp)
 
 ADD_IPPP_EXAMPLE(GettingStarted "${source}" "${ADDITIONAL_LIBRARIES}")

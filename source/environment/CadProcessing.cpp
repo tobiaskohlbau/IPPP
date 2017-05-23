@@ -33,7 +33,7 @@ namespace cad {
 *  \param[out] Mesh
 *  \date       2017-05-09
 */
-bool importMesh(const std::string &filePath, Mesh &mesh) {
+bool importMesh(const std::string &filePath, Mesh &mesh, const bool calcNormals) {
     std::size_t found = filePath.find_last_of(".");
     if (filePath.substr(found) == ".g") {
         return importBYU(filePath, mesh);
@@ -44,6 +44,7 @@ bool importMesh(const std::string &filePath, Mesh &mesh) {
         return false;
     }
 
+    // merge meshes to one single mesh
     size_t verticeCount;
     for (auto tmpMesh : meshes) {
         verticeCount = mesh.vertices.size();
@@ -55,7 +56,8 @@ bool importMesh(const std::string &filePath, Mesh &mesh) {
         }
     }
 
-    mesh.normals = computeNormals(mesh.vertices, mesh.faces);
+    if (calcNormals)
+        mesh.normals = computeNormals(mesh.vertices, mesh.faces);
     return true;
 }
 
@@ -66,7 +68,7 @@ bool importMesh(const std::string &filePath, Mesh &mesh) {
 *  \param[out] Mesh
 *  \date       2017-05-09
 */
-bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes) {
+bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const bool calcNormals) {
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (!scene) {
@@ -75,16 +77,20 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes) {
     }
 
     if (scene->mNumMeshes == 0) {
+        Logging::error("Scene contains no meshes", "CadProcessing");
         return false;
     }
+    Logging::info("File has: " + std::to_string(scene->mNumMeshes) + " meshes", "CadProcessing");
     meshes.clear();
 
     aiMatrix4x4 trafo;
     aiIdentityMatrix4(&trafo);
     getMeshes(scene, scene->mRootNode, &trafo, meshes);
 
-    for (auto mesh : meshes) {
-        mesh.normals = computeNormals(mesh.vertices, mesh.faces);
+    if (calcNormals) {
+        for (auto mesh : meshes) {
+            mesh.normals = computeNormals(mesh.vertices, mesh.faces);
+        }
     }
 
     return true;
@@ -291,29 +297,30 @@ Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue) {
 void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue) {
     for (auto triangle : triangles) {
         std::vector<Vector2> points;
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 1; i < 4; ++i) {
             points.push_back(triangle.getP(i));
-            struct Vector2Sorter {
-                bool operator()(const Vector2 &lhs, const Vector2 &rhs) const {
-                    return lhs[1] < rhs[1];
-                }
-            };
-            Vector2 v1 = points[0];
-            Vector2 v2 = points[1];
-            Vector2 v3 = points[2];
-            std::sort(std::begin(points), std::end(points), Vector2Sorter());
-            if (v2[1] == v3[1]) {
-                fillBottomFlatTriangle(space, v1, v2, v3, fillValue);
+        }
+        struct Vector2Sorter {
+            bool operator()(const Vector2 &lhs, const Vector2 &rhs) const {
+                return lhs[1] < rhs[1];
             }
-            /* check for trivial case of top-flat triangle */
-            else if (v1[1] == v2[1]) {
-                fillTopFlatTriangle(space, v1, v2, v3, fillValue);
-            } else {
-                /* general case - split the triangle in a topflat and bottom-flat one */
-                Vector2 v4(v1[0] + ((float)(v2[1] - v1[1]) / (float)(v3[1] - v1[1])) * (v3[0] - v1[0]), v2[1]);
-                fillBottomFlatTriangle(space, v1, v2, v4, fillValue);
-                fillTopFlatTriangle(space, v2, v4, v3, fillValue);
-            }
+        };
+        std::sort(std::begin(points), std::end(points), Vector2Sorter());
+        Vector2 v1 = points[0];
+        Vector2 v2 = points[1];
+        Vector2 v3 = points[2];
+
+        if (v2[1] == v3[1]) {
+            fillBottomFlatTriangle(space, v1, v2, v3, fillValue);
+        }
+        /* check for trivial case of top-flat triangle */
+        else if (v1[1] == v2[1]) {
+            fillTopFlatTriangle(space, v1, v2, v3, fillValue);
+        } else {
+            /* general case - split the triangle in a topflat and bottom-flat one */
+            Vector2 v4(v1[0] + ((float)(v2[1] - v1[1]) / (float)(v3[1] - v1[1])) * (v3[0] - v1[0]), v2[1]);
+            fillBottomFlatTriangle(space, v1, v2, v4, fillValue);
+            fillTopFlatTriangle(space, v2, v4, v3, fillValue);
         }
     }
 }
@@ -495,6 +502,10 @@ void drawLine(Eigen::MatrixXi &space, int x1, int x2, int y, int value) {
         std::swap(x1, x2);
     }
     for (int x = x1; x <= x2; ++x) {
+        if (0 > y || y > space.rows() || 0 > x || x > space.cols()) {
+            Logging::debug("Triangle out of space", "CadProcessing");
+            continue;
+        }
         space(y, x) = value;
     }
 }

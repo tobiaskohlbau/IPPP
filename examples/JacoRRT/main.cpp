@@ -8,6 +8,7 @@
 #include <Environment>
 #include <Planner>
 
+#include <ui/ModuleCreator.hpp>
 #include <ui/Writer.hpp>
 
 using namespace ippp;
@@ -26,17 +27,10 @@ void simpleRRT() {
     robot->saveMeshConfig(util::Vecf(0, 0, 0, 0, 0, 0));
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
-    std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, 0.5));
-    std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(environment));
-    std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(environment, collision, trajectory, sampler));
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
+                               SamplingType::Sampling, 0.5);
 
-    RRTOptions<dim> options(30, collision, trajectory, sampling, distanceMetric);
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
-    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(4000, neighborFinder));
-
-    RRT<dim> planner(environment, options, graph);
+    RRT<dim> planner(environment, creator.getRRTOptions(30), creator.getGraph());
     Vector6 start = util::Vecf(180, 180, 180, 180, 180, 180);
     Vector6 goal = util::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
 
@@ -77,21 +71,13 @@ void treeConnection() {
 
     // create two trees from init and from goal
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
-    std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, 0.5));
-    std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(environment));
-    std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(environment, collision, trajectory, sampler));
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
-    RRTOptions<dim> options(20, collision, trajectory, sampling, distanceMetric);
+    ModuleCreator<dim> creator1(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
+                                SamplingType::Sampling, 0.5);
+    ModuleCreator<dim> creator2(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
+                                SamplingType::Sampling, 0.5);
 
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinderInit(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinderGoal(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
-    std::shared_ptr<Graph<dim>> graphInit(new Graph<dim>(4000, neighborFinderInit));
-    std::shared_ptr<Graph<dim>> graphGoal(new Graph<dim>(4000, neighborFinderGoal));
-
-    RRTStar<dim> plannerGoalNode(environment, options, graphInit);
-    RRTStar<dim> plannerInitNode(environment, options, graphGoal);
+    RRTStar<dim> plannerGoalNode(environment, creator1.getRRTOptions(20), creator1.getGraph());
+    RRTStar<dim> plannerInitNode(environment, creator2.getRRTOptions(20), creator2.getGraph());
 
     // set properties to the planners
     plannerInitNode.setInitNode(util::Vecf(180, 180, 180, 180, 180, 180));

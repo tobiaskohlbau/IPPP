@@ -5,6 +5,7 @@
 #include <Planner>
 
 #include <modelDirectory.h>
+#include <ui/ModuleCreator.hpp>
 
 // set namespace of the motion planner lib
 using namespace ippp;
@@ -36,23 +37,14 @@ int main(int argc, char** argv) {
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     // define step size of the trajectories and create trajectory planner
     float stepSize = 3;
-    std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, stepSize));
-    // create the sampling module with the sampler
-    std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(environment));
-    std::shared_ptr<Sampling<dim>> sampling(new Sampling<dim>(environment, collision, trajectory, sampler));
-    // create the distance metric
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    // create all required core modules with the ModuleCreator
+    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
+                               SamplingType::Sampling, stepSize);
 
-    // define the options of the path planner with the modules
+    // define the options of the path planner
     float rrtStepSize = 30;
-    RRTOptions<6> options(rrtStepSize, collision, trajectory, sampling, distanceMetric);
-    // create the neighbor finder for the graph
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
-    // create the graph of the planner
-    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
     // create the path planner
-    RRTStar<6> pathPlanner(environment, options, graph);
+    RRTStar<6> pathPlanner(environment, creator.getRRTOptions(rrtStepSize), creator.getGraph());
 
     // define start and goal position, angles has to be in rad
     Vector<dim> start = util::Vecf(78.240253, 24.147785, -8.133371, 0.286451, 0.769112, 0.706202);

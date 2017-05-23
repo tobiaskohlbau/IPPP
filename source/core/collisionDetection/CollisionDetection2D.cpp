@@ -28,23 +28,24 @@ namespace ippp {
 */
 CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<Environment> &environment)
     : CollisionDetection<2>("CollisionDetection2D", environment) {
-    if (!m_environment->getObstacleNum() == 0) {
-        Logging::warning("Empty workspace", this);
-        return;
-    }
-
-    // create workspace from the 2d triangles
-    m_workspace2D = cad::create2dspace(m_environment->getBoundary(), 255);
-    std::vector<std::shared_ptr<ModelContainer>> obstacles = m_environment->getObstacles();
-    for (auto &obstacle : obstacles) {
-        auto model = std::dynamic_pointer_cast<ModelTriangle2D>(obstacle);
-        cad::drawTriangles(m_workspace2D, model->m_triangles, 0);
-    }
-
     // set boundaries
     auto bound = m_environment->getBoundary();
     m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
     m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
+
+    // create workspace from the 2d triangles
+    m_workspace2D = cad::create2dspace(m_environment->getBoundary(), 255);
+
+    if (m_environment->getObstacleNum() == 0) {
+        Logging::warning("Empty workspace", this);
+    } else {
+        // add obstacles to the workspace
+        std::vector<std::shared_ptr<ModelContainer>> obstacles = m_environment->getObstacles();
+        for (auto &obstacle : obstacles) {
+            auto model = std::dynamic_pointer_cast<ModelTriangle2D>(obstacle);
+            cad::drawTriangles(m_workspace2D, model->m_triangles, 0);
+        }
+    }
 }
 
 /*!

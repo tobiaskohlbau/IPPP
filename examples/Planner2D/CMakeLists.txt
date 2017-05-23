@@ -19,7 +19,8 @@
 set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp
-    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp)
+    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp
+    ${CMAKE_SOURCE_DIR}/examples/ui/ModuleCreator.hpp)
 
 find_package(OpenCV REQUIRED)
 if (OpenCV_VERSION VERSION_LESS "2.4.0")

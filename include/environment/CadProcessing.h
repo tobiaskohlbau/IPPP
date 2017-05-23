@@ -53,8 +53,8 @@ enum class ExportFormat {
     EXTENSIBLE_3D
 };
 
-bool importMesh(const std::string &filePath, Mesh &mesh);
-bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes);
+bool importMesh(const std::string &filePath, Mesh &mesh, const bool calcNormals = false);
+bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const bool calcNormals = false);
 void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std::vector<Mesh> &meshes);
 bool importBYU(const std::string &filePath, Mesh &mesh);
 bool exportCad(ExportFormat format, const std::string &filePath, const Mesh &mesh);
