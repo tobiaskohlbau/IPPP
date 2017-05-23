@@ -19,6 +19,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <core/dataObj/Graph.hpp>
+#include <core/distanceMetrics/L2Metric.hpp>
 #include <core/utility/UtilList.hpp>
 
 using namespace ippp;
@@ -27,7 +28,7 @@ BOOST_AUTO_TEST_SUITE(constructor)
 
 template <unsigned int dim>
 void testConstructor() {
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new L2Metric<dim>());
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
         new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
 
@@ -59,7 +60,7 @@ BOOST_AUTO_TEST_SUITE(search)
 
 template <unsigned int dim>
 void NNS() {
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new L2Metric<dim>());
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder1(
         new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
     Graph<dim> graph1(0, neighborFinder1);
@@ -114,7 +115,7 @@ void contains(std::vector<std::shared_ptr<Node<dim>>> result, std::vector<std::s
 
 template <unsigned int dim>
 void RS() {
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new L2Metric<dim>());
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder1(
         new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
     Graph<dim> graph1(0, neighborFinder1);

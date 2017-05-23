@@ -16,45 +16,36 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef DISTANCEMETRIC_HPP
-#define DISTANCEMETRIC_HPP
+#ifndef L2METRIC_HPP
+#define L2METRIC_HPP
 
-#include <memory>
-
-#include <core/Identifier.h>
-#include <core/dataObj/Node.hpp>
-#include <core/types.h>
+#include <core/distanceMetrics/DistanceMetric.hpp>
 
 namespace ippp {
 
-template <unsigned int dim>
-class Node;
-
 /*!
-* \brief   Virtual class for the computation of distance costs from an Edge
+* \brief   Static class for the computation of distance costs from Edge
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
 template <unsigned int dim>
-class DistanceMetric : public Identifier {
+class L2Metric : public DistanceMetric<dim> {
   public:
-    DistanceMetric(const std::string &name = "L2 Metric");
-    float calcDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
-    virtual float calcDist(const Vector<dim> &source, const Vector<dim> &target) const = 0;
+    L2Metric();
+    float calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
 };
 
 /*!
-*  \brief      Standard constructor of the class DistanceMetric
+*  \brief      Standard constructor of the class L1Metric.
 *  \author     Sascha Kaden
-*  \param[in]  name
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-DistanceMetric<dim>::DistanceMetric(const std::string &name) : Identifier(name) {
+L2Metric<dim>::L2Metric() : DistanceMetric<dim>("L1 Metric") {
 }
 
 /*!
-*  \brief      Calculates the distance cost of an Edge from the source and target Node.
+*  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
@@ -62,10 +53,10 @@ DistanceMetric<dim>::DistanceMetric(const std::string &name) : Identifier(name) 
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float DistanceMetric<dim>::calcDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const {
-    return calcDist(source->getValues(), target->getValues());
+float L2Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).norm();
 }
 
 } /* namespace ippp */
 
-#endif    // DISTANCEMETRIC_HPP
+#endif    // L2METRIC_HPP

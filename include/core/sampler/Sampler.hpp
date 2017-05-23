@@ -39,7 +39,7 @@ template <unsigned int dim>
 class Sampler : public Identifier {
   public:
     Sampler(const std::shared_ptr<Environment> &environment, const std::string &name = "Sampler");
-    virtual Vector<dim> getSample();
+    virtual Vector<dim> getSample() = 0;
     float getRandomAngle();
     float getRandomNumber();
     Vector<dim> getRandomRay();
@@ -82,21 +82,6 @@ Sampler<dim>::Sampler(const std::shared_ptr<Environment> &environment, const std
     m_generator = std::mt19937(rd());
     m_distAngle = std::uniform_real_distribution<float>(0, util::twoPi());
     m_distNumber = std::uniform_real_distribution<float>(0, 1.0);
-}
-
-/*!
-*  \brief      Return random sample
-*  \author     Sascha Kaden
-*  \param[out] sample
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-Vector<dim> Sampler<dim>::getSample() {
-    Vector<dim> vec;
-    for (unsigned int i = 0; i < dim; ++i) {
-        vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
-    }
-    return vec;
 }
 
 /*!

@@ -33,19 +33,20 @@ namespace ippp {
 template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
-    TrajectoryPlanner(const std::shared_ptr<CollisionDetection<dim>> &collision, const float stepSize = 1);
+    TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
+                      const float stepSize = 1);
 
     bool controlTrajectory(const Node<dim> &source, const Node<dim> &target);
     bool controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
     bool controlTrajectory(const Vector<dim> &source, const Vector<dim> &target);
     Vector<dim> controlTrajCont(const Vector<dim> &source, const Vector<dim> &target);
-    std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
-    std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
+    virtual std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) = 0;
+    virtual std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) = 0;
 
     void setStepSize(const float stepSize);
     float getStepSize() const;
 
-  private:
+  protected:
     float m_stepSize = 1;
     float m_sqStepSize = 1;
     std::shared_ptr<CollisionDetection<dim>> m_collision;
@@ -59,8 +60,9 @@ class TrajectoryPlanner : public Identifier {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-TrajectoryPlanner<dim>::TrajectoryPlanner(const std::shared_ptr<CollisionDetection<dim>> &collision, const float stepSize)
-    : Identifier("TrajectoryPlanner"), m_collision(collision) {
+TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                          const float stepSize)
+    : Identifier(name), m_collision(collision) {
     setStepSize(stepSize);
 }
 
@@ -109,11 +111,11 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const Vector<dim> &source, const 
 }
 
 /*!
-*  \brief      Control the linear trajectory and return the last collision free point 
+*  \brief      Control the linear trajectory and return the last collision free point
 *  \author     Sascha Kaden
 *  \param[in]  source Vector
 *  \param[in]  target Vector
-*  \param[out] last collision free point (NaN Vector, if no point is free)  
+*  \param[out] last collision free point (NaN Vector, if no point is free)
 *  \date       2016-05-31
 */
 template <unsigned int dim>
@@ -133,52 +135,6 @@ Vector<dim> TrajectoryPlanner<dim>::controlTrajCont(const Vector<dim> &source, c
     } else {
         return path[count];
     }
-}
-
-/*!
-*  \brief      Compute the binary (section wise) trajectory between source and target. Return vector of points.
-*  \details    The trajectory doesn't contain source or target vector.
-*  \author     Sascha Kaden
-*  \param[in]  source Vector
-*  \param[in]  target Vector
-*  \param[out] trajectory
-*  \date       2016-12-21
-*/
-template <unsigned int dim>
-std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) {
-    std::vector<Vector<dim>> vecs;
-
-    Vector<dim> u(target - source);
-    vecs.reserve((int)(u.norm() / m_stepSize) + 1);
-    unsigned int divider = 2;
-    for (Vector<dim> uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider) {
-        for (unsigned int i = 1; i < divider; i += 2) {
-            vecs.push_back(source + (uTemp * i));
-        }
-    }
-    return vecs;
-}
-
-/*!
-*  \brief      Compute the continuous trajectory between source and target. Return vector of points.
-*  \details    The trajectory doesn't contain source or target vector.
-*  \author     Sascha Kaden
-*  \param[in]  source Vector
-*  \param[in]  target Vector
-*  \param[out] trajectory
-*  \date       2016-12-21
-*/
-template <unsigned int dim>
-std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) {
-    std::vector<Vector<dim>> vecs;
-
-    Vector<dim> u(target - source);    // u = a - b
-    vecs.reserve((int)(u.norm() / m_stepSize) + 1);
-    u /= u.norm() / m_stepSize;    // u = |u|
-    for (Vector<dim> temp(source + u); (temp - target).squaredNorm() > 1; temp += u) {
-        vecs.push_back(temp);
-    }
-    return vecs;
 }
 
 /*!

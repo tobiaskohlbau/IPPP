@@ -19,6 +19,7 @@
 #include <core/Identifier.h>
 #include <core/types.h>
 
+#include <core/collisionDetection/CollisionDetection.hpp>
 #include <core/collisionDetection/CollisionDetection2D.h>
 #include <core/collisionDetection/CollisionDetectionPqp.hpp>
 #include <core/collisionDetection/CollisionDetectionTriangleRobot.h>
@@ -31,15 +32,18 @@
 #include <core/distanceMetrics/DistanceMetric.hpp>
 #include <core/distanceMetrics/InfMetric.hpp>
 #include <core/distanceMetrics/L1Metric.hpp>
+#include <core/distanceMetrics/L2Metric.hpp>
 #include <core/distanceMetrics/WeightVecInfMetric.hpp>
 #include <core/distanceMetrics/WeightVecL1Metric.hpp>
 #include <core/distanceMetrics/WeightVecL2Metric.hpp>
 
 #include <core/neighborFinders/BruteForceNF.hpp>
 #include <core/neighborFinders/KDTree.hpp>
+#include <core/neighborFinders/NeighborFinder.hpp>
 
 #include <core/sampler/Sampler.hpp>
 #include <core/sampler/SamplerNormalDist.hpp>
+#include <core/sampler/SamplerRandom.hpp>
 #include <core/sampler/SamplerUniform.hpp>
 #include <core/sampler/SeedSampler.hpp>
 
@@ -48,6 +52,7 @@
 #include <core/sampling/Sampling.hpp>
 #include <core/sampling/SamplingNearObstacle.hpp>
 
+#include <core/trajectoryPlanner/LinearTrajectory.hpp>
 #include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 
 #include <core/utility/Logging.h>

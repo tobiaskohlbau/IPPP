@@ -46,9 +46,9 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(environment));
     std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(environment));
-    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new TrajectoryPlanner<6>(collision, 3));
-    std::shared_ptr<TrajectoryPlanner<6>> trajectoryBenchmark(new TrajectoryPlanner<6>(collisionBenchmark, 3));
-    std::shared_ptr<Sampler<6>> sampler(new Sampler<6>(environment));
+    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new LinearTrajectory<6>(collision, 3));
+    std::shared_ptr<TrajectoryPlanner<6>> trajectoryBenchmark(new LinearTrajectory<6>(collisionBenchmark, 3));
+    std::shared_ptr<Sampler<6>> sampler(new SamplerRandom<6>(environment));
     std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(environment, collision, trajectory, sampler));
     for (int i = 3; i < 6; ++i) {
         config.obstacleConfig[i] *= util::toRad();
@@ -57,7 +57,7 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<Sampling<6>> samplingBenchmark(
         new Sampling<6>(environment, collisionBenchmark, trajectoryBenchmark, sampler));
 
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
+    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new L2Metric<dim>());
     RRTOptions<6> options(40, collision, trajectory, sampling, distanceMetric);
     RRTOptions<6> optionsBenchmark(40, collisionBenchmark, trajectoryBenchmark, samplingBenchmark, distanceMetric);
 

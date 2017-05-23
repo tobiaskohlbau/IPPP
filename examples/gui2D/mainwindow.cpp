@@ -49,8 +49,7 @@ void MainWindow::computePath() {
     if (m_robotTypeLabel == 1) {
         const unsigned int dim = 3;
 
-        std::shared_ptr<ippp::DistanceMetric<dim>> metric =
-            std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
+        std::shared_ptr<ippp::DistanceMetric<dim>> metric = std::make_shared<ippp::L2Metric<dim>>(ippp::L2Metric<dim>());
         ;
         if (m_metricLabel == 1) {
             metric = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
@@ -81,9 +80,9 @@ void MainWindow::computePath() {
         //        std::shared_ptr<ModelContainer> model(new Model2D(m_workspace));
         //        robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(environment));
-        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, m_trajectoryStepSize));
+        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new LinearTrajectory<dim>(collision, m_trajectoryStepSize));
 
-        std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(environment));
+        std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(environment));
         if (m_samplingStrategy == 1)
             sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(environment));
         else if (m_samplerMethod == 2)
@@ -112,8 +111,7 @@ void MainWindow::computePath() {
         m_connected = m_planner3d->computePath(start, goal, m_numNodes, m_numThreads);
     } else {
         const unsigned int dim = 2;
-        std::shared_ptr<ippp::DistanceMetric<dim>> metric =
-            std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
+        std::shared_ptr<ippp::DistanceMetric<dim>> metric = std::make_shared<ippp::L2Metric<dim>>(ippp::L2Metric<dim>());
         if (m_metricLabel == 1) {
             metric = std::make_shared<ippp::L1Metric<dim>>(ippp::L1Metric<dim>());
         } else if (m_metricLabel == 2) {
@@ -142,8 +140,8 @@ void MainWindow::computePath() {
         //        robot->setWorkspace(model);
 
         std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(environment));
-        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new TrajectoryPlanner<dim>(collision, m_trajectoryStepSize));
-        std::shared_ptr<Sampler<dim>> sampler(new Sampler<dim>(environment));
+        std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new LinearTrajectory<dim>(collision, m_trajectoryStepSize));
+        std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(environment));
 
         if (m_samplingStrategy == 1)
             sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(environment));
