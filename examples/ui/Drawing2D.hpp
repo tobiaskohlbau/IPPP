@@ -3,15 +3,15 @@
 
 #include <type_traits>
 
+#include "opencv2/core/eigen.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/core/eigen.hpp"
 #include <Eigen/Core>
 
-#include <core/types.h>
+#include <core/Identifier.h>
 #include <core/dataObj/Node.hpp>
 #include <core/dataObj/PointList.hpp>
-#include <core/Identifier.h>
+#include <core/types.h>
 #include <core/utility/Logging.h>
 
 namespace ippp {
@@ -33,7 +33,7 @@ void drawTree2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &i
     static_assert(dim == 2, "Dimension has to be 2");
     for (auto &elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
-        //cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
+        // cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
         if (elem->getParentNode() != nullptr) {
             cv::Point point2(elem->getParentNode()->getX(), elem->getParentNode()->getY());
             cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
@@ -57,7 +57,7 @@ void drawGraph2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &
     static_assert(dim == 2, "Dimension has to be 2");
     for (auto &elem : nodes) {
         cv::Point point(elem->getX(), elem->getY());
-        //cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
+        // cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
         for (auto &child : elem->getChildNodes()) {
             if (child != nullptr) {
                 cv::Point point2(child->getX(), child->getY());
@@ -97,7 +97,7 @@ static void drawPath2D(const std::vector<Vector2> vecs, cv::Mat &image, Eigen::V
 *  \date          2016-05-25
 */
 static void drawTrianglePath(std::vector<Vector3> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
-                      Eigen::Vector3i colorPoint, int thickness) {
+                             Eigen::Vector3i colorPoint, int thickness) {
     if (vecs.size() == 0)
         return;
 
@@ -142,6 +142,26 @@ static Eigen::MatrixXi cvToEigen(cv::Mat cvMat) {
     Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> B = A_Eigen;
 
     return B;
+}
+
+/*!
+*  \brief      Convert cv::Mat to integer Eigen matrix
+*  \author     Sascha Kaden
+*  \param[in]  image
+*  \param[out] Eigen matrix
+*  \date       2016-12-18
+*/
+static cv::Mat eigenToCV(Eigen::MatrixXi eigenMat) {
+    cv::Mat cvMat(eigenMat.rows(), eigenMat.cols(), CV_32SC1, eigenMat.data());
+
+    if (Eigen::RowMajorBit) {
+        cv::transpose(cvMat, cvMat);
+    }
+
+    cv::Mat dst;
+    cvMat.convertTo(dst, CV_8UC1);
+
+    return dst;
 }
 
 } /* namespace drawing */

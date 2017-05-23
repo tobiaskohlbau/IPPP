@@ -9,16 +9,15 @@
 
 #include <modelDirectory.h>
 #include <ui/Drawing2D.hpp>
+#include <ui/ModuleCreator.hpp>
 #include <ui/Writer.hpp>
 
 using namespace ippp;
 
-cv::Mat obstacleWorkspace;
-
-void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
+void testTriangleRobot() {
     const unsigned int dim = 3;
-    Vector3 min = util::append<2>(minimum, 0.0);
-    Vector3 max = util::append<2>(maximum, util::twoPi());
+    Vector3 min(0.0, 0.0, 0.0);
+    Vector3 max(1000, 1000, util::twoPi());
 
     std::vector<Triangle2D> triangles;
     triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0), Vector2(25, 50)));
@@ -26,35 +25,26 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     ModelFactoryTriangle2D factory;
     std::shared_ptr<ModelContainer> baseModel = factory.createModel(triangles);
     std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, min, max));
-    std::shared_ptr<Environment> environment(
-        new Environment(2, AABB(Vector3(-1500, -1500, -1500), Vector3(1500, 1500, 1500)), robot));
+    std::shared_ptr<Environment> environment(new Environment(2, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)), robot));
     // std::shared_ptr<ModelContainer> model(new Model2D(mat));
     // robot->setWorkspace(model);
 
-    std::shared_ptr<CollisionDetection<3>> collision(new CollisionDetectionTriangleRobot(environment));
-    std::shared_ptr<TrajectoryPlanner<3>> trajectory(new TrajectoryPlanner<3>(collision));
-    std::shared_ptr<Sampler<3>> sampler(new SeedSampler<3>(environment));
-    std::shared_ptr<Sampling<3>> sampling(new SamplingNearObstacle<3>(environment, collision, trajectory, sampler));
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
-
-    PRMOptions<dim> prmOptions(30, collision, trajectory, sampling, distanceMetric);
-    RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling, distanceMetric);
-    SRTOptions<dim> srtOptions(20, collision, trajectory, sampling, distanceMetric);
-
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
-    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(environment));
+    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
+                               SamplingType::Sampling);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(robot, prmOptions, graph));
-    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, rrtOptions, graph));
-    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions, graph));
-    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions, graph));
+    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(40), creator.getGraph()));
+    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
+    // planner = std::shared_ptr<RRTStarContTraj<dim>>(new RRTStarContTraj<dim>(environment, creator.getRRTOptions(50),
+    // creator.getGraph()));
+    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
+    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
     Vector3 goal(400.0, 930.0, 50 * util::toRad());
-    bool connected = planner->computePath(start, goal, 20000, 8);
+    bool connected = planner->computePath(start, goal, 20000, 4);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
@@ -65,8 +55,11 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
 
         // Writer::writeVecsToFile(path, "result.txt");
 
-        cv::Mat image = obstacleWorkspace.clone();
+        Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getBoundary(), 255);
+        cv::Mat image = drawing::eigenToCV(workspace2D);
+        // cv::Mat image = obstacleWorkspace.clone();
         cv::cvtColor(image, image, CV_GRAY2BGR);
+
         drawing::drawTrianglePath(path, triangles, image, Eigen::Vector3i(0, 0, 255), 2);
         writer::writeVecsToFile<3>(path, "test.txt", 1);
 
@@ -77,45 +70,43 @@ void testTriangleRobot(Vector2 minimum, Vector2 maximum, Eigen::MatrixXi mat) {
     }
 }
 
-void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
+void testPointRobot() {
+    Vector2 min(0.0, 0.0);
+    Vector2 max(1000, 1000);
+
     const unsigned int dim = 2;
     std::shared_ptr<PointRobot> robot(new PointRobot(min, max));
-    std::shared_ptr<Environment> environment(
-        new Environment(2, AABB(Vector3(-1500, -1500, -1500), Vector3(1500, 1500, 1500)), robot));
-    // std::shared_ptr<ModelContainer> model(new Model2D(mat));
+    std::shared_ptr<Environment> environment(new Environment(2, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)), robot));
+    ModelFactoryTriangle2D factory;
+    auto workspace = factory.createModel(getModelDirectory() + "/spaces/easyMaze.obj");
+    environment->addObstacle(workspace);
     // robot->setWorkspace(model);
 
-    std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(environment));
-    std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(collision));
-    std::shared_ptr<Sampler<2>> sampler(new SamplerUniform<2>(environment));
-    std::shared_ptr<Sampling<2>> sampling(new SamplingNearObstacle<2>(environment, collision, trajectory, sampler));
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new DistanceMetric<dim>());
-
-    PRMOptions<dim> prmOptions(40, collision, trajectory, sampling, distanceMetric);
-    RRTOptions<dim> rrtOptions(50, collision, trajectory, sampling, distanceMetric);
-    SRTOptions<dim> srtOptions(20, collision, trajectory, sampling, distanceMetric);
-
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
-        new BruteForceNF<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
-    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(environment));
+    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
+                               SamplingType::Sampling);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, prmOptions, graph));
-    // planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(robot, rrtOptions, graph));
-    // planner = std::shared_ptr<RRTStarContTraj<dim>>(new RRTStarContTraj<dim>(robot, rrtOptions, graph));
-    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(robot, rrtOptions, graph));
-    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(robot, srtOptions, graph));
+    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(40), creator.getGraph()));
+    // planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
+    // planner = std::shared_ptr<RRTStarContTraj<dim>>(new RRTStarContTraj<dim>(environment, creator.getRRTOptions(50),
+    // creator.getGraph()));
+    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
+    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(50.0, 30.0);
     Vector2 goal(870.0, 870.0);
-    bool connected = planner->computePath(start, goal, 4000, 2);
+    bool connected = planner->computePath(start, goal, 6000, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
 
-    cv::Mat image = obstacleWorkspace.clone();
+    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getBoundary(), 255);
+    cad::drawTriangles(workspace2D, std::dynamic_pointer_cast<ModelTriangle2D>(workspace)->m_triangles, 50);
+    cv::Mat image = drawing::eigenToCV(workspace2D);
+    // cv::Mat image = obstacleWorkspace.clone();
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
     drawing::drawGraph2D(nodes, image, Eigen::Vector3i(125, 125, 125), Eigen::Vector3i(125, 125, 125), 1);
@@ -134,15 +125,7 @@ void testPointRobot(Vector2 min, Vector2 max, Eigen::MatrixXi mat) {
 }
 
 int main(int argc, char** argv) {
-    // obstacleWorkspace = cv::imread(getModelDirectory() + "spaces/freeWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    // obstacleWorkspace = cv::imread(getModelDirectory() + "spaces/labyrinth.png", CV_LOAD_IMAGE_GRAYSCALE);
-    obstacleWorkspace = cv::imread(getModelDirectory() + "spaces/obstacleWorkspace.png", CV_LOAD_IMAGE_GRAYSCALE);
-    Eigen::MatrixXi mat = drawing::cvToEigen(obstacleWorkspace);
+    testTriangleRobot();
 
-    Vector2 minBoundary(0.0, 0.0);
-    Vector2 maxBoundary(mat.rows(), mat.cols());
-
-    testTriangleRobot(minBoundary, maxBoundary, mat);
-
-    testPointRobot(minBoundary, maxBoundary, mat);
+    testPointRobot();
 }

@@ -29,17 +29,22 @@ namespace ippp {
 */
 CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment)
     : CollisionDetection("CollisionDetectionTriangleRobot", environment) {
-    if (!m_environment->getObstacleNum() == 0) {
-        Logging::warning("Empty workspace", this);
-        return;
-    }
+    // set boundaries
+    auto bound = m_environment->getBoundary();
+    m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
+    m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
 
     // create workspace from the 2d triangles
     m_workspace2D = cad::create2dspace(m_environment->getBoundary(), 255);
-    std::vector<std::shared_ptr<ModelContainer>> obstacles = m_environment->getObstacles();
-    for (auto &obstacle : obstacles) {
-        auto model = std::dynamic_pointer_cast<ModelTriangle2D>(obstacle);
-        cad::drawTriangles(m_workspace2D, model->m_triangles, 0);
+
+    if (!m_environment->getObstacleNum() == 0) {
+        Logging::warning("Empty workspace", this);
+    } else {
+        std::vector<std::shared_ptr<ModelContainer>> obstacles = m_environment->getObstacles();
+        for (auto &obstacle : obstacles) {
+            auto model = std::dynamic_pointer_cast<ModelTriangle2D>(obstacle);
+            cad::drawTriangles(m_workspace2D, model->m_triangles, 0);
+        }
     }
 
     auto robot = m_environment->getRobot();
@@ -49,11 +54,6 @@ CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shar
     } else {
         m_triangles = std::dynamic_pointer_cast<ModelTriangle2D>(robot->getBaseModel())->m_triangles;
     }
-
-    // set boundaries
-    auto bound = m_environment->getBoundary();
-    m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
-    m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
 }
 
 /*!

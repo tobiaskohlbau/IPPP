@@ -48,6 +48,7 @@ void MainWindow::computePath() {
 
     if (m_robotTypeLabel == 1) {
         const unsigned int dim = 3;
+
         std::shared_ptr<ippp::DistanceMetric<dim>> metric =
             std::make_shared<ippp::DistanceMetric<dim>>(ippp::DistanceMetric<dim>());
         ;

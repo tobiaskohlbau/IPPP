@@ -16,81 +16,232 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef WRITER_H
-#define WRITER_H
+#ifndef MODULECREATOR_HPP
+#define MODULECREATOR_HPP
 
 #include <fstream>
 #include <type_traits>
 #include <vector>
 
-#include <Eigen/Core>
-
-#include <core/types.h>
+#include <Core>
+#include <Environment>
+#include <Planner>
 
 namespace ippp {
-namespace writer {
+
+enum class CollisionType { Collision2D, CollisionPQP, CollisionTriangle };
+
+enum class MetricType { L1, L2, Inf };
+
+enum class SamplerType { Sampler, SamplerNormalDist, SamplerUniform, SeedSampler };
+
+enum class NeighborType { KDTree, BruteForce };
+
+enum class SamplingType { Bridge, Gaussian, Sampling, NearObstacle };
 
 /*!
-*  \brief      Write vecs to defined file, clear file
-*  \param[in]  vector of Vec
-*  \param[in]  filename
-*  \param[in]  scale
-*  \author     Sasch Kaden
-*  \date       2016-11-14
+* \brief   Class ModuleCreator generates all defined modules for the path planner and creates the graph for the planner too. By a
+* method it returns the options for the planner.
+* \author  Sascha Kaden
+* \date    2017-05-22
 */
 template <unsigned int dim>
-void writeVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, float scale) {
-    std::ofstream myfile(filename);
-    for (int i = 0; i < vecs.size(); ++i) {
-        for (unsigned int j = 0; j < dim; ++j)
-            myfile << vecs[i][j] * scale << " ";
-        myfile << std::endl;
-    }
-    myfile.close();
-}
+class ModuleCreator : public Identifier {
+  public:
+    ModuleCreator(std::shared_ptr<Environment> environment, std::shared_ptr<CollisionDetection<dim>> collision,
+                  MetricType metricType, NeighborType neighborType, SamplerType samplerType, SamplingType samplingType,
+                  const double trajecotryStepSize = 1, const unsigned int samplingAttempts = 10, const double samplingDist = 10);
+
+    std::shared_ptr<DistanceMetric<dim>> getMetric();
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
+    std::shared_ptr<Graph<dim>> getGraph();
+    std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner();
+    std::shared_ptr<Sampler<dim>> getSampler();
+    std::shared_ptr<Sampling<dim>> getSampling();
+
+    PRMOptions<dim> getPRMOptions(const float rangeSize);
+    RRTOptions<dim> getRRTOptions(const float stepSize);
+    SRTOptions<dim> getSRTOptions(const unsigned int nbOfTrees);
+
+  private:
+    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
+    std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr;
+    std::shared_ptr<Graph<dim>> m_graph = nullptr;
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
+    std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
+    std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
+
+    MetricType m_metricType;
+    SamplerType m_samplerType;
+    NeighborType m_neighborType;
+};
 
 /*!
-*  \brief      Append vecs to defined file
-*  \param[in]  vector of Vec
-*  \param[in]  filename
-*  \param[in]  scale
-*  \author     Sasch Kaden
-*  \date       2016-11-14
+*  \brief      Constructor of the class ModuleCreator
+*  \author     Sascha Kaden
+*  \param[in]  environment
+*  \param[in]  collision detection
+*  \param[in]  metric type
+*  \param[in]  neighbor type
+*  \param[in]  sampler type
+*  \param[in]  sampling type
+*  \param[in]  sampling attempts
+*  \param[in]  sampling distance for some specific sampler
+*  \date       2017-05-22
 */
 template <unsigned int dim>
-void appendVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, float scale) {
-    std::ofstream myfile;
-    myfile.open(filename, std::ios_base::app);
-    for (int i = 0; i < vecs.size(); ++i) {
-        for (unsigned int j = 0; j < dim; ++j)
-            myfile << vecs[i][j] * scale << " ";
-        myfile << std::endl;
+ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std::shared_ptr<CollisionDetection<dim>> collision,
+                                  MetricType metricType, NeighborType neighborType, SamplerType samplerType,
+                                  SamplingType samplingType, const double trajecotryStepSize, const unsigned int samplingAttempts,
+                                  const double samplingDist)
+    : Identifier("ModuleCreator"), m_neighborType(neighborType), m_metricType(metricType), m_samplerType(samplerType) {
+    m_collision = collision;
+
+    m_trajectory = std::shared_ptr<TrajectoryPlanner<dim>>(new TrajectoryPlanner<dim>(collision, trajecotryStepSize));
+
+    if (metricType == MetricType::L1)
+        m_metric = std::shared_ptr<DistanceMetric<dim>>(new DistanceMetric<dim>());
+    else if (metricType == MetricType::L2)
+        m_metric = std::shared_ptr<DistanceMetric<dim>>(new DistanceMetric<dim>());
+    else if (metricType == MetricType::Inf)
+        m_metric = std::shared_ptr<DistanceMetric<dim>>(new DistanceMetric<dim>());
+
+    if (neighborType == NeighborType::BruteForce)
+        m_neighborFinder = std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(
+            new BruteForceNF<dim, std::shared_ptr<Node<dim>>>(m_metric));
+    else if (neighborType == NeighborType::KDTree)
+        m_neighborFinder = std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(
+            new KDTree<dim, std::shared_ptr<Node<dim>>>(m_metric));
+
+    m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(0, m_neighborFinder));
+
+    if (samplerType == SamplerType::Sampler)
+        m_sampler = std::shared_ptr<Sampler<dim>>(new Sampler<dim>(environment));
+    else if (samplerType == SamplerType::SamplerNormalDist)
+        m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(environment));
+    else if (samplerType == SamplerType::SamplerUniform)
+        m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(environment));
+    else if (samplerType == SamplerType::SeedSampler)
+        m_sampler = std::shared_ptr<Sampler<dim>>(new SeedSampler<dim>(environment));
+
+    if (samplingType == SamplingType::Sampling) {
+        m_sampling =
+            std::shared_ptr<Sampling<dim>>(new Sampling<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts));
+    } else if (samplingType == SamplingType::Bridge) {
+        m_sampling = std::shared_ptr<Sampling<dim>>(
+            new BridgeSampling<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts, samplingDist));
+    } else if (samplingType == SamplingType::Gaussian) {
+        m_sampling = std::shared_ptr<Sampling<dim>>(
+            new GaussianSampling<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts, samplingDist));
+    } else if (samplingType == SamplingType::NearObstacle) {
+        m_sampling = std::shared_ptr<Sampling<dim>>(
+            new SamplingNearObstacle<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts));
     }
-    myfile.close();
 }
 
 /*!
-*  \brief      Write transformation vectors to defined file
-*  \param[in]  vector of vector of Vec
-*  \param[in]  filename
-*  \author     Sasch Kaden
-*  \date       2016-11-14
+*  \brief      Return the pointer to the distance metric instance.
+*  \author     Sascha Kaden
+*  \param[out] distance metric
+*  \date       2017-05-22
 */
-static void writeTrafosToFile(const std::vector<std::vector<Vector6>> &vecs, const std::string &filename) {
-    std::ofstream myfile;
-    myfile.open(filename, std::ios_base::app);
-    for (auto trafos : vecs) {
-        for (auto trafo : trafos) {
-            for (unsigned int i = 0; i < trafo.cols(); ++i) {
-                myfile << trafo[i] << " ";
-            }
-        }
-        myfile << std::endl;
-    }
-    myfile.close();
+template <unsigned int dim>
+std::shared_ptr<DistanceMetric<dim>> ModuleCreator<dim>::getMetric() {
+    return m_metric;
 }
 
-} /* namespace utilList */
+/*!
+*  \brief      Return the pointer to the distance metric instance.
+*  \author     Sascha Kaden
+*  \param[out] distance metric
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> ModuleCreator<dim>::getNeighborFinder() {
+    return m_neighborFinder;
+}
+
+/*!
+*  \brief      Return the pointer to the Graph instance.
+*  \author     Sascha Kaden
+*  \param[out] Graph
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<Graph<dim>> ModuleCreator<dim>::getGraph() {
+    return m_graph;
+}
+
+/*!
+*  \brief      Return the pointer to the TrajectoryPlanner instance.
+*  \author     Sascha Kaden
+*  \param[out] TrajecotryPlanner
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<TrajectoryPlanner<dim>> ModuleCreator<dim>::getTrajectoryPlanner() {
+    return m_trajectory;
+}
+
+/*!
+*  \brief      Return the pointer to the Sampler instance.
+*  \author     Sascha Kaden
+*  \param[out] Sampler
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<Sampler<dim>> ModuleCreator<dim>::getSampler() {
+    return m_sampler;
+}
+
+/*!
+*  \brief      Return the pointer to the Sampling instance.
+*  \author     Sascha Kaden
+*  \param[out] Sampling
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<Sampling<dim>> ModuleCreator<dim>::getSampling() {
+    return m_sampling;
+}
+
+/*!
+*  \brief      Generate PRMOptions and return them.
+*  \author     Sascha Kaden
+*  \param[in]  range size
+*  \param[out] PRMOptions
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const float rangeSize) {
+    return PRMOptions<dim>(rangeSize, m_collision, m_trajectory, m_sampling, m_metric);
+}
+
+/*!
+*  \brief      Generate RRTOptions and return them.
+*  \author     Sascha Kaden
+*  \param[in]  step size
+*  \param[out] RRTOptions
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+RRTOptions<dim> ModuleCreator<dim>::getRRTOptions(const float stepSize) {
+    return RRTOptions<dim>(stepSize, m_collision, m_trajectory, m_sampling, m_metric);
+}
+
+/*!
+*  \brief      Generate SRTOptions and return them.
+*  \author     Sascha Kaden
+*  \param[in]  number of trees
+*  \param[out] SRTOptions
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+SRTOptions<dim> ModuleCreator<dim>::getSRTOptions(const unsigned int nbOfTrees) {
+    return SRTOptions<dim>(nbOfTrees, m_collision, m_trajectory, m_sampling, m_metric);
+}
+
 } /* namespace ippp */
 
-#endif    // WRITER_H
+#endif    // MODULECREATOR_HPP
