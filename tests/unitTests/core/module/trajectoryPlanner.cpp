@@ -19,7 +19,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <core/collisionDetection/CollisionDetectionPqp.hpp>
-#include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <core/trajectoryPlanner/LinearTrajectory.hpp>
 #include <core/utility/Utility.h>
 #include <environment/robot/Jaco.h>
 
@@ -33,17 +33,17 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     std::shared_ptr<Jaco> robot(new Jaco());
     std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
-    TrajectoryPlanner<dim> planner(collision, 0.1);
+    std::shared_ptr<TrajectoryPlanner<dim>> planner(new LinearTrajectory<dim>(collision, 0.1));
 
     // test trajectories
     Vector6 init = util::Vecf(0, 0, 0, 0, 0, 0);
     Vector6 goal = util::Vecf(0, 0, 0, 0, 0, 0);
     std::vector<Vector6> path;
-    path = planner.calcTrajectoryCont(init, goal);
+    path = planner->calcTrajectoryCont(init, goal);
     BOOST_CHECK(path.size() == 0);
 
     goal = util::Vecf(1, 1, 1, 1, 1, 1);
-    path = planner.calcTrajectoryCont(init, goal);
+    path = planner->calcTrajectoryCont(init, goal);
     float dist = 1 / goal.norm() * 0.1;
     for (float i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     }
 
     goal = util::Vecf(-1, -1, -1, -1, -1, -1);
-    path = planner.calcTrajectoryCont(init, goal);
+    path = planner->calcTrajectoryCont(init, goal);
     dist = -1 / goal.norm() * 0.1;
     for (float i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {

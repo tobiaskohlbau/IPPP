@@ -31,9 +31,11 @@ namespace ippp {
 
 enum class CollisionType { Collision2D, CollisionPQP, CollisionTriangle };
 
+enum class TrajectoryType { Linear };
+
 enum class MetricType { L1, L2, Inf };
 
-enum class SamplerType { Sampler, SamplerNormalDist, SamplerUniform, SeedSampler };
+enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, SeedSampler };
 
 enum class NeighborType { KDTree, BruteForce };
 
@@ -50,7 +52,8 @@ class ModuleCreator : public Identifier {
   public:
     ModuleCreator(std::shared_ptr<Environment> environment, std::shared_ptr<CollisionDetection<dim>> collision,
                   MetricType metricType, NeighborType neighborType, SamplerType samplerType, SamplingType samplingType,
-                  const double trajecotryStepSize = 1, const unsigned int samplingAttempts = 10, const double samplingDist = 10);
+                  TrajectoryType trajectoryType, const double trajecotryStepSize = 1, const unsigned int samplingAttempts = 10,
+                  const double samplingDist = 10);
 
     std::shared_ptr<DistanceMetric<dim>> getMetric();
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
@@ -93,19 +96,20 @@ class ModuleCreator : public Identifier {
 template <unsigned int dim>
 ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std::shared_ptr<CollisionDetection<dim>> collision,
                                   MetricType metricType, NeighborType neighborType, SamplerType samplerType,
-                                  SamplingType samplingType, const double trajecotryStepSize, const unsigned int samplingAttempts,
-                                  const double samplingDist)
+                                  SamplingType samplingType, TrajectoryType trajectoryType, const double trajecotryStepSize,
+                                  const unsigned int samplingAttempts, const double samplingDist)
     : Identifier("ModuleCreator"), m_neighborType(neighborType), m_metricType(metricType), m_samplerType(samplerType) {
     m_collision = collision;
 
-    m_trajectory = std::shared_ptr<TrajectoryPlanner<dim>>(new TrajectoryPlanner<dim>(collision, trajecotryStepSize));
+    // if (trajectoryType == TrajectoryType::Linear)
+    m_trajectory = std::shared_ptr<TrajectoryPlanner<dim>>(new LinearTrajectory<dim>(collision, trajecotryStepSize));
 
     if (metricType == MetricType::L1)
-        m_metric = std::shared_ptr<DistanceMetric<dim>>(new DistanceMetric<dim>());
+        m_metric = std::shared_ptr<DistanceMetric<dim>>(new L1Metric<dim>());
     else if (metricType == MetricType::L2)
-        m_metric = std::shared_ptr<DistanceMetric<dim>>(new DistanceMetric<dim>());
+        m_metric = std::shared_ptr<DistanceMetric<dim>>(new L2Metric<dim>());
     else if (metricType == MetricType::Inf)
-        m_metric = std::shared_ptr<DistanceMetric<dim>>(new DistanceMetric<dim>());
+        m_metric = std::shared_ptr<DistanceMetric<dim>>(new InfMetric<dim>());
 
     if (neighborType == NeighborType::BruteForce)
         m_neighborFinder = std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(
@@ -116,8 +120,8 @@ ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std:
 
     m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(0, m_neighborFinder));
 
-    if (samplerType == SamplerType::Sampler)
-        m_sampler = std::shared_ptr<Sampler<dim>>(new Sampler<dim>(environment));
+    if (samplerType == SamplerType::SamplerRandom)
+        m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerRandom<dim>(environment));
     else if (samplerType == SamplerType::SamplerNormalDist)
         m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(environment));
     else if (samplerType == SamplerType::SamplerUniform)
