@@ -40,7 +40,7 @@ RobotBase::~RobotBase() {
 RobotBase::RobotBase(const std::string &name, const unsigned int dim, RobotType robotType, const VectorX &minBoundary,
                      const VectorX &maxBoundary)
     : Identifier(name), m_dim(dim), m_robotType(robotType), m_minBoundary(minBoundary), m_maxBoundary(maxBoundary) {
-    m_pose = util::Vecf(0, 0, 0, 0, 0, 0);
+    m_pose = util::Vecd(0, 0, 0, 0, 0, 0);
     m_poseMat = util::poseVecToMat(m_pose);
     m_baseModel = nullptr;
 }

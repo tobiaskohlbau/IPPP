@@ -58,14 +58,14 @@ Vector<dim> SamplerLinear<dim>::getSample() {
     Vector<dim> vec;
     if (dim == 6) {
         for (unsigned int i = 0; i < 3; ++i) {
-            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
+            vec[i] = m_minBoundary[i] + (double)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
         }
         for (unsigned int i = 3; i < 6; ++i) {
             vec[i] = this->m_origin[i - 3];
         }
     } else {
         for (unsigned int i = 0; i < dim; ++i) {
-            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
+            vec[i] = m_minBoundary[i] + (double)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
         }
     }
     return vec;

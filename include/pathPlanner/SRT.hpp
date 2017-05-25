@@ -48,7 +48,7 @@ class SRT : public Planner<dim> {
     void expandNode(std::shared_ptr<Node<dim>> currentNode);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing = true);
+    std::vector<Vector<dim>> getPath(const double trajectoryStepSize, const bool smoothing = true);
 
   protected:
     void samplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfTrees);
@@ -324,7 +324,7 @@ bool SRT<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node
 */
 template <unsigned int dim>
 void SRT<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
-    float dist, edgeCost;
+    double dist, edgeCost;
     for (auto successor : currentNode->getChildNodes()) {
         if (util::contains(m_closedList, successor)) {
             continue;
@@ -380,7 +380,7 @@ std::vector<std::shared_ptr<Node<dim>>> SRT<dim>::getPathNodes() {
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> SRT<dim>::getPath(const float trajectoryStepSize, const bool smoothing) {
+std::vector<Vector<dim>> SRT<dim>::getPath(const double trajectoryStepSize, const bool smoothing) {
     return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 

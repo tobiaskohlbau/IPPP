@@ -37,7 +37,7 @@ Joint::Joint() {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-Joint::Joint(float minBound, float maxBound) {
+Joint::Joint(double minBound, double maxBound) {
     setBoundaries(minBound, maxBound);
 }
 
@@ -49,7 +49,7 @@ Joint::Joint(float minBound, float maxBound) {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-Joint::Joint(float minBound, float maxBound, std::shared_ptr<ModelContainer> model) {
+Joint::Joint(double minBound, double maxBound, std::shared_ptr<ModelContainer> model) {
     setBoundaries(minBound, maxBound);
     setModel(model);
 }
@@ -85,7 +85,7 @@ std::shared_ptr<ModelContainer> Joint::getModel() {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-void Joint::setBoundaries(float minBound, float maxBound) {
+void Joint::setBoundaries(double minBound, double maxBound) {
     if (minBound > maxBound) {
         m_maxBound = minBound;
         m_minBound = maxBound;
@@ -102,7 +102,7 @@ void Joint::setBoundaries(float minBound, float maxBound) {
 *  \author     Sascha Kaden
 *  \date       2016-08-25
 */
-void Joint::getBoundaries(float &minBound, float &maxBound) {
+void Joint::getBoundaries(double &minBound, double &maxBound) {
     minBound = m_minBound;
     maxBound = m_maxBound;
 }

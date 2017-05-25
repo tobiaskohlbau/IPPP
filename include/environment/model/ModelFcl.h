@@ -25,7 +25,7 @@
 
 namespace ippp {
 
-typedef fcl::BVHModel<fcl::OBB<float>> FCLModel;
+typedef fcl::BVHModel<fcl::OBB<double>> FCLModel;
 
 /*!
 * \brief   Fcl model class

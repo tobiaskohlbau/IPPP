@@ -23,8 +23,8 @@ int main(int argc, char** argv) {
     std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel(modelDir + "parasol_benchmarks/alpha1.5/obstacle.obj");
 
     // specify the boundaries of the robot
-    VectorX minBoundary = util::Vecf(-200, -200, -200, 0, 0, 0);
-    VectorX maxBoundary = util::Vecf(200, 200, 200, util::twoPi(), util::twoPi(), util::twoPi());
+    VectorX minBoundary = util::Vecd(-200, -200, -200, 0, 0, 0);
+    VectorX maxBoundary = util::Vecd(200, 200, 200, util::twoPi(), util::twoPi(), util::twoPi());
 
     // create mobile robot and set the models
     std::shared_ptr<RobotBase> robot(new MobileRobot(2, minBoundary, maxBoundary));
@@ -36,19 +36,19 @@ int main(int argc, char** argv) {
     // as first create the collision detection
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     // define step size of the trajectories and create trajectory planner
-    float stepSize = 3;
+    double stepSize = 3;
     // create all required core modules with the ModuleCreator
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
                                SamplingType::Sampling, TrajectoryType::Linear, stepSize);
 
     // define the options of the path planner
-    float rrtStepSize = 30;
+    double rrtStepSize = 30;
     // create the path planner
     RRTStar<6> pathPlanner(environment, creator.getRRTOptions(rrtStepSize), creator.getGraph());
 
     // define start and goal position, angles has to be in rad
-    Vector<dim> start = util::Vecf(78.240253, 24.147785, -8.133371, 0.286451, 0.769112, 0.706202);
-    Vector<dim> goal = util::Vecf(-1.393717, 14.630385, 0.415858, 0.713232, 0.156663, 0.826461);
+    Vector<dim> start = util::Vecd(78.240253, 24.147785, -8.133371, 0.286451, 0.769112, 0.706202);
+    Vector<dim> goal = util::Vecd(-1.393717, 14.630385, 0.415858, 0.713232, 0.156663, 0.826461);
 
     // define number of nodes and threads for the path planning
     unsigned int numNodes = 8000;

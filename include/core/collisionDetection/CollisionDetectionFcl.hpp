@@ -49,11 +49,11 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
                   Vector3 &t2);
 
     // models for collision detection
-    fcl::CollisionObject<float> *o1 = nullptr;
-    fcl::CollisionObject<float> *o2 = nullptr;
+    fcl::CollisionObject<double> *o1 = nullptr;
+    fcl::CollisionObject<double> *o2 = nullptr;
 
     Matrix3 m_identity;
-    Eigen::Vector3f m_zeroVec;
+    Vector3 m_zeroVec;
 
     std::shared_ptr<FCLModel> m_baseMesh;
     std::shared_ptr<FCLModel> m_workspace;
@@ -74,7 +74,7 @@ template <unsigned int dim>
 CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<RobotBase> &robot)
     : CollisionDetection<dim>("collisionDetection", robot) {
     m_identity = Matrix3::Identity(3, 3);
-    m_zeroVec = Eigen::Vector3f::Zero(3, 1);
+    m_zeroVec = Vector3::Zero(3, 1);
 
     if (m_robot->getBaseModel() != nullptr && !m_robot->getBaseModel()->empty()) {
         m_baseMesh =
@@ -238,7 +238,7 @@ bool CollisionDetectionFcl<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 
             if (checkFCL(m_jointModels[i], m_jointModels[j], R[i], R[j], t[i], t[j])) {
                 if (Logging::getLogLevel() == LogLevel::debug) {
                     Logging::debug("Collision between link " + std::to_string(i) + " and link " + std::to_string(j), this);
-                    Eigen::Vector3f r = R[i].eulerAngles(0, 1, 2);
+                    Vector3 r = R[i].eulerAngles(0, 1, 2);
                     std::cout << "A" << i << ": ";
                     std::cout << "Euler angles: " << r.transpose() << "\t";
                     std::cout << "Translation: " << t[i].transpose() << std::endl;
@@ -282,10 +282,10 @@ bool CollisionDetectionFcl<dim>::checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::checkFCL(std::shared_ptr<FCLModel> &model1, std::shared_ptr<FCLModel> &model2, Matrix3 &R1,
                                           Matrix3 &R2, Vector3 &t1, Vector3 &t2) {
-    o1 = new fcl::CollisionObject<float>(model1, R1, t1);
-    o2 = new fcl::CollisionObject<float>(model2, R2, t2);
-    fcl::CollisionRequest<float> request;    // default setting
-    fcl::CollisionResult<float> result;
+    o1 = new fcl::CollisionObject<double>(model1, R1, t1);
+    o2 = new fcl::CollisionObject<double>(model2, R2, t2);
+    fcl::CollisionRequest<double> request;    // default setting
+    fcl::CollisionResult<double> result;
     collide(o1, o2, request, result);
     delete o1;
     delete o2;

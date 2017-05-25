@@ -46,14 +46,14 @@ class PRM : public Planner<dim> {
     void expandNode(std::shared_ptr<Node<dim>> currentNode);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing = true);
+    std::vector<Vector<dim>> getPath(const double trajectoryStepSize, const bool smoothing = true);
 
   protected:
     void samplingPhase(const unsigned int nbOfNodes);
     void plannerPhase(const unsigned int startNodeIndex, const unsigned int endNodeIndex);
     std::shared_ptr<Node<dim>> connectNode(const Vector<dim> &node);
 
-    float m_rangeSize;
+    double m_rangeSize;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
     std::vector<std::shared_ptr<Node<dim>>> m_openList, m_closedList;
 
@@ -266,7 +266,7 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &vec) {
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(vec, m_rangeSize * 3);
-    float dist = std::numeric_limits<float>::max();
+    double dist = std::numeric_limits<double>::max();
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (m_trajectory->controlTrajectory(vec, *nearNodes[i]) && m_metric->calcDist(vec, nearNodes[i]->getValues()) < dist) {
@@ -324,7 +324,7 @@ bool PRM<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node
 */
 template <unsigned int dim>
 void PRM<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
-    float dist, edgeCost;
+    double dist, edgeCost;
     for (auto successor : currentNode->getChildNodes()) {
         if (util::contains(m_closedList, successor)) {
             continue;
@@ -363,7 +363,7 @@ std::vector<std::shared_ptr<Node<dim>>> PRM<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> PRM<dim>::getPath(const float trajectoryStepSize, const bool smoothing) {
+std::vector<Vector<dim>> PRM<dim>::getPath(const double trajectoryStepSize, const bool smoothing) {
     return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
 }
 

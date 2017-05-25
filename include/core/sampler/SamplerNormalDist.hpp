@@ -36,7 +36,7 @@ class SamplerNormalDist : public Sampler<dim> {
     void setOrigin(const Vector<dim> &origin) override;
 
   private:
-    std::vector<std::normal_distribution<float>> m_distNormal;
+    std::vector<std::normal_distribution<double>> m_distNormal;
 };
 
 /*!
@@ -50,7 +50,7 @@ SamplerNormalDist<dim>::SamplerNormalDist(const std::shared_ptr<Environment> &en
     : Sampler<dim>(environment, "SamplerNormalDist") {
     m_distNormal.clear();
     for (unsigned int i = 0; i < dim; ++i) {
-        std::normal_distribution<float> distribution(this->m_origin[i], this->m_maxBoundary[i] - this->m_minBoundary[i]);
+        std::normal_distribution<double> distribution(this->m_origin[i], this->m_maxBoundary[i] - this->m_minBoundary[i]);
         m_distNormal.push_back(distribution);
     }
 }
@@ -64,7 +64,7 @@ SamplerNormalDist<dim>::SamplerNormalDist(const std::shared_ptr<Environment> &en
 template <unsigned int dim>
 Vector<dim> SamplerNormalDist<dim>::getSample() {
     Vector<dim> vec;
-    float number;
+    double number;
     for (unsigned int i = 0; i < dim; ++i) {
         do {
             number = m_distNormal[i](this->m_generator);
@@ -84,7 +84,7 @@ template <unsigned int dim>
 void SamplerNormalDist<dim>::setOrigin(const Vector<dim> &origin) {
     m_distNormal.clear();
     for (unsigned int i = 0; i < dim; ++i) {
-        std::normal_distribution<float> distribution(origin[i], this->m_maxBoundary[i] - this->m_minBoundary[i]);
+        std::normal_distribution<double> distribution(origin[i], this->m_maxBoundary[i] - this->m_minBoundary[i]);
         m_distNormal.push_back(distribution);
     }
 }

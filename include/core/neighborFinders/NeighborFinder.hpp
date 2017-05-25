@@ -39,7 +39,7 @@ class NeighborFinder : public Identifier {
     virtual void rebaseSorted(std::vector<T> &nodes) = 0;
 
     virtual T searchNearestNeighbor(const Vector<dim> &vec) = 0;
-    virtual std::vector<T> searchRange(const Vector<dim> &vec, float range) = 0;
+    virtual std::vector<T> searchRange(const Vector<dim> &vec, double range) = 0;
 
   protected:
     std::shared_ptr<DistanceMetric<dim>> m_metric;

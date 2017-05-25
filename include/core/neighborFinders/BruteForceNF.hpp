@@ -42,7 +42,7 @@ class BruteForceNF : public NeighborFinder<dim, T> {
     void rebaseSorted(std::vector<T> &nodes);
 
     T searchNearestNeighbor(const Vector<dim> &vec);
-    std::vector<T> searchRange(const Vector<dim> &vec, float range);
+    std::vector<T> searchRange(const Vector<dim> &vec, double range);
 
   private:
     std::vector<std::pair<const Vector<dim>, T>> m_nodes;
@@ -138,7 +138,7 @@ T BruteForceNF<dim, T>::searchNearestNeighbor(const Vector<dim> &vec) {
 * \date        2017-05-16
 */
 template <unsigned int dim, class T>
-std::vector<T> BruteForceNF<dim, T>::searchRange(const Vector<dim> &vec, float range) {
+std::vector<T> BruteForceNF<dim, T>::searchRange(const Vector<dim> &vec, double range) {
     std::vector<T> nodePtrs;
 
     for (auto node : m_nodes) {

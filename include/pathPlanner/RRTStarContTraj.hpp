@@ -88,7 +88,7 @@ std::shared_ptr<Node<dim>> RRTStarContTraj<dim>::computeRRTNode(const Vector<dim
     }
 
     std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
-    float edgeCost = this->m_metric->calcEdgeCost(newNode, nearestNode);
+    double edgeCost = this->m_metric->calcEdgeCost(newNode, nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);
     m_mutex.lock();
@@ -113,7 +113,7 @@ void RRTStarContTraj<dim>::chooseParent(const Vector<dim> &newVec, std::shared_p
     // get near nodes to the new node
     nearNodes = m_graph->getNearNodes(newVec, m_stepSize);
 
-    float nearestNodeCost = nearestNode->getCost();
+    double nearestNodeCost = nearestNode->getCost();
     for (auto nearNode : nearNodes) {
         if (nearNode->getCost() < nearestNodeCost) {
             nearestNodeCost = nearNode->getCost();

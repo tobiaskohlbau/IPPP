@@ -44,7 +44,7 @@ class Sampling : public Identifier {
              const unsigned int attempts = 10, const std::string &name = "Sampling");
 
     virtual Vector<dim> getSample();
-    float getRandomNumber() const;
+    double getRandomNumber() const;
     void setOrigin(const Vector<dim> &origin);
 
   protected:
@@ -93,7 +93,7 @@ Vector<dim> Sampling<dim>::getSample() {
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-float Sampling<dim>::getRandomNumber() const {
+double Sampling<dim>::getRandomNumber() const {
     return m_sampler->getRandomNumber();
 }
 

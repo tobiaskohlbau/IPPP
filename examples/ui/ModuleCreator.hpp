@@ -62,8 +62,8 @@ class ModuleCreator : public Identifier {
     std::shared_ptr<Sampler<dim>> getSampler();
     std::shared_ptr<Sampling<dim>> getSampling();
 
-    PRMOptions<dim> getPRMOptions(const float rangeSize);
-    RRTOptions<dim> getRRTOptions(const float stepSize);
+    PRMOptions<dim> getPRMOptions(const double rangeSize);
+    RRTOptions<dim> getRRTOptions(const double stepSize);
     SRTOptions<dim> getSRTOptions(const unsigned int nbOfTrees);
 
   private:
@@ -218,7 +218,7 @@ std::shared_ptr<Sampling<dim>> ModuleCreator<dim>::getSampling() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const float rangeSize) {
+PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const double rangeSize) {
     return PRMOptions<dim>(rangeSize, m_collision, m_trajectory, m_sampling, m_metric);
 }
 
@@ -230,7 +230,7 @@ PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const float rangeSize) {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-RRTOptions<dim> ModuleCreator<dim>::getRRTOptions(const float stepSize) {
+RRTOptions<dim> ModuleCreator<dim>::getRRTOptions(const double stepSize) {
     return RRTOptions<dim>(stepSize, m_collision, m_trajectory, m_sampling, m_metric);
 }
 

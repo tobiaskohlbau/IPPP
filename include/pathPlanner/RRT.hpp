@@ -44,7 +44,7 @@ class RRT : public Planner<dim> {
     virtual bool connectGoalNode(const Vector<dim> goal);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing = true);
+    std::vector<Vector<dim>> getPath(const double trajectoryStepSize, const bool smoothing = true);
     std::shared_ptr<Node<dim>> getInitNode() const;
     std::shared_ptr<Node<dim>> getGoalNode() const;
 
@@ -54,7 +54,7 @@ class RRT : public Planner<dim> {
     Vector<dim> computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode);
 
     // variables
-    float m_stepSize = 1;
+    double m_stepSize = 1;
     std::shared_ptr<Node<dim>> m_initNode = nullptr;
     std::shared_ptr<Node<dim>> m_goalNode = nullptr;
 
@@ -272,7 +272,7 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randVec) 
         return nullptr;
     }
 
-    float edgeCost = this->m_metric->calcDist(nearestNode, newNode);
+    double edgeCost = this->m_metric->calcDist(nearestNode, newNode);
     newNode->setParent(nearestNode, edgeCost);
 
     m_mutex.lock();
@@ -310,7 +310,7 @@ std::vector<std::shared_ptr<Node<dim>>> RRT<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> RRT<dim>::getPath(const float trajectoryStepSize, const bool smoothing) {
+std::vector<Vector<dim>> RRT<dim>::getPath(const double trajectoryStepSize, const bool smoothing) {
     std::vector<Vector<dim>> path;
     if (!m_pathPlanned) {
         Logging::warning("Path is not complete", this);

@@ -67,7 +67,7 @@ void NNS() {
     std::vector<Vector<dim>> vecs;
     std::vector<std::shared_ptr<Node<dim>>> nodes;
     for (int i = 0; i < 10; ++i) {
-        Vector<dim> vec = Eigen::VectorXf::Constant(dim, 1, i);
+        Vector<dim> vec = Vector<dim>::Constant(dim, 1, i);
         vecs.push_back(vec);
         std::shared_ptr<Node<dim>> node = std::shared_ptr<Node<dim>>(new Node<dim>(vec));
         nodes.push_back(node);
@@ -123,7 +123,7 @@ void RS() {
     std::vector<std::shared_ptr<Node<dim>>> nodes;
     for (int i = 0; i < 10; ++i) {
         int value = i * 10;
-        Vector<dim> vec = Eigen::VectorXf::Constant(dim, 1, value);
+        Vector<dim> vec = Eigen::VectorXd::Constant(dim, 1, value);
         vecs.push_back(vec);
         std::shared_ptr<Node<dim>> node = std::shared_ptr<Node<dim>>(new Node<dim>(vec));
         nodes.push_back(node);

@@ -31,15 +31,15 @@ namespace ippp {
 template <unsigned int dim>
 class RRTOptions : public PlannerOptions<dim> {
   public:
-    RRTOptions(const float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    RRTOptions(const double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
                const std::shared_ptr<DistanceMetric<dim>> &metric);
 
-    void setStepSize(const float stepSize);
-    float getStepSize() const;
+    void setStepSize(const double stepSize);
+    double getStepSize() const;
 
   private:
-    float m_stepSize = 30;
+    double m_stepSize = 30;
 };
 
 /*!
@@ -52,7 +52,7 @@ class RRTOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-RRTOptions<dim>::RRTOptions(const float stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+RRTOptions<dim>::RRTOptions(const double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                             const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
                             const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<DistanceMetric<dim>> &metric)
     : PlannerOptions<dim>(collision, planner, sampling, metric) {
@@ -66,7 +66,7 @@ RRTOptions<dim>::RRTOptions(const float stepSize, const std::shared_ptr<Collisio
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-void RRTOptions<dim>::setStepSize(const float stepSize) {
+void RRTOptions<dim>::setStepSize(const double stepSize) {
     if (stepSize <= 0) {
         Logging::warning("Step size was smaller than 0 and was set up to 1", this);
         m_stepSize = 1;
@@ -82,7 +82,7 @@ void RRTOptions<dim>::setStepSize(const float stepSize) {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-float RRTOptions<dim>::getStepSize() const {
+double RRTOptions<dim>::getStepSize() const {
     return m_stepSize;
 }
 

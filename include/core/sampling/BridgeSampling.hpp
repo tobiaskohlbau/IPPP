@@ -33,12 +33,12 @@ class BridgeSampling : public Sampling<dim> {
   public:
     BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
                    const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                   const unsigned int attempts = 10, const float distance = 15);
+                   const unsigned int attempts = 10, const double distance = 15);
 
     virtual Vector<dim> getSample();
 
   private:
-    float m_distance;
+    double m_distance;
 
     using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_collision;
@@ -59,7 +59,7 @@ BridgeSampling<dim>::BridgeSampling(const std::shared_ptr<Environment> &environm
                                     const std::shared_ptr<CollisionDetection<dim>> &collision,
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                     const std::shared_ptr<Sampler<dim>> &sampler, const unsigned int attempts,
-                                    const float distance)
+                                    const double distance)
     : Sampling<dim>(environment, collision, trajectory, sampler, attempts, "BridgeSampling"), m_distance(distance) {
 }
 

@@ -26,8 +26,8 @@ BOOST_AUTO_TEST_SUITE(constructor)
 
 template <unsigned int dim>
 void testConstructor() {
-    VectorX sourceVec = Eigen::MatrixXf::Constant(dim, 1, 0);
-    VectorX targetVec = Eigen::MatrixXf::Constant(dim, 1, 3);
+    VectorX sourceVec = Eigen::MatrixXd::Constant(dim, 1, 0);
+    VectorX targetVec = Eigen::MatrixXd::Constant(dim, 1, 3);
     std::shared_ptr<Node<dim>> source = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVec));
     std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
 
@@ -54,9 +54,9 @@ BOOST_AUTO_TEST_SUITE(node)
 
 template <unsigned int dim>
 void testSourceNode() {
-    VectorX sourceVec = Eigen::MatrixXf::Constant(dim, 1, 0);
-    VectorX targetVec = Eigen::MatrixXf::Constant(dim, 1, 3);
-    VectorX sourceVecNew = Eigen::MatrixXf::Constant(dim, 1, -10);
+    VectorX sourceVec = Eigen::MatrixXd::Constant(dim, 1, 0);
+    VectorX targetVec = Eigen::MatrixXd::Constant(dim, 1, 3);
+    VectorX sourceVecNew = Eigen::MatrixXd::Constant(dim, 1, -10);
     std::shared_ptr<Node<dim>> source = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVec));
     std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
     std::shared_ptr<Node<dim>> sourceNew = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVecNew));
@@ -80,9 +80,9 @@ BOOST_AUTO_TEST_CASE(sourceNode) {
 
 template <unsigned int dim>
 void testTargetNode() {
-    VectorX sourceVec = Eigen::MatrixXf::Constant(dim, 1, 0);
-    VectorX targetVec = Eigen::MatrixXf::Constant(dim, 1, 3);
-    VectorX targetVecNew = Eigen::MatrixXf::Constant(dim, 1, 10);
+    VectorX sourceVec = Eigen::MatrixXd::Constant(dim, 1, 0);
+    VectorX targetVec = Eigen::MatrixXd::Constant(dim, 1, 3);
+    VectorX targetVecNew = Eigen::MatrixXd::Constant(dim, 1, 10);
     std::shared_ptr<Node<dim>> source = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVec));
     std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
     std::shared_ptr<Node<dim>> targetNew = std::shared_ptr<Node<dim>>(new Node<dim>(targetVecNew));

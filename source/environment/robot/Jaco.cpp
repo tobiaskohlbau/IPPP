@@ -28,12 +28,12 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco() : SerialRobot("Jaco", 6, util::Vecf(0, 42, 17, 0, 0, 0), util::Vecf(360, 318, 343, 360, 360, 360)) {
-    m_alpha = util::Vecf(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());
-    m_a = util::Vecf(0, 410, 0, 0, 0, 0);
-    m_d = util::Vecf(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
+Jaco::Jaco() : SerialRobot("Jaco", 6, util::Vecd(0, 42, 17, 0, 0, 0), util::Vecd(360, 318, 343, 360, 360, 360)) {
+    m_alpha = util::Vecd(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());
+    m_a = util::Vecd(0, 410, 0, 0, 0, 0);
+    m_d = util::Vecd(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
-    m_pose = util::Vecf(0, 0, 0, 0, 0, 0);
+    m_pose = util::Vecd(0, 0, 0, 0, 0, 0);
 
     ModelFactoryPqp modelFactoryPqp;
     m_baseModel = modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_base.dae");

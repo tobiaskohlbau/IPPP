@@ -36,7 +36,7 @@ class SerialRobot : public RobotBase {
 
     virtual Vector6 directKinematic(const VectorX &angles) = 0;
     virtual std::vector<Matrix4> getJointTrafos(const VectorX &angles) = 0;
-    Matrix4 getTrafo(float alpha, float a, float d, float q);
+    Matrix4 getTrafo(double alpha, double a, double d, double q);
     Vector6 getTcpPosition(const std::vector<Matrix4> &trafos);
 
     void setJoints(std::vector<Joint> joints);

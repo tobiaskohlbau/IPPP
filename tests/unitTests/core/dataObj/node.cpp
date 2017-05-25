@@ -77,8 +77,8 @@ BOOST_AUTO_TEST_CASE(vectorConstructor) {
     Node<2> node2(Vector2(0, 1));
     Node<3> node3(Vector3(0, 1, 2));
     Node<4> node4(Vector4(0, 1, 2, 3));
-    Node<5> node5(util::Vecf(0, 1, 2, 3, 4));
-    Node<6> node6(util::Vecf(0, 1, 2, 3, 4, 5));
+    Node<5> node5(util::Vecd(0, 1, 2, 3, 4));
+    Node<6> node6(util::Vecd(0, 1, 2, 3, 4, 5));
     testVectorConstructor<2>(node2);
     testVectorConstructor<3>(node3);
     testVectorConstructor<4>(node4);
@@ -92,8 +92,8 @@ BOOST_AUTO_TEST_SUITE(parent_childes)
 
 template <unsigned int dim>
 void testParent() {
-    Node<dim> node(Eigen::VectorXf::Constant(dim, 1, 0));
-    Node<dim> parent(Eigen::VectorXf::Constant(dim, 1, 10));
+    Node<dim> node(Vector<dim>::Constant(dim, 1, 0));
+    Node<dim> parent(Vector<dim>::Constant(dim, 1, 10));
 
     std::shared_ptr<Node<dim>> ptrParent = std::make_shared<Node<dim>>(parent);
     node.setParent(ptrParent, 1);
@@ -117,10 +117,10 @@ BOOST_AUTO_TEST_CASE(parent) {
 
 template <unsigned int dim>
 void testChildes() {
-    Node<dim> node(Eigen::VectorXf::Constant(dim, 1, 0));
+    Node<dim> node(Vector<dim>::Constant(dim, 1, 0));
     std::vector<std::shared_ptr<Node<dim>>> childes;
     for (int i = 0; i < 3; ++i) {
-        childes.push_back(std::make_shared<Node<dim>>(Eigen::VectorXf::Constant(dim, 1, i)));
+        childes.push_back(std::make_shared<Node<dim>>(Vector<dim>::Constant(dim, 1, i)));
         node.addChild(childes[i], 1);
     }
 

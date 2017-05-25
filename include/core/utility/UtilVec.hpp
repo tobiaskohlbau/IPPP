@@ -92,7 +92,7 @@ Vector<dim1 + dim2> append(const Vector<dim1> &first, const Vector<dim2> &second
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Vector<dim + 1> append(const Vector<dim> &source, const float add) {
+Vector<dim + 1> append(const Vector<dim> &source, const double add) {
     Vector<dim + 1> vec;
     for (int i = 0; i < dim; ++i) {
         vec[i] = source[i];
@@ -112,7 +112,7 @@ Vector<dim + 1> append(const Vector<dim> &source, const float add) {
 *  \param[out] result Vector
 *  \date       2016-12-23
 */
-static Vector5 Vecf(float x, float y, float z, float rx, float ry) {
+static Vector5 Vecd(double x, double y, double z, double rx, double ry) {
     Vector5 vec;
     vec << x, y, z, rx, ry;
     return vec;
@@ -130,7 +130,7 @@ static Vector5 Vecf(float x, float y, float z, float rx, float ry) {
 *  \param[out] result Vector
 *  \date       2016-12-23
 */
-static Vector6 Vecf(float x, float y, float z, float rx, float ry, float rz) {
+static Vector6 Vecd(double x, double y, double z, double rx, double ry, double rz) {
     Vector6 vec;
     vec << x, y, z, rx, ry, rz;
     return vec;
@@ -144,7 +144,7 @@ static Vector6 Vecf(float x, float y, float z, float rx, float ry, float rz) {
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Vector<dim> Vecf(const float data) {
+Vector<dim> Vecd(const double data) {
     Vector<dim> vec;
     for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data;
@@ -160,7 +160,7 @@ Vector<dim> Vecf(const float data) {
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Vector<dim> Vecf(const float data[]) {
+Vector<dim> Vecd(const double data[]) {
     Vector<dim> vec;
     for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data[i];
@@ -176,7 +176,7 @@ Vector<dim> Vecf(const float data[]) {
 *  \param[out] result Vector
 *  \date       2016-12-23
 */
-static VectorX Vecf(const unsigned int dim, const float data[]) {
+static VectorX Vecd(const unsigned int dim, const double data[]) {
     VectorX vec(dim);
     for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data[i];

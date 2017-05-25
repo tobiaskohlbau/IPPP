@@ -35,8 +35,8 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 
     std::vector<Vector6> queries = readQuery(queryPath);
 
-    Vector6 minBoundary = util::Vecf(config.minBoundary[0], config.minBoundary[1], config.minBoundary[2], 0, 0, 0);
-    Vector6 maxBoundary = util::Vecf(config.maxBoundary[0], config.maxBoundary[1], config.maxBoundary[2], util::twoPi(),
+    Vector6 minBoundary = util::Vecd(config.minBoundary[0], config.minBoundary[1], config.minBoundary[2], 0, 0, 0);
+    Vector6 maxBoundary = util::Vecd(config.maxBoundary[0], config.maxBoundary[1], config.maxBoundary[2], util::twoPi(),
                                      util::twoPi(), util::twoPi());
     std::shared_ptr<RobotBase> robot(new MobileRobot(6, minBoundary, maxBoundary));
     robot->setBaseModel(robotModel);
@@ -139,7 +139,7 @@ void benchmarkHedgehog() {
 
 int main(int argc, char** argv) {
     std::vector<Mesh> meshes;
-    bool result = cad::importMeshes("/users/skaden/Downloads/GearAssembly.stl", meshes);
+    bool result = cad::importMeshes("/users/skaden/Downloads/PuzzleBox3x3.obj", meshes);
     if (result) {
         int count = 1;
         for (auto mesh : meshes) {

@@ -37,7 +37,7 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
     bool controlTrajectory(std::vector<Vector3> &vec) override;
 
   private:
-    bool checkPoint2D(float x, float y);
+    bool checkPoint2D(double x, double y);
     bool checkTriangleRobot(const Vector3 &vec);
 
     Eigen::MatrixXi m_workspace2D;

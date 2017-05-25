@@ -36,16 +36,16 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     std::shared_ptr<TrajectoryPlanner<dim>> planner(new LinearTrajectory<dim>(collision, 0.1));
 
     // test trajectories
-    Vector6 init = util::Vecf(0, 0, 0, 0, 0, 0);
-    Vector6 goal = util::Vecf(0, 0, 0, 0, 0, 0);
+    Vector6 init = util::Vecd(0, 0, 0, 0, 0, 0);
+    Vector6 goal = util::Vecd(0, 0, 0, 0, 0, 0);
     std::vector<Vector6> path;
     path = planner->calcTrajectoryCont(init, goal);
     BOOST_CHECK(path.size() == 0);
 
-    goal = util::Vecf(1, 1, 1, 1, 1, 1);
+    goal = util::Vecd(1, 1, 1, 1, 1, 1);
     path = planner->calcTrajectoryCont(init, goal);
-    float dist = 1 / goal.norm() * 0.1;
-    for (float i = 0; i < path.size(); ++i) {
+    double dist = 1 / goal.norm() * 0.1;
+    for (double i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
             BOOST_CHECK(path[i][j] <= dist + 0.0001);
             BOOST_CHECK(path[i][j] >= dist - 0.0001);
@@ -53,10 +53,10 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
         dist += 1 / goal.norm() * 0.1;
     }
 
-    goal = util::Vecf(-1, -1, -1, -1, -1, -1);
+    goal = util::Vecd(-1, -1, -1, -1, -1, -1);
     path = planner->calcTrajectoryCont(init, goal);
     dist = -1 / goal.norm() * 0.1;
-    for (float i = 0; i < path.size(); ++i) {
+    for (double i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
             BOOST_CHECK(path[i][j] <= dist + 0.0001);
             BOOST_CHECK(path[i][j] >= dist - 0.0001);

@@ -33,7 +33,7 @@ class WeightVecL1Metric : public DistanceMetric<dim> {
   public:
     WeightVecL1Metric();
     WeightVecL1Metric(const Vector<dim> &weightVec);
-    float calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
 
     void setWeightVec(const Vector<dim> &vec);
     Vector<dim> getWeightVec() const;
@@ -71,7 +71,7 @@ WeightVecL1Metric<dim>::WeightVecL1Metric(const Vector<dim> &weightVec) : Distan
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-float WeightVecL1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
+double WeightVecL1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).cwiseProduct(m_weightVec).sum();
 }
 
