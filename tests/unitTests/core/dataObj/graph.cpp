@@ -20,7 +20,7 @@
 
 #include <core/dataObj/Graph.hpp>
 #include <core/distanceMetrics/L2Metric.hpp>
-#include <core/utility/UtilList.hpp>
+#include <core/util/UtilList.hpp>
 
 using namespace ippp;
 

@@ -19,9 +19,9 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
-#include <core/utility/UtilGeo.hpp>
-#include <core/utility/UtilIO.hpp>
-#include <core/utility/UtilList.hpp>
-#include <core/utility/UtilVec.hpp>
+#include <core/util/UtilGeo.hpp>
+#include <core/util/UtilIO.hpp>
+#include <core/util/UtilList.hpp>
+#include <core/util/UtilVec.hpp>
 
 #endif    // UTILITY_H

@@ -19,7 +19,7 @@
 #ifndef UTILCOLLISION_HPP
 #define UTILCOLLISION_HPP
 
-#include <core/utility/UtilGeo.hpp>
+#include <core/util/UtilGeo.hpp>
 #include <environment/robot/SerialRobot.h>
 
 namespace ippp {

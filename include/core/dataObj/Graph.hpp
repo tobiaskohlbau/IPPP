@@ -22,7 +22,7 @@
 #include <core/Identifier.h>
 #include <core/dataObj/Node.hpp>
 #include <core/neighborFinders/KDTree.hpp>
-#include <core/utility/Logging.h>
+#include <core/util/Logging.h>
 
 namespace ippp {
 

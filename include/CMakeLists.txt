@@ -47,11 +47,11 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/LinearTrajectory.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/TrajectoryPlanner.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilGeo.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilIO.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilList.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilVec.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/UtilCollision.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilGeo.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilIO.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilList.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilVec.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilCollision.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.hpp

@@ -12,7 +12,7 @@
 #include <core/dataObj/Node.hpp>
 #include <core/dataObj/PointList.hpp>
 #include <core/types.h>
-#include <core/utility/Logging.h>
+#include <core/util/Logging.h>
 
 namespace ippp {
 namespace drawing {

@@ -25,7 +25,7 @@
 #include <string>
 
 #include <core/types.h>
-#include <core/utility/Logging.h>
+#include <core/util/Logging.h>
 
 namespace ippp {
 namespace util {

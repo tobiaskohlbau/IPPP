@@ -20,8 +20,9 @@
 #define POINTLIST_H
 
 #include <Eigen/Core>
-#include <core/utility/Logging.h>
-#include <core/utility/Utility.h>
+#include <core/types.h>
+#include <core/util/Logging.h>
+#include <core/util/UtilGeo.hpp>
 
 namespace ippp {
 
