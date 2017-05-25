@@ -18,7 +18,7 @@
 
 #include <environment/robot/KukaKR5.h>
 
-#include <core/utility/Utility.h>
+#include <core/util/Utility.h>
 #include <environment/model/ModelFactoryPqp.h>
 
 namespace ippp {

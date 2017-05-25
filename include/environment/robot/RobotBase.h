@@ -24,8 +24,8 @@
 
 #include <core/Identifier.h>
 #include <core/types.h>
-#include <core/utility/Logging.h>
-#include <core/utility/Utility.h>
+#include <core/util/Logging.h>
+#include <core/util/Utility.h>
 #include <environment/model/ModelContainer.h>
 
 namespace ippp {

@@ -21,8 +21,8 @@
 #include <fstream>
 #include <iostream>
 
-#include <core/utility/Logging.h>
-#include <core/utility/UtilList.hpp>
+#include <core/util/Logging.h>
+#include <core/util/UtilList.hpp>
 
 namespace ippp {
 

@@ -30,7 +30,7 @@
 
 #include <core/dataObj/PointList.hpp>
 #include <core/types.h>
-#include <core/utility/UtilList.hpp>
+#include <core/util/UtilList.hpp>
 #include <environment/model/Mesh.h>
 
 namespace ippp {

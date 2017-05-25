@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/utility/Logging.h>
+#include <core/util/Logging.h>
 #include <environment/model/ModelContainer.h>
 
 namespace ippp {
@@ -34,8 +34,7 @@ ModelContainer::~ModelContainer() {
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
-ModelContainer::ModelContainer(const std::string &name, const AABB &boundingBox)
-    : Identifier(name) {
+ModelContainer::ModelContainer(const std::string &name, const AABB &boundingBox) : Identifier(name) {
 }
 
 } /* namespace ippp */

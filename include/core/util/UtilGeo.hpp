@@ -25,7 +25,7 @@
 #include <Eigen/Geometry>
 
 #include <core/types.h>
-#include <core/utility/UtilVec.hpp>
+#include <core/util/UtilVec.hpp>
 
 namespace ippp {
 namespace util {

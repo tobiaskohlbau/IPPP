@@ -20,7 +20,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/Identifier.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionTriangleRobot.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/utility/Logging.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/Logging.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/CadProcessing.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/Environment.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/Jaco.cpp

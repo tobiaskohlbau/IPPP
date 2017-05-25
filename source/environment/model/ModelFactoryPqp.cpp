@@ -18,7 +18,7 @@
 
 #include <environment/model/ModelFactoryPqp.h>
 
-#include <core/utility/Logging.h>
+#include <core/util/Logging.h>
 
 namespace ippp {
 

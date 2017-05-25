@@ -18,7 +18,7 @@
 
 #include <environment/model/ModelFactoryFcl.h>
 
-#include <core/utility/Logging.h>
+#include <core/util/Logging.h>
 
 namespace ippp {
 
@@ -37,7 +37,6 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
     }
     std::vector<Vector3> vertices;
     std::vector<Vector3i> faces;
-
 
     std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
     if (!importCad(filePath, fclModel->m_vertices, fclModel->m_faces, fclModel->m_normals)) {
@@ -60,7 +59,6 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
 }
 
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const std::string &filePath) {
-
 }
 
 /*!

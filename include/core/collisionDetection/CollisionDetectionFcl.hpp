@@ -22,7 +22,7 @@
 #include <fcl/fcl.h>
 
 #include <core/collisionDetection/CollisionDetection.hpp>
-#include <core/utility/UtilCollision.hpp>
+#include <core/util/UtilCollision.hpp>
 #include <environment/SerialRobot.hpp>
 #include <environment/model/ModelFcl.h>
 

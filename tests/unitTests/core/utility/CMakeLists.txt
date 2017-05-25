@@ -16,7 +16,7 @@
 #
 #-------------------------------------------------------------------------//
 
-set(MODULE "core_utility")
+set(MODULE "core_util")
 add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
 
 ADD_IPPP_TEST(utilGeo "")

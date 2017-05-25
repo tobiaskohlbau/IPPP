@@ -20,8 +20,8 @@
 
 #include <fstream>
 
-#include <core/utility/Logging.h>
-#include <core/utility/UtilGeo.hpp>
+#include <core/util/Logging.h>
+#include <core/util/UtilGeo.hpp>
 
 namespace ippp {
 namespace cad {
