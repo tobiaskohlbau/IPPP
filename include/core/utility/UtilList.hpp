@@ -48,7 +48,7 @@ void eraseFromList(std::vector<std::shared_ptr<Node<dim>>> &list, const std::sha
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> removeMinFromList(std::vector<std::shared_ptr<Node<dim>>> &list) {
-    float min = std::numeric_limits<float>::max();
+    double min = std::numeric_limits<double>::max();
     std::shared_ptr<Node<dim>> minNode = nullptr;
     for (int i = 0; i < list.size(); ++i) {
         if (list[i]->getCost() < min) {

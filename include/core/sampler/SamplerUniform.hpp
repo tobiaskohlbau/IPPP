@@ -35,7 +35,7 @@ class SamplerUniform : public Sampler<dim> {
     Vector<dim> getSample() override;
 
   private:
-    std::vector<std::uniform_real_distribution<float>> m_distUniform;
+    std::vector<std::uniform_real_distribution<double>> m_distUniform;
 };
 
 /*!
@@ -48,7 +48,7 @@ template <unsigned int dim>
 SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<Environment> &environment)
     : Sampler<dim>(environment, "SamplerUniform") {
     for (unsigned int i = 0; i < dim; ++i) {
-        std::uniform_real_distribution<float> dist(this->m_minBoundary[i], this->m_maxBoundary[i]);
+        std::uniform_real_distribution<double> dist(this->m_minBoundary[i], this->m_maxBoundary[i]);
         m_distUniform.push_back(dist);
     }
 }

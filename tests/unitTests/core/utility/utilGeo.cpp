@@ -33,8 +33,8 @@ BOOST_AUTO_TEST_CASE(pi) {
 }
 
 BOOST_AUTO_TEST_CASE(decomposeT) {
-    Matrix4 T0 = Matrix4f::Zero(4, 4);
-    Matrix4 T1 = Matrix4f::Identity(4, 4);
+    Matrix4 T0 = Matrix4::Zero(4, 4);
+    Matrix4 T1 = Matrix4::Identity(4, 4);
     Matrix3 R0, R1;
     Vector3 t0, t1;
     util::decomposeT(T0, R0, t0);
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(decomposeT) {
 }
 
 BOOST_AUTO_TEST_CASE(poseVecToMat) {
-    Vector6 poseZero = util::Vecf(0, 0, 0, 0, 0, 0);
+    Vector6 poseZero = util::Vecd(0, 0, 0, 0, 0, 0);
     Matrix4 poseMat = util::poseVecToMat(poseZero);
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
@@ -72,14 +72,14 @@ BOOST_AUTO_TEST_CASE(poseVecToMat) {
     for (int i = 0; i < 6; ++i)
         BOOST_CHECK(poseZero[i] == poseVec[i]);
 
-    Vector6 poseTwo = util::Vecf(1, 1, 1, 0, 0, 0);
+    Vector6 poseTwo = util::Vecd(1, 1, 1, 0, 0, 0);
     poseMat = util::poseVecToMat(poseTwo);
     for (int i = 0; i < 4; ++i)
         BOOST_CHECK(poseMat(i, 3) == 1);
 
-    for (float x = 0; x < 359; x += 5) {
-        for (float y = 0; y < 359; y += 5) {
-            for (float z = 0; z < 359; z += 5) {
+    for (double x = 0; x < 359; x += 5) {
+        for (double y = 0; y < 359; y += 5) {
+            for (double z = 0; z < 359; z += 5) {
                 poseMat = util::poseVecToMat(poseTwo);
                 poseVec = util::poseMatToVec(poseMat);
                 for (int i = 0; i < 6; ++i) {
@@ -92,11 +92,11 @@ BOOST_AUTO_TEST_CASE(poseVecToMat) {
 }
 
 BOOST_AUTO_TEST_CASE(degToRad) {
-    float pi = util::pi();
-    float a1[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
-    float a2[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
-    VectorX deg = util::Vecf(11, a1);
-    VectorX rad = util::Vecf(11, a2);
+    double pi = util::pi();
+    double a1[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
+    double a2[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
+    VectorX deg = util::Vecd(11, a1);
+    VectorX rad = util::Vecd(11, a2);
     VectorX temp1 = util::degToRad<11>(deg);
     Vector<11> temp2;
     for (int i = 0; i < 11; ++i)
@@ -110,11 +110,11 @@ BOOST_AUTO_TEST_CASE(degToRad) {
 }
 
 BOOST_AUTO_TEST_CASE(radToDeg) {
-    float pi = util::pi();
-    float a1[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
-    float a2[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
-    VectorX rad = util::Vecf(11, a1);
-    VectorX deg = util::Vecf(11, a2);
+    double pi = util::pi();
+    double a1[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
+    double a2[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
+    VectorX rad = util::Vecd(11, a1);
+    VectorX deg = util::Vecd(11, a2);
     VectorX temp1 = util::radToDeg<11>(rad);
     Vector<11> temp2;
     for (int i = 0; i < 11; ++i)

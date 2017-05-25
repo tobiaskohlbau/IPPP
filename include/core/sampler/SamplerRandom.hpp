@@ -60,7 +60,7 @@ template <unsigned int dim>
 Vector<dim> SamplerRandom<dim>::getSample() {
     Vector<dim> vec;
     for (unsigned int i = 0; i < dim; ++i) {
-        vec[i] = this->m_minBoundary[i] + (float)(this->m_generator() % (int)(this->m_maxBoundary[i] - this->m_minBoundary[i]));
+        vec[i] = this->m_minBoundary[i] + (double)(this->m_generator() % (int)(this->m_maxBoundary[i] - this->m_minBoundary[i]));
     }
     return vec;
 }

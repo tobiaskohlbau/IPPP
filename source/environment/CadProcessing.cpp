@@ -73,6 +73,7 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const 
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (!scene) {
         Logging::error("Could not load cad", "CadProcessing");
+        Logging::error("Assimp message: " + std::string(importer.GetErrorString()), "CadProcessing");
         return false;
     }
 
@@ -318,7 +319,7 @@ void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triang
             fillTopFlatTriangle(space, v1, v2, v3, fillValue);
         } else {
             /* general case - split the triangle in a topflat and bottom-flat one */
-            Vector2 v4(v1[0] + ((float)(v2[1] - v1[1]) / (float)(v3[1] - v1[1])) * (v3[0] - v1[0]), v2[1]);
+            Vector2 v4(v1[0] + ((double)(v2[1] - v1[1]) / (double)(v3[1] - v1[1])) * (v3[0] - v1[0]), v2[1]);
             fillBottomFlatTriangle(space, v1, v2, v4, fillValue);
             fillTopFlatTriangle(space, v2, v4, v3, fillValue);
         }
@@ -390,8 +391,8 @@ std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const 
 *  \date       2017-04-04
 */
 AABB computeAABB(const std::vector<Vector3> &vertices) {
-    float min = std::numeric_limits<float>::min();
-    float max = std::numeric_limits<float>::max();
+    double min = std::numeric_limits<double>::min();
+    double max = std::numeric_limits<double>::max();
     Vector3 minBoundary(max, max, max);
     Vector3 maxBoundary(min, min, min);
 
@@ -470,11 +471,11 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
 }
 
 void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value) {
-    float invslope1 = (v2[0] - v1[0]) / (v2[1] - v1[1]);
-    float invslope2 = (v3[0] - v1[0]) / (v3[1] - v1[1]);
+    double invslope1 = (v2[0] - v1[0]) / (v2[1] - v1[1]);
+    double invslope2 = (v3[0] - v1[0]) / (v3[1] - v1[1]);
 
-    float curx1 = v1[0];
-    float curx2 = v1[0];
+    double curx1 = v1[0];
+    double curx2 = v1[0];
 
     for (int scanlineY = v1[1]; scanlineY <= v2[1]; scanlineY++) {
         drawLine(space, (int)curx1, (int)curx2, scanlineY, value);
@@ -484,11 +485,11 @@ void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vect
 }
 
 void fillTopFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value) {
-    float invslope1 = (v3[0] - v1[0]) / (v3[1] - v1[1]);
-    float invslope2 = (v3[0] - v2[0]) / (v3[1] - v2[1]);
+    double invslope1 = (v3[0] - v1[0]) / (v3[1] - v1[1]);
+    double invslope2 = (v3[0] - v2[0]) / (v3[1] - v2[1]);
 
-    float curx1 = v3[0];
-    float curx2 = v3[0];
+    double curx1 = v3[0];
+    double curx2 = v3[0];
 
     for (int scanlineY = v3[1]; scanlineY > v1[1]; scanlineY--) {
         drawLine(space, (int)curx1, (int)curx2, scanlineY, value);

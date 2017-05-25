@@ -38,10 +38,9 @@ EnvironmentConfig readEnvironment(const std::string &file) {
     std::ifstream is(file);
     std::string str;
     while (getline(is, str)) {
-
         if (util::contains(str, "Boundary Box")) {
             size_t firstLim = str.find("[");
-			size_t lastLim = str.find("]");
+            size_t lastLim = str.find("]");
             std::string box = str.substr(firstLim + 1, lastLim);
 
             std::size_t found = box.find_first_of(";");
@@ -104,9 +103,9 @@ std::vector<Vector6> readQuery(const std::string &path) {
         std::string::size_type sz;
         Vector6 config;
         for (int i = 0; i < 7; ++i) {
-            float value = std::stof(str, &sz);
+            double value = std::stof(str, &sz);
             if (i != 0)
-                config[i-1] = value;
+                config[i - 1] = value;
 
             if (sz < str.size())
                 str = str.substr(sz + 1);
@@ -115,6 +114,5 @@ std::vector<Vector6> readQuery(const std::string &path) {
     }
     return configs;
 }
-
 
 } /* namespace ippp */

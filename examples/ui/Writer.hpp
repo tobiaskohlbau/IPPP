@@ -39,7 +39,7 @@ namespace writer {
 *  \date       2016-11-14
 */
 template <unsigned int dim>
-void writeVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, float scale) {
+void writeVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, double scale) {
     std::ofstream myfile(filename);
     for (int i = 0; i < vecs.size(); ++i) {
         for (unsigned int j = 0; j < dim; ++j)
@@ -58,7 +58,7 @@ void writeVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &fi
 *  \date       2016-11-14
 */
 template <unsigned int dim>
-void appendVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, float scale) {
+void appendVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, double scale) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);
     for (int i = 0; i < vecs.size(); ++i) {

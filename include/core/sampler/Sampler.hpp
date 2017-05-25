@@ -40,8 +40,8 @@ class Sampler : public Identifier {
   public:
     Sampler(const std::shared_ptr<Environment> &environment, const std::string &name = "Sampler");
     virtual Vector<dim> getSample() = 0;
-    float getRandomAngle();
-    float getRandomNumber();
+    double getRandomAngle();
+    double getRandomNumber();
     Vector<dim> getRandomRay();
 
     virtual void setOrigin(const Vector<dim> &mean);
@@ -54,8 +54,8 @@ class Sampler : public Identifier {
 
     std::random_device rd;
     std::mt19937 m_generator;
-    std::uniform_real_distribution<float> m_distAngle;
-    std::uniform_real_distribution<float> m_distNumber;
+    std::uniform_real_distribution<double> m_distAngle;
+    std::uniform_real_distribution<double> m_distNumber;
 };
 
 /*!
@@ -80,8 +80,8 @@ Sampler<dim>::Sampler(const std::shared_ptr<Environment> &environment, const std
     }
 
     m_generator = std::mt19937(rd());
-    m_distAngle = std::uniform_real_distribution<float>(0, util::twoPi());
-    m_distNumber = std::uniform_real_distribution<float>(0, 1.0);
+    m_distAngle = std::uniform_real_distribution<double>(0, util::twoPi());
+    m_distNumber = std::uniform_real_distribution<double>(0, 1.0);
 }
 
 /*!
@@ -91,7 +91,7 @@ Sampler<dim>::Sampler(const std::shared_ptr<Environment> &environment, const std
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-float Sampler<dim>::getRandomAngle() {
+double Sampler<dim>::getRandomAngle() {
     return m_distAngle(m_generator);
 }
 
@@ -102,7 +102,7 @@ float Sampler<dim>::getRandomAngle() {
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-float Sampler<dim>::getRandomNumber() {
+double Sampler<dim>::getRandomNumber() {
     return m_distNumber(m_generator);
 }
 

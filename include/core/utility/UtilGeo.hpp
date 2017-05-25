@@ -30,23 +30,23 @@
 namespace ippp {
 namespace util {
 
-constexpr float pi() {
+constexpr double pi() {
     return M_PI;
 }
 
-constexpr float twoPi() {
+constexpr double twoPi() {
     return M_PI * 2;
 }
 
-constexpr float halfPi() {
+constexpr double halfPi() {
     return M_PI / 2;
 }
 
-constexpr float toRad() {
+constexpr double toRad() {
     return M_PI / 180;
 }
 
-constexpr float toDeg() {
+constexpr double toDeg() {
     return 180 / M_PI;
 }
 
@@ -59,7 +59,7 @@ constexpr float toDeg() {
 *  \date       2016-08-25
 */
 static Matrix4 createT(const Matrix3 &R, const Vector3 &t) {
-    Matrix4 T = Eigen::Matrix4f::Identity(4, 4);
+    Matrix4 T = Matrix4::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
     T.block<3, 1>(0, 3) = t;
     return T;
@@ -98,8 +98,8 @@ static void decomposeT(const Matrix3 &T, Matrix2 &R, Vector2 &t) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix2 getRotMat2D(const float rad) {
-    Eigen::Rotation2D<float> R(rad);
+static Matrix2 getRotMat2D(const double rad) {
+    Eigen::Rotation2D<double> R(rad);
     return R.toRotationMatrix();
 }
 
@@ -112,10 +112,10 @@ static Matrix2 getRotMat2D(const float rad) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix3 getRotMat3D(const float radX, const float radY, const float radZ) {
+static Matrix3 getRotMat3D(const double radX, const double radY, const double radZ) {
     Matrix3 R;
-    R = Eigen::AngleAxisf(radX, Eigen::Vector3f::UnitX()) * Eigen::AngleAxisf(radY, Eigen::Vector3f::UnitY()) *
-        Eigen::AngleAxisf(radZ, Eigen::Vector3f::UnitZ());
+    R = Eigen::AngleAxisd(radX, Eigen::Vector3d::UnitX()) * Eigen::AngleAxisd(radY, Eigen::Vector3d::UnitY()) *
+        Eigen::AngleAxisd(radZ, Eigen::Vector3d::UnitZ());
     return R;
 }
 
@@ -157,7 +157,7 @@ static void poseVecToRandT(const Vector6 &pose, Matrix3 &R, Vector3 &t) {
 */
 static Matrix4 poseVecToMat(const Vector6 &pose) {
     Matrix3 R = getRotMat3D(pose[3], pose[4], pose[5]);
-    Matrix4 T = Eigen::Matrix4f::Identity(4, 4);
+    Matrix4 T = Matrix4::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
     for (int i = 0; i < 3; ++i) {
         T(i, 3) = pose[i];
@@ -190,9 +190,9 @@ static Vector6 poseMatToVec(const Matrix4 &pose) {
 static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3) {
     Vector3 v = p2 - p1;
     Vector3 w = p3 - p1;
-    float nx = (v[1] * w[2]) - (v[2] * w[1]);
-    float ny = (v[2] * w[0]) - (v[0] * w[2]);
-    float nz = (v[0] * w[1]) - (v[1] * w[0]);
+    double nx = (v[1] * w[2]) - (v[2] * w[1]);
+    double ny = (v[2] * w[0]) - (v[0] * w[2]);
+    double nz = (v[0] * w[1]) - (v[1] * w[0]);
     Vector3 normal(nx, ny, nz);
     return normal.normalized();
 }
@@ -262,7 +262,7 @@ Vector<dim> radToDeg(Vector<dim> rad) {
 *  \param[out] rad
 *  \date       2016-11-16
 */
-static float degToRad(const float deg) {
+static double degToRad(const double deg) {
     return deg * toRad();
 }
 

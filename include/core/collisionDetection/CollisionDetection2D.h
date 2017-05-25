@@ -38,7 +38,7 @@ class CollisionDetection2D : public CollisionDetection<2> {
     bool controlTrajectory(std::vector<Vector2> &vec) override;
 
   private:
-    bool checkPoint2D(float x, float y);
+    bool checkPoint2D(double x, double y);
 
     Vector2 m_minBoundary;
     Vector2 m_maxBoundary;

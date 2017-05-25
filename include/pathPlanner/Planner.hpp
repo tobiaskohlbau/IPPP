@@ -55,10 +55,10 @@ class Planner : public Identifier {
 
     std::shared_ptr<Graph<dim>> getGraph();
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
-    virtual std::vector<Vector<dim>> getPath(const float trajectoryStepSize, const bool smoothing) = 0;
+    virtual std::vector<Vector<dim>> getPath(const double trajectoryStepSize, const bool smoothing) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
     std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                              const float trajectoryStepSize, const bool smoothing);
+                                              const double trajectoryStepSize, const bool smoothing);
 
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
@@ -137,7 +137,7 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                                        const float trajectoryStepSize, const bool smoothing) {
+                                                        const double trajectoryStepSize, const bool smoothing) {
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes;
     if (smoothing)
         smoothedNodes = smoothPath(nodes);

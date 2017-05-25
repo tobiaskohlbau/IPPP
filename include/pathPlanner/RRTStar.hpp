@@ -95,7 +95,7 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randV
     }
 
     std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
-    float edgeCost = this->m_metric->calcDist(newNode, nearestNode);
+    double edgeCost = this->m_metric->calcDist(newNode, nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);
     m_mutex.lock();
@@ -120,7 +120,7 @@ void RRTStar<dim>::chooseParent(const Vector<dim> &newVec, std::shared_ptr<Node<
     // get near nodes to the new node
     nearNodes = m_graph->getNearNodes(newVec, m_stepSize);
 
-    float nearestNodeCost = nearestNode->getCost();
+    double nearestNodeCost = nearestNode->getCost();
     for (auto nearNode : nearNodes) {
         if (nearNode->getCost() < nearestNodeCost) {
             if (m_trajectory->controlTrajectory(newVec, nearNode->getValues())) {
@@ -142,7 +142,7 @@ void RRTStar<dim>::chooseParent(const Vector<dim> &newVec, std::shared_ptr<Node<
 template <unsigned int dim>
 void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
                           std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
-    float oldDist, newDist, edgeCost;
+    double oldDist, newDist, edgeCost;
     for (auto nearNode : nearNodes) {
         if (nearNode != parentNode) {
             edgeCost = this->m_metric->calcDist(nearNode, newNode);
@@ -176,7 +176,7 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(goalNode, m_stepSize * 3);
 
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
-    float minCost = std::numeric_limits<float>::max();
+    double minCost = std::numeric_limits<double>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
         if (nearNodes[i]->getCost() < minCost && m_trajectory->controlTrajectory(goalNode, nearNodes[i])) {
             minCost = nearNodes[i]->getCost();

@@ -41,7 +41,7 @@ class KDNode {
     Vector<dim> vec;
     T node;
     unsigned int axis = 0;
-    float value = 0;
+    double value = 0;
 };
 
 /*!

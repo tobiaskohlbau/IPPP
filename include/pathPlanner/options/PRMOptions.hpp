@@ -31,15 +31,15 @@ namespace ippp {
 template <unsigned int dim>
 class PRMOptions : public PlannerOptions<dim> {
   public:
-    PRMOptions(const float rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    PRMOptions(const double rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
                const std::shared_ptr<DistanceMetric<dim>> &DistanceMetric);
 
-    void setRangeSize(const float rangeSize);
-    float getRangeSize() const;
+    void setRangeSize(const double rangeSize);
+    double getRangeSize() const;
 
   private:
-    float m_rangeSize = 30;
+    double m_rangeSize = 30;
 };
 
 /*!
@@ -52,7 +52,7 @@ class PRMOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-PRMOptions<dim>::PRMOptions(const float rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+PRMOptions<dim>::PRMOptions(const double rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                             const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
                             const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<DistanceMetric<dim>> &metric)
     : PlannerOptions<dim>(collision, planner, sampling, metric) {
@@ -66,7 +66,7 @@ PRMOptions<dim>::PRMOptions(const float rangeSize, const std::shared_ptr<Collisi
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-void PRMOptions<dim>::setRangeSize(const float rangeSize) {
+void PRMOptions<dim>::setRangeSize(const double rangeSize) {
     if (rangeSize <= 0) {
         Logging::warning("Step size was equal or smaller than 0 and is set up to 1", this);
         m_rangeSize = 1;
@@ -82,7 +82,7 @@ void PRMOptions<dim>::setRangeSize(const float rangeSize) {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-float PRMOptions<dim>::getRangeSize() const {
+double PRMOptions<dim>::getRangeSize() const {
     return m_rangeSize;
 }
 

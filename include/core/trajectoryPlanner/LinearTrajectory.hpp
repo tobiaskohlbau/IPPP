@@ -31,7 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class LinearTrajectory : public TrajectoryPlanner<dim> {
   public:
-    LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const float stepSize = 1);
+    LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const double stepSize = 1);
 
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
@@ -50,7 +50,7 @@ class LinearTrajectory : public TrajectoryPlanner<dim> {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-LinearTrajectory<dim>::LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const float stepSize)
+LinearTrajectory<dim>::LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const double stepSize)
     : TrajectoryPlanner<dim>("TrajectoryPlanner", collision, stepSize) {
 }
 

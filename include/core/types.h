@@ -28,23 +28,23 @@ namespace ippp {
 
 // Eigen variables
 template <unsigned int dim>
-using Vector = Eigen::Matrix<float, dim, 1>;
-using Vector2 = Eigen::Matrix<float, 2, 1>;
-using Vector3 = Eigen::Matrix<float, 3, 1>;
-using Vector4 = Eigen::Matrix<float, 4, 1>;
-using Vector5 = Eigen::Matrix<float, 5, 1>;
-using Vector6 = Eigen::Matrix<float, 6, 1>;
-using VectorX = Eigen::Matrix<float, Eigen::Dynamic, 1>;
+using Vector = Eigen::Matrix<double, dim, 1>;
+using Vector2 = Eigen::Matrix<double, 2, 1>;
+using Vector3 = Eigen::Matrix<double, 3, 1>;
+using Vector4 = Eigen::Matrix<double, 4, 1>;
+using Vector5 = Eigen::Matrix<double, 5, 1>;
+using Vector6 = Eigen::Matrix<double, 6, 1>;
+using VectorX = Eigen::Matrix<double, Eigen::Dynamic, 1>;
 
 template <unsigned int dim>
-using Matrix = Eigen::Matrix<float, dim, dim>;
-using Matrix2 = Eigen::Matrix2f;
-using Matrix3 = Eigen::Matrix3f;
-using Matrix4 = Eigen::Matrix4f;
-using MatrixX = Eigen::MatrixXf;
+using Matrix = Eigen::Matrix<double, dim, dim>;
+using Matrix2 = Eigen::Matrix2d;
+using Matrix3 = Eigen::Matrix3d;
+using Matrix4 = Eigen::Matrix4d;
+using MatrixX = Eigen::MatrixXd;
 using Vector3i = Eigen::Matrix<int, 3, 1>;
 
-using AABB = Eigen::AlignedBox<float, 3>;
+using AABB = Eigen::AlignedBox<double, 3>;
 
 } /* namespace ippp */
 

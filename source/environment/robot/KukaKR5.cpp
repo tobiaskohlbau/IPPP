@@ -30,13 +30,13 @@ namespace ippp {
 *  \date        2016-10-22
 */
 KukaKR5::KukaKR5()
-    : SerialRobot("KukaKR5", 6, util::Vecf(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -util::twoPi()),
-                  util::Vecf(2.70526, util::pi(), 1.8326f, 6.10865f, 5.41052f, 2.96706f)) {
-    m_alpha = util::Vecf(90, 0, 90, 90, 90, 0);
+    : SerialRobot("KukaKR5", 6, util::Vecd(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -util::twoPi()),
+                  util::Vecd(2.70526, util::pi(), 1.8326f, 6.10865f, 5.41052f, 2.96706f)) {
+    m_alpha = util::Vecd(90, 0, 90, 90, 90, 0);
     m_alpha = util::degToRad<6>(m_alpha);
-    m_a = util::Vecf(180, 600, 120, 0, 0, 0);
-    m_d = util::Vecf(400, 0, 0, 620, 0, 115);
-    m_pose = util::Vecf(0, 0, 0, 0, 0, 0);
+    m_a = util::Vecd(180, 600, 120, 0, 0, 0);
+    m_d = util::Vecd(400, 0, 0, 620, 0, 115);
+    m_pose = util::Vecd(0, 0, 0, 0, 0, 0);
 
     ModelFactoryPqp modelFactoryPqp;
     m_baseModel = modelFactoryPqp.createModel("meshes/KukaKR5/link0.stl");

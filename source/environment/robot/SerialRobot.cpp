@@ -42,13 +42,13 @@ SerialRobot::SerialRobot(std::string name, const unsigned int dim, VectorX minBo
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Matrix4 SerialRobot::getTrafo(float alpha, float a, float d, float q) {
-    float sinAlpha = sin(alpha);
-    float cosAlpha = cos(alpha);
-    float sinQ = sin(q);
-    float cosQ = cos(q);
+Matrix4 SerialRobot::getTrafo(double alpha, double a, double d, double q) {
+    double sinAlpha = sin(alpha);
+    double cosAlpha = cos(alpha);
+    double sinQ = sin(q);
+    double cosQ = cos(q);
 
-    Matrix4 T = Eigen::Matrix4f::Zero(4, 4);
+    Matrix4 T = Matrix4::Zero(4, 4);
     T(0, 0) = cosQ;
     T(0, 1) = -sinQ * cosAlpha;
     T(0, 2) = sinQ * sinAlpha;
@@ -163,22 +163,22 @@ void SerialRobot::saveMeshConfig(VectorX angles) {
 */
 void SerialRobot::saveMeshConfig(Matrix4 *As) {
     if (this->m_baseModel != nullptr) {
-        std::vector<Eigen::Vector3f> verts;
+        std::vector<Vector3> verts;
         for (auto vertice : this->m_baseModel->m_mesh.vertices) {
-            Eigen::Vector4f temp(util::append<3>(vertice, (float)1));
+            Vector4 temp(util::append<3>(vertice, (double)1));
             temp = this->m_poseMat * temp;
-            verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
+            verts.push_back(Vector3(temp(0), temp(1), temp(2)));
         }
         cad::exportCad(cad::ExportFormat::OBJ, "base", verts, this->m_baseModel->m_mesh.faces);
     }
     // this->m_baseModel->saveObj("base.obj", this->m_poseMat);
 
     for (int i = 0; i < m_joints.size(); ++i) {
-        std::vector<Eigen::Vector3f> verts;
+        std::vector<Vector3> verts;
         for (auto vertice : getModelFromJoint(i)->m_mesh.vertices) {
-            Eigen::Vector4f temp(util::append<3>(vertice, (float)1));
+            Vector4 temp(util::append<3>(vertice, (double)1));
             temp = this->m_poseMat * temp;
-            verts.push_back(Eigen::Vector3f(temp(0), temp(1), temp(2)));
+            verts.push_back(Vector3(temp(0), temp(1), temp(2)));
         }
         cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), verts, getModelFromJoint(i)->m_mesh.faces);
         // getModelFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);

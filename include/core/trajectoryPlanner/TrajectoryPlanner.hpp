@@ -34,7 +34,7 @@ template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
     TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                      const float stepSize = 1);
+                      const double stepSize = 1);
 
     bool controlTrajectory(const Node<dim> &source, const Node<dim> &target);
     bool controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
@@ -43,12 +43,12 @@ class TrajectoryPlanner : public Identifier {
     virtual std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) = 0;
     virtual std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) = 0;
 
-    void setStepSize(const float stepSize);
-    float getStepSize() const;
+    void setStepSize(const double stepSize);
+    double getStepSize() const;
 
   protected:
-    float m_stepSize = 1;
-    float m_sqStepSize = 1;
+    double m_stepSize = 1;
+    double m_sqStepSize = 1;
     std::shared_ptr<CollisionDetection<dim>> m_collision;
 };
 
@@ -61,7 +61,7 @@ class TrajectoryPlanner : public Identifier {
 */
 template <unsigned int dim>
 TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                          const float stepSize)
+                                          const double stepSize)
     : Identifier(name), m_collision(collision) {
     setStepSize(stepSize);
 }
@@ -144,7 +144,7 @@ Vector<dim> TrajectoryPlanner<dim>::controlTrajCont(const Vector<dim> &source, c
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-void TrajectoryPlanner<dim>::setStepSize(const float stepSize) {
+void TrajectoryPlanner<dim>::setStepSize(const double stepSize) {
     if (stepSize <= 0) {
         m_stepSize = 1;
         Logging::warning("Step size has to be larger than 0, it has set to 1!", this);
@@ -161,7 +161,7 @@ void TrajectoryPlanner<dim>::setStepSize(const float stepSize) {
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-float TrajectoryPlanner<dim>::getStepSize() const {
+double TrajectoryPlanner<dim>::getStepSize() const {
     return m_stepSize;
 }
 

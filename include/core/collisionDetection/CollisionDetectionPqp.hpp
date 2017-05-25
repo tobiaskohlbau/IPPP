@@ -46,7 +46,7 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
     bool checkPQP(PQP_Model *model1, PQP_Model *model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1, Vector3 &t2);
 
     Matrix3 m_identity;
-    Eigen::Vector3f m_zeroVec;
+    Vector3 m_zeroVec;
 
     PQP_Model *m_baseMesh = nullptr;
     std::vector<PQP_Model *> m_obstacles;
@@ -68,7 +68,7 @@ template <unsigned int dim>
 CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environment> &environment)
     : CollisionDetection<dim>("CollisionDetectionPQP", environment) {
     m_identity = Matrix3::Identity(3, 3);
-    m_zeroVec = Eigen::Vector3f::Zero(3, 1);
+    m_zeroVec = Vector3::Zero(3, 1);
 
     auto robot = m_environment->getRobot();
 

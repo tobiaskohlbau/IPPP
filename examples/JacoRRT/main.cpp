@@ -14,7 +14,7 @@
 using namespace ippp;
 
 void printTime(clock_t begin, clock_t end) {
-    float elapsed_secs = float(end - begin) / CLOCKS_PER_SEC;
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "Computation time: " << elapsed_secs << std::endl;
 }
 
@@ -24,15 +24,15 @@ void simpleRRT() {
     std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     // environment->addObstacle(obstacleModel);
 
-    robot->saveMeshConfig(util::Vecf(0, 0, 0, 0, 0, 0));
+    robot->saveMeshConfig(util::Vecd(0, 0, 0, 0, 0, 0));
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
                                SamplingType::Sampling, TrajectoryType::Linear, 0.5);
 
     RRT<dim> planner(environment, creator.getRRTOptions(30), creator.getGraph());
-    Vector6 start = util::Vecf(180, 180, 180, 180, 180, 180);
-    Vector6 goal = util::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5);
+    Vector6 start = util::Vecd(180, 180, 180, 180, 180, 180);
+    Vector6 goal = util::Vecd(275, 167.5, 57.4, 241, 82.7, 75.5);
 
     // compute the tree
     clock_t begin = std::clock();
@@ -80,8 +80,8 @@ void treeConnection() {
     RRTStar<dim> plannerInitNode(environment, creator2.getRRTOptions(20), creator2.getGraph());
 
     // set properties to the planners
-    plannerInitNode.setInitNode(util::Vecf(180, 180, 180, 180, 180, 180));
-    plannerGoalNode.setInitNode(util::Vecf(275, 167.5, 57.4, 241, 82.7, 75.5));
+    plannerInitNode.setInitNode(util::Vecd(180, 180, 180, 180, 180, 180));
+    plannerGoalNode.setInitNode(util::Vecd(275, 167.5, 57.4, 241, 82.7, 75.5));
 
     // compute the tree
     clock_t begin = std::clock();
@@ -91,16 +91,16 @@ void treeConnection() {
     printTime(begin, end);
 
     // get random sample from the first pathPlanner and try to connect to both planners
-    Eigen::VectorXf goal;
+    Eigen::VectorXd goal;
     bool connected = false;
-    float minCost = std::numeric_limits<float>::max();
+    double minCost = std::numeric_limits<double>::max();
     for (int i = 0; i < 10000; ++i) {
-        //        Vec<float> sample = plannerInitNode.getSamplePoint();
+        //        Vec<double> sample = plannerInitNode.getSamplePoint();
         //
         //        bool planner1Connected = plannerInitNode.connectGoalNode(sample);
         //        bool planner2Connected = plannerGoalNode.connectGoalNode(sample);
         //        if (planner1Connected && planner2Connected) {
-        //            float cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
+        //            double cost = plannerInitNode.getGoalNode()->getCost() + plannerGoalNode.getGoalNode()->getCost();
         //            if (cost < minCost) {
         //                goal = sample;
         //                connected = true;

@@ -60,11 +60,11 @@ Vector<dim> SamplerRotatory<dim>::getSample() {
             vec[i] = m_origin[i];
         }
         for (unsigned int i = 3; i < 6; ++i) {
-            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
+            vec[i] = m_minBoundary[i] + (double)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
         }
     } else {
         for (unsigned int i = 0; i < dim; ++i) {
-            vec[i] = m_minBoundary[i] + (float)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
+            vec[i] = m_minBoundary[i] + (double)(m_generator() % (int)(m_maxBoundary[i] - m_minBoundary[i]));
         }
     }
     return vec;
