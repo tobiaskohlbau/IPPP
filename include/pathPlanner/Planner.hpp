@@ -30,6 +30,7 @@
 #include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <core/types.h>
 #include <environment/Environment.h>
+#include <environment/util/UtilEnvironment.hpp>
 #include <pathPlanner/options/PlannerOptions.hpp>
 
 namespace ippp {
@@ -95,6 +96,12 @@ template <unsigned int dim>
 Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment> &environment,
                       const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
     : Identifier(name), m_options(options), m_metric(options.getDistanceMetric()) {
+    // check dimensions of the robot to the dimension of the planner
+    if (!util::checkDimensions<dim>(environment)) {
+        Logging::error("Robot dimensions are unequal to planner dimension", this);
+    }
+    assert(util::checkDimensions<dim>(environment));
+
     m_pathPlanned = false;
 
     m_environment = environment;
