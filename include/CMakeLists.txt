@@ -52,6 +52,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilVec.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilCollision.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/util/UtilEnvironment.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.hpp
