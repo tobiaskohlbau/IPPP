@@ -41,6 +41,10 @@
 #include <core/neighborFinders/KDTree.hpp>
 #include <core/neighborFinders/NeighborFinder.hpp>
 
+#include <core/pathModifier/DummyPathModifier.hpp>
+#include <core/pathModifier/NodeCutPathModifier.hpp>
+#include <core/pathModifier/PathModifier.hpp>
+
 #include <core/sampler/Sampler.hpp>
 #include <core/sampler/SamplerNormalDist.hpp>
 #include <core/sampler/SamplerRandom.hpp>

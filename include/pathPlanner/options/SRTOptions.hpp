@@ -32,8 +32,8 @@ template <unsigned int dim>
 class SRTOptions : public PlannerOptions<dim> {
   public:
     SRTOptions(const unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
-               const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
-               const std::shared_ptr<DistanceMetric<dim>> &metric);
+               const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<PathModifier<dim>> &pathModifier,
+               const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     void setNbOfTrees(const unsigned int nbOfTrees);
     unsigned int getNbOfTrees() const;
@@ -45,17 +45,21 @@ class SRTOptions : public PlannerOptions<dim> {
 /*!
 *  \brief      Standard constructor of the class PRMOptions
 *  \param[in]  rangeSize
-*  \param[in]  trajectoryStepSize
-*  \param[in]  trajectoryMethod
-*  \param[in]  samplerMethod
+*  \param[in]  CollisionDetection
+*  \param[in]  DistanceMetric
+*  \param[in]  PathModifier
+*  \param[in]  Sampling
+*  \param[in]  TrajectoryPlanner
 *  \author     Sascha Kaden
 *  \date       2017-04-02
 */
 template <unsigned int dim>
 SRTOptions<dim>::SRTOptions(const unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                            const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
-                            const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<DistanceMetric<dim>> &metric)
-    : PlannerOptions<dim>(collision, planner, sampling, metric) {
+                            const std::shared_ptr<DistanceMetric<dim>> &metric,
+                            const std::shared_ptr<PathModifier<dim>> &pathModifier,
+                            const std::shared_ptr<Sampling<dim>> &sampling,
+                            const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
+    : PlannerOptions<dim>(collision, metric, pathModifier, sampling, trajectory) {
     setNbOfTrees(nbOfTrees);
 }
 

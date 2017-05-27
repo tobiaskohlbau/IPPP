@@ -69,10 +69,7 @@ Sampling<dim>::Sampling(const std::shared_ptr<Environment> &environment,
                         const std::shared_ptr<CollisionDetection<dim>> &collision,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                         const unsigned int attempts, const std::string &name)
-    : Identifier(name), m_attempts(attempts) {
-    m_collision = collision;
-    m_trajectory = trajectory;
-    m_sampler = sampler;
+    : Identifier(name), m_collision(collision), m_trajectory(trajectory), m_sampler(sampler), m_attempts(attempts) {
 }
 
 /*!

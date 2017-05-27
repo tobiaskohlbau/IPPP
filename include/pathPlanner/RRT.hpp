@@ -44,7 +44,7 @@ class RRT : public Planner<dim> {
     virtual bool connectGoalNode(const Vector<dim> goal);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double trajectoryStepSize, const bool smoothing = true);
+    std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1);
     std::shared_ptr<Node<dim>> getInitNode() const;
     std::shared_ptr<Node<dim>> getGoalNode() const;
 
@@ -310,7 +310,7 @@ std::vector<std::shared_ptr<Node<dim>>> RRT<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> RRT<dim>::getPath(const double trajectoryStepSize, const bool smoothing) {
+std::vector<Vector<dim>> RRT<dim>::getPath(const double trajectoryStepSize) {
     std::vector<Vector<dim>> path;
     if (!m_pathPlanned) {
         Logging::warning("Path is not complete", this);
@@ -318,7 +318,7 @@ std::vector<Vector<dim>> RRT<dim>::getPath(const double trajectoryStepSize, cons
     }
 
     std::vector<std::shared_ptr<Node<dim>>> nodes = getPathNodes();
-    path = this->getPathFromNodes(nodes, trajectoryStepSize, smoothing);
+    path = this->getPathFromNodes(nodes, trajectoryStepSize);
 
     Logging::info("Path has: " + std::to_string(path.size()) + " points", this);
     return path;

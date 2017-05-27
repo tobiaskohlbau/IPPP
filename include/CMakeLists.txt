@@ -34,6 +34,9 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/BruteForceNF.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/KDTree.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/NeighborFinder.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/DummyPathModifier.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/PathModifier.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/NodeCutPathModifier.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/Sampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerRandom.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerLinear.hpp

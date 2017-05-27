@@ -38,7 +38,7 @@ class Node;
 template <unsigned int dim>
 class DistanceMetric : public Identifier {
   public:
-    DistanceMetric(const std::string &name = "L2 Metric");
+    DistanceMetric(const std::string &name);
     double calcDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
     virtual double calcDist(const Vector<dim> &source, const Vector<dim> &target) const = 0;
 };

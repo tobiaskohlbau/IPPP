@@ -24,88 +24,73 @@
 #include <core/Identifier.h>
 #include <core/collisionDetection/CollisionDetection.hpp>
 #include <core/distanceMetrics/DistanceMetric.hpp>
+#include <core/pathModifier/PathModifier.hpp>
 #include <core/sampling/Sampling.hpp>
 #include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 
 namespace ippp {
 
 /*!
-* \brief   Class PlannerOptions determines all base options for the path planner
+* \brief   Class PlannerOptions holds all module instances for the path planner.
 * \author  Sascha Kaden
 * \date    2016-08-29
 */
 template <unsigned int dim>
 class PlannerOptions : public Identifier {
   public:
-    PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
-                   const std::shared_ptr<TrajectoryPlanner<dim>> &planner, const std::shared_ptr<Sampling<dim>> &sampling,
-                   const std::shared_ptr<DistanceMetric<dim>> &metric);
-
-    void setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &planner);
-    std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner() const;
+    PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<DistanceMetric<dim>> &metric,
+                   const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
+                   const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     void setCollisionDetection(const std::shared_ptr<CollisionDetection<dim>> &collision);
     std::shared_ptr<CollisionDetection<dim>> getCollisionDetection() const;
 
-    void setSampling(const std::shared_ptr<Sampling<dim>> &sampling);
-    std::shared_ptr<Sampling<dim>> getSampling() const;
-
     void setDistanceMetric(const std::shared_ptr<DistanceMetric<dim>> &metric);
     std::shared_ptr<DistanceMetric<dim>> getDistanceMetric() const;
 
+    void setPathModifier(const std::shared_ptr<PathModifier<dim>> &pathModifier);
+    std::shared_ptr<PathModifier<dim>> getPathModifier() const;
+
+    void setSampling(const std::shared_ptr<Sampling<dim>> &sampling);
+    std::shared_ptr<Sampling<dim>> getSampling() const;
+
+    void setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &planner);
+    std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner() const;
+
   protected:
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-    std::shared_ptr<TrajectoryPlanner<dim>> m_planner = nullptr;
-    std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
+    std::shared_ptr<PathModifier<dim>> m_pathModifier = nullptr;
+    std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
 };
 
 /*!
-*  \brief      Standard constructor of the class PlannerOptions
-*  \param[in]  trajectoryStepSize
-*  \param[in]  trajectoryMethod
-*  \param[in]  samplerMethod
-*  \param[in]  samplingMethod
+*  \brief      Standard constructor of the class PlannerOptions, it holds all modules of the path planner.
+*  \param[in]  CollisionDetection
 *  \param[in]  DistanceMetric
+*  \param[in]  PathModifier
+*  \param[in]  Sampling
+*  \param[in]  TrajectoryPlanner
 *  \author     Sascha Kaden
-*  \date       2016-08-29
+*  \date       2017-05-26
 */
 template <unsigned int dim>
 PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                    const std::shared_ptr<TrajectoryPlanner<dim>> &planner,
+                                    const std::shared_ptr<DistanceMetric<dim>> &metric,
+                                    const std::shared_ptr<PathModifier<dim>> &pathModifier,
                                     const std::shared_ptr<Sampling<dim>> &sampling,
-                                    const std::shared_ptr<DistanceMetric<dim>> &metric)
-    : Identifier("PlannerOptions") {
-    m_collision = collision;
-    m_planner = planner;
-    m_metric = metric;
-    m_sampling = sampling;
+                                    const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
+    : Identifier("PlannerOptions"),
+      m_collision(collision),
+      m_metric(metric),
+      m_pathModifier(pathModifier),
+      m_sampling(sampling),
+      m_trajectory(trajectory) {
 }
 
 /*!
-*  \brief      Sets the trajectory step size
-*  \param[in]  stepSize
-*  \author     Sascha Kaden
-*  \date       2016-08-29
-*/
-template <unsigned int dim>
-void PlannerOptions<dim>::setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &planner) {
-    m_planner = planner;
-}
-
-/*!
-*  \brief      Returns the trajectory step size
-*  \param[out] stepSize
-*  \author     Sascha Kaden
-*  \date       2016-08-29
-*/
-template <unsigned int dim>
-std::shared_ptr<TrajectoryPlanner<dim>> PlannerOptions<dim>::getTrajectoryPlanner() const {
-    return m_planner;
-}
-
-/*!
-*  \brief      Set the collision detection
+*  \brief      Set the CollisionDetection instance.
 *  \param[in]  collision detection
 *  \author     Sascha Kaden
 *  \date       2016-01-29
@@ -116,7 +101,7 @@ void PlannerOptions<dim>::setCollisionDetection(const std::shared_ptr<CollisionD
 }
 
 /*!
-*  \brief      Returns the collision detection
+*  \brief      Returns the CollisionDetection instance.
 *  \param[out] collision detection
 *  \author     Sascha Kaden
 *  \date       2016-01-29
@@ -127,29 +112,7 @@ std::shared_ptr<CollisionDetection<dim>> PlannerOptions<dim>::getCollisionDetect
 }
 
 /*!
-*  \brief      Sets the Sampling
-*  \param[in]  strategy
-*  \author     Sascha Kaden
-*  \date       2016-12-15
-*/
-template <unsigned int dim>
-void PlannerOptions<dim>::setSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
-    m_sampling = sampling;
-}
-
-/*!
-*  \brief      Returns the Sampling
-*  \param[out] sampling
-*  \author     Sascha Kaden
-*  \date       2016-12-15
-*/
-template <unsigned int dim>
-std::shared_ptr<Sampling<dim>> PlannerOptions<dim>::getSampling() const {
-    return m_sampling;
-}
-
-/*!
-*  \brief      Sets the DistanceMetric
+*  \brief      Sets the DistanceMetric instance.
 *  \param[in]  metric
 *  \author     Sascha Kaden
 *  \date       2017-01-01
@@ -160,7 +123,7 @@ void PlannerOptions<dim>::setDistanceMetric(const std::shared_ptr<DistanceMetric
 }
 
 /*!
-*  \brief      Returns the DistanceMetric
+*  \brief      Returns the DistanceMetric instance.
 *  \param[out] metric
 *  \author     Sascha Kaden
 *  \date       2017-01-01
@@ -168,6 +131,72 @@ void PlannerOptions<dim>::setDistanceMetric(const std::shared_ptr<DistanceMetric
 template <unsigned int dim>
 std::shared_ptr<DistanceMetric<dim>> PlannerOptions<dim>::getDistanceMetric() const {
     return m_metric;
+}
+
+/*!
+*  \brief      Sets the PathModifier instance.
+*  \param[in]  PathModifier
+*  \author     Sascha Kaden
+*  \date       2017-05-26
+*/
+template <unsigned int dim>
+void PlannerOptions<dim>::setPathModifier(const std::shared_ptr<PathModifier<dim>> &pathModifier) {
+    m_pathModifier = pathModifier;
+}
+
+/*!
+*  \brief      Returns the PathModifier instance.
+*  \param[out] PathModifier
+*  \author     Sascha Kaden
+*  \date       2017-05-26
+*/
+template <unsigned int dim>
+std::shared_ptr<PathModifier<dim>> PlannerOptions<dim>::getPathModifier() const {
+    return m_pathModifier;
+}
+
+/*!
+*  \brief      Sets the Sampling instance.
+*  \param[in]  Sampling
+*  \author     Sascha Kaden
+*  \date       2016-12-15
+*/
+template <unsigned int dim>
+void PlannerOptions<dim>::setSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
+    m_sampling = sampling;
+}
+
+/*!
+*  \brief      Returns the Sampling instance.
+*  \param[out] Sampling
+*  \author     Sascha Kaden
+*  \date       2016-12-15
+*/
+template <unsigned int dim>
+std::shared_ptr<Sampling<dim>> PlannerOptions<dim>::getSampling() const {
+    return m_sampling;
+}
+
+/*!
+*  \brief      Sets the TrajectoryPlanner instance.
+*  \param[in]  TrajectoryPlanner
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
+template <unsigned int dim>
+void PlannerOptions<dim>::setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory) {
+    m_trajectory = trajectory;
+}
+
+/*!
+*  \brief      Returns the TrajectoryPlanner instance.
+*  \param[out] TrajectoryPlanner
+*  \author     Sascha Kaden
+*  \date       2016-08-29
+*/
+template <unsigned int dim>
+std::shared_ptr<TrajectoryPlanner<dim>> PlannerOptions<dim>::getTrajectoryPlanner() const {
+    return m_trajectory;
 }
 
 } /* namespace ippp */

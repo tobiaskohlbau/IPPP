@@ -30,8 +30,8 @@ void testTriangleRobot() {
     // robot->setWorkspace(model);
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(environment));
-    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
-                               SamplingType::Sampling, TrajectoryType::Linear);
+    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
+                               SamplerType::SamplerUniform, SamplingType::Sampling, TrajectoryType::Linear);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(40), creator.getGraph()));
@@ -51,7 +51,7 @@ void testTriangleRobot() {
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
-        std::vector<Vector3> path = planner->getPath(80, true);
+        std::vector<Vector3> path = planner->getPath(80);
 
         // Writer::writeVecsToFile(path, "result.txt");
 
@@ -83,8 +83,8 @@ void testPointRobot() {
     // robot->setWorkspace(model);
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(environment));
-    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
-                               SamplingType::Sampling, TrajectoryType::Linear);
+    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
+                               SamplerType::SamplerUniform, SamplingType::Sampling, TrajectoryType::Linear);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(40), creator.getGraph()));
@@ -113,7 +113,7 @@ void testPointRobot() {
     drawing::drawTree2D(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
 
     if (connected) {
-        std::vector<Vector2> pathPoints = planner->getPath(1, true);
+        std::vector<Vector2> pathPoints = planner->getPath();
         drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
         writer::writeVecsToFile<2>(pathPoints, "test.txt", 1);
     }
