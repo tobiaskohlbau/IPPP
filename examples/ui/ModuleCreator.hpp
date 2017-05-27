@@ -31,15 +31,17 @@ namespace ippp {
 
 enum class CollisionType { Collision2D, CollisionPQP, CollisionTriangle };
 
-enum class TrajectoryType { Linear };
-
 enum class MetricType { L1, L2, Inf };
-
-enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, SeedSampler };
 
 enum class NeighborType { KDTree, BruteForce };
 
+enum class PathModifierType { Dummy, NodeCut };
+
+enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, SeedSampler };
+
 enum class SamplingType { Bridge, Gaussian, Sampling, NearObstacle };
+
+enum class TrajectoryType { Linear };
 
 /*!
 * \brief   Class ModuleCreator generates all defined modules for the path planner and creates the graph for the planner too. By a
@@ -51,16 +53,18 @@ template <unsigned int dim>
 class ModuleCreator : public Identifier {
   public:
     ModuleCreator(std::shared_ptr<Environment> environment, std::shared_ptr<CollisionDetection<dim>> collision,
-                  MetricType metricType, NeighborType neighborType, SamplerType samplerType, SamplingType samplingType,
-                  TrajectoryType trajectoryType, const double trajecotryStepSize = 1, const unsigned int samplingAttempts = 10,
-                  const double samplingDist = 10);
+                  MetricType metricType, NeighborType neighborType, PathModifierType modifierType, SamplerType samplerType,
+                  SamplingType samplingType, TrajectoryType trajectoryType, const double trajecotryStepSize = 1,
+                  const unsigned int samplingAttempts = 10, const double samplingDist = 10);
 
+    std::shared_ptr<CollisionDetection<dim>> getCollisionDetection();
     std::shared_ptr<DistanceMetric<dim>> getMetric();
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
     std::shared_ptr<Graph<dim>> getGraph();
-    std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner();
+    std::shared_ptr<PathModifier<dim>> getPathModifier();
     std::shared_ptr<Sampler<dim>> getSampler();
     std::shared_ptr<Sampling<dim>> getSampling();
+    std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner();
 
     PRMOptions<dim> getPRMOptions(const double rangeSize);
     RRTOptions<dim> getRRTOptions(const double stepSize);
@@ -69,15 +73,12 @@ class ModuleCreator : public Identifier {
   private:
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr;
     std::shared_ptr<Graph<dim>> m_graph = nullptr;
-    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr;
+    std::shared_ptr<PathModifier<dim>> m_pathModifier;
     std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
     std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
-
-    MetricType m_metricType;
-    SamplerType m_samplerType;
-    NeighborType m_neighborType;
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
 };
 
 /*!
@@ -95,10 +96,10 @@ class ModuleCreator : public Identifier {
 */
 template <unsigned int dim>
 ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std::shared_ptr<CollisionDetection<dim>> collision,
-                                  MetricType metricType, NeighborType neighborType, SamplerType samplerType,
-                                  SamplingType samplingType, TrajectoryType trajectoryType, const double trajecotryStepSize,
-                                  const unsigned int samplingAttempts, const double samplingDist)
-    : Identifier("ModuleCreator"), m_neighborType(neighborType), m_metricType(metricType), m_samplerType(samplerType) {
+                                  MetricType metricType, NeighborType neighborType, PathModifierType modifierType,
+                                  SamplerType samplerType, SamplingType samplingType, TrajectoryType trajectoryType,
+                                  const double trajecotryStepSize, const unsigned int samplingAttempts, const double samplingDist)
+    : Identifier("ModuleCreator") {
     m_collision = collision;
 
     // if (trajectoryType == TrajectoryType::Linear)
@@ -119,6 +120,12 @@ ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std:
             new KDTree<dim, std::shared_ptr<Node<dim>>>(m_metric));
 
     m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(0, m_neighborFinder));
+
+    if (modifierType == PathModifierType::NodeCut)
+        m_pathModifier =
+            std::shared_ptr<NodeCutPathModifier<dim>>(new NodeCutPathModifier<dim>(environment, collision, m_trajectory));
+    else
+        std::shared_ptr<DummyPathModifier<dim>>(new DummyPathModifier<dim>(environment, collision, m_trajectory));
 
     if (samplerType == SamplerType::SamplerRandom)
         m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerRandom<dim>(environment));
@@ -145,9 +152,20 @@ ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std:
 }
 
 /*!
-*  \brief      Return the pointer to the distance metric instance.
+*  \brief      Return the pointer to the CollisionDetection instance.
 *  \author     Sascha Kaden
-*  \param[out] distance metric
+*  \param[out] CollisionDetection
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<CollisionDetection<dim>> ModuleCreator<dim>::getCollisionDetection() {
+    return m_collision;
+}
+
+/*!
+*  \brief      Return the pointer to the DistanceMetric instance.
+*  \author     Sascha Kaden
+*  \param[out] DistanceMetric
 *  \date       2017-05-22
 */
 template <unsigned int dim>
@@ -178,14 +196,14 @@ std::shared_ptr<Graph<dim>> ModuleCreator<dim>::getGraph() {
 }
 
 /*!
-*  \brief      Return the pointer to the TrajectoryPlanner instance.
+*  \brief      Return the pointer to the PathModifier instance.
 *  \author     Sascha Kaden
-*  \param[out] TrajecotryPlanner
+*  \param[out] PathModifier
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<TrajectoryPlanner<dim>> ModuleCreator<dim>::getTrajectoryPlanner() {
-    return m_trajectory;
+std::shared_ptr<PathModifier<dim>> ModuleCreator<dim>::getPathModifier() {
+    return m_pathModifier;
 }
 
 /*!
@@ -211,6 +229,17 @@ std::shared_ptr<Sampling<dim>> ModuleCreator<dim>::getSampling() {
 }
 
 /*!
+*  \brief      Return the pointer to the TrajectoryPlanner instance.
+*  \author     Sascha Kaden
+*  \param[out] TrajecotryPlanner
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<TrajectoryPlanner<dim>> ModuleCreator<dim>::getTrajectoryPlanner() {
+    return m_trajectory;
+}
+
+/*!
 *  \brief      Generate PRMOptions and return them.
 *  \author     Sascha Kaden
 *  \param[in]  range size
@@ -219,7 +248,7 @@ std::shared_ptr<Sampling<dim>> ModuleCreator<dim>::getSampling() {
 */
 template <unsigned int dim>
 PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const double rangeSize) {
-    return PRMOptions<dim>(rangeSize, m_collision, m_trajectory, m_sampling, m_metric);
+    return PRMOptions<dim>(rangeSize, m_collision, m_metric, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!
@@ -231,7 +260,7 @@ PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const double rangeSize) {
 */
 template <unsigned int dim>
 RRTOptions<dim> ModuleCreator<dim>::getRRTOptions(const double stepSize) {
-    return RRTOptions<dim>(stepSize, m_collision, m_trajectory, m_sampling, m_metric);
+    return RRTOptions<dim>(stepSize, m_collision, m_metric, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!
@@ -243,7 +272,7 @@ RRTOptions<dim> ModuleCreator<dim>::getRRTOptions(const double stepSize) {
 */
 template <unsigned int dim>
 SRTOptions<dim> ModuleCreator<dim>::getSRTOptions(const unsigned int nbOfTrees) {
-    return SRTOptions<dim>(nbOfTrees, m_collision, m_trajectory, m_sampling, m_metric);
+    return SRTOptions<dim>(nbOfTrees, m_collision, m_metric, m_pathModifier, m_sampling, m_trajectory);
 }
 
 } /* namespace ippp */

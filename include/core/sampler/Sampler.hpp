@@ -38,7 +38,7 @@ namespace ippp {
 template <unsigned int dim>
 class Sampler : public Identifier {
   public:
-    Sampler(const std::shared_ptr<Environment> &environment, const std::string &name = "Sampler");
+    Sampler(const std::shared_ptr<Environment> &environment, const std::string &name);
     virtual Vector<dim> getSample() = 0;
     double getRandomAngle();
     double getRandomNumber();

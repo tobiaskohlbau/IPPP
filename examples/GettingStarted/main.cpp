@@ -38,8 +38,8 @@ int main(int argc, char** argv) {
     // define step size of the trajectories and create trajectory planner
     double stepSize = 3;
     // create all required core modules with the ModuleCreator
-    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, SamplerType::SamplerUniform,
-                               SamplingType::Sampling, TrajectoryType::Linear, stepSize);
+    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
+                               SamplerType::SamplerUniform, SamplingType::Sampling, TrajectoryType::Linear, stepSize);
 
     // define the options of the path planner
     double rrtStepSize = 30;
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
     bool result = pathPlanner.computePath(start, goal, numNodes, numThreads);
 
     if (result) {
-        std::vector<Vector<dim>> path = pathPlanner.getPath(1, true);
+        std::vector<Vector<dim>> path = pathPlanner.getPath();
     }
 
     return 0;

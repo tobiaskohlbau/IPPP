@@ -46,7 +46,7 @@ class PRM : public Planner<dim> {
     void expandNode(std::shared_ptr<Node<dim>> currentNode);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double trajectoryStepSize, const bool smoothing = true);
+    std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1);
 
   protected:
     void samplingPhase(const unsigned int nbOfNodes);
@@ -358,13 +358,12 @@ std::vector<std::shared_ptr<Node<dim>>> PRM<dim>::getPathNodes() {
 *  \brief      Return all points of the final path
 *  \author     Sascha Kaden
 *  \param[in]  trajectory step size
-*  \param[in]  smoothing
 *  \param[out] configurations of the path
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> PRM<dim>::getPath(const double trajectoryStepSize, const bool smoothing) {
-    return this->getPathFromNodes(m_nodePath, trajectoryStepSize, smoothing);
+std::vector<Vector<dim>> PRM<dim>::getPath(const double trajectoryStepSize) {
+    return this->getPathFromNodes(m_nodePath, trajectoryStepSize);
 }
 
 } /* namespace ippp */

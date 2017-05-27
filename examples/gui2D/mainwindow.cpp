@@ -81,6 +81,7 @@ void MainWindow::computePath() {
         //        robot->setWorkspace(model);
         std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(environment));
         std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new LinearTrajectory<dim>(collision, m_trajectoryStepSize));
+        std::shared_ptr<PathModifier<dim>> pathModifier(new NodeCutPathModifier<dim>(environment, collision, trajectory));
 
         std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(environment));
         if (m_samplingStrategy == 1)
@@ -92,8 +93,8 @@ void MainWindow::computePath() {
         if (m_samplingStrategy == 1)
             sampling = std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<3>(environment, collision, trajectory, sampler));
 
-        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, metric);
-        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, metric);
+        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, metric, pathModifier, sampling, trajectory);
+        PRMOptions<dim> prmOptions(m_prmDistance, collision, metric, pathModifier, sampling, trajectory);
 
         std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
             new KDTree<dim, std::shared_ptr<Node<dim>>>(metric));
@@ -142,6 +143,7 @@ void MainWindow::computePath() {
         std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(environment));
         std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new LinearTrajectory<dim>(collision, m_trajectoryStepSize));
         std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(environment));
+        std::shared_ptr<PathModifier<dim>> pathModifier(new NodeCutPathModifier<dim>(environment, collision, trajectory));
 
         if (m_samplingStrategy == 1)
             sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(environment));
@@ -152,8 +154,8 @@ void MainWindow::computePath() {
         if (m_samplingStrategy == 1)
             sampling = std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<dim>(environment, collision, trajectory, sampler));
 
-        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, trajectory, sampling, metric);
-        PRMOptions<dim> prmOptions(m_prmDistance, collision, trajectory, sampling, metric);
+        RRTOptions<dim> rrtOptions(m_rrtStepsize, collision, metric, pathModifier, sampling, trajectory);
+        PRMOptions<dim> prmOptions(m_prmDistance, collision, metric, pathModifier, sampling, trajectory);
 
         std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
             new KDTree<dim, std::shared_ptr<Node<dim>>>(metric));
@@ -180,7 +182,7 @@ void MainWindow::viewPath() {
 
     if (m_robotTypeLabel == 1) {
         if (m_connected) {
-            std::vector<Vector3> path = m_planner3d->getPath(80, true);
+            std::vector<Vector3> path = m_planner3d->getPath(80);
             drawing::drawTrianglePath(path, m_triangles, image, Eigen::Vector3i(0, 0, 255), 2);
         } else {
             return;
@@ -189,7 +191,7 @@ void MainWindow::viewPath() {
         std::vector<std::shared_ptr<Node<2>>> nodes = m_planner2d->getGraphNodes();
         drawing::drawTree2D<2>(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
         if (m_connected) {
-            std::vector<Vector2> pathPoints = m_planner2d->getPath(1, true);
+            std::vector<Vector2> pathPoints = m_planner2d->getPath();
             drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
         }
     }

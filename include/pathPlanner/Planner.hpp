@@ -26,6 +26,7 @@
 #include <core/Identifier.h>
 #include <core/collisionDetection/CollisionDetection.hpp>
 #include <core/dataObj/Graph.hpp>
+#include <core/pathModifier/PathModifier.hpp>
 #include <core/sampling/Sampling.hpp>
 #include <core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <core/types.h>
@@ -56,23 +57,25 @@ class Planner : public Identifier {
 
     std::shared_ptr<Graph<dim>> getGraph();
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
-    virtual std::vector<Vector<dim>> getPath(const double trajectoryStepSize, const bool smoothing) = 0;
+    virtual std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
     std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                              const double trajectoryStepSize, const bool smoothing);
+                                              const double trajectoryStepSize);
 
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
 
-    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory;
-    std::shared_ptr<Sampling<dim>> m_sampling;
-    std::shared_ptr<CollisionDetection<dim>> m_collision;
-    std::shared_ptr<Graph<dim>> m_graph;
-    std::shared_ptr<Environment> m_environment;
+    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
 
-    const std::shared_ptr<DistanceMetric<dim>> m_metric;
+    std::shared_ptr<Environment> m_environment = nullptr;
+    std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
+    std::shared_ptr<PathModifier<dim>> m_pathModifier = nullptr;
+    std::shared_ptr<Graph<dim>> m_graph = nullptr;
+    std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
+
     const PlannerOptions<dim> m_options;
-    bool m_pathPlanned;
+    bool m_pathPlanned = false;
 };
 
 /*!
@@ -95,20 +98,20 @@ Planner<dim>::~Planner() {
 template <unsigned int dim>
 Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment> &environment,
                       const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
-    : Identifier(name), m_options(options), m_metric(options.getDistanceMetric()) {
+    : Identifier(name),
+      m_collision(options.getCollisionDetection()),
+      m_environment(environment),
+      m_graph(graph),
+      m_metric(options.getDistanceMetric()),
+      m_options(options),
+      m_pathModifier(options.getPathModifier()),
+      m_trajectory(options.getTrajectoryPlanner()),
+      m_sampling(options.getSampling()) {
     // check dimensions of the robot to the dimension of the planner
     if (!util::checkDimensions<dim>(environment)) {
         Logging::error("Robot dimensions are unequal to planner dimension", this);
     }
     assert(util::checkDimensions<dim>(environment));
-
-    m_pathPlanned = false;
-
-    m_environment = environment;
-    m_graph = graph;
-    m_collision = m_options.getCollisionDetection();
-    m_trajectory = options.getTrajectoryPlanner();
-    m_sampling = options.getSampling();
 }
 
 /*!
@@ -138,18 +141,13 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 *  \author     Sascha Kaden
 *  \param[in]  path nodes
 *  \param[in]  trajectory step size
-*  \param[in]  smoothing
 *  \param[out] path configurations
 *  \date       2016-05-27
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                                        const double trajectoryStepSize, const bool smoothing) {
-    std::vector<std::shared_ptr<Node<dim>>> smoothedNodes;
-    if (smoothing)
-        smoothedNodes = smoothPath(nodes);
-    else
-        smoothedNodes = nodes;
+                                                        const double trajectoryStepSize) {
+    std::vector<std::shared_ptr<Node<dim>>> smoothedNodes = m_pathModifier->smoothPath(nodes);
 
     Logging::info("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", this);
 

@@ -13,6 +13,7 @@
 
 #include <modelDirectory.h>
 #include <ui/BenchmarkReader.h>
+#include <ui/ModuleCreator.hpp>
 #include <ui/Writer.hpp>
 
 using namespace ippp;
@@ -46,28 +47,19 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(environment));
     std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(environment));
-    std::shared_ptr<TrajectoryPlanner<6>> trajectory(new LinearTrajectory<6>(collision, 3));
-    std::shared_ptr<TrajectoryPlanner<6>> trajectoryBenchmark(new LinearTrajectory<6>(collisionBenchmark, 3));
-    std::shared_ptr<Sampler<6>> sampler(new SamplerRandom<6>(environment));
-    std::shared_ptr<Sampling<6>> sampling(new Sampling<6>(environment, collision, trajectory, sampler));
+
+    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
+                               SamplerType::SamplerRandom, SamplingType::Sampling, TrajectoryType::Linear);
+    ModuleCreator<dim> creatorBenchmark(environment, collisionBenchmark, MetricType::L2, NeighborType::KDTree,
+                                        PathModifierType::NodeCut, SamplerType::SamplerRandom, SamplingType::Sampling,
+                                        TrajectoryType::Linear);
+
     for (int i = 3; i < 6; ++i) {
         config.obstacleConfig[i] *= util::toRad();
     }
 
-    std::shared_ptr<Sampling<6>> samplingBenchmark(
-        new Sampling<6>(environment, collisionBenchmark, trajectoryBenchmark, sampler));
-
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new L2Metric<dim>());
-    RRTOptions<6> options(40, collision, trajectory, sampling, distanceMetric);
-    RRTOptions<6> optionsBenchmark(40, collisionBenchmark, trajectoryBenchmark, samplingBenchmark, distanceMetric);
-
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
-    std::shared_ptr<Graph<dim>> graph(new Graph<dim>(0, neighborFinder));
-    std::shared_ptr<Graph<dim>> graphBenchmark(new Graph<dim>(0, neighborFinder));
-
-    RRTStar<6> planner(environment, options, graph);
-    RRTStar<6> plannerBenchmark(environment, optionsBenchmark, graphBenchmark);
+    RRTStar<6> planner(environment, creator.getRRTOptions(40), creator.getGraph());
+    RRTStar<6> plannerBenchmark(environment, creatorBenchmark.getRRTOptions(40), creatorBenchmark.getGraph());
 
     // std::static_pointer_cast<ModelPqp>(robotModel)->transform(queries[1]);
     // exportCad(ExportFormat::OBJ, "robotStart", robotModel->m_vertices, robotModel->m_faces);
@@ -138,8 +130,10 @@ void benchmarkHedgehog() {
 }
 
 int main(int argc, char** argv) {
+    modelDir = getModelDirectory();
+
     std::vector<Mesh> meshes;
-    bool result = cad::importMeshes("/users/skaden/Downloads/PuzzleBox3x3.obj", meshes);
+    bool result = cad::importMeshes(modelDir + "assembly/Quader2x3x10.dae", meshes);
     if (result) {
         int count = 1;
         for (auto mesh : meshes) {
@@ -150,9 +144,9 @@ int main(int argc, char** argv) {
 
     // ProfilerStart("/tmp/cpu.prof");
     modelDir = getModelDirectory();
-    // benchmarkFlange();
-    // benchmarkAlphaPuzzle();
-    // benchmarkHedgehog();
+    //    benchmarkFlange();
+    //    benchmarkAlphaPuzzle();
+    //    benchmarkHe dgehog();
     // ProfilerStop();
     return 0;
 }
