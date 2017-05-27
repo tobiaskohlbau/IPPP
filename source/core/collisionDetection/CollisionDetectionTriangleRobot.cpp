@@ -74,7 +74,7 @@ bool CollisionDetectionTriangleRobot::controlVec(const Vector3 &vec) {
 *  \param[out] binary result of collision (true if in collision)
 *  \date       2017-02-19
 */
-bool CollisionDetectionTriangleRobot::controlTrajectory(std::vector<Vector3> &vecs) {
+bool CollisionDetectionTriangleRobot::checkTrajectory(std::vector<Vector3> &vecs) {
     if (vecs.size() == 0) {
         return false;
     }

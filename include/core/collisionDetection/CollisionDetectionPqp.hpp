@@ -36,7 +36,7 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
   public:
     CollisionDetectionPqp(const std::shared_ptr<Environment> &environment);
     bool controlVec(const Vector<dim> &vec) override;
-    bool controlTrajectory(std::vector<Vector<dim>> &vec) override;
+    bool checkTrajectory(std::vector<Vector<dim>> &vec) override;
 
   protected:
     bool checkSerialRobot(const Vector<dim> &vec);
@@ -134,7 +134,7 @@ bool CollisionDetectionPqp<dim>::controlVec(const Vector<dim> &vec) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::controlTrajectory(std::vector<Vector<dim>> &vecs) {
+bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &vecs) {
     if (vecs.size() == 0) {
         return false;
     }

@@ -34,7 +34,7 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
   public:
     CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment);
     bool controlVec(const Vector3 &vec) override;
-    bool controlTrajectory(std::vector<Vector3> &vec) override;
+    bool checkTrajectory(std::vector<Vector3> &vec) override;
 
   private:
     bool checkPoint2D(double x, double y);

@@ -90,7 +90,7 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randV
     std::vector<std::shared_ptr<Node<dim>>> nearNodes;
     chooseParent(newVec, nearestNode, nearNodes);
 
-    if (!m_trajectory->controlTrajectory(newVec, nearestNode->getValues())) {
+    if (!m_trajectory->checkTrajectory(newVec, nearestNode->getValues())) {
         return nullptr;
     }
 
@@ -123,7 +123,7 @@ void RRTStar<dim>::chooseParent(const Vector<dim> &newVec, std::shared_ptr<Node<
     double nearestNodeCost = nearestNode->getCost();
     for (auto nearNode : nearNodes) {
         if (nearNode->getCost() < nearestNodeCost) {
-            if (m_trajectory->controlTrajectory(newVec, nearNode->getValues())) {
+            if (m_trajectory->checkTrajectory(newVec, nearNode->getValues())) {
                 nearestNodeCost = nearNode->getCost();
                 nearestNode = nearNode;
             }
@@ -148,7 +148,7 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
             edgeCost = this->m_metric->calcDist(nearNode, newNode);
             oldDist = nearNode->getCost();
             newDist = edgeCost + newNode->getCost();
-            if (newDist < oldDist && m_trajectory->controlTrajectory(nearNode, newNode)) {
+            if (newDist < oldDist && m_trajectory->checkTrajectory(nearNode, newNode)) {
                 m_mutex.lock();
                 nearNode->setCost(newDist);
                 nearNode->setParent(newNode, edgeCost);
@@ -178,7 +178,7 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     double minCost = std::numeric_limits<double>::max();
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (nearNodes[i]->getCost() < minCost && m_trajectory->controlTrajectory(goalNode, nearNodes[i])) {
+        if (nearNodes[i]->getCost() < minCost && m_trajectory->checkTrajectory(goalNode, nearNodes[i])) {
             minCost = nearNodes[i]->getCost();
             nearestNode = nearNodes[i];
         }

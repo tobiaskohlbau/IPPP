@@ -38,7 +38,7 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
   public:
     CollisionDetectionFcl(const std::shared_ptr<RobotBase> &robot);
     bool controlVec(const Vector<dim> &vec);
-    bool controlTrajectory(std::vector<Vector<dim>> &vec);
+    bool checkTrajectory(std::vector<Vector<dim>> &vec);
 
   private:
     bool controlCollisionMesh(const Vector<dim> &vec);
@@ -151,7 +151,7 @@ bool CollisionDetectionFcl<dim>::controlCollisionMesh(const Vector<dim> &vec) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionFcl<dim>::controlTrajectory(std::vector<Vector<dim>> &vecs) {
+bool CollisionDetectionFcl<dim>::checkTrajectory(std::vector<Vector<dim>> &vecs) {
     if (vecs.size() == 0) {
         return false;
     }

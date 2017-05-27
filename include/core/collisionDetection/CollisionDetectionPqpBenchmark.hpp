@@ -36,7 +36,7 @@ class CollisionDetectionPqpBenchmark : public CollisionDetectionPqp<dim> {
   public:
     CollisionDetectionPqpBenchmark(const std::shared_ptr<Environment> &environment);
     bool controlVec(const Vector<dim> &vec) override;
-    bool controlTrajectory(std::vector<Vector<dim>> &vec) override;
+    bool checkTrajectory(std::vector<Vector<dim>> &vec) override;
 
     int getCount() const;
     void resetCount();
@@ -90,7 +90,7 @@ bool CollisionDetectionPqpBenchmark<dim>::controlVec(const Vector<dim> &vec) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqpBenchmark<dim>::controlTrajectory(std::vector<Vector<dim>> &vecs) {
+bool CollisionDetectionPqpBenchmark<dim>::checkTrajectory(std::vector<Vector<dim>> &vecs) {
     if (vecs.size() == 0)
         return false;
 

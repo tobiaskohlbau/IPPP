@@ -187,7 +187,7 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
 
 /*!
 *  \brief      Return shortened path nodes
-*  \details    If trajectory from node to grandparent node is free, parent node will be erased.
+*  \details    If trajectory from node to grandparent node is valid, parent node will be erased.
 *  \author     Sascha Kaden
 *  \param[in]  path nodes
 *  \param[out] shorted path nodes
@@ -198,7 +198,7 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::smoothPath(std::vector<std
     unsigned int i = 0;
     auto countNodes = nodes.size() - 2;
     while (i < countNodes) {
-        while (i < countNodes && m_trajectory->controlTrajectory(nodes[i]->getValues(), nodes[i + 2]->getValues())) {
+        while (i < countNodes && m_trajectory->checkTrajectory(nodes[i]->getValues(), nodes[i + 2]->getValues())) {
             nodes.erase(nodes.begin() + i + 1);
             --countNodes;
         }

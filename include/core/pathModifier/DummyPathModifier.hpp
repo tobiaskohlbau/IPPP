@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Base class of all path modifier or path smoother.
+* \brief   DummyPathModifier is dummy PathModifier, which only returns the passed path.
 * \author  Sascha Kaden
 * \date    2017-05-23
 */
@@ -43,7 +43,7 @@ class DummyPathModifier : public PathModifier<dim> {
 };
 
 /*!
-*  \brief      Constructor of the base Sampler class
+*  \brief      Constructor of the DummyPathModifier.
 *  \author     Sascha Kaden
 *  \param[in]  Environment
 *  \param[in]  CollisionDetection
@@ -57,6 +57,12 @@ DummyPathModifier<dim>::DummyPathModifier(const std::shared_ptr<Environment> &en
     : PathModifier<dim>(environment, collision, trajectory, "Dummy PathModifier") {
 }
 
+/*!
+*  \brief         Dummy function, it returns just the passed node path.
+*  \author        Sascha Kaden
+*  \param[in,out] list of path nodes
+*  \date          2017-05-23
+*/
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> DummyPathModifier<dim>::smoothPath(
     const std::vector<std::shared_ptr<Node<dim>>> &nodes) const {
