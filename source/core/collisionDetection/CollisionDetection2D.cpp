@@ -66,7 +66,7 @@ bool CollisionDetection2D::controlVec(const Vector2 &vec) {
 *  \param[out] binary result of collision (true if in collision)
 *  \date       2016-05-25
 */
-bool CollisionDetection2D::controlTrajectory(std::vector<Vector2> &vecs) {
+bool CollisionDetection2D::checkTrajectory(std::vector<Vector2> &vecs) {
     if (vecs.size() == 0) {
         return false;
     }

@@ -229,7 +229,7 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
 
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (auto node : nearNodes) {
-        if (m_trajectory->controlTrajectory(goal, node->getValues())) {
+        if (m_trajectory->checkTrajectory(goal, node->getValues())) {
             nearestNode = node;
             break;
         }
@@ -268,7 +268,7 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randVec) 
 
     if (m_collision->controlVec(newNode->getValues())) {
         return nullptr;
-    } else if (!m_trajectory->controlTrajectory(newNode, nearestNode)) {
+    } else if (!m_trajectory->checkTrajectory(newNode, nearestNode)) {
         return nullptr;
     }
 

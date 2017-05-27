@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Class SamplingNearObstacle creates samples with the passed Sampler and if they in collision free samples in
+* \brief   Class SamplingNearObstacle creates samples with the passed Sampler and if they in collision valid samples in
 * neighborhood will found.
 * \author  Sascha Kaden
 * \date    2016-12-20
@@ -65,8 +65,8 @@ SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environmen
 
 /*!
 *  \brief      Sample in the neighborhood of obstacles
-*  \details    If Sample is in collision, second random collision free sample will be computed and by binary search the
-*              nearest collision free sample to the first sample, will be taken.
+*  \details    If Sample is in collision, second random collision valid sample will be computed and by binary search the
+*              nearest collision valid sample to the first sample, will be taken.
 *  \author     Sascha Kaden
 *  \param[out] sample Vector
 *  \date       2016-12-20

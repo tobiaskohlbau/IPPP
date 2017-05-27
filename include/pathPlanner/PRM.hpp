@@ -211,7 +211,7 @@ void PRM<dim>::plannerPhase(const unsigned int startNodeIndex, const unsigned in
     for (auto node = nodes.begin() + startNodeIndex; node != nodes.begin() + endNodeIndex; ++node) {
         std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
-            if (m_trajectory->controlTrajectory((*node)->getValues(), nearNode->getValues())) {
+            if (m_trajectory->checkTrajectory((*node)->getValues(), nearNode->getValues())) {
                 (*node)->addChild(nearNode, m_metric->calcDist(nearNode, (*node)));
             }
         }
@@ -269,7 +269,7 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &vec) {
     double dist = std::numeric_limits<double>::max();
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (int i = 0; i < nearNodes.size(); ++i) {
-        if (m_trajectory->controlTrajectory(vec, *nearNodes[i]) && m_metric->calcDist(vec, nearNodes[i]->getValues()) < dist) {
+        if (m_trajectory->checkTrajectory(vec, *nearNodes[i]) && m_metric->calcDist(vec, nearNodes[i]->getValues()) < dist) {
             dist = m_metric->calcDist(vec, nearNodes[i]->getValues());
             nearestNode = nearNodes[i];
         }

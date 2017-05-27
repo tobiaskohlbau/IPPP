@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Base class of all path modifier or path smoother.
+* \brief   NodeCutPathModifier smooths the path by cutting nodes from the passed path, if a path to the following node is valid.
 * \author  Sascha Kaden
 * \date    2017-05-23
 */
@@ -43,7 +43,7 @@ class NodeCutPathModifier : public PathModifier<dim> {
 };
 
 /*!
-*  \brief      Constructor of the base Sampler class
+*  \brief      Constructor of the NodeCutPathModifier.
 *  \author     Sascha Kaden
 *  \param[in]  Environment
 *  \param[in]  CollisionDetection
@@ -58,7 +58,7 @@ NodeCutPathModifier<dim>::NodeCutPathModifier(const std::shared_ptr<Environment>
 }
 
 /*!
-*  \brief      Try to cut nodes from the path, if a free path to the following node valid.
+*  \brief      Try to cut nodes from the path, if a valid path to the following node exists.
 *  \author     Sascha Kaden
 *  \param[in]  list of path nodes
 *  \param[out] shorted node path
@@ -72,7 +72,7 @@ std::vector<std::shared_ptr<Node<dim>>> NodeCutPathModifier<dim>::smoothPath(
     auto countNodes = smoothedNodes.size() - 2;
     while (i < countNodes) {
         while (i < countNodes &&
-               m_trajectory->controlTrajectory(smoothedNodes[i]->getValues(), smoothedNodes[i + 2]->getValues())) {
+               m_trajectory->checkTrajectory(smoothedNodes[i]->getValues(), smoothedNodes[i + 2]->getValues())) {
             smoothedNodes.erase(smoothedNodes.begin() + i + 1);
             --countNodes;
         }

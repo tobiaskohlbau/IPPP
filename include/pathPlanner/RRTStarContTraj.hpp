@@ -25,8 +25,8 @@ namespace ippp {
 
 /*!
 * \brief   Class of the RRTStarContTraj, adaption of the RRT* path planner.
-* \details Choose parent with the smallest cost and test the trajectory continuous to the new Node. Thereby the last collision
-* free point will be added to the graph.
+* \details Choose parent with the smallest cost and test the trajectory continuous to the new Node. Thereby the last valid point
+* will be added to the graph.
 * \author  Sascha Kaden
 * \date    2017-04-16
 */

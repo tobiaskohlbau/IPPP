@@ -36,10 +36,14 @@ class TrajectoryPlanner : public Identifier {
     TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
                       const double stepSize = 1);
 
-    bool controlTrajectory(const Node<dim> &source, const Node<dim> &target);
-    bool controlTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
-    bool controlTrajectory(const Vector<dim> &source, const Vector<dim> &target);
-    Vector<dim> controlTrajCont(const Vector<dim> &source, const Vector<dim> &target);
+    bool checkTrajectory(const Node<dim> &source, const Node<dim> &target);
+    bool checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
+    bool checkTrajectory(const Vector<dim> &source, const Vector<dim> &target);
+
+    Vector<dim> checkTrajCont(const Node<dim> &source, const Node<dim> &target);
+    Vector<dim> checkTrajCont(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
+    Vector<dim> checkTrajCont(const Vector<dim> &source, const Vector<dim> &target);
+
     virtual std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) = 0;
     virtual std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) = 0;
 
@@ -49,7 +53,7 @@ class TrajectoryPlanner : public Identifier {
   protected:
     double m_stepSize = 1;
     double m_sqStepSize = 1;
-    std::shared_ptr<CollisionDetection<dim>> m_collision;
+    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
 };
 
 /*!
@@ -75,8 +79,8 @@ TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::sh
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::controlTrajectory(const Node<dim> &source, const Node<dim> &target) {
-    return controlTrajectory(source.getValues(), target.getValues());
+bool TrajectoryPlanner<dim>::checkTrajectory(const Node<dim> &source, const Node<dim> &target) {
+    return checkTrajectory(source.getValues(), target.getValues());
 }
 
 /*!
@@ -88,9 +92,8 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const Node<dim> &source, const No
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::controlTrajectory(const std::shared_ptr<Node<dim>> &source,
-                                               const std::shared_ptr<Node<dim>> &target) {
-    return controlTrajectory(source->getValues(), target->getValues());
+bool TrajectoryPlanner<dim>::checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) {
+    return checkTrajectory(source->getValues(), target->getValues());
 }
 
 /*!
@@ -102,24 +105,51 @@ bool TrajectoryPlanner<dim>::controlTrajectory(const std::shared_ptr<Node<dim>> 
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::controlTrajectory(const Vector<dim> &source, const Vector<dim> &target) {
+bool TrajectoryPlanner<dim>::checkTrajectory(const Vector<dim> &source, const Vector<dim> &target) {
     std::vector<Vector<dim>> path = calcTrajectoryBin(source, target);
-    if (m_collision->controlTrajectory(path)) {
+    if (m_collision->checkTrajectory(path)) {
         return false;
     }
     return true;
 }
 
 /*!
-*  \brief      Control the linear trajectory and return the last collision free point
+*  \brief      Control the linear trajectory and return the last collision valid point.
 *  \author     Sascha Kaden
-*  \param[in]  source Vector
-*  \param[in]  target Vector
-*  \param[out] last collision free point (NaN Vector, if no point is free)
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] last collision valid point (NaN Vector, if no point is valid)
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-Vector<dim> TrajectoryPlanner<dim>::controlTrajCont(const Vector<dim> &source, const Vector<dim> &target) {
+Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Node<dim> &source, const Node<dim> &target) {
+    return checkTrajCont(source.getValues(), target.getValues());
+}
+
+/*!
+*  \brief      Control the linear trajectory and return the last collision valid point.
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] last collision valid point (NaN Vector, if no point is valid)
+*  \date       2016-05-31
+*/
+template <unsigned int dim>
+Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const std::shared_ptr<Node<dim>> &source,
+                                                  const std::shared_ptr<Node<dim>> &target) {
+    return checkTrajCont(source->getValues(), target->getValues());
+}
+
+/*!
+*  \brief      Control the linear trajectory and return the last collision valid point.
+*  \author     Sascha Kaden
+*  \param[in]  source Vector
+*  \param[in]  target Vector
+*  \param[out] last collision valid point (NaN Vector, if no point is valid)
+*  \date       2016-05-31
+*/
+template <unsigned int dim>
+Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, const Vector<dim> &target) {
     std::vector<Vector<dim>> path = calcTrajectoryCont(source, target);
     path.push_back(target);
     unsigned int count = -1;

@@ -219,7 +219,7 @@ bool SRT<dim>::plannerPhase(std::vector<std::shared_ptr<Graph<dim>>> &trees) {
             int count = m_sampling->getRandomNumber() * graph->size();
             std::shared_ptr<Node<dim>> node = graph->getNode(count);
             std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(node);
-            if (m_trajectory->controlTrajectory(node, nearestNode)) {
+            if (m_trajectory->checkTrajectory(node, nearestNode)) {
                 node->addChild(nearestNode, m_metric->calcEdgeCost(node, nearestNode));
                 nearestNode->addChild(node, m_metric->calcEdgeCost(nearestNode, node));
                 m_graph->addNodeList(graph->getNodes());
