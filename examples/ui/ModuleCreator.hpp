@@ -39,7 +39,7 @@ enum class PathModifierType { Dummy, NodeCut };
 
 enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, SeedSampler };
 
-enum class SamplingType { Bridge, Gaussian, Straight, NearObstacle };
+enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, NearObstacle };
 
 enum class TrajectoryType { Linear };
 
@@ -145,6 +145,9 @@ ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std:
     } else if (samplingType == SamplingType::Gaussian) {
         m_sampling = std::shared_ptr<Sampling<dim>>(
             new GaussianSampling<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts, samplingDist));
+    } else if (samplingType == SamplingType::GaussianDist) {
+        m_sampling = std::shared_ptr<Sampling<dim>>(
+            new GaussianDistSampling<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts, samplingDist));
     } else if (samplingType == SamplingType::NearObstacle) {
         m_sampling = std::shared_ptr<Sampling<dim>>(
             new SamplingNearObstacle<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts));

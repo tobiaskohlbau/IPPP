@@ -16,29 +16,30 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef GAUSSIANSAMPLING_HPP
-#define GAUSSIANSAMPLING_HPP
+#ifndef GAUSSIANDISTSAMPLING_HPP
+#define GAUSSIANDISTSAMPLING_HPP
 
 #include <core/sampling/Sampling.hpp>
 
 namespace ippp {
 
 /*!
-* \brief   Class Sampling creates sample Vectors with the passed strategy, for creating single Vectors the Sampler is used.
+* \brief   Gaussian distance sampling creates samples in the near of the passed config.
 * \author  Sascha Kaden
-* \date    2016-12-20
+* \date    2017-06-07
 */
 template <unsigned int dim>
-class GaussianSampling : public Sampling<dim> {
+class GaussianDistSampling : public Sampling<dim> {
   public:
-    GaussianSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    GaussianDistSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
                      const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                     const unsigned int attempts = 10, const double distance = 15);
+                     const unsigned int attempts = 10, const double maxDist = 15);
 
     Vector<dim> getSample() override;
+    Vector<dim> getSample(const Vector<dim> &prevSample) override;
 
   private:
-    double m_distance;
+    double m_maxDist;
 
     using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_collision;
@@ -53,41 +54,50 @@ class GaussianSampling : public Sampling<dim> {
 *  \param[in]  TrajectoryPlanner
 *  \param[in]  Sampler
 *  \param[in]  attempts for one sampling
-*  \date       2016-12-20
+*  \param[in]  max distance to previous sample
+*  \date        2017-06-07
 */
 template <unsigned int dim>
-GaussianSampling<dim>::GaussianSampling(const std::shared_ptr<Environment> &environment,
+GaussianDistSampling<dim>::GaussianDistSampling(const std::shared_ptr<Environment> &environment,
                                         const std::shared_ptr<CollisionDetection<dim>> &collision,
                                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                         const std::shared_ptr<Sampler<dim>> &sampler, const unsigned int attempts,
-                                        const double distance)
-    : Sampling<dim>("GaussianSampling", environment, collision, trajectory, sampler, attempts), m_distance(distance) {
+                                        const double maxDist)
+    : Sampling<dim>("GaussianDistSampling", environment, collision, trajectory, sampler, attempts), m_maxDist(maxDist) {
 }
 
 /*!
-*  \brief      Return sample
+*  \brief      Return just sample from the Sampler
 *  \author     Sascha Kaden
-*  \param[out] sample Vec
+*  \param[out] sample
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Vector<dim> GaussianSampling<dim>::getSample() {
-    Vector<dim> sample1, sample2, ray;
+Vector<dim> GaussianDistSampling<dim>::getSample() {
+    return m_sampler->getSample();
+}
 
+/*!
+*  \brief      Return free sample in the near of the previous sample.
+*  \details    The distance to the previous sample will be randomly from zero to max distance.
+*  \author     Sascha Kaden
+*  \param[in]  previous sample
+*  \param[out] sample
+*  \date       2017-06-07
+*/
+template <unsigned int dim>
+Vector<dim> GaussianDistSampling<dim>::getSample(const Vector<dim> &prevSample) {
+    Vector<dim> ray, sample;
     for (unsigned int count = 0; count < m_attempts; ++count) {
-        sample1 = m_sampler->getSample();
         ray = m_sampler->getRandomRay();
-        ray *= m_distance * m_sampler->getRandomNumber();
-        sample2 = sample1 + ray;
-
-        if (!m_collision->controlVec(sample1) && m_collision->controlVec(sample2))
-            return sample1;
-        else if (m_collision->controlVec(sample1) && !m_collision->controlVec(sample2))
-            return sample2;
+        ray *= m_maxDist * m_sampler->getRandomNumber();
+        sample = prevSample + ray;
+        if (!m_collision->controlVec(sample))
+            return sample;
     }
     return util::NaNVector<dim>();
 }
 
 } /* namespace ippp */
 
-#endif /* GAUSSIANSAMPLING_HPP */
+#endif /* GAUSSIANDISTSAMPLING_HPP */
