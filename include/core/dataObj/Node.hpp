@@ -27,6 +27,7 @@
 #include <Eigen/Core>
 
 #include <core/dataObj/Edge.hpp>
+#include <core/dataObj/NodeDataContainer.h>
 #include <core/types.h>
 #include <core/util/UtilVec.hpp>
 
@@ -42,30 +43,28 @@ template <unsigned int dim>
 class Node {
   public:
     Node();
-    Node(double x, double y);
-    Node(double x, double y, double z);
-    Node(double x, double y, double z, double rx);
-    Node(double x, double y, double z, double rx, double ry);
-    Node(double x, double y, double z, double rx, double ry, double rz);
-    Node(const Vector<dim> &vec);
-
-    double getX() const;
-    double getY() const;
-    double getZ() const;
+    Node(const Vector<dim> &config);
 
     bool empty() const;
+
     void setCost(double cost);
     void addCost(double cost);
     double getCost() const;
+
+    void setData(const std::shared_ptr<NodeDataContainer> &data);
+    std::shared_ptr<NodeDataContainer> getData();
+    bool checkData() const;
 
     void setParent(const std::shared_ptr<Node> &parent, const double edgeCost);
     std::shared_ptr<Node> getParentNode() const;
     std::shared_ptr<Edge<dim>> getParentEdge() const;
     void clearParent();
+
     void setQueryParent(const std::shared_ptr<Node> &parent, const double edgeCost);
     std::shared_ptr<Node> getQueryParentNode() const;
     std::shared_ptr<Edge<dim>> getQueryParentEdge() const;
     void clearQueryParent();
+
     void addChild(const std::shared_ptr<Node> &child, const double edgeCost);
     std::vector<std::shared_ptr<Node>> getChildNodes() const;
     std::vector<std::shared_ptr<Edge<dim>>> getChildEdges() const;
@@ -74,8 +73,9 @@ class Node {
     Vector<dim> getValues() const;
 
   private:
-    Vector<dim> m_vec;
+    Vector<dim> m_config;
     double m_cost = -1;
+    std::shared_ptr<NodeDataContainer> m_data;
 
     std::shared_ptr<Edge<dim>> m_parent = nullptr;
     std::shared_ptr<Edge<dim>> m_queryParent = nullptr;
@@ -84,84 +84,16 @@ class Node {
 
 /*!
 *  \brief      Default constructor of the class Node, sets all elements of the Vector NaN.
+*  \details    A default Node contains a NAN config and is therefore empty.
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
 template <unsigned int dim>
 Node<dim>::Node() {
     for (int i = 0; i < dim; ++i) {
-        m_vec[i] = NAN;
+        m_config[i] = NAN;
     }
-}
-
-/*!
-*  \brief      Constructor of the class Node (2D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-Node<dim>::Node(double x, double y) {
-    m_vec = Vector2(x, y);
-}
-
-/*!
-*  \brief      Constructor of the class Node (3D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-Node<dim>::Node(double x, double y, double z) {
-    m_vec = Vector3(x, y, z);
-}
-
-/*!
-*  \brief      Constructor of the class Node (4D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \param[in]  rx
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-Node<dim>::Node(double x, double y, double z, double rx) {
-    m_vec = Vector4(x, y, z, rx);
-}
-
-/*!
-*  \brief      Constructor of the class Node (5D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \param[in]  rx
-*  \param[in]  ry
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-Node<dim>::Node(double x, double y, double z, double rx, double ry) {
-    m_vec = util::Vecd(x, y, z, rx, ry);
-}
-
-/*!
-*  \brief      Constructor of the class Node (6D)
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \param[in]  rx
-*  \param[in]  ry
-*  \param[in]  rz
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-Node<dim>::Node(double x, double y, double z, double rx, double ry, double rz) {
-    m_vec = util::Vecd(x, y, z, rx, ry, rz);
+    m_data = std::shared_ptr<NodeDataContainer>(new NodeDataContainer);
 }
 
 /*!
@@ -171,38 +103,9 @@ Node<dim>::Node(double x, double y, double z, double rx, double ry, double rz) {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Node<dim>::Node(const Vector<dim> &vec) {
-    m_vec = vec;
-}
-
-/*!
-*  \brief      Return first element of the vector
-*  \author     Sascha Kaden
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-double Node<dim>::getX() const {
-    return m_vec[0];
-}
-
-/*!
-*  \brief      Return second element of the vector
-*  \author     Sascha Kaden
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-double Node<dim>::getY() const {
-    return m_vec[1];
-}
-
-/*!
-*  \brief      Return third element of the vector
-*  \author     Sascha Kaden
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-double Node<dim>::getZ() const {
-    return m_vec[2];
+Node<dim>::Node(const Vector<dim> &config) {
+    m_config = config;
+    m_data = std::shared_ptr<NodeDataContainer>(new NodeDataContainer);
 }
 
 /*!
@@ -213,7 +116,7 @@ double Node<dim>::getZ() const {
 */
 template <unsigned int dim>
 bool Node<dim>::empty() const {
-    return std::isnan(m_vec[0]);
+    return std::isnan(m_config[0]);
 }
 
 /*!
@@ -251,6 +154,42 @@ void Node<dim>::addCost(const double cost) {
 template <unsigned int dim>
 double Node<dim>::getCost() const {
     return m_cost;
+}
+
+/*!
+*  \brief      Set data container of the node
+*  \author     Sascha Kaden
+*  \param[in]  data container
+*  \date       2017-06-09
+*/
+template <unsigned int dim>
+void Node<dim>::setData(const std::shared_ptr<NodeDataContainer> &data) {
+    m_data = data;
+}
+
+/*!
+*  \brief      Return data container of the Node
+*  \author     Sascha Kaden
+*  \param[out] data container
+*  \date       2017-06-09
+*/
+template <unsigned int dim>
+std::shared_ptr<NodeDataContainer> Node<dim>::getData() {
+    return m_data;
+}
+
+/*!
+*  \brief      Return true if data container is initialized
+*  \author     Sascha Kaden
+*  \param[out] validity of the data container
+*  \date       2017-06-09
+*/
+template <unsigned int dim>
+bool Node<dim>::checkData() const {
+    if (m_data == nullptr)
+        return false;
+    else
+        return true;
 }
 
 /*!
@@ -411,7 +350,7 @@ void Node<dim>::clearChildes() {
 */
 template <unsigned int dim>
 Vector<dim> Node<dim>::getValues() const {
-    return m_vec;
+    return m_config;
 }
 
 } /* namespace ippp */

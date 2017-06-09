@@ -46,24 +46,6 @@ BOOST_AUTO_TEST_CASE(standardConstructor) {
 }
 
 template <unsigned int dim>
-void testElementConstructor(Node<dim> node) {
-    BOOST_CHECK(node.empty() == false);
-    BOOST_CHECK(node.getParentNode() == nullptr);
-    BOOST_CHECK(node.getChildNodes().size() == 0);
-    BOOST_CHECK(node.getCost() == -1);
-    for (int i = 0; i < dim; ++i)
-        BOOST_CHECK(node.getValues()[i] == i);
-}
-
-BOOST_AUTO_TEST_CASE(elementConstructor) {
-    testElementConstructor<2>(Node<2>(0, 1));
-    testElementConstructor<3>(Node<3>(0, 1, 2));
-    testElementConstructor<4>(Node<4>(0, 1, 2, 3));
-    testElementConstructor<5>(Node<5>(0, 1, 2, 3, 4));
-    testElementConstructor<6>(Node<6>(0, 1, 2, 3, 4, 5));
-}
-
-template <unsigned int dim>
 void testVectorConstructor(Node<dim> node) {
     BOOST_CHECK(node.empty() == false);
     BOOST_CHECK(node.getParentNode() == nullptr);
