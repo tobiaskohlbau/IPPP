@@ -47,7 +47,7 @@ class SamplerRandom : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerRandom<dim>::SamplerRandom(const std::shared_ptr<Environment> &environment) : Sampler<dim>(environment, "RandomSampler") {
+SamplerRandom<dim>::SamplerRandom(const std::shared_ptr<Environment> &environment) : Sampler<dim>("RandomSampler", environment) {
 }
 
 /*!

@@ -38,7 +38,7 @@ namespace ippp {
 template <unsigned int dim>
 class Sampler : public Identifier {
   public:
-    Sampler(const std::shared_ptr<Environment> &environment, const std::string &name);
+    Sampler(const std::string &name, const std::shared_ptr<Environment> &environment);
     virtual Vector<dim> getSample() = 0;
     double getRandomAngle();
     double getRandomNumber();
@@ -61,11 +61,11 @@ class Sampler : public Identifier {
 /*!
 *  \brief      Constructor of the base Sampler class
 *  \author     Sascha Kaden
-*  \param[in]  robot
+*  \param[in]  Environment
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Sampler<dim>::Sampler(const std::shared_ptr<Environment> &environment, const std::string &name) : Identifier(name) {
+Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment> &environment) : Identifier(name) {
     m_minBoundary = environment->getRobot()->getMinBoundary();
     m_maxBoundary = environment->getRobot()->getMaxBoundary();
     Vector6 pose = environment->getRobot()->getPose();

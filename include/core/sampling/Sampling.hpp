@@ -61,10 +61,12 @@ class Sampling : public Identifier {
 /*!
 *  \brief      Constructor of the class Sampling
 *  \author     Sascha Kaden
-*  \param[in]  robot
+*  \param[in]  name
+*  \param[in]  Environment
 *  \param[in]  CollisionDetection
 *  \param[in]  TrajectoryPlanner
 *  \param[in]  Sampler
+*  \param[in]  attempts for one sampling
 *  \date       2016-12-20
 */
 template <unsigned int dim>
@@ -97,6 +99,7 @@ Vector<dim> Sampling<dim>::getSample(const Vector &prevSample) {
 template <unsigned int dim>
 std::vector<Vector<dim>> Sampling<dim>::getSamples(const unsigned int amount) {
     std::vector<Vector<dim>> samples;
+    samples.reserve(amount);
     for (unsigned int i = 0; i < amount; ++i)
         samples.push_back(getSample());
 

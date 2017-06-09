@@ -32,31 +32,29 @@ template <unsigned int dim>
 class StraightSampling : public Sampling<dim> {
   public:
     StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-             const unsigned int attempts = 10);
+             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
 
     virtual Vector<dim> getSample();
 
   protected:
-    using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
 };
 
 /*!
 *  \brief      Constructor of the class Sampling
 *  \author     Sascha Kaden
-*  \param[in]  robot
+*  \param[in]  Environment
 *  \param[in]  CollisionDetection
 *  \param[in]  TrajectoryPlanner
+*  \param[in]  Sampler
 *  \param[in]  Sampler
 *  \date       2016-12-20
 */
 template <unsigned int dim>
 StraightSampling<dim>::StraightSampling(const std::shared_ptr<Environment> &environment,
                         const std::shared_ptr<CollisionDetection<dim>> &collision,
-                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                        const unsigned int attempts)
-    : Sampling<dim>("StraightSampling", environment, collision, trajectory, sampler, attempts) {
+                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler)
+    : Sampling<dim>("StraightSampling", environment, collision, trajectory, sampler, 10) {
 }
 
 /*!

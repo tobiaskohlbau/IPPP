@@ -54,7 +54,7 @@ template <unsigned int dim>
 DummyPathModifier<dim>::DummyPathModifier(const std::shared_ptr<Environment> &environment,
                                           std::shared_ptr<CollisionDetection<dim>> &collision,
                                           std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PathModifier<dim>(environment, collision, trajectory, "Dummy PathModifier") {
+    : PathModifier<dim>("Dummy PathModifier", environment, collision, trajectory) {
 }
 
 /*!
