@@ -39,8 +39,6 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/NodeCutPathModifier.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/Sampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerRandom.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerLinear.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerRotatory.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerNormalDist.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerUniform.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SeedSampler.hpp
