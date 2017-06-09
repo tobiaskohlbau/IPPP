@@ -53,6 +53,7 @@
 #include <core/sampler/SeedSampler.hpp>
 
 #include <core/sampling/BridgeSampling.hpp>
+#include <core/sampling/GaussianDistSampling.hpp>
 #include <core/sampling/GaussianSampling.hpp>
 #include <core/sampling/Sampling.hpp>
 #include <core/sampling/SamplingNearObstacle.hpp>

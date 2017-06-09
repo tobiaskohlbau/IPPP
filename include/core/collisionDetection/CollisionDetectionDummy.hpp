@@ -74,4 +74,4 @@ bool CollisionDetectionDummy<dim>::checkTrajectory(std::vector<Vector<dim>> &vec
 
 } /* namespace ippp */
 
-#endif /* COLLISIONDETECTIONPQP_HPP */
+#endif /* COLLISIONDETECTIONDUMMY_HPP */

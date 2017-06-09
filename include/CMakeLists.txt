@@ -45,6 +45,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SeedSampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/BridgeSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianSampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianDistSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/StraightSampling.hpp

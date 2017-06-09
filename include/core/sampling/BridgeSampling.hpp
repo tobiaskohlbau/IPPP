@@ -35,7 +35,7 @@ class BridgeSampling : public Sampling<dim> {
                    const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                    const unsigned int attempts = 10, const double distance = 15);
 
-    virtual Vector<dim> getSample();
+    Vector<dim> getSample() override;
 
   private:
     double m_distance;
@@ -76,6 +76,7 @@ Vector<dim> BridgeSampling<dim>::getSample() {
     Vector<dim> sample1, sample2, ray;
     do {
         sample1 = m_sampler->getSample();
+        ++count;
     } while (!m_collision->controlVec(sample1));
 
     do {
