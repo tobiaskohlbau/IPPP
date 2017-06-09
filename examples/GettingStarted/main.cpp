@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
     double stepSize = 3;
     // create all required core modules with the ModuleCreator
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerUniform, SamplingType::Sampling, TrajectoryType::Linear, stepSize);
+                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear, stepSize);
 
     // define the options of the path planner
     double rrtStepSize = 30;

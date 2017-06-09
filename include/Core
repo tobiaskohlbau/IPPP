@@ -55,6 +55,7 @@
 #include <core/sampling/GaussianSampling.hpp>
 #include <core/sampling/Sampling.hpp>
 #include <core/sampling/SamplingNearObstacle.hpp>
+#include <core/sampling/StraightSampling.hpp>
 
 #include <core/trajectoryPlanner/LinearTrajectory.hpp>
 #include <core/trajectoryPlanner/TrajectoryPlanner.hpp>

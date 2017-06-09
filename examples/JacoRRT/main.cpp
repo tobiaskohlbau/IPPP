@@ -28,7 +28,7 @@ void simpleRRT() {
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerUniform, SamplingType::Sampling, TrajectoryType::Linear, 0.5);
+                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear, 0.5);
 
     RRT<dim> planner(environment, creator.getRRTOptions(30), creator.getGraph());
     Vector6 start = util::Vecd(180, 180, 180, 180, 180, 180);
@@ -72,9 +72,9 @@ void treeConnection() {
     // create two trees from init and from goal
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     ModuleCreator<dim> creator1(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                                SamplerType::SamplerUniform, SamplingType::Sampling, TrajectoryType::Linear, 0.5);
+                                SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear, 0.5);
     ModuleCreator<dim> creator2(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                                SamplerType::SamplerUniform, SamplingType::Sampling, TrajectoryType::Linear, 0.5);
+                                SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear, 0.5);
 
     RRTStar<dim> plannerGoalNode(environment, creator1.getRRTOptions(20), creator1.getGraph());
     RRTStar<dim> plannerInitNode(environment, creator2.getRRTOptions(20), creator2.getGraph());
