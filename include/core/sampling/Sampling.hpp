@@ -85,7 +85,7 @@ Sampling<dim>::Sampling(const std::string &name, const std::shared_ptr<Environme
 *  \date       2017-06-07
 */
 template <unsigned int dim>
-Vector<dim> Sampling<dim>::getSample(const Vector &prevSample) {
+Vector<dim> Sampling<dim>::getSample(const Vector<dim> &prevSample) {
     return getSample();
 }
 

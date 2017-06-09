@@ -138,7 +138,7 @@ ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std:
 
     if (samplingType == SamplingType::Straight) {
         m_sampling =
-            std::shared_ptr<Sampling<dim>>(new StraightSampling<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts));
+            std::shared_ptr<Sampling<dim>>(new StraightSampling<dim>(environment, collision, m_trajectory, m_sampler));
     } else if (samplingType == SamplingType::Bridge) {
         m_sampling = std::shared_ptr<Sampling<dim>>(
             new BridgeSampling<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts, samplingDist));
