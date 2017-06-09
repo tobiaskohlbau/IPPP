@@ -37,6 +37,7 @@ namespace ippp {
 class Environment : public Identifier {
   public:
     Environment(const unsigned int workspaceDim, const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot);
+    Environment(const unsigned int workspaceDim, const AABB &spaceBoundary, const std::vector<std::shared_ptr<RobotBase>> &robot);
     ~Environment();
 
     void addObstacle(const std::shared_ptr<ModelContainer> &model);

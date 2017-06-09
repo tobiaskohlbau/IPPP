@@ -165,6 +165,8 @@ bool importBYU(const std::string &filePath, Mesh &mesh) {
 
     getline(is, str);
     getline(is, str);
+    while(str == "")
+        getline(is, str);
     util::trimWhitespaces(str);
     for (unsigned int i = 0; i < numVertices; ++i) {
         Vector3 vec;
@@ -179,6 +181,8 @@ bool importBYU(const std::string &filePath, Mesh &mesh) {
             util::trimWhitespaces(str);
         }
     }
+    while(str == "")
+        getline(is, str);
     for (unsigned int i = 0; i < numFaces; ++i) {
         util::trimWhitespaces(str);
         Vector3i vec;

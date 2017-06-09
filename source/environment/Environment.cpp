@@ -39,8 +39,28 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
 }
 
 /*!
-*  \brief      Standard deconstructor of the Environment
-*  \author     Sasch Kaden
+*  \brief      Constructor of the class Environment
+*  \author     Sascha Kaden
+*  \param[in]  dimension of the workspace
+*  \param[in]  workspace boundary
+*  \param[in]  list of robots
+*  \date       2017-05-17
+*/
+Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBoundary, const std::vector<std::shared_ptr<RobotBase>> &robots)
+        : Identifier("Environment"), m_spaceDim(workspaceDim), m_spaceBoundary(spaceBoundary) {
+    if (2 > m_spaceDim || m_spaceDim > 3)
+        Logging::error("Dimension of workspace have to be 2 or 3", this);
+    assert(m_spaceDim == 2 || m_spaceDim == 3);
+
+    if (robots.empty())
+        Logging::error("No robot passed", this);
+    assert(!robots.empty());
+    m_robots = robots;
+}
+
+/*!
+*  \brief      Standard destructor of the Environment
+*  \author     Sascha Kaden
 *  \date       2017-05-17
 */
 Environment::~Environment() {
