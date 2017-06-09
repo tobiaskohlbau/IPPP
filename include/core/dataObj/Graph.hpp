@@ -90,9 +90,10 @@ class Graph : public Identifier {
 template <unsigned int dim>
 Graph<dim>::Graph(const unsigned int sortCount,
                   const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder)
-    : Identifier("Graph"), m_sortCount(sortCount) {
+    : Identifier("Graph"), m_sortCount(sortCount), m_neighborFinder(neighborFinder) {
     m_autoSort = (sortCount != 0);
-    m_neighborFinder = neighborFinder;
+    // reserve memory for the node vector to reduce computation time at new memory allocation
+    m_nodes.reserve(10000);
 }
 
 /*!
