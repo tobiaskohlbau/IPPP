@@ -46,7 +46,7 @@ class SamplerUniform : public Sampler<dim> {
 */
 template <unsigned int dim>
 SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<Environment> &environment)
-    : Sampler<dim>(environment, "SamplerUniform") {
+    : Sampler<dim>("SamplerUniform", environment) {
     for (unsigned int i = 0; i < dim; ++i) {
         std::uniform_real_distribution<double> dist(this->m_minBoundary[i], this->m_maxBoundary[i]);
         m_distUniform.push_back(dist);

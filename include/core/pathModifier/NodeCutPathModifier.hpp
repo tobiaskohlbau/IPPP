@@ -54,7 +54,7 @@ template <unsigned int dim>
 NodeCutPathModifier<dim>::NodeCutPathModifier(const std::shared_ptr<Environment> &environment,
                                               std::shared_ptr<CollisionDetection<dim>> &collision,
                                               std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PathModifier<dim>(environment, collision, trajectory, "Node cutter") {
+    : PathModifier<dim>("Node cutter", environment, collision, trajectory) {
 }
 
 /*!

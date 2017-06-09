@@ -47,7 +47,7 @@ class SeedSampler : public Sampler<dim> {
 */
 template <unsigned int dim>
 SeedSampler<dim>::SeedSampler(const std::shared_ptr<Environment> &environment, const std::string &seed)
-    : Sampler<dim>(environment, "SeedSampler") {
+    : Sampler<dim>("SeedSampler", environment) {
     std::seed_seq seed_seq(seed.begin(), seed.end());
     m_randomEngine = std::minstd_rand0(seed_seq);
 }

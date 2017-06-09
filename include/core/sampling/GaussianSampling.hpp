@@ -48,10 +48,11 @@ class GaussianSampling : public Sampling<dim> {
 /*!
 *  \brief      Constructor of the class Sampling
 *  \author     Sascha Kaden
-*  \param[in]  robot
+*  \param[in]  Environment
 *  \param[in]  CollisionDetection
 *  \param[in]  TrajectoryPlanner
 *  \param[in]  Sampler
+*  \param[in]  attempts for one sampling
 *  \date       2016-12-20
 */
 template <unsigned int dim>

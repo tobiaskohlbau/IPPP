@@ -47,7 +47,7 @@ class SamplerNormalDist : public Sampler<dim> {
 */
 template <unsigned int dim>
 SamplerNormalDist<dim>::SamplerNormalDist(const std::shared_ptr<Environment> &environment)
-    : Sampler<dim>(environment, "SamplerNormalDist") {
+    : Sampler<dim>("SamplerNormalDist", environment) {
     m_distNormal.clear();
     for (unsigned int i = 0; i < dim; ++i) {
         std::normal_distribution<double> distribution(this->m_origin[i], this->m_maxBoundary[i] - this->m_minBoundary[i]);
