@@ -39,6 +39,7 @@ class Graph : public Identifier {
 
     void addNode(const std::shared_ptr<Node<dim>> &node);
     void addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &nodes);
+
     std::shared_ptr<Node<dim>> getNode(const unsigned int index) const;
     std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
 

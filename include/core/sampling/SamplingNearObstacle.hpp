@@ -60,7 +60,7 @@ SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environmen
                                                 const std::shared_ptr<CollisionDetection<dim>> &collision,
                                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                                 const std::shared_ptr<Sampler<dim>> &sampler, const unsigned int attempts)
-    : Sampling<dim>(environment, collision, trajectory, sampler, attempts, "SamplingNearObstacle") {
+    : Sampling<dim>("SamplingNearObstacle", environment, collision, trajectory, sampler, attempts) {
 }
 
 /*!

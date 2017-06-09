@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <string>
 
 //#include <gperftools/profiler.h>
 
@@ -49,9 +50,9 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(environment));
 
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerRandom, SamplingType::Sampling, TrajectoryType::Linear);
+                               SamplerType::SamplerRandom, SamplingType::Straight, TrajectoryType::Linear);
     ModuleCreator<dim> creatorBenchmark(environment, collisionBenchmark, MetricType::L2, NeighborType::KDTree,
-                                        PathModifierType::NodeCut, SamplerType::SamplerRandom, SamplingType::Sampling,
+                                        PathModifierType::NodeCut, SamplerType::SamplerRandom, SamplingType::Straight,
                                         TrajectoryType::Linear);
 
     for (int i = 3; i < 6; ++i) {
@@ -131,19 +132,51 @@ void benchmarkHedgehog() {
 
 int main(int argc, char** argv) {
     modelDir = getModelDirectory();
+    std::string dir = "/users/skaden/";
+    std::vector<std::string> meshFiles;
+    meshFiles.push_back(dir + "i.obj");
+    meshFiles.push_back(dir + "y.obj");
+    meshFiles.push_back(dir + "z.obj");
+    meshFiles.push_back(dir + "l.obj");
+    meshFiles.push_back(dir + "x.obj");
+    meshFiles.push_back(dir + "c.obj");
+    meshFiles.push_back(dir + "f.obj");
+    meshFiles.push_back(dir + "s.obj");
+    meshFiles.push_back(dir + "b.obj");
+    meshFiles.push_back(dir + "m.obj");
+    meshFiles.push_back(dir + "t.obj");
+    meshFiles.push_back(dir + "v.obj");
 
+    std::vector<std::string> names = {"i", "y", "z", "l", "x", "c", "f", "s", "b", "m", "t", "v"};
     std::vector<Mesh> meshes;
-    bool result = cad::importMeshes(modelDir + "assembly/Quader2x3x10.dae", meshes);
-    if (result) {
-        int count = 1;
-        for (auto mesh : meshes) {
-            cad::exportCad(cad::ExportFormat::OBJ, "cube" + std::to_string(count), mesh);
-            ++count;
-        }
-    }
+//    int count = 0;
+//    for (auto file : meshFiles) {
+//        Mesh mesh;
+//        bool result = cad::importMesh(file, mesh);
+//        meshes.push_back(mesh);
+//
+//        ++count;
+//    }
+
+    cad::importMeshes(dir + "pentomino.dae", meshes);
+//    double pi = util::pi();
+//    cad::transformVertices(util::Vecd(0.4, 2.4, 0.4,    0, 0 ,0), meshes[0].vertices);
+//    cad::transformVertices(util::Vecd(1.85, 2.65, 0.4,  1*pi, 0, 0), meshes[1].vertices);
+//    cad::transformVertices(util::Vecd(2.9, 3.15, 0.4,   1*pi, 0, 0.5*pi), meshes[2].vertices);
+//    cad::transformVertices(util::Vecd(3.4, 3.27, -0.13, 0, -0.5*pi, 0), meshes[3].vertices);
+//    cad::transformVertices(util::Vecd(1.4, 0.4, -0.6,   0.5*pi, 0 ,0), meshes[4].vertices);
+//    cad::transformVertices(util::Vecd(2.7, 0.4, -0.6,   0.5*pi, 0, 1*pi), meshes[5].vertices);
+//    cad::transformVertices(util::Vecd(2.32, 1.4, -0.72, -0.5*pi , 0, 1*pi), meshes[6].vertices);
+//    cad::transformVertices(util::Vecd(1.4, 2.4, -0.6,   0, 0, 0.5*pi), meshes[7].vertices);
+//    cad::transformVertices(util::Vecd(1.53, 3.93, -0.6, 0, 0, 0.5*pi), meshes[8].vertices);
+//    cad::transformVertices(util::Vecd(1.28, 1.52, -1.6, 0, 0, 0), meshes[9].vertices);
+//    cad::transformVertices(util::Vecd(1.1, 3.4, -1.6,   0, 0, 0), meshes[10].vertices);
+//    cad::transformVertices(util::Vecd(2.6, 3.6, -1.6,   0, 0, -0.5*pi), meshes[11].vertices);
+
+    for (int i = 0; i < 12; ++i)
+        cad::exportCad(cad::ExportFormat::OBJ, names[i], meshes[i]);
 
     // ProfilerStart("/tmp/cpu.prof");
-    modelDir = getModelDirectory();
     //    benchmarkFlange();
     //    benchmarkAlphaPuzzle();
     //    benchmarkHe dgehog();

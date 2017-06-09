@@ -31,7 +31,7 @@ void testTriangleRobot() {
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(environment));
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerUniform, SamplingType::Sampling, TrajectoryType::Linear);
+                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(40), creator.getGraph()));
@@ -84,7 +84,7 @@ void testPointRobot() {
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(environment));
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerUniform, SamplingType::Sampling, TrajectoryType::Linear);
+                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(40), creator.getGraph()));

@@ -48,6 +48,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/StraightSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/LinearTrajectory.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/TrajectoryPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilGeo.hpp

@@ -60,7 +60,7 @@ BridgeSampling<dim>::BridgeSampling(const std::shared_ptr<Environment> &environm
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                     const std::shared_ptr<Sampler<dim>> &sampler, const unsigned int attempts,
                                     const double distance)
-    : Sampling<dim>(environment, collision, trajectory, sampler, attempts, "BridgeSampling"), m_distance(distance) {
+    : Sampling<dim>("BridgeSampling", environment, collision, trajectory, sampler, attempts), m_distance(distance) {
 }
 
 /*!
