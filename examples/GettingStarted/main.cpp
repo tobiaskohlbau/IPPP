@@ -27,7 +27,9 @@ int main(int argc, char** argv) {
     VectorX maxBoundary = util::Vecd(200, 200, 200, util::twoPi(), util::twoPi(), util::twoPi());
 
     // create mobile robot and set the models
-    std::shared_ptr<RobotBase> robot(new MobileRobot(2, minBoundary, maxBoundary));
+    std::vector<DofType> dofTypes = {DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos,
+                                     DofType::volumetricRot, DofType::volumetricRot, DofType::volumetricRot};
+    std::shared_ptr<RobotBase> robot(new MobileRobot(2, std::make_pair(minBoundary, maxBoundary), dofTypes));
     robot->setBaseModel(robotModel);
     std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     environment->addObstacle(obstacleModel);

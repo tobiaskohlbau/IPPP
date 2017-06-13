@@ -37,9 +37,12 @@ RobotBase::~RobotBase() {
 *  \param[in]  number of joints of the robot
 *  \date       2016-06-30
 */
-RobotBase::RobotBase(const std::string &name, const unsigned int dim, RobotType robotType, const VectorX &minBoundary,
-                     const VectorX &maxBoundary)
-    : Identifier(name), m_dim(dim), m_robotType(robotType), m_minBoundary(minBoundary), m_maxBoundary(maxBoundary) {
+RobotBase::RobotBase(const std::string &name, const unsigned int dim, RobotType robotType, const std::pair<VectorX, VectorX> &boundary,
+                     const std::vector<DofType> &dofTypes)
+    : Identifier(name), m_dim(dim), m_robotType(robotType), m_minBoundary(boundary.first), m_maxBoundary(boundary.second), m_dofTypes(dofTypes) {
+    if (dim != m_dofTypes.size())
+        Logging::error("DoF Types have not the size of the robot dimension", this);
+    assert(dim == m_dofTypes.size());
     m_pose = util::Vecd(0, 0, 0, 0, 0, 0);
     m_poseMat = util::poseVecToMat(m_pose);
     m_baseModel = nullptr;

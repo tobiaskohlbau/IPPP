@@ -25,8 +25,10 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-11-15
 */
-TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, Vector3 minBoundary, Vector3 maxBoundary)
-    : RobotBase("TriangleRobot2D", 3, RobotType::mobile, minBoundary, maxBoundary) {
+TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel,
+                                 const std::pair<Vector3, Vector3> &boundary)
+    : RobotBase("TriangleRobot2D", 3, RobotType::mobile, boundary,
+                std::vector<DofType>({DofType::planarPos, DofType::planarPos, DofType::planarRot})) {
     setBaseModel(triangleModel);
 }
 

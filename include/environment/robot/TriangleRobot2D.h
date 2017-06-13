@@ -32,7 +32,7 @@ namespace ippp {
 */
 class TriangleRobot2D : public RobotBase {
   public:
-    TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, Vector3 minBoundary, Vector3 maxBoundary);
+    TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, const std::pair<Vector3, Vector3> &boundary);
 };
 
 } /* namespace ippp */

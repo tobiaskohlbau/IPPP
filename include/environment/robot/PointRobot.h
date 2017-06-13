@@ -31,7 +31,7 @@ namespace ippp {
 */
 class PointRobot : public RobotBase {
   public:
-    PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary);
+    PointRobot(const std::pair<Vector2, Vector2> &boundary);
 
   private:
 };

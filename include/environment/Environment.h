@@ -29,6 +29,8 @@
 
 namespace ippp {
 
+enum class BodyType { Planar, Volumetric };
+
 /*!
 * \brief   Evironment class, contains a list of obstacles, the workspace boundaries and the robot.
 * \author  Sascha Kaden
