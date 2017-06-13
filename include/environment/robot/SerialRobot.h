@@ -32,7 +32,8 @@ namespace ippp {
 */
 class SerialRobot : public RobotBase {
   public:
-    SerialRobot(std::string name, const unsigned int dim, VectorX minBoundary, VectorX maxBoundary);
+    SerialRobot(const std::string &name, const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
+                const std::vector<DofType> &dofTypes);
 
     virtual Vector6 directKinematic(const VectorX &angles) = 0;
     virtual std::vector<Matrix4> getJointTrafos(const VectorX &angles) = 0;

@@ -30,8 +30,11 @@ namespace ippp {
 *  \date        2016-10-22
 */
 KukaKR5::KukaKR5()
-    : SerialRobot("KukaKR5", 6, util::Vecd(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -util::twoPi()),
-                  util::Vecd(2.70526, util::pi(), 1.8326f, 6.10865f, 5.41052f, 2.96706f)) {
+    : SerialRobot("KukaKR5", 6,
+                  std::make_pair(util::Vecd(-2.70526, -1.13446, -1.18682, -6.10865, 0.872665, -util::twoPi()),
+                                 util::Vecd(2.70526, util::pi(), 1.8326f, 6.10865f, 5.41052f, 2.96706f)),
+                  std::vector<DofType>({DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos,
+                                        DofType::volumetricRot, DofType::volumetricRot, DofType::volumetricRot})) {
     m_alpha = util::Vecd(90, 0, 90, 90, 90, 0);
     m_alpha = util::degToRad<6>(m_alpha);
     m_a = util::Vecd(180, 600, 120, 0, 0, 0);

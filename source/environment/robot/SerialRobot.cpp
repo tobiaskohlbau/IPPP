@@ -28,8 +28,9 @@ namespace ippp {
 *  \param[in]  maximum boundary
 *  \date       2016-07-19
 */
-SerialRobot::SerialRobot(std::string name, const unsigned int dim, VectorX minBoundary, VectorX maxBoundary)
-    : RobotBase(name, dim, RobotType::serial, minBoundary, maxBoundary) {
+SerialRobot::SerialRobot(const std::string &name, const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
+                         const std::vector<DofType> &dofTypes)
+    : RobotBase(name, dim, RobotType::serial, boundary, dofTypes) {
 }
 
 /*!

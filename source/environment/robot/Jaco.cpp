@@ -28,7 +28,10 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco() : SerialRobot("Jaco", 6, util::Vecd(0, 42, 17, 0, 0, 0), util::Vecd(360, 318, 343, 360, 360, 360)) {
+Jaco::Jaco() : SerialRobot("Jaco", 6, std::make_pair(util::Vecd(0, 42, 17, 0, 0, 0),
+                                                     util::Vecd(360, 318, 343, 360, 360, 360)),
+                           std::vector<DofType>({DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos,
+                                                 DofType::volumetricRot, DofType::volumetricRot, DofType::volumetricRot})) {
     m_alpha = util::Vecd(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());
     m_a = util::Vecd(0, 410, 0, 0, 0, 0);
     m_d = util::Vecd(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);

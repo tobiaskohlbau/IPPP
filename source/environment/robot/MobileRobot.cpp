@@ -20,8 +20,9 @@
 
 namespace ippp {
 
-MobileRobot::MobileRobot(const unsigned int dim, VectorX minBoundary, VectorX maxBoundary)
-    : RobotBase("MobileRobot", dim, RobotType::mobile, minBoundary, maxBoundary) {
+MobileRobot::MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
+                         const std::vector<DofType> &dofTypes)
+    : RobotBase("MobileRobot", dim, RobotType::mobile, boundary, dofTypes) {
 }
 
 } /* namespace ippp */

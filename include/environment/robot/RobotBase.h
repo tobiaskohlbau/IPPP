@@ -31,6 +31,7 @@
 namespace ippp {
 
 enum RobotType { serial, mobile };
+enum DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint};
 
 /*!
 * \brief   Base class of all robots
@@ -42,8 +43,8 @@ class RobotBase : public Identifier {
     virtual ~RobotBase();
 
   protected:
-    RobotBase(const std::string &name, const unsigned int dim, RobotType robotType, const VectorX &minBoundary,
-              const VectorX &maxBoundary);
+    RobotBase(const std::string &name, const unsigned int dim, const RobotType robotType, const std::pair<VectorX, VectorX> &boundary,
+              const std::vector<DofType> &dofTypes);
 
   public:
     void setPose(const Vector6 &pose);
@@ -64,6 +65,7 @@ class RobotBase : public Identifier {
     const VectorX m_maxBoundary;
 
     const unsigned int m_dim;
+    const std::vector<DofType> m_dofTypes;
     Vector6 m_pose;
     Matrix4 m_poseMat;
 

@@ -27,8 +27,8 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-PointRobot::PointRobot(const Vector2 &minBoundary, const Vector2 &maxBoundary)
-    : RobotBase("PointRobot", 2, RobotType::mobile, minBoundary, maxBoundary) {
+PointRobot::PointRobot(const std::pair<Vector2, Vector2> &boundary)
+    : RobotBase("PointRobot", 2, RobotType::mobile, boundary, std::vector<DofType>({DofType::planarPos, DofType::planarPos})) {
 }
 
 } /* namespace ippp */

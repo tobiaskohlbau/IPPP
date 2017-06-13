@@ -25,7 +25,8 @@ namespace ippp {
 
 class MobileRobot : public RobotBase {
   public:
-    MobileRobot(const unsigned int dim, VectorX minBoundary, VectorX maxBoundary);
+    MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
+                const std::vector<DofType> &dofTypes);
 };
 
 } /* namespace ippp */
