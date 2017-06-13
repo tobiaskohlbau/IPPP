@@ -71,6 +71,7 @@ class Node {
     void clearChildes();
 
     Vector<dim> getValues() const;
+    double getValue(const unsigned int index) const;
 
   private:
     Vector<dim> m_config;
@@ -351,6 +352,18 @@ void Node<dim>::clearChildes() {
 template <unsigned int dim>
 Vector<dim> Node<dim>::getValues() const {
     return m_config;
+}
+
+/*!
+*  \brief      Return value from index
+*  \author     Sascha Kaden
+*  \param[in]  index
+*  \param[out] value
+*  \date       2016-05-24
+*/
+template <unsigned int dim>
+double Node<dim>::getValue(const unsigned int index) const {
+    return m_config[index];
 }
 
 } /* namespace ippp */
