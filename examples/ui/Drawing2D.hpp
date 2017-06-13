@@ -32,10 +32,10 @@ void drawTree2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &i
                 Eigen::Vector3i colorEdge, int thickness) {
     static_assert(dim == 2, "Dimension has to be 2");
     for (auto &elem : nodes) {
-        cv::Point point(elem->getX(), elem->getY());
+        cv::Point point(elem->getValue(0), elem->getValue(1));
         // cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
         if (elem->getParentNode() != nullptr) {
-            cv::Point point2(elem->getParentNode()->getX(), elem->getParentNode()->getY());
+            cv::Point point2(elem->getParentNode()->getValue(0), elem->getParentNode()->getValue(1));
             cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
         }
     }
@@ -56,11 +56,11 @@ void drawGraph2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &
                  Eigen::Vector3i colorEdge, int thickness) {
     static_assert(dim == 2, "Dimension has to be 2");
     for (auto &elem : nodes) {
-        cv::Point point(elem->getX(), elem->getY());
+        cv::Point point(elem->getValue(0), elem->getValue(1));
         // cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
         for (auto &child : elem->getChildNodes()) {
             if (child != nullptr) {
-                cv::Point point2(child->getX(), child->getY());
+                cv::Point point2(child->getValue(0), child->getValue(1));
                 cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
             }
         }
