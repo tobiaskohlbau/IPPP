@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/Identifier.h>
+#include <ippp/core/Identifier.h>
 
 namespace ippp {
 

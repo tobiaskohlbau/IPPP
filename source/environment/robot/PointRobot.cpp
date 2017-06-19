@@ -16,9 +16,9 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/robot/PointRobot.h>
+#include <ippp/environment/robot/PointRobot.h>
 
-#include <core/util/Logging.h>
+#include <ippp/core/util/Logging.h>
 
 namespace ippp {
 

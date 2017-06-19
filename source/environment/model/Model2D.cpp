@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/model/Model2D.h>
+#include <ippp/environment/model/Model2D.h>
 
 namespace ippp {
 

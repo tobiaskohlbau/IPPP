@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/collisionDetection/CollisionDetectionTriangleRobot.h>
+#include <ippp/core/collisionDetection/CollisionDetectionTriangleRobot.h>
 
 namespace ippp {
 

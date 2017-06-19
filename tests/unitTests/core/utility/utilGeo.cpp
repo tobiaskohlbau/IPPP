@@ -20,7 +20,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/util/Utility.h>
+#include <ippp/core/util/Utility.h>
 
 using namespace ippp;
 using namespace Eigen;

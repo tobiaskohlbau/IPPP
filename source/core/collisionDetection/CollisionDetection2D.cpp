@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/collisionDetection/CollisionDetection2D.h>
+#include <ippp/core/collisionDetection/CollisionDetection2D.h>
 
 namespace ippp {
 

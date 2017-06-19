@@ -16,10 +16,10 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/robot/KukaKR5.h>
+#include <ippp/environment/robot/KukaKR5.h>
 
-#include <core/util/Utility.h>
-#include <environment/model/ModelFactoryPqp.h>
+#include <ippp/core/util/Utility.h>
+#include <ippp/environment/model/ModelFactoryPqp.h>
 
 namespace ippp {
 

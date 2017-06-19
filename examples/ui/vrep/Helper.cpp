@@ -1,6 +1,6 @@
 #include "Helper.h"
 
-#include <core/util/Logging.h>
+#include <IPPP/core/util/Logging.h>
 
 using namespace ippp;
 

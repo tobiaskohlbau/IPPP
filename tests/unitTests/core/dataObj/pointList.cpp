@@ -18,7 +18,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/dataObj/PointList.hpp>
+#include <ippp/core/dataObj/PointList.hpp>
 
 using namespace ippp;
 

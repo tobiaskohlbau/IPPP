@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/robot/RobotBase.h>
+#include <ippp/environment/robot/RobotBase.h>
 
 namespace ippp {
 

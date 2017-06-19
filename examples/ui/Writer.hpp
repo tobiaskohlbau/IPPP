@@ -25,7 +25,7 @@
 
 #include <Eigen/Core>
 
-#include <core/types.h>
+#include <ippp/core/types.h>
 
 namespace ippp {
 namespace writer {

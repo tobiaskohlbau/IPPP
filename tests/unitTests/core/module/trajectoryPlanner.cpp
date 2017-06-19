@@ -18,10 +18,10 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/collisionDetection/CollisionDetectionPqp.hpp>
-#include <core/trajectoryPlanner/LinearTrajectory.hpp>
-#include <core/util/Utility.h>
-#include <environment/robot/Jaco.h>
+#include <ippp/core/collisionDetection/CollisionDetectionPqp.hpp>
+#include <ippp/core/trajectoryPlanner/LinearTrajectory.hpp>
+#include <ippp/core/util/Utility.h>
+#include <ippp/environment/robot/Jaco.h>
 
 using namespace ippp;
 

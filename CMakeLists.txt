@@ -25,7 +25,7 @@ add_definitions(-D_USE_MATH_DEFINES)
 
 option(BUILD_FCL "Build FCL collision lib")
 option(BUILD_EXAMPLES "Build the examples")
-option(BUILD_TESTS "Build tests")
+option(BUILD_TESTS "Build tests" ON)
 option(BUILD_BENCHMARK "Build optional benchmark classes")
 
 # external libraries
@@ -44,7 +44,7 @@ SET(LIBRARIES
         ${ASSIMP_LIBRARIES})
 
 # source files
-ADD_SUBDIRECTORY(include)
+ADD_SUBDIRECTORY(include/ippp)
 ADD_SUBDIRECTORY(source)
 
 # options

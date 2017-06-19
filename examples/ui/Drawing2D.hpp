@@ -8,11 +8,11 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <Eigen/Core>
 
-#include <core/Identifier.h>
-#include <core/dataObj/Node.hpp>
-#include <core/dataObj/PointList.hpp>
-#include <core/types.h>
-#include <core/util/Logging.h>
+#include <ippp/core/Identifier.h>
+#include <ippp/core/dataObj/Node.hpp>
+#include <ippp/core/dataObj/PointList.hpp>
+#include <ippp/core/types.h>
+#include <ippp/core/util/Logging.h>
 
 namespace ippp {
 namespace drawing {

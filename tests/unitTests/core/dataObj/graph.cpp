@@ -18,9 +18,9 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <core/dataObj/Graph.hpp>
-#include <core/distanceMetrics/L2Metric.hpp>
-#include <core/util/UtilList.hpp>
+#include <ippp/core/dataObj/Graph.hpp>
+#include <ippp/core/distanceMetrics/L2Metric.hpp>
+#include <ippp/core/util/UtilList.hpp>
 
 using namespace ippp;
 
@@ -66,16 +66,16 @@ void NNS() {
     Graph<dim> graph1(0, neighborFinder1);
     std::vector<Vector<dim>> vecs;
     std::vector<std::shared_ptr<Node<dim>>> nodes;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 100; i+=5) {
         Vector<dim> vec = Vector<dim>::Constant(dim, 1, i);
         vecs.push_back(vec);
-        std::shared_ptr<Node<dim>> node = std::shared_ptr<Node<dim>>(new Node<dim>(vec));
+        std::shared_ptr<Node<dim>> node(new Node<dim>(vec));
         nodes.push_back(node);
         graph1.addNode(node);
     }
-    BOOST_CHECK(nodes[0] == graph1.getNearestNode(nodes[0]));
-    BOOST_CHECK(nodes[0] == graph1.getNearestNode(*(nodes[0])));
-    BOOST_CHECK(nodes[0] == graph1.getNearestNode(vecs[0]));
+    BOOST_CHECK(nodes[1] == graph1.getNearestNode(nodes[0]));
+    BOOST_CHECK(nodes[1] == graph1.getNearestNode(*(nodes[0])));
+    BOOST_CHECK(nodes[1] == graph1.getNearestNode(vecs[0]));
 
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder2(
         new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
