@@ -16,9 +16,9 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/Environment.h>
+#include <ippp/environment/Environment.h>
 
-#include <core/util/Logging.h>
+#include <ippp/core/util/Logging.h>
 
 namespace ippp {
 

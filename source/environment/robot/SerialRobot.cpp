@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/robot/SerialRobot.h>
+#include <ippp/environment/robot/SerialRobot.h>
 
 namespace ippp {
 

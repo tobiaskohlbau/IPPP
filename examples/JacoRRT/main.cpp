@@ -4,9 +4,9 @@
 
 #include <Eigen/Core>
 
-#include <Core>
-#include <Environment>
-#include <Planner>
+#include <ippp/Core>
+#include <ippp/Environment>
+#include <ippp/Planner>
 
 #include <ui/ModuleCreator.hpp>
 #include <ui/Writer.hpp>

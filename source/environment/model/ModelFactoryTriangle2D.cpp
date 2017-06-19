@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/model/ModelFactoryTriangle2D.h>
+#include <ippp/environment/model/ModelFactoryTriangle2D.h>
 
 namespace ippp {
 

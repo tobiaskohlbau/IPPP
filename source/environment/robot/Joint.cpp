@@ -16,9 +16,9 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/robot/Joint.h>
+#include <ippp/environment/robot/Joint.h>
 
-#include <core/util/Logging.h>
+#include <ippp/core/util/Logging.h>
 
 namespace ippp {
 

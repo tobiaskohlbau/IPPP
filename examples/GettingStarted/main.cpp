@@ -1,8 +1,8 @@
 #include <memory>
 
-#include <Core>
-#include <Environment>
-#include <Planner>
+#include <ippp/Core>
+#include <ippp/Environment>
+#include <ippp/Planner>
 
 #include <modelDirectory.h>
 #include <ui/ModuleCreator.hpp>

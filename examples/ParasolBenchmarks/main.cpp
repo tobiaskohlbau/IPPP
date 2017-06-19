@@ -5,12 +5,15 @@
 
 //#include <gperftools/profiler.h>
 
-#include <Core>
-#include <Environment>
-#include <Planner>
-#include <core/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
-//#include <core/collisionDetection/CollisionDetectionFcl.hpp>
-//#include <environment/model/ModelFactoryFcl.h>
+//#include <boost/filesystem.hpp>
+//#include <boost/range/iterator_range.hpp>
+
+#include <ippp/Core>
+#include <ippp/Environment>
+#include <ippp/Planner>
+#include <ippp/core/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
+//#include <ippp/core/collisionDetection/CollisionDetectionFcl.hpp>
+//#include <ippp/environment/model/ModelFactoryFcl.h>
 
 #include <modelDirectory.h>
 #include <ui/BenchmarkReader.h>
@@ -40,7 +43,9 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     Vector6 minBoundary = util::Vecd(config.minBoundary[0], config.minBoundary[1], config.minBoundary[2], 0, 0, 0);
     Vector6 maxBoundary = util::Vecd(config.maxBoundary[0], config.maxBoundary[1], config.maxBoundary[2], util::twoPi(),
                                      util::twoPi(), util::twoPi());
-    std::shared_ptr<RobotBase> robot(new MobileRobot(6, minBoundary, maxBoundary));
+    std::vector<DofType> dofTypes = {DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos,
+                          DofType::volumetricRot, DofType::volumetricRot, DofType::volumetricRot};
+    std::shared_ptr<RobotBase> robot(new MobileRobot(6, std::make_pair(minBoundary, maxBoundary), dofTypes));
     robot->setBaseModel(robotModel);
 
     std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
@@ -130,51 +135,44 @@ void benchmarkHedgehog() {
     std::cout << std::endl;
 }
 
+void transformCad() {
+    std::string file = "/users/skaden/untitled.dae";
+    std::vector<Mesh> meshes;
+    bool result = cad::importMeshes(file, meshes);
+    for (int i = 0; i < meshes.size(); ++i)
+        cad::exportCad(cad::ExportFormat::OBJ, std::to_string(i), meshes[i]);
+}
+
+void generateMap() {
+    const unsigned int dim = 3;
+    Vector3 min(-50,-50,-50);
+    Vector3 max(50,50,50);
+    AABB bounding(min, max);
+
+    std::vector<Triangle2D> triangles;
+    triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0), Vector2(25, 50)));
+    ModelFactoryTriangle2D factory;
+    std::shared_ptr<ModelContainer> baseModel = factory.createModel(triangles);
+
+    std::shared_ptr<RobotBase> robot(new TriangleRobot2D(baseModel, std::make_pair(min,max)));
+    std::shared_ptr<Environment> environment(new Environment(dim, bounding, robot));
+    std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(environment));
+
+    MapGenerator<3> mapGenerator(bounding, sampler);
+    auto meshes = mapGenerator.generateMap(20, Vector3(30, 30, 30));
+    auto mesh = cad::mergeMeshes(meshes);
+    cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
+
+    for (size_t i = 0; i < meshes.size(); ++i) {
+        cad::exportCad(cad::ExportFormat::OBJ, "obstacle" + std::to_string(i), meshes[i]);
+    }
+}
+
 int main(int argc, char** argv) {
     modelDir = getModelDirectory();
-    std::string dir = "/users/skaden/";
-    std::vector<std::string> meshFiles;
-    meshFiles.push_back(dir + "i.obj");
-    meshFiles.push_back(dir + "y.obj");
-    meshFiles.push_back(dir + "z.obj");
-    meshFiles.push_back(dir + "l.obj");
-    meshFiles.push_back(dir + "x.obj");
-    meshFiles.push_back(dir + "c.obj");
-    meshFiles.push_back(dir + "f.obj");
-    meshFiles.push_back(dir + "s.obj");
-    meshFiles.push_back(dir + "b.obj");
-    meshFiles.push_back(dir + "m.obj");
-    meshFiles.push_back(dir + "t.obj");
-    meshFiles.push_back(dir + "v.obj");
 
-    std::vector<std::string> names = {"i", "y", "z", "l", "x", "c", "f", "s", "b", "m", "t", "v"};
-    std::vector<Mesh> meshes;
-//    int count = 0;
-//    for (auto file : meshFiles) {
-//        Mesh mesh;
-//        bool result = cad::importMesh(file, mesh);
-//        meshes.push_back(mesh);
-//
-//        ++count;
-//    }
-
-    cad::importMeshes(dir + "pentomino.dae", meshes);
-//    double pi = util::pi();
-//    cad::transformVertices(util::Vecd(0.4, 2.4, 0.4,    0, 0 ,0), meshes[0].vertices);
-//    cad::transformVertices(util::Vecd(1.85, 2.65, 0.4,  1*pi, 0, 0), meshes[1].vertices);
-//    cad::transformVertices(util::Vecd(2.9, 3.15, 0.4,   1*pi, 0, 0.5*pi), meshes[2].vertices);
-//    cad::transformVertices(util::Vecd(3.4, 3.27, -0.13, 0, -0.5*pi, 0), meshes[3].vertices);
-//    cad::transformVertices(util::Vecd(1.4, 0.4, -0.6,   0.5*pi, 0 ,0), meshes[4].vertices);
-//    cad::transformVertices(util::Vecd(2.7, 0.4, -0.6,   0.5*pi, 0, 1*pi), meshes[5].vertices);
-//    cad::transformVertices(util::Vecd(2.32, 1.4, -0.72, -0.5*pi , 0, 1*pi), meshes[6].vertices);
-//    cad::transformVertices(util::Vecd(1.4, 2.4, -0.6,   0, 0, 0.5*pi), meshes[7].vertices);
-//    cad::transformVertices(util::Vecd(1.53, 3.93, -0.6, 0, 0, 0.5*pi), meshes[8].vertices);
-//    cad::transformVertices(util::Vecd(1.28, 1.52, -1.6, 0, 0, 0), meshes[9].vertices);
-//    cad::transformVertices(util::Vecd(1.1, 3.4, -1.6,   0, 0, 0), meshes[10].vertices);
-//    cad::transformVertices(util::Vecd(2.6, 3.6, -1.6,   0, 0, -0.5*pi), meshes[11].vertices);
-
-    for (int i = 0; i < 12; ++i)
-        cad::exportCad(cad::ExportFormat::OBJ, names[i], meshes[i]);
+    // transformCad();
+    generateMap();
 
     // ProfilerStart("/tmp/cpu.prof");
     //    benchmarkFlange();
@@ -183,3 +181,47 @@ int main(int argc, char** argv) {
     // ProfilerStop();
     return 0;
 }
+
+//    std::string dir = "/users/skaden/";
+//    std::vector<std::string> meshFiles;
+//    meshFiles.push_back(dir + "i.obj");
+//    meshFiles.push_back(dir + "y.obj");
+//    meshFiles.push_back(dir + "z.obj");
+//    meshFiles.push_back(dir + "l.obj");
+//    meshFiles.push_back(dir + "x.obj");
+//    meshFiles.push_back(dir + "c.obj");
+//    meshFiles.push_back(dir + "f.obj");
+//    meshFiles.push_back(dir + "s.obj");
+//    meshFiles.push_back(dir + "b.obj");
+//    meshFiles.push_back(dir + "m.obj");
+//    meshFiles.push_back(dir + "t.obj");
+//    meshFiles.push_back(dir + "v.obj");
+//
+//    std::vector<std::string> names = {"i", "y", "z", "l", "x", "c", "f", "s", "b", "m", "t", "v"};
+//    std::vector<Mesh> meshes;
+////    int count = 0;
+////    for (auto file : meshFiles) {
+////        Mesh mesh;
+////        bool result = cad::importMesh(file, mesh);
+////        meshes.push_back(mesh);
+////
+////        ++count;
+////    }
+//
+//    cad::importMeshes(dir + "pentomino.dae", meshes);
+////    double pi = util::pi();
+////    cad::transformVertices(util::Vecd(0.4, 2.4, 0.4,    0, 0 ,0), meshes[0].vertices);
+////    cad::transformVertices(util::Vecd(1.85, 2.65, 0.4,  1*pi, 0, 0), meshes[1].vertices);
+////    cad::transformVertices(util::Vecd(2.9, 3.15, 0.4,   1*pi, 0, 0.5*pi), meshes[2].vertices);
+////    cad::transformVertices(util::Vecd(3.4, 3.27, -0.13, 0, -0.5*pi, 0), meshes[3].vertices);
+////    cad::transformVertices(util::Vecd(1.4, 0.4, -0.6,   0.5*pi, 0 ,0), meshes[4].vertices);
+////    cad::transformVertices(util::Vecd(2.7, 0.4, -0.6,   0.5*pi, 0, 1*pi), meshes[5].vertices);
+////    cad::transformVertices(util::Vecd(2.32, 1.4, -0.72, -0.5*pi , 0, 1*pi), meshes[6].vertices);
+////    cad::transformVertices(util::Vecd(1.4, 2.4, -0.6,   0, 0, 0.5*pi), meshes[7].vertices);
+////    cad::transformVertices(util::Vecd(1.53, 3.93, -0.6, 0, 0, 0.5*pi), meshes[8].vertices);
+////    cad::transformVertices(util::Vecd(1.28, 1.52, -1.6, 0, 0, 0), meshes[9].vertices);
+////    cad::transformVertices(util::Vecd(1.1, 3.4, -1.6,   0, 0, 0), meshes[10].vertices);
+////    cad::transformVertices(util::Vecd(2.6, 3.6, -1.6,   0, 0, -0.5*pi), meshes[11].vertices);
+//
+//    for (int i = 0; i < 12; ++i)
+//        cad::exportCad(cad::ExportFormat::OBJ, names[i], meshes[i]);

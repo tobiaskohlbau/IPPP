@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <core/util/Logging.h>
+#include <ippp/core/util/Logging.h>
 
 #include <fstream>
 #include <iostream>

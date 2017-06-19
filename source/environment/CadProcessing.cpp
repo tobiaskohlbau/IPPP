@@ -16,12 +16,12 @@
 //
 //-------------------------------------------------------------------------//
 
-#include "include/environment/CadProcessing.h"
+#include <ippp/environment/CadProcessing.h>
 
 #include <fstream>
 
-#include <core/util/Logging.h>
-#include <core/util/UtilGeo.hpp>
+#include <ippp/core/util/Logging.h>
+#include <ippp/core/util/UtilGeo.hpp>
 
 namespace ippp {
 namespace cad {
@@ -33,7 +33,7 @@ namespace cad {
 *  \param[out] Mesh
 *  \date       2017-05-09
 */
-bool importMesh(const std::string &filePath, Mesh &mesh, const bool calcNormals) {
+bool importMesh(const std::string &filePath, Mesh &mesh, const double scale, const bool calcNormals) {
     std::size_t found = filePath.find_last_of(".");
     if (filePath.substr(found) == ".g") {
         return importBYU(filePath, mesh);
@@ -45,16 +45,10 @@ bool importMesh(const std::string &filePath, Mesh &mesh, const bool calcNormals)
     }
 
     // merge meshes to one single mesh
-    size_t verticeCount;
-    for (auto tmpMesh : meshes) {
-        verticeCount = mesh.vertices.size();
-        for (auto vertex : tmpMesh.vertices) {
-            mesh.vertices.push_back(vertex);
-        }
-        for (auto face : tmpMesh.faces) {
-            mesh.faces.push_back(Vector3i(face[0] + verticeCount, face[1] + verticeCount, face[2] + verticeCount));
-        }
-    }
+    mesh = mergeMeshes(meshes);
+
+    for (auto &&vertex : mesh.vertices)
+        vertex *= scale;
 
     if (calcNormals)
         mesh.normals = computeNormals(mesh.vertices, mesh.faces);
@@ -68,7 +62,7 @@ bool importMesh(const std::string &filePath, Mesh &mesh, const bool calcNormals)
 *  \param[out] Mesh
 *  \date       2017-05-09
 */
-bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const bool calcNormals) {
+bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const double scale, const bool calcNormals) {
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (!scene) {
@@ -81,12 +75,16 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const 
         Logging::error("Scene contains no meshes", "CadProcessing");
         return false;
     }
-    Logging::info("File has: " + std::to_string(scene->mNumMeshes) + " meshes", "CadProcessing");
+    Logging::info("File has: " + std::to_string(scene->mNumMeshes) + " mesh(es)", "CadProcessing");
     meshes.clear();
 
     aiMatrix4x4 trafo;
     aiIdentityMatrix4(&trafo);
     getMeshes(scene, scene->mRootNode, &trafo, meshes);
+
+    for (auto &&mesh : meshes)
+        for (auto &&vertex : mesh.vertices)
+            vertex *= scale;
 
     if (calcNormals) {
         for (auto mesh : meshes) {
@@ -291,6 +289,21 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
     const aiExportFormatDesc *formatDesc = exporter.GetExportFormatDescription(formatCount);
     exporter.Export(&scene, formatDesc->id, filePath + "." + formatDesc->fileExtension, aiProcess_Triangulate);
     return true;
+}
+
+Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
+    Mesh mesh;
+    size_t verticeCount;
+    for (auto tmpMesh : meshes) {
+        verticeCount = mesh.vertices.size();
+        for (auto vertex : tmpMesh.vertices) {
+            mesh.vertices.push_back(vertex);
+        }
+        for (auto face : tmpMesh.faces) {
+            mesh.faces.push_back(Vector3i(face[0] + verticeCount, face[1] + verticeCount, face[2] + verticeCount));
+        }
+    }
+    return mesh;
 }
 
 Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue) {

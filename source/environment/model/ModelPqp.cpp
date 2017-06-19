@@ -16,9 +16,9 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/model/ModelPqp.h>
+#include <ippp/environment/model/ModelPqp.h>
 
-#include <environment/CadProcessing.h>
+#include <ippp/environment/CadProcessing.h>
 
 namespace ippp {
 

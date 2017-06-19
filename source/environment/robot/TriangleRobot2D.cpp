@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/robot/TriangleRobot2D.h>
+#include <ippp/environment/robot/TriangleRobot2D.h>
 
 namespace ippp {
 

@@ -3,9 +3,9 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-#include <Core>
-#include <Environment>
-#include <Planner>
+#include <ippp/Core>
+#include <ippp/Environment>
+#include <ippp/Planner>
 
 #include <modelDirectory.h>
 #include <ui/Drawing2D.hpp>

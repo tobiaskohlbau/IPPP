@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <environment/robot/MobileRobot.h>
+#include <ippp/environment/robot/MobileRobot.h>
 
 namespace ippp {
 
