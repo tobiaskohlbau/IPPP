@@ -17,6 +17,7 @@
 //-------------------------------------------------------------------------//
 
 #include <ippp/environment/model/ModelTriangle2D.h>
+#include <ippp/environment/CadProcessing.h>
 
 namespace ippp {
 
@@ -45,6 +46,8 @@ void ModelTriangle2D::transformModel(const Matrix4 &T) {
     for (auto triangle : m_triangles) {
         triangle.transform(R, t);
     }
+    m_mesh = cad::generateMesh(m_triangles);
+    m_mesh.aabb = cad::computeAABB(m_mesh);
 }
 
 void ModelTriangle2D::transformModel(const Vector6 &config) {
@@ -53,6 +56,8 @@ void ModelTriangle2D::transformModel(const Vector6 &config) {
     for (auto triangle : m_triangles) {
         triangle.transform(R, t);
     }
+    m_mesh = cad::generateMesh(m_triangles);
+    m_mesh.aabb = cad::computeAABB(m_mesh);
 }
 
 } /* namespace ippp */

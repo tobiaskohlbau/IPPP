@@ -39,11 +39,13 @@ class ModelContainer : public Identifier {
     ModelContainer(const std::string &name, const AABB &boundingBox = AABB());
 
   public:
+    AABB getAABB() const ;
     virtual bool empty() const = 0;
     virtual void transformModel(const Matrix4 &T) = 0;
     virtual void transformModel(const Vector6 &config) = 0;
 
     Mesh m_mesh;
+    AABB m_aabb;
 };
 
 } /* namespace ippp */
