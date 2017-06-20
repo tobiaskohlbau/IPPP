@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     std::shared_ptr<Jaco> robot(new Jaco());
     std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
-    std::shared_ptr<TrajectoryPlanner<dim>> planner(new LinearTrajectory<dim>(collision, 0.1));
+    std::shared_ptr<TrajectoryPlanner<dim>> planner(new LinearTrajectory<dim>(collision, environment, 0.1));
 
     // test trajectories
     Vector6 init = util::Vecd(0, 0, 0, 0, 0, 0);

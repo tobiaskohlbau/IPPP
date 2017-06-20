@@ -39,7 +39,7 @@ enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, SeedS
 
 enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle };
 
-enum class TrajectoryType { Linear };
+enum class TrajectoryType { Linear, RotateAtS};
 
 /*!
 * \brief   Class ModuleCreator generates all defined modules for the path planner and creates the graph for the planner too. By a
@@ -101,8 +101,10 @@ ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std:
     : Identifier("ModuleCreator") {
     m_collision = collision;
 
-    // if (trajectoryType == TrajectoryType::Linear)
-    m_trajectory = std::shared_ptr<TrajectoryPlanner<dim>>(new LinearTrajectory<dim>(collision, trajecotryStepSize));
+    if (trajectoryType == TrajectoryType::RotateAtS)
+        m_trajectory = std::shared_ptr<TrajectoryPlanner<dim>>(new RotateAtS<dim>(collision, environment, trajecotryStepSize));
+    else
+        m_trajectory = std::shared_ptr<TrajectoryPlanner<dim>>(new LinearTrajectory<dim>(collision, environment, trajecotryStepSize));
 
     if (metricType == MetricType::L1)
         m_metric = std::shared_ptr<DistanceMetric<dim>>(new L1Metric<dim>());

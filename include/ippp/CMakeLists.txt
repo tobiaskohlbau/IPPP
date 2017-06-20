@@ -51,6 +51,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/StraightSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/LinearTrajectory.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/RotateAtS.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/TrajectoryPlanner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilGeo.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilIO.hpp

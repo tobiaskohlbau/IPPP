@@ -148,4 +148,14 @@ RobotType RobotBase::getRobotType() const {
     return m_robotType;
 }
 
+/*!
+*  \brief      Return the dofs of the robot
+*  \author     Sascha Kaden
+*  \param[out] dofs
+*  \date       2017-06-20
+*/
+std::vector<DofType> RobotBase::getDofTypes() const {
+    return m_dofTypes;
+}
+
 } /* namespace ippp */
