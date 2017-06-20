@@ -29,8 +29,6 @@
 
 namespace ippp {
 
-enum class CollisionType { Collision2D, CollisionPQP, CollisionTriangle };
-
 enum class MetricType { L1, L2, Inf };
 
 enum class NeighborType { KDTree, BruteForce };
@@ -39,7 +37,7 @@ enum class PathModifierType { Dummy, NodeCut };
 
 enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, SeedSampler };
 
-enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, NearObstacle };
+enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle };
 
 enum class TrajectoryType { Linear };
 
@@ -66,6 +64,7 @@ class ModuleCreator : public Identifier {
     std::shared_ptr<Sampling<dim>> getSampling();
     std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner();
 
+    PlannerOptions<dim> getPlannerOptions();
     PRMOptions<dim> getPRMOptions(const double rangeSize);
     RRTOptions<dim> getRRTOptions(const double stepSize);
     SRTOptions<dim> getSRTOptions(const unsigned int nbOfTrees);
@@ -148,6 +147,9 @@ ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std:
     } else if (samplingType == SamplingType::GaussianDist) {
         m_sampling = std::shared_ptr<Sampling<dim>>(
             new GaussianDistSampling<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts, samplingDist));
+    } else if (samplingType == SamplingType::MedialAxis) {
+        m_sampling = std::shared_ptr<Sampling<dim>>(
+            new MedialAxisSampling<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts, samplingDist));
     } else if (samplingType == SamplingType::NearObstacle) {
         m_sampling = std::shared_ptr<Sampling<dim>>(
             new SamplingNearObstacle<dim>(environment, collision, m_trajectory, m_sampler, samplingAttempts));
@@ -240,6 +242,17 @@ std::shared_ptr<Sampling<dim>> ModuleCreator<dim>::getSampling() {
 template <unsigned int dim>
 std::shared_ptr<TrajectoryPlanner<dim>> ModuleCreator<dim>::getTrajectoryPlanner() {
     return m_trajectory;
+}
+
+/*!
+*  \brief      Generate PlannerOptions and return them.
+*  \author     Sascha Kaden
+*  \param[out] PlannerOptions
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+PlannerOptions<dim> ModuleCreator<dim>::getPlannerOptions() {
+    return PlannerOptions<dim>(m_collision, m_metric, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!
