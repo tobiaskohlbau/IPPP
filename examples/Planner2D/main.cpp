@@ -19,7 +19,7 @@ using namespace ippp;
 void testTriangleRobot() {
     const unsigned int dim = 3;
     Vector3 min(0.0, 0.0, 0.0);
-    Vector3 max(1000, 1000, util::twoPi());
+    Vector3 max(300, 300, util::twoPi());
 
     std::vector<Triangle2D> triangles;
     triangles.push_back(Triangle2D(Vector2(0, 0), Vector2(25, 0), Vector2(25, 50)));
@@ -27,26 +27,24 @@ void testTriangleRobot() {
     ModelFactoryTriangle2D factory;
     std::shared_ptr<ModelContainer> baseModel = factory.createModel(triangles);
     std::shared_ptr<TriangleRobot2D> robot(new TriangleRobot2D(baseModel, std::make_pair(min, max)));
-    std::shared_ptr<Environment> environment(new Environment(2, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)), robot));
+    std::shared_ptr<Environment> environment(new Environment(2, AABB(Vector3(0, 0, 0), Vector3(300, 300, 300)), robot));
     // std::shared_ptr<ModelContainer> model(new Model2D(mat));
     // robot->setWorkspace(model);
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(environment));
-    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear);
+    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::Dummy,
+                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::RotateAtS);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(40), creator.getGraph()));
-    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
-    // planner = std::shared_ptr<RRTStarContTraj<dim>>(new RRTStarContTraj<dim>(environment, creator.getRRTOptions(50),
-    // creator.getGraph()));
+     planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(30), creator.getGraph()));
+    // planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
     // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(5, 5, 0);
-    Vector3 goal(400.0, 930.0, 50 * util::toRad());
-    bool connected = planner->computePath(start, goal, 20000, 4);
+    Vector3 goal(200, 200, 50 * util::toRad());
+    bool connected = planner->computePath(start, goal, 10000, 1);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
@@ -85,7 +83,7 @@ void testPointRobot() {
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(environment));
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear, 1, 20, 100);
+                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::RotateAtS, 1, 20, 100);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     //planner = std::shared_ptr<EST<dim>>(new EST<dim>(environment, creator.getPlannerOptions(), creator.getGraph()));
@@ -98,7 +96,7 @@ void testPointRobot() {
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(50.0, 30.0);
     Vector2 goal(870.0, 870.0);
-    bool connected = planner->computePath(start, goal, 20000, 2);
+    bool connected = planner->computePath(start, goal, 20000, 1);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
@@ -125,7 +123,8 @@ void testPointRobot() {
 }
 
 int main(int argc, char** argv) {
-    //testTriangleRobot();
+    //Logging::setLogLevel(LogLevel::debug);
+    testTriangleRobot();
 
-    testPointRobot();
+//    testPointRobot();
 }

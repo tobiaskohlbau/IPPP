@@ -169,7 +169,7 @@ std::vector<std::shared_ptr<RobotBase>> Environment::getRobots() const {
 *  \param[out] robot size
 *  \date       2017-05-17
 */
-size_t Environment::getRobotNum() const {
+size_t Environment::numRobots() const {
     return m_robots.size();
 }
 

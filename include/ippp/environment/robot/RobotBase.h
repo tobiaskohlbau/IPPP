@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef ROBOTBASE_HPP
-#define ROBOTBASE_HPP
+#ifndef ROBOTBASE_H
+#define ROBOTBASE_H
 
 #include <string>
 #include <vector>
@@ -58,6 +58,7 @@ class RobotBase : public Identifier {
     VectorX getMaxBoundary() const;
     unsigned int getDim() const;
     RobotType getRobotType() const;
+    std::vector<DofType> getDofTypes() const;
 
   protected:
     const RobotType m_robotType;
@@ -74,4 +75,4 @@ class RobotBase : public Identifier {
 
 } /* namespace ippp */
 
-#endif /* ROBOTBASE_HPP */
+#endif /* ROBOTBASE_H */

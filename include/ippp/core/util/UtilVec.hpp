@@ -102,6 +102,22 @@ Vector<dim + 1> append(const Vector<dim> &source, const double add) {
 }
 
 /*!
+*  \brief      Multiplicate two vectors and return the result.
+*  \author     Sascha Kaden
+*  \param[in]  first Vector
+*  \param[in]  second vector
+*  \param[out] result Vector
+*  \date       2017-06-20
+*/
+template <unsigned int dim>
+Vector<dim> multiplyElementWise(const Vector<dim> &source, const Vector<dim> &mask) {
+    Vector<dim> result(source);
+    for (unsigned int i = 0; i < dim; ++i)
+        result[i] *= mask[i];
+    return result;
+}
+
+/*!
 *  \brief      Creates a 5 dimensional Vector with passed values
 *  \author     Sascha Kaden
 *  \param[in]  x

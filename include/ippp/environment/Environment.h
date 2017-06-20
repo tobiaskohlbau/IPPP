@@ -51,7 +51,7 @@ class Environment : public Identifier {
     std::shared_ptr<RobotBase> getRobot() const;
     std::shared_ptr<RobotBase> getRobot(const unsigned int index) const;
     std::vector<std::shared_ptr<RobotBase>> getRobots() const;
-    size_t getRobotNum() const;
+    size_t numRobots() const;
 
     AABB getBoundary() const;
     unsigned int getDim() const;

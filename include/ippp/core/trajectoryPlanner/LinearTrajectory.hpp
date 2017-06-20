@@ -24,14 +24,15 @@
 namespace ippp {
 
 /*!
-* \brief   Class TrajectoryPlanner plans between the passed nodes/vecs. Start and end point aren't part of the path.
+* \brief   Class LinearTrajectory plans a linear path between the passed nodes/vecs. Start and end point aren't part of the path.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
 template <unsigned int dim>
 class LinearTrajectory : public TrajectoryPlanner<dim> {
   public:
-    LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const double stepSize = 1);
+    LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision,
+                     const std::shared_ptr<Environment> &environment, const double stepSize = 1);
 
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
@@ -43,15 +44,16 @@ class LinearTrajectory : public TrajectoryPlanner<dim> {
 };
 
 /*!
-*  \brief      Constructor of the class TrajectoryPlanner
+*  \brief      Constructor of the class LinearTrajectory
 *  \author     Sascha Kaden
-*  \param[in]  TrajectoryMethod
-*  \param[in]  pointer to CollisionDetection instance
+*  \param[in]  CollisionDetection
+*  \param[in]  step size of the path
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-LinearTrajectory<dim>::LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const double stepSize)
-    : TrajectoryPlanner<dim>("TrajectoryPlanner", collision, stepSize) {
+LinearTrajectory<dim>::LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                        const std::shared_ptr<Environment> &environment, const double stepSize)
+    : TrajectoryPlanner<dim>("LinearTrajectory", collision, environment, stepSize) {
 }
 
 /*!

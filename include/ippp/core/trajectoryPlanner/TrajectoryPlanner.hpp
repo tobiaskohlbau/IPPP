@@ -22,11 +22,12 @@
 #include <ippp/core/Identifier.h>
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
 #include <ippp/core/types.h>
+#include <ippp/environment/Environment.h>
 
 namespace ippp {
 
 /*!
-* \brief   Class TrajectoryPlanner plans between the passed nodes/vecs. Start and end point aren't part of the path.
+* \brief   Class LinearTrajectory plans a path between the passed nodes/vecs. Start and end point aren't part of the path.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
@@ -34,7 +35,7 @@ template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
     TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                      const double stepSize = 1);
+                      const std::shared_ptr<Environment> &environment, const double stepSize = 1);
 
     bool checkTrajectory(const Node<dim> &source, const Node<dim> &target);
     bool checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
@@ -54,19 +55,21 @@ class TrajectoryPlanner : public Identifier {
     double m_stepSize = 1;
     double m_sqStepSize = 1;
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
+    std::shared_ptr<Environment> m_environment = nullptr;
 };
 
 /*!
 *  \brief      Constructor of the class TrajectoryPlanner
 *  \author     Sascha Kaden
-*  \param[in]  TrajectoryMethod
-*  \param[in]  pointer to CollisionDetection instance
+*  \param[in]  name
+*  \param[in]  CollisionDetection
+*  \param[in]  step size of the path
 *  \date       2016-05-25
 */
 template <unsigned int dim>
 TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                          const double stepSize)
-    : Identifier(name), m_collision(collision) {
+                                          const std::shared_ptr<Environment> &environment, const double stepSize)
+    : Identifier(name), m_collision(collision), m_environment(environment){
     setStepSize(stepSize);
 }
 
