@@ -291,6 +291,33 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
     return true;
 }
 
+std::vector<Triangle2D> generateTriangles(const Mesh &mesh) {
+    std::vector<Triangle2D> triangles;
+    for (auto face : mesh.faces) {
+        Triangle2D tri(Vector2(mesh.vertices[face[0]][0], mesh.vertices[face[0]][1]),
+                       Vector2(mesh.vertices[face[1]][0], mesh.vertices[face[1]][1]),
+                       Vector2(mesh.vertices[face[2]][0], mesh.vertices[face[2]][1]));
+        triangles.push_back(tri);
+    }
+    return triangles;
+}
+
+Mesh generateMesh(const std::vector<Triangle2D> &triangles) {
+    Mesh mesh;
+    mesh.vertices.reserve(triangles.size() * 3);
+    mesh.faces.reserve(triangles.size());
+    size_t vertexCount = 0;
+    for (auto tri : triangles) {
+        vertexCount = mesh.vertices.size();
+        for (unsigned int i = 1; i < 4; ++i) {
+            auto pt = tri.getP(i);
+            mesh.vertices.push_back(Vector3(pt[0], pt[1], 0));
+        }
+        mesh.faces.push_back(Vector3i(vertexCount, vertexCount + 1, vertexCount +2));
+    }
+    mesh.aabb = computeAABB(mesh.vertices);
+}
+
 Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
     Mesh mesh;
     size_t verticeCount;
@@ -434,6 +461,17 @@ AABB computeAABB(const std::vector<Vector3> &vertices) {
 */
 AABB computeAABB(const Mesh &mesh) {
     return computeAABB(mesh.vertices);
+}
+
+/*!
+*  \brief      Compute the bounding box from the passed vertices and return AABB bounding box.
+*  \author     Sascha Kaden
+*  \param[in]  CadModel
+*  \param[out] AABB bounding box
+*  \date       2017-04-18
+*/
+AABB computeAABB(const std::vector<Triangle2D> &triangles) {
+    return computeAABB(generateMesh(triangles));
 }
 
 /*!

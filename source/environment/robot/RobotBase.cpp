@@ -59,6 +59,7 @@ void RobotBase::setPose(const Vector6 &pose) {
         Logging::error("Pose vector has wrong dimension, must have 6!", this);
         return;
     }
+    m_baseModel->transformModel(pose);
 
     m_pose = pose;
     m_poseMat = util::poseVecToMat(pose);

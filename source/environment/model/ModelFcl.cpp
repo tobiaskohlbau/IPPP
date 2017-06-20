@@ -46,11 +46,11 @@ bool ModelFcl::empty() const {
 *  \date       2017-04-04
 */
 void ModelFcl::transformModel(const Matrix4 &T) {
-    if (empty()) {
+    if (empty())
         return;
-    }
+
     transformCad(config, m_vertices);
-    m_boundingBox = computeBoundingBox(m_vertices);
+    m_mesh.aabb = computeBoundingBox(m_vertices);
 
     updateFclModel();
 }
@@ -62,14 +62,13 @@ void ModelFcl::transformModel(const Matrix4 &T) {
 *  \date       2017-04-04
 */
 void ModelFcl::transformModel(const Vector6 &config) {
-    if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0) {
+    if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0)
         return;
-    }
-    if (empty()) {
+    if (empty())
         return;
-    }
+
     transformVertices(config, m_vertices);
-    m_boundingBox = computeBoundingBox(m_vertices);
+    m_mesh.aabb = computeBoundingBox(m_vertices);
 
     updateFclModel();
 }
@@ -77,12 +76,12 @@ void ModelFcl::transformModel(const Vector6 &config) {
 void ModelFcl::updateFclModel() {
     std::vector<fcl::Vector3> vertices;
     std::vector<fcl::Triangle> triangles;
-    for (auto vertex : m_vertices) {
+    for (auto vertex : m_vertices)
         vertices.push_back(fcl::Vector3f(vertex[0], vertex[1], vertex[2]));
-    }
-    for (auto face : m_faces) {
+
+    for (auto face : m_faces)
         triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
-    }
+
     m_fclModel = FCLModel();
     m_fclModel.beginModel();
     m_fclModel.addSubModel(vertices, triangles);

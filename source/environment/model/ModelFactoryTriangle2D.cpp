@@ -47,13 +47,7 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::s
         return nullptr;
     }
     triangleModel->m_mesh.aabb = cad::computeAABB(triangleModel->m_mesh);
-
-    for (auto face : triangleModel->m_mesh.faces) {
-        Triangle2D tri(Vector2(triangleModel->m_mesh.vertices[face[0]][0], triangleModel->m_mesh.vertices[face[0]][1]),
-                       Vector2(triangleModel->m_mesh.vertices[face[1]][0], triangleModel->m_mesh.vertices[face[1]][1]),
-                       Vector2(triangleModel->m_mesh.vertices[face[2]][0], triangleModel->m_mesh.vertices[face[2]][1]));
-        triangleModel->m_triangles.push_back(tri);
-    }
+    triangleModel->m_triangles = cad::generateTriangles(triangleModel->m_mesh);
 
     return triangleModel;
 }
@@ -74,12 +68,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
         std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
         triangleModel->m_mesh = mesh;
         triangleModel->m_mesh.aabb = cad::computeAABB(mesh);
-        for (auto face : triangleModel->m_mesh.faces) {
-            Triangle2D tri(Vector2(triangleModel->m_mesh.vertices[face[0]][0], triangleModel->m_mesh.vertices[face[0]][1]),
-                           Vector2(triangleModel->m_mesh.vertices[face[1]][0], triangleModel->m_mesh.vertices[face[1]][1]),
-                           Vector2(triangleModel->m_mesh.vertices[face[2]][0], triangleModel->m_mesh.vertices[face[2]][1]));
-            triangleModel->m_triangles.push_back(tri);
-        }
+        triangleModel->m_triangles = cad::generateTriangles(triangleModel->m_mesh);
         models.push_back(triangleModel);
     }
     return models;
@@ -116,6 +105,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
 std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::vector<Triangle2D> triangles) {
     std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
     triangleModel->m_triangles = triangles;
+    triangleModel->m_mesh = cad::generateMesh(triangles);
     return triangleModel;
 }
 
