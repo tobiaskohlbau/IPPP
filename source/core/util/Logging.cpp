@@ -167,7 +167,7 @@ void Logging::warning(std::string message, const Identifier *module) {
 }
 
 /*!
-*  \brief      Error logging with module for identificaion
+*  \brief      Error logging with module for identification
 *  \param[in]  message
 *  \param[in]  module pointer
 *  \author     Sasch Kaden
@@ -182,16 +182,13 @@ void Logging::error(std::string message, const Identifier *module) {
 }
 
 /*!
-*  \brief      Debug logging with module for identificaion
+*  \brief      Debug logging with module for identification
 *  \param[in]  message
 *  \param[in]  module pointer
 *  \author     Sasch Kaden
 *  \date       2016-10-22
 */
 void Logging::debug(std::string message, Identifier *module) {
-    if (m_level != LogLevel::debug) {
-        return;
-    }
     if (module == nullptr) {
         debug(message, "Unknown");
     } else {
@@ -200,49 +197,47 @@ void Logging::debug(std::string message, Identifier *module) {
 }
 
 /*!
-*  \brief      Info logging with module name for identificaion
+*  \brief      Info logging with module name for identification
 *  \param[in]  message
 *  \param[in]  module name
 *  \author     Sasch Kaden
 *  \date       2016-10-22
 */
 void Logging::info(std::string message, std::string moduleName) {
-    sendString("Info " + moduleName + ": " + message);
+    sendString("Info " + moduleName + ": " + message, LogLevel::info);
 }
 
 /*!
-*  \brief      Warning logging with module name for identificaion
+*  \brief      Warning logging with module name for identification
 *  \param[in]  message
 *  \param[in]  module name
 *  \author     Sasch Kaden
 *  \date       2016-10-22
 */
 void Logging::warning(std::string message, std::string moduleName) {
-    sendString("Warning " + moduleName + ": " + message);
+    sendString("Warning " + moduleName + ": " + message, LogLevel::warn);
 }
 
 /*!
-*  \brief      Error logging with module name for identificaion
+*  \brief      Error logging with module name for identification
 *  \param[in]  message
 *  \param[in]  module name
 *  \author     Sasch Kaden
 *  \date       2016-10-22
 */
 void Logging::error(std::string message, std::string moduleName) {
-    sendString("Error " + moduleName + ": " + message);
+    sendString("Error " + moduleName + ": " + message, LogLevel::error);
 }
 
 /*!
-*  \brief      Debug logging with module name for identificaion
+*  \brief      Debug logging with module name for identification
 *  \param[in]  message
 *  \param[in]  module name
 *  \author     Sasch Kaden
 *  \date       2016-10-22
 */
 void Logging::debug(std::string message, std::string moduleName) {
-    if (m_level == LogLevel::debug) {
-        sendString("Debug " + moduleName + ": " + message);
-    }
+    sendString("Debug " + moduleName + ": " + message, LogLevel::debug);
 }
 
 /*!
@@ -251,10 +246,10 @@ void Logging::debug(std::string message, std::string moduleName) {
 *  \author     Sasch Kaden
 *  \date       2016-11-14
 */
-void Logging::sendString(std::string message) {
-    if (!m_level) {
+void Logging::sendString(std::string message, LogLevel level) {
+    if (level < m_level)
         return;
-    }
+
     m_mutex.lock();
     if (m_output == LogOutput::file) {
         writeToFile(message);
