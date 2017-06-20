@@ -55,6 +55,7 @@
 #include <ippp/core/sampling/BridgeSampling.hpp>
 #include <ippp/core/sampling/GaussianDistSampling.hpp>
 #include <ippp/core/sampling/GaussianSampling.hpp>
+#include <ippp/core/sampling/MedialAxisSampling.hpp>
 #include <ippp/core/sampling/Sampling.hpp>
 #include <ippp/core/sampling/SamplingNearObstacle.hpp>
 #include <ippp/core/sampling/StraightSampling.hpp>

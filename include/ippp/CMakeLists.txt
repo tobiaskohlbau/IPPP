@@ -46,6 +46,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/BridgeSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianDistSampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/MedialAxisSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/StraightSampling.hpp
@@ -62,12 +63,14 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/SRTOptions.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/EST.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/Planner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/PRM.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRT.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStar.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStarContTraj.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/SRT.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/SRT.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/TreePlanner.hpp)
 
 IF (${BUILD_FCL})
     list(APPEND SRCS
