@@ -106,10 +106,10 @@ bool TrajectoryPlanner<dim>::checkTrajectory(const std::shared_ptr<Node<dim>> &s
 */
 template <unsigned int dim>
 bool TrajectoryPlanner<dim>::checkTrajectory(const Vector<dim> &source, const Vector<dim> &target) {
-    std::vector<Vector<dim>> path = calcTrajectoryBin(source, target);
-    if (m_collision->checkTrajectory(path)) {
+    auto path = calcTrajectoryBin(source, target);
+    if (m_collision->checkTrajectory(path))
         return false;
-    }
+
     return true;
 }
 
@@ -150,7 +150,7 @@ Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const std::shared_ptr<Node<dim
 */
 template <unsigned int dim>
 Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, const Vector<dim> &target) {
-    std::vector<Vector<dim>> path = calcTrajectoryCont(source, target);
+    auto path = calcTrajectoryCont(source, target);
     path.push_back(target);
     unsigned int count = -1;
     for (auto point : path) {
