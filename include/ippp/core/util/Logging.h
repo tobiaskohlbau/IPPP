@@ -25,8 +25,8 @@
 
 namespace ippp {
 
-enum LogLevel { none, debug, all };
-enum LogOutput { terminal, file, terminlAndFile };
+enum LogLevel { off, fatal, error, warn, info, debug, trace, all };
+enum class LogOutput { terminal, file, terminlAndFile };
 
 /*!
 * \brief   Logging class for the complete framework
@@ -62,7 +62,7 @@ class Logging {
     static void writeToFile(std::string message);
 
   private:
-    static void sendString(std::string message);
+    static void sendString(std::string message, LogLevel level);
 
     static LogLevel m_level;
     static LogOutput m_output;
