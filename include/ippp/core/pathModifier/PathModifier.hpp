@@ -35,8 +35,9 @@ namespace ippp {
 template <unsigned int dim>
 class PathModifier : public Identifier {
   public:
-    PathModifier(const std::string &name, const std::shared_ptr<Environment> &environment, std::shared_ptr<CollisionDetection<dim>> &collision,
-                 std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    PathModifier(const std::string &name, const std::shared_ptr<Environment> &environment,
+                 const std::shared_ptr<CollisionDetection<dim>> &collision,
+                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     virtual std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const = 0;
 
@@ -57,8 +58,8 @@ class PathModifier : public Identifier {
 */
 template <unsigned int dim>
 PathModifier<dim>::PathModifier(const std::string &name, const std::shared_ptr<Environment> &environment,
-                                std::shared_ptr<CollisionDetection<dim>> &collision,
-                                std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
+                                const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
     : Identifier(name), m_collision(collision), m_environment(environment), m_trajectory(trajectory) {
 }
 
