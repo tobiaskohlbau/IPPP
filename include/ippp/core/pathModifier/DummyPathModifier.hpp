@@ -31,15 +31,12 @@ namespace ippp {
 template <unsigned int dim>
 class DummyPathModifier : public PathModifier<dim> {
   public:
-    DummyPathModifier(const std::shared_ptr<Environment> &environment, std::shared_ptr<CollisionDetection<dim>> &collision,
-                      std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    DummyPathModifier(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
+                      const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
 
   protected:
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-    std::shared_ptr<Environment> m_environment = nullptr;
-    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
 };
 
 /*!
@@ -52,8 +49,8 @@ class DummyPathModifier : public PathModifier<dim> {
 */
 template <unsigned int dim>
 DummyPathModifier<dim>::DummyPathModifier(const std::shared_ptr<Environment> &environment,
-                                          std::shared_ptr<CollisionDetection<dim>> &collision,
-                                          std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
+                                          const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                          const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
     : PathModifier<dim>("Dummy PathModifier", environment, collision, trajectory) {
 }
 

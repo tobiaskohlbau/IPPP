@@ -31,15 +31,15 @@ namespace ippp {
 template <unsigned int dim>
 class NodeCutPathModifier : public PathModifier<dim> {
   public:
-    NodeCutPathModifier(const std::shared_ptr<Environment> &environment, std::shared_ptr<CollisionDetection<dim>> &collision,
-                        std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    NodeCutPathModifier(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
+                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
 
   protected:
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-    std::shared_ptr<Environment> m_environment = nullptr;
-    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
+    using PathModifier<dim>::m_collision;
+    using PathModifier<dim>::m_environment;
+    using PathModifier<dim>::m_trajectory;
 };
 
 /*!
@@ -52,9 +52,9 @@ class NodeCutPathModifier : public PathModifier<dim> {
 */
 template <unsigned int dim>
 NodeCutPathModifier<dim>::NodeCutPathModifier(const std::shared_ptr<Environment> &environment,
-                                              std::shared_ptr<CollisionDetection<dim>> &collision,
-                                              std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PathModifier<dim>("Node cutter", environment, collision, trajectory) {
+                                              const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                              const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
+    : PathModifier<dim>("NodeCut", environment, collision, trajectory) {
 }
 
 /*!
@@ -62,19 +62,24 @@ NodeCutPathModifier<dim>::NodeCutPathModifier(const std::shared_ptr<Environment>
 *  \author     Sascha Kaden
 *  \param[in]  list of path nodes
 *  \param[out] shorted node path
-*  \date       2017-05-23
+*  \date       2017-06-20
 */
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> NodeCutPathModifier<dim>::smoothPath(
     const std::vector<std::shared_ptr<Node<dim>>> &nodes) const {
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes = nodes;
-    unsigned int i = 0;
-    auto countNodes = smoothedNodes.size() - 2;
-    while (i < countNodes) {
-        while (i < countNodes &&
-               m_trajectory->checkTrajectory(smoothedNodes[i]->getValues(), smoothedNodes[i + 2]->getValues())) {
-            smoothedNodes.erase(smoothedNodes.begin() + i + 1);
-            --countNodes;
+
+    auto i = std::begin(smoothedNodes);
+    while (i != std::end(smoothedNodes) - 2) {
+        auto j = i + 2;
+        while (j != std::end(smoothedNodes) - 1) {
+
+            if (m_trajectory->checkTrajectory(*i, *j)) {
+                j = smoothedNodes.erase(j - 1);
+                ++j;
+            } else {
+                break;
+            }
         }
         ++i;
     }
