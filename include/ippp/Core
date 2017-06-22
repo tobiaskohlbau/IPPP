@@ -21,6 +21,7 @@
 
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
 #include <ippp/core/collisionDetection/CollisionDetection2D.h>
+#include <ippp/core/collisionDetection/CollisionDetectionAABB.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionDummy.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionPqp.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionTriangleRobot.h>

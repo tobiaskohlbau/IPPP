@@ -36,6 +36,7 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
         Logging::error("Dimension of workspace have to be 2 or 3", this);
     assert(m_spaceDim == 2 || m_spaceDim == 3);
     m_robots.push_back(robot);
+    m_robotDimSizes.push_back(robot->getDim());
 }
 
 /*!
@@ -56,6 +57,8 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
         Logging::error("No robot passed", this);
     assert(!robots.empty());
     m_robots = robots;
+    for (auto &robot : m_robots)
+        m_robotDimSizes.push_back(robot->getDim());
 }
 
 /*!
@@ -191,6 +194,16 @@ AABB Environment::getBoundary() const {
 */
 unsigned int Environment::getDim() const {
     return m_spaceDim;
+}
+
+/*!
+*  \brief      Return the list of the dimension sizes of the robots.
+*  \author     Sascha Kaden
+*  \param[out] robot dimension sizes
+*  \date       2017-05-17
+*/
+std::vector<unsigned int> Environment::getRobotDimSizes() const {
+    return m_robotDimSizes;
 }
 
 } /* namespace ippp */

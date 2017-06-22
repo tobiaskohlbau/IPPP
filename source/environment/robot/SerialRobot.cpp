@@ -34,6 +34,17 @@ SerialRobot::SerialRobot(const std::string &name, const unsigned int dim, const 
 }
 
 /*!
+*  \brief      Compute the transformation of the robot from the configuration
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[out] pair with rotation and translation
+*  \date       2017-06-21
+*/
+std::pair<Matrix3, Vector3> SerialRobot::getTransformation(const VectorX &config) const {
+    return std::make_pair(Matrix3(), Vector3());
+}
+
+/*!
 *  \brief      Create transformation matrix from the passed D-H parameter and the joint angle
 *  \author     Sascha Kaden
 *  \param[in]  D-H alpha parameter

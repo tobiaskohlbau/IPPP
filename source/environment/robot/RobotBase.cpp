@@ -71,7 +71,7 @@ void RobotBase::setPose(const Vector6 &pose) {
 *  \param[out] pose Vec
 *  \date       2016-07-24
 */
-Vector6 RobotBase::getPose() {
+Vector6 RobotBase::getPose() const {
     return m_pose;
 }
 
@@ -81,7 +81,7 @@ Vector6 RobotBase::getPose() {
 *  \param[out] pose matrix
 *  \date       2016-07-24
 */
-Matrix4 RobotBase::getPoseMat() {
+Matrix4 RobotBase::getPoseMat() const {
     return m_poseMat;
 }
 
@@ -105,7 +105,7 @@ void RobotBase::setBaseModel(const std::shared_ptr<ModelContainer> &model) {
 *  \param[out] base model
 *  \date       2016-06-30
 */
-std::shared_ptr<ModelContainer> RobotBase::getBaseModel() {
+std::shared_ptr<ModelContainer> RobotBase::getBaseModel() const {
     return m_baseModel;
 }
 

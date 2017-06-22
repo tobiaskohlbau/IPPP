@@ -25,4 +25,15 @@ MobileRobot::MobileRobot(const unsigned int dim, const std::pair<VectorX, Vector
     : RobotBase("MobileRobot", dim, RobotType::mobile, boundary, dofTypes) {
 }
 
+/*!
+*  \brief      Compute the transformation of the robot from the configuration
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[out] pair with rotation and translation
+*  \date       2017-06-21
+*/
+std::pair<Matrix3, Vector3> MobileRobot::getTransformation(const VectorX &config) const {
+    return util::poseVecToRandT(Vector6(config));
+}
+
 } /* namespace ippp */

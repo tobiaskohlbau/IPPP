@@ -18,6 +18,8 @@
 
 #include <ippp/environment/robot/TriangleRobot2D.h>
 
+#include <ippp/core/util/UtilGeo.hpp>
+
 namespace ippp {
 
 /*!
@@ -30,6 +32,17 @@ TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangle
     : RobotBase("TriangleRobot2D", 3, RobotType::mobile, boundary,
                 std::vector<DofType>({DofType::planarPos, DofType::planarPos, DofType::planarRot})) {
     setBaseModel(triangleModel);
+}
+
+/*!
+*  \brief      Compute the transformation of the robot from the configuration
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[out] pair with rotation and translation
+*  \date       2017-06-21
+*/
+std::pair<Matrix3, Vector3> TriangleRobot2D::getTransformation(const VectorX &config) const {
+    return util::poseVecToRandT(Vector3(config));
 }
 
 } /* namespace ippp */

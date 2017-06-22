@@ -33,6 +33,7 @@ namespace ippp {
 class TriangleRobot2D : public RobotBase {
   public:
     TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, const std::pair<Vector3, Vector3> &boundary);
+    std::pair<Matrix3, Vector3> getTransformation(const VectorX &config) const override ;
 };
 
 } /* namespace ippp */

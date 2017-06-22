@@ -19,7 +19,6 @@
 #ifndef POINTROBOT_H
 #define POINTROBOT_H
 
-#include <ippp/environment/model/Model2D.h>
 #include <ippp/environment/robot/RobotBase.h>
 
 namespace ippp {
@@ -32,8 +31,7 @@ namespace ippp {
 class PointRobot : public RobotBase {
   public:
     PointRobot(const std::pair<Vector2, Vector2> &boundary);
-
-  private:
+    std::pair<Matrix3, Vector3> getTransformation(const VectorX &config) const override;
 };
 
 } /* namespace ippp */

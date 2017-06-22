@@ -27,6 +27,7 @@ class MobileRobot : public RobotBase {
   public:
     MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
                 const std::vector<DofType> &dofTypes);
+    std::pair<Matrix3, Vector3> getTransformation(const VectorX &config) const override ;
 };
 
 } /* namespace ippp */

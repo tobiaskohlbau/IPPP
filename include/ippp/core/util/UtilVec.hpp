@@ -117,6 +117,21 @@ Vector<dim> multiplyElementWise(const Vector<dim> &source, const Vector<dim> &ma
     return result;
 }
 
+template <unsigned int dim>
+std::vector<VectorX> splitVec(const Vector<dim> vec, const std::vector<unsigned int> &dofs) {
+    std::vector<VectorX> vecs;
+    vecs.reserve(dofs.size());
+    unsigned int count = 0;
+    for (auto &dof : dofs) {
+        VectorX temp(dof);
+        for (unsigned int i = 0; i < dof; ++i, ++count) {
+            temp[i] = vec[count];
+        }
+        vecs.push_back(temp);
+    }
+    return vecs;
+}
+
 /*!
 *  \brief      Creates a 5 dimensional Vector with passed values
 *  \author     Sascha Kaden

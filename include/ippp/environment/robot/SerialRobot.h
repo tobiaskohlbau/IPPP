@@ -35,6 +35,7 @@ class SerialRobot : public RobotBase {
     SerialRobot(const std::string &name, const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
                 const std::vector<DofType> &dofTypes);
 
+    virtual std::pair<Matrix3, Vector3> getTransformation(const VectorX &config) const ;
     virtual Vector6 directKinematic(const VectorX &angles) = 0;
     virtual std::vector<Matrix4> getJointTrafos(const VectorX &angles) = 0;
     Matrix4 getTrafo(double alpha, double a, double d, double q);
