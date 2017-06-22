@@ -63,8 +63,8 @@ CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shar
 *  \param[out] binary result of collision (true if in collision)
 *  \date       2017-02-19
 */
-bool CollisionDetectionTriangleRobot::controlVec(const Vector3 &vec) {
-    return checkTriangleRobot(vec);
+bool CollisionDetectionTriangleRobot::checkConfig(const Vector3 &config) {
+    return checkTriangleRobot(config);
 }
 
 /*!
@@ -74,15 +74,14 @@ bool CollisionDetectionTriangleRobot::controlVec(const Vector3 &vec) {
 *  \param[out] binary result of collision (true if in collision)
 *  \date       2017-02-19
 */
-bool CollisionDetectionTriangleRobot::checkTrajectory(std::vector<Vector3> &vecs) {
-    if (vecs.size() == 0) {
+bool CollisionDetectionTriangleRobot::checkTrajectory(std::vector<Vector3> &configs) {
+    if (configs.size() == 0)
         return false;
-    }
-    for (int i = 0; i < vecs.size(); ++i) {
-        if (checkTriangleRobot(vecs[i])) {
+
+    for (auto &config : configs)
+        if (checkTriangleRobot(config))
             return true;
-        }
-    }
+
     return false;
 }
 
@@ -100,11 +99,10 @@ bool CollisionDetectionTriangleRobot::checkPoint2D(double x, double y) {
         return true;
     }
 
-    if (m_workspace2D(y, x) < 80) {
+    if (m_workspace2D(y, x) < 80)
         return true;
-    } else {
+    else
         return false;
-    }
 }
 
 /*!

@@ -139,7 +139,7 @@ void RRT<dim>::computeTreeThread(const unsigned int nbOfNodes) {
 */
 template <unsigned int dim>
 bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
-    if (m_collision->controlVec(goal)) {
+    if (m_collision->checkConfig(goal)) {
         Logging::warning("Goal Node in collision", this);
         return false;
     }
@@ -178,15 +178,15 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randVec) {
+std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randConfig) {
     // get nearest neighbor
-    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randVec);
+    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randConfig);
 
     // compute Node<dim> new with fixed step size
-    Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
-    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
+    Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
+    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newConfig));
 
-    if (m_collision->controlVec(newNode->getValues())) {
+    if (m_collision->checkConfig(newNode->getValues())) {
         return nullptr;
     } else if (!m_trajectory->checkTrajectory(newNode, nearestNode)) {
         return nullptr;

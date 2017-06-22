@@ -80,9 +80,9 @@ Vector<dim> GaussianSampling<dim>::getSample() {
         ray *= m_distance * m_sampler->getRandomNumber();
         sample2 = sample1 + ray;
 
-        if (!m_collision->controlVec(sample1) && m_collision->controlVec(sample2))
+        if (!m_collision->checkConfig(sample1) && m_collision->checkConfig(sample2))
             return sample1;
-        else if (m_collision->controlVec(sample1) && !m_collision->controlVec(sample2))
+        else if (m_collision->checkConfig(sample1) && !m_collision->checkConfig(sample2))
             return sample2;
     }
     return util::NaNVector<dim>();

@@ -34,8 +34,8 @@ namespace ippp {
 class CollisionDetection2D : public CollisionDetection<2> {
   public:
     CollisionDetection2D(const std::shared_ptr<Environment> &environment);
-    bool controlVec(const Vector2 &vec) override;
-    bool checkTrajectory(std::vector<Vector2> &vec) override;
+    bool checkConfig(const Vector2 &config) override;
+    bool checkTrajectory(std::vector<Vector2> &configs) override;
 
   private:
     bool checkPoint2D(double x, double y);

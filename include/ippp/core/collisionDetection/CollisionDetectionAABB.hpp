@@ -35,7 +35,7 @@ template <unsigned int dim>
 class CollisionDetectionAABB : public CollisionDetection<dim> {
   public:
     CollisionDetectionAABB(const std::shared_ptr<Environment> &environment);
-    bool controlVec(const Vector<dim> &config) override;
+    bool checkConfig(const Vector<dim> &config) override;
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
     bool checkAABB(const AABB &a, const AABB &b);
 
@@ -80,13 +80,13 @@ CollisionDetectionAABB<dim>::CollisionDetectionAABB(const std::shared_ptr<Enviro
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-bool CollisionDetectionAABB<dim>::controlVec(const Vector<dim> &config) {
+bool CollisionDetectionAABB<dim>::checkConfig(const Vector<dim> &config) {
     if (m_multiRobot) {
         // compute the new AABBs of the robots with the configuration
-        std::vector<VectorX> vecs = util::splitVec(config, m_environment->getRobotDimSizes());
+        std::vector<VectorX> singleConfigs = util::splitVec(config, m_environment->getRobotDimSizes());
         std::vector<AABB> robotAABBs;
         for (unsigned int i = 0; i < m_robots.size(); ++i) {
-            auto trafo = m_robots[i]->getTransformation(vecs[i]);
+            auto trafo = m_robots[i]->getTransformation(singleConfigs[i]);
             robotAABBs.push_back(util::transformAABB(m_robotAABBs[i], trafo));
         }
         // check collisions

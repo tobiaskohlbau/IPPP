@@ -37,8 +37,8 @@ template <unsigned int dim>
 class CollisionDetectionFcl : public CollisionDetection<dim> {
   public:
     CollisionDetectionFcl(const std::shared_ptr<RobotBase> &robot);
-    bool controlVec(const Vector<dim> &vec);
-    bool checkTrajectory(std::vector<Vector<dim>> &vec);
+    bool checkConfig(const Vector<dim> &config);
+    bool checkTrajectory(std::vector<Vector<dim>> &configs);
 
   private:
     bool controlCollisionMesh(const Vector<dim> &vec);
@@ -123,8 +123,8 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<RobotBas
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionFcl<dim>::controlVec(const Vector<dim> &vec) {
-    return controlCollisionMesh(vec);
+bool CollisionDetectionFcl<dim>::checkConfig(const Vector<dim> &config) {
+    return controlCollisionMesh(config);
 }
 
 /*!
@@ -151,18 +151,18 @@ bool CollisionDetectionFcl<dim>::controlCollisionMesh(const Vector<dim> &vec) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionFcl<dim>::checkTrajectory(std::vector<Vector<dim>> &vecs) {
-    if (vecs.size() == 0) {
+bool CollisionDetectionFcl<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+    if (configs.empty()) {
         return false;
     }
 
     if (m_robot->getRobotType() == RobotType::mobile) {
-        for (int i = 0; i < vecs.size(); ++i)
-            if (checkMobileRobot(vecs[i]))
+        for (int i = 0; i < configs.size(); ++i)
+            if (checkMobileRobot(configs[i]))
                 return true;
     } else {
-        for (int i = 0; i < vecs.size(); ++i) {
-            if (checkSerialRobot(vecs[i])) {
+        for (int i = 0; i < configs.size(); ++i) {
+            if (checkSerialRobot(configs[i])) {
                 return true;
             }
         }
@@ -179,13 +179,13 @@ bool CollisionDetectionFcl<dim>::checkTrajectory(std::vector<Vector<dim>> &vecs)
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &vec) {
+bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &config) {
     std::shared_ptr<SerialRobot<dim>> robot(std::static_pointer_cast<SerialRobot<dim>>(m_robot));
     Matrix3 poseR;
     Vector3 poseT;
     Matrix3 rot[dim];
     Vector3 trans[dim];
-    utilCollision::getTrafosFromRobot<dim>(vec, robot, poseR, poseT, rot, trans);
+    utilCollision::getTrafosFromRobot<dim>(config, robot, poseR, poseT, rot, trans);
 
     return checkMesh(rot, poseR, trans, poseT);
 }
@@ -198,10 +198,10 @@ bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &vec) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &vec) {
+bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &config) {
     Matrix3 poseR;
     Vector3 poseT;
-    util::poseVecToRandT(vec, poseR, poseT);
+    util::poseVecToRandT(config, poseR, poseT);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {
         return checkFCL(m_workspace, m_baseMesh, m_identity, poseR, m_zeroVec, poseT);

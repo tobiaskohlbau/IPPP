@@ -75,17 +75,17 @@ SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environmen
 template <unsigned int dim>
 Vector<dim> SamplingNearObstacle<dim>::getSample() {
     Vector<dim> sample1 = m_sampler->getSample();
-    if (!m_collision->controlVec(sample1)) {
+    if (!m_collision->checkConfig(sample1)) {
         return sample1;
     } else {
         Vector<dim> sample2;
         do {
             sample2 = m_sampler->getSample();
-        } while (m_collision->controlVec(sample2));
+        } while (m_collision->checkConfig(sample2));
         std::vector<Vector<dim>> path = m_trajectory->calcTrajectoryBin(sample2, sample1);
         sample1 = path[0];
         for (auto point : path) {
-            if (!m_collision->controlVec(point))
+            if (!m_collision->checkConfig(point))
                 sample1 = point;
             else
                 break;

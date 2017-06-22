@@ -35,7 +35,7 @@ template <unsigned int dim>
 class CollisionDetection : public Identifier {
   public:
     CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment);
-    virtual bool controlVec(const Vector<dim> &vec) = 0;
+    virtual bool checkConfig(const Vector<dim> &config) = 0;
     virtual bool checkTrajectory(std::vector<Vector<dim>> &vec) = 0;
 
   protected:

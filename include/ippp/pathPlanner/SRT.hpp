@@ -98,11 +98,11 @@ SRT<dim>::SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<
 template <unsigned int dim>
 bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
                            const unsigned int numThreads) {
-    if (m_collision->controlVec(start)) {
+    if (m_collision->checkConfig(start)) {
         Logging::error("Start Node in collision", this);
         return false;
     }
-    if (m_collision->controlVec(goal)) {
+    if (m_collision->checkConfig(goal)) {
         Logging::error("Goal Node in collision", this);
         return false;
     }
@@ -165,7 +165,7 @@ void SRT<dim>::samplingPhase(const unsigned int nbOfNodes, const unsigned int nb
     for (unsigned int i = 0; i < nbOfTrees; ++i) {
         do {
             sample = m_sampling->getSample();
-        } while (util::empty<dim>(sample) || m_collision->controlVec(sample));
+        } while (util::empty<dim>(sample) || m_collision->checkConfig(sample));
 
         std::shared_ptr<Graph<dim>> graph = computeTree(nbOfNodes, sample);
         m_mutex.lock();

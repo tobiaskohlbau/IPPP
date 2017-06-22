@@ -116,7 +116,7 @@ void EST<dim>::computeTreeThread(const unsigned int nbOfNodes) {
         // choose random node of the graph
         auto randNode = m_graph->getNode(m_sampling->getRandomNumber() * m_graph->size());
         sample = m_sampling->getSample(randNode->getValues());
-        if (util::empty<dim>(sample) || m_collision->controlVec(sample))
+        if (util::empty<dim>(sample) || m_collision->checkConfig(sample))
             continue;
 
         if (!m_trajectory->checkTrajectory(randNode->getValues(), sample))
@@ -141,7 +141,7 @@ void EST<dim>::computeTreeThread(const unsigned int nbOfNodes) {
 */
 template <unsigned int dim>
 bool EST<dim>::connectGoalNode(Vector<dim> goal) {
-    if (m_collision->controlVec(goal)) {
+    if (m_collision->checkConfig(goal)) {
         Logging::warning("Goal Node in collision", this);
         return false;
     }

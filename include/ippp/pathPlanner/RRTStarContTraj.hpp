@@ -73,21 +73,21 @@ RRTStarContTraj<dim>::RRTStarContTraj(const std::shared_ptr<Environment> &enviro
 *  \date          2016-06-02
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> RRTStarContTraj<dim>::computeRRTNode(const Vector<dim> &randVec) {
+std::shared_ptr<Node<dim>> RRTStarContTraj<dim>::computeRRTNode(const Vector<dim> &randConfig) {
     // get nearest neighbor
-    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randVec);
+    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randConfig);
     // set Node<dim> new fix fixed step size of 10
-    Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
+    Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
     std::vector<std::shared_ptr<Node<dim>>> nearNodes;
-    chooseParent(newVec, nearestNode, nearNodes);
+    chooseParent(newConfig, nearestNode, nearNodes);
 
-    newVec = m_trajectory->controlTrajCont(nearestNode->getValues(), newVec);
+    newConfig = m_trajectory->controlTrajCont(nearestNode->getValues(), newConfig);
 
-    if (util::empty<dim>(newVec)) {
+    if (util::empty<dim>(newConfig)) {
         return nullptr;
     }
 
-    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
+    std::shared_ptr<Node<dim>> newNode(new Node<dim>(newConfig));
     double edgeCost = this->m_metric->calcEdgeCost(newNode, nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);

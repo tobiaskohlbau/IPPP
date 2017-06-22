@@ -55,8 +55,8 @@ CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<Environment> &e
 *  \param[out] binary result of collision (true if in collision or vec is empty)
 *  \date       2016-05-25
 */
-bool CollisionDetection2D::controlVec(const Vector2 &vec) {
-    return checkPoint2D(vec[0], vec[1]);
+bool CollisionDetection2D::checkConfig(const Vector2 &config) {
+    return checkPoint2D(config[0], config[1]);
 }
 
 /*!
@@ -66,12 +66,12 @@ bool CollisionDetection2D::controlVec(const Vector2 &vec) {
 *  \param[out] binary result of collision (true if in collision)
 *  \date       2016-05-25
 */
-bool CollisionDetection2D::checkTrajectory(std::vector<Vector2> &vecs) {
-    if (vecs.size() == 0)
+bool CollisionDetection2D::checkTrajectory(std::vector<Vector2> &configs) {
+    if (configs.size() == 0)
         return false;
 
-    for (int i = 0; i < vecs.size(); ++i)
-        if (checkPoint2D(vecs[i][0], vecs[i][1]))
+    for (auto &config : configs)
+        if (checkPoint2D(config[0], config[1]))
             return true;
 
     return false;

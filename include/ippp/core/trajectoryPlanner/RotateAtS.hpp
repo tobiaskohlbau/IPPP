@@ -97,42 +97,42 @@ std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryBin(const Vector<dim> &so
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) {
-    std::vector<Vector<dim>> vecs;
+    std::vector<Vector<dim>> configs;
 
     Vector<dim> posSource = util::multiplyElementWise<dim>(source, m_posMask);
     Vector<dim> posTarget = util::multiplyElementWise<dim>(target, m_posMask);
 
     // compute the linear translation points
     Vector<dim> u(posTarget - posSource);    // u = a - b
-    vecs.reserve((int)(u.norm() / m_stepSize) + 1);
+    configs.reserve((int)(u.norm() / m_stepSize) + 1);
     u /= u.norm() / m_stepSize;    // u = |u|
     for (Vector<dim> temp(posSource + u); (temp - posTarget).squaredNorm() > 1; temp += u)
-        vecs.push_back(temp);
+        configs.push_back(temp);
 
     // get middle point
-    size_t middleIndex = vecs.size() * m_rotationPoint;
-    auto middlePos = vecs[middleIndex];
+    size_t middleIndex = configs.size() * m_rotationPoint;
+    auto middlePos = configs[middleIndex];
     // add the fixed rotations to the linear path
     Vector<dim> rotSource = util::multiplyElementWise<dim>(source, m_rotMask);
     Vector<dim> rotTarget = util::multiplyElementWise<dim>(target, m_rotMask);
     size_t index = 0;
-    for (auto vec = vecs.begin(); vec != vecs.end(); ++vec, ++index) {
+    for (auto config = configs.begin(); config != configs.end(); ++config, ++index) {
         if (index <= middleIndex)
-            *vec += rotSource;
+            *config += rotSource;
         else
-            *vec += rotTarget;
+            *config += rotTarget;
     }
 
     // add rotation changing points to the vector
     rotSource += middlePos;
     rotTarget += middlePos;
-    auto it = vecs.begin() + middleIndex;
+    auto it = configs.begin() + middleIndex;
     u = (rotTarget - rotSource);    // u = a - b
     u /= u.norm() / m_stepSize;    // u = |u|
     for (Vector<dim> temp(rotSource + u); (temp - rotTarget).squaredNorm() > m_stepSize; temp += u)
-        it = vecs.insert(it, temp);
+        it = configs.insert(it, temp);
 
-    return vecs;
+    return configs;
 }
 
 /*!

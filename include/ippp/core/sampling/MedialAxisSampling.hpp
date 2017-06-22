@@ -78,18 +78,18 @@ MedialAxisSampling<dim>::MedialAxisSampling(const std::shared_ptr<Environment> &
 template <unsigned int dim>
 Vector<dim> MedialAxisSampling<dim>::getSample() {
     auto sample = m_sampler->getSample();
-    bool sampleCollision = m_collision->controlVec(sample);
+    bool sampleCollision = m_collision->checkConfig(sample);
 
-    std::vector<Vector<dim>> tempVecs(m_numberDirections, sample);
+    std::vector<Vector<dim>> tempConfigs(m_numberDirections, sample);
     Vector<dim> first, direction;
     bool collision = sampleCollision;
 
     // calculate the nearest obstacle position with the computed directions
     while (collision == sampleCollision) {
-        auto temp = tempVecs.begin();
+        auto temp = tempConfigs.begin();
         for (auto dir = m_directions.begin(); dir < m_directions.end(); ++dir, ++temp) {
             *temp += *dir;
-            if (m_collision->controlVec(*temp) != sampleCollision) {
+            if (m_collision->checkConfig(*temp) != sampleCollision) {
                 // set the first collision vector and the direction and break the while loop
                 first = *temp;
                 direction = *dir;
@@ -110,7 +110,7 @@ Vector<dim> MedialAxisSampling<dim>::getSample() {
         else
             second += direction;
 
-        collision = m_collision->controlVec(second);
+        collision = m_collision->checkConfig(second);
     }
     // return the middle point of these two collisions
     return second - ((second - first) / 2 );
