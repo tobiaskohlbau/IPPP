@@ -157,7 +157,7 @@ Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, con
     path.push_back(target);
     unsigned int count = -1;
     for (auto point : path) {
-        if (m_collision->controlVec(point)) {
+        if (m_collision->checkConfig(point)) {
             break;
         } else {
             ++count;

@@ -77,7 +77,7 @@ Vector<dim> BridgeSampling<dim>::getSample() {
     do {
         sample1 = m_sampler->getSample();
         ++count;
-    } while (!m_collision->controlVec(sample1));
+    } while (!m_collision->checkConfig(sample1));
 
     do {
         if (count > m_attempts)
@@ -88,7 +88,7 @@ Vector<dim> BridgeSampling<dim>::getSample() {
         ray = m_sampler->getRandomRay();
         ray *= m_distance * m_sampler->getRandomNumber();
         sample2 = sample1 + ray;
-    } while (!m_collision->controlVec(sample2) && m_collision->controlVec(sample1 + (ray / 2)));
+    } while (!m_collision->checkConfig(sample2) && m_collision->checkConfig(sample1 + (ray / 2)));
 
     return sample1 + (ray / 2);
 }

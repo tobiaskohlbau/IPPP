@@ -138,7 +138,7 @@ static void poseVecToRandT(const Vector3 &pose, Matrix2 &R, Vector2 &t) {
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
 *  \param[out] rotation matrix and translation vector
-*  \date       2016-11-15
+*  \date       2017-06-20
 */
 static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector3 &pose) {
     Vector3 t(pose[0], pose[1], 0);
@@ -157,9 +157,8 @@ static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector3 &pose) {
 */
 static void poseVecToRandT(const Vector6 &pose, Matrix3 &R, Vector3 &t) {
     R = getRotMat3D(pose[3], pose[4], pose[5]);
-    for (unsigned int i = 0; i < 3; ++i) {
+    for (unsigned int i = 0; i < 3; ++i)
         t(i) = pose[i];
-    }
 }
 
 /*!
@@ -167,7 +166,7 @@ static void poseVecToRandT(const Vector6 &pose, Matrix3 &R, Vector3 &t) {
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
 *  \param[out] rotation matrix and translation vector
-*  \date       2016-11-15
+*  \date       2017-06-20
 */
 static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector6 &pose) {
     Vector3 t(pose[0], pose[1], pose[2]);

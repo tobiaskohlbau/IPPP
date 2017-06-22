@@ -35,8 +35,8 @@ template <unsigned int dim>
 class CollisionDetectionPqpBenchmark : public CollisionDetectionPqp<dim> {
   public:
     CollisionDetectionPqpBenchmark(const std::shared_ptr<Environment> &environment);
-    bool controlVec(const Vector<dim> &vec) override;
-    bool checkTrajectory(std::vector<Vector<dim>> &vec) override;
+    bool checkConfig(const Vector<dim> &config) override;
+    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
     int getCount() const;
     void resetCount();
@@ -70,12 +70,12 @@ CollisionDetectionPqpBenchmark<dim>::CollisionDetectionPqpBenchmark(const std::s
 *  \date       2017-02-27
 */
 template <unsigned int dim>
-bool CollisionDetectionPqpBenchmark<dim>::controlVec(const Vector<dim> &vec) {
+bool CollisionDetectionPqpBenchmark<dim>::checkConfig(const Vector<dim> &config) {
     m_mutexCount.lock();
     ++m_count;
     m_mutexCount.unlock();
     auto startTime = std::chrono::system_clock::now();
-    bool result = CollisionDetectionPqp<dim>::controlVec(vec);
+    bool result = CollisionDetectionPqp<dim>::checkConfig(config);
     m_mutexTime.lock();
     m_computationTimes.push_back(std::chrono::system_clock::now() - startTime);
     m_mutexTime.unlock();
@@ -90,27 +90,26 @@ bool CollisionDetectionPqpBenchmark<dim>::controlVec(const Vector<dim> &vec) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqpBenchmark<dim>::checkTrajectory(std::vector<Vector<dim>> &vecs) {
-    if (vecs.size() == 0)
+bool CollisionDetectionPqpBenchmark<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+    if (configs.empty())
         return false;
 
     if (this->m_environment->getRobot()->getRobotType() == RobotType::mobile) {
-        for (int i = 0; i < vecs.size(); ++i) {
+        for (auto &config : configs) {
             m_mutexCount.lock();
             ++m_count;
             m_mutexCount.unlock();
-            if (CollisionDetectionPqp<dim>::checkMobileRobot(vecs[i])) {
+            if (CollisionDetectionPqp<dim>::checkMobileRobot(config))
                 return true;
-            }
+
         }
     } else {
-        for (int i = 0; i < vecs.size(); ++i) {
+        for (auto &config : configs) {
             m_mutexCount.lock();
             ++m_count;
             m_mutexCount.unlock();
-            if (CollisionDetectionPqp<dim>::checkSerialRobot(vecs[i])) {
+            if (CollisionDetectionPqp<dim>::checkSerialRobot(config))
                 return true;
-            }
         }
     }
 

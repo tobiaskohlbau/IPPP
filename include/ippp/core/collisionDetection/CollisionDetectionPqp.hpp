@@ -35,8 +35,8 @@ template <unsigned int dim>
 class CollisionDetectionPqp : public CollisionDetection<dim> {
   public:
     CollisionDetectionPqp(const std::shared_ptr<Environment> &environment);
-    bool controlVec(const Vector<dim> &vec) override;
-    bool checkTrajectory(std::vector<Vector<dim>> &vec) override;
+    bool checkConfig(const Vector<dim> &config) override;
+    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   protected:
     bool checkSerialRobot(const Vector<dim> &vec);
@@ -118,11 +118,11 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::controlVec(const Vector<dim> &vec) {
+bool CollisionDetectionPqp<dim>::checkConfig(const Vector<dim> &config) {
     if (m_environment->getRobot()->getRobotType() == RobotType::mobile) {
-        return checkMobileRobot(vec);
+        return checkMobileRobot(config);
     } else {
-        return checkSerialRobot(vec);
+        return checkSerialRobot(config);
     }
 }
 
@@ -134,20 +134,20 @@ bool CollisionDetectionPqp<dim>::controlVec(const Vector<dim> &vec) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &vecs) {
-    if (vecs.size() == 0) {
+bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+    if (configs.size() == 0) {
         return false;
     }
 
     if (m_environment->getRobot()->getRobotType() == RobotType::mobile) {
-        for (int i = 0; i < vecs.size(); ++i) {
-            if (checkMobileRobot(vecs[i])) {
+        for (int i = 0; i < configs.size(); ++i) {
+            if (checkMobileRobot(configs[i])) {
                 return true;
             }
         }
     } else {
-        for (int i = 0; i < vecs.size(); ++i) {
-            if (checkSerialRobot(vecs[i])) {
+        for (int i = 0; i < configs.size(); ++i) {
+            if (checkSerialRobot(configs[i])) {
                 return true;
             }
         }

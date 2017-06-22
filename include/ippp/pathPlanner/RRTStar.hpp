@@ -79,22 +79,22 @@ RRTStar<dim>::RRTStar(const std::shared_ptr<Environment> &environment, const RRT
 *  \date       2017-04-16
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randVec) {
+std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randConfig) {
     // get nearest neighbor
-    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randVec);
+    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randConfig);
     // set Node<dim> new fix fixed step size of 10
-    Vector<dim> newVec = this->computeNodeNew(randVec, nearestNode->getValues());
-    if (m_collision->controlVec(newVec)) {
+    Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
+    if (m_collision->checkConfig(newConfig)) {
         return nullptr;
     }
     std::vector<std::shared_ptr<Node<dim>>> nearNodes;
-    chooseParent(newVec, nearestNode, nearNodes);
+    chooseParent(randConfig, nearestNode, nearNodes);
 
-    if (!m_trajectory->checkTrajectory(newVec, nearestNode->getValues())) {
+    if (!m_trajectory->checkTrajectory(newConfig, nearestNode->getValues())) {
         return nullptr;
     }
 
-    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newVec));
+    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newConfig));
     double edgeCost = this->m_metric->calcDist(newNode, nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);
@@ -115,15 +115,15 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randV
 *  \date          2017-04-16
 */
 template <unsigned int dim>
-void RRTStar<dim>::chooseParent(const Vector<dim> &newVec, std::shared_ptr<Node<dim>> &nearestNode,
+void RRTStar<dim>::chooseParent(const Vector<dim> &newConfig, std::shared_ptr<Node<dim>> &nearestNode,
                                 std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     // get near nodes to the new node
-    nearNodes = m_graph->getNearNodes(newVec, m_stepSize);
+    nearNodes = m_graph->getNearNodes(newConfig, m_stepSize);
 
     double nearestNodeCost = nearestNode->getCost();
     for (auto nearNode : nearNodes) {
         if (nearNode->getCost() < nearestNodeCost) {
-            if (m_trajectory->checkTrajectory(newVec, nearNode->getValues())) {
+            if (m_trajectory->checkTrajectory(newConfig, nearNode->getValues())) {
                 nearestNodeCost = nearNode->getCost();
                 nearestNode = nearNode;
             }
@@ -167,7 +167,7 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
 */
 template <unsigned int dim>
 bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
-    if (m_collision->controlVec(goal)) {
+    if (m_collision->checkConfig(goal)) {
         Logging::warning("Goal Node in collision", this);
         return false;
     }

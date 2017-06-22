@@ -155,7 +155,7 @@ void PRM<dim>::samplingPhase(const unsigned int nbOfNodes) {
         if (util::empty<dim>(sample))
             continue;
 
-        if (!m_collision->controlVec(sample)) {
+        if (!m_collision->checkConfig(sample)) {
             m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
         }
     }
