@@ -134,6 +134,20 @@ static void poseVecToRandT(const Vector3 &pose, Matrix2 &R, Vector2 &t) {
 }
 
 /*!
+*  \brief      Convert pose Vec to R and t in 2D
+*  \author     Sascha Kaden
+*  \param[in]  pose Vector
+*  \param[out] rotation matrix and translation vector
+*  \date       2016-11-15
+*/
+static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector3 &pose) {
+    Vector3 t(pose[0], pose[1], 0);
+    Matrix3 R = Matrix3::Identity(3,3);
+    R.block<2, 2>(0,0) = getRotMat2D(pose[2]);
+    return std::make_pair(R, t);
+}
+
+/*!
 *  \brief      Convert pose Vec to R and t in 3D
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
@@ -146,6 +160,19 @@ static void poseVecToRandT(const Vector6 &pose, Matrix3 &R, Vector3 &t) {
     for (unsigned int i = 0; i < 3; ++i) {
         t(i) = pose[i];
     }
+}
+
+/*!
+*  \brief      Convert pose Vec to R and t in 2D
+*  \author     Sascha Kaden
+*  \param[in]  pose Vector
+*  \param[out] rotation matrix and translation vector
+*  \date       2016-11-15
+*/
+static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector6 &pose) {
+    Vector3 t(pose[0], pose[1], pose[2]);
+    Matrix3 R = getRotMat3D(pose[3], pose[4], pose[5]);
+    return std::make_pair(R, t);
 }
 
 /*!
@@ -195,6 +222,30 @@ static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3
     double nz = (v[0] * w[1]) - (v[1] * w[0]);
     Vector3 normal(nx, ny, nz);
     return normal.normalized();
+}
+
+/*!
+*  \brief      Transforms a AABB with the passed transformations.
+*  \details    The new AABB has a larger size as the original and the AABB is no more tight!
+*  \author     Sascha Kaden
+*  \param[in]  original aabb
+*  \param[in]  pair with rotation and transformation
+*  \param[out] transformed aabb
+*  \date       2017-06-21
+*/
+static AABB transformAABB(const AABB &a, const std::pair<Matrix3,Vector3> &trafo)
+{
+    // trafo is pair with rotation and translation
+    Vector3 center(trafo.second);
+    Vector3 radius = Vector3::Zero(3,1);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            center[i] += trafo.second(i,j) * a.center()[j];
+            radius[i] += std::abs(trafo.second(i,j)) * a.diagonal()[j] / 2;
+        }
+    }
+    // return AABB by new construction min and max point
+    return AABB(center - radius, center + radius);
 }
 
 /*!

@@ -23,7 +23,7 @@ namespace ippp {
 /*!
 *  \brief      Constructor of the class CollisionDetection2D
 *  \author     Sascha Kaden
-*  \param[in]  robot
+*  \param[in]  Environment
 *  \date       2017-02-19
 */
 CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<Environment> &environment)

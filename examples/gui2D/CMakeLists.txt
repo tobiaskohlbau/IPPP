@@ -26,25 +26,25 @@ else()
     find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
 endif()
 
-find_package(Qt5Widgets)
-find_package(Qt5Core)
-find_package(Qt5Gui)
-add_definitions(${QT_DEFINITIONS})
+#find_package(Qt5Widgets)
+#find_package(Qt5Core)
+#find_package(Qt5Gui)
+#add_definitions(${QT_DEFINITIONS})
 
 include_directories(${Boost_INCLUDE_DIRS})
 
-QT5_WRAP_UI(UIS_HDRS
-        ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.ui)
+#QT5_WRAP_UI(UIS_HDRS
+#        ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.ui)
 
 set(source
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.h
-    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp
-    ${UIS_HDRS})
+    ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp)
+#    ${UIS_HDRS})
 
 set(ADDITIONAL_LIBRARIES
     ${OpenCV_LIBS})
 
-ADD_IPPP_EXAMPLE(Gui2D "${source}" "${ADDITIONAL_LIBRARIES}")
-qt5_use_modules(Gui2D Widgets Gui)
+#ADD_IPPP_EXAMPLE(Gui2D "${source}" "${ADDITIONAL_LIBRARIES}")
+#qt5_use_modules(Gui2D Widgets Gui)

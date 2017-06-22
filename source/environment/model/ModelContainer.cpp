@@ -38,4 +38,14 @@ ModelContainer::ModelContainer(const std::string &name, const AABB &boundingBox)
     m_mesh.aabb = boundingBox;
 }
 
+/*!
+*  \brief      Return AABB of the model.
+*  \param[out] AABB
+*  \author     Sascha Kaden
+*  \date       2017-02-19
+*/
+AABB ModelContainer::getAABB() const {
+    return m_mesh.aabb;
+}
+
 } /* namespace ippp */

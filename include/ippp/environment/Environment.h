@@ -55,11 +55,13 @@ class Environment : public Identifier {
 
     AABB getBoundary() const;
     unsigned int getDim() const;
+    std::vector<unsigned int> getRobotDimSizes() const;
 
   protected:
     const unsigned int m_spaceDim = 0;
     const AABB m_spaceBoundary;
 
+    std::vector<unsigned int> m_robotDimSizes;
     std::vector<std::shared_ptr<RobotBase>> m_robots;
     std::vector<std::shared_ptr<ModelContainer>> m_obstacles;
 };
