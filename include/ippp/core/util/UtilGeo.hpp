@@ -224,7 +224,33 @@ static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3
 }
 
 /*!
-*  \brief      Transforms a AABB with the passed transformations.
+*  \brief      Transforms an AABB with the passed transformations and return the new AABB.
+*  \details    The new AABB has a larger size as the original and the AABB is no more tight!
+*  \author     Sascha Kaden
+*  \param[in]  original aabb
+*  \param[in]  pair with rotation and transformation
+*  \param[out] transformed aabb
+*  \date       2017-06-21
+*/
+static AABB transformAABB(const AABB &a, const std::pair<Matrix2,Vector2> &trafo)
+{
+    // trafo is pair with rotation and translation
+    Vector3 center(trafo.second[0], trafo.second[1], 0);
+    Vector3 radius = Vector3::Zero(3,1);
+    Matrix3 R = Matrix3::Identity(3,3);
+    R.block<2,2>(0,0) = trafo.first;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            center[i] += R(i,j) * a.center()[j];
+            radius[i] += std::abs(R(i,j)) * a.diagonal()[j] / 2;
+        }
+    }
+    // return AABB by new construction min and max point
+    return AABB(center - radius, center + radius);
+}
+
+/*!
+*  \brief      Transforms an AABB with the passed transformations and return the new AABB.
 *  \details    The new AABB has a larger size as the original and the AABB is no more tight!
 *  \author     Sascha Kaden
 *  \param[in]  original aabb
@@ -239,12 +265,28 @@ static AABB transformAABB(const AABB &a, const std::pair<Matrix3,Vector3> &trafo
     Vector3 radius = Vector3::Zero(3,1);
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            center[i] += trafo.second(i,j) * a.center()[j];
-            radius[i] += std::abs(trafo.second(i,j)) * a.diagonal()[j] / 2;
+            center[i] += trafo.first(i,j) * a.center()[j];
+            radius[i] += std::abs(trafo.first(i,j)) * a.diagonal()[j] / 2;
         }
     }
     // return AABB by new construction min and max point
     return AABB(center - radius, center + radius);
+}
+
+/*!
+*  \brief      Translate an AABB with the passed transformations.
+*  \details    The new AABB has a larger size as the original and the AABB is no more tight!
+*  \author     Sascha Kaden
+*  \param[in]  original aabb
+*  \param[in]  pair with rotation and transformation
+*  \param[out] transformed aabb
+*  \date       2017-06-21
+*/
+static AABB translateAABB(const AABB &a, const Vector3 &t)
+{
+    AABB result(a);
+    result.translate(t);
+    return result;
 }
 
 /*!

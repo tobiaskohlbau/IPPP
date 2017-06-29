@@ -117,6 +117,14 @@ Vector<dim> multiplyElementWise(const Vector<dim> &source, const Vector<dim> &ma
     return result;
 }
 
+/*!
+*  \brief      Splits the Vector in separate Vectors with the sizes of the passed list.
+*  \author     Sascha Kaden
+*  \param[in]  main Vector
+*  \param[in]  splitting sequence
+*  \param[out] separate result Vectors
+*  \date       2017-06-20
+*/
 template <unsigned int dim>
 std::vector<VectorX> splitVec(const Vector<dim> vec, const std::vector<unsigned int> &dofs) {
     std::vector<VectorX> vecs;
