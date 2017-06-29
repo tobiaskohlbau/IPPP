@@ -31,7 +31,7 @@ std::mutex Logging::m_mutex;
 /*!
 *  \brief      Set global log level
 *  \param[in]  LogLevel
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 void Logging::setLogLevel(LogLevel level) {
@@ -41,7 +41,7 @@ void Logging::setLogLevel(LogLevel level) {
 /*!
 *  \brief      Return global log level
 *  \param[out] LogLevel
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 LogLevel Logging::getLogLevel() {
@@ -51,7 +51,7 @@ LogLevel Logging::getLogLevel() {
 /*!
 *  \brief      Set Logging output
 *  \param[in]  LogOutput
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 void Logging::setLogOutput(LogOutput output) {
@@ -61,7 +61,7 @@ void Logging::setLogOutput(LogOutput output) {
 /*!
 *  \brief      Return Logging output
 *  \param[out] LogOutput
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 LogOutput Logging::getLogOutput() {
@@ -71,7 +71,7 @@ LogOutput Logging::getLogOutput() {
 /*!
 *  \brief      Set output file
 *  \param[in]  output file
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 void Logging::setOutputFile(const std::string file) {
@@ -84,7 +84,7 @@ void Logging::setOutputFile(const std::string file) {
 /*!
 *  \brief      Return output file
 *  \param[out] output file
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 std::string Logging::getOutputFile() {
@@ -95,7 +95,7 @@ std::string Logging::getOutputFile() {
 *  \brief      Info logging with module for identificaion
 *  \param[in]  message
 *  \param[in]  module pointer
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::info(std::string message, Identifier *module) {
@@ -110,7 +110,7 @@ void Logging::info(std::string message, Identifier *module) {
 *  \brief      Warning logging with module for identificaion
 *  \param[in]  message
 *  \param[in]  module pointer
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::warning(std::string message, Identifier *module) {
@@ -125,7 +125,7 @@ void Logging::warning(std::string message, Identifier *module) {
 *  \brief      Error logging with module for identificaion
 *  \param[in]  message
 *  \param[in]  module pointer
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::error(std::string message, Identifier *module) {
@@ -137,10 +137,40 @@ void Logging::error(std::string message, Identifier *module) {
 }
 
 /*!
+*  \brief      Debug logging with module for identificaion
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sascha Kaden
+*  \date       2016-10-22
+*/
+void Logging::debug(std::string message, Identifier *module) {
+    if (module == nullptr) {
+        debug(message, "Unknown");
+    } else {
+        debug(message, module->getName());
+    }
+}
+
+/*!
+*  \brief      Trace logging with module for identificaion
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sascha Kaden
+*  \date       2016-10-22
+*/
+void Logging::trace(std::string message, Identifier *module) {
+    if (module == nullptr) {
+        trace(message, "Unknown");
+    } else {
+        trace(message, module->getName());
+    }
+}
+
+/*!
 *  \brief      Info logging with module for identificaion
 *  \param[in]  message
 *  \param[in]  module pointer
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::info(std::string message, const Identifier *module) {
@@ -155,7 +185,7 @@ void Logging::info(std::string message, const Identifier *module) {
 *  \brief      Warning logging with module for identificaion
 *  \param[in]  message
 *  \param[in]  module pointer
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::warning(std::string message, const Identifier *module) {
@@ -170,7 +200,7 @@ void Logging::warning(std::string message, const Identifier *module) {
 *  \brief      Error logging with module for identification
 *  \param[in]  message
 *  \param[in]  module pointer
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::error(std::string message, const Identifier *module) {
@@ -185,10 +215,10 @@ void Logging::error(std::string message, const Identifier *module) {
 *  \brief      Debug logging with module for identification
 *  \param[in]  message
 *  \param[in]  module pointer
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::debug(std::string message, Identifier *module) {
+void Logging::debug(std::string message, const Identifier *module) {
     if (module == nullptr) {
         debug(message, "Unknown");
     } else {
@@ -197,10 +227,25 @@ void Logging::debug(std::string message, Identifier *module) {
 }
 
 /*!
+*  \brief      Trace logging with module for identification
+*  \param[in]  message
+*  \param[in]  module pointer
+*  \author     Sascha Kaden
+*  \date       2016-10-22
+*/
+void Logging::trace(std::string message, const Identifier *module) {
+    if (module == nullptr) {
+        trace(message, "Unknown");
+    } else {
+        trace(message, module->getName());
+    }
+}
+
+/*!
 *  \brief      Info logging with module name for identification
 *  \param[in]  message
 *  \param[in]  module name
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::info(std::string message, std::string moduleName) {
@@ -211,7 +256,7 @@ void Logging::info(std::string message, std::string moduleName) {
 *  \brief      Warning logging with module name for identification
 *  \param[in]  message
 *  \param[in]  module name
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::warning(std::string message, std::string moduleName) {
@@ -222,7 +267,7 @@ void Logging::warning(std::string message, std::string moduleName) {
 *  \brief      Error logging with module name for identification
 *  \param[in]  message
 *  \param[in]  module name
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::error(std::string message, std::string moduleName) {
@@ -233,7 +278,7 @@ void Logging::error(std::string message, std::string moduleName) {
 *  \brief      Debug logging with module name for identification
 *  \param[in]  message
 *  \param[in]  module name
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-10-22
 */
 void Logging::debug(std::string message, std::string moduleName) {
@@ -241,13 +286,24 @@ void Logging::debug(std::string message, std::string moduleName) {
 }
 
 /*!
+*  \brief      Trace logging with module name for identification
+*  \param[in]  message
+*  \param[in]  module name
+*  \author     Sascha Kaden
+*  \date       2016-10-22
+*/
+void Logging::trace(std::string message, std::string moduleName) {
+    sendString("Trace " + moduleName + ": " + message, LogLevel::trace);
+}
+
+/*!
 *  \brief      Send message by defined LogOutput method, satisfy thread safety
 *  \param[in]  message
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 void Logging::sendString(std::string message, LogLevel level) {
-    if (level < m_level)
+    if (level >= m_level)
         return;
 
     m_mutex.lock();
@@ -265,7 +321,7 @@ void Logging::sendString(std::string message, LogLevel level) {
 /*!
 *  \brief      Send message to the terminal
 *  \param[in]  message
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 void Logging::printToTerminal(std::string message) {
@@ -275,7 +331,7 @@ void Logging::printToTerminal(std::string message) {
 /*!
 *  \brief      Append message to the defined output file
 *  \param[in]  message
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 void Logging::writeToFile(std::string message) {
