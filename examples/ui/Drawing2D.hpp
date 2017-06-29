@@ -77,7 +77,7 @@ void drawGraph2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &
 *  \date          2016-05-25
 */
 static void drawPath2D(const std::vector<Vector2> vecs, cv::Mat &image, Eigen::Vector3i colorPoint, int thickness) {
-    if (vecs.size() == 0)
+    if (vecs.empty())
         return;
 
     for (int i = 0; i < vecs.size(); ++i) {
@@ -98,7 +98,7 @@ static void drawPath2D(const std::vector<Vector2> vecs, cv::Mat &image, Eigen::V
 */
 static void drawTrianglePath(std::vector<Vector3> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
                              Eigen::Vector3i colorPoint, int thickness) {
-    if (vecs.size() == 0)
+    if (vecs.empty())
         return;
 
     Logging::info("start drawing of triangles", "Drawing2D");

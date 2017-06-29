@@ -287,7 +287,7 @@ bool Graph<dim>::eraseNode(const std::shared_ptr<Node<dim>> &node) {
 */
 template <unsigned int dim>
 bool Graph<dim>::empty() const {
-    if (m_nodes.size() == 0) {
+    if (m_nodes.empty()) {
         return true;
     } else {
         return false;
