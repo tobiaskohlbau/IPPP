@@ -35,7 +35,7 @@ template <unsigned int dim>
 class CollisionDetectionPqp : public CollisionDetection<dim> {
   public:
     CollisionDetectionPqp(const std::shared_ptr<Environment> &environment);
-    bool checkConfig(const Vector<dim> &config) override;
+    bool checkConfig(const Vector<dim> &config, CollisionData *data = nullptr) override;
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   protected:
@@ -118,7 +118,7 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkConfig(const Vector<dim> &config) {
+bool CollisionDetectionPqp<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
     if (m_environment->getRobot()->getRobotType() == RobotType::mobile) {
         return checkMobileRobot(config);
     } else {
@@ -135,7 +135,7 @@ bool CollisionDetectionPqp<dim>::checkConfig(const Vector<dim> &config) {
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
-    if (configs.size() == 0) {
+    if (configs.empty()) {
         return false;
     }
 

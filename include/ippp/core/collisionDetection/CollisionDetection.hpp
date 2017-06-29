@@ -21,6 +21,7 @@
 
 #include <Eigen/Core>
 
+#include <ippp/core/dataObj/CollisionData.h>
 #include <ippp/core/dataObj/Node.hpp>
 #include <ippp/environment/Environment.h>
 
@@ -35,7 +36,7 @@ template <unsigned int dim>
 class CollisionDetection : public Identifier {
   public:
     CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment);
-    virtual bool checkConfig(const Vector<dim> &config) = 0;
+    virtual bool checkConfig(const Vector<dim> &config, CollisionData *data = nullptr) = 0;
     virtual bool checkTrajectory(std::vector<Vector<dim>> &vec) = 0;
 
   protected:

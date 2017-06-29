@@ -26,15 +26,18 @@ namespace ippp {
 class CollisionData {
   public:
     bool collision = false;
-
-    double penetrationDepth = 0;
-    double minDist = 0;
-
-    unsigned int numCollisions = 0;
-    unsigned int triangleTests = 0;
-    unsigned int boundingTests = 0;
-
+    bool checkObstacle = true;
+    bool checkRobots = true;
     std::vector<unsigned int> robotsToCheck;
+
+    double penetrationDepth = std::numeric_limits<double>::max();
+    double minDist = std::numeric_limits<double>::max();
+    double minObstacleDist = std::numeric_limits<double>::max();
+    double minRobotDist = std::numeric_limits<double>::max();
+
+    bool operator<(CollisionData& r) {
+        return this->minDist < r.minDist;
+    }
 };
 
 } /* namespace ippp */

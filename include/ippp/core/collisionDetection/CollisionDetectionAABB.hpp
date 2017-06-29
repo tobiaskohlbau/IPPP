@@ -35,13 +35,12 @@ template <unsigned int dim>
 class CollisionDetectionAABB : public CollisionDetection<dim> {
   public:
     CollisionDetectionAABB(const std::shared_ptr<Environment> &environment);
-    bool checkConfig(const Vector<dim> &config) override;
+    bool checkConfig(const Vector<dim> &config, CollisionData *data = nullptr) override;
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
-    bool checkAABB(const AABB &a, const AABB &b);
 
   private:
-    bool checkObstacles(const AABB &robotAABB);
-    bool checkRobots(const std::vector<AABB> &robotAABB);
+    bool checkObstacles(const AABB &robotAABB, CollisionData *data = nullptr);
+    bool checkRobots(const std::vector<AABB> &robotAABB, CollisionData *data = nullptr);
 
     bool m_multiRobot = false;
     std::vector<AABB> m_robotAABBs;
@@ -80,25 +79,25 @@ CollisionDetectionAABB<dim>::CollisionDetectionAABB(const std::shared_ptr<Enviro
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-bool CollisionDetectionAABB<dim>::checkConfig(const Vector<dim> &config) {
+bool CollisionDetectionAABB<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
     if (m_multiRobot) {
         // compute the new AABBs of the robots with the configuration
-        std::vector<VectorX> singleConfigs = util::splitVec(config, m_environment->getRobotDimSizes());
+        std::vector<VectorX> singleConfigs = util::splitVec<dim>(config, m_environment->getRobotDimSizes());
         std::vector<AABB> robotAABBs;
         for (unsigned int i = 0; i < m_robots.size(); ++i) {
             auto trafo = m_robots[i]->getTransformation(singleConfigs[i]);
             robotAABBs.push_back(util::transformAABB(m_robotAABBs[i], trafo));
         }
         // check collisions
-        if (checkRobots(robotAABBs))
+        if (checkRobots(robotAABBs, data))
             return true;
         for (auto &robotAABB : robotAABBs)
-            if (checkObstacles(robotAABB))
+            if (checkObstacles(robotAABB, data))
                 return true;
     } else {
         auto trafo = m_robots[0]->getTransformation(config);
         AABB robotAABB = util::transformAABB(m_robotAABBs[0], trafo);
-        return checkObstacles(robotAABB);
+        return checkObstacles(robotAABB, data);
     }
 
     return false;
@@ -113,31 +112,63 @@ bool CollisionDetectionAABB<dim>::checkConfig(const Vector<dim> &config) {
 */
 template <unsigned int dim>
 bool CollisionDetectionAABB<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
-    if (configs.size() == 0)
+    if (configs.empty())
         return false;
 
     for (auto &config : configs)
-        if (controlVec(config))
+        if (checkConfig(config))
             return true;
 
     return false;
 }
 
 template <unsigned int dim>
-bool CollisionDetectionAABB<dim>::checkRobots(const std::vector<AABB> &robots) {
-    for (auto a = robots.begin(); a != robots.end() - 1; ++a)
-        for (auto b = robots.begin() + 1; b != robots.end(); ++b)
-            if (a->intersects(*b))
+bool CollisionDetectionAABB<dim>::checkRobots(const std::vector<AABB> &robots, CollisionData *data) {
+    if (data != nullptr && data->checkRobots){
+        double dist;
+        for (auto a = robots.begin(); a != robots.end() - 1; ++a) {
+            for (auto b = robots.begin() + 1; b != robots.end(); ++b) {
+                dist = std::sqrt(a->squaredExteriorDistance(*b));
+                if (dist < data->minDist)
+                    data->minDist = dist;
+                if (dist < data->minRobotDist)
+                    data->minRobotDist = dist;
+                if (dist == 0) {
+                    data->collision = true;
+                    return true;
+                }
+            }
+        }
+    } else {
+        for (auto a = robots.begin(); a != robots.end() - 1; ++a)
+            for (auto b = robots.begin() + 1; b != robots.end(); ++b)
+                if (a->intersects(*b))
+                    return true;
+    }
+
+    return false;
+}
+
+template <unsigned int dim>
+bool CollisionDetectionAABB<dim>::checkObstacles(const AABB &robotAABB, CollisionData *data) {
+    if (data != nullptr && data->checkObstacle) {
+        double dist;
+        for (auto &obstacle : m_obstacleAABBs) {
+            dist = std::sqrt(robotAABB.squaredExteriorDistance(obstacle));
+            if (dist < data->minDist)
+                data->minDist = dist;
+            if (dist < data->minObstacleDist)
+                data->minObstacleDist = dist;
+            if (dist == 0) {
+                data->collision = true;
                 return true;
-
-    return false;
-}
-
-template <unsigned int dim>
-bool CollisionDetectionAABB<dim>::checkObstacles(const AABB &robotAABB) {
-    for (auto &obstacle : m_obstacleAABBs)
-        if (robotAABB.intersects(obstacle))
-            return true;
+            }
+        }
+    } else {
+        for (auto &obstacle : m_obstacleAABBs)
+            if (robotAABB.intersects(obstacle))
+                return true;
+    }
 
     return false;
 }

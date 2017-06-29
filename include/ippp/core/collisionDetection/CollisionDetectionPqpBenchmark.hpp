@@ -35,7 +35,7 @@ template <unsigned int dim>
 class CollisionDetectionPqpBenchmark : public CollisionDetectionPqp<dim> {
   public:
     CollisionDetectionPqpBenchmark(const std::shared_ptr<Environment> &environment);
-    bool checkConfig(const Vector<dim> &config) override;
+    bool checkConfig(const Vector<dim> &config, CollisionData *data = nullptr) override;
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
     int getCount() const;
@@ -70,7 +70,7 @@ CollisionDetectionPqpBenchmark<dim>::CollisionDetectionPqpBenchmark(const std::s
 *  \date       2017-02-27
 */
 template <unsigned int dim>
-bool CollisionDetectionPqpBenchmark<dim>::checkConfig(const Vector<dim> &config) {
+bool CollisionDetectionPqpBenchmark<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
     m_mutexCount.lock();
     ++m_count;
     m_mutexCount.unlock();
