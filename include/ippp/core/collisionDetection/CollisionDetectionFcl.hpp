@@ -37,8 +37,8 @@ template <unsigned int dim>
 class CollisionDetectionFcl : public CollisionDetection<dim> {
   public:
     CollisionDetectionFcl(const std::shared_ptr<RobotBase> &robot);
-    bool checkConfig(const Vector<dim> &config);
-    bool checkTrajectory(std::vector<Vector<dim>> &configs);
+    bool checkConfig(const Vector<dim> &config) override;
+    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   private:
     bool controlCollisionMesh(const Vector<dim> &vec);
@@ -135,11 +135,11 @@ bool CollisionDetectionFcl<dim>::checkConfig(const Vector<dim> &config) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionFcl<dim>::controlCollisionMesh(const Vector<dim> &vec) {
+bool CollisionDetectionFcl<dim>::controlCollisionMesh(const Vector<dim> &config) {
     if (m_robot->getRobotType() == RobotType::mobile) {
-        return checkMobileRobot(vec);
+        return checkMobileRobot(config);
     } else {
-        return checkSerialRobot(vec);
+        return checkSerialRobot(config);
     }
 }
 
