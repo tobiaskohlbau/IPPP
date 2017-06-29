@@ -32,7 +32,7 @@ template <unsigned int dim>
 class CollisionDetectionDummy : public CollisionDetection<dim> {
   public:
     CollisionDetectionDummy(const std::shared_ptr<Environment> &environment);
-    bool checkConfig(const Vector<dim> &config) override;
+    bool checkConfig(const Vector<dim> &config, CollisionData *data = nullptr) override;
     bool checkTrajectory(std::vector<Vector<dim>> &vec) override;
 };
 
@@ -56,7 +56,7 @@ CollisionDetectionDummy<dim>::CollisionDetectionDummy(const std::shared_ptr<Envi
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionDummy<dim>::checkConfig(const Vector<dim> &config) {
+bool CollisionDetectionDummy<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
     return false;
 }
 

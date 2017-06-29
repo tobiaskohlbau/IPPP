@@ -39,12 +39,17 @@ CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<Environment> &e
     if (m_environment->getObstacleNum() == 0) {
         Logging::warning("Empty workspace", this);
     } else {
-        // add obstacles to the workspace
-        std::vector<std::shared_ptr<ModelContainer>> obstacles = m_environment->getObstacles();
-        for (auto &obstacle : obstacles) {
-            auto model = std::dynamic_pointer_cast<ModelTriangle2D>(obstacle);
-            cad::drawTriangles(m_workspace2D, model->m_triangles, 0);
-        }
+        for (auto obstacle : m_environment->getObstacles())
+            m_obstacles.push_back(obstacle->m_mesh);
+    }
+
+    // update obstacle models for the 2D collision check, extends the AABB of the obstacle
+    for (auto obstacle : m_obstacles) {
+        Vector3 bottomLeft = obstacle.aabb.corner(AABB::CornerType::BottomLeft);
+        Vector3 topRight = obstacle.aabb.corner(AABB::CornerType::TopRight);
+        bottomLeft[2] = -1;
+        topRight[2] = 1;
+        obstacle.aabb = AABB(bottomLeft, topRight);
     }
 }
 
@@ -55,7 +60,7 @@ CollisionDetection2D::CollisionDetection2D(const std::shared_ptr<Environment> &e
 *  \param[out] binary result of collision (true if in collision or vec is empty)
 *  \date       2016-05-25
 */
-bool CollisionDetection2D::checkConfig(const Vector2 &config) {
+bool CollisionDetection2D::checkConfig(const Vector2 &config, CollisionData *data) {
     return checkPoint2D(config[0], config[1]);
 }
 
@@ -67,7 +72,7 @@ bool CollisionDetection2D::checkConfig(const Vector2 &config) {
 *  \date       2016-05-25
 */
 bool CollisionDetection2D::checkTrajectory(std::vector<Vector2> &configs) {
-    if (configs.size() == 0)
+    if (configs.empty())
         return false;
 
     for (auto &config : configs)
@@ -86,13 +91,37 @@ bool CollisionDetection2D::checkTrajectory(std::vector<Vector2> &configs) {
 *  \date       2016-06-30
 */
 bool CollisionDetection2D::checkPoint2D(double x, double y) {
-    if (m_minBoundary[0] >= x || x >= m_maxBoundary[0] || m_minBoundary[1] >= y || y >= m_maxBoundary[1])
+    if (m_minBoundary[0] >= x || x >= m_maxBoundary[0] || m_minBoundary[1] >= y || y >= m_maxBoundary[1]) {
+        Logging::trace("Config out of bound", this);
         return true;
+    }
 
-    if (m_workspace2D(y, x) < 80)
-        return true;
-    else
-        return false;
+    double s, t, area;
+    Vector3 p0, p1, p2;
+    for (auto &obstacle : m_obstacles) {
+        // check bounding box to point
+        if (obstacle.aabb.exteriorDistance(Vector3(x, y, 0)) != 0)
+            continue;
+
+        // check if point is in triangle
+        for (auto &face : obstacle.faces) {
+            p0 = obstacle.vertices[face[0]];
+            p1 = obstacle.vertices[face[1]];
+            p2 = obstacle.vertices[face[2]];
+            area = std::abs(0.5 * (-p1[1] * p2[0] + p0[1] * (-p1[0] + p2[0]) + p0[0] * (p1[1] - p2[1]) + p1[0] * p2[1]));
+            s = 1/(2*area)*(p0[1]*p2[0] - p0[0]*p2[1] + (p2[1] - p0[1])*x + (p0[0] - p2[0])*y);
+            t = 1/(2*area)*(p0[0]*p1[1] - p0[1]*p1[0] + (p0[1] - p1[1])*x + (p1[0] - p0[0])*y);
+
+            if (s>0 && t>0 && 1-s-t>0)
+                return true;
+        }
+    }
+    return false;
+
+//    if (m_workspace2D(y, x) < 80)
+//        return true;
+//    else
+//        return false;
 }
 
 } /* namespace ippp */

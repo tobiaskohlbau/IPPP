@@ -339,8 +339,22 @@ Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue) {
     return space;
 }
 
+void drawTriangles(Eigen::MatrixXi &space, const Mesh &mesh, const int fillValue) {
+    auto triangles = generateTriangles(mesh);
+    drawTriangles(space, triangles, fillValue);
+}
+
+void drawTriangles(Eigen::MatrixXi &space, std::vector<Mesh> &meshes, const int fillValue) {
+    std::vector<Triangle2D> triangles;
+    for (auto &mesh : meshes) {
+        auto tris = generateTriangles(mesh);
+        triangles.insert(std::end(triangles), std::begin(tris), std::end(tris));
+    }
+    drawTriangles(space, triangles, fillValue);
+}
+
 void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue) {
-    for (auto triangle : triangles) {
+    for (auto &triangle : triangles) {
         std::vector<Vector2> points;
         for (int i = 1; i < 4; ++i) {
             points.push_back(triangle.getP(i));

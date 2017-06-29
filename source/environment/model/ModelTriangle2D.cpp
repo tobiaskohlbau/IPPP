@@ -31,11 +31,10 @@ ModelTriangle2D::ModelTriangle2D() : ModelContainer("ModelTriangle2D") {
 *  \date       2017-02-19
 */
 bool ModelTriangle2D::empty() const {
-    if (m_triangles.size() == 0) {
+    if (m_triangles.empty())
         return true;
-    } else {
+    else
         return false;
-    }
 }
 
 void ModelTriangle2D::transformModel(const Matrix4 &T) {
@@ -43,9 +42,9 @@ void ModelTriangle2D::transformModel(const Matrix4 &T) {
     Vector2 t;
     Matrix3 transformation = T.block<3, 3>(0, 0);
     util::decomposeT(transformation, R, t);
-    for (auto triangle : m_triangles) {
+    for (auto triangle : m_triangles)
         triangle.transform(R, t);
-    }
+
     m_mesh = cad::generateMesh(m_triangles);
     m_mesh.aabb = cad::computeAABB(m_mesh);
 }
@@ -53,9 +52,9 @@ void ModelTriangle2D::transformModel(const Matrix4 &T) {
 void ModelTriangle2D::transformModel(const Vector6 &config) {
     Matrix2 R = util::getRotMat2D(config[2]);
     Vector2 t(config[0], config[1]);
-    for (auto triangle : m_triangles) {
+    for (auto triangle : m_triangles)
         triangle.transform(R, t);
-    }
+
     m_mesh = cad::generateMesh(m_triangles);
     m_mesh.aabb = cad::computeAABB(m_mesh);
 }

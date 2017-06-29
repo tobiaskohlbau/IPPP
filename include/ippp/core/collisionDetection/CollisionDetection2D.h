@@ -34,7 +34,7 @@ namespace ippp {
 class CollisionDetection2D : public CollisionDetection<2> {
   public:
     CollisionDetection2D(const std::shared_ptr<Environment> &environment);
-    bool checkConfig(const Vector2 &config) override;
+    bool checkConfig(const Vector2 &config, CollisionData *data = nullptr) override;
     bool checkTrajectory(std::vector<Vector2> &configs) override;
 
   private:
@@ -43,6 +43,7 @@ class CollisionDetection2D : public CollisionDetection<2> {
     Vector2 m_minBoundary;
     Vector2 m_maxBoundary;
     Eigen::MatrixXi m_workspace2D;
+    std::vector<Mesh> m_obstacles;
 };
 
 } /* namespace ippp */

@@ -31,7 +31,7 @@
 namespace ippp {
 
 enum RobotType { serial, mobile };
-enum DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint};
+enum DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint, position, rotation};
 
 /*!
 * \brief   Base class of all robots

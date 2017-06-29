@@ -66,6 +66,8 @@ Mesh generateMesh(const std::vector<Triangle2D> &triangles);
 Mesh mergeMeshes(const std::vector<Mesh> &meshes);
 
 Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue);
+void drawTriangles(Eigen::MatrixXi &space, const Mesh &mesh, const int fillValue);
+void drawTriangles(Eigen::MatrixXi &space, std::vector<Mesh> &meshes, const int fillValue);
 void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue);
 
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices);

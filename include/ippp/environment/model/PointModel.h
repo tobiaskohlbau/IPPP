@@ -16,25 +16,27 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef POINTROBOT_H
-#define POINTROBOT_H
+#ifndef POINTMODEL_H
+#define POINTMODEL_H
 
-#include <ippp/environment/robot/RobotBase.h>
-#include <ippp/environment/model/PointModel.h>
+#include <ippp/core/dataObj/PointList.hpp>
+#include <ippp/environment/model/ModelContainer.h>
 
 namespace ippp {
 
 /*!
-* \brief   Class for the 2D point robot
+* \brief   Triangle2D model class, contains a list of triangles, will be used from the TriangleRobot2D
 * \author  Sascha Kaden
-* \date    2016-06-30
+* \date    2017-02-19
 */
-class PointRobot : public RobotBase {
+class PointModel : public ModelContainer {
   public:
-    PointRobot(const std::pair<Vector2, Vector2> &boundary);
-    std::pair<Matrix3, Vector3> getTransformation(const VectorX &config) const override;
+    PointModel();
+    bool empty() const;
+    void transformModel(const Matrix4 &T);
+    void transformModel(const Vector6 &config);
 };
 
 } /* namespace ippp */
 
-#endif /* POINTROBOT_H */
+#endif    // POINTMODEL_H
