@@ -67,7 +67,7 @@ BruteForceNF<dim, T>::BruteForceNF(const std::shared_ptr<DistanceMetric<dim>> &d
 template <unsigned int dim, class T>
 BruteForceNF<dim, T>::BruteForceNF(const std::shared_ptr<DistanceMetric<dim>> &distanceMetric, std::vector<T> &nodes)
     : NeighborFinder<dim, T>("BruteForceNF", distanceMetric) {
-    for (auto node : nodes) {
+    for (auto &node : nodes) {
         m_nodes.push_back(std::make_pair(node->getValues(), node));
     }
 }
@@ -91,7 +91,7 @@ template <unsigned int dim, class T>
 void BruteForceNF<dim, T>::rebaseSorted(std::vector<T> &nodes) {
     if (m_nodes.size() != nodes.size()) {
         m_nodes.clear();
-        for (auto node : nodes) {
+        for (auto &node : nodes) {
             addNode(node->getValues(), node);
         }
     }
@@ -120,7 +120,7 @@ template <unsigned int dim, class T>
 T BruteForceNF<dim, T>::searchNearestNeighbor(const Vector<dim> &vec) {
     double minDist = std::numeric_limits<double>::max();
     T nodePtr = nullptr;
-    for (auto node : m_nodes) {
+    for (auto &node : m_nodes) {
         if (this->m_metric->calcDist(vec, node.first) < minDist && vec != node.first) {
             minDist = this->m_metric->calcDist(vec, node.first);
             nodePtr = node.second;
@@ -141,11 +141,10 @@ template <unsigned int dim, class T>
 std::vector<T> BruteForceNF<dim, T>::searchRange(const Vector<dim> &vec, double range) {
     std::vector<T> nodePtrs;
 
-    for (auto node : m_nodes) {
-        if (this->m_metric->calcDist(vec, node.first) < range && vec != node.first) {
+    for (auto &node : m_nodes)
+        if (this->m_metric->calcDist(vec, node.first) < range && vec != node.first)
             nodePtrs.push_back(node.second);
-        }
-    }
+    
     return nodePtrs;
 }
 
