@@ -24,6 +24,7 @@
 #include <ippp/core/collisionDetection/CollisionDetectionAABB.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionDummy.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionPqp.hpp>
+#include <ippp/core/collisionDetection/CollisionDetectionSphere.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionTriangleRobot.h>
 
 #include <ippp/core/dataObj/Edge.hpp>

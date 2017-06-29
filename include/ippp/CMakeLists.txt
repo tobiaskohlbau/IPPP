@@ -26,6 +26,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionAABB.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionDummy.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqp.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionSphere.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/DistanceMetric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L1Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L2Metric.hpp
