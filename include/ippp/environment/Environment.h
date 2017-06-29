@@ -43,6 +43,7 @@ class Environment : public Identifier {
     ~Environment();
 
     void addObstacle(const std::shared_ptr<ModelContainer> &model);
+    void addObstacles(const std::vector<std::shared_ptr<ModelContainer>> &models);
     std::shared_ptr<ModelContainer> getObstacle(const unsigned int index) const;
     std::vector<std::shared_ptr<ModelContainer>> getObstacles() const;
     size_t getObstacleNum() const;

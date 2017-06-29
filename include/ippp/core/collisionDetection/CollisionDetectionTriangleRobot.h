@@ -33,7 +33,7 @@ namespace ippp {
 class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
   public:
     CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment);
-    bool checkConfig(const Vector3 &config) override;
+    bool checkConfig(const Vector3 &config, CollisionData *data = nullptr) override;
     bool checkTrajectory(std::vector<Vector3> &configs) override;
 
   private:
@@ -42,8 +42,10 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<3> {
 
     Eigen::MatrixXi m_workspace2D;
     std::vector<Triangle2D> m_triangles;
-    Vector2 m_minBoundary;
-    Vector2 m_maxBoundary;
+    std::shared_ptr<ModelContainer> m_robotModel;
+    AABB m_workspaceBounding;
+    std::pair<Vector3, Vector3> m_robotBounding;
+    std::vector<Mesh> m_obstacles;
 };
 
 } /* namespace ippp */

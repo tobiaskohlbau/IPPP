@@ -29,30 +29,38 @@ namespace ippp {
 */
 CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment)
     : CollisionDetection("CollisionDetectionTriangleRobot", environment) {
+    auto robot = m_environment->getRobot();
+
     // set boundaries
-    auto bound = m_environment->getBoundary();
-    m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
-    m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
+    m_workspaceBounding = m_environment->getBoundary();
+    m_robotBounding = std::make_pair(robot->getMinBoundary(), robot->getMaxBoundary());
 
     // create workspace from the 2d triangles
     m_workspace2D = cad::create2dspace(m_environment->getBoundary(), 255);
 
-    if (!m_environment->getObstacleNum() == 0) {
+    if (m_environment->getObstacleNum() == 0) {
         Logging::warning("Empty workspace", this);
     } else {
-        std::vector<std::shared_ptr<ModelContainer>> obstacles = m_environment->getObstacles();
-        for (auto &obstacle : obstacles) {
-            auto model = std::dynamic_pointer_cast<ModelTriangle2D>(obstacle);
-            cad::drawTriangles(m_workspace2D, model->m_triangles, 0);
-        }
+        for (auto obstacle : m_environment->getObstacles())
+            m_obstacles.push_back(obstacle->m_mesh);
     }
 
-    auto robot = m_environment->getRobot();
+    // update obstacle models for the 2D collision check, extends the AABB of the obstacle
+    for (auto obstacle : m_obstacles) {
+        Vector3 bottomLeft = obstacle.aabb.corner(AABB::CornerType::BottomLeft);
+        Vector3 topRight = obstacle.aabb.corner(AABB::CornerType::TopRight);
+        bottomLeft[2] = -1;
+        topRight[2] = 1;
+        obstacle.aabb = AABB(bottomLeft, topRight);
+    }
+
+
     if (!robot->getBaseModel() || robot->getBaseModel()->empty()) {
         Logging::error("Empty base model", this);
         return;
     } else {
-        m_triangles = std::dynamic_pointer_cast<ModelTriangle2D>(robot->getBaseModel())->m_triangles;
+        m_robotModel = robot->getBaseModel();
+        m_triangles = std::dynamic_pointer_cast<ModelTriangle2D>(m_robotModel)->m_triangles;
     }
 }
 
@@ -63,7 +71,7 @@ CollisionDetectionTriangleRobot::CollisionDetectionTriangleRobot(const std::shar
 *  \param[out] binary result of collision (true if in collision)
 *  \date       2017-02-19
 */
-bool CollisionDetectionTriangleRobot::checkConfig(const Vector3 &config) {
+bool CollisionDetectionTriangleRobot::checkConfig(const Vector3 &config, CollisionData *data) {
     return checkTriangleRobot(config);
 }
 
@@ -75,7 +83,7 @@ bool CollisionDetectionTriangleRobot::checkConfig(const Vector3 &config) {
 *  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::checkTrajectory(std::vector<Vector3> &configs) {
-    if (configs.size() == 0)
+    if (configs.empty())
         return false;
 
     for (auto &config : configs)
@@ -94,15 +102,29 @@ bool CollisionDetectionTriangleRobot::checkTrajectory(std::vector<Vector3> &conf
 *  \date       2017-02-19
 */
 bool CollisionDetectionTriangleRobot::checkPoint2D(double x, double y) {
-    if (m_minBoundary[0] >= x || x >= m_maxBoundary[0] || m_minBoundary[1] >= y || y >= m_maxBoundary[1]) {
-        Logging::debug("Point out of workspace", this);
+    if (m_workspaceBounding.min()[0] >= x || x >= m_workspaceBounding.max()[0] ||
+        m_workspaceBounding.min()[1] >= y || y >= m_workspaceBounding.max()[1]) {
+        Logging::trace("Config out of workspace bound", this);
         return true;
     }
 
-    if (m_workspace2D(y, x) < 80)
-        return true;
-    else
-        return false;
+    double s, t, area;
+    Vector3 p0, p1, p2;
+    for (auto &obstacle : m_obstacles) {
+        // check if point is in triangle
+        for (auto &face : obstacle.faces) {
+            p0 = obstacle.vertices[face[0]];
+            p1 = obstacle.vertices[face[1]];
+            p2 = obstacle.vertices[face[2]];
+            area = std::abs(0.5 * (-p1[1] * p2[0] + p0[1] * (-p1[0] + p2[0]) + p0[0] * (p1[1] - p2[1]) + p1[0] * p2[1]));
+            s = 1/(2*area)*(p0[1]*p2[0] - p0[0]*p2[1] + (p2[1] - p0[1])*x + (p0[0] - p2[0])*y);
+            t = 1/(2*area)*(p0[0]*p1[1] - p0[1]*p1[0] + (p0[1] - p1[1])*x + (p1[0] - p0[0])*y);
+
+            if (s>0 && t>0 && 1-s-t>0)
+                return true;
+        }
+    }
+    return false;
 }
 
 /*!
@@ -112,13 +134,30 @@ bool CollisionDetectionTriangleRobot::checkPoint2D(double x, double y) {
 *  \param[out] binary result of collision, true if in collision
 *  \date       2017-02-19
 */
-bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &vec) {
-    VectorX vector = vec;
-    vector.resize(3);
+bool CollisionDetectionTriangleRobot::checkTriangleRobot(const Vector3 &config) {
+    // check boundary of the robot
+    for (unsigned int i = 0; i < 3; ++i) {
+        if (config[i] < m_robotBounding.first[i] || m_robotBounding.second[i] < config[i]) {
+            Logging::trace("Out of robot boundary", this);
+            return true;
+        }
+    }
 
-    Matrix2 R;
-    Vector2 t;
-    util::poseVecToRandT(vector, R, t);
+    auto trafo = m_environment->getRobot()->getTransformation(config);
+    // bounding box check
+    AABB robotAABB = util::transformAABB(m_robotModel->m_mesh.aabb, trafo);
+    bool intersection = false;
+    for (auto &obstacle : m_obstacles) {
+        if (robotAABB.intersects(obstacle.aabb)) {
+            intersection = true;
+            break;
+        }
+    }
+    if (!intersection)
+        return false;
+
+    Vector2 t(trafo.second[0], trafo.second[1]);
+    Matrix2 R = trafo.first.block<2,2>(0,0);
 
     Vector2 u, temp;
     std::vector<Triangle2D> triangles = m_triangles;

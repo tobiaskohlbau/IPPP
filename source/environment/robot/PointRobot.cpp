@@ -19,6 +19,7 @@
 #include <ippp/environment/robot/PointRobot.h>
 
 #include <ippp/core/util/Logging.h>
+#include <ippp/environment/model/PointModel.h>
 
 namespace ippp {
 
@@ -29,6 +30,10 @@ namespace ippp {
 */
 PointRobot::PointRobot(const std::pair<Vector2, Vector2> &boundary)
     : RobotBase("PointRobot", 2, RobotType::mobile, boundary, std::vector<DofType>({DofType::planarPos, DofType::planarPos})) {
+    // generate minimum bounding box for robot model
+
+    std::shared_ptr<ModelContainer> model(new PointModel());
+    setBaseModel(model);
 }
 
 /*!

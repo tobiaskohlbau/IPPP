@@ -46,6 +46,8 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::s
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
+    for (auto vertex : triangleModel->m_mesh.vertices)
+        vertex[2] = 0;
     triangleModel->m_mesh.aabb = cad::computeAABB(triangleModel->m_mesh);
     triangleModel->m_triangles = cad::generateTriangles(triangleModel->m_mesh);
 
@@ -67,6 +69,8 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
     for (auto mesh : meshes) {
         std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
         triangleModel->m_mesh = mesh;
+        for (auto vertex : triangleModel->m_mesh.vertices)
+            vertex[2] = 0;
         triangleModel->m_mesh.aabb = cad::computeAABB(mesh);
         triangleModel->m_triangles = cad::generateTriangles(triangleModel->m_mesh);
         models.push_back(triangleModel);

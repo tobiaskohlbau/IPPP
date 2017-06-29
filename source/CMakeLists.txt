@@ -35,7 +35,8 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryPqp.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryTriangle2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelPqp.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelTriangle2D.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelTriangle2D.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/PointModel.cpp)
 
 IF (${BUILD_FCL})
     list(APPEND SRCS

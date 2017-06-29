@@ -16,25 +16,29 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef POINTROBOT_H
-#define POINTROBOT_H
-
-#include <ippp/environment/robot/RobotBase.h>
 #include <ippp/environment/model/PointModel.h>
 
 namespace ippp {
 
+PointModel::PointModel() : ModelContainer("PointModel") {
+    double d = 0.0001;
+    m_mesh.aabb = AABB(Vector3(-d, -d, -d), Vector3(d, d, d));
+}
+
 /*!
-* \brief   Class for the 2D point robot
-* \author  Sascha Kaden
-* \date    2016-06-30
+*  \brief      Return true if model is empty
+*  \author     Sascha Kaden
+*  \param[out] state
+*  \date       2017-02-19
 */
-class PointRobot : public RobotBase {
-  public:
-    PointRobot(const std::pair<Vector2, Vector2> &boundary);
-    std::pair<Matrix3, Vector3> getTransformation(const VectorX &config) const override;
-};
+bool PointModel::empty() const {
+    return false;
+}
+
+void PointModel::transformModel(const Matrix4 &T) {
+}
+
+void PointModel::transformModel(const Vector6 &config) {
+}
 
 } /* namespace ippp */
-
-#endif /* POINTROBOT_H */

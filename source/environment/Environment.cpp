@@ -80,6 +80,17 @@ void Environment::addObstacle(const std::shared_ptr<ModelContainer> &model) {
 }
 
 /*!
+*  \brief      Add a list of obstacles to the Environment
+*  \author     Sascha Kaden
+*  \param[in]  obstacles
+*  \date       2017-05-17
+*/
+void Environment::addObstacles(const std::vector<std::shared_ptr<ModelContainer>> &models) {
+    for (auto &model : models)
+        m_obstacles.push_back(model);
+}
+
+/*!
 *  \brief      Return obstacle by the index
 *  \author     Sascha Kaden
 *  \param[in]  index
