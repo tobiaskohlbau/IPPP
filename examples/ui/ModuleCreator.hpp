@@ -126,7 +126,8 @@ ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std:
         m_pathModifier =
             std::shared_ptr<NodeCutPathModifier<dim>>(new NodeCutPathModifier<dim>(environment, collision, m_trajectory));
     else
-        std::shared_ptr<DummyPathModifier<dim>>(new DummyPathModifier<dim>(environment, collision, m_trajectory));
+        m_pathModifier =
+            std::shared_ptr<DummyPathModifier<dim>>(new DummyPathModifier<dim>(environment, collision, m_trajectory));
 
     if (samplerType == SamplerType::SamplerRandom)
         m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerRandom<dim>(environment));
