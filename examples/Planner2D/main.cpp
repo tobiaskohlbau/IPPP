@@ -31,7 +31,7 @@ void testTriangleRobot() {
     // std::shared_ptr<ModelContainer> model(new Model2D(mat));
     // robot->setWorkspace(model);
 
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot(environment));
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot<dim>(environment));
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::Dummy,
                                SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear);
 
@@ -81,24 +81,24 @@ void testPointRobot() {
     auto workspace = factory.createModels(getModelDirectory() + "/spaces/easyMaze.obj");
     environment->addObstacles(workspace);
 
-    std::shared_ptr<CollisionDetection<dim>> collisionAABB(new CollisionDetectionAABB<2>(environment));
-    std::shared_ptr<CollisionDetection<dim>> collisionSphere(new CollisionDetectionSphere<2>(environment));
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D(environment));
+    std::shared_ptr<CollisionDetection<dim>> collisionAABB(new CollisionDetectionAABB<dim>(environment));
+    std::shared_ptr<CollisionDetection<dim>> collisionSphere(new CollisionDetectionSphere<dim>(environment));
+    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetection2D<dim>(environment));
     ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear, 1, 20, 100);
+                               SamplerType::SamplerRandom, SamplingType::Straight, TrajectoryType::Linear, 1, 20, 10);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     //planner = std::shared_ptr<EST<dim>>(new EST<dim>(environment, creator.getPlannerOptions(), creator.getGraph()));
-    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(20), creator.getGraph()));
+     planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(20), creator.getGraph()));
     // planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
-    planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
+//    planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
     // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(50.0, 30.0);
     Vector2 goal(870.0, 870.0);
-    bool connected = planner->computePath(start, goal, 10000, 1);
+    bool connected = planner->computePath(start, goal, 8000, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();

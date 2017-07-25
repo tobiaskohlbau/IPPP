@@ -136,7 +136,7 @@ void benchmarkHedgehog() {
 }
 
 void transformCad() {
-    std::string file = "/users/skaden/untitled.dae";
+    std::string file = modelDir + "assembly/box7.dae";
     std::vector<Mesh> meshes;
     bool result = cad::importMeshes(file, meshes);
     for (int i = 0; i < meshes.size(); ++i)
@@ -171,8 +171,8 @@ void generateMap() {
 int main(int argc, char** argv) {
     modelDir = getModelDirectory();
 
-    // transformCad();
-    generateMap();
+     transformCad();
+//    generateMap();
 
     // ProfilerStart("/tmp/cpu.prof");
     //    benchmarkFlange();
@@ -199,29 +199,29 @@ int main(int argc, char** argv) {
 //
 //    std::vector<std::string> names = {"i", "y", "z", "l", "x", "c", "f", "s", "b", "m", "t", "v"};
 //    std::vector<Mesh> meshes;
-////    int count = 0;
-////    for (auto file : meshFiles) {
-////        Mesh mesh;
-////        bool result = cad::importMesh(file, mesh);
-////        meshes.push_back(mesh);
-////
-////        ++count;
-////    }
+//    int count = 0;
+//    for (auto file : meshFiles) {
+//        Mesh mesh;
+//        bool result = cad::importMesh(file, mesh);
+//        meshes.push_back(mesh);
+//
+//        ++count;
+//    }
 //
 //    cad::importMeshes(dir + "pentomino.dae", meshes);
-////    double pi = util::pi();
-////    cad::transformVertices(util::Vecd(0.4, 2.4, 0.4,    0, 0 ,0), meshes[0].vertices);
-////    cad::transformVertices(util::Vecd(1.85, 2.65, 0.4,  1*pi, 0, 0), meshes[1].vertices);
-////    cad::transformVertices(util::Vecd(2.9, 3.15, 0.4,   1*pi, 0, 0.5*pi), meshes[2].vertices);
-////    cad::transformVertices(util::Vecd(3.4, 3.27, -0.13, 0, -0.5*pi, 0), meshes[3].vertices);
-////    cad::transformVertices(util::Vecd(1.4, 0.4, -0.6,   0.5*pi, 0 ,0), meshes[4].vertices);
-////    cad::transformVertices(util::Vecd(2.7, 0.4, -0.6,   0.5*pi, 0, 1*pi), meshes[5].vertices);
-////    cad::transformVertices(util::Vecd(2.32, 1.4, -0.72, -0.5*pi , 0, 1*pi), meshes[6].vertices);
-////    cad::transformVertices(util::Vecd(1.4, 2.4, -0.6,   0, 0, 0.5*pi), meshes[7].vertices);
-////    cad::transformVertices(util::Vecd(1.53, 3.93, -0.6, 0, 0, 0.5*pi), meshes[8].vertices);
-////    cad::transformVertices(util::Vecd(1.28, 1.52, -1.6, 0, 0, 0), meshes[9].vertices);
-////    cad::transformVertices(util::Vecd(1.1, 3.4, -1.6,   0, 0, 0), meshes[10].vertices);
-////    cad::transformVertices(util::Vecd(2.6, 3.6, -1.6,   0, 0, -0.5*pi), meshes[11].vertices);
+//    double pi = util::pi();
+//    cad::transformVertices(util::Vecd(0.4, 2.4, 0.4,    0, 0 ,0), meshes[0].vertices);
+//    cad::transformVertices(util::Vecd(1.85, 2.65, 0.4,  1*pi, 0, 0), meshes[1].vertices);
+//    cad::transformVertices(util::Vecd(2.9, 3.15, 0.4,   1*pi, 0, 0.5*pi), meshes[2].vertices);
+//    cad::transformVertices(util::Vecd(3.4, 3.27, -0.13, 0, -0.5*pi, 0), meshes[3].vertices);
+//    cad::transformVertices(util::Vecd(1.4, 0.4, -0.6,   0.5*pi, 0 ,0), meshes[4].vertices);
+//    cad::transformVertices(util::Vecd(2.7, 0.4, -0.6,   0.5*pi, 0, 1*pi), meshes[5].vertices);
+//    cad::transformVertices(util::Vecd(2.32, 1.4, -0.72, -0.5*pi , 0, 1*pi), meshes[6].vertices);
+//    cad::transformVertices(util::Vecd(1.4, 2.4, -0.6,   0, 0, 0.5*pi), meshes[7].vertices);
+//    cad::transformVertices(util::Vecd(1.53, 3.93, -0.6, 0, 0, 0.5*pi), meshes[8].vertices);
+//    cad::transformVertices(util::Vecd(1.28, 1.52, -1.6, 0, 0, 0), meshes[9].vertices);
+//    cad::transformVertices(util::Vecd(1.1, 3.4, -1.6,   0, 0, 0), meshes[10].vertices);
+//    cad::transformVertices(util::Vecd(2.6, 3.6, -1.6,   0, 0, -0.5*pi), meshes[11].vertices);
 //
 //    for (int i = 0; i < 12; ++i)
 //        cad::exportCad(cad::ExportFormat::OBJ, names[i], meshes[i]);
