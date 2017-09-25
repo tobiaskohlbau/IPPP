@@ -23,9 +23,9 @@
 #include <type_traits>
 #include <vector>
 
-#include <ippp/Core>
-#include <ippp/Environment>
-#include <ippp/Planner>
+#include <ippp/Core.h>
+#include <ippp/Environment.h>
+#include <ippp/Planner.h>
 
 namespace ippp {
 
