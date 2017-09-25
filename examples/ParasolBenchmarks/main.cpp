@@ -8,9 +8,9 @@
 //#include <boost/filesystem.hpp>
 //#include <boost/range/iterator_range.hpp>
 
-#include <ippp/Core>
-#include <ippp/Environment>
-#include <ippp/Planner>
+#include <ippp/Core.h>
+#include <ippp/Environment.h>
+#include <ippp/Planner.h>
 #include <ippp/core/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
 //#include <ippp/core/collisionDetection/CollisionDetectionFcl.hpp>
 //#include <ippp/environment/model/ModelFactoryFcl.h>

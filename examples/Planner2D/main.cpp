@@ -3,9 +3,9 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-#include <ippp/Core>
-#include <ippp/Environment>
-#include <ippp/Planner>
+#include <ippp/Core.h>
+#include <ippp/Environment.h>
+#include <ippp/Planner.h>
 
 #include <ippp/core/sampling/MedialAxisSampling.hpp>
 
