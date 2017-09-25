@@ -19,6 +19,7 @@
 #include <ippp/environment/CadProcessing.h>
 
 #include <fstream>
+#include <iostream>
 
 #include <ippp/core/util/Logging.h>
 #include <ippp/core/util/UtilGeo.hpp>
@@ -33,25 +34,20 @@ namespace cad {
 *  \param[out] Mesh
 *  \date       2017-05-09
 */
-bool importMesh(const std::string &filePath, Mesh &mesh, const double scale, const bool calcNormals) {
+bool importMesh(const std::string &filePath, Mesh &mesh, const double scale, const bool calcNormals, const bool useTrafo) {
     std::size_t found = filePath.find_last_of(".");
     if (filePath.substr(found) == ".g") {
         return importBYU(filePath, mesh);
     }
 
     std::vector<Mesh> meshes;
-    if (!importMeshes(filePath, meshes)) {
+    if (!importMeshes(filePath, meshes, scale, calcNormals, useTrafo)) {
         return false;
     }
 
     // merge meshes to one single mesh
     mesh = mergeMeshes(meshes);
 
-    for (auto &&vertex : mesh.vertices)
-        vertex *= scale;
-
-    if (calcNormals)
-        mesh.normals = computeNormals(mesh.vertices, mesh.faces);
     return true;
 }
 
@@ -62,7 +58,7 @@ bool importMesh(const std::string &filePath, Mesh &mesh, const double scale, con
 *  \param[out] Mesh
 *  \date       2017-05-09
 */
-bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const double scale, const bool calcNormals) {
+bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const double scale, const bool calcNormals, const bool useTrafo) {
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (!scene) {
@@ -80,7 +76,7 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const 
 
     aiMatrix4x4 trafo;
     aiIdentityMatrix4(&trafo);
-    getMeshes(scene, scene->mRootNode, &trafo, meshes);
+    getMeshes(scene, scene->mRootNode, &trafo, meshes, useTrafo);
 
     for (auto &&mesh : meshes)
         for (auto &&vertex : mesh.vertices)
@@ -95,6 +91,25 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const 
     return true;
 }
 
+Matrix4 importTransformation(const std::string &filePath) {
+    Matrix4 X = Matrix4::Zero(4,4);
+    std::ifstream fin (filePath);
+
+    if (fin.is_open())
+    {
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                float item = 0.0;
+                fin >> item;
+                X(row, col) = item;
+            }
+        }
+        fin.close();
+    }
+    std::cout << "X = " << std::endl << X << std::endl;
+    return X;
+}
+
 /*!
 *  \brief      Go through the scene nodes and load and transform all meshes them.
 *  \author     Sascha Kaden
@@ -104,7 +119,7 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const 
 *  \param[out] vector of meshes
 *  \date       2017-05-09
 */
-void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std::vector<Mesh> &meshes) {
+void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std::vector<Mesh> &meshes, const bool useTrafo) {
     aiMatrix4x4 prevTrafo;
 
     prevTrafo = *trafo;
@@ -115,7 +130,8 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std
         const aiMesh *aimesh = scene->mMeshes[node->mMeshes[i]];
         for (int j = 0; j < aimesh->mNumVertices; ++j) {
             aiVector3D vertex = aimesh->mVertices[j];
-            aiTransformVecByMatrix4(&vertex, trafo);
+            if (useTrafo)
+                aiTransformVecByMatrix4(&vertex, trafo);
             mesh.vertices.push_back(Vector3(vertex.x, vertex.y, vertex.z));
         }
         for (int j = 0; j < aimesh->mNumFaces; ++j) {

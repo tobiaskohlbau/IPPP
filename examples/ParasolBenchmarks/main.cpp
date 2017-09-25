@@ -135,14 +135,6 @@ void benchmarkHedgehog() {
     std::cout << std::endl;
 }
 
-void transformCad() {
-    std::string file = modelDir + "assembly/box7.dae";
-    std::vector<Mesh> meshes;
-    bool result = cad::importMeshes(file, meshes);
-    for (int i = 0; i < meshes.size(); ++i)
-        cad::exportCad(cad::ExportFormat::OBJ, std::to_string(i), meshes[i]);
-}
-
 void generateMap() {
     const unsigned int dim = 3;
     Vector3 min(-50,-50,-50);
@@ -171,7 +163,14 @@ void generateMap() {
 int main(int argc, char** argv) {
     modelDir = getModelDirectory();
 
-     transformCad();
+    std::string file = modelDir + "assembly/boxRot.dae";
+    std::vector<Mesh> meshes;
+    auto result = cad::importMeshes(file, meshes, 1, false, true);
+    if (result)
+        std::cout << "successful reading" << std::endl;
+    for (int i = 0; i < meshes.size(); ++i)
+        cad::exportCad(cad::ExportFormat::OBJ, std::to_string(i), meshes[i]);
+
 //    generateMap();
 
     // ProfilerStart("/tmp/cpu.prof");
