@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.78.0 commit date:2017-02-24, commit time:14:33, hash:e92f2352830</authoring_tool>
     </contributor>
-    <created>2017-08-31T12:35:11</created>
-    <modified>2017-08-31T12:35:11</modified>
+    <created>2017-08-25T12:05:50</created>
+    <modified>2017-08-25T12:05:50</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -114,9 +114,9 @@
     <geometry id="Cube_001-mesh" name="Cube.001">
       <mesh>
         <source id="Cube_001-mesh-positions">
-          <float_array id="Cube_001-mesh-positions-array" count="75">-1 -1 -1 -1 -1 1 -1 1 -1 -1 1 1 1 -1 -1 1 -1 1 1 1 -1 1 1 1 -1 0 1 0 1 1 1 0 1 0 -1 1 1 -0.5 1 -0.5 -1 1 -1 -0.5 1 0.5 -1 1 -1 -0.25 1 1 -0.25 1 0 -0.25 1 0.5 -0.25 1 -0.5 -0.25 1 -0.75 -0.25 1 0.75 -0.25 1 -0.25 -0.25 1 0.25 -0.25 1</float_array>
+          <float_array id="Cube_001-mesh-positions-array" count="120">-1 -1 -1 -1 -1 1 -1 1 -1 -1 1 1 1 -1 -1 1 -1 1 1 1 -1 1 1 1 -1 0 1 0 1 1 1 0 1 0 -1 1 1 0 1 1 -1 1 0 -1 1 -1 -1 1 -1 0 1 1 -0.5 1 -0.5 -1 1 -1 -0.5 1 0.5 -1 1 -1 -0.25 1 1 -0.25 1 -1 -0.125 1 0 -0.125 1 0.5 -0.125 1 -0.5 -0.125 1 1 -0.125 1 -0.75 -0.125 1 0.25 -0.125 1 0.75 -0.125 1 -0.25 -0.125 1 -0.375 -0.125 1 0.625 -0.125 1 0.125 -0.125 1 -0.875 -0.125 1 -0.625 -0.125 1 0.375 -0.125 1 0.875 -0.125 1 -0.125 -0.125 1</float_array>
           <technique_common>
-            <accessor source="#Cube_001-mesh-positions-array" count="25" stride="3">
+            <accessor source="#Cube_001-mesh-positions-array" count="40" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
@@ -136,11 +136,15 @@
         <vertices id="Cube_001-mesh-vertices">
           <input semantic="POSITION" source="#Cube_001-mesh-positions"/>
         </vertices>
-        <polylist count="34">
+        <lines count="2">
+          <input semantic="VERTEX" source="#Cube_001-mesh-vertices" offset="0"/>
+          <p>16 23 27 12</p>
+        </lines>
+        <polylist count="44">
           <input semantic="VERTEX" source="#Cube_001-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cube_001-mesh-normals" offset="1"/>
-          <vcount>3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 </vcount>
-          <p>16 0 8 0 0 0 3 1 9 1 2 1 17 2 12 2 4 2 11 3 13 3 0 3 6 4 0 4 2 4 24 5 11 5 15 5 2 0 0 0 8 0 14 0 16 0 0 0 0 0 1 0 14 0 8 0 3 0 2 0 6 1 2 1 9 1 9 1 7 1 6 1 4 2 6 2 10 2 10 2 17 2 4 2 6 2 7 2 10 2 12 2 5 2 4 2 0 3 4 3 11 3 15 3 11 3 4 3 4 3 5 3 15 3 13 3 1 3 0 3 6 4 4 4 0 4 13 5 11 5 23 5 15 5 5 5 12 5 12 5 17 5 22 5 19 5 24 5 15 5 12 5 22 5 19 5 11 5 24 5 18 5 14 5 1 5 13 5 21 5 16 5 14 5 18 5 23 5 11 5 20 5 21 5 14 5 14 5 13 5 20 5 12 5 19 5 15 5 23 5 20 5 13 5</p>
+          <vcount>3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 </vcount>
+          <p>1 0 8 0 0 0 3 1 9 1 2 1 7 2 10 2 6 2 5 3 11 3 4 3 6 4 0 4 2 4 11 5 5 5 20 5 1 5 11 5 18 5 17 5 22 5 30 5 2 0 0 0 8 0 8 0 3 0 2 0 6 1 2 1 9 1 9 1 7 1 6 1 4 2 6 2 10 2 10 2 5 2 4 2 0 3 4 3 11 3 11 3 1 3 0 3 6 4 4 4 0 4 5 5 13 5 20 5 20 5 14 5 11 5 11 5 14 5 18 5 18 5 15 5 1 5 39 5 31 5 14 5 26 5 36 5 19 5 24 5 39 5 14 5 36 5 28 5 19 5 34 5 24 5 14 5 28 5 35 5 21 5 29 5 34 5 14 5 35 5 23 5 21 5 37 5 29 5 20 5 32 5 26 5 18 5 19 5 15 5 18 5 28 5 21 5 19 5 33 5 25 5 20 5 31 5 18 5 14 5 19 5 18 5 26 5 20 5 13 5 17 5 18 5 31 5 32 5 25 5 37 5 20 5 27 5 38 5 22 5 30 5 33 5 17 5 14 5 20 5 29 5 22 5 38 5 30 5 20 5 17 5 33 5</p>
         </polylist>
       </mesh>
     </geometry>
