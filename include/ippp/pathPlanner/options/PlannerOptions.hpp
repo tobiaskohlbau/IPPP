@@ -24,6 +24,7 @@
 #include <ippp/core/Identifier.h>
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
 #include <ippp/core/distanceMetrics/DistanceMetric.hpp>
+#include <ippp/core/evaluator/Evaluator.hpp>
 #include <ippp/core/pathModifier/PathModifier.hpp>
 #include <ippp/core/sampling/Sampling.hpp>
 #include <ippp/core/trajectoryPlanner/TrajectoryPlanner.hpp>
@@ -39,14 +40,17 @@ template <unsigned int dim>
 class PlannerOptions : public Identifier {
   public:
     PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<DistanceMetric<dim>> &metric,
-                   const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
-                   const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+                   const std::shared_ptr<Evaluator<dim>> &evalutor, const std::shared_ptr<PathModifier<dim>> &pathModifier,
+                   const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     void setCollisionDetection(const std::shared_ptr<CollisionDetection<dim>> &collision);
     std::shared_ptr<CollisionDetection<dim>> getCollisionDetection() const;
 
     void setDistanceMetric(const std::shared_ptr<DistanceMetric<dim>> &metric);
     std::shared_ptr<DistanceMetric<dim>> getDistanceMetric() const;
+
+    void setEvaluator(const std::shared_ptr<Evaluator<dim>> &evaluator);
+    std::shared_ptr<Evaluator<dim>> getEvaluator() const;
 
     void setPathModifier(const std::shared_ptr<PathModifier<dim>> &pathModifier);
     std::shared_ptr<PathModifier<dim>> getPathModifier() const;
@@ -60,6 +64,7 @@ class PlannerOptions : public Identifier {
   protected:
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
+    std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
     std::shared_ptr<PathModifier<dim>> m_pathModifier = nullptr;
     std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
@@ -69,6 +74,7 @@ class PlannerOptions : public Identifier {
 *  \brief      Standard constructor of the class PlannerOptions, it holds all modules of the path planner.
 *  \param[in]  CollisionDetection
 *  \param[in]  DistanceMetric
+*  \param[in]  Evaluator
 *  \param[in]  PathModifier
 *  \param[in]  Sampling
 *  \param[in]  TrajectoryPlanner
@@ -78,12 +84,14 @@ class PlannerOptions : public Identifier {
 template <unsigned int dim>
 PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
                                     const std::shared_ptr<DistanceMetric<dim>> &metric,
+                                    const std::shared_ptr<Evaluator<dim>> &evaluator,
                                     const std::shared_ptr<PathModifier<dim>> &pathModifier,
                                     const std::shared_ptr<Sampling<dim>> &sampling,
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
     : Identifier("PlannerOptions"),
       m_collision(collision),
       m_metric(metric),
+      m_evaluator(evaluator),
       m_pathModifier(pathModifier),
       m_sampling(sampling),
       m_trajectory(trajectory) {
@@ -131,6 +139,28 @@ void PlannerOptions<dim>::setDistanceMetric(const std::shared_ptr<DistanceMetric
 template <unsigned int dim>
 std::shared_ptr<DistanceMetric<dim>> PlannerOptions<dim>::getDistanceMetric() const {
     return m_metric;
+}
+
+/*!
+*  \brief      Sets the Evaluator instance.
+*  \param[in]  evaluator
+*  \author     Sascha Kaden
+*  \date       2017-09-30
+*/
+template <unsigned int dim>
+void PlannerOptions<dim>::setEvaluator(const std::shared_ptr<Evaluator<dim>> &evaluator) {
+    m_evaluator = evaluator;
+}
+
+/*!
+*  \brief      Returns the Evaluator instance.
+*  \param[out] evaluator
+*  \author     Sascha Kaden
+*  \date       2017-09-30
+*/
+template <unsigned int dim>
+std::shared_ptr<Evaluator<dim>> PlannerOptions<dim>::getEvaluator() const {
+    return m_evaluator;
 }
 
 /*!

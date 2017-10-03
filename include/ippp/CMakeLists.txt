@@ -36,6 +36,9 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL1Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL2Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecInfMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/DummyEvaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/Evaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/QueryEvaluator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/BruteForceNF.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/KDTree.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/NeighborFinder.hpp
@@ -57,11 +60,12 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/LinearTrajectory.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/RotateAtS.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/TrajectoryPlanner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilCollision.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilGeo.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilIO.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilList.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilTrajectory.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilVec.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilCollision.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/util/UtilEnvironment.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/util/MapGenerator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp
@@ -75,7 +79,8 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStar.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStarContTraj.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/SRT.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/TreePlanner.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/TreePlanner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/util/UtilPlanner.hpp)
 
 IF (${BUILD_FCL})
     list(APPEND SRCS
