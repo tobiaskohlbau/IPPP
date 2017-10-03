@@ -37,10 +37,12 @@ class Graph : public Identifier {
     Graph(const unsigned int sortCount, const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder);
     ~Graph();
 
-    void addNode(const std::shared_ptr<Node<dim>> &node);
+    bool addNode(const std::shared_ptr<Node<dim>> &node);
     void addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &nodes);
+    bool containNode(const std::shared_ptr<Node<dim>> &node);
 
     std::shared_ptr<Node<dim>> getNode(const unsigned int index) const;
+    std::shared_ptr<Node<dim>> getNode(const Vector<dim> &config) const;
     std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
 
     std::shared_ptr<Node<dim>> getNearestNode(const Vector<dim> &vec) const;
@@ -66,11 +68,10 @@ class Graph : public Identifier {
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
 
     bool operator<(std::shared_ptr<Graph<dim>> const &a) {
-        if (a->getNode(0) && this->getNode(0)) {
+        if (a->getNode(0) && this->getNode(0))
             return a->getNode(0)->getValues().norm() < this->getNode(0)->getValues().norm();
-        } else {
+        else
             return false;
-        }
     }
 
   private:
@@ -119,17 +120,17 @@ Graph<dim>::~Graph() {
 * \brief      Add a Node to the graph
 * \author     Sascha Kaden
 * \param[in]  Node
+* \param[out] result, false if the Node is soon inside of the Graph
 * \date       2016-05-25
 */
 template <unsigned int dim>
-void Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
+bool Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_mutex.lock();
     m_neighborFinder->addNode(node->getValues(), node);
     m_nodes.push_back(node);
     m_mutex.unlock();
-    if (m_autoSort && (m_nodes.size() % m_sortCount) == 0) {
+    if (m_autoSort && (m_nodes.size() % m_sortCount) == 0)
         sortTree();
-    }
 }
 
 /*!
@@ -140,24 +141,53 @@ void Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
 */
 template <unsigned int dim>
 void Graph<dim>::addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &nodes) {
-    for (auto node : nodes) {
+    for (auto node : nodes)
         addNode(node);
-    }
+}
+
+/*!
+* \brief      Checks the graph, if it contains the passed Node.
+* \author     Sascha Kaden
+* \param[in]  Node
+* \param[out] result, true if it contains
+* \date       2017-10-01
+*/
+template <unsigned int dim>
+bool Graph<dim>::containNode(const std::shared_ptr<Node<dim>> &node) {
+    auto nearestNode = m_neighborFinder->searchNearestNeighbor(node->getValues());
+    if (util::equal<dim>(nearestNode->getValues(), node->getValues()))
+        return true;
 }
 
 /*!
 * \brief      Return Node from index
 * \author     Sascha Kaden
-* \param[in]  Node
+* \param[in]  index
+* \param[out] Node
 * \date       2017-04-03
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const unsigned int index) const {
-    if (index < m_nodes.size()) {
+    if (index < m_nodes.size())
         return m_nodes[index];
-    } else {
+    else
         return nullptr;
-    }
+}
+
+/*!
+* \brief      Return Node from config
+* \author     Sascha Kaden
+* \param[in]  Vector
+* \param[out] Node
+* \date       2017-10-01
+*/
+template <unsigned int dim>
+std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const {
+    auto nearestNode = m_neighborFinder->searchNearestNeighbor(config);
+    if (nearestNode && util::equal<dim>(nearestNode->getValues(), config))
+        return nearestNode;
+    else
+        return nullptr;
 }
 
 /*!
@@ -287,11 +317,10 @@ bool Graph<dim>::eraseNode(const std::shared_ptr<Node<dim>> &node) {
 */
 template <unsigned int dim>
 bool Graph<dim>::empty() const {
-    if (m_nodes.empty()) {
+    if (m_nodes.empty())
         return true;
-    } else {
+    else
         return false;
-    }
 }
 
 /*!
@@ -334,9 +363,8 @@ bool Graph<dim>::autoSort() const {
 */
 template <unsigned int dim>
 void Graph<dim>::clearParents() {
-    for (auto &&node : m_nodes) {
+    for (auto &&node : m_nodes)
         node->clearParent();
-    }
 }
 
 /*!
@@ -346,9 +374,8 @@ void Graph<dim>::clearParents() {
 */
 template <unsigned int dim>
 void Graph<dim>::clearQueryParents() {
-    for (auto &&node : m_nodes) {
+    for (auto &&node : m_nodes)
         node->clearQueryParent();
-    }
 }
 
 /*!
@@ -358,9 +385,8 @@ void Graph<dim>::clearQueryParents() {
 */
 template <unsigned int dim>
 void Graph<dim>::clearChildes() {
-    for (auto &&node : m_nodes) {
+    for (auto &&node : m_nodes)
         node->clearChildes();
-    }
 }
 
 /*!
