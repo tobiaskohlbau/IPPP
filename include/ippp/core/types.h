@@ -26,7 +26,7 @@
 
 namespace ippp {
 
-// Eigen variables
+// Eigen Vectors
 template <unsigned int dim>
 using Vector = Eigen::Matrix<double, dim, 1>;
 using Vector2 = Eigen::Matrix<double, 2, 1>;
@@ -36,6 +36,7 @@ using Vector5 = Eigen::Matrix<double, 5, 1>;
 using Vector6 = Eigen::Matrix<double, 6, 1>;
 using VectorX = Eigen::Matrix<double, Eigen::Dynamic, 1>;
 
+// Eigen Matrices
 template <unsigned int dim>
 using Matrix = Eigen::Matrix<double, dim, dim>;
 using Matrix2 = Eigen::Matrix2d;

@@ -142,8 +142,8 @@ static void poseVecToRandT(const Vector3 &pose, Matrix2 &R, Vector2 &t) {
 */
 static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector3 &pose) {
     Vector3 t(pose[0], pose[1], 0);
-    Matrix3 R = Matrix3::Identity(3,3);
-    R.block<2, 2>(0,0) = getRotMat2D(pose[2]);
+    Matrix3 R = Matrix3::Identity(3, 3);
+    R.block<2, 2>(0, 0) = getRotMat2D(pose[2]);
     return std::make_pair(R, t);
 }
 
@@ -232,17 +232,16 @@ static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3
 *  \param[out] transformed aabb
 *  \date       2017-06-21
 */
-static AABB transformAABB(const AABB &a, const std::pair<Matrix2,Vector2> &trafo)
-{
+static AABB transformAABB(const AABB &a, const std::pair<Matrix2, Vector2> &trafo) {
     // trafo is pair with rotation and translation
     Vector3 center(trafo.second[0], trafo.second[1], 0);
-    Vector3 radius = Vector3::Zero(3,1);
-    Matrix3 R = Matrix3::Identity(3,3);
-    R.block<2,2>(0,0) = trafo.first;
+    Vector3 radius = Vector3::Zero(3, 1);
+    Matrix3 R = Matrix3::Identity(3, 3);
+    R.block<2, 2>(0, 0) = trafo.first;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            center[i] += R(i,j) * a.center()[j];
-            radius[i] += std::abs(R(i,j)) * a.diagonal()[j] / 2;
+            center[i] += R(i, j) * a.center()[j];
+            radius[i] += std::abs(R(i, j)) * a.diagonal()[j] / 2;
         }
     }
     // return AABB by new construction min and max point
@@ -253,20 +252,19 @@ static AABB transformAABB(const AABB &a, const std::pair<Matrix2,Vector2> &trafo
 *  \brief      Transforms an AABB with the passed transformations and return the new AABB.
 *  \details    The new AABB has a larger size as the original and the AABB is no more tight!
 *  \author     Sascha Kaden
-*  \param[in]  original aabb
+*  \param[in]  original AABB
 *  \param[in]  pair with rotation and transformation
 *  \param[out] transformed aabb
 *  \date       2017-06-21
 */
-static AABB transformAABB(const AABB &a, const std::pair<Matrix3,Vector3> &trafo)
-{
+static AABB transformAABB(const AABB &a, const std::pair<Matrix3, Vector3> &trafo) {
     // trafo is pair with rotation and translation
     Vector3 center(trafo.second);
-    Vector3 radius = Vector3::Zero(3,1);
+    Vector3 radius = Vector3::Zero(3, 1);
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            center[i] += trafo.first(i,j) * a.center()[j];
-            radius[i] += std::abs(trafo.first(i,j)) * a.diagonal()[j] / 2;
+            center[i] += trafo.first(i, j) * a.center()[j];
+            radius[i] += std::abs(trafo.first(i, j)) * a.diagonal()[j] / 2;
         }
     }
     // return AABB by new construction min and max point
@@ -282,8 +280,7 @@ static AABB transformAABB(const AABB &a, const std::pair<Matrix3,Vector3> &trafo
 *  \param[out] transformed aabb
 *  \date       2017-06-21
 */
-static AABB translateAABB(const AABB &a, const Vector3 &t)
-{
+static AABB translateAABB(const AABB &a, const Vector3 &t) {
     AABB result(a);
     result.translate(t);
     return result;
@@ -308,11 +305,10 @@ static Vector3 removeDuplicates(std::vector<Vector3> &vectors) {
     for (auto vec = vectors.begin(); vec != vectors.end(); ++vec) {
         int i = 1;
         while (vec + i != vectors.end() && vec->x() - (vec + i)->x() < 0.01) {
-            if ((*vec - *(vec + i)).squaredNorm() < 0.0001) {
+            if ((*vec - *(vec + i)).squaredNorm() < 0.0001)
                 vectors.erase(vec + i);
-            } else {
+            else
                 ++i;
-            }
         }
     }
 }
@@ -326,9 +322,8 @@ static Vector3 removeDuplicates(std::vector<Vector3> &vectors) {
 */
 template <unsigned int dim>
 Vector<dim> degToRad(Vector<dim> deg) {
-    for (unsigned int i = 0; i < dim; ++i) {
+    for (unsigned int i = 0; i < dim; ++i)
         deg[i] *= toRad();
-    }
     return deg;
 }
 
@@ -341,9 +336,8 @@ Vector<dim> degToRad(Vector<dim> deg) {
 */
 template <unsigned int dim>
 Vector<dim> radToDeg(Vector<dim> rad) {
-    for (unsigned int i = 0; i < dim; ++i) {
+    for (unsigned int i = 0; i < dim; ++i)
         rad[i] *= toDeg();
-    }
     return rad;
 }
 
