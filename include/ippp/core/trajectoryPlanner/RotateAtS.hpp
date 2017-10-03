@@ -59,6 +59,7 @@ class RotateAtS : public TrajectoryPlanner<dim> {
 *  \brief      Constructor of the class LinearTrajectory
 *  \author     Sascha Kaden
 *  \param[in]  CollisionDetection
+*  \param[in]  Environment
 *  \param[in]  step size of the path
 *  \param[in]  rotation point
 *  \date       2017-06-20
@@ -68,7 +69,9 @@ RotateAtS<dim>::RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collis
                           const std::shared_ptr<Environment> &environment, const double stepSize, const double rotPoint)
     : TrajectoryPlanner<dim>("RotateAtS", collision, environment, stepSize) {
     setRotationPoint(rotPoint);
-    initMasks();
+    auto masks = environment->getConfigMasks();
+    m_posMask = masks.first;
+    m_rotMask = masks.second;
 }
 
 /*!
@@ -103,34 +106,17 @@ std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &s
     Vector<dim> posTarget = util::multiplyElementWise<dim>(target, m_posMask);
 
     // compute the linear translation points
-    Vector<dim> u(posTarget - posSource);    // u = a - b
-    configs.reserve((int)(u.norm() / m_stepSize) + 1);
-    u /= u.norm() / m_stepSize;    // u = |u|
-    for (Vector<dim> temp(posSource + u); (temp - posTarget).squaredNorm() > 1; temp += u)
-        configs.push_back(temp);
+    configs = util::linearTrajectoryCont<dim>(posSource, posTarget, m_stepSize);
+    Vector<dim> u(posTarget - posSource);
 
-    // get middle point
-    size_t middleIndex = configs.size() * m_rotationPoint;
-    auto middlePos = configs[middleIndex];
-    // add the fixed rotations to the linear path
+    // compute the linear rotation points
     Vector<dim> rotSource = util::multiplyElementWise<dim>(source, m_rotMask);
     Vector<dim> rotTarget = util::multiplyElementWise<dim>(target, m_rotMask);
-    size_t index = 0;
-    for (auto config = configs.begin(); config != configs.end(); ++config, ++index) {
-        if (index <= middleIndex)
-            *config += rotSource;
-        else
-            *config += rotTarget;
-    }
+    std::vector<Vector<dim>> rotConfigs = util::linearTrajectoryCont<dim>(rotSource, rotTarget, m_stepSize);
 
-    // add rotation changing points to the vector
-    rotSource += middlePos;
-    rotTarget += middlePos;
-    auto it = configs.begin() + middleIndex;
-    u = (rotTarget - rotSource);    // u = a - b
-    u /= u.norm() / m_stepSize;    // u = |u|
-    for (Vector<dim> temp(rotSource + u); (temp - rotTarget).squaredNorm() > m_stepSize; temp += u)
-        it = configs.insert(it, temp);
+    // get middle point and insert rotation configurations
+    size_t middleIndex = configs.size() * m_rotationPoint;
+    configs.insert(std::begin(configs) + middleIndex, std::begin(rotConfigs), std::end(rotConfigs));
 
     return configs;
 }
@@ -160,28 +146,6 @@ void RotateAtS<dim>::setRotationPoint(const double rotPoint) {
 template <unsigned int dim>
 double RotateAtS<dim>::getRotationPoint() {
     return m_rotationPoint;
-}
-
-/*!
-*  \brief      Initialize the rotation and translations mask with the dofs of the robots.
-*  \author     Sascha Kaden
-*  \date       2017-06-20
-*/
-template <unsigned int dim>
-void RotateAtS<dim>::initMasks() {
-    size_t index = 0;
-    for (size_t i = 0; i < m_environment->numRobots(); ++i) {
-        auto dofTypes = m_environment->getRobot(i)->getDofTypes();
-        for (auto dof = dofTypes.begin(); dof != dofTypes.end(); ++dof, ++index) {
-            if (*dof == DofType::planarPos || *dof == volumetricPos) {
-                m_posMask[index] = 1;
-                m_rotMask[index] = 0;
-            } else {
-                m_posMask[index] = 0;
-                m_rotMask[index] = 1;
-            }
-        }
-    }
 }
 
 } /* namespace ippp */
