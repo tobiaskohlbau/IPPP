@@ -102,8 +102,11 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
     std::vector<Vector<dim>> query = {goal};
     m_evaluator->setQuery(query);
 
-    while (!m_evaluator->evaluate())
+    size_t loopCount = 1;
+    while (!m_evaluator->evaluate()) {
+        Logging::debug("Iteration: " + std::to_string(loopCount++), this);
         computeTree(numNodes, numThreads);
+    }
 
     return connectGoalNode(goal);
 }

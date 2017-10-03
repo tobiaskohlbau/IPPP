@@ -70,7 +70,7 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
             m_obstacles.push_back(obstacle->m_mesh);
     }
 
-    // update obstacle models for the 2D collision check, extends the AABB of the obstacle
+    // update obstacle models for the 2D collision check, extends the AABB of the obstacle in z direction
     for (auto obstacle : m_obstacles) {
         Vector3 bottomLeft = obstacle.aabb.corner(AABB::CornerType::BottomLeft);
         Vector3 topRight = obstacle.aabb.corner(AABB::CornerType::TopRight);

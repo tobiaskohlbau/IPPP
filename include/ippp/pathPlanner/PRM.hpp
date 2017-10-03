@@ -96,8 +96,11 @@ bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, cons
     std::vector<Vector<dim>> query = {start, goal};
     m_evaluator->setQuery(query);
 
-    while (!m_evaluator->evaluate())
+    size_t loopCount = 1;
+    while (!m_evaluator->evaluate()) {
+        Logging::debug("Iteration: " + std::to_string(loopCount++), this);
         expand(numNodes, numThreads);
+    }
 
     return queryPath(start, goal);
 }
@@ -119,7 +122,7 @@ bool PRM<dim>::expand(const unsigned int numNodes, const unsigned int numThreads
 }
 
 /*!
-*  \brief      Sampling phase of the Pipppanner
+*  \brief      Sampling phase of the PRM
 *  \author     Sascha Kaden
 *  \param[in]  number of Nodes to be sampled
 *  \param[in]  number of threads
@@ -165,7 +168,7 @@ void PRM<dim>::samplingPhase(const unsigned int nbOfNodes) {
 }
 
 /*!
-*  \brief      Local planning phase of the Pipppanner.
+*  \brief      Local planning phase of the PRM.
 *  \details    Add the nearest neighbors of a Node as childes.
 *  \author     Sascha Kaden
 *  \param[in]  number of threads
