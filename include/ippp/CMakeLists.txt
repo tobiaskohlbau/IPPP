@@ -37,7 +37,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedL1Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedL2Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedInfMetric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/DummyEvaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/SingleIterationEvaluator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/Evaluator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/QueryEvaluator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/BruteForceNF.hpp

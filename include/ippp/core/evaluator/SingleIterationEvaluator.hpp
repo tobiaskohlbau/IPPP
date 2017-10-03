@@ -24,14 +24,14 @@
 namespace ippp {
 
 /*!
-* \brief   Dummy Evaluator which returns always true.
+* \brief   SingleIterationEvaluator which runs only one Iteration.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
 template <unsigned int dim>
-class DummyEvaluator : public Evaluator<dim> {
+class SingleIterationEvaluator : public Evaluator<dim> {
   public:
-    DummyEvaluator(const std::shared_ptr<Environment> &environment);
+    SingleIterationEvaluator(const std::shared_ptr<Environment> &environment);
 
     bool evaluate();
 
@@ -40,24 +40,24 @@ class DummyEvaluator : public Evaluator<dim> {
 };
 
 /*!
-*  \brief      Constructor of the class DummyEvaluator
+*  \brief      Constructor of the class SingleIterationEvaluator
 *  \author     Sascha Kaden
 *  \param[in]  Environment
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-DummyEvaluator<dim>::DummyEvaluator(const std::shared_ptr<Environment> &environment)
-    : Evaluator<dim>("DummyEvaluator", environment) {
+SingleIterationEvaluator<dim>::SingleIterationEvaluator(const std::shared_ptr<Environment> &environment)
+    : Evaluator<dim>("SingleIterationEvaluator", environment) {
 }
 
 /*!
-*  \brief      Return always true at evaluation
+*  \brief      Return always true at the second iteration
 *  \author     Sascha Kaden
-*  \param[out] true evaluation
+*  \param[out] evaluation
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-bool DummyEvaluator<dim>::evaluate() {
+bool SingleIterationEvaluator<dim>::evaluate() {
     if (m_firstEvaluation) {
         m_firstEvaluation = false;
         return false;

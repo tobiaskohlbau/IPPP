@@ -40,7 +40,7 @@
 #include <ippp/core/distanceMetrics/WeightedL1Metric.hpp>
 #include <ippp/core/distanceMetrics/WeightedL2Metric.hpp>
 
-#include <ippp/core/evaluator/DummyEvaluator.hpp>
+#include <ippp/core/evaluator/SingleIterationEvaluator.hpp>
 #include <ippp/core/evaluator/Evaluator.hpp>
 #include <ippp/core/evaluator/QueryEvaluator.hpp>
 
