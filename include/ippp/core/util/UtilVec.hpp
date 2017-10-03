@@ -27,6 +27,24 @@ namespace ippp {
 namespace util {
 
 /*!
+*  \brief      Check equality of two Vectors
+*  \author     Sascha Kaden
+*  \param[in]  Vector a
+*  \param[in]  Vector b
+*  \param[out] result, true if vectors are equal
+*  \date       2017-09-30
+*/
+
+template <unsigned int dim>
+static bool equal(const Vector<dim> &a, const Vector<dim> &b) {
+    for (unsigned int i = 0; i < dim; ++i)
+        if (a[i] - b[i] > 0.00001)
+            return false;
+
+    return true;
+}
+
+/*!
 *  \brief      Check whether the vector is empty (contains a NaN value)
 *  \author     Sascha Kaden
 *  \param[in]  Vector
