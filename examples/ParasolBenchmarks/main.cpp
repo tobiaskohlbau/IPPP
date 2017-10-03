@@ -54,11 +54,12 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(environment));
     std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(environment));
 
-    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerRandom, SamplingType::Straight, TrajectoryType::Linear);
-    ModuleCreator<dim> creatorBenchmark(environment, collisionBenchmark, MetricType::L2, NeighborType::KDTree,
-                                        PathModifierType::NodeCut, SamplerType::SamplerRandom, SamplingType::Straight,
-                                        TrajectoryType::Linear);
+    ModuleCreator<dim> creator;
+    creator.setCollision(collision);
+    creator.setEnvironment(environment);
+    ModuleCreator<dim> creatorBenchmark;
+    creatorBenchmark.setCollision(collisionBenchmark);
+    creatorBenchmark.setEnvironment(environment);
 
     for (int i = 3; i < 6; ++i) {
         config.obstacleConfig[i] *= util::toRad();
@@ -137,8 +138,8 @@ void benchmarkHedgehog() {
 
 void generateMap() {
     const unsigned int dim = 3;
-    Vector3 min(-50,-50,-50);
-    Vector3 max(50,50,50);
+    Vector3 min(0,0,-10);
+    Vector3 max(1000,1000,10);
     AABB bounding(min, max);
 
     std::vector<Triangle2D> triangles;
@@ -151,7 +152,7 @@ void generateMap() {
     std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(environment));
 
     MapGenerator<3> mapGenerator(bounding, sampler);
-    auto meshes = mapGenerator.generateMap(20, Vector3(30, 30, 30));
+    auto meshes = mapGenerator.generateMap(400, Vector3(30, 30, 20));
     auto mesh = cad::mergeMeshes(meshes);
     cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
 
@@ -163,15 +164,15 @@ void generateMap() {
 int main(int argc, char** argv) {
     modelDir = getModelDirectory();
 
-    std::string file = modelDir + "assembly/boxRot.dae";
-    std::vector<Mesh> meshes;
-    auto result = cad::importMeshes(file, meshes, 1, false, true);
-    if (result)
-        std::cout << "successful reading" << std::endl;
-    for (int i = 0; i < meshes.size(); ++i)
-        cad::exportCad(cad::ExportFormat::OBJ, std::to_string(i), meshes[i]);
+//    std::string file = modelDir + "assembly/boxRot.dae";
+//    std::vector<Mesh> meshes;
+//    auto result = cad::importMeshes(file, meshes, 1, false, true);
+//    if (result)
+//        std::cout << "successful reading" << std::endl;
+//    for (int i = 0; i < meshes.size(); ++i)
+//        cad::exportCad(cad::ExportFormat::OBJ, std::to_string(i), meshes[i]);
 
-//    generateMap();
+    generateMap();
 
     // ProfilerStart("/tmp/cpu.prof");
     //    benchmarkFlange();

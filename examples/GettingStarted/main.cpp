@@ -40,8 +40,15 @@ int main(int argc, char** argv) {
     // define step size of the trajectories and create trajectory planner
     double stepSize = 3;
     // create all required core modules with the ModuleCreator
-    ModuleCreator<dim> creator(environment, collision, MetricType::L2, NeighborType::KDTree, PathModifierType::NodeCut,
-                               SamplerType::SamplerUniform, SamplingType::Straight, TrajectoryType::Linear, stepSize);
+    ModuleCreator<dim> creator;
+    creator.setEnvironment(environment);
+    creator.setCollision(collision);
+    creator.setMetricType(MetricType::L2);
+    creator.setPathModifierType(PathModifierType::NodeCut);
+    creator.setSamplerType(SamplerType::SamplerUniform);
+    creator.setSamplingType(SamplingType::Straight);
+    creator.setSamplingProperties(5, 10);
+    creator.setTrajectoryType(TrajectoryType::Linear);
 
     // define the options of the path planner
     double rrtStepSize = 30;

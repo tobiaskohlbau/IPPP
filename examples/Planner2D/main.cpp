@@ -78,7 +78,7 @@ void testPointRobot() {
     std::shared_ptr<Environment> environment(new Environment(2, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)), robot));
     ModelFactoryTriangle2D factory;
 
-    auto workspace = factory.createModels(getModelDirectory() + "/spaces/random2DHard.obj");
+    auto workspace = factory.createModels(getModelDirectory() + "/spaces/random2D.obj");
     environment->addObstacles(workspace);
 
     std::shared_ptr<CollisionDetection<dim>> collision2D(new CollisionDetection2D<dim>(environment));
@@ -86,8 +86,8 @@ void testPointRobot() {
     creator.setEnvironment(environment);
     creator.setCollision(collision2D);
     creator.setEvaluatorType(EvaluatorType::Query);
-    creator.setSamplingType(SamplingType::MedialAxis);
-    creator.setEvaluatorType(EvaluatorType::SingleIteration);
+    creator.setQueryEvaluatorDist(30);
+    creator.setSamplingType(SamplingType::NearObstacle);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
 //    planner = std::shared_ptr<EST<dim>>(new EST<dim>(environment, creator.getPlannerOptions(), creator.getGraph()));
@@ -100,7 +100,7 @@ void testPointRobot() {
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(10.0, 10.0);
     Vector2 goal(990.0, 990.0);
-    bool connected = planner->computePath(start, goal, 20000, 2);
+    bool connected = planner->computePath(start, goal, 500, 2);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
