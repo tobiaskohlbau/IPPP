@@ -131,10 +131,10 @@ void RRT<dim>::computeTreeThread(const unsigned int nbOfNodes) {
 }
 
 /*!
-*  \brief      Connects goal Node< to tree, if connection is possible
+*  \brief      Connects goal Node to tree, if connection is possible
 *  \author     Sascha Kaden
 *  \param[in]  goal Node
-*  \param[out] true, if the connection was possible
+*  \param[out] true, if the connection is valid
 *  \date       2016-05-27
 */
 template <unsigned int dim>
@@ -159,9 +159,8 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
         goalNode->setParent(nearestNode, this->m_metric->calcDist(nearestNode, goalNode));
         m_goalNode = goalNode;
         m_graph->addNode(goalNode);
-        // Logging::info("Goal Node<dim> is connected", this);
         m_pathPlanned = true;
-        Logging::info("Goal could connected", this);
+        Logging::info("Goal is connected", this);
         return true;
     }
 

@@ -24,15 +24,11 @@
 #include <Eigen/Core>
 
 #include <ippp/core/Identifier.h>
-#include <ippp/core/collisionDetection/CollisionDetection.hpp>
 #include <ippp/core/dataObj/Graph.hpp>
-#include <ippp/core/pathModifier/PathModifier.hpp>
-#include <ippp/core/sampling/Sampling.hpp>
-#include <ippp/core/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <ippp/core/types.h>
-#include <ippp/environment/Environment.h>
 #include <ippp/environment/util/UtilEnvironment.hpp>
 #include <ippp/pathPlanner/options/PlannerOptions.hpp>
+#include <ippp/pathPlanner/util/UtilPlanner.hpp>
 
 namespace ippp {
 
@@ -66,9 +62,9 @@ class Planner : public Identifier {
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
 
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
+    std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
     std::shared_ptr<PathModifier<dim>> m_pathModifier = nullptr;
     std::shared_ptr<Graph<dim>> m_graph = nullptr;
     std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
@@ -101,6 +97,7 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
     : Identifier(name),
       m_collision(options.getCollisionDetection()),
       m_environment(environment),
+      m_evaluator(options.getEvaluator()),
       m_graph(graph),
       m_metric(options.getDistanceMetric()),
       m_options(options),
@@ -208,4 +205,4 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::smoothPath(std::vector<std
 
 } /* namespace ippp */
 
-#endif /* RRTPLANNER_HPP */
+#endif /* PLANNER_HPP */
