@@ -36,9 +36,9 @@
 #include <ippp/core/distanceMetrics/InfMetric.hpp>
 #include <ippp/core/distanceMetrics/L1Metric.hpp>
 #include <ippp/core/distanceMetrics/L2Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightVecInfMetric.hpp>
-#include <ippp/core/distanceMetrics/WeightVecL1Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightVecL2Metric.hpp>
+#include <ippp/core/distanceMetrics/WeightedInfMetric.hpp>
+#include <ippp/core/distanceMetrics/WeightedL1Metric.hpp>
+#include <ippp/core/distanceMetrics/WeightedL2Metric.hpp>
 
 #include <ippp/core/evaluator/DummyEvaluator.hpp>
 #include <ippp/core/evaluator/Evaluator.hpp>
