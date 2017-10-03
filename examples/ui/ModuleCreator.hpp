@@ -165,7 +165,7 @@ void ModuleCreator<dim>::initializeModules() {
     m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(m_graphSortCount, m_neighborFinder));
 
     if (m_evaluatorType == EvaluatorType::SingleIteration)
-        m_evaluator = std::shared_ptr<Evaluator<dim>>(new DummyEvaluator<dim>(m_environment));
+        m_evaluator = std::shared_ptr<Evaluator<dim>>(new SingleIterationEvaluator<dim>(m_environment));
     else
         m_evaluator =
             std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_environment, m_metric, m_graph, m_queryEvaluatorDist));
