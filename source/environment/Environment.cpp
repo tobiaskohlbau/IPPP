@@ -27,6 +27,21 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \param[in]  dimension of the workspace
 *  \param[in]  workspace boundary
+*  \date       2017-05-17
+*/
+Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBoundary)
+    : Identifier("Environment"), m_spaceDim(workspaceDim), m_spaceBoundary(spaceBoundary) {
+    if (2 > m_spaceDim || m_spaceDim > 3)
+        Logging::error("Dimension of workspace have to be 2 or 3", this);
+    assert(m_spaceDim == 2 || m_spaceDim == 3);
+    updateConfigurationDim();
+}
+
+/*!
+*  \brief      Constructor of the class Environment
+*  \author     Sascha Kaden
+*  \param[in]  dimension of the workspace
+*  \param[in]  workspace boundary
 *  \param[in]  robot
 *  \date       2017-05-17
 */
