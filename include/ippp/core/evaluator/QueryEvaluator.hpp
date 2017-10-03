@@ -23,6 +23,7 @@
 #include <ippp/core/distanceMetrics/DistanceMetric.hpp>
 #include <ippp/core/evaluator/Evaluator.hpp>
 #include <ippp/core/util/UtilVec.hpp>
+#include <ippp/core/util/Logging.h>
 
 namespace ippp {
 
@@ -85,6 +86,7 @@ bool QueryEvaluator<dim>::evaluate() {
             if (m_metric->calcDist(m_targets[targetIndex], m_graph->getNode(index)->getValues()) < m_dist) {
                 found = true;
                 m_validTargets[targetIndex] = true;
+                Logging::debug("Target: " + std::to_string(targetIndex) + " is solved.", this);
                 break;
             }
         }

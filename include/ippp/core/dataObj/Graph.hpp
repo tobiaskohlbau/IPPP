@@ -286,7 +286,7 @@ template <unsigned int dim>
 void Graph<dim>::sortTree() {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_neighborFinder->rebaseSorted(m_nodes);
-    Logging::info("KD Tree has been sorted and have: " + std::to_string(m_nodes.size()) + " Nodes", this);
+    Logging::debug("KD Tree has been sorted and has: " + std::to_string(m_nodes.size()) + " Nodes", this);
 }
 
 /*!
