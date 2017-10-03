@@ -36,7 +36,7 @@ class RRTStar : public RRT<dim> {
     RRTStar(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
             const std::shared_ptr<Graph<dim>> &graph);
 
-    bool connectGoalNode(const Vector<dim> goal);
+    bool connectGoalNode(const Vector<dim> goal) override;
 
   protected:
     std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec);
@@ -46,11 +46,12 @@ class RRTStar : public RRT<dim> {
                 std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
     using Planner<dim>::m_collision;
+    using Planner<dim>::m_environment;
     using Planner<dim>::m_graph;
+    using Planner<dim>::m_metric;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_environment;
     using Planner<dim>::m_sampling;
     using RRT<dim>::m_initNode;
     using RRT<dim>::m_goalNode;
@@ -84,18 +85,17 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randC
     std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randConfig);
     // set Node<dim> new fix fixed step size of 10
     Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
-    if (m_collision->checkConfig(newConfig)) {
+    if (m_collision->checkConfig(newConfig))
         return nullptr;
-    }
+    
     std::vector<std::shared_ptr<Node<dim>>> nearNodes;
     chooseParent(randConfig, nearestNode, nearNodes);
 
-    if (!m_trajectory->checkTrajectory(newConfig, nearestNode->getValues())) {
+    if (!m_trajectory->checkTrajectory(newConfig, nearestNode->getValues()))
         return nullptr;
-    }
 
     std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newConfig));
-    double edgeCost = this->m_metric->calcDist(newNode, nearestNode);
+    double edgeCost = m_metric->calcDist(newNode, nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);
     m_mutex.lock();
@@ -145,7 +145,7 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
     double oldDist, newDist, edgeCost;
     for (auto nearNode : nearNodes) {
         if (nearNode != parentNode) {
-            edgeCost = this->m_metric->calcDist(nearNode, newNode);
+            edgeCost = m_metric->calcDist(nearNode, newNode);
             oldDist = nearNode->getCost();
             newDist = edgeCost + newNode->getCost();
             if (newDist < oldDist && m_trajectory->checkTrajectory(nearNode, newNode)) {
@@ -159,10 +159,10 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
 }
 
 /*!
-*  \brief      Connects goal Node to tree, if connection is possible
+*  \brief      Connects goal Node to tree, if connection is valid
 *  \author     Sascha Kaden
-*  \param[in]  goal Node
-*  \param[out] true, if the connection was possible
+*  \param[in]  goal configuration
+*  \param[out] true, if the connection is valid
 *  \date       2016-05-27
 */
 template <unsigned int dim>
@@ -172,29 +172,22 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
         return false;
     }
 
-    std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(goalNode, m_stepSize * 3);
+    auto nearestNode = util::getNearestValidNode<dim>(goal, m_graph, m_trajectory, m_metric, m_stepSize * 3);
 
-    std::shared_ptr<Node<dim>> nearestNode = nullptr;
-    double minCost = std::numeric_limits<double>::max();
-    for (int i = 0; i < nearNodes.size(); ++i) {
-        if (nearNodes[i]->getCost() < minCost && m_trajectory->checkTrajectory(goalNode, nearNodes[i])) {
-            minCost = nearNodes[i]->getCost();
-            nearestNode = nearNodes[i];
-        }
-    }
-
-    if (nearestNode != nullptr) {
-        goalNode->setParent(nearestNode, this->m_metric->calcDist(goalNode, nearestNode));
+    if (nearestNode) {
+        std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
+        goalNode->setParent(nearestNode, m_metric->calcDist(goalNode, nearestNode));
         goalNode->setCost(goalNode->getParentEdge()->getCost() + nearestNode->getCost());
+        nearestNode->addChild(goalNode, m_metric->calcDist(goalNode, nearestNode));
+
         m_goalNode = goalNode;
         m_pathPlanned = true;
-        Logging::info("Goal could connected", this);
+        Logging::info("Goal is connected", this);
         return true;
+    } else {
+        Logging::warning("Goal could NOT connected", this);
+        return false;
     }
-
-    Logging::warning("Goal could NOT connected", this);
-    return false;
 }
 
 } /* namespace ippp */

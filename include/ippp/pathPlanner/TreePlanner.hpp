@@ -35,9 +35,10 @@ template <unsigned int dim>
 class TreePlanner : public Planner<dim> {
   public:
     TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
-        const std::shared_ptr<Graph<dim>> &graph);
+                const std::shared_ptr<Graph<dim>> &graph);
 
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
+    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
+                             const unsigned int numThreads);
     virtual bool expand(const unsigned int numNodes, const unsigned int numThreads);
     virtual bool setInitNode(const Vector<dim> start);
 
@@ -54,25 +55,26 @@ class TreePlanner : public Planner<dim> {
     std::shared_ptr<Node<dim>> m_goalNode = nullptr;
 
     using Planner<dim>::m_collision;
+    using Planner<dim>::m_environment;
+    using Planner<dim>::m_evaluator;
     using Planner<dim>::m_graph;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_environment;
 };
 
 /*!
 *  \brief      Constructor of the class TreePlanner, base class of RRT and EST.
 *  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \param[in]  options
-*  \param[in]  Graph
 *  \param[in]  name
+*  \param[in]  Environment
+*  \param[in]  PlannerOptions
+*  \param[in]  Graph
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
-              const std::shared_ptr<Graph<dim>> &graph)
+TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment,
+                              const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
     : Planner<dim>(name, environment, options, graph) {
 }
 
@@ -88,15 +90,20 @@ TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Env
 */
 template <unsigned int dim>
 bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
-                           const unsigned int numThreads) {
-    if (!setInitNode(start)) {
+                                   const unsigned int numThreads) {
+    if (!setInitNode(start))
         return false;
-    }
+
     if (m_collision->checkConfig(goal)) {
         Logging::error("Goal Node in collision", this);
         return false;
     }
-    computeTree(numNodes, numThreads);
+
+    std::vector<Vector<dim>> query = {goal};
+    m_evaluator->setQuery(query);
+
+    while (!m_evaluator->evaluate())
+        computeTree(numNodes, numThreads);
 
     return connectGoalNode(goal);
 }
@@ -154,14 +161,12 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> TreePlanner<dim>::getPathNodes() {
     std::vector<std::shared_ptr<Node<dim>>> nodes;
-    if (!m_pathPlanned) {
+    if (!m_pathPlanned)
         return nodes;
-    }
 
     nodes.push_back(m_goalNode);
-    for (std::shared_ptr<Node<dim>> temp = m_goalNode->getParentNode(); temp != nullptr; temp = temp->getParentNode()) {
+    for (std::shared_ptr<Node<dim>> temp = m_goalNode->getParentNode(); temp != nullptr; temp = temp->getParentNode())
         nodes.push_back(temp);
-    }
 
     Logging::info("Path has: " + std::to_string(nodes.size()) + " nodes", this);
     return nodes;

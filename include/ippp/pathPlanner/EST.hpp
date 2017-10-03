@@ -33,7 +33,8 @@ namespace ippp {
 template <unsigned int dim>
 class EST : public TreePlanner<dim> {
   public:
-    EST(const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph);
+    EST(const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
+        const std::shared_ptr<Graph<dim>> &graph);
 
     bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
     bool connectGoalNode(const Vector<dim> goal);

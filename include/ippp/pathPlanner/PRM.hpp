@@ -51,27 +51,29 @@ class PRM : public Planner<dim> {
   protected:
     void samplingPhase(const unsigned int nbOfNodes);
     void plannerPhase(const unsigned int startNodeIndex, const unsigned int endNodeIndex);
-    std::shared_ptr<Node<dim>> connectNode(const Vector<dim> &node);
+    std::shared_ptr<Node<dim>> connectNode(const Vector<dim> &config);
 
     double m_rangeSize;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
     std::vector<std::shared_ptr<Node<dim>>> m_openList, m_closedList;
 
     using Planner<dim>::m_collision;
+    using Planner<dim>::m_environment;
+    using Planner<dim>::m_evaluator;
     using Planner<dim>::m_graph;
+    using Planner<dim>::m_metric;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_environment;
     using Planner<dim>::m_sampling;
-    using Planner<dim>::m_metric;
 };
 
 /*!
-*  \brief      Standard constructor of the class Pipppanner
+*  \brief      Standard constructor of the class PRM
 *  \author     Sascha Kaden
-*  \param[in]  robot
-*  \param[in]  prm options
+*  \param[in]  Environment
+*  \param[in]  PRMOptions
+*  \param[in]  Graph
 *  \date       2016-08-09
 */
 template <unsigned int dim>
@@ -94,7 +96,11 @@ PRM<dim>::PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<
 template <unsigned int dim>
 bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
                            const unsigned int numThreads) {
-    expand(numNodes, numThreads);
+    std::vector<Vector<dim>> query = {start, goal};
+    m_evaluator->setQuery(query);
+
+    while (!m_evaluator->evaluate())
+        expand(numNodes, numThreads);
 
     return queryPath(start, goal);
 }
@@ -189,7 +195,7 @@ void PRM<dim>::startPlannerPhase(const unsigned int nbOfThreads) {
 
 /*!
 *  \brief      Local planning thread function
-*  \details    Searchs the nearest neighbors between the given indexes and adds them as childes
+*  \details    Searches the nearest neighbors between the given indexes and adds them as childes
 *  \author     Sascha Kaden
 *  \param[in]  start index
 *  \param[in]  end index
@@ -219,7 +225,7 @@ void PRM<dim>::plannerPhase(const unsigned int startNodeIndex, const unsigned in
 }
 
 /*!
-*  \brief      Searchs a between start and goal Node
+*  \brief      Searches a between start and goal Node
 *  \details    Uses internal the A* algorithm to find the best path. It saves the path Nodes internal.
 *  \author     Sascha Kaden
 *  \param[in]  start Node
@@ -264,18 +270,22 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &vec) {
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(vec, m_rangeSize * 3);
-    double dist = std::numeric_limits<double>::max();
-    std::shared_ptr<Node<dim>> nearestNode = nullptr;
-    for (int i = 0; i < nearNodes.size(); ++i) {
-        if (m_trajectory->checkTrajectory(vec, *nearNodes[i]) && m_metric->calcDist(vec, nearNodes[i]->getValues()) < dist) {
-            dist = m_metric->calcDist(vec, nearNodes[i]->getValues());
-            nearestNode = nearNodes[i];
-        }
-    }
+std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &config) {
+    // check that the graph contains the node and if yes return it
+    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNode(config);
+    if (nearestNode)
+        return nearestNode;
 
-    return nearestNode;
+    nearestNode = util::getNearestValidNode<dim>(config, m_graph, m_trajectory, m_metric, m_rangeSize);
+    // create new Node with connection to the nearest Node, if a valid path exists
+    if (nearestNode) {
+        std::shared_ptr<Node<dim>> node(new Node<dim>(config));
+        node->setParent(nearestNode, m_metric->calcDist(nearestNode, node));
+        nearestNode->addChild(node, m_metric->calcDist(nearestNode, node));
+        return node;
+    } else {
+        return nullptr;
+    }
 }
 
 /*!

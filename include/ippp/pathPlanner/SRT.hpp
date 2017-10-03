@@ -62,13 +62,14 @@ class SRT : public Planner<dim> {
     std::mutex m_mutex;
 
     using Planner<dim>::m_collision;
+    using Planner<dim>::m_environment;
+    using Planner<dim>::m_evaluator;
     using Planner<dim>::m_graph;
+    using Planner<dim>::m_metric;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_environment;
     using Planner<dim>::m_sampling;
-    using Planner<dim>::m_metric;
 };
 
 /*!
@@ -106,7 +107,12 @@ bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, cons
         Logging::error("Goal Node in collision", this);
         return false;
     }
-    expand(numNodes, numThreads);
+
+    std::vector<Vector<dim>> query = {start, goal};
+    m_evaluator->setQuery(query);
+
+    while (!m_evaluator->evaluate())
+        expand(numNodes, numThreads);
 
     return queryPath(start, goal);
 }
@@ -183,7 +189,7 @@ void SRT<dim>::samplingPhase(const unsigned int nbOfNodes, const unsigned int nb
 */
 template <unsigned int dim>
 std::shared_ptr<Graph<dim>> SRT<dim>::computeTree(const unsigned int nbOfNodes, const Vector<dim> &origin) {
-    RRTOptions<dim> rrtOptions(30, m_collision, m_trajectory, m_sampling);
+    RRTOptions<dim> rrtOptions(30, m_collision, m_metric, m_evaluator, this->m_pathModifier, m_sampling, m_trajectory);
     RRT<dim> rrt(m_environment, rrtOptions);
     rrt.setInitNode(origin);
     rrt.expand(nbOfNodes, 1);
@@ -220,8 +226,8 @@ bool SRT<dim>::plannerPhase(std::vector<std::shared_ptr<Graph<dim>>> &trees) {
             std::shared_ptr<Node<dim>> node = graph->getNode(count);
             std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(node);
             if (m_trajectory->checkTrajectory(node, nearestNode)) {
-                node->addChild(nearestNode, m_metric->calcEdgeCost(node, nearestNode));
-                nearestNode->addChild(node, m_metric->calcEdgeCost(nearestNode, node));
+                node->addChild(nearestNode, m_metric->calcDist(node, nearestNode));
+                nearestNode->addChild(node, m_metric->calcDist(nearestNode, node));
                 m_graph->addNodeList(graph->getNodes());
                 m_graph->sortTree();
                 ++connectionCount;
