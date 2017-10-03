@@ -37,6 +37,7 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
     assert(m_spaceDim == 2 || m_spaceDim == 3);
     m_robots.push_back(robot);
     m_robotDimSizes.push_back(robot->getDim());
+    updateConfigurationDim();
 }
 
 /*!
@@ -59,6 +60,8 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
     m_robots = robots;
     for (auto &robot : m_robots)
         m_robotDimSizes.push_back(robot->getDim());
+
+    updateConfigurationDim();
 }
 
 /*!
@@ -134,6 +137,7 @@ size_t Environment::getObstacleNum() const {
 */
 void Environment::addRobot(const std::shared_ptr<RobotBase> &robot) {
     m_robots.push_back(robot);
+    updateConfigurationDim();
 }
 
 /*!
@@ -203,7 +207,7 @@ AABB Environment::getBoundary() const {
 *  \param[out] dimension
 *  \date       2017-05-17
 */
-unsigned int Environment::getDim() const {
+unsigned int Environment::getSpaceDim() const {
     return m_spaceDim;
 }
 
@@ -215,6 +219,62 @@ unsigned int Environment::getDim() const {
 */
 std::vector<unsigned int> Environment::getRobotDimSizes() const {
     return m_robotDimSizes;
+}
+
+/*!
+*  \brief      Return the configuration dimension.
+*  \author     Sascha Kaden
+*  \param[out] configuration dimension
+*  \date       2017-09-30
+*/
+unsigned int Environment::getConfigDim() const {
+    return m_configurationDim;
+}
+
+/*!
+*  \brief      Return the position and rotation mask of the robots.
+*  \author     Sascha Kaden
+*  \param[out] position and rotation mask
+*  \date       2017-09-30
+*/
+std::pair<VectorX, VectorX> Environment::getConfigMasks() const {
+    return std::make_pair(m_positionMask, m_rotationMask);
+}
+
+/*!
+*  \brief      Update the complete configuration dimensions of all robots inside of the environment.
+*  \author     Sascha Kaden
+*  \date       2017-09-30
+*/
+void Environment::updateConfigurationDim() {
+    m_configurationDim = 0;
+    for (const auto &dimSize : m_robotDimSizes)
+        m_configurationDim += dimSize;
+
+    updateMasks();
+}
+
+/*!
+*  \brief      Update the position and rotation mask of the robots inside of the environment.
+*  \author     Sascha Kaden
+*  \date       2017-09-30
+*/
+void Environment::updateMasks() {
+    m_positionMask = VectorX(m_configurationDim, 1);
+    m_rotationMask = VectorX(m_configurationDim, 1);
+    size_t index = 0;
+    for (size_t i = 0; i < m_robots.size(); ++i) {
+        auto dofTypes = getRobot(i)->getDofTypes();
+        for (auto dof = dofTypes.begin(); dof != dofTypes.end(); ++dof, ++index) {
+            if (*dof == DofType::planarPos || *dof == volumetricPos) {
+                m_positionMask[index] = 1;
+                m_rotationMask[index] = 0;
+            } else {
+                m_positionMask[index] = 0;
+                m_rotationMask[index] = 1;
+            }
+        }
+    }
 }
 
 } /* namespace ippp */

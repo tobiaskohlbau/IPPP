@@ -55,16 +55,24 @@ class Environment : public Identifier {
     size_t numRobots() const;
 
     AABB getBoundary() const;
-    unsigned int getDim() const;
+    unsigned int getSpaceDim() const;
     std::vector<unsigned int> getRobotDimSizes() const;
+    unsigned int getConfigDim() const;
+    std::pair<VectorX, VectorX> getConfigMasks() const;
 
   protected:
+    void updateConfigurationDim();
+    void updateMasks();
+
+    unsigned int m_configurationDim = 0;
     const unsigned int m_spaceDim = 0;
     const AABB m_spaceBoundary;
 
     std::vector<unsigned int> m_robotDimSizes;
     std::vector<std::shared_ptr<RobotBase>> m_robots;
     std::vector<std::shared_ptr<ModelContainer>> m_obstacles;
+    VectorX m_positionMask;
+    VectorX m_rotationMask;
 };
 
 } /* namespace ippp */
