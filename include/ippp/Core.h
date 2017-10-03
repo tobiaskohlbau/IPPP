@@ -40,6 +40,10 @@
 #include <ippp/core/distanceMetrics/WeightVecL1Metric.hpp>
 #include <ippp/core/distanceMetrics/WeightVecL2Metric.hpp>
 
+#include <ippp/core/evaluator/DummyEvaluator.hpp>
+#include <ippp/core/evaluator/Evaluator.hpp>
+#include <ippp/core/evaluator/QueryEvaluator.hpp>
+
 #include <ippp/core/neighborFinders/BruteForceNF.hpp>
 #include <ippp/core/neighborFinders/KDTree.hpp>
 #include <ippp/core/neighborFinders/NeighborFinder.hpp>

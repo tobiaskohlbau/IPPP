@@ -72,6 +72,7 @@ class ModuleCreator : public Identifier {
   private:
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
+    std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
     std::shared_ptr<Graph<dim>> m_graph = nullptr;
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr;
     std::shared_ptr<PathModifier<dim>> m_pathModifier;
@@ -121,6 +122,9 @@ ModuleCreator<dim>::ModuleCreator(std::shared_ptr<Environment> environment, std:
             new KDTree<dim, std::shared_ptr<Node<dim>>>(m_metric));
 
     m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(0, m_neighborFinder));
+
+    m_evaluator = std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(environment, m_metric, m_graph, 10));
+//    m_evaluator = std::shared_ptr<Evaluator<dim>>(new DummyEvaluator<dim>(environment));
 
     if (modifierType == PathModifierType::NodeCut)
         m_pathModifier =
@@ -255,7 +259,7 @@ std::shared_ptr<TrajectoryPlanner<dim>> ModuleCreator<dim>::getTrajectoryPlanner
 */
 template <unsigned int dim>
 PlannerOptions<dim> ModuleCreator<dim>::getPlannerOptions() {
-    return PlannerOptions<dim>(m_collision, m_metric, m_pathModifier, m_sampling, m_trajectory);
+    return PlannerOptions<dim>(m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!
@@ -267,7 +271,7 @@ PlannerOptions<dim> ModuleCreator<dim>::getPlannerOptions() {
 */
 template <unsigned int dim>
 PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const double rangeSize) {
-    return PRMOptions<dim>(rangeSize, m_collision, m_metric, m_pathModifier, m_sampling, m_trajectory);
+    return PRMOptions<dim>(rangeSize, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!
@@ -279,7 +283,7 @@ PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const double rangeSize) {
 */
 template <unsigned int dim>
 RRTOptions<dim> ModuleCreator<dim>::getRRTOptions(const double stepSize) {
-    return RRTOptions<dim>(stepSize, m_collision, m_metric, m_pathModifier, m_sampling, m_trajectory);
+    return RRTOptions<dim>(stepSize, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!
@@ -291,7 +295,7 @@ RRTOptions<dim> ModuleCreator<dim>::getRRTOptions(const double stepSize) {
 */
 template <unsigned int dim>
 SRTOptions<dim> ModuleCreator<dim>::getSRTOptions(const unsigned int nbOfTrees) {
-    return SRTOptions<dim>(nbOfTrees, m_collision, m_metric, m_pathModifier, m_sampling, m_trajectory);
+    return SRTOptions<dim>(nbOfTrees, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 } /* namespace ippp */
