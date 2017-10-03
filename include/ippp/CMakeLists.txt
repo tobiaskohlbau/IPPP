@@ -17,11 +17,6 @@
 #-------------------------------------------------------------------------//
 
 list(APPEND SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Edge.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Graph.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/KDNode.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionAABB.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionDummy.hpp
@@ -29,13 +24,19 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionSphere.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection2D.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionTriangleRobot.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/CollisionData.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Edge.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Graph.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/KDNode.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/DistanceMetric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L1Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L2Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/InfMetric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL1Metric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecL2Metric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightVecInfMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedL1Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedL2Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedInfMetric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/DummyEvaluator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/Evaluator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/QueryEvaluator.hpp

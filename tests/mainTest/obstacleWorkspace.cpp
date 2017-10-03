@@ -21,9 +21,9 @@
 #include <ippp/core/collisionDetection/CollisionDetection2D.hpp>
 #include <ippp/core/distanceMetrics/InfMetric.hpp>
 #include <ippp/core/distanceMetrics/L1Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightVecInfMetric.hpp>
-#include <ippp/core/distanceMetrics/WeightVecL1Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightVecL2Metric.hpp>
+#include <ippp/core/distanceMetrics/WeightedInfMetric.hpp>
+#include <ippp/core/distanceMetrics/WeightedL1Metric.hpp>
+#include <ippp/core/distanceMetrics/WeightedL2Metric.hpp>
 #include <pathPlanner/NormalRRT.hpp>
 #include <pathPlanner/PRM.hpp>
 #include <pathPlanner/RRTStar.hpp>

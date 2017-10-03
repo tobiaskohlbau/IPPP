@@ -16,23 +16,23 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef WEIGHTVECINFMETRIC_HPP
-#define WEIGHTVECINFMETRIC_HPP
+#ifndef WEIGHTVECL2METRIC_HPP
+#define WEIGHTVECL2METRIC_HPP
 
 #include <ippp/core/distanceMetrics/DistanceMetric.hpp>
 
 namespace ippp {
 
 /*!
-* \brief   Static class for the computation of distance costs from an Edge
+* \brief   Static class for the computation of distance costs from Edge
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
 template <unsigned int dim>
-class WeightVecInfMetric : public DistanceMetric<dim> {
+class WeightedL2Metric : public DistanceMetric<dim> {
   public:
-    WeightVecInfMetric();
-    WeightVecInfMetric(const Vector<dim> &weightVec);
+    WeightedL2Metric();
+    WeightedL2Metric(const Vector<dim> &weightVec);
     double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
 
     void setWeightVec(const Vector<dim> &vec);
@@ -43,22 +43,22 @@ class WeightVecInfMetric : public DistanceMetric<dim> {
 };
 
 /*!
-*  \brief      Standard constructor of the class WeightVecInfMetric
+*  \brief      Standard constructor of the class WeightVecL2Metric
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-WeightVecInfMetric<dim>::WeightVecInfMetric() : DistanceMetric<dim>("weightVecInf metric") {
+WeightedL2Metric<dim>::WeightedL2Metric() : DistanceMetric<dim>("weightVecL2 metric") {
 }
 
 /*!
-*  \brief      Standard constructor of the class WeightVecInfMetric
+*  \brief      Constructor of the class WeightVecL2Metric
 *  \author     Sascha Kaden
 *  \param[in]  weightVec
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-WeightVecInfMetric<dim>::WeightVecInfMetric(const Vector<dim> &weightVec) : DistanceMetric<dim>("weightVecInf metric") {
+WeightedL2Metric<dim>::WeightedL2Metric(const Vector<dim> &weightVec) : DistanceMetric<dim>("weightVecL2 metric") {
     setWeightVec(weightVec);
 }
 
@@ -71,8 +71,8 @@ WeightVecInfMetric<dim>::WeightVecInfMetric(const Vector<dim> &weightVec) : Dist
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-double WeightVecInfMetric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
-    return (source - target).cwiseProduct(m_weightVec).maxCoeff();
+double WeightedL2Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).cwiseProduct(m_weightVec).norm();
 }
 
 /*!
@@ -82,7 +82,7 @@ double WeightVecInfMetric<dim>::calcDist(const Vector<dim> &source, const Vector
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-void WeightVecInfMetric<dim>::setWeightVec(const Vector<dim> &vec) {
+void WeightedL2Metric<dim>::setWeightVec(const Vector<dim> &vec) {
     m_weightVec = vec;
 }
 
@@ -93,10 +93,10 @@ void WeightVecInfMetric<dim>::setWeightVec(const Vector<dim> &vec) {
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-Vector<dim> WeightVecInfMetric<dim>::getWeightVec() const {
+Vector<dim> WeightedL2Metric<dim>::getWeightVec() const {
     return m_weightVec;
 }
 
 } /* namespace ippp */
 
-#endif    // WEIGHTVECINFMETRIC_HPP
+#endif    // WEIGHTVECL2METRIC_HPP

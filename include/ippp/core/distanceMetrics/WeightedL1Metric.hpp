@@ -29,10 +29,10 @@ namespace ippp {
 * \date    2017-01-02
 */
 template <unsigned int dim>
-class WeightVecL1Metric : public DistanceMetric<dim> {
+class WeightedL1Metric : public DistanceMetric<dim> {
   public:
-    WeightVecL1Metric();
-    WeightVecL1Metric(const Vector<dim> &weightVec);
+    WeightedL1Metric();
+    WeightedL1Metric(const Vector<dim> &weightVec);
     double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
 
     void setWeightVec(const Vector<dim> &vec);
@@ -48,7 +48,7 @@ class WeightVecL1Metric : public DistanceMetric<dim> {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-WeightVecL1Metric<dim>::WeightVecL1Metric() : DistanceMetric<dim>("weightVecL1 metric") {
+WeightedL1Metric<dim>::WeightedL1Metric() : DistanceMetric<dim>("weightVecL1 metric") {
 }
 
 /*!
@@ -58,7 +58,7 @@ WeightVecL1Metric<dim>::WeightVecL1Metric() : DistanceMetric<dim>("weightVecL1 m
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-WeightVecL1Metric<dim>::WeightVecL1Metric(const Vector<dim> &weightVec) : DistanceMetric<dim>("weightVecL1 metric") {
+WeightedL1Metric<dim>::WeightedL1Metric(const Vector<dim> &weightVec) : DistanceMetric<dim>("weightVecL1 metric") {
     setWeightVec(weightVec);
 }
 
@@ -71,7 +71,7 @@ WeightVecL1Metric<dim>::WeightVecL1Metric(const Vector<dim> &weightVec) : Distan
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-double WeightVecL1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
+double WeightedL1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).cwiseProduct(m_weightVec).sum();
 }
 
@@ -82,7 +82,7 @@ double WeightVecL1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-void WeightVecL1Metric<dim>::setWeightVec(const Vector<dim> &vec) {
+void WeightedL1Metric<dim>::setWeightVec(const Vector<dim> &vec) {
     m_weightVec = vec;
 }
 
@@ -93,7 +93,7 @@ void WeightVecL1Metric<dim>::setWeightVec(const Vector<dim> &vec) {
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-Vector<dim> WeightVecL1Metric<dim>::getWeightVec() const {
+Vector<dim> WeightedL1Metric<dim>::getWeightVec() const {
     return m_weightVec;
 }
 
