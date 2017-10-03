@@ -31,8 +31,8 @@ namespace ippp {
 template <unsigned int dim>
 class LinearTrajectory : public TrajectoryPlanner<dim> {
   public:
-    LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision,
-                     const std::shared_ptr<Environment> &environment, const double stepSize = 1);
+    LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Environment> &environment,
+                     const double stepSize = 1);
 
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
@@ -47,6 +47,7 @@ class LinearTrajectory : public TrajectoryPlanner<dim> {
 *  \brief      Constructor of the class LinearTrajectory
 *  \author     Sascha Kaden
 *  \param[in]  CollisionDetection
+*  \param[in]  Environment
 *  \param[in]  step size of the path
 *  \date       2016-05-25
 */
@@ -67,17 +68,7 @@ LinearTrajectory<dim>::LinearTrajectory(const std::shared_ptr<CollisionDetection
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> LinearTrajectory<dim>::calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) {
-    std::vector<Vector<dim>> configs;
-
-    Vector<dim> u(target - source);
-    configs.reserve((int)(u.norm() / m_stepSize) + 1);
-    unsigned int divider = 2;
-    for (Vector<dim> uTemp(u / divider); uTemp.squaredNorm() > m_sqStepSize; divider *= 2, uTemp = u / divider) {
-        for (unsigned int i = 1; i < divider; i += 2) {
-            configs.push_back(source + (uTemp * i));
-        }
-    }
-    return configs;
+    return util::linearTrajectoryBin<dim>(source, target, m_stepSize);
 }
 
 /*!
@@ -91,15 +82,7 @@ std::vector<Vector<dim>> LinearTrajectory<dim>::calcTrajectoryBin(const Vector<d
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> LinearTrajectory<dim>::calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) {
-    std::vector<Vector<dim>> configs;
-
-    Vector<dim> u(target - source);    // u = a - b
-    configs.reserve((int)(u.norm() / m_stepSize) + 1);
-    u /= u.norm() / m_stepSize;    // u = |u|
-    for (Vector<dim> temp(source + u); (temp - target).squaredNorm() > 1; temp += u) {
-        configs.push_back(temp);
-    }
-    return configs;
+    return util::linearTrajectoryCont<dim>(source, target, m_stepSize);
 }
 
 } /* namespace ippp */

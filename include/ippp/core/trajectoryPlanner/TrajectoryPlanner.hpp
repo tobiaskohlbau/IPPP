@@ -22,6 +22,7 @@
 #include <ippp/core/Identifier.h>
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
 #include <ippp/core/types.h>
+#include <ippp/core/util/UtilTrajectory.hpp>
 #include <ippp/environment/Environment.h>
 
 namespace ippp {
@@ -63,13 +64,14 @@ class TrajectoryPlanner : public Identifier {
 *  \author     Sascha Kaden
 *  \param[in]  name
 *  \param[in]  CollisionDetection
+*  \param[in]  Environment
 *  \param[in]  step size of the path
 *  \date       2016-05-25
 */
 template <unsigned int dim>
 TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
                                           const std::shared_ptr<Environment> &environment, const double stepSize)
-    : Identifier(name), m_collision(collision), m_environment(environment){
+    : Identifier(name), m_collision(collision), m_environment(environment) {
     setStepSize(stepSize);
 }
 
@@ -156,18 +158,16 @@ Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, con
     auto path = calcTrajectoryCont(source, target);
     path.push_back(target);
     unsigned int count = -1;
-    for (auto point : path) {
-        if (m_collision->checkConfig(point)) {
+    for (auto point : path)
+        if (m_collision->checkConfig(point))
             break;
-        } else {
+        else
             ++count;
-        }
-    }
-    if (count == -1) {
+
+    if (count == -1)
         return util::NaNVector<dim>();
-    } else {
+    else
         return path[count];
-    }
 }
 
 /*!
