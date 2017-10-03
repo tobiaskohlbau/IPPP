@@ -25,7 +25,7 @@
 namespace ippp {
 
 /*!
-* \brief   Class Pipppanner
+* \brief   Class PRM
 * \author  Sascha Kaden
 * \date    2016-08-09
 */
@@ -42,8 +42,6 @@ class PRM : public Planner<dim> {
     void startPlannerPhase(const unsigned int nbOfThreads = 1);
 
     bool queryPath(const Vector<dim> start, const Vector<dim> goal);
-    bool aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode);
-    void expandNode(std::shared_ptr<Node<dim>> currentNode);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
     std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1);
@@ -55,7 +53,6 @@ class PRM : public Planner<dim> {
 
     double m_rangeSize;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
-    std::vector<std::shared_ptr<Node<dim>>> m_openList, m_closedList;
 
     using Planner<dim>::m_collision;
     using Planner<dim>::m_environment;
@@ -242,7 +239,8 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
         return false;
     }
 
-    bool pathPlanned = aStar(sourceNode, goalNode);
+    m_graph->clearQueryParents();
+    bool pathPlanned = util::aStar<dim>(sourceNode, goalNode, m_metric);
 
     if (pathPlanned) {
         Logging::info("Path could be planned", this);
@@ -285,71 +283,6 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &config) {
         return node;
     } else {
         return nullptr;
-    }
-}
-
-/*!
-*  \brief      A* algorithm to find best path
-*  \author     Sascha Kaden
-*  \param[in]  source Node (start)
-*  \param[in]  goal Node (goal)
-*  \param[out] result of algorithm
-*  \date       2016-08-09
-*/
-template <unsigned int dim>
-bool PRM<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode) {
-    m_graph->clearQueryParents();
-    m_closedList.clear();
-    m_openList.clear();
-
-    std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
-    for (int i = 0; i < edges.size(); ++i) {
-        edges[i]->getTarget()->setCost(edges[i]->getCost());
-        edges[i]->getTarget()->setQueryParent(sourceNode, m_metric->calcDist(edges[i]->getTarget(), sourceNode));
-        m_openList.push_back(edges[i]->getTarget());
-    }
-    m_closedList.push_back(sourceNode);
-
-    int count = 0;
-    std::shared_ptr<Node<dim>> currentNode;
-    while (!m_openList.empty()) {
-        currentNode = util::removeMinFromList(m_openList);
-
-        if (currentNode == targetNode) {
-            return true;
-        }
-        m_closedList.push_back(currentNode);
-        ++count;
-
-        expandNode(currentNode);
-    }
-    return false;
-}
-
-/*!
-*  \brief      Expands the openList of the A* algorithm from the childes of the passed Node
-*  \author     Sascha Kaden
-*  \param[in]  current ndoe
-*  \date       2016-08-09
-*/
-template <unsigned int dim>
-void PRM<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
-    double dist, edgeCost;
-    for (auto successor : currentNode->getChildNodes()) {
-        if (util::contains(m_closedList, successor)) {
-            continue;
-        }
-        edgeCost = m_metric->calcDist(currentNode, successor);
-        dist = currentNode->getCost() + edgeCost;
-
-        if (util::contains(m_openList, successor) && dist >= successor->getCost()) {
-            continue;
-        }
-        successor->setQueryParent(currentNode, edgeCost);
-        successor->setCost(dist);
-        if (!util::contains(m_openList, successor)) {
-            m_openList.push_back(successor);
-        }
     }
 }
 
