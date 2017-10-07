@@ -19,7 +19,7 @@
 list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionAABB.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionDummy.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionAlwaysValid.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqp.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionSphere.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection2D.hpp

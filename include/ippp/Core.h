@@ -22,7 +22,7 @@
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
 #include <ippp/core/collisionDetection/CollisionDetection2D.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionAABB.hpp>
-#include <ippp/core/collisionDetection/CollisionDetectionDummy.hpp>
+#include <ippp/core/collisionDetection/CollisionDetectionAlwaysValid.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionPqp.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionSphere.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionTriangleRobot.hpp>
