@@ -303,7 +303,7 @@ void Logging::trace(std::string message, std::string moduleName) {
 *  \date       2016-11-14
 */
 void Logging::sendString(std::string message, LogLevel level) {
-    if (level >= m_level)
+    if (level > m_level)
         return;
 
     m_mutex.lock();
