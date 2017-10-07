@@ -33,7 +33,7 @@ enum class CollisionType { Dim2, Dim2Triangle, AlwaysValid, PQP, FCL, AABB, Sphe
 
 enum class MetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
 
-enum class EvaluatorType { SingleIteration, Query };
+enum class EvaluatorType { SingleIteration, Query, Time, QueryOrTime };
 
 enum class NeighborType { KDTree, BruteForce };
 
@@ -75,7 +75,7 @@ class ModuleCreator : public Identifier {
     void setMetricType(const MetricType type);
     void setMetricWeightVec(const Vector<dim> vector);
     void setEvaluatorType(const EvaluatorType type);
-    void setQueryEvaluatorDist(const double queryEvaluatorDist);
+    void setEvaluatorProperties(const double queryEvaluatorDist, const unsigned int duration);
     void setGraphSortCount(const size_t count);
     void setNeighborFinderType(const NeighborType type);
     void setPathModifierType(const PathModifierType type);
@@ -105,6 +105,7 @@ class ModuleCreator : public Identifier {
     Vector<dim> m_metricWeight;
     EvaluatorType m_evaluatorType = EvaluatorType::SingleIteration;
     double m_queryEvaluatorDist = 10;
+    unsigned int m_evaluatorDuration = 10;
     size_t m_graphSortCount = 2000;
     NeighborType m_neighborType = NeighborType::KDTree;
     PathModifierType m_pathModifierType = PathModifierType::NodeCut;
@@ -182,10 +183,17 @@ void ModuleCreator<dim>::initializeModules() {
     m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(m_graphSortCount, m_neighborFinder));
 
     if (m_evaluatorType == EvaluatorType::SingleIteration)
-        m_evaluator = std::shared_ptr<Evaluator<dim>>(new SingleIterationEvaluator<dim>(m_environment));
-    else
+        m_evaluator = std::shared_ptr<Evaluator<dim>>(new SingleIterationEvaluator<dim>());
+    else if (m_evaluatorType == EvaluatorType::Time)
+        m_evaluator = std::shared_ptr<Evaluator<dim>>(new TimeEvaluator<dim>(m_evaluatorDuration));
+    else if (m_evaluatorType == EvaluatorType::QueryOrTime) {
+        std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
+        evaluators.push_back(std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_metric, m_graph, m_queryEvaluatorDist)));
+        evaluators.push_back(std::shared_ptr<Evaluator<dim>>(new TimeEvaluator<dim>(m_evaluatorDuration)));
+        m_evaluator = std::shared_ptr<Evaluator<dim>>(new ComposeEvaluator<dim>(evaluators, ComposeType::OR));
+    } else
         m_evaluator =
-            std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_environment, m_metric, m_graph, m_queryEvaluatorDist));
+            std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_metric, m_graph, m_queryEvaluatorDist));
 
     if (m_pathModifierType == PathModifierType::NodeCut)
         m_pathModifier =
@@ -284,8 +292,9 @@ void ModuleCreator<dim>::setEvaluatorType(const EvaluatorType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setQueryEvaluatorDist(const double queryEvaluatorDist) {
+void ModuleCreator<dim>::setEvaluatorProperties(const double queryEvaluatorDist, const unsigned int duration) {
     m_queryEvaluatorDist = queryEvaluatorDist;
+    m_evaluatorDuration = duration;
 }
 
 /*!

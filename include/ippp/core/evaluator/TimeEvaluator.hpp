@@ -16,8 +16,10 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SINGLEITERATIONEVALUATOR_HPP
-#define SINGLEITERATIONEVALUATOR_HPP
+#ifndef TIMEEVALUATOR_HPP
+#define TIMEEVALUATOR_HPP
+
+#include <chrono>
 
 #include <ippp/core/evaluator/Evaluator.hpp>
 
@@ -29,14 +31,17 @@ namespace ippp {
 * \date    2017-09-30
 */
 template <unsigned int dim>
-class SingleIterationEvaluator : public Evaluator<dim> {
+class TimeEvaluator : public Evaluator<dim> {
   public:
-    SingleIterationEvaluator();
+    TimeEvaluator(const unsigned int maxDuration = 30);
 
     bool evaluate();
 
   protected:
-    bool m_firstEvaluation = true;
+    unsigned int m_maxDuration;
+    bool m_started = false;
+//    std::chrono::time_point<std::chrono::_V2::system_clock, std::chrono::duration> m_startTime;
+
 };
 
 /*!
@@ -46,7 +51,8 @@ class SingleIterationEvaluator : public Evaluator<dim> {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-SingleIterationEvaluator<dim>::SingleIterationEvaluator() : Evaluator<dim>("SingleIterationEvaluator") {
+TimeEvaluator<dim>::TimeEvaluator(const unsigned int maxDuration)
+    : Evaluator<dim>("SingleIterationEvaluator"), m_maxDuration(maxDuration) {
 }
 
 /*!
@@ -56,15 +62,19 @@ SingleIterationEvaluator<dim>::SingleIterationEvaluator() : Evaluator<dim>("Sing
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-bool SingleIterationEvaluator<dim>::evaluate() {
-    if (m_firstEvaluation) {
-        m_firstEvaluation = false;
-        return false;
-    } else {
-        return true;
-    }
+bool TimeEvaluator<dim>::evaluate() {
+//    if (!m_started) {
+//        m_startTime = std::chrono::system_clock::now();
+//        m_started = true;
+//    }
+//
+//    auto duration = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - m_startTime);
+//    if (duration.count() > m_maxDuration)
+//        return true;
+//    else
+//        return false;
 }
 
 } /* namespace ippp */
 
-#endif /* SINGLEITERATIONEVALUATOR_HPP */
+#endif /* TIMEEVALUATOR_HPP */

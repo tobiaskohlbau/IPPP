@@ -24,12 +24,14 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionSphere.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection2D.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionTriangleRobot.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/CollisionData.h
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Edge.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Graph.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/KDNode.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/DistanceMetric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L1Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L2Metric.hpp
@@ -37,20 +39,27 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedL1Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedL2Metric.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedInfMetric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/SingleIterationEvaluator.hpp
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/ComposeEvaluator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/Evaluator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/QueryEvaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/SingleIterationEvaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/TimeEvaluator.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/BruteForceNF.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/KDTree.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/NeighborFinder.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/DummyPathModifier.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/PathModifier.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/NodeCutPathModifier.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/Sampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerRandom.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerNormalDist.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerUniform.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SeedSampler.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/BridgeSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianSampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianDistSampling.hpp
@@ -58,22 +67,27 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/Sampling.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/StraightSampling.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/LinearTrajectory.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/RotateAtS.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/TrajectoryPlanner.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilCollision.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilGeo.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilIO.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilTrajectory.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilVec.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/Environment.h
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/util/UtilEnvironment.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/util/MapGenerator.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/SRTOptions.hpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/EST.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/Planner.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/PRM.hpp
