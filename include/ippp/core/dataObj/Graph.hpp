@@ -34,14 +34,14 @@ namespace ippp {
 template <unsigned int dim>
 class Graph : public Identifier {
   public:
-    Graph(const unsigned int sortCount, const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder);
+    Graph(const size_t sortCount, const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder);
     ~Graph();
 
     bool addNode(const std::shared_ptr<Node<dim>> &node);
     void addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &nodes);
     bool containNode(const std::shared_ptr<Node<dim>> &node);
 
-    std::shared_ptr<Node<dim>> getNode(const unsigned int index) const;
+    std::shared_ptr<Node<dim>> getNode(const size_t index) const;
     std::shared_ptr<Node<dim>> getNode(const Vector<dim> &config) const;
     std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
 
@@ -78,7 +78,7 @@ class Graph : public Identifier {
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr;
     std::mutex m_mutex;
-    const unsigned int m_sortCount = 0;
+    const size_t m_sortCount = 0;
     bool m_autoSort = false;
     bool m_preserveNodePtr = false;
 };
@@ -89,7 +89,7 @@ class Graph : public Identifier {
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-Graph<dim>::Graph(const unsigned int sortCount,
+Graph<dim>::Graph(const size_t sortCount,
                   const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder)
     : Identifier("Graph"), m_sortCount(sortCount), m_neighborFinder(neighborFinder) {
     m_autoSort = (sortCount != 0);
@@ -167,7 +167,7 @@ bool Graph<dim>::containNode(const std::shared_ptr<Node<dim>> &node) {
 * \date       2017-04-03
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> Graph<dim>::getNode(const unsigned int index) const {
+std::shared_ptr<Node<dim>> Graph<dim>::getNode(const size_t index) const {
     if (index < m_nodes.size())
         return m_nodes[index];
     else
