@@ -32,6 +32,7 @@ template <unsigned int dim>
 class SamplerRandom : public Sampler<dim> {
   public:
     SamplerRandom(const std::shared_ptr<Environment> &environment);
+    SamplerRandom(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary);
     virtual Vector<dim> getSample();
 
   protected:
@@ -41,13 +42,25 @@ class SamplerRandom : public Sampler<dim> {
 };
 
 /*!
-*  \brief      Constructor of the base Sampler class
+*  \brief      Constructor of the RandomSampler class
 *  \author     Sascha Kaden
-*  \param[in]  robot
+*  \param[in]  Environment
 *  \date       2016-05-24
 */
 template <unsigned int dim>
 SamplerRandom<dim>::SamplerRandom(const std::shared_ptr<Environment> &environment) : Sampler<dim>("RandomSampler", environment) {
+}
+
+/*!
+*  \brief      Constructor of the RandomSampler class
+*  \author     Sascha Kaden
+*  \param[in]  minimum boundary
+*  \param[in]  maximum boundary
+*  \date       2016-05-24
+*/
+template <unsigned int dim>
+SamplerRandom<dim>::SamplerRandom(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary)
+    : Sampler<dim>("RandomSampler", minBoundary, maxBoundary) {
 }
 
 /*!

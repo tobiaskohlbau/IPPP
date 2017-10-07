@@ -21,7 +21,7 @@
 
 #include <ippp/core/Identifier.h>
 #include <ippp/core/sampler/Sampler.hpp>
-#include <ippp/environment/CadProcessing.h>
+#include <ippp/environment/cad/CadProcessing.h>
 
 namespace ippp {
 
@@ -32,17 +32,19 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2017-06-99
 */
-template<unsigned int dim>
+template <unsigned int dim>
 class MapGenerator : public Identifier {
   public:
-    MapGenerator(const AABB &bounding, const std::shared_ptr<Sampler<dim>> &sampler);
-    std::vector<Mesh> generateMap(const unsigned int numObst, const Vector<dim> &maxExtensions);
+    MapGenerator(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::shared_ptr<Sampler<dim>> &sampler);
+    std::vector<Mesh> generateMap(const unsigned int numObstacles, const Vector<dim> &maxExtensions);
 
   protected:
     bool checkBounding(const Vector<dim> &sample, const Vector<dim> &extension);
-    AABB m_bounding;
-    std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
 
+    Vector<dim> m_minBoundary;
+    Vector<dim> m_maxBoundary;
+
+    std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
 };
 
 /*!
@@ -53,9 +55,9 @@ class MapGenerator : public Identifier {
 *  \date       2017-06-99
 */
 template <unsigned int dim>
-MapGenerator<dim>::MapGenerator(const AABB &bounding, const std::shared_ptr<Sampler<dim>> &sampler)
-    : Identifier("MapGenerator"), m_bounding(bounding), m_sampler(sampler) {
-
+MapGenerator<dim>::MapGenerator(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary,
+                                const std::shared_ptr<Sampler<dim>> &sampler)
+    : Identifier("MapGenerator"), m_minBoundary(minBoundary), m_maxBoundary(maxBoundary), m_sampler(sampler) {
 }
 
 /*!
@@ -66,12 +68,12 @@ MapGenerator<dim>::MapGenerator(const AABB &bounding, const std::shared_ptr<Samp
 *  \param[out] list of obstacles
 *  \date       2017-06-99
 */
-template<unsigned int dim>
-std::vector<Mesh> MapGenerator<dim>::generateMap(const unsigned int numObst, const Vector<dim> &maxExtensions) {
-    assert(dim == 3);
+template <unsigned int dim>
+std::vector<Mesh> MapGenerator<dim>::generateMap(const unsigned int numObstacles, const Vector<dim> &maxExtensions) {
+    assert(dim == 3 || dim == 2);
     Vector<dim> ext;
     std::vector<Mesh> meshes;
-    for (int i = 0; i < numObst; ++i) {
+    for (int i = 0; i < numObstacles; ++i) {
         Mesh mesh;
         auto sample = m_sampler->getSample();
         for (unsigned int j = 0; j < dim; ++j)
@@ -88,7 +90,7 @@ std::vector<Mesh> MapGenerator<dim>::generateMap(const unsigned int numObst, con
             mesh.vertices.push_back(Vector3(sample[0], sample[1], 0));
             mesh.vertices.push_back(Vector3(sample[0] + ext[0], sample[1], 0));
             mesh.vertices.push_back(Vector3(sample[0], sample[1] + ext[1], 0));
-            mesh.vertices.push_back(Vector3(sample[0]+ ext[0], sample[1] + ext[1], 0));
+            mesh.vertices.push_back(Vector3(sample[0] + ext[0], sample[1] + ext[1], 0));
 
             mesh.faces.push_back(Vector3i(faceCount, faceCount + 1, faceCount + 2));
             mesh.faces.push_back(Vector3i(faceCount + 1, faceCount + 2, faceCount + 3));
@@ -130,19 +132,15 @@ std::vector<Mesh> MapGenerator<dim>::generateMap(const unsigned int numObst, con
 *  \param[out] validity, true if out of bounds
 *  \date       2017-06-99
 */
-template<unsigned int dim>
+template <unsigned int dim>
 bool MapGenerator<dim>::checkBounding(const Vector<dim> &sample, const Vector<dim> &ext) {
-    Vector3 minBoundary = m_bounding.center() - (m_bounding.diagonal() / 2);
-    Vector3 maxBoundary = m_bounding.center() + (m_bounding.diagonal() / 2);
-
-    for (unsigned int i = 0; i < dim; ++i) {
-        if (sample[i] < minBoundary[i] || sample[i] + ext[i] > maxBoundary[i]) {
+    for (unsigned int i = 0; i < dim; ++i)
+        if (sample[i] < m_minBoundary[i] || sample[i] + ext[i] > m_maxBoundary[i])
             return false;
-        }
-    }
+
     return true;
 }
 
 } /* namespace ippp */
 
-#endif // MAPGENERATOR_HPP
+#endif    // MAPGENERATOR_HPP
