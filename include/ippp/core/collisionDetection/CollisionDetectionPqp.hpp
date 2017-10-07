@@ -39,8 +39,8 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   protected:
-    bool checkSerialRobot(const Vector<dim> &vec);
-    bool checkMobileRobot(const Vector<dim> &vec);
+    bool checkSerialRobot(const Vector<dim> &config);
+    bool checkMobileRobot(const Vector<dim> &config);
     bool checkMesh(std::vector<Matrix3> Rs, Matrix3 &poseR, std::vector<Vector3> ts, Vector3 &poseT);
 
     bool checkPQP(PQP_Model *model1, PQP_Model *model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1, Vector3 &t2);
@@ -163,11 +163,11 @@ bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &confi
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &vec) {
+bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) {
     auto robot = std::dynamic_pointer_cast<SerialRobot>(this->m_environment->getRobot());
     Matrix3 poseR;
     Vector3 poseT;
-    std::pair<std::vector<Matrix3>, std::vector<Vector3>> rotAndTrans = util::getTrafosFromRobot(vec, robot, poseR, poseT);
+    std::pair<std::vector<Matrix3>, std::vector<Vector3>> rotAndTrans = util::getTrafosFromRobot(config, robot, poseR, poseT);
     // for (auto tmp : jointTrafos)
     //    std::cout << tmp <<std::endl;
     // robot->saveMeshConfig(As);
@@ -183,14 +183,12 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &vec) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &vec) {
-    Matrix3 poseR;
-    Vector3 poseT;
-    util::poseVecToRandT(vec, poseR, poseT);
+bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &config) {
+    auto transformation = m_environment->getRobot()->getTransformation(config);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {
         for (auto obstacle : m_obstacles) {
-            if (checkPQP(obstacle, m_baseMesh, m_identity, poseR, m_zeroVec, poseT)) {
+            if (checkPQP(obstacle, m_baseMesh, m_identity, transformation.first, m_zeroVec, transformation.second)) {
                 return true;
             }
         }

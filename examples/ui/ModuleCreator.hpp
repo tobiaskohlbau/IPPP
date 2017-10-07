@@ -71,7 +71,7 @@ class ModuleCreator : public Identifier {
     SRTOptions<dim> getSRTOptions(const unsigned int nbOfTrees);
 
     void setEnvironment(const std::shared_ptr<Environment> &environment);
-    void setCollision(const std::shared_ptr<CollisionDetection<dim>> &collision);
+    void setCollisionType(const CollisionType type);
     void setMetricType(const MetricType type);
     void setMetricWeightVec(const Vector<dim> vector);
     void setEvaluatorType(const EvaluatorType type);
@@ -100,6 +100,7 @@ class ModuleCreator : public Identifier {
     std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
 
+    CollisionType m_collisionType = CollisionType::PQP;
     MetricType m_metricType = MetricType::L2;
     Vector<dim> m_metricWeight;
     EvaluatorType m_evaluatorType = EvaluatorType::SingleIteration;
@@ -133,10 +134,23 @@ ModuleCreator<dim>::ModuleCreator() : Identifier("ModuleCreator") {
 */
 template <unsigned int dim>
 void ModuleCreator<dim>::initializeModules() {
-    if (!m_collision || !m_environment) {
-        Logging::error("CollisionDetection or Environment not set", this);
+    if (!m_environment) {
+        Logging::error("Environment not set!", this);
         return;
     }
+
+    if (m_collisionType == CollisionType::Dim2)
+        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetection2D<dim>(m_environment));
+    else if (m_collisionType == CollisionType::Dim2Triangle)
+        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionTriangleRobot<dim>(m_environment));
+    else if (m_collisionType == CollisionType::AABB)
+        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionAABB<dim>(m_environment));
+    else if (m_collisionType == CollisionType::Sphere)
+        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionSphere<dim>(m_environment));
+    else if (m_collisionType == CollisionType::AlwaysValid)
+        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionAlwaysValid<dim>(m_environment));
+    else
+        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionPqp<dim>(m_environment));
 
     if (m_trajectoryType == TrajectoryType::RotateAtS)
         m_trajectory =
@@ -220,14 +234,14 @@ void ModuleCreator<dim>::setEnvironment(const std::shared_ptr<Environment> &envi
 }
 
 /*!
-*  \brief      Sets the CollisionDetection
+*  \brief      Sets the CollisionType
 *  \author     Sascha Kaden
-*  \param[in]  CollisionDetection
-*  \date       2017-10-03
+*  \param[in]  CollisionType
+*  \date       2017-10-06
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setCollision(const std::shared_ptr<CollisionDetection<dim>> &collision) {
-    m_collision = collision;
+void ModuleCreator<dim>::setCollisionType(const CollisionType type) {
+    m_collisionType = type;
 }
 
 /*!

@@ -34,15 +34,12 @@ int main(int argc, char** argv) {
     std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     environment->addObstacle(obstacleModel);
 
-    // create the modules of the planner
-    // as first create the collision detection
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     // define step size of the trajectories and create trajectory planner
     double stepSize = 3;
     // create all required core modules with the ModuleCreator
     ModuleCreator<dim> creator;
     creator.setEnvironment(environment);
-    creator.setCollision(collision);
+    creator.setCollisionType(CollisionType::PQP);
     creator.setMetricType(MetricType::L2);
     creator.setPathModifierType(PathModifierType::NodeCut);
     creator.setSamplerType(SamplerType::SamplerUniform);

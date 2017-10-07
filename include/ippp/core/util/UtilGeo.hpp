@@ -120,7 +120,7 @@ static Matrix3 getRotMat3D(const double radX, const double radY, const double ra
 }
 
 /*!
-*  \brief      Convert pose Vec to R and t in 2D
+*  \brief      Convert pose config to R and t in 2D
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
 *  \param[out] rotation matrix
@@ -134,7 +134,7 @@ static void poseVecToRandT(const Vector3 &pose, Matrix2 &R, Vector2 &t) {
 }
 
 /*!
-*  \brief      Convert pose Vec to R and t in 2D
+*  \brief      Convert pose config to R and t in 2D
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
 *  \param[out] rotation matrix and translation vector
@@ -148,7 +148,7 @@ static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector3 &pose) {
 }
 
 /*!
-*  \brief      Convert pose Vec to R and t in 3D
+*  \brief      Convert pose config to R and t in 3D
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
 *  \param[out] rotation matrix
@@ -175,7 +175,7 @@ static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector6 &pose) {
 }
 
 /*!
-*  \brief      Convert pose Vec to transformation matrix
+*  \brief      Convert pose config to transformation matrix
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
 *  \param[out] transformation matrix

@@ -55,10 +55,10 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(environment));
 
     ModuleCreator<dim> creator;
-    creator.setCollision(collision);
+    creator.setCollisionType(CollisionType::PQP);
     creator.setEnvironment(environment);
     ModuleCreator<dim> creatorBenchmark;
-    creatorBenchmark.setCollision(collisionBenchmark);
+    creatorBenchmark.setCollisionType(CollisionType::PQP);
     creatorBenchmark.setEnvironment(environment);
 
     for (int i = 3; i < 6; ++i) {

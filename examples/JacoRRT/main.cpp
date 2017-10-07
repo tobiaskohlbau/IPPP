@@ -26,10 +26,9 @@ void simpleRRT() {
 
     robot->saveMeshConfig(util::Vecd(0, 0, 0, 0, 0, 0));
 
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     ModuleCreator<dim> creator;
     creator.setEnvironment(environment);
-    creator.setCollision(collision);
+    creator.setCollisionType(CollisionType::PQP);
 
     RRT<dim> planner(environment, creator.getRRTOptions(30), creator.getGraph());
     Vector6 start = util::Vecd(180, 180, 180, 180, 180, 180);
@@ -71,13 +70,12 @@ void treeConnection() {
     // environment->addObstacle(obstacleModel);
 
     // create two trees from init and from goal
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     ModuleCreator<dim> creator1;
     creator1.setEnvironment(environment);
-    creator1.setCollision(collision);
+    creator1.setCollisionType(CollisionType::PQP);
     ModuleCreator<dim> creator2;
     creator2.setEnvironment(environment);
-    creator2.setCollision(collision);
+    creator2.setCollisionType(CollisionType::PQP);
 
     RRTStar<dim> plannerGoalNode(environment, creator1.getRRTOptions(20), creator1.getGraph());
     RRTStar<dim> plannerInitNode(environment, creator2.getRRTOptions(20), creator2.getGraph());

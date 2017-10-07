@@ -35,8 +35,8 @@ template <unsigned int dim>
 class CollisionDetection2D : public CollisionDetection<dim> {
   public:
     CollisionDetection2D(const std::shared_ptr<Environment> &environment);
-    bool checkConfig(const Vector2 &config, CollisionData *data = nullptr) override;
-    bool checkTrajectory(std::vector<Vector2> &configs) override;
+    bool checkConfig(const Vector<dim> &config, CollisionData *data = nullptr) override;
+    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   private:
     bool checkPoint2D(double x, double y);
@@ -88,7 +88,7 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-bool CollisionDetection2D<dim>::checkConfig(const Vector2 &config, CollisionData *data) {
+bool CollisionDetection2D<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
     return checkPoint2D(config[0], config[1]);
 }
 
@@ -100,7 +100,7 @@ bool CollisionDetection2D<dim>::checkConfig(const Vector2 &config, CollisionData
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-bool CollisionDetection2D<dim>::checkTrajectory(std::vector<Vector2> &configs) {
+bool CollisionDetection2D<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
     if (configs.empty())
         return false;
 
