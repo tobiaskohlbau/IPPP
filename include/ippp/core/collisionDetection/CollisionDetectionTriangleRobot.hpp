@@ -20,6 +20,7 @@
 #define COLLISIONDETECTIONTRIANGLEROBOT_HPP
 
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
+#include <ippp/environment/CadDrawing.h>
 #include <ippp/environment/CadProcessing.h>
 #include <ippp/environment/robot/TriangleRobot2D.h>
 
@@ -243,8 +244,8 @@ bool CollisionDetectionTriangleRobot<dim>::checkTriangleRobot(const Vector<dim> 
 }
 
 template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a,
-                                                        const Vector3 b, const Vector3 c) {
+bool CollisionDetectionTriangleRobot<dim>::lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b,
+                                                        const Vector3 c) {
     Vector3 pq = q - p;
     Vector3 pa = a - p;
     Vector3 pb = b - p;

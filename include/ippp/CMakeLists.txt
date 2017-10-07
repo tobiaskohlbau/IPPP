@@ -67,6 +67,10 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilList.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilTrajectory.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilVec.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/CadDrawing.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/CadImportExport.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/CadProcessing.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/Environment.h
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/util/UtilEnvironment.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/util/MapGenerator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp
