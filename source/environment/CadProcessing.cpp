@@ -27,6 +27,13 @@
 namespace ippp {
 namespace cad {
 
+/*!
+*  \brief      Generate a Triangle2D from the passed Mesh.
+*  \author     Sascha Kaden
+*  \param[in]  Mesh
+*  \param[out] generated vector of Triangle2D
+*  \date       2017-10-07
+*/
 std::vector<Triangle2D> generateTriangles(const Mesh &mesh) {
     std::vector<Triangle2D> triangles;
     for (auto face : mesh.faces) {
@@ -38,6 +45,13 @@ std::vector<Triangle2D> generateTriangles(const Mesh &mesh) {
     return triangles;
 }
 
+/*!
+*  \brief      Generate a Mesh from the passed triangles. Duplicate vertices are not considered.
+*  \author     Sascha Kaden
+*  \param[in]  vector of triangles
+*  \param[out] generated Mesh
+*  \date       2017-10-07
+*/
 Mesh generateMesh(const std::vector<Triangle2D> &triangles) {
     Mesh mesh;
     mesh.vertices.reserve(triangles.size() * 3);
@@ -54,27 +68,74 @@ Mesh generateMesh(const std::vector<Triangle2D> &triangles) {
     mesh.aabb = computeAABB(mesh.vertices);
 }
 
+/*!
+*  \brief      Merge the passed Meshes to one single Mesh.
+*  \author     Sascha Kaden
+*  \param[in]  vector of Meshes
+*  \param[out] merged Mesh
+*  \date       2017-10-07
+*/
 Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
     Mesh mesh;
-    size_t verticeCount;
+    size_t vertexCount;
     for (auto tmpMesh : meshes) {
-        verticeCount = mesh.vertices.size();
-        for (auto vertex : tmpMesh.vertices) {
+        vertexCount = mesh.vertices.size();
+        for (auto &vertex : tmpMesh.vertices) {
             mesh.vertices.push_back(vertex);
         }
-        for (auto face : tmpMesh.faces) {
-            mesh.faces.push_back(Vector3i(face[0] + verticeCount, face[1] + verticeCount, face[2] + verticeCount));
+        for (auto &face : tmpMesh.faces) {
+            mesh.faces.push_back(Vector3i(face[0] + vertexCount, face[1] + vertexCount, face[2] + vertexCount));
         }
     }
     return mesh;
 }
 
 /*!
-*  \brief           Transform vertices with the passed configuration, Vector with position and rotation.
-*  \author          Sascha Kaden
-*  \param[in]       configuration
-*  \param[in, out]  list of vertices
-*  \date            2017-02-25
+*  \brief      Calculate center point of the vertices of a Mesh.
+*  \author     Sascha Kaden
+*  \param[in]  Mesh
+*  \param[out] center point
+*  \date       2017-10-07
+*/
+Vector3 getCenterOfMesh(const Mesh &mesh) {
+    Vector3 sum(0,0,0);
+    for (auto &vertex : mesh.vertices)
+        sum += vertex;
+
+    return sum / mesh.vertices.size();
+}
+
+/*!
+*  \brief          Center the by reference passed meshes.
+*  \author         Sascha Kaden
+*  \param[in, out] vector of Meshes
+*  \date           2017-10-07
+*/
+void centerMeshes(std::vector<Mesh> &meshes) {
+    for (auto &mesh : meshes)
+        centerMesh(mesh);
+}
+
+/*!
+*  \brief          Center the by reference passed Mesh.
+*  \author         Sascha Kaden
+*  \param[in, out] Mesh
+*  \date           2017-10-07
+*/
+void centerMesh(Mesh &mesh) {
+    Vector3 centerPoint = getCenterOfMesh(mesh);
+
+    // set the vertices to the new center point
+    for (auto &vertex : mesh.vertices)
+        vertex -= centerPoint;
+}
+
+/*!
+*  \brief          Transform vertices with the passed configuration, Vector with position and rotation.
+*  \author         Sascha Kaden
+*  \param[in]      configuration
+*  \param[in, out] list of vertices
+*  \date           2017-02-25
 */
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices) {
     if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0) {
@@ -89,11 +150,11 @@ void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices) {
 }
 
 /*!
-*  \brief           Transform vertices with the passed transformation matrix.
-*  \author          Sascha Kaden
-*  \param[in]       transformation matrix
-*  \param[in, out]  list of vertices
-*  \date            2017-04-07
+*  \brief          Transform vertices with the passed transformation matrix.
+*  \author         Sascha Kaden
+*  \param[in]      transformation matrix
+*  \param[in, out] list of vertices
+*  \date           2017-04-07
 */
 void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices) {
     Matrix3 R;
