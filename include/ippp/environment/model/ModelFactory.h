@@ -24,8 +24,8 @@
 #include <vector>
 
 #include <ippp/core/Identifier.h>
-#include <include/ippp/environment/cad/CadImportExport.h>
-#include <include/ippp/environment/cad/CadProcessing.h>
+#include <ippp/environment/cad/CadImportExport.h>
+#include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/environment/model/ModelContainer.h>
 
 namespace ippp {

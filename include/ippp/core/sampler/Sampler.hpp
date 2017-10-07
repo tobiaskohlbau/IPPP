@@ -39,6 +39,7 @@ template <unsigned int dim>
 class Sampler : public Identifier {
   public:
     Sampler(const std::string &name, const std::shared_ptr<Environment> &environment);
+    Sampler(const std::string &name, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary);
     virtual Vector<dim> getSample() = 0;
     double getRandomAngle();
     double getRandomNumber();
@@ -68,16 +69,28 @@ template <unsigned int dim>
 Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment> &environment) : Identifier(name) {
     m_minBoundary = environment->getRobot()->getMinBoundary();
     m_maxBoundary = environment->getRobot()->getMaxBoundary();
+
     Vector6 pose = environment->getRobot()->getPose();
-    if (dim <= 6) {
-        for (int i = 0; i < dim; ++i) {
-            m_origin[i] = pose[i];
-        }
-    } else {
-        for (int i = 0; i < 6; ++i) {
-            m_origin[i] = pose[i];
-        }
-    }
+    for (int i = 0; i < dim; ++i)
+        m_origin[i] = pose[i];
+
+    m_generator = std::mt19937(rd());
+    m_distAngle = std::uniform_real_distribution<double>(0, util::twoPi());
+    m_distNumber = std::uniform_real_distribution<double>(0, 1.0);
+}
+
+/*!
+*  \brief      Constructor of the base Sampler class
+*  \author     Sascha Kaden
+*  \param[in]  minimum boundary
+*  \param[in]  maximum boundary
+*  \date       2016-05-24
+*/
+template <unsigned int dim>
+Sampler<dim>::Sampler(const std::string &name, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary)
+    : Identifier(name) {
+    m_minBoundary = minBoundary;
+    m_maxBoundary = maxBoundary;
 
     m_generator = std::mt19937(rd());
     m_distAngle = std::uniform_real_distribution<double>(0, util::twoPi());

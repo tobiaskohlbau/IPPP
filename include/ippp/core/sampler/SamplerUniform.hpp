@@ -32,6 +32,7 @@ template <unsigned int dim>
 class SamplerUniform : public Sampler<dim> {
   public:
     SamplerUniform(const std::shared_ptr<Environment> &environment);
+    SamplerUniform(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary);
     Vector<dim> getSample() override;
 
   private:
@@ -41,12 +42,28 @@ class SamplerUniform : public Sampler<dim> {
 /*!
 *  \brief      Constructor of the class SamplerUniform
 *  \author     Sascha Kaden
-*  \param[in]  robot
+*  \param[in]  Environment
 *  \date       2016-05-24
 */
 template <unsigned int dim>
 SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<Environment> &environment)
     : Sampler<dim>("SamplerUniform", environment) {
+    for (unsigned int i = 0; i < dim; ++i) {
+        std::uniform_real_distribution<double> dist(this->m_minBoundary[i], this->m_maxBoundary[i]);
+        m_distUniform.push_back(dist);
+    }
+}
+
+/*!
+*  \brief      Constructor of the class SamplerUniform
+*  \author     Sascha Kaden
+*  \param[in]  minimum boundary
+*  \param[in]  maximum boundary
+*  \date       2016-05-24
+*/
+template <unsigned int dim>
+SamplerUniform<dim>::SamplerUniform(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary)
+    : Sampler<dim>("SamplerUniform", minBoundary, maxBoundary) {
     for (unsigned int i = 0; i < dim; ++i) {
         std::uniform_real_distribution<double> dist(this->m_minBoundary[i], this->m_maxBoundary[i]);
         m_distUniform.push_back(dist);

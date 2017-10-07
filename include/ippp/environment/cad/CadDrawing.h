@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-#include <include/ippp/environment/cad/CadProcessing.h>
+#include <ippp/environment/cad/CadProcessing.h>
 
 namespace ippp {
 namespace cad {
