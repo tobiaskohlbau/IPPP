@@ -22,7 +22,7 @@
 #include <Eigen/Geometry>
 
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
-#include <ippp/environment/CadProcessing.h>
+#include <ippp/environment/cad/CadProcessing.h>
 
 namespace ippp {
 

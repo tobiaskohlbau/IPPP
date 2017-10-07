@@ -17,7 +17,7 @@
 //-------------------------------------------------------------------------//
 
 #include <ippp/environment/model/ModelTriangle2D.h>
-#include <ippp/environment/CadProcessing.h>
+#include <include/ippp/environment/cad/CadProcessing.h>
 
 namespace ippp {
 

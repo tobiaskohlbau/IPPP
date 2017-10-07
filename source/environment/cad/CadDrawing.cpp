@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/environment/CadDrawing.h>
+#include <include/ippp/environment/cad/CadDrawing.h>
 
 #include <ippp/core/util/Logging.h>
 

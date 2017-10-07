@@ -20,8 +20,8 @@
 #define COLLISIONDETECTIONTRIANGLEROBOT_HPP
 
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
-#include <ippp/environment/CadDrawing.h>
-#include <ippp/environment/CadProcessing.h>
+#include <ippp/environment/cad/CadDrawing.h>
+#include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/environment/robot/TriangleRobot2D.h>
 
 namespace ippp {
