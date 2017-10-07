@@ -34,7 +34,7 @@ template <unsigned int dim>
 class RotateAtS : public TrajectoryPlanner<dim> {
   public:
     RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision,
-              const std::shared_ptr<Environment> &environment, const double stepSize = 1, const double rotPoint = 0.5);
+              const std::shared_ptr<Environment> &environment, const double posRes = 1, const double oriRes = 0.1, const double rotPoint = 0.5);
 
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
@@ -46,13 +46,15 @@ class RotateAtS : public TrajectoryPlanner<dim> {
     void initMasks();
 
     double m_rotationPoint = 0.5;
-    Vector<dim> m_posMask;
-    Vector<dim> m_rotMask;
 
     using TrajectoryPlanner<dim>::m_collision;
     using TrajectoryPlanner<dim>::m_environment;
-    using TrajectoryPlanner<dim>::m_stepSize;
-    using TrajectoryPlanner<dim>::m_sqStepSize;
+    using TrajectoryPlanner<dim>::m_posRes;
+    using TrajectoryPlanner<dim>::m_oriRes;
+    using TrajectoryPlanner<dim>::m_sqPosRes;
+    using TrajectoryPlanner<dim>::m_sqOriRes;
+    using TrajectoryPlanner<dim>::m_posMask;
+    using TrajectoryPlanner<dim>::m_oriMask;
 };
 
 /*!
@@ -60,18 +62,17 @@ class RotateAtS : public TrajectoryPlanner<dim> {
 *  \author     Sascha Kaden
 *  \param[in]  CollisionDetection
 *  \param[in]  Environment
-*  \param[in]  step size of the path
+*  \param[in]  position resolution
+*  \param[in]  orientation resolution
 *  \param[in]  rotation point
 *  \date       2017-06-20
 */
 template <unsigned int dim>
 RotateAtS<dim>::RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision,
-                          const std::shared_ptr<Environment> &environment, const double stepSize, const double rotPoint)
-    : TrajectoryPlanner<dim>("RotateAtS", collision, environment, stepSize) {
+                          const std::shared_ptr<Environment> &environment, const double posRes, const double oriRes, const double rotPoint)
+    : TrajectoryPlanner<dim>("RotateAtS", collision, environment, posRes, oriRes) {
     setRotationPoint(rotPoint);
-    auto masks = environment->getConfigMasks();
-    m_posMask = masks.first;
-    m_rotMask = masks.second;
+
 }
 
 /*!
@@ -106,17 +107,17 @@ std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &s
     Vector<dim> posTarget = util::multiplyElementWise<dim>(target, m_posMask);
 
     // compute the linear translation points
-    configs = util::linearTrajectoryCont<dim>(posSource, posTarget, m_stepSize);
+    configs = util::linearTrajectoryCont<dim>(posSource, posTarget, m_posRes, m_oriRes, m_posMask, m_oriMask);
     Vector<dim> u(posTarget - posSource);
 
     // compute the linear rotation points
-    Vector<dim> rotSource = util::multiplyElementWise<dim>(source, m_rotMask);
-    Vector<dim> rotTarget = util::multiplyElementWise<dim>(target, m_rotMask);
-    std::vector<Vector<dim>> rotConfigs = util::linearTrajectoryCont<dim>(rotSource, rotTarget, m_stepSize);
+    Vector<dim> rotSource = util::multiplyElementWise<dim>(source, m_oriMask);
+    Vector<dim> rotTarget = util::multiplyElementWise<dim>(target, m_oriMask);
+    std::vector<Vector<dim>> oriConfigs = util::linearTrajectoryCont<dim>(rotSource, rotTarget, m_posRes, m_oriRes, m_posMask, m_oriMask);
 
     // get middle point and insert rotation configurations
     size_t middleIndex = configs.size() * m_rotationPoint;
-    configs.insert(std::begin(configs) + middleIndex, std::begin(rotConfigs), std::end(rotConfigs));
+    configs.insert(std::begin(configs) + middleIndex, std::begin(oriConfigs), std::end(oriConfigs));
 
     return configs;
 }
@@ -133,7 +134,7 @@ void RotateAtS<dim>::setRotationPoint(const double rotPoint) {
         m_rotationPoint = rotPoint;
     } else {
         m_rotationPoint = 0.5;
-        Logging::error("rotation point have to be between 0 and 1", this);
+        Logging::error("Rotation point have to be between 0 and 1!", this);
     }
 }
 

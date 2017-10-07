@@ -29,6 +29,8 @@
 
 namespace ippp {
 
+enum class CollisionType { Dim2, Dim2Triangle, AlwaysValid, PQP, FCL, AABB, Sphere };
+
 enum class MetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
 
 enum class EvaluatorType { SingleIteration, Query };
@@ -82,7 +84,7 @@ class ModuleCreator : public Identifier {
                                const double medialAxisDirs = 15);
     void setSamplingType(const SamplingType type);
     void setTrajectoryType(const TrajectoryType type);
-    void setTrajectoryStepSize(const double stepSize);
+    void setTrajectoryProperties(const double posRes, const double oriRes);
 
   private:
     void initializeModules();
@@ -111,7 +113,8 @@ class ModuleCreator : public Identifier {
     double m_samplingDist = 10;
     unsigned int m_medialAxisDirs = 15;
     TrajectoryType m_trajectoryType = TrajectoryType::Linear;
-    double m_trajectoryStepSize = 1;
+    double m_posRes = 1;
+    double m_oriRes = 0.1;
 };
 
 /*!
@@ -137,10 +140,10 @@ void ModuleCreator<dim>::initializeModules() {
 
     if (m_trajectoryType == TrajectoryType::RotateAtS)
         m_trajectory =
-            std::shared_ptr<TrajectoryPlanner<dim>>(new RotateAtS<dim>(m_collision, m_environment, m_trajectoryStepSize));
+            std::shared_ptr<TrajectoryPlanner<dim>>(new RotateAtS<dim>(m_collision, m_environment, m_posRes, m_oriRes));
     else
         m_trajectory =
-            std::shared_ptr<TrajectoryPlanner<dim>>(new LinearTrajectory<dim>(m_collision, m_environment, m_trajectoryStepSize));
+            std::shared_ptr<TrajectoryPlanner<dim>>(new LinearTrajectory<dim>(m_collision, m_environment, m_posRes, m_oriRes));
 
     if (m_metricType == MetricType::L1)
         m_metric = std::shared_ptr<DistanceMetric<dim>>(new L1Metric<dim>());
@@ -195,8 +198,8 @@ void ModuleCreator<dim>::initializeModules() {
         m_sampling = std::shared_ptr<Sampling<dim>>(new GaussianDistSampling<dim>(m_environment, m_collision, m_trajectory,
                                                                                   m_sampler, m_samplingAttempts, m_samplingDist));
     else if (m_samplingType == SamplingType::MedialAxis)
-        m_sampling = std::shared_ptr<Sampling<dim>>(new MedialAxisSampling<dim>(
-            m_environment, m_collision, m_trajectory, m_sampler, m_samplingAttempts, m_medialAxisDirs));
+        m_sampling = std::shared_ptr<Sampling<dim>>(new MedialAxisSampling<dim>(m_environment, m_collision, m_trajectory,
+                                                                                m_sampler, m_samplingAttempts, m_medialAxisDirs));
     else if (m_samplingType == SamplingType::NearObstacle)
         m_sampling = std::shared_ptr<Sampling<dim>>(
             new SamplingNearObstacle<dim>(m_environment, m_collision, m_trajectory, m_sampler, m_samplingAttempts));
@@ -359,8 +362,19 @@ void ModuleCreator<dim>::setTrajectoryType(const TrajectoryType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setTrajectoryStepSize(const double stepSize) {
-    m_trajectoryStepSize = stepSize;
+void ModuleCreator<dim>::setTrajectoryProperties(const double posRes, const double oriRes) {
+    if (posRes <= 0) {
+        m_posRes = 1;
+        Logging::warning("Position resolution has to be larger than 0, it was set to 1!", this);
+    } else {
+        m_posRes = posRes;
+    }
+    if (oriRes <= 0) {
+        m_oriRes = 0.1;
+        Logging::warning("Orientation resolution has to be larger than 0, it was set to 0.1!", this);
+    } else {
+        m_oriRes = oriRes;
+    }
 }
 
 /*!

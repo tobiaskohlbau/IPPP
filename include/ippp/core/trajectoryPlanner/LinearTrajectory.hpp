@@ -32,15 +32,19 @@ template <unsigned int dim>
 class LinearTrajectory : public TrajectoryPlanner<dim> {
   public:
     LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Environment> &environment,
-                     const double stepSize = 1);
+                     const double posRes = 1, const double oriRes = 0.1);
 
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
 
   private:
     using TrajectoryPlanner<dim>::m_collision;
-    using TrajectoryPlanner<dim>::m_stepSize;
-    using TrajectoryPlanner<dim>::m_sqStepSize;
+    using TrajectoryPlanner<dim>::m_posRes;
+    using TrajectoryPlanner<dim>::m_oriRes;
+    using TrajectoryPlanner<dim>::m_sqPosRes;
+    using TrajectoryPlanner<dim>::m_sqOriRes;
+    using TrajectoryPlanner<dim>::m_posMask;
+    using TrajectoryPlanner<dim>::m_oriMask;
 };
 
 /*!
@@ -48,13 +52,14 @@ class LinearTrajectory : public TrajectoryPlanner<dim> {
 *  \author     Sascha Kaden
 *  \param[in]  CollisionDetection
 *  \param[in]  Environment
-*  \param[in]  step size of the path
+*  \param[in]  position resolution
+*  \param[in]  orientation resolution
 *  \date       2016-05-25
 */
 template <unsigned int dim>
 LinearTrajectory<dim>::LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                        const std::shared_ptr<Environment> &environment, const double stepSize)
-    : TrajectoryPlanner<dim>("LinearTrajectory", collision, environment, stepSize) {
+                                        const std::shared_ptr<Environment> &environment, const double posRes, const double oriRes)
+    : TrajectoryPlanner<dim>("LinearTrajectory", collision, environment, posRes, oriRes) {
 }
 
 /*!
@@ -68,7 +73,7 @@ LinearTrajectory<dim>::LinearTrajectory(const std::shared_ptr<CollisionDetection
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> LinearTrajectory<dim>::calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) {
-    return util::linearTrajectoryBin<dim>(source, target, m_stepSize);
+    return util::linearTrajectoryBin<dim>(source, target, m_posRes, m_oriRes, m_posMask, m_oriMask);
 }
 
 /*!
@@ -82,7 +87,7 @@ std::vector<Vector<dim>> LinearTrajectory<dim>::calcTrajectoryBin(const Vector<d
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> LinearTrajectory<dim>::calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) {
-    return util::linearTrajectoryCont<dim>(source, target, m_stepSize);
+    return util::linearTrajectoryCont<dim>(source, target, m_posRes, m_oriRes, m_posMask, m_oriMask);
 }
 
 } /* namespace ippp */

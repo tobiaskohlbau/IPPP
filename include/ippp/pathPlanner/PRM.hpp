@@ -44,7 +44,7 @@ class PRM : public Planner<dim> {
     bool queryPath(const Vector<dim> start, const Vector<dim> goal);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1);
+    std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1);
 
   protected:
     void samplingPhase(const unsigned int nbOfNodes);
@@ -308,8 +308,8 @@ std::vector<std::shared_ptr<Node<dim>>> PRM<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> PRM<dim>::getPath(const double trajectoryStepSize) {
-    return this->getPathFromNodes(m_nodePath, trajectoryStepSize);
+std::vector<Vector<dim>> PRM<dim>::getPath(const double posRes, const double oriRes) {
+    return this->getPathFromNodes(m_nodePath, posRes, oriRes);
 }
 
 } /* namespace ippp */
