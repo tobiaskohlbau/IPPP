@@ -25,7 +25,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
-#include <ippp/environment/CadProcessing.h>
+#include <include/ippp/environment/cad/CadProcessing.h>
 
 namespace ippp {
 namespace cad {

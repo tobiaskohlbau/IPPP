@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/environment/CadProcessing.h>
+#include <include/ippp/environment/cad/CadProcessing.h>
 
 #include <fstream>
 #include <iostream>
@@ -138,15 +138,14 @@ void centerMesh(Mesh &mesh) {
 *  \date           2017-02-25
 */
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices) {
-    if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0) {
+    if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0)
         return;
-    }
+
     Matrix3 R;
     Vector3 t;
     util::poseVecToRandT(config, R, t);
-    for (auto &&vertex : vertices) {
+    for (auto &&vertex : vertices)
         vertex = (R * vertex) + t;
-    }
 }
 
 /*!
@@ -160,9 +159,8 @@ void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices) {
     Matrix3 R;
     Vector3 t;
     util::decomposeT(T, R, t);
-    for (auto &&vertex : vertices) {
+    for (auto &&vertex : vertices)
         vertex = (R * vertex) + t;
-    }
 }
 
 /*!
@@ -175,15 +173,13 @@ void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices) {
 */
 std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces) {
     std::vector<Vector3> normals;
-    if (vertices.empty() || faces.empty()) {
+    if (vertices.empty() || faces.empty())
         return normals;
-    }
 
-    for (auto face : faces) {
+    for (auto face : faces)
         normals.push_back(util::computeNormal(vertices[face[0]], vertices[face[1]], vertices[face[2]]));
-    }
-    util::removeDuplicates(normals);
 
+    util::removeDuplicates(normals);
     return normals;
 }
 
