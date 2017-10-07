@@ -36,7 +36,7 @@ template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
     TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                      const std::shared_ptr<Environment> &environment, const double stepSize = 1);
+                      const std::shared_ptr<Environment> &environment, const double posRes = 1, const double oriRes = 0.1);
 
     bool checkTrajectory(const Node<dim> &source, const Node<dim> &target);
     bool checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
@@ -49,14 +49,22 @@ class TrajectoryPlanner : public Identifier {
     virtual std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) = 0;
     virtual std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) = 0;
 
-    void setStepSize(const double stepSize);
-    double getStepSize() const;
+    void setResolutions(const double posRes, const double oriRes = 0.1);
+    double getPosRes() const;
+    double getOriRes() const;
+    std::pair<double, double> getResolutions() const;
 
   protected:
-    double m_stepSize = 1;
-    double m_sqStepSize = 1;
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
+
+    double m_posRes = 1;
+    double m_oriRes = 0.1;
+    double m_sqPosRes = 1;
+    double m_sqOriRes = 1;
+
+    Vector<dim> m_posMask;
+    Vector<dim> m_oriMask;
 };
 
 /*!
@@ -65,14 +73,19 @@ class TrajectoryPlanner : public Identifier {
 *  \param[in]  name
 *  \param[in]  CollisionDetection
 *  \param[in]  Environment
-*  \param[in]  step size of the path
+*  \param[in]  position resolution
+*  \param[in]  orientation resolution
 *  \date       2016-05-25
 */
 template <unsigned int dim>
 TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                          const std::shared_ptr<Environment> &environment, const double stepSize)
+                                          const std::shared_ptr<Environment> &environment, const double posRes,
+                                          const double oriRes)
     : Identifier(name), m_collision(collision), m_environment(environment) {
-    setStepSize(stepSize);
+    setResolutions(posRes, oriRes);
+    auto masks = environment->getConfigMasks();
+    m_posMask = masks.first;
+    m_oriMask = masks.second;
 }
 
 /*!
@@ -171,31 +184,63 @@ Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, con
 }
 
 /*!
-*  \brief      Set step size, if value is larger than zero otherwise 1 will be set
+*  \brief      Set position and orientation resolutions.
+*  \details    If values are smaller or equal to zero, standard parameter will be set.
 *  \author     Sascha Kaden
-*  \param[in]  step size
-*  \date       2016-07-14
+*  \param[in]  position resolution
+*  \param[in]  orientation resolution
+*  \date       2017-10-07
 */
 template <unsigned int dim>
-void TrajectoryPlanner<dim>::setStepSize(const double stepSize) {
-    if (stepSize <= 0) {
-        m_stepSize = 1;
-        Logging::warning("Step size has to be larger than 0, it has set to 1!", this);
+void TrajectoryPlanner<dim>::setResolutions(const double posRes, const double oriRes) {
+    if (posRes <= 0) {
+        m_posRes = 1;
+        Logging::warning("Position resolution has to be larger than 0, it was set to 1!", this);
     } else {
-        m_stepSize = stepSize;
+        m_posRes = posRes;
     }
-    m_sqStepSize = stepSize * stepSize;
+    if (oriRes <= 0) {
+        m_oriRes = 0.1;
+        Logging::warning("Orientation resolution has to be larger than 0, it was set to 0.1!", this);
+    } else {
+        m_oriRes = oriRes;
+    }
+
+    m_sqPosRes = m_posRes * m_posRes;
+    m_sqOriRes = m_oriRes * m_oriRes;
 }
 
 /*!
-*  \brief      Return step size
+*  \brief      Return position resolution
 *  \author     Sascha Kaden
-*  \param[out] step size
-*  \date       2016-07-14
+*  \param[out] position resolution
+*  \date       2017-10-07
 */
 template <unsigned int dim>
-double TrajectoryPlanner<dim>::getStepSize() const {
-    return m_stepSize;
+double TrajectoryPlanner<dim>::getPosRes() const {
+    return m_posRes;
+}
+
+/*!
+*  \brief      Return orientation resolution
+*  \author     Sascha Kaden
+*  \param[out] orientation resolution
+*  \date       2017-10-07
+*/
+template <unsigned int dim>
+double TrajectoryPlanner<dim>::getOriRes() const {
+    return m_oriRes;
+}
+
+/*!
+*  \brief      Return orientation resolution
+*  \author     Sascha Kaden
+*  \param[out] orientation resolution
+*  \date       2017-10-07
+*/
+template <unsigned int dim>
+std::pair<double, double> TrajectoryPlanner<dim>::getResolutions() const {
+    return std::make_pair(m_posRes, m_oriRes);
 }
 
 } /* namespace ippp */

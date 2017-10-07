@@ -46,7 +46,7 @@ class TreePlanner : public Planner<dim> {
     virtual bool connectGoalNode(const Vector<dim> goal) = 0;
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1);
+    std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1);
     std::shared_ptr<Node<dim>> getInitNode() const;
     std::shared_ptr<Node<dim>> getGoalNode() const;
 
@@ -183,7 +183,7 @@ std::vector<std::shared_ptr<Node<dim>>> TreePlanner<dim>::getPathNodes() {
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> TreePlanner<dim>::getPath(const double trajectoryStepSize) {
+std::vector<Vector<dim>> TreePlanner<dim>::getPath(const double posRes, const double oriRes) {
     std::vector<Vector<dim>> path;
     if (!m_pathPlanned) {
         Logging::warning("Path is not complete", this);
@@ -191,7 +191,7 @@ std::vector<Vector<dim>> TreePlanner<dim>::getPath(const double trajectoryStepSi
     }
 
     std::vector<std::shared_ptr<Node<dim>>> nodes = getPathNodes();
-    path = this->getPathFromNodes(nodes, trajectoryStepSize);
+    path = this->getPathFromNodes(nodes, posRes, oriRes);
 
     Logging::info("Path has: " + std::to_string(path.size()) + " points", this);
     return path;

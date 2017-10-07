@@ -32,40 +32,11 @@ namespace util {
 *  \param[in]  target Vector
 *  \param[in]  positional resolution
 *  \param[in]  rotational resolution
-*  \param[in]  position mask
-*  \param[in]  rotation mask
 *  \param[out] trajectory
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, const double posRes,
-                                                     const double oriRes, const Vector<dim> &posMask, const Vector<dim> &rotMask) {
-    double uNormPos = (util::multiplyElementWise<dim>((target - source), posMask)).norm();
-    double uNormRot = (util::multiplyElementWise<dim>((target - source), rotMask)).norm();
-
-    // check resolutions of position and orientation resolution and take the smaller one
-    double resolution = 1;
-    if (uNormRot / oriRes < uNormPos / posRes)
-        resolution = uNormRot / oriRes;
-    else
-        resolution = uNormPos / posRes;
-
-    return linearTrajectory(source, target, resolution);
-}
-
-/*!
-*  \brief      Compute the continuous trajectory between source and target. Return vector of points.
-*  \details    The trajectory doesn't contain source or target configuration.
-*  \author     Sascha Kaden
-*  \param[in]  source Vector
-*  \param[in]  target Vector
-*  \param[in]  positional resolution
-*  \param[in]  rotational resolution
-*  \param[out] trajectory
-*  \date       2017-09-30
-*/
-template <unsigned int dim>
-static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, const double res = 1) {
+static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, const double res) {
     std::vector<Vector<dim>> configs;
 
     Vector<dim> u(target - source);    // u = a - b
@@ -90,19 +61,18 @@ static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, 
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, const double posRes,
-                                                    const double oriRes, const Vector<dim> &posMask, const Vector<dim> &rotMask) {
-    double uNormPos = (util::multiplyElementWise<dim>((target - source), posMask)).norm();
-    double uNormRot = (util::multiplyElementWise<dim>((target - source), rotMask)).norm();
+static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, const double posRes,
+                                                     const double oriRes, const Vector<dim> &posMask,
+                                                     const Vector<dim> &oriMask) {
+    double uNormPos = (util::multiplyElementWise<dim>((target - source), posMask)).squaredNorm();
+    double uNormOri = (util::multiplyElementWise<dim>((target - source), oriMask)).squaredNorm();
 
     // check resolutions of position and orientation resolution and take the smaller one
-    double resolution = 1;
-    if (uNormRot / oriRes < uNormPos / posRes)
-        resolution = uNormRot / oriRes;
+    auto oRes = uNormOri / oriRes;
+    if (oRes > 0 && oRes < uNormPos / posRes)
+        return linearTrajectoryCont<dim>(source, target, oriRes);
     else
-        resolution = uNormPos / posRes;
-
-    return linearTrajectoryBin(source, target, resolution);
+        return linearTrajectoryCont<dim>(source, target, posRes);
 }
 
 /*!
@@ -116,7 +86,7 @@ static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, c
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, const double res = 1) {
+static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, const double res) {
     std::vector<Vector<dim>> configs;
 
     Vector<dim> u(target - source);
@@ -128,6 +98,33 @@ static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, c
             configs.push_back(source + (uTemp * i));
 
     return configs;
+}
+
+/*!
+*  \brief      Compute the continuous trajectory between source and target. Return vector of points.
+*  \details    The trajectory doesn't contain source or target configuration.
+*  \author     Sascha Kaden
+*  \param[in]  source Vector
+*  \param[in]  target Vector
+*  \param[in]  positional resolution
+*  \param[in]  rotational resolution
+*  \param[in]  position mask
+*  \param[in]  rotation mask
+*  \param[out] trajectory
+*  \date       2017-09-30
+*/
+template <unsigned int dim>
+static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, const double posRes,
+                                                    const double oriRes, const Vector<dim> &posMask, const Vector<dim> &oriMask) {
+    double uNormPos = (util::multiplyElementWise<dim>((target - source), posMask)).squaredNorm();
+    double uNormOri = (util::multiplyElementWise<dim>((target - source), oriMask)).squaredNorm();
+
+    // check resolutions of position and orientation resolution and take the smaller one
+    auto oRes = uNormOri / oriRes;
+    if (oRes > 0 && oRes < uNormPos / posRes)
+        return linearTrajectoryBin<dim>(source, target, oriRes);
+    else
+        return linearTrajectoryBin<dim>(source, target, posRes);
 }
 
 } /* namespace util */

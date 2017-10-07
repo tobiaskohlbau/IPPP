@@ -53,10 +53,10 @@ class Planner : public Identifier {
 
     std::shared_ptr<Graph<dim>> getGraph();
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
-    virtual std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1) = 0;
+    virtual std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
     std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                              const double trajectoryStepSize);
+                                              const double posRes, const double oriRes);
 
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
@@ -143,11 +143,14 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 */
 template <unsigned int dim>
 std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                                        const double trajectoryStepSize) {
+                                                        const double posRes, const double oriRes) {
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes = m_pathModifier->smoothPath(nodes);
 
     Logging::info("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", this);
 
+    // save the planner resolution and set passed resolutions
+    auto plannerRes = m_trajectory->getResolutions();
+    m_trajectory->setResolutions(posRes, oriRes);
     std::vector<Vector<dim>> path;
     for (int i = 0; i < smoothedNodes.size() - 1; ++i) {
         std::vector<Vector<dim>> tempConfigs =
@@ -157,27 +160,9 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
         }
     }
 
-    if (trajectoryStepSize < m_trajectory->getStepSize()) {
-        Logging::info("Passed trajectory step size is smaller than the step of the planner! Path has step size of the planner",
-                      this);
-    } else if (trajectoryStepSize > m_trajectory->getStepSize()) {
-        unsigned int steps = trajectoryStepSize / m_trajectory->getStepSize();
-        std::vector<Vector<dim>> newPath;
-        newPath.push_back(path[0]);
-        unsigned int j = 0;
-        for (auto point : path) {
-            if (j == steps) {
-                newPath.push_back(point);
-                j = 0;
-            } else {
-                ++j;
-            }
-        }
+    // set the resolution again to the planner resolution
+    m_trajectory->setResolutions(plannerRes.first, plannerRes.second);
 
-        if (newPath.back() != path.back())
-            newPath.push_back(path.back());
-        path = newPath;
-    }
     return path;
 }
 
