@@ -22,8 +22,8 @@
 #include <ippp/core/dataObj/Graph.hpp>
 #include <ippp/core/distanceMetrics/DistanceMetric.hpp>
 #include <ippp/core/evaluator/Evaluator.hpp>
-#include <ippp/core/util/UtilVec.hpp>
 #include <ippp/core/util/Logging.h>
+#include <ippp/core/util/UtilVec.hpp>
 
 namespace ippp {
 
@@ -35,8 +35,8 @@ namespace ippp {
 template <unsigned int dim>
 class QueryEvaluator : public Evaluator<dim> {
   public:
-    QueryEvaluator(const std::shared_ptr<Environment> &environment, const std::shared_ptr<DistanceMetric<dim>> &metric,
-                   const std::shared_ptr<Graph<dim>> &graph, double dist = 1);
+    QueryEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
+                   const double dist = 10);
 
     bool evaluate();
     void setQuery(const std::vector<Vector<dim>> &targets) override;
@@ -62,10 +62,9 @@ class QueryEvaluator : public Evaluator<dim> {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-QueryEvaluator<dim>::QueryEvaluator(const std::shared_ptr<Environment> &environment,
-                                    const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
-                                    double dist)
-    : Evaluator<dim>("QueryEvaluator", environment), m_graph(graph), m_metric(metric), m_dist(dist) {
+QueryEvaluator<dim>::QueryEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
+                                    const double dist)
+    : Evaluator<dim>("QueryEvaluator"), m_graph(graph), m_metric(metric), m_dist(dist) {
 }
 
 /*!

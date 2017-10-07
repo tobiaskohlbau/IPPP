@@ -21,8 +21,8 @@
 
 #include <ippp/core/Identifier.h>
 #include <ippp/core/types.h>
-#include <ippp/environment/Environment.h>
 #include <ippp/core/util/UtilVec.hpp>
+#include <ippp/environment/Environment.h>
 
 namespace ippp {
 
@@ -34,13 +34,12 @@ namespace ippp {
 template <unsigned int dim>
 class Evaluator : public Identifier {
   public:
-    Evaluator(const std::string &name, const std::shared_ptr<Environment> &environment);
+    Evaluator(const std::string &name);
 
     virtual bool evaluate() = 0;
     virtual void setQuery(const std::vector<Vector<dim>> &targets);
 
   protected:
-    std::shared_ptr<Environment> m_environment = nullptr;
     std::vector<Vector<dim>> m_targets;
 };
 
@@ -52,8 +51,7 @@ class Evaluator : public Identifier {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-Evaluator<dim>::Evaluator(const std::string &name, const std::shared_ptr<Environment> &environment)
-    : Identifier(name), m_environment(environment) {
+Evaluator<dim>::Evaluator(const std::string &name) : Identifier(name) {
 }
 
 /*!

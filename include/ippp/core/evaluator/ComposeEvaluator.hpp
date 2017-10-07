@@ -16,27 +16,30 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SINGLEITERATIONEVALUATOR_HPP
-#define SINGLEITERATIONEVALUATOR_HPP
+#ifndef COMPOSEEVALUATOR_HPP
+#define COMPOSEEVALUATOR_HPP
 
 #include <ippp/core/evaluator/Evaluator.hpp>
 
 namespace ippp {
 
+enum class ComposeType { AND, OR };
+
 /*!
-* \brief   SingleIterationEvaluator which runs only one Iteration.
+* \brief   ComposeEvaluator which runs only one Iteration.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
 template <unsigned int dim>
-class SingleIterationEvaluator : public Evaluator<dim> {
+class ComposeEvaluator : public Evaluator<dim> {
   public:
-    SingleIterationEvaluator();
+    ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, const ComposeType type);
 
     bool evaluate();
 
   protected:
-    bool m_firstEvaluation = true;
+    std::vector<std::shared_ptr<Evaluator<dim>>> m_evaluators;
+    ComposeType m_type = ComposeType::AND;
 };
 
 /*!
@@ -46,7 +49,8 @@ class SingleIterationEvaluator : public Evaluator<dim> {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-SingleIterationEvaluator<dim>::SingleIterationEvaluator() : Evaluator<dim>("SingleIterationEvaluator") {
+ComposeEvaluator<dim>::ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, const ComposeType type)
+    : Evaluator<dim>("ComposeEvaluator"), m_evaluators(evaluators), m_type(type) {
 }
 
 /*!
@@ -56,15 +60,22 @@ SingleIterationEvaluator<dim>::SingleIterationEvaluator() : Evaluator<dim>("Sing
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-bool SingleIterationEvaluator<dim>::evaluate() {
-    if (m_firstEvaluation) {
-        m_firstEvaluation = false;
-        return false;
-    } else {
+bool ComposeEvaluator<dim>::evaluate() {
+    if (m_type == ComposeType::AND) {
+        for (auto &evaluator : m_evaluators) {
+            if (!evaluator->evaluate())
+                return false;
+        }
+        return true;
+    } else {    // OR
+        for (auto &evaluator : m_evaluators) {
+            if (evaluator->evaluate())
+                return true;
+        }
         return true;
     }
 }
 
 } /* namespace ippp */
 
-#endif /* SINGLEITERATIONEVALUATOR_HPP */
+#endif /* COMPOSEEVALUATOR_HPP */

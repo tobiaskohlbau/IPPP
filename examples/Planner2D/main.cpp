@@ -34,11 +34,11 @@ void testTriangleRobot() {
     creator.setEnvironment(environment);
     creator.setCollisionType(CollisionType::Dim2Triangle);
     creator.setEvaluatorType(EvaluatorType::Query);
-    creator.setQueryEvaluatorDist(10);
+    creator.setEvaluatorProperties(10, 10);
     creator.setSamplingType(SamplingType::NearObstacle);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-//    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(30), creator.getGraph()));
+    //    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(30), creator.getGraph()));
     planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(40), creator.getGraph()));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
     // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
@@ -96,15 +96,15 @@ void testPointRobot() {
     creator.setEnvironment(environment);
     creator.setCollisionType(CollisionType::Dim2);
     creator.setEvaluatorType(EvaluatorType::Query);
-    creator.setQueryEvaluatorDist(30);
+    creator.setEvaluatorProperties(10, 10);
     creator.setSamplingType(SamplingType::NearObstacle);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-//    planner = std::shared_ptr<EST<dim>>(new EST<dim>(environment, creator.getPlannerOptions(), creator.getGraph()));
-//    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(20), creator.getGraph()));
+    //    planner = std::shared_ptr<EST<dim>>(new EST<dim>(environment, creator.getPlannerOptions(), creator.getGraph()));
+    //    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(20), creator.getGraph()));
     planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(20), creator.getGraph()));
-//    planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
-//    planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
+    //    planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
+    //    planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
@@ -140,6 +140,6 @@ void testPointRobot() {
 
 int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::debug);
-//    testTriangleRobot();
+    //    testTriangleRobot();
     testPointRobot();
 }
