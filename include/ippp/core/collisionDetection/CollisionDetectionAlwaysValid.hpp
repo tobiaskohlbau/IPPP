@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef COLLISIONDETECTIONDUMMY_HPP
-#define COLLISIONDETECTIONDUMMY_HPP
+#ifndef COLLISIONDETECTIONALAWAYSVALID_HPP
+#define COLLISIONDETECTIONALAWAYSVALID_HPP
 
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
 
@@ -29,9 +29,9 @@ namespace ippp {
 * \date    2017-02-19
 */
 template <unsigned int dim>
-class CollisionDetectionDummy : public CollisionDetection<dim> {
+class CollisionDetectionAlwaysValid : public CollisionDetection<dim> {
   public:
-    CollisionDetectionDummy(const std::shared_ptr<Environment> &environment);
+    CollisionDetectionAlwaysValid(const std::shared_ptr<Environment> &environment);
     bool checkConfig(const Vector<dim> &config, CollisionData *data = nullptr) override;
     bool checkTrajectory(std::vector<Vector<dim>> &vec) override;
 };
@@ -43,8 +43,8 @@ class CollisionDetectionDummy : public CollisionDetection<dim> {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-CollisionDetectionDummy<dim>::CollisionDetectionDummy(const std::shared_ptr<Environment> &environment)
-        : CollisionDetection<dim>("CollisionDetectionDummy", environment) {
+CollisionDetectionAlwaysValid<dim>::CollisionDetectionAlwaysValid(const std::shared_ptr<Environment> &environment)
+        : CollisionDetection<dim>("CollisionDetectionAlwaysValid", environment) {
 
 }
 
@@ -56,7 +56,7 @@ CollisionDetectionDummy<dim>::CollisionDetectionDummy(const std::shared_ptr<Envi
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionDummy<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
+bool CollisionDetectionAlwaysValid<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
     return false;
 }
 
@@ -68,10 +68,10 @@ bool CollisionDetectionDummy<dim>::checkConfig(const Vector<dim> &config, Collis
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionDummy<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+bool CollisionDetectionAlwaysValid<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
     return false;
 }
 
 } /* namespace ippp */
 
-#endif /* COLLISIONDETECTIONDUMMY_HPP */
+#endif /* COLLISIONDETECTIONALAWAYSVALID_HPP */
