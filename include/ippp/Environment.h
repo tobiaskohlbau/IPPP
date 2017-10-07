@@ -16,6 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
+#include <ippp/environment/CadDrawing.h>
+#include <ippp/environment/CadImportExport.h>
 #include <ippp/environment/CadProcessing.h>
 #include <ippp/environment/Environment.h>
 #include <ippp/environment/util/MapGenerator.hpp>

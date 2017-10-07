@@ -19,7 +19,6 @@
 #ifndef SERIALROBOT_HPP
 #define SERIALROBOT_HPP
 
-#include <ippp/environment/CadProcessing.h>
 #include <ippp/environment/robot/Joint.h>
 #include <ippp/environment/robot/RobotBase.h>
 

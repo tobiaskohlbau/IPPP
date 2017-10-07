@@ -18,8 +18,9 @@
 
 list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/Identifier.cpp
-
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/Logging.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/CadDrawing.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/CadImportExport.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/CadProcessing.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/Environment.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/Jaco.cpp

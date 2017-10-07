@@ -16,29 +16,28 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef MODELFACTORY_H
-#define MODELFACTORY_H
+#ifndef CADDRAWING_H
+#define CADDRAWING_H
 
-#include <memory>
 #include <string>
 #include <vector>
 
-#include <ippp/core/Identifier.h>
-#include <ippp/environment/CadImportExport.h>
 #include <ippp/environment/CadProcessing.h>
-#include <ippp/environment/model/ModelContainer.h>
 
 namespace ippp {
+namespace cad {
 
-class ModelFactory : public Identifier {
-  public:
-    ModelFactory(const std::string &name) : Identifier(name){};
+Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue);
+void drawTriangles(Eigen::MatrixXi &space, const Mesh &mesh, const int fillValue);
+void drawTriangles(Eigen::MatrixXi &space, std::vector<Mesh> &meshes, const int fillValue);
+void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue);
 
-    virtual std::shared_ptr<ModelContainer> createModel(const std::string &filePath) = 0;
-    virtual std::vector<std::shared_ptr<ModelContainer>> createModels(const std::string &filePath) = 0;
-    virtual std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths) = 0;
-};
+void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
+void fillTopFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
+void drawLine(Eigen::MatrixXi &space, int x1, int x2, int y, int value);
+
+} /* namespace cad */
 
 } /* namespace ippp */
 
-#endif    // MODELFACTORY_H
+#endif    // CADDRAWING_H
