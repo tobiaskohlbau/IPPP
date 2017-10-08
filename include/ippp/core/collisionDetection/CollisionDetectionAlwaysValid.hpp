@@ -33,7 +33,7 @@ class CollisionDetectionAlwaysValid : public CollisionDetection<dim> {
   public:
     CollisionDetectionAlwaysValid(const std::shared_ptr<Environment> &environment);
     bool checkConfig(const Vector<dim> &config, CollisionData *data = nullptr) override;
-    bool checkTrajectory(std::vector<Vector<dim>> &vec) override;
+    bool checkTrajectory(std::vector<Vector<dim>> &config) override;
 };
 
 /*!

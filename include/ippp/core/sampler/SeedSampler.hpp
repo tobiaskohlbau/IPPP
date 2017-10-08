@@ -60,11 +60,10 @@ SeedSampler<dim>::SeedSampler(const std::shared_ptr<Environment> &environment, c
 */
 template <unsigned int dim>
 Vector<dim> SeedSampler<dim>::getSample() {
-    Vector<dim> vec;
-    for (unsigned int i = 0; i < dim; ++i) {
-        vec[i] = this->m_minBoundary[i] + (double)(m_randomEngine() % (int)(this->m_maxBoundary[i] - this->m_minBoundary[i]));
-    }
-    return vec;
+    Vector<dim> config;
+    for (unsigned int i = 0; i < dim; ++i)
+        config[i] = this->m_minBoundary[i] + (double)(m_randomEngine() % (int)(this->m_maxBoundary[i] - this->m_minBoundary[i]));
+    return config;
 }
 
 } /* namespace ippp */

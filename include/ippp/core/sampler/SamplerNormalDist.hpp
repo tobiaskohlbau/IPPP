@@ -63,15 +63,15 @@ SamplerNormalDist<dim>::SamplerNormalDist(const std::shared_ptr<Environment> &en
 */
 template <unsigned int dim>
 Vector<dim> SamplerNormalDist<dim>::getSample() {
-    Vector<dim> vec;
+    Vector<dim> config;
     double number;
     for (unsigned int i = 0; i < dim; ++i) {
         do {
             number = m_distNormal[i](this->m_generator);
         } while ((number <= this->m_minBoundary[i]) || (number >= this->m_maxBoundary[i]));
-        vec[i] = number;
+        config[i] = number;
     }
-    return vec;
+    return config;
 }
 
 /*!

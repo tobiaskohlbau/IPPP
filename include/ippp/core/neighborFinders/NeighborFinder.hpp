@@ -35,11 +35,11 @@ class NeighborFinder : public Identifier {
     NeighborFinder(const std::string &name, const std::shared_ptr<DistanceMetric<dim>> &distanceMetric);
     virtual ~NeighborFinder();
 
-    virtual void addNode(const Vector<dim> &vec, const T &node) = 0;
+    virtual void addNode(const Vector<dim> &config, const T &node) = 0;
     virtual void rebaseSorted(std::vector<T> &nodes) = 0;
 
-    virtual T searchNearestNeighbor(const Vector<dim> &vec) = 0;
-    virtual std::vector<T> searchRange(const Vector<dim> &vec, double range) = 0;
+    virtual T searchNearestNeighbor(const Vector<dim> &config) = 0;
+    virtual std::vector<T> searchRange(const Vector<dim> &config, double range) = 0;
 
   protected:
     std::shared_ptr<DistanceMetric<dim>> m_metric;

@@ -38,11 +38,11 @@ class BruteForceNF : public NeighborFinder<dim, T> {
     BruteForceNF(const std::shared_ptr<DistanceMetric<dim>> &distanceMetric, std::vector<T> &nodes);
     ~BruteForceNF();
 
-    void addNode(const Vector<dim> &vec, const T &node);
+    void addNode(const Vector<dim> &config, const T &node);
     void rebaseSorted(std::vector<T> &nodes);
 
-    T searchNearestNeighbor(const Vector<dim> &vec);
-    std::vector<T> searchRange(const Vector<dim> &vec, double range);
+    T searchNearestNeighbor(const Vector<dim> &config);
+    std::vector<T> searchRange(const Vector<dim> &config, double range);
 
   private:
     std::vector<std::pair<const Vector<dim>, T>> m_nodes;
@@ -105,7 +105,7 @@ void BruteForceNF<dim, T>::rebaseSorted(std::vector<T> &nodes) {
 * \date        2017-05-16
 */
 template <unsigned int dim, class T>
-void BruteForceNF<dim, T>::addNode(const Vector<dim> &vec, const T &node) {
+void BruteForceNF<dim, T>::addNode(const Vector<dim> &config, const T &node) {
     m_nodes.push_back(std::make_pair(node->getValues(), node));
 }
 
@@ -117,12 +117,12 @@ void BruteForceNF<dim, T>::addNode(const Vector<dim> &vec, const T &node) {
 * \date        2017-05-16
 */
 template <unsigned int dim, class T>
-T BruteForceNF<dim, T>::searchNearestNeighbor(const Vector<dim> &vec) {
+T BruteForceNF<dim, T>::searchNearestNeighbor(const Vector<dim> &config) {
     double minDist = std::numeric_limits<double>::max();
     T nodePtr = nullptr;
     for (auto &node : m_nodes) {
-        if (this->m_metric->calcSimpleDist(vec, node.first) < minDist && vec != node.first) {
-            minDist = this->m_metric->calcDist(vec, node.first);
+        if (this->m_metric->calcSimpleDist(config, node.first) < minDist && config != node.first) {
+            minDist = this->m_metric->calcDist(config, node.first);
             nodePtr = node.second;
         }
     }
@@ -138,12 +138,12 @@ T BruteForceNF<dim, T>::searchNearestNeighbor(const Vector<dim> &vec) {
 * \date        2017-05-16
 */
 template <unsigned int dim, class T>
-std::vector<T> BruteForceNF<dim, T>::searchRange(const Vector<dim> &vec, double range) {
+std::vector<T> BruteForceNF<dim, T>::searchRange(const Vector<dim> &config, double range) {
     std::vector<T> nodePtrs;
     this->m_metric->simplifyDist(range);
 
     for (auto &node : m_nodes)
-        if (this->m_metric->calcSimpleDist(vec, node.first) < range && vec != node.first)
+        if (this->m_metric->calcSimpleDist(config, node.first) < range && config != node.first)
             nodePtrs.push_back(node.second);
     
     return nodePtrs;

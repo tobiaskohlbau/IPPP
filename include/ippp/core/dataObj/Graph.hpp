@@ -45,10 +45,10 @@ class Graph : public Identifier {
     std::shared_ptr<Node<dim>> getNode(const Vector<dim> &config) const;
     std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
 
-    std::shared_ptr<Node<dim>> getNearestNode(const Vector<dim> &vec) const;
+    std::shared_ptr<Node<dim>> getNearestNode(const Vector<dim> &config) const;
     std::shared_ptr<Node<dim>> getNearestNode(const Node<dim> &node) const;
     std::shared_ptr<Node<dim>> getNearestNode(const std::shared_ptr<Node<dim>> &node) const;
-    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Vector<dim> &vec, const double range) const;
+    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Vector<dim> &config, const double range) const;
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, const double range) const;
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, const double range) const;
 
@@ -209,8 +209,8 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() const {
 * \date       2016-05-25
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Vector<dim> &vec) const {
-    return m_neighborFinder->searchNearestNeighbor(vec);
+std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Vector<dim> &config) const {
+    return m_neighborFinder->searchNearestNeighbor(config);
 }
 
 /*!
@@ -246,8 +246,8 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const std::shared_ptr<Node
 * \date       2016-05-25
 */
 template <unsigned int dim>
-std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Vector<dim> &vec, const double range) const {
-    return m_neighborFinder->searchRange(vec, range);
+std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Vector<dim> &config, const double range) const {
+    return m_neighborFinder->searchRange(config, range);
 }
 
 /*!

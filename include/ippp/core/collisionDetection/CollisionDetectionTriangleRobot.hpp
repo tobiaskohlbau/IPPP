@@ -40,7 +40,7 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<dim> {
 
   private:
     bool checkPoint2D(double x, double y);
-    bool checkTriangleRobot(const Vector<dim> &vec);
+    bool checkTriangleRobot(const Vector<dim> &config);
     bool lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b, const Vector3 c);
 
     Eigen::MatrixXi m_workspace2D;
