@@ -33,7 +33,9 @@ class WeightedL2Metric : public DistanceMetric<dim> {
   public:
     WeightedL2Metric();
     WeightedL2Metric(const Vector<dim> &weightVec);
-    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const;
+    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
+    void simplifyDist(double &dist) const;
 
     void setWeightVec(const Vector<dim> &vec);
     Vector<dim> getWeightVec() const;
@@ -73,6 +75,31 @@ WeightedL2Metric<dim>::WeightedL2Metric(const Vector<dim> &weightVec) : Distance
 template <unsigned int dim>
 double WeightedL2Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).cwiseProduct(m_weightVec).norm();
+}
+
+/*!
+*  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the specified metric.
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] squared distance cost
+*  \date       2017-10-08
+*/
+template <unsigned int dim>
+double WeightedL2Metric<dim>::calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).cwiseProduct(m_weightVec).squaredNorm();
+}
+
+/*!
+*  \brief      Calculates the simplified distance of the passed distance.
+*  \author     Sascha Kaden
+*  \param[in]  distance
+*  \param[out] simplified distance
+*  \date       2017-10-08
+*/
+template <unsigned int dim>
+void WeightedL2Metric<dim>::simplifyDist(double &dist) const {
+    dist *= dist;
 }
 
 /*!

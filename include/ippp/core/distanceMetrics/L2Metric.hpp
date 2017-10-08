@@ -32,20 +32,22 @@ template <unsigned int dim>
 class L2Metric : public DistanceMetric<dim> {
   public:
     L2Metric();
-    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const;
+    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
+    void simplifyDist(double &dist) const;
 };
 
 /*!
-*  \brief      Standard constructor of the class L1Metric.
+*  \brief      Standard constructor of the class L2Metric.
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-L2Metric<dim>::L2Metric() : DistanceMetric<dim>("L1 Metric") {
+L2Metric<dim>::L2Metric() : DistanceMetric<dim>("L2 Metric") {
 }
 
 /*!
-*  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
+*  \brief      Calculates the distance cost of an Edge from the source and target Node by the L2 metric.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
@@ -55,6 +57,31 @@ L2Metric<dim>::L2Metric() : DistanceMetric<dim>("L1 Metric") {
 template <unsigned int dim>
 double L2Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).norm();
+}
+
+/*!
+*  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the L2 metric.
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] squared distance cost
+*  \date       2017-10-08
+*/
+template <unsigned int dim>
+double L2Metric<dim>::calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).squaredNorm();
+}
+
+/*!
+*  \brief      Calculates the simplified distance of the passed distance.
+*  \author     Sascha Kaden
+*  \param[in]  distance
+*  \param[out] simplified distance
+*  \date       2017-10-08
+*/
+template <unsigned int dim>
+void L2Metric<dim>::simplifyDist(double &dist) const {
+    dist *= dist;
 }
 
 } /* namespace ippp */

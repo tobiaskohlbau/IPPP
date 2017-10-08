@@ -46,6 +46,7 @@ class QueryEvaluator : public Evaluator<dim> {
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
 
     double m_dist = 1;
+    double m_simplifiedDist;
     size_t m_lastNodeIndex = 0;
     std::vector<bool> m_validTargets;
 
@@ -64,7 +65,8 @@ class QueryEvaluator : public Evaluator<dim> {
 template <unsigned int dim>
 QueryEvaluator<dim>::QueryEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
                                     const double dist)
-    : Evaluator<dim>("QueryEvaluator"), m_graph(graph), m_metric(metric), m_dist(dist) {
+    : Evaluator<dim>("QueryEvaluator"), m_graph(graph), m_metric(metric), m_dist(dist), m_simplifiedDist(dist) {
+    m_metric->simplifyDist(m_simplifiedDist);
 }
 
 /*!
@@ -82,7 +84,7 @@ bool QueryEvaluator<dim>::evaluate() {
 
         bool found = false;
         for (size_t index = m_lastNodeIndex; index < m_graph->size(); ++index) {
-            if (m_metric->calcDist(m_targets[targetIndex], m_graph->getNode(index)->getValues()) < m_dist) {
+            if (m_metric->calcSimpleDist(m_targets[targetIndex], m_graph->getNode(index)->getValues()) < m_simplifiedDist) {
                 found = true;
                 m_validTargets[targetIndex] = true;
                 Logging::debug("Target: " + std::to_string(targetIndex) + " is solved.", this);

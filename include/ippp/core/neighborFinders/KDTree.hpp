@@ -53,7 +53,7 @@ class KDTree : public NeighborFinder<dim, T> {
     void NNS(const Vector<dim> &point, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode,
              double &bestDist);
     void RS(const Vector<dim> &point, std::shared_ptr<KDNode<dim, T>> node,
-            std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, double sqRange, const Vector<dim> &maxBoundary,
+            std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, double simplifiedRange, const Vector<dim> &maxBoundary,
             const Vector<dim> &minBoundary);
 
     std::shared_ptr<KDNode<dim, T>> sortNodes(std::vector<T> &vec, unsigned int cd);
@@ -260,6 +260,7 @@ std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &vec, double range)
     std::vector<std::shared_ptr<KDNode<dim, T>>> kdNodes;
     Vector<dim> maxBoundary = vec;
     Vector<dim> minBoundary = vec;
+    this->m_metric->simplifyDist(range);
     maxBoundary = maxBoundary.array() + range;
     minBoundary = minBoundary.array() - range;
     RS(vec, m_root, kdNodes, range, maxBoundary, minBoundary);
@@ -283,7 +284,7 @@ std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &vec, double range)
 template <unsigned int dim, class T>
 void KDTree<dim, T>::NNS(const Vector<dim> &vec, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode,
                          double &bestDist) {
-    double dist = this->m_metric->calcDist(vec, node->vec);
+    double dist = this->m_metric->calcSimpleDist(vec, node->vec);
     if (dist < bestDist && vec != node->vec) {
         bestDist = dist;
         refNode = node;
@@ -322,21 +323,21 @@ void KDTree<dim, T>::NNS(const Vector<dim> &vec, std::shared_ptr<KDNode<dim, T>>
 */
 template <unsigned int dim, class T>
 void KDTree<dim, T>::RS(const Vector<dim> &vec, std::shared_ptr<KDNode<dim, T>> node,
-                        std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, double range, const Vector<dim> &maxBoundary,
+                        std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, double simplifiedRange, const Vector<dim> &maxBoundary,
                         const Vector<dim> &minBoundary) {
-    if (node == nullptr) {
+    if (node == nullptr)
         return;
-    }
-    if (this->m_metric->calcDist(vec, node->vec) < range && vec != node->vec) {
+
+    if (this->m_metric->calcSimpleDist(vec, node->vec) < simplifiedRange && vec != node->vec)
         refNodes.push_back(node);
-    }
+
     if (vec[node->axis] < maxBoundary[node->axis] && vec[node->axis] < minBoundary[node->axis]) {
-        RS(vec, node->left, refNodes, range, maxBoundary, minBoundary);
+        RS(vec, node->left, refNodes, simplifiedRange, maxBoundary, minBoundary);
     } else if (vec[node->axis] > maxBoundary[node->axis] && vec[node->axis] > minBoundary[node->axis]) {
-        RS(vec, node->right, refNodes, range, maxBoundary, minBoundary);
+        RS(vec, node->right, refNodes, simplifiedRange, maxBoundary, minBoundary);
     } else {
-        RS(vec, node->left, refNodes, range, maxBoundary, minBoundary);
-        RS(vec, node->right, refNodes, range, maxBoundary, minBoundary);
+        RS(vec, node->left, refNodes, simplifiedRange, maxBoundary, minBoundary);
+        RS(vec, node->right, refNodes, simplifiedRange, maxBoundary, minBoundary);
     }
 }
 
