@@ -32,7 +32,9 @@ template <unsigned int dim>
 class L1Metric : public DistanceMetric<dim> {
   public:
     L1Metric();
-    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const;
+    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
+    void simplifyDist(double &dist) const;
 };
 
 /*!
@@ -45,7 +47,7 @@ L1Metric<dim>::L1Metric() : DistanceMetric<dim>("L1 Metric") {
 }
 
 /*!
-*  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
+*  \brief      Calculates the distance cost of an Edge from the source and target Node by the L1 metric.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
@@ -55,6 +57,30 @@ L1Metric<dim>::L1Metric() : DistanceMetric<dim>("L1 Metric") {
 template <unsigned int dim>
 double L1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).sum();
+}
+
+/*!
+*  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the L1 metric.
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] squared distance cost
+*  \date       2017-10-08
+*/
+template <unsigned int dim>
+double L1Metric<dim>::calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).sum();
+}
+
+/*!
+*  \brief      Calculates the simplified distance of the passed distance.
+*  \author     Sascha Kaden
+*  \param[in]  distance
+*  \param[out] simplified distance
+*  \date       2017-10-08
+*/
+template <unsigned int dim>
+void L1Metric<dim>::simplifyDist(double &dist) const {
 }
 
 } /* namespace ippp */

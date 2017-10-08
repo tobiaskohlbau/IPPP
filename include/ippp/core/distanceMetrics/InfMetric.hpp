@@ -32,7 +32,9 @@ template <unsigned int dim>
 class InfMetric : public DistanceMetric<dim> {
   public:
     InfMetric();
-    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const;
+    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
+    void simplifyDist(double &dist) const;
 };
 
 /*!
@@ -45,7 +47,7 @@ InfMetric<dim>::InfMetric() : DistanceMetric<dim>("Inf Metric") {
 }
 
 /*!
-*  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
+*  \brief      Calculates the distance cost of an Edge from the source and target Node by the infinity metric.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
@@ -55,6 +57,30 @@ InfMetric<dim>::InfMetric() : DistanceMetric<dim>("Inf Metric") {
 template <unsigned int dim>
 double InfMetric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).maxCoeff();
+}
+
+/*!
+*  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the infinity metric.
+*  \author     Sascha Kaden
+*  \param[in]  source Node
+*  \param[in]  target Node
+*  \param[out] squared distance cost
+*  \date       2017-10-08
+*/
+template <unsigned int dim>
+double InfMetric<dim>::calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const {
+    return (source - target).maxCoeff();
+}
+
+/*!
+*  \brief      Calculates the simplified distance of the passed distance.
+*  \author     Sascha Kaden
+*  \param[in]  distance
+*  \param[out] simplified distance
+*  \date       2017-10-08
+*/
+template <unsigned int dim>
+void InfMetric<dim>::simplifyDist(double &dist) const {
 }
 
 } /* namespace ippp */
