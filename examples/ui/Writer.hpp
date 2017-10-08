@@ -31,7 +31,7 @@ namespace ippp {
 namespace writer {
 
 /*!
-*  \brief      Write vecs to defined file, clear file
+*  \brief      Write configs to the defined file, clear file
 *  \param[in]  vector of Vec
 *  \param[in]  filename
 *  \param[in]  scale
@@ -39,18 +39,18 @@ namespace writer {
 *  \date       2016-11-14
 */
 template <unsigned int dim>
-void writeVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, double scale) {
+void writeVecsToFile(const std::vector<Vector<dim>> &configs, const std::string &filename, double scale) {
     std::ofstream myfile(filename);
-    for (int i = 0; i < vecs.size(); ++i) {
+    for (int i = 0; i < configs.size(); ++i) {
         for (unsigned int j = 0; j < dim; ++j)
-            myfile << vecs[i][j] * scale << " ";
+            myfile << configs[i][j] * scale << " ";
         myfile << std::endl;
     }
     myfile.close();
 }
 
 /*!
-*  \brief      Append vecs to defined file
+*  \brief      Append configs to defined file
 *  \param[in]  vector of Vec
 *  \param[in]  filename
 *  \param[in]  scale
@@ -58,12 +58,12 @@ void writeVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &fi
 *  \date       2016-11-14
 */
 template <unsigned int dim>
-void appendVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &filename, double scale) {
+void appendVecsToFile(const std::vector<Vector<dim>> &configs, const std::string &filename, double scale) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);
-    for (int i = 0; i < vecs.size(); ++i) {
+    for (int i = 0; i < configs.size(); ++i) {
         for (unsigned int j = 0; j < dim; ++j)
-            myfile << vecs[i][j] * scale << " ";
+            myfile << configs[i][j] * scale << " ";
         myfile << std::endl;
     }
     myfile.close();
@@ -76,10 +76,10 @@ void appendVecsToFile(const std::vector<Vector<dim>> &vecs, const std::string &f
 *  \author     Sasch Kaden
 *  \date       2016-11-14
 */
-static void writeTrafosToFile(const std::vector<std::vector<Vector6>> &vecs, const std::string &filename) {
+static void writeTrafosToFile(const std::vector<std::vector<Vector6>> &configs, const std::string &filename) {
     std::ofstream myfile;
     myfile.open(filename, std::ios_base::app);
-    for (auto trafos : vecs) {
+    for (auto trafos : configs) {
         for (auto trafo : trafos) {
             for (unsigned int i = 0; i < trafo.cols(); ++i) {
                 myfile << trafo[i] << " ";

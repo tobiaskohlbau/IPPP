@@ -41,9 +41,9 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   private:
-    bool controlCollisionMesh(const Vector<dim> &vec);
-    bool checkSerialRobot(const Vector<dim> &vec);
-    bool checkMobileRobot(const Vector<dim> &vec);
+    bool controlCollisionMesh(const Vector<dim> &config);
+    bool checkSerialRobot(const Vector<dim> &config);
+    bool checkMobileRobot(const Vector<dim> &config);
     bool checkMesh(Matrix3 R[], Matrix3 &poseR, Vector3 t[], Vector3 &poseT);
     bool checkFCL(std::shared_ptr<FCLModel> &model1, std::shared_ptr<FCLModel> &model2, Matrix3 &R1, Matrix3 &R2, Vector3 &t1,
                   Vector3 &t2);

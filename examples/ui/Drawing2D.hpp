@@ -76,12 +76,12 @@ void drawGraph2D(const std::vector<std::shared_ptr<Node<dim>>> &nodes, cv::Mat &
 *  \param[in]     thickness of the points
 *  \date          2016-05-25
 */
-static void drawPath2D(const std::vector<Vector2> vecs, cv::Mat &image, Eigen::Vector3i colorPoint, int thickness) {
-    if (vecs.empty())
+static void drawPath2D(const std::vector<Vector2> configs, cv::Mat &image, Eigen::Vector3i colorPoint, int thickness) {
+    if (configs.empty())
         return;
 
-    for (int i = 0; i < vecs.size(); ++i) {
-        cv::Point point(vecs[i][0], vecs[i][1]);
+    for (int i = 0; i < configs.size(); ++i) {
+        cv::Point point(configs[i][0], configs[i][1]);
         cv::circle(image, point, 2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
     }
 }
@@ -96,9 +96,9 @@ static void drawPath2D(const std::vector<Vector2> vecs, cv::Mat &image, Eigen::V
 *  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
-static void drawTrianglePath(std::vector<Vector3> vecs, std::vector<Triangle2D> triangles, cv::Mat &image,
+static void drawTrianglePath(std::vector<Vector3> configs, std::vector<Triangle2D> triangles, cv::Mat &image,
                              Eigen::Vector3i colorPoint, int thickness) {
-    if (vecs.empty())
+    if (configs.empty())
         return;
 
     Logging::info("start drawing of triangles", "Drawing2D");
@@ -107,10 +107,10 @@ static void drawTrianglePath(std::vector<Vector3> vecs, std::vector<Triangle2D> 
     Vector2 t;
     cv::Point2i pt1, pt2, pt3;
     Triangle2D triangle;
-    for (auto vec : vecs) {
+    for (auto config : configs) {
         for (int i = 0; i < triangles.size(); ++i) {
             triangle = triangles[i];
-            util::poseVecToRandT(vec, R, t);
+            util::poseVecToRandT(config, R, t);
             triangle.transform(R, t);
             pt1 = cv::Point2i(triangle.getP(1)[0], triangle.getP(1)[1]);
             pt2 = cv::Point2i(triangle.getP(2)[0], triangle.getP(2)[1]);

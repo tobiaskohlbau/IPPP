@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Class LinearTrajectory plans a path between the passed nodes/vecs. Start and end point aren't part of the path.
+* \brief   Class LinearTrajectory plans a path between the passed nodes/configs. Start and end point aren't part of the path.
 * \details The rotation in the path will be at the rotation point, percent value of the value.
  * The values of the rotation will be taken from the robot, which is saved in the environment.
 * \author  Sascha Kaden

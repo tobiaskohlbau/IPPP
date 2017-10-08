@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Class LinearTrajectory plans a linear path between the passed nodes/vecs. Start and end point aren't part of the path.
+* \brief   Class LinearTrajectory plans a linear path between the passed nodes/configs. Start and end point aren't part of the path.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */

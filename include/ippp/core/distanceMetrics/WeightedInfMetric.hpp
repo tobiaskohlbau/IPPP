@@ -37,7 +37,7 @@ class WeightedInfMetric : public DistanceMetric<dim> {
     double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
     void simplifyDist(double &dist) const;
 
-    void setWeightVec(const Vector<dim> &vec);
+    void setWeightVec(const Vector<dim> &weight);
     Vector<dim> getWeightVec() const;
 
   private:
@@ -108,8 +108,8 @@ void WeightedInfMetric<dim>::simplifyDist(double &dist) const {
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-void WeightedInfMetric<dim>::setWeightVec(const Vector<dim> &vec) {
-    m_weightVec = vec;
+void WeightedInfMetric<dim>::setWeightVec(const Vector<dim> &weight) {
+    m_weightVec = weight;
 }
 
 /*!

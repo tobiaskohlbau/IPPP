@@ -34,11 +34,11 @@ namespace ippp {
 template <unsigned int dim, typename T>
 class KDNode {
   public:
-    KDNode(const Vector<dim> &vec, const T &node);
+    KDNode(const Vector<dim> &config, const T &node);
 
     std::shared_ptr<KDNode<dim, T>> left = nullptr;
     std::shared_ptr<KDNode<dim, T>> right = nullptr;
-    Vector<dim> vec;
+    Vector<dim> config;
     T node;
     unsigned int axis = 0;
     double value = 0;
@@ -52,8 +52,8 @@ class KDNode {
 *  \date       2016-05-27
 */
 template <unsigned int dim, typename T>
-KDNode<dim, T>::KDNode(const Vector<dim> &vec, const T &node) {
-    this->vec = vec;
+KDNode<dim, T>::KDNode(const Vector<dim> &config, const T &node) {
+    this->config = config;
     this->node = node;
 }
 } /* namespace ippp */

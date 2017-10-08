@@ -78,11 +78,11 @@ SamplerUniform<dim>::SamplerUniform(const Vector<dim> &minBoundary, const Vector
 */
 template <unsigned int dim>
 Vector<dim> SamplerUniform<dim>::getSample() {
-    Vector<dim> vec;
+    Vector<dim> config;
     for (unsigned int i = 0; i < dim; ++i) {
-        vec[i] = m_distUniform[i](this->m_generator);
+        config[i] = m_distUniform[i](this->m_generator);
     }
-    return vec;
+    return config;
 }
 
 } /* namespace ippp */
