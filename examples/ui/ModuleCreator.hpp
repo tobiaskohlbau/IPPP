@@ -56,8 +56,10 @@ class ModuleCreator : public Identifier {
   public:
     ModuleCreator();
 
+    std::shared_ptr<Environment> getEnvironment();
     std::shared_ptr<CollisionDetection<dim>> getCollisionDetection();
-    std::shared_ptr<DistanceMetric<dim>> getMetric();
+    std::shared_ptr<DistanceMetric<dim>> getDistanceMetric();
+    std::shared_ptr<Evaluator<dim>> getEvaluator();
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
     std::shared_ptr<Graph<dim>> getGraph();
     std::shared_ptr<PathModifier<dim>> getPathModifier();
@@ -117,6 +119,8 @@ class ModuleCreator : public Identifier {
     TrajectoryType m_trajectoryType = TrajectoryType::Linear;
     double m_posRes = 1;
     double m_oriRes = 0.1;
+
+    bool m_parameterModified = false;
 };
 
 /*!
@@ -139,6 +143,10 @@ void ModuleCreator<dim>::initializeModules() {
         Logging::error("Environment not set!", this);
         return;
     }
+
+    if (!m_parameterModified)
+        return;
+    m_parameterModified = false;
 
     if (m_collisionType == CollisionType::Dim2)
         m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetection2D<dim>(m_environment));
@@ -192,8 +200,7 @@ void ModuleCreator<dim>::initializeModules() {
         evaluators.push_back(std::shared_ptr<Evaluator<dim>>(new TimeEvaluator<dim>(m_evaluatorDuration)));
         m_evaluator = std::shared_ptr<Evaluator<dim>>(new ComposeEvaluator<dim>(evaluators, ComposeType::OR));
     } else
-        m_evaluator =
-            std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_metric, m_graph, m_queryEvaluatorDist));
+        m_evaluator = std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_metric, m_graph, m_queryEvaluatorDist));
 
     if (m_pathModifierType == PathModifierType::NodeCut)
         m_pathModifier =
@@ -239,6 +246,7 @@ void ModuleCreator<dim>::initializeModules() {
 template <unsigned int dim>
 void ModuleCreator<dim>::setEnvironment(const std::shared_ptr<Environment> &environment) {
     m_environment = environment;
+    m_parameterModified = true;
 }
 
 /*!
@@ -250,6 +258,7 @@ void ModuleCreator<dim>::setEnvironment(const std::shared_ptr<Environment> &envi
 template <unsigned int dim>
 void ModuleCreator<dim>::setCollisionType(const CollisionType type) {
     m_collisionType = type;
+    m_parameterModified = true;
 }
 
 /*!
@@ -261,6 +270,7 @@ void ModuleCreator<dim>::setCollisionType(const CollisionType type) {
 template <unsigned int dim>
 void ModuleCreator<dim>::setMetricType(const MetricType type) {
     m_metricType = type;
+    m_parameterModified = true;
 }
 
 /*!
@@ -272,6 +282,7 @@ void ModuleCreator<dim>::setMetricType(const MetricType type) {
 template <unsigned int dim>
 void ModuleCreator<dim>::setMetricWeightVec(const Vector<dim> vector) {
     m_metricWeight = vector;
+    m_parameterModified = true;
 }
 
 /*!
@@ -283,6 +294,7 @@ void ModuleCreator<dim>::setMetricWeightVec(const Vector<dim> vector) {
 template <unsigned int dim>
 void ModuleCreator<dim>::setEvaluatorType(const EvaluatorType type) {
     m_evaluatorType = type;
+    m_parameterModified = true;
 }
 
 /*!
@@ -295,6 +307,7 @@ template <unsigned int dim>
 void ModuleCreator<dim>::setEvaluatorProperties(const double queryEvaluatorDist, const unsigned int duration) {
     m_queryEvaluatorDist = queryEvaluatorDist;
     m_evaluatorDuration = duration;
+    m_parameterModified = true;
 }
 
 /*!
@@ -306,6 +319,7 @@ void ModuleCreator<dim>::setEvaluatorProperties(const double queryEvaluatorDist,
 template <unsigned int dim>
 void ModuleCreator<dim>::setGraphSortCount(const size_t count) {
     m_graphSortCount = count;
+    m_parameterModified = true;
 }
 
 /*!
@@ -317,6 +331,7 @@ void ModuleCreator<dim>::setGraphSortCount(const size_t count) {
 template <unsigned int dim>
 void ModuleCreator<dim>::setNeighborFinderType(const NeighborType type) {
     m_neighborType = type;
+    m_parameterModified = true;
 }
 
 /*!
@@ -328,6 +343,7 @@ void ModuleCreator<dim>::setNeighborFinderType(const NeighborType type) {
 template <unsigned int dim>
 void ModuleCreator<dim>::setPathModifierType(const PathModifierType type) {
     m_pathModifierType = type;
+    m_parameterModified = true;
 }
 
 /*!
@@ -339,6 +355,7 @@ void ModuleCreator<dim>::setPathModifierType(const PathModifierType type) {
 template <unsigned int dim>
 void ModuleCreator<dim>::setSamplerType(const SamplerType type) {
     m_samplerType = type;
+    m_parameterModified = true;
 }
 
 /*!
@@ -350,6 +367,7 @@ void ModuleCreator<dim>::setSamplerType(const SamplerType type) {
 template <unsigned int dim>
 void ModuleCreator<dim>::setSamplingType(const SamplingType type) {
     m_samplingType = type;
+    m_parameterModified = true;
 }
 
 /*!
@@ -365,6 +383,7 @@ void ModuleCreator<dim>::setSamplingProperties(const size_t samplingAttempts, co
     m_samplingAttempts = samplingAttempts;
     m_samplingDist = samplingDist;
     m_medialAxisDirs = medialAxisDirs;
+    m_parameterModified = true;
 }
 
 /*!
@@ -376,6 +395,7 @@ void ModuleCreator<dim>::setSamplingProperties(const size_t samplingAttempts, co
 template <unsigned int dim>
 void ModuleCreator<dim>::setTrajectoryType(const TrajectoryType type) {
     m_trajectoryType = type;
+    m_parameterModified = true;
 }
 
 /*!
@@ -398,6 +418,18 @@ void ModuleCreator<dim>::setTrajectoryProperties(const double posRes, const doub
     } else {
         m_oriRes = oriRes;
     }
+    m_parameterModified = true;
+}
+
+/*!
+*  \brief      Return the pointer to the Environment instance.
+*  \author     Sascha Kaden
+*  \param[out] Evaluator
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<Environment> ModuleCreator<dim>::getEnvironment() {
+    return m_environment;
 }
 
 /*!
@@ -408,6 +440,7 @@ void ModuleCreator<dim>::setTrajectoryProperties(const double posRes, const doub
 */
 template <unsigned int dim>
 std::shared_ptr<CollisionDetection<dim>> ModuleCreator<dim>::getCollisionDetection() {
+    initializeModules();
     return m_collision;
 }
 
@@ -418,8 +451,21 @@ std::shared_ptr<CollisionDetection<dim>> ModuleCreator<dim>::getCollisionDetecti
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<DistanceMetric<dim>> ModuleCreator<dim>::getMetric() {
+std::shared_ptr<DistanceMetric<dim>> ModuleCreator<dim>::getDistanceMetric() {
+    initializeModules();
     return m_metric;
+}
+
+/*!
+*  \brief      Return the pointer to the Evaluator instance.
+*  \author     Sascha Kaden
+*  \param[out] Evaluator
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<Evaluator<dim>> ModuleCreator<dim>::getEvaluator() {
+    initializeModules();
+    return m_evaluator;
 }
 
 /*!
@@ -430,6 +476,7 @@ std::shared_ptr<DistanceMetric<dim>> ModuleCreator<dim>::getMetric() {
 */
 template <unsigned int dim>
 std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> ModuleCreator<dim>::getNeighborFinder() {
+    initializeModules();
     return m_neighborFinder;
 }
 
@@ -441,6 +488,7 @@ std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> ModuleCreator<d
 */
 template <unsigned int dim>
 std::shared_ptr<Graph<dim>> ModuleCreator<dim>::getGraph() {
+    initializeModules();
     return m_graph;
 }
 
@@ -452,6 +500,7 @@ std::shared_ptr<Graph<dim>> ModuleCreator<dim>::getGraph() {
 */
 template <unsigned int dim>
 std::shared_ptr<PathModifier<dim>> ModuleCreator<dim>::getPathModifier() {
+    initializeModules();
     return m_pathModifier;
 }
 
@@ -463,6 +512,7 @@ std::shared_ptr<PathModifier<dim>> ModuleCreator<dim>::getPathModifier() {
 */
 template <unsigned int dim>
 std::shared_ptr<Sampler<dim>> ModuleCreator<dim>::getSampler() {
+    initializeModules();
     return m_sampler;
 }
 
@@ -474,6 +524,7 @@ std::shared_ptr<Sampler<dim>> ModuleCreator<dim>::getSampler() {
 */
 template <unsigned int dim>
 std::shared_ptr<Sampling<dim>> ModuleCreator<dim>::getSampling() {
+    initializeModules();
     return m_sampling;
 }
 
@@ -485,6 +536,7 @@ std::shared_ptr<Sampling<dim>> ModuleCreator<dim>::getSampling() {
 */
 template <unsigned int dim>
 std::shared_ptr<TrajectoryPlanner<dim>> ModuleCreator<dim>::getTrajectoryPlanner() {
+    initializeModules();
     return m_trajectory;
 }
 
@@ -496,6 +548,7 @@ std::shared_ptr<TrajectoryPlanner<dim>> ModuleCreator<dim>::getTrajectoryPlanner
 */
 template <unsigned int dim>
 PlannerOptions<dim> ModuleCreator<dim>::getPlannerOptions() {
+    initializeModules();
     return PlannerOptions<dim>(m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
