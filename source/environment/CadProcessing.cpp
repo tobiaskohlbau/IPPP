@@ -332,6 +332,7 @@ Mesh generateMesh(const std::vector<Triangle2D> &triangles) {
         mesh.faces.push_back(Vector3i(vertexCount, vertexCount + 1, vertexCount +2));
     }
     mesh.aabb = computeAABB(mesh.vertices);
+	return mesh;
 }
 
 Mesh mergeMeshes(const std::vector<Mesh> &meshes) {

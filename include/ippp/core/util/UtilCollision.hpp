@@ -30,7 +30,7 @@ static std::pair<std::vector<Matrix3>, std::vector<Vector3>> getTrafosFromRobot(
                                                                                 Matrix3 &poseR, Vector3 &poseT) {
     std::vector<Matrix4> jointTrafos = robot->getJointTrafos(vec);
     Matrix4 pose = robot->getPoseMat();
-    Matrix4 As[robot->getDim()];
+	Matrix4 *As = new Matrix4[robot->getDim()];
     As[0] = pose * jointTrafos[0];
     for (int i = 1; i < jointTrafos.size(); ++i) {
         As[i] = As[i - 1] * jointTrafos[i];
@@ -42,6 +42,7 @@ static std::pair<std::vector<Matrix3>, std::vector<Vector3>> getTrafosFromRobot(
     for (int i = 0; i < jointTrafos.size(); ++i) {
         util::decomposeT(As[i], rots[i], trans[i]);
     }
+	delete []As;
     return std::make_pair(rots, trans);
 }
 

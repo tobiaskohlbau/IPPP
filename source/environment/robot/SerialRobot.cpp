@@ -159,12 +159,13 @@ unsigned int SerialRobot::getNbJoints() {
 */
 void SerialRobot::saveMeshConfig(VectorX angles) {
     std::vector<Matrix4> jointTrafos = getJointTrafos(angles);
-    Matrix4 As[jointTrafos.size()];
+	Matrix4 *As = new Matrix4[jointTrafos.size()];
     As[0] = this->m_poseMat * jointTrafos[0];
     for (int i = 1; i < jointTrafos.size(); ++i) {
         As[i] = As[i - 1] * jointTrafos[i];
     }
     saveMeshConfig(As);
+	delete[] As;
 }
 
 /*!
