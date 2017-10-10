@@ -1,10 +1,12 @@
 .project
+.vs
 
 *~
 *.idea
 *.log
 *.txt.user
 *.txt.user
+CMakeSettings.json
 
 build/
 cmake-build-debug/
