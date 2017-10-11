@@ -292,7 +292,7 @@ static AABB translateAABB(const AABB &a, const Vector3 &t) {
 *  \param[in]  list of vectors
 *  \date       2017-04-07
 */
-static Vector3 removeDuplicates(std::vector<Vector3> &vectors) {
+static void removeDuplicates(std::vector<Vector3> &vectors) {
     // sort vector list
     struct {
         bool operator()(Vector3 a, Vector3 b) {

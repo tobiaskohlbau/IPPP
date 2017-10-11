@@ -36,7 +36,7 @@ template <unsigned int dim>
 class MapGenerator : public Identifier {
   public:
     MapGenerator(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::shared_ptr<Sampler<dim>> &sampler);
-    std::vector<Mesh> generateMap(const unsigned int numObstacles, const Vector<dim> &maxExtensions);
+    std::vector<Mesh> generateMap(const size_t numObstacles, const Vector<dim> &maxExtensions);
 
   protected:
     bool checkBounding(const Vector<dim> &sample, const Vector<dim> &extension);
@@ -69,11 +69,11 @@ MapGenerator<dim>::MapGenerator(const Vector<dim> &minBoundary, const Vector<dim
 *  \date       2017-06-99
 */
 template <unsigned int dim>
-std::vector<Mesh> MapGenerator<dim>::generateMap(const unsigned int numObstacles, const Vector<dim> &maxExtensions) {
+std::vector<Mesh> MapGenerator<dim>::generateMap(const size_t numObstacles, const Vector<dim> &maxExtensions) {
     assert(dim == 3 || dim == 2);
     Vector<dim> ext;
     std::vector<Mesh> meshes;
-    for (int i = 0; i < numObstacles; ++i) {
+    for (size_t i = 0; i < numObstacles; ++i) {
         Mesh mesh;
         auto sample = m_sampler->getSample();
         for (unsigned int j = 0; j < dim; ++j)
