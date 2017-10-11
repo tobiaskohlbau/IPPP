@@ -77,7 +77,7 @@ class ModuleCreator : public Identifier {
     void setMetricType(const MetricType type);
     void setMetricWeightVec(const Vector<dim> vector);
     void setEvaluatorType(const EvaluatorType type);
-    void setEvaluatorProperties(const double queryEvaluatorDist, const unsigned int duration);
+    void setEvaluatorProperties(const double queryEvaluatorDist, const size_t duration);
     void setGraphSortCount(const size_t count);
     void setNeighborFinderType(const NeighborType type);
     void setPathModifierType(const PathModifierType type);
@@ -107,15 +107,15 @@ class ModuleCreator : public Identifier {
     Vector<dim> m_metricWeight;
     EvaluatorType m_evaluatorType = EvaluatorType::SingleIteration;
     double m_queryEvaluatorDist = 10;
-    unsigned int m_evaluatorDuration = 10;
+    size_t m_evaluatorDuration = 10;
     size_t m_graphSortCount = 2000;
     NeighborType m_neighborType = NeighborType::KDTree;
     PathModifierType m_pathModifierType = PathModifierType::NodeCut;
     SamplerType m_samplerType = SamplerType::SamplerRandom;
     SamplingType m_samplingType = SamplingType::Straight;
-	size_t m_samplingAttempts = 10;
+    size_t m_samplingAttempts = 10;
     double m_samplingDist = 10;
-	size_t m_medialAxisDirs = 15;
+    size_t m_medialAxisDirs = 15;
     TrajectoryType m_trajectoryType = TrajectoryType::Linear;
     double m_posRes = 1;
     double m_oriRes = 0.1;
@@ -304,7 +304,7 @@ void ModuleCreator<dim>::setEvaluatorType(const EvaluatorType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setEvaluatorProperties(const double queryEvaluatorDist, const unsigned int duration) {
+void ModuleCreator<dim>::setEvaluatorProperties(const double queryEvaluatorDist, const size_t duration) {
     m_queryEvaluatorDist = queryEvaluatorDist;
     m_evaluatorDuration = duration;
     m_parameterModified = true;
