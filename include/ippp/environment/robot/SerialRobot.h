@@ -46,8 +46,8 @@ class SerialRobot : public RobotBase {
     std::shared_ptr<ModelContainer> getModelFromJoint(unsigned int jointIndex);
     std::vector<std::shared_ptr<ModelContainer>> getJointModels();
 
-    void saveMeshConfig(VectorX angles);
-    void saveMeshConfig(Matrix4 *As);
+    void saveMeshConfig(const VectorX angles);
+    void saveMeshConfig(const std::vector<Matrix4> As);
 
   protected:
     std::vector<Joint> m_joints;

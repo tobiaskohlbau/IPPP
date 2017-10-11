@@ -19,6 +19,8 @@
 #ifndef UTILVEC_HPP
 #define UTILVEC_HPP
 
+#include <vector>
+
 #include <Eigen/Core>
 
 #include <ippp/core/types.h>
