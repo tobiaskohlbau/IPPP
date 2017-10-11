@@ -33,15 +33,14 @@ namespace ippp {
 template <unsigned int dim>
 class TimeEvaluator : public Evaluator<dim> {
   public:
-    TimeEvaluator(const unsigned int maxDuration = 30);
+    TimeEvaluator(const size_t maxDuration = 30);
 
     bool evaluate();
 
   protected:
-    unsigned int m_maxDuration;
+    size_t m_maxDuration;
     bool m_started = false;
-	std::chrono::time_point<std::chrono::system_clock> m_startTime;
-
+    std::chrono::time_point<std::chrono::system_clock> m_startTime;
 };
 
 /*!
@@ -51,7 +50,7 @@ class TimeEvaluator : public Evaluator<dim> {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-TimeEvaluator<dim>::TimeEvaluator(const unsigned int maxDuration)
+TimeEvaluator<dim>::TimeEvaluator(const size_t maxDuration)
     : Evaluator<dim>("SingleIterationEvaluator"), m_maxDuration(maxDuration) {
 }
 
@@ -68,11 +67,13 @@ bool TimeEvaluator<dim>::evaluate() {
         m_started = true;
     }
 
-    auto duration = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - m_startTime);
-    if (duration.count() > m_maxDuration)
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - m_startTime);
+    if (duration.count() > m_maxDuration * 1000) {
+        Logging::info("Maximum duration achieved with: " + std::to_string(static_cast<double>(duration.count() / 1000)) + " seconds.", this);
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 } /* namespace ippp */
