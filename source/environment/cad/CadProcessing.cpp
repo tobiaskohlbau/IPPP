@@ -56,16 +56,18 @@ Mesh generateMesh(const std::vector<Triangle2D> &triangles) {
     Mesh mesh;
     mesh.vertices.reserve(triangles.size() * 3);
     mesh.faces.reserve(triangles.size());
-    size_t vertexCount = 0;
+    int vertexCount = 0;
     for (auto tri : triangles) {
         vertexCount = mesh.vertices.size();
         for (unsigned int i = 1; i < 4; ++i) {
             auto pt = tri.getP(i);
             mesh.vertices.push_back(Vector3(pt[0], pt[1], 0));
         }
-        mesh.faces.push_back(Vector3i(vertexCount, vertexCount + 1, vertexCount +2));
+        mesh.faces.push_back(Vector3i(vertexCount, vertexCount + 1, vertexCount + 2));
     }
     mesh.aabb = computeAABB(mesh.vertices);
+
+    return mesh;
 }
 
 /*!
@@ -77,7 +79,7 @@ Mesh generateMesh(const std::vector<Triangle2D> &triangles) {
 */
 Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
     Mesh mesh;
-    size_t vertexCount;
+    int vertexCount;
     for (auto tmpMesh : meshes) {
         vertexCount = mesh.vertices.size();
         for (auto &vertex : tmpMesh.vertices) {
@@ -98,7 +100,7 @@ Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
 *  \date       2017-10-07
 */
 Vector3 getCenterOfMesh(const Mesh &mesh) {
-    Vector3 sum(0,0,0);
+    Vector3 sum(0, 0, 0);
     for (auto &vertex : mesh.vertices)
         sum += vertex;
 
