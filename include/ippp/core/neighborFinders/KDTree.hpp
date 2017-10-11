@@ -57,8 +57,8 @@ class KDTree : public NeighborFinder<dim, T> {
             const Vector<dim> &minBoundary);
 
     std::shared_ptr<KDNode<dim, T>> sortNodes(std::vector<T> &config, unsigned int cd);
-    void quickSort(std::vector<T> &A, int left, int right, int dimension);
-    int partition(std::vector<T> &A, int left, int right, int dimension);
+    void quickSort(std::vector<T> &A, size_t left, size_t right, int dimension);
+    size_t partition(std::vector<T> &A, size_t left, size_t right, int dimension);
 
     std::shared_ptr<KDNode<dim, T>> m_root;
 };
@@ -282,8 +282,8 @@ std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &config, double ran
 *  \date       2016-05-27
 */
 template <unsigned int dim, class T>
-void KDTree<dim, T>::NNS(const Vector<dim> &config, std::shared_ptr<KDNode<dim, T>> node, std::shared_ptr<KDNode<dim, T>> &refNode,
-                         double &bestDist) {
+void KDTree<dim, T>::NNS(const Vector<dim> &config, std::shared_ptr<KDNode<dim, T>> node,
+                         std::shared_ptr<KDNode<dim, T>> &refNode, double &bestDist) {
     double dist = this->m_metric->calcSimpleDist(config, node->config);
     if (dist < bestDist && config != node->config) {
         bestDist = dist;
@@ -323,8 +323,8 @@ void KDTree<dim, T>::NNS(const Vector<dim> &config, std::shared_ptr<KDNode<dim, 
 */
 template <unsigned int dim, class T>
 void KDTree<dim, T>::RS(const Vector<dim> &config, std::shared_ptr<KDNode<dim, T>> node,
-                        std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, double simplifiedRange, const Vector<dim> &maxBoundary,
-                        const Vector<dim> &minBoundary) {
+                        std::vector<std::shared_ptr<KDNode<dim, T>>> &refNodes, double simplifiedRange,
+                        const Vector<dim> &maxBoundary, const Vector<dim> &minBoundary) {
     if (node == nullptr)
         return;
 
@@ -354,13 +354,15 @@ std::shared_ptr<KDNode<dim, T>> KDTree<dim, T>::sortNodes(std::vector<T> &config
     if (config.size() < 1) {
         return nullptr;
     } else if (config.size() == 1) {
-        std::shared_ptr<KDNode<dim, T>> kdNode = std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(config[0]->getValues(), config[0]));
+        std::shared_ptr<KDNode<dim, T>> kdNode =
+            std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(config[0]->getValues(), config[0]));
         kdNode->axis = cd;
         kdNode->value = kdNode->config[cd];
         return kdNode;
     } else if (config.size() == 2) {
         quickSort(config, 0, config.size() - 1, cd);
-        std::shared_ptr<KDNode<dim, T>> kdNode = std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(config[1]->getValues(), config[1]));
+        std::shared_ptr<KDNode<dim, T>> kdNode =
+            std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(config[1]->getValues(), config[1]));
         kdNode->axis = cd;
         kdNode->value = kdNode->config[cd];
 
@@ -370,8 +372,8 @@ std::shared_ptr<KDNode<dim, T>> KDTree<dim, T>::sortNodes(std::vector<T> &config
         return kdNode;
     } else {
         quickSort(config, 0, config.size() - 1, cd);
-        std::shared_ptr<KDNode<dim, T>> kdNode =
-            std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(config[config.size() / 2]->getValues(), config[config.size() / 2]));
+        std::shared_ptr<KDNode<dim, T>> kdNode = std::shared_ptr<KDNode<dim, T>>(
+            new KDNode<dim, T>(config[config.size() / 2]->getValues(), config[config.size() / 2]));
         kdNode->axis = cd;
         kdNode->value = kdNode->config[cd];
 
@@ -393,8 +395,8 @@ std::shared_ptr<KDNode<dim, T>> KDTree<dim, T>::sortNodes(std::vector<T> &config
 *  \date       2016-08-09
 */
 template <unsigned int dim, class T>
-void KDTree<dim, T>::quickSort(std::vector<T> &A, int left, int right, int cd) {
-    int r;
+void KDTree<dim, T>::quickSort(std::vector<T> &A, size_t left, size_t right, int cd) {
+    size_t r;
     if (left < right) {
         r = partition(A, left, right, cd);
         quickSort(A, left, r, cd);
@@ -413,10 +415,10 @@ void KDTree<dim, T>::quickSort(std::vector<T> &A, int left, int right, int cd) {
 *  \date       2016-08-09
 */
 template <unsigned int dim, class T>
-int KDTree<dim, T>::partition(std::vector<T> &A, int left, int right, int cd) {
+size_t KDTree<dim, T>::partition(std::vector<T> &A, size_t left, size_t right, int cd) {
     double x = A[left]->getValues()[cd];
-    int i = left;
-    int j;
+    size_t i = left;
+    size_t j;
 
     for (j = left + 1; j < right; j++) {
         if (A[j]->getValues()[cd] <= x) {
