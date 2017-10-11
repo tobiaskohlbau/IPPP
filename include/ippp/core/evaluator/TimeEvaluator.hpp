@@ -40,7 +40,7 @@ class TimeEvaluator : public Evaluator<dim> {
   protected:
     unsigned int m_maxDuration;
     bool m_started = false;
-//    std::chrono::time_point<std::chrono::_V2::system_clock, std::chrono::duration> m_startTime;
+	std::chrono::time_point<std::chrono::system_clock> m_startTime;
 
 };
 
@@ -63,16 +63,16 @@ TimeEvaluator<dim>::TimeEvaluator(const unsigned int maxDuration)
 */
 template <unsigned int dim>
 bool TimeEvaluator<dim>::evaluate() {
-//    if (!m_started) {
-//        m_startTime = std::chrono::system_clock::now();
-//        m_started = true;
-//    }
-//
-//    auto duration = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - m_startTime);
-//    if (duration.count() > m_maxDuration)
-//        return true;
-//    else
-//        return false;
+    if (!m_started) {
+        m_startTime = std::chrono::system_clock::now();
+        m_started = true;
+    }
+
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - m_startTime);
+    if (duration.count() > m_maxDuration)
+        return true;
+    else
+        return false;
 }
 
 } /* namespace ippp */
