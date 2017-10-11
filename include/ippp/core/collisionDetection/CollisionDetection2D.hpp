@@ -71,7 +71,7 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
     }
 
     // update obstacle models for the 2D collision check, extends the AABB of the obstacle in z direction
-    for (auto obstacle : m_obstacles) {
+    for (auto &obstacle : m_obstacles) {
         Vector3 bottomLeft = obstacle.aabb.corner(AABB::CornerType::BottomLeft);
         Vector3 topRight = obstacle.aabb.corner(AABB::CornerType::TopRight);
         bottomLeft[2] = -1;
@@ -126,8 +126,8 @@ bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) {
         return true;
     }
 
-    double s, t, area;
-    Vector3 p0, p1, p2;
+	double alpha, beta, gamma;
+    Vector3 p1, p2, p3;
     for (auto &obstacle : m_obstacles) {
         // check bounding box to point
         if (obstacle.aabb.exteriorDistance(Vector3(x, y, 0)) != 0)
@@ -135,15 +135,17 @@ bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) {
 
         // check if point is in triangle
         for (auto &face : obstacle.faces) {
-            p0 = obstacle.vertices[face[0]];
-            p1 = obstacle.vertices[face[1]];
-            p2 = obstacle.vertices[face[2]];
-            area = std::abs(0.5 * (-p1[1] * p2[0] + p0[1] * (-p1[0] + p2[0]) + p0[0] * (p1[1] - p2[1]) + p1[0] * p2[1]));
-            s = 1/(2*area)*(p0[1]*p2[0] - p0[0]*p2[1] + (p2[1] - p0[1])*x + (p0[0] - p2[0])*y);
-            t = 1/(2*area)*(p0[0]*p1[1] - p0[1]*p1[0] + (p0[1] - p1[1])*x + (p1[0] - p0[0])*y);
+            p1 = obstacle.vertices[face[0]];
+            p2 = obstacle.vertices[face[1]];
+            p3 = obstacle.vertices[face[2]];
+			alpha = ((p2[1] - p3[1])*(x - p3[0]) + (p3[0] - p2[0])*(y - p3[1])) /
+				((p2[1] - p3[1])*(p1[0] - p3[0]) + (p3[0] - p2[0])*(p1[1] - p3[1]));
+			beta = ((p3[1] - p1[1])*(x - p3[0]) + (p1[0] - p3[0])*(y - p3[1])) /
+				((p2[1] - p3[1])*(p1[0] - p3[0]) + (p3[0] - p2[0])*(p1[1] - p3[1]));
+			gamma = 1.0f - alpha - beta;
 
-            if (s>0 && t>0 && 1-s-t>0)
-                return true;
+			if (alpha > 0 && beta > 0 && gamma > 0)
+				return true;
         }
     }
     return false;
