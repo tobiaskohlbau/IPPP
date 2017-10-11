@@ -32,13 +32,13 @@ template <unsigned int dim>
 class MedialAxisSampling : public Sampling<dim> {
   public:
     MedialAxisSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                     const unsigned int attempts = 10, const unsigned int numDirs = 50);
+                       const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
+                       const size_t attempts = 10, const size_t numDirs = 50);
 
     Vector<dim> getSample() override;
 
   private:
-    unsigned int m_numberDirections;
+    size_t m_numberDirections;
     std::vector<Vector<dim>> m_directions;
 
     using Sampling<dim>::m_attempts;
@@ -59,10 +59,10 @@ class MedialAxisSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 MedialAxisSampling<dim>::MedialAxisSampling(const std::shared_ptr<Environment> &environment,
-                                        const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                        const std::shared_ptr<Sampler<dim>> &sampler, const unsigned int attempts,
-                                        const unsigned int numberDirs)
+                                            const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                            const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                                            const std::shared_ptr<Sampler<dim>> &sampler, const size_t attempts,
+                                            const size_t numberDirs)
     : Sampling<dim>("MedialAxisSampling", environment, collision, trajectory, sampler, attempts), m_numberDirections(numberDirs) {
     m_directions.reserve(m_numberDirections);
     for (unsigned int i = 0; i < numberDirs; ++i)
@@ -113,7 +113,7 @@ Vector<dim> MedialAxisSampling<dim>::getSample() {
         collision = m_collision->checkConfig(second);
     }
     // return the middle point of these two collisions
-    return second - ((second - first) / 2 );
+    return second - ((second - first) / 2);
 }
 
 } /* namespace ippp */

@@ -32,7 +32,7 @@ template <unsigned int dim>
 class StraightSampling : public Sampling<dim> {
   public:
     StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
+                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
 
     virtual Vector<dim> getSample();
 
@@ -52,8 +52,9 @@ class StraightSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 StraightSampling<dim>::StraightSampling(const std::shared_ptr<Environment> &environment,
-                        const std::shared_ptr<CollisionDetection<dim>> &collision,
-                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler)
+                                        const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                                        const std::shared_ptr<Sampler<dim>> &sampler)
     : Sampling<dim>("StraightSampling", environment, collision, trajectory, sampler, 10) {
 }
 

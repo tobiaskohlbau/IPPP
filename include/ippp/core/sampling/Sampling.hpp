@@ -41,7 +41,7 @@ class Sampling : public Identifier {
   public:
     Sampling(const std::string &name, const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
              const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-             const unsigned int attempts = 10);
+             const size_t attempts = 10);
 
     virtual Vector<dim> getSample() = 0;
     virtual Vector<dim> getSample(const Vector<dim> &prevSample);
@@ -51,7 +51,7 @@ class Sampling : public Identifier {
     void setOrigin(const Vector<dim> &origin);
 
   protected:
-    const unsigned int m_attempts;
+    const size_t m_attempts;
 
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
@@ -73,7 +73,7 @@ template <unsigned int dim>
 Sampling<dim>::Sampling(const std::string &name, const std::shared_ptr<Environment> &environment,
                         const std::shared_ptr<CollisionDetection<dim>> &collision,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                        const unsigned int attempts)
+                        const size_t attempts)
     : Identifier(name), m_collision(collision), m_trajectory(trajectory), m_sampler(sampler), m_attempts(attempts) {
 }
 
