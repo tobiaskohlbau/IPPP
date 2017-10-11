@@ -57,7 +57,7 @@ class Graph : public Identifier {
 
     bool empty() const;
     size_t size() const;
-    unsigned int getSortCount() const;
+    size_t getSortCount() const;
     bool autoSort() const;
     void preserveNodePtr();
 
@@ -89,8 +89,7 @@ class Graph : public Identifier {
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-Graph<dim>::Graph(const size_t sortCount,
-                  const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder)
+Graph<dim>::Graph(const size_t sortCount, const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder)
     : Identifier("Graph"), m_sortCount(sortCount), m_neighborFinder(neighborFinder) {
     m_autoSort = (sortCount != 0);
     // reserve memory for the node vector to reduce computation time at new memory allocation
@@ -131,6 +130,8 @@ bool Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_mutex.unlock();
     if (m_autoSort && (m_nodes.size() % m_sortCount) == 0)
         sortTree();
+
+    return true;
 }
 
 /*!
@@ -341,7 +342,7 @@ size_t Graph<dim>::size() const {
 * \date       2017-01-09
 */
 template <unsigned int dim>
-unsigned int Graph<dim>::getSortCount() const {
+size_t Graph<dim>::getSortCount() const {
     return m_sortCount;
 }
 
