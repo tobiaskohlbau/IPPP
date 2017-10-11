@@ -192,9 +192,8 @@ bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &config) {
                 return true;
             }
         }
-    } else {
-        return false;
     }
+    return false;
 }
 
 /*!
