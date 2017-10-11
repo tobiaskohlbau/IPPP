@@ -83,7 +83,7 @@ class ModuleCreator : public Identifier {
     void setPathModifierType(const PathModifierType type);
     void setSamplerType(const SamplerType type);
     void setSamplingProperties(const size_t samplingAttempts = 10, const double samplingDist = 10,
-                               const double medialAxisDirs = 15);
+                               const size_t medialAxisDirs = 15);
     void setSamplingType(const SamplingType type);
     void setTrajectoryType(const TrajectoryType type);
     void setTrajectoryProperties(const double posRes, const double oriRes);
@@ -113,9 +113,9 @@ class ModuleCreator : public Identifier {
     PathModifierType m_pathModifierType = PathModifierType::NodeCut;
     SamplerType m_samplerType = SamplerType::SamplerRandom;
     SamplingType m_samplingType = SamplingType::Straight;
-    unsigned int m_samplingAttempts = 10;
+	size_t m_samplingAttempts = 10;
     double m_samplingDist = 10;
-    unsigned int m_medialAxisDirs = 15;
+	size_t m_medialAxisDirs = 15;
     TrajectoryType m_trajectoryType = TrajectoryType::Linear;
     double m_posRes = 1;
     double m_oriRes = 0.1;
@@ -379,7 +379,7 @@ void ModuleCreator<dim>::setSamplingType(const SamplingType type) {
 */
 template <unsigned int dim>
 void ModuleCreator<dim>::setSamplingProperties(const size_t samplingAttempts, const double samplingDist,
-                                               const double medialAxisDirs) {
+                                               const size_t medialAxisDirs) {
     m_samplingAttempts = samplingAttempts;
     m_samplingDist = samplingDist;
     m_medialAxisDirs = medialAxisDirs;
