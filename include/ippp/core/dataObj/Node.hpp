@@ -68,7 +68,12 @@ class Node {
     void addChild(const std::shared_ptr<Node> &child, const double edgeCost);
     std::vector<std::shared_ptr<Node>> getChildNodes() const;
     std::vector<std::shared_ptr<Edge<dim>>> getChildEdges() const;
-    void clearChildes();
+    bool isChild(const std::shared_ptr<Node> &child) const;
+    void clearChildren();
+
+    void addInvalidChild(const std::shared_ptr<Node> &child);
+    bool isInvalidChild(const std::shared_ptr<Node> &node) const;
+    void clearInvalidChildren();
 
     Vector<dim> getValues() const;
     double getValue(const unsigned int index) const;
@@ -80,7 +85,8 @@ class Node {
 
     std::shared_ptr<Edge<dim>> m_parent = nullptr;
     std::shared_ptr<Edge<dim>> m_queryParent = nullptr;
-    std::vector<std::shared_ptr<Edge<dim>>> m_childes;
+    std::vector<std::shared_ptr<Edge<dim>>> m_children;
+    std::vector<std::shared_ptr<Node>> m_invalidChildren;
 };
 
 /*!
@@ -91,9 +97,9 @@ class Node {
 */
 template <unsigned int dim>
 Node<dim>::Node() {
-    for (int i = 0; i < dim; ++i) {
+    for (unsigned int i = 0; i < dim; ++i)
         m_config[i] = NAN;
-    }
+    
     m_data = std::shared_ptr<NodeDataContainer>(new NodeDataContainer);
 }
 
@@ -265,11 +271,10 @@ void Node<dim>::setQueryParent(const std::shared_ptr<Node> &queryParent, const d
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Node<dim>::getQueryParentNode() const {
-    if (!m_queryParent) {
+    if (!m_queryParent)
         return nullptr;
-    } else {
+    else
         return m_queryParent->getTarget();
-    }
 }
 
 /*!
@@ -303,7 +308,7 @@ template <unsigned int dim>
 void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child, const double edgeCost) {
     if (!child->empty()) {
         std::shared_ptr<Edge<dim>> edge(new Edge<dim>(std::make_shared<Node>(*this), child, edgeCost));
-        m_childes.push_back(edge);
+        m_children.push_back(edge);
     }
 }
 
@@ -316,9 +321,9 @@ void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child, const double e
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChildNodes() const {
     std::vector<std::shared_ptr<Node>> childNodes;
-    for (auto &&child : m_childes) {
+    for (auto &&child : m_children)
         childNodes.push_back(child->getTarget());
-    }
+
     return childNodes;
 }
 
@@ -330,17 +335,73 @@ std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChildNodes() const {
 */
 template <unsigned int dim>
 std::vector<std::shared_ptr<Edge<dim>>> Node<dim>::getChildEdges() const {
-    return m_childes;
+    return m_children;
 }
 
 /*!
-*  \brief      Clear list of childes
+*  \brief      Check if passed node is child
+*  \author     Sascha Kaden
+*  \param[in]  node
+*  \param[out] true if existing child
+*  \date       2017-10-12
+*/
+template <unsigned int dim>
+bool Node<dim>::isChild(const std::shared_ptr<Node<dim>> &node) const {
+    for (auto &edge : m_children)
+        if (edge->getTarget() == node)
+            return true;
+
+    return false;
+}
+
+/*!
+*  \brief      Clear list of children
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */
 template <unsigned int dim>
-void Node<dim>::clearChildes() {
-    m_childes.clear();
+void Node<dim>::clearChildren() {
+    m_children.clear();
+}
+
+/*!
+*  \brief      Add an invalid child Node to the invalid children list
+*  \author     Sascha Kaden
+*  \param[in]  shared_ptr child Node
+*  \date       2017-10-12
+*/
+template <unsigned int dim>
+void Node<dim>::addInvalidChild(const std::shared_ptr<Node<dim>> &child) {
+    if (child->empty())
+        return;
+
+    m_invalidChildren.push_back(child);
+}
+
+/*!
+*  \brief      Check if passed node is invalid child of the Node
+*  \author     Sascha Kaden
+*  \param[in]  node
+*  \param[out] true if existing invalid child
+*  \date       2017-10-12
+*/
+template <unsigned int dim>
+bool Node<dim>::isInvalidChild(const std::shared_ptr<Node<dim>> &node) const {
+    for (auto &child : m_invalidChildren)
+        if (child == node)
+            return true;
+
+    return false;
+}
+
+/*!
+*  \brief      Clear list of invalid children
+*  \author     Sascha Kaden
+*  \date       2017-10-12
+*/
+template <unsigned int dim>
+void Node<dim>::clearInvalidChildren() {
+    m_invalidChildren.clear();
 }
 
 /*!
