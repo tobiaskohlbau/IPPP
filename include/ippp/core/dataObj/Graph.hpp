@@ -108,7 +108,8 @@ Graph<dim>::~Graph() {
             if (node) {
                 node->clearParent();
                 node->clearQueryParent();
-                node->clearChildes();
+                node->clearChildren();
+				node->clearInvalidChildren();
                 node = nullptr;
             }
         }

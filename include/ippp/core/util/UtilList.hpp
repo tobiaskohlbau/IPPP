@@ -50,15 +50,15 @@ template <unsigned int dim>
 std::shared_ptr<Node<dim>> removeMinFromList(std::vector<std::shared_ptr<Node<dim>>> &list) {
     double min = std::numeric_limits<double>::max();
     std::shared_ptr<Node<dim>> minNode = nullptr;
-    for (int i = 0; i < list.size(); ++i) {
+    for (size_t i = 0; i < list.size(); ++i) {
         if (list[i]->getCost() < min) {
             minNode = list[i];
             min = list[i]->getCost();
         }
     }
-    if (minNode != nullptr) {
+    if (minNode != nullptr)
         eraseFromList(list, minNode);
-    }
+
     return minNode;
 }
 

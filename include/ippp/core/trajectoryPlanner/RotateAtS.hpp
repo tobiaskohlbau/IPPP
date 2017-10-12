@@ -116,7 +116,7 @@ std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &s
     std::vector<Vector<dim>> oriConfigs = util::linearTrajectoryCont<dim>(rotSource, rotTarget, m_posRes, m_oriRes, m_posMask, m_oriMask);
 
     // get middle point and insert rotation configurations
-    size_t middleIndex = configs.size() * m_rotationPoint;
+    size_t middleIndex = static_cast<size_t>(configs.size() * m_rotationPoint);
     configs.insert(std::begin(configs) + middleIndex, std::begin(oriConfigs), std::end(oriConfigs));
 
     return configs;

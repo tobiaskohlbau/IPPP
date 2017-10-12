@@ -35,11 +35,11 @@ class PRM : public Planner<dim> {
     PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
 
-    bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
-    bool expand(const unsigned int numNodes, const unsigned int numThreads);
+    bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads);
+    bool expand(const size_t numNodes, const size_t numThreads);
 
-    void startSamplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfThreads = 1);
-    void startPlannerPhase(const unsigned int nbOfThreads = 1);
+    void startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads = 1);
+    void startPlannerPhase(const size_t nbOfThreads = 1);
 
     bool queryPath(const Vector<dim> start, const Vector<dim> goal);
 
@@ -47,8 +47,8 @@ class PRM : public Planner<dim> {
     std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1);
 
   protected:
-    void samplingPhase(const unsigned int nbOfNodes);
-    void plannerPhase(const unsigned int startNodeIndex, const unsigned int endNodeIndex);
+    void samplingPhase(const size_t nbOfNodes);
+    void plannerPhase(const size_t startNodeIndex, const size_t endNodeIndex);
     std::shared_ptr<Node<dim>> connectNode(const Vector<dim> &config);
 
     double m_rangeSize;
@@ -91,8 +91,7 @@ PRM<dim>::PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
-                           const unsigned int numThreads) {
+bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads) {
     std::vector<Vector<dim>> query = {start, goal};
     m_evaluator->setQuery(query);
 
@@ -114,7 +113,7 @@ bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, cons
 *  \date       2017-03-01
 */
 template <unsigned int dim>
-bool PRM<dim>::expand(const unsigned int numNodes, const unsigned int numThreads) {
+bool PRM<dim>::expand(const size_t numNodes, const size_t numThreads) {
     startSamplingPhase(numNodes, numThreads);
     m_graph->sortTree();
     startPlannerPhase(numThreads);
@@ -129,21 +128,19 @@ bool PRM<dim>::expand(const unsigned int numNodes, const unsigned int numThreads
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRM<dim>::startSamplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfThreads) {
-    unsigned int countNodes = nbOfNodes;
+void PRM<dim>::startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads) {
+    size_t countNodes = nbOfNodes;
     if (nbOfThreads == 1) {
         samplingPhase(nbOfNodes);
     } else {
         countNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i) {
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads.push_back(std::thread(&PRM::samplingPhase, this, countNodes));
-        }
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i) {
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads[i].join();
-        }
     }
 }
 
@@ -154,9 +151,9 @@ void PRM<dim>::startSamplingPhase(const unsigned int nbOfNodes, const unsigned i
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRM<dim>::samplingPhase(const unsigned int nbOfNodes) {
+void PRM<dim>::samplingPhase(const size_t nbOfNodes) {
     Vector<dim> sample;
-    for (unsigned int i = 0; i < nbOfNodes; ++i) {
+    for (size_t i = 0; i < nbOfNodes; ++i) {
         sample = m_sampling->getSample();
         if (util::empty<dim>(sample))
             continue;
@@ -175,21 +172,19 @@ void PRM<dim>::samplingPhase(const unsigned int nbOfNodes) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRM<dim>::startPlannerPhase(const unsigned int nbOfThreads) {
-    unsigned int nodeCount = m_graph->size();
+void PRM<dim>::startPlannerPhase(const size_t nbOfThreads) {
+    size_t nodeCount = m_graph->size();
     if (nbOfThreads == 1) {
         plannerPhase(0, nodeCount);
     } else {
-        unsigned int threadAmount = nodeCount / nbOfThreads;
+        size_t threadAmount = nodeCount / nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i) {
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads.push_back(std::thread(&PRM::plannerPhase, this, i * threadAmount, (i + 1) * threadAmount));
-        }
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i) {
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads[i].join();
-        }
     }
 }
 
@@ -202,7 +197,7 @@ void PRM<dim>::startPlannerPhase(const unsigned int nbOfThreads) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRM<dim>::plannerPhase(const unsigned int startNodeIndex, const unsigned int endNodeIndex) {
+void PRM<dim>::plannerPhase(const size_t startNodeIndex, const size_t endNodeIndex) {
     if (startNodeIndex > endNodeIndex) {
         Logging::error("Start index is larger than end index", this);
         return;
@@ -217,9 +212,13 @@ void PRM<dim>::plannerPhase(const unsigned int startNodeIndex, const unsigned in
     for (auto node = nodes.begin() + startNodeIndex; node != nodes.begin() + endNodeIndex; ++node) {
         std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
-            if (m_trajectory->checkTrajectory((*node)->getValues(), nearNode->getValues())) {
+            if ((*node)->isChild(nearNode) || (*node)->isInvalidChild(nearNode))
+                continue;
+
+            if (m_trajectory->checkTrajectory((*node)->getValues(), nearNode->getValues()))
                 (*node)->addChild(nearNode, m_metric->calcDist(nearNode, (*node)));
-            }
+            else
+                (*node)->addInvalidChild(nearNode);
         }
     }
 }

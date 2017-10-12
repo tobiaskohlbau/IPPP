@@ -185,9 +185,9 @@ static Matrix4 poseVecToMat(const Vector6 &pose) {
     Matrix3 R = getRotMat3D(pose[3], pose[4], pose[5]);
     Matrix4 T = Matrix4::Identity(4, 4);
     T.block<3, 3>(0, 0) = R;
-    for (int i = 0; i < 3; ++i) {
+    for (size_t i = 0; i < 3; ++i)
         T(i, 3) = pose[i];
-    }
+    
     return T;
 }
 
@@ -238,8 +238,8 @@ static AABB transformAABB(const AABB &a, const std::pair<Matrix2, Vector2> &traf
     Vector3 radius = Vector3::Zero(3, 1);
     Matrix3 R = Matrix3::Identity(3, 3);
     R.block<2, 2>(0, 0) = trafo.first;
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
+    for (size_t i = 0; i < 3; i++) {
+        for (size_t j = 0; j < 3; j++) {
             center[i] += R(i, j) * a.center()[j];
             radius[i] += std::abs(R(i, j)) * a.diagonal()[j] / 2;
         }
@@ -261,8 +261,8 @@ static AABB transformAABB(const AABB &a, const std::pair<Matrix3, Vector3> &traf
     // trafo is pair with rotation and translation
     Vector3 center(trafo.second);
     Vector3 radius = Vector3::Zero(3, 1);
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
+    for (size_t i = 0; i < 3; i++) {
+        for (size_t j = 0; j < 3; j++) {
             center[i] += trafo.first(i, j) * a.center()[j];
             radius[i] += std::abs(trafo.first(i, j)) * a.diagonal()[j] / 2;
         }

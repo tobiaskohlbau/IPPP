@@ -75,7 +75,7 @@ std::vector<Matrix4> Jaco::getJointTrafos(const VectorX &angles) {
 
     std::vector<Matrix4> trafos;
     // create transformation matrizes
-    for (int i = 0; i < 6; ++i) {
+    for (size_t i = 0; i < 6; ++i) {
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], dhAngles[i]));
     }
     return trafos;

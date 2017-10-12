@@ -37,12 +37,11 @@ class TreePlanner : public Planner<dim> {
     TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
                 const std::shared_ptr<Graph<dim>> &graph);
 
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
-                             const unsigned int numThreads);
-    virtual bool expand(const unsigned int numNodes, const unsigned int numThreads);
+    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads);
+    virtual bool expand(const size_t numNodes, const size_t numThreads);
     virtual bool setInitNode(const Vector<dim> start);
 
-    virtual bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1) = 0;
+    virtual bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1) = 0;
     virtual bool connectGoalNode(const Vector<dim> goal) = 0;
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
@@ -89,8 +88,8 @@ TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Env
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
-                                   const unsigned int numThreads) {
+bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes,
+                                   const size_t numThreads) {
     if (!setInitNode(start))
         return false;
 
@@ -120,7 +119,7 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-bool TreePlanner<dim>::expand(const unsigned int numNodes, const unsigned int numThreads) {
+bool TreePlanner<dim>::expand(const size_t numNodes, const size_t numThreads) {
     return computeTree(numNodes, numThreads);
 }
 

@@ -88,7 +88,7 @@ std::vector<Matrix4> KukaKR5::getJointTrafos(const Vector6 &angles) {
     Vector6 rads = util::degToRad<6>(angles);
 
     std::vector<Matrix4> trafos;
-    for (int i = 0; i < 6; ++i) {
+    for (size_t i = 0; i < 6; ++i) {
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));
     }
     return trafos;

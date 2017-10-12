@@ -126,7 +126,7 @@ bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) {
         return true;
     }
 
-	double alpha, beta, gamma;
+    double alpha, beta, gamma;
     Vector3 p1, p2, p3;
     for (auto &obstacle : m_obstacles) {
         // check bounding box to point
@@ -138,14 +138,14 @@ bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) {
             p1 = obstacle.vertices[face[0]];
             p2 = obstacle.vertices[face[1]];
             p3 = obstacle.vertices[face[2]];
-			alpha = ((p2[1] - p3[1])*(x - p3[0]) + (p3[0] - p2[0])*(y - p3[1])) /
-				((p2[1] - p3[1])*(p1[0] - p3[0]) + (p3[0] - p2[0])*(p1[1] - p3[1]));
-			beta = ((p3[1] - p1[1])*(x - p3[0]) + (p1[0] - p3[0])*(y - p3[1])) /
-				((p2[1] - p3[1])*(p1[0] - p3[0]) + (p3[0] - p2[0])*(p1[1] - p3[1]));
-			gamma = 1.0f - alpha - beta;
+            alpha = ((p2[1] - p3[1]) * (x - p3[0]) + (p3[0] - p2[0]) * (y - p3[1])) /
+                    ((p2[1] - p3[1]) * (p1[0] - p3[0]) + (p3[0] - p2[0]) * (p1[1] - p3[1]));
+            beta = ((p3[1] - p1[1]) * (x - p3[0]) + (p1[0] - p3[0]) * (y - p3[1])) /
+                   ((p2[1] - p3[1]) * (p1[0] - p3[0]) + (p3[0] - p2[0]) * (p1[1] - p3[1]));
+            gamma = 1.0f - alpha - beta;
 
-			if (alpha > 0 && beta > 0 && gamma > 0)
-				return true;
+            if (alpha > 0 && beta > 0 && gamma > 0)
+                return true;
         }
     }
     return false;

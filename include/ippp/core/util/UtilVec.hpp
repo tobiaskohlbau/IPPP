@@ -94,12 +94,12 @@ bool empty(const Vector<dim> &vec) {
 template <unsigned int dim1, unsigned int dim2>
 Vector<dim1 + dim2> append(const Vector<dim1> &first, const Vector<dim2> &second) {
     Vector<dim1 + dim2> vec;
-    for (int i = 0; i < dim1; ++i) {
+    for (unsigned int i = 0; i < dim1; ++i)
         vec[i] = first[i];
-    }
-    for (int i = 0; i < dim2; ++i) {
+    
+    for (unsigned int i = 0; i < dim2; ++i)
         vec[dim1 + i] = second[i];
-    }
+    
     return vec;
 }
 
@@ -114,9 +114,9 @@ Vector<dim1 + dim2> append(const Vector<dim1> &first, const Vector<dim2> &second
 template <unsigned int dim>
 Vector<dim + 1> append(const Vector<dim> &source, const double add) {
     Vector<dim + 1> vec;
-    for (int i = 0; i < dim; ++i) {
+    for (unsigned int i = 0; i < dim; ++i)
         vec[i] = source[i];
-    }
+    
     vec[dim] = add;
     return vec;
 }

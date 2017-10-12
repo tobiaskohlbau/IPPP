@@ -106,9 +106,9 @@ Vector6 SerialRobot::getTcpPosition(const std::vector<Matrix4> &trafos) {
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
     Matrix4 robotToTcp = trafos[0];
-    for (int i = 1; i < 6; ++i) {
+    for (size_t i = 1; i < 6; ++i)
         robotToTcp *= trafos[i];
-    }
+    
     Matrix4 basisToTcp = this->m_poseMat * robotToTcp;
 
     return util::poseMatToVec(basisToTcp);
@@ -121,7 +121,7 @@ Vector6 SerialRobot::getTcpPosition(const std::vector<Matrix4> &trafos) {
 *  \param[out] MeshContainer
 *  \date       2016-08-25
 */
-std::shared_ptr<ModelContainer> SerialRobot::getModelFromJoint(unsigned int jointIndex) {
+std::shared_ptr<ModelContainer> SerialRobot::getModelFromJoint(size_t jointIndex) {
     if (jointIndex < m_joints.size()) {
         return m_joints[jointIndex].getModel();
     } else {
@@ -150,7 +150,7 @@ std::vector<std::shared_ptr<ModelContainer>> SerialRobot::getJointModels() {
 *  \param[out] number of joints
 *  \date       2016-06-30
 */
-unsigned int SerialRobot::getNbJoints() {
+size_t SerialRobot::getNbJoints() {
     return m_joints.size();
 }
 
@@ -164,7 +164,7 @@ void SerialRobot::saveMeshConfig(const VectorX angles) {
     std::vector<Matrix4> jointTrafos = getJointTrafos(angles);
     std::vector<Matrix4> As(jointTrafos.size());
     As[0] = this->m_poseMat * jointTrafos[0];
-    for (int i = 1; i < jointTrafos.size(); ++i)
+    for (size_t i = 1; i < jointTrafos.size(); ++i)
         As[i] = As[i - 1] * jointTrafos[i];
     
     saveMeshConfig(As);
@@ -188,10 +188,10 @@ void SerialRobot::saveMeshConfig(const std::vector<Matrix4> As) {
     }
     // this->m_baseModel->saveObj("base.obj", this->m_poseMat);
 
-    for (int i = 0; i < m_joints.size(); ++i) {
+    for (size_t i = 0; i < m_joints.size(); ++i) {
         std::vector<Vector3> verts;
-        for (auto vertice : getModelFromJoint(i)->m_mesh.vertices) {
-            Vector4 temp(util::append<3>(vertice, (double)1));
+        for (auto vertex : getModelFromJoint(i)->m_mesh.vertices) {
+            Vector4 temp(util::append<3>(vertex, (double)1));
             temp = this->m_poseMat * temp;
             verts.push_back(Vector3(temp(0), temp(1), temp(2)));
         }

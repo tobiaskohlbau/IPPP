@@ -98,7 +98,7 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
                 }
             }
             if (!emptyJoint) {
-                for (int i = 0; i < dim; ++i) {
+                for (unsigned int i = 0; i < dim; ++i) {
                     m_jointModels.push_back(&std::static_pointer_cast<ModelPqp>(serialRobot->getModelFromJoint(i))->m_pqpModel);
                 }
             } else {
@@ -140,13 +140,13 @@ bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &confi
     }
 
     if (m_environment->getRobot()->getRobotType() == RobotType::mobile) {
-        for (int i = 0; i < configs.size(); ++i) {
+        for (size_t i = 0; i < configs.size(); ++i) {
             if (checkMobileRobot(configs[i])) {
                 return true;
             }
         }
     } else {
-        for (int i = 0; i < configs.size(); ++i) {
+        for (size_t i = 0; i < configs.size(); ++i) {
             if (checkSerialRobot(configs[i])) {
                 return true;
             }
@@ -210,7 +210,7 @@ template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkMesh(std::vector<Matrix3> Rs, Matrix3 &poseR, std::vector<Vector3> ts, Vector3 &poseT) {
     // control collision between baseModel and joints
     if (m_baseMeshAvaible) {
-        for (int i = 1; i < dim; ++i) {
+        for (unsigned int i = 1; i < dim; ++i) {
             if (checkPQP(m_baseMesh, m_jointModels[i], poseR, Rs[i], poseT, ts[i])) {
                 return true;
             }
@@ -218,8 +218,8 @@ bool CollisionDetectionPqp<dim>::checkMesh(std::vector<Matrix3> Rs, Matrix3 &pos
     }
 
     // control collision of the robot joints with themselves
-    for (int i = 0; i < dim; ++i) {
-        for (int j = i + 2; j < dim; ++j) {
+    for (unsigned int i = 0; i < dim; ++i) {
+        for (unsigned int j = i + 2; j < dim; ++j) {
             if (checkPQP(m_jointModels[i], m_jointModels[j], Rs[i], Rs[j], ts[i], ts[j])) {
                 if (Logging::getLogLevel() == LogLevel::debug) {
                     auto temp = m_environment->getRobot();
@@ -248,7 +248,7 @@ bool CollisionDetectionPqp<dim>::checkMesh(std::vector<Matrix3> Rs, Matrix3 &pos
                 return true;
             }
         }
-        for (int i = 0; i < dim; ++i) {
+        for (unsigned int i = 0; i < dim; ++i) {
             for (auto obstacle : m_obstacles) {
                 if (checkPQP(obstacle, m_jointModels[i], m_identity, Rs[i], m_zeroVec, ts[i])) {
                     Logging::debug("Collision between workspace and link " + std::to_string(i), this);
@@ -277,8 +277,8 @@ bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model *model1, PQP_Model *model2, 
                                           Vector3 &t2) {
     PQP_REAL pqpR1[3][3], pqpR2[3][3], pqpT1[3], pqpT2[3];
 
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
+    for (size_t i = 0; i < 3; ++i) {
+        for (size_t j = 0; j < 3; ++j) {
             pqpR1[i][j] = R1(i, j);
             pqpR2[i][j] = R2(i, j);
         }
@@ -288,11 +288,10 @@ bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model *model1, PQP_Model *model2, 
 
     PQP_CollideResult cres;
     PQP_Collide(&cres, pqpR1, pqpT1, model1, pqpR2, pqpT2, model2, PQP_FIRST_CONTACT);
-    if (cres.NumPairs() > 0) {
+    if (cres.NumPairs() > 0)
         return true;
-    } else {
+    else
         return false;
-    }
 }
 
 } /* namespace ippp */

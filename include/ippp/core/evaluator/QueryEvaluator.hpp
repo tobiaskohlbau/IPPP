@@ -77,7 +77,6 @@ QueryEvaluator<dim>::QueryEvaluator(const std::shared_ptr<DistanceMetric<dim>> &
 */
 template <unsigned int dim>
 bool QueryEvaluator<dim>::evaluate() {
-    bool allFound = true;
     for (size_t targetIndex = 0; targetIndex < m_targets.size(); ++targetIndex) {
         if (m_validTargets[targetIndex])
             continue;
@@ -91,14 +90,13 @@ bool QueryEvaluator<dim>::evaluate() {
                 break;
             }
         }
-        if (!found)
-            allFound = false;
-    }
-    if (!allFound) {
-        m_lastNodeIndex = m_graph->size() - 1;
-        return false;
     }
 
+    for (auto validTarget : m_validTargets)
+        if (!validTarget)
+            return false;
+    
+    Logging::info("Queries solved.", this);
     return true;
 }
 

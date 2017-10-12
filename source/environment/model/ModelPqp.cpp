@@ -88,12 +88,12 @@ void ModelPqp::updatePqpModel() {
     m_pqpModel.BeginModel();
     // create pqp triangles
     PQP_REAL p[3][3];
-    for (int i = 0; i < m_mesh.faces.size(); ++i) {
+    for (size_t i = 0; i < m_mesh.faces.size(); ++i) {
         // go through faces
-        for (int j = 0; j < 3; ++j) {
+        for (size_t j = 0; j < 3; ++j) {
             // go through face
             int vert = m_mesh.faces[i][j];
-            for (int k = 0; k < 3; ++k) {
+            for (size_t k = 0; k < 3; ++k) {
                 p[j][k] = m_mesh.vertices[vert][k];
             }
         }

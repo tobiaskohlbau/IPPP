@@ -45,8 +45,8 @@ static Matrix4 readT(const std::string &path, const double scale = 1) {
     std::ifstream fin(path);
 
     if (fin.is_open()) {
-        for (int row = 0; row < 4; ++row)
-            for (int col = 0; col < 4; ++col) {
+        for (size_t row = 0; row < 4; ++row)
+            for (size_t col = 0; col < 4; ++col) {
                 double item = 0.0;
                 fin >> item;
                 T(row, col) = item;

@@ -160,9 +160,9 @@ std::chrono::duration<double> CollisionDetectionPqpBenchmark<dim>::getMeanComput
         return duration;
 
     duration = m_computationTimes[0];
-    for (int i = 1; i < m_computationTimes.size(); ++i) {
+    for (size_t i = 1; i < m_computationTimes.size(); ++i)
         duration += m_computationTimes[i];
-    }
+
     duration /= (double)m_computationTimes.size();
     return duration;
 }

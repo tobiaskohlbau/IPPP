@@ -37,11 +37,11 @@ class RRT : public TreePlanner<dim> {
     RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph,
         const std::string &name = "RRT");
 
-    virtual bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
+    virtual bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1);
     virtual bool connectGoalNode(const Vector<dim> goal);
 
   protected:
-    void computeTreeThread(unsigned int nbOfNodes);
+    void computeTreeThread(size_t nbOfNodes);
     virtual std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec);
     Vector<dim> computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode);
 
@@ -85,23 +85,23 @@ RRT<dim>::RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRT<dim>::computeTree(const unsigned int nbOfNodes, const unsigned int nbOfThreads) {
+bool RRT<dim>::computeTree(const size_t nbOfNodes, const size_t nbOfThreads) {
     if (m_initNode == nullptr) {
         Logging::error("Init Node is not connected", this);
         return false;
     }
 
-    unsigned int countNodes = nbOfNodes;
+    size_t countNodes = nbOfNodes;
     if (nbOfThreads == 1) {
         computeTreeThread(nbOfNodes);
     } else {
         countNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i)
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads.push_back(std::thread(&RRT::computeTreeThread, this, countNodes));
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i)
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads[i].join();
     }
 
@@ -115,9 +115,9 @@ bool RRT<dim>::computeTree(const unsigned int nbOfNodes, const unsigned int nbOf
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-void RRT<dim>::computeTreeThread(const unsigned int nbOfNodes) {
+void RRT<dim>::computeTreeThread(const size_t nbOfNodes) {
     Vector<dim> sample;
-    for (unsigned int i = 0; i < nbOfNodes; ++i) {
+    for (size_t i = 0; i < nbOfNodes; ++i) {
         sample = m_sampling->getSample();
         if (util::empty<dim>(sample))
             continue;
@@ -185,11 +185,10 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randConfi
     Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
     std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newConfig));
 
-    if (m_collision->checkConfig(newNode->getValues())) {
+    if (m_collision->checkConfig(newNode->getValues()))
         return nullptr;
-    } else if (!m_trajectory->checkTrajectory(newNode, nearestNode)) {
+    else if (!m_trajectory->checkTrajectory(newNode, nearestNode))
         return nullptr;
-    }
 
     double edgeCost = this->m_metric->calcDist(nearestNode, newNode);
     newNode->setParent(nearestNode, edgeCost);

@@ -41,9 +41,9 @@ class SerialRobot : public RobotBase {
     Vector6 getTcpPosition(const std::vector<Matrix4> &trafos);
 
     void setJoints(std::vector<Joint> joints);
-    unsigned int getNbJoints();
+    size_t getNbJoints();
 
-    std::shared_ptr<ModelContainer> getModelFromJoint(unsigned int jointIndex);
+    std::shared_ptr<ModelContainer> getModelFromJoint(size_t jointIndex);
     std::vector<std::shared_ptr<ModelContainer>> getJointModels();
 
     void saveMeshConfig(const VectorX angles);

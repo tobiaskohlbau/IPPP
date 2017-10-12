@@ -37,10 +37,10 @@ class SRT : public Planner<dim> {
     SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
 
-    bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes, const unsigned int numThreads);
-    bool expand(const unsigned int numNodes, const unsigned int numThreads);
+    bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads);
+    bool expand(const size_t numNodes, const size_t numThreads);
 
-    void startSamplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfThreads = 1);
+    void startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads = 1);
     bool plannerPhase(std::vector<std::shared_ptr<Graph<dim>>> &trees);
 
     bool queryPath(const Vector<dim> start, const Vector<dim> goal);
@@ -51,10 +51,10 @@ class SRT : public Planner<dim> {
     std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1);
 
   protected:
-    void samplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfTrees);
-    std::shared_ptr<Graph<dim>> computeTree(const unsigned int nbOfNodes, const Vector<dim> &origin);
+    void samplingPhase(const size_t nbOfNodes, const size_t nbOfTrees);
+    std::shared_ptr<Graph<dim>> computeTree(const size_t nbOfNodes, const Vector<dim> &origin);
 
-    unsigned int m_nbOfTrees;
+    size_t m_nbOfTrees;
     std::vector<std::shared_ptr<Graph<dim>>> m_treeGraphs;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
     std::vector<std::shared_ptr<Node<dim>>> m_openList, m_closedList;
@@ -97,8 +97,7 @@ SRT<dim>::SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
-                           const unsigned int numThreads) {
+bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads) {
     if (m_collision->checkConfig(start)) {
         Logging::error("Start Node in collision", this);
         return false;
@@ -126,7 +125,7 @@ bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, cons
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-bool SRT<dim>::expand(const unsigned int numNodes, const unsigned int numThreads) {
+bool SRT<dim>::expand(const size_t numNodes, const size_t numThreads) {
     startSamplingPhase(numNodes, numThreads);
     plannerPhase(m_treeGraphs);
     m_treeGraphs.clear();
@@ -141,20 +140,18 @@ bool SRT<dim>::expand(const unsigned int numNodes, const unsigned int numThreads
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-void SRT<dim>::startSamplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfThreads) {
+void SRT<dim>::startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads) {
     if (nbOfThreads == 1) {
         samplingPhase(nbOfNodes, m_nbOfTrees);
     } else {
-        unsigned int treeCount = (m_nbOfTrees / nbOfThreads) + 1;
+        size_t treeCount = (m_nbOfTrees / nbOfThreads) + 1;
         std::vector<std::thread> threads;
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i) {
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads.push_back(std::thread(&SRT::samplingPhase, this, nbOfNodes, treeCount));
-        }
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i) {
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads[i].join();
-        }
     }
 }
 
@@ -166,9 +163,9 @@ void SRT<dim>::startSamplingPhase(const unsigned int nbOfNodes, const unsigned i
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-void SRT<dim>::samplingPhase(const unsigned int nbOfNodes, const unsigned int nbOfTrees) {
+void SRT<dim>::samplingPhase(const size_t nbOfNodes, const size_t nbOfTrees) {
     Vector<dim> sample;
-    for (unsigned int i = 0; i < nbOfTrees; ++i) {
+    for (size_t i = 0; i < nbOfTrees; ++i) {
         do {
             sample = m_sampling->getSample();
         } while (util::empty<dim>(sample) || m_collision->checkConfig(sample));
@@ -188,7 +185,7 @@ void SRT<dim>::samplingPhase(const unsigned int nbOfNodes, const unsigned int nb
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-std::shared_ptr<Graph<dim>> SRT<dim>::computeTree(const unsigned int nbOfNodes, const Vector<dim> &origin) {
+std::shared_ptr<Graph<dim>> SRT<dim>::computeTree(const size_t nbOfNodes, const Vector<dim> &origin) {
     RRTOptions<dim> rrtOptions(30, m_collision, m_metric, m_evaluator, this->m_pathModifier, m_sampling, m_trajectory);
     RRT<dim> rrt(m_environment, rrtOptions);
     rrt.setInitNode(origin);
@@ -219,9 +216,9 @@ bool SRT<dim>::plannerPhase(std::vector<std::shared_ptr<Graph<dim>>> &trees) {
     }
 
     // add all graphs from tree list to the main graph
-    unsigned int connectionCount = 0;
+    size_t connectionCount = 0;
     for (auto graph : trees) {
-        for (int i = 0; i < 20; ++i) {
+        for (size_t i = 0; i < 20; ++i) {
             int count = m_sampling->getRandomNumber() * graph->size();
             std::shared_ptr<Node<dim>> node = graph->getNode(count);
             std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(node);
@@ -299,7 +296,7 @@ bool SRT<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node
     m_openList.clear();
 
     std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
-    for (int i = 0; i < edges.size(); ++i) {
+    for (size_t i = 0; i < edges.size(); ++i) {
         edges[i]->getTarget()->setCost(edges[i]->getCost());
         edges[i]->getTarget()->setQueryParent(sourceNode, m_metric->calcEdgeCost(edges[i]->getTarget(), sourceNode));
         m_openList.push_back(edges[i]->getTarget());
@@ -311,9 +308,9 @@ bool SRT<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node
     while (!m_openList.empty()) {
         currentNode = util::removeMinFromList(m_openList);
 
-        if (currentNode == targetNode) {
+        if (currentNode == targetNode)
             return true;
-        }
+
         m_closedList.push_back(currentNode);
         ++count;
 
@@ -332,15 +329,15 @@ template <unsigned int dim>
 void SRT<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
     double dist, edgeCost;
     for (auto successor : currentNode->getChildNodes()) {
-        if (util::contains(m_closedList, successor)) {
+        if (util::contains(m_closedList, successor))
             continue;
-        }
+
         edgeCost = m_metric->calcEdgeCost(currentNode, successor);
         dist = currentNode->getCost() + edgeCost;
 
-        if (util::contains(m_openList, successor) && dist >= successor->getCost()) {
+        if (util::contains(m_openList, successor) && dist >= successor->getCost())
             continue;
-        }
+
         successor->setQueryParent(currentNode, edgeCost);
         successor->setCost(dist);
         if (!util::contains(m_openList, successor)) {
@@ -349,20 +346,19 @@ void SRT<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
     }
     if (currentNode->getParentNode() != nullptr) {
         auto successor = currentNode->getParentNode();
-        if (util::contains(m_closedList, successor)) {
+        if (util::contains(m_closedList, successor))
             return;
-        }
+
         edgeCost = m_metric->calcEdgeCost(currentNode, successor);
         dist = currentNode->getCost() + edgeCost;
 
-        if (util::contains(m_openList, successor) && dist >= successor->getCost()) {
+        if (util::contains(m_openList, successor) && dist >= successor->getCost())
             return;
-        }
+
         successor->setQueryParent(currentNode, edgeCost);
         successor->setCost(dist);
-        if (!util::contains(m_openList, successor)) {
+        if (!util::contains(m_openList, successor))
             m_openList.push_back(successor);
-        }
     }
 }
 

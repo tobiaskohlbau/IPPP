@@ -57,7 +57,7 @@ Mesh generateMesh(const std::vector<Triangle2D> &triangles) {
     mesh.vertices.reserve(triangles.size() * 3);
     mesh.faces.reserve(triangles.size());
     int vertexCount = 0;
-    for (auto tri : triangles) {
+    for (auto &tri : triangles) {
         vertexCount = mesh.vertices.size();
         for (unsigned int i = 1; i < 4; ++i) {
             auto pt = tri.getP(i);
@@ -80,14 +80,13 @@ Mesh generateMesh(const std::vector<Triangle2D> &triangles) {
 Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
     Mesh mesh;
     int vertexCount;
-    for (auto tmpMesh : meshes) {
+    for (auto &tmpMesh : meshes) {
         vertexCount = mesh.vertices.size();
-        for (auto &vertex : tmpMesh.vertices) {
+        for (auto &vertex : tmpMesh.vertices)
             mesh.vertices.push_back(vertex);
-        }
-        for (auto &face : tmpMesh.faces) {
+        
+        for (auto &face : tmpMesh.faces)
             mesh.faces.push_back(Vector3i(face[0] + vertexCount, face[1] + vertexCount, face[2] + vertexCount));
-        }
     }
     return mesh;
 }

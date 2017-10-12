@@ -68,8 +68,10 @@ bool TimeEvaluator<dim>::evaluate() {
     }
 
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - m_startTime);
-    if (duration.count() > m_maxDuration * 1000) {
-        Logging::info("Maximum duration achieved with: " + std::to_string(static_cast<double>(duration.count() / 1000)) + " seconds.", this);
+    if (static_cast<size_t>(duration.count()) > m_maxDuration * 1000) {
+        Logging::info(
+            "Maximum duration achieved with: " + std::to_string(static_cast<double>(duration.count() / 1000)) + " seconds.",
+            this);
         return true;
     } else {
         return false;

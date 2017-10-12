@@ -36,11 +36,11 @@ class EST : public TreePlanner<dim> {
     EST(const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
 
-    bool computeTree(unsigned int nbOfNodes, unsigned int nbOfThreads = 1);
+    bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1);
     bool connectGoalNode(const Vector<dim> goal);
 
   protected:
-    void computeTreeThread(unsigned int nbOfNodes);
+    void computeTreeThread(size_t nbOfNodes);
 
     // variables
     std::mutex m_mutex;
@@ -81,23 +81,23 @@ EST<dim>::EST(const std::shared_ptr<Environment> &environment, const PlannerOpti
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-bool EST<dim>::computeTree(const unsigned int nbOfNodes, const unsigned int nbOfThreads) {
+bool EST<dim>::computeTree(const size_t nbOfNodes, const size_t nbOfThreads) {
     if (m_initNode == nullptr) {
         Logging::error("Init Node is not connected", this);
         return false;
     }
 
-    unsigned int countNodes = nbOfNodes;
+    size_t countNodes = nbOfNodes;
     if (nbOfThreads == 1) {
         computeTreeThread(nbOfNodes);
     } else {
         countNodes /= nbOfThreads;
         std::vector<std::thread> threads;
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i)
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads.push_back(std::thread(&EST::computeTreeThread, this, countNodes));
 
-        for (unsigned int i = 0; i < nbOfThreads; ++i)
+        for (size_t i = 0; i < nbOfThreads; ++i)
             threads[i].join();
     }
 
@@ -111,9 +111,9 @@ bool EST<dim>::computeTree(const unsigned int nbOfNodes, const unsigned int nbOf
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-void EST<dim>::computeTreeThread(const unsigned int nbOfNodes) {
+void EST<dim>::computeTreeThread(const size_t nbOfNodes) {
     Vector<dim> sample;
-    for (unsigned int i = 0; i < nbOfNodes; ++i) {
+    for (size_t i = 0; i < nbOfNodes; ++i) {
         // choose random node of the graph
         auto randNode = m_graph->getNode(m_sampling->getRandomNumber() * m_graph->size());
         sample = m_sampling->getSample(randNode->getValues());

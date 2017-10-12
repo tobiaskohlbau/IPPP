@@ -46,9 +46,9 @@ void drawTriangles(Eigen::MatrixXi &space, std::vector<Mesh> &meshes, const int 
 void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue) {
     for (auto &triangle : triangles) {
         std::vector<Vector2> points;
-        for (int i = 1; i < 4; ++i) {
+        for (size_t i = 1; i < 4; ++i)
             points.push_back(triangle.getP(i));
-        }
+        
         struct Vector2Sorter {
             bool operator()(const Vector2 &lhs, const Vector2 &rhs) const {
                 return lhs[1] < rhs[1];

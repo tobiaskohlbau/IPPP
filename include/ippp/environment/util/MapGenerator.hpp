@@ -85,7 +85,7 @@ std::vector<Mesh> MapGenerator<dim>::generateMap(const size_t numObstacles, cons
             continue;
         }
 
-        int faceCount = mesh.vertices.size();
+        int faceCount = static_cast<int>(mesh.vertices.size());
         if (dim == 2) {
             mesh.vertices.push_back(Vector3(sample[0], sample[1], 0));
             mesh.vertices.push_back(Vector3(sample[0] + ext[0], sample[1], 0));

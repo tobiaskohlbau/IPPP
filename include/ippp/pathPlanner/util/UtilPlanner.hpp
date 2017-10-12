@@ -96,7 +96,7 @@ static bool aStar(const std::shared_ptr<Node<dim>> sourceNode, const std::shared
     std::vector<std::shared_ptr<Node<dim>>> openList, closedList;
 
     std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
-    for (int i = 0; i < edges.size(); ++i) {
+    for (size_t i = 0; i < edges.size(); ++i) {
         edges[i]->getTarget()->setCost(edges[i]->getCost());
         edges[i]->getTarget()->setQueryParent(sourceNode, metric->calcDist(edges[i]->getTarget(), sourceNode));
         openList.push_back(edges[i]->getTarget());

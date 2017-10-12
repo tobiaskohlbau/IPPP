@@ -55,12 +55,12 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
     pqpModel->m_pqpModel.BeginModel();
     // create pqp triangles
     PQP_REAL p[3][3];
-    for (int i = 0; i < pqpModel->m_mesh.faces.size(); ++i) {
+    for (size_t i = 0; i < pqpModel->m_mesh.faces.size(); ++i) {
         // go through faces
-        for (int j = 0; j < 3; ++j) {
+        for (size_t j = 0; j < 3; ++j) {
             // go through face
             int vertex = pqpModel->m_mesh.faces[i][j];
-            for (int k = 0; k < 3; ++k) {
+            for (size_t k = 0; k < 3; ++k) {
                 p[j][k] = pqpModel->m_mesh.faces[vertex][k];
             }
         }
@@ -96,12 +96,12 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const
         pqpModel->m_pqpModel.BeginModel();
         // create pqp triangles
         PQP_REAL p[3][3];
-        for (int i = 0; i < pqpModel->m_mesh.faces.size(); ++i) {
+        for (size_t i = 0; i < pqpModel->m_mesh.faces.size(); ++i) {
             // go through faces
-            for (int j = 0; j < 3; ++j) {
+            for (size_t j = 0; j < 3; ++j) {
                 // go through face
                 int vertex = pqpModel->m_mesh.faces[i][j];
-                for (int k = 0; k < 3; ++k) {
+                for (size_t k = 0; k < 3; ++k) {
                     p[j][k] = pqpModel->m_mesh.faces[vertex][k];
                 }
             }

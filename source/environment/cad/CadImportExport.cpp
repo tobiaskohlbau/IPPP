@@ -36,14 +36,12 @@ namespace cad {
 */
 bool importMesh(const std::string &filePath, Mesh &mesh, const double scale, const bool calcNormals, const bool useTrafo) {
     std::size_t found = filePath.find_last_of(".");
-    if (filePath.substr(found) == ".g") {
+    if (filePath.substr(found) == ".g")
         return importBYU(filePath, mesh);
-    }
 
     std::vector<Mesh> meshes;
-    if (!importMeshes(filePath, meshes, scale, calcNormals, useTrafo)) {
+    if (!importMeshes(filePath, meshes, scale, calcNormals, useTrafo))
         return false;
-    }
 
     // merge meshes to one single mesh
     mesh = mergeMeshes(meshes);
@@ -58,7 +56,8 @@ bool importMesh(const std::string &filePath, Mesh &mesh, const double scale, con
 *  \param[out] Mesh
 *  \date       2017-05-09
 */
-bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const double scale, const bool calcNormals, const bool useTrafo) {
+bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const double scale, const bool calcNormals,
+                  const bool useTrafo) {
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (!scene) {
@@ -82,23 +81,20 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const 
         for (auto &&vertex : mesh.vertices)
             vertex *= scale;
 
-    if (calcNormals) {
-        for (auto mesh : meshes) {
+    if (calcNormals)
+        for (auto mesh : meshes)
             mesh.normals = computeNormals(mesh.vertices, mesh.faces);
-        }
-    }
 
     return true;
 }
 
 Matrix4 importTransformation(const std::string &filePath) {
-    Matrix4 X = Matrix4::Zero(4,4);
-    std::ifstream fin (filePath);
+    Matrix4 X = Matrix4::Zero(4, 4);
+    std::ifstream fin(filePath);
 
-    if (fin.is_open())
-    {
-        for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 4; col++) {
+    if (fin.is_open()) {
+        for (size_t row = 0; row < 4; row++) {
+            for (size_t col = 0; col < 4; col++) {
                 float item = 0.0;
                 fin >> item;
                 X(row, col) = item;
@@ -125,16 +121,16 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std
     prevTrafo = *trafo;
     aiMultiplyMatrix4(trafo, &node->mTransformation);
 
-    for (int i = 0; i < node->mNumMeshes; ++i) {
+    for (size_t i = 0; i < node->mNumMeshes; ++i) {
         Mesh mesh;
         const aiMesh *aimesh = scene->mMeshes[node->mMeshes[i]];
-        for (int j = 0; j < aimesh->mNumVertices; ++j) {
+        for (size_t j = 0; j < aimesh->mNumVertices; ++j) {
             aiVector3D vertex = aimesh->mVertices[j];
             if (useTrafo)
                 aiTransformVecByMatrix4(&vertex, trafo);
             mesh.vertices.push_back(Vector3(vertex.x, vertex.y, vertex.z));
         }
-        for (int j = 0; j < aimesh->mNumFaces; ++j) {
+        for (size_t j = 0; j < aimesh->mNumFaces; ++j) {
             if (aimesh->mFaces[j].mNumIndices > 2) {
                 mesh.faces.push_back(
                     Vector3i(aimesh->mFaces[j].mIndices[0], aimesh->mFaces[j].mIndices[1], aimesh->mFaces[j].mIndices[2]));
@@ -145,7 +141,7 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std
         meshes.push_back(mesh);
     }
 
-    for (int i = 0; i < node->mNumChildren; ++i) {
+    for (size_t i = 0; i < node->mNumChildren; ++i) {
         getMeshes(scene, node->mChildren[i], trafo, meshes);
     }
     *trafo = prevTrafo;
@@ -162,9 +158,9 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std
 bool importBYU(const std::string &filePath, Mesh &mesh) {
     std::ifstream is(filePath);
     std::string str;
-    unsigned int numBodies = 0;
-    unsigned int numVertices = 0;
-    unsigned int numFaces = 0;
+    size_t numBodies = 0;
+    size_t numVertices = 0;
+    size_t numFaces = 0;
 
     getline(is, str);
     util::trimWhitespaces(str);
@@ -179,7 +175,7 @@ bool importBYU(const std::string &filePath, Mesh &mesh) {
 
     getline(is, str);
     getline(is, str);
-    while(str == "")
+    while (str == "")
         getline(is, str);
     util::trimWhitespaces(str);
     for (unsigned int i = 0; i < numVertices; ++i) {
@@ -195,7 +191,7 @@ bool importBYU(const std::string &filePath, Mesh &mesh) {
             util::trimWhitespaces(str);
         }
     }
-    while(str == "")
+    while (str == "")
         getline(is, str);
     for (unsigned int i = 0; i < numFaces; ++i) {
         util::trimWhitespaces(str);
@@ -340,9 +336,8 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
     // add vertices to the mesh
     pMesh->mVertices = new aiVector3D[vertices.size()];
     pMesh->mNumVertices = vertices.size();
-    for (size_t i = 0; i < vertices.size(); ++i) {
+    for (size_t i = 0; i < vertices.size(); ++i)
         pMesh->mVertices[i] = aiVector3D(vertices[i].x(), vertices[i].y(), vertices[i].z());
-    }
 
     pMesh->mFaces = new aiFace[faces.size()];
     pMesh->mNumFaces = faces.size();
@@ -351,7 +346,7 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
 
         face.mIndices = new unsigned int[3];
         face.mNumIndices = 3;
-        for (int j = 0; j < 3; ++j) {
+        for (size_t j = 0; j < 3; ++j) {
             face.mIndices[j] = faces[i][j];
         }
     }

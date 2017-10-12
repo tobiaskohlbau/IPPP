@@ -47,16 +47,15 @@ class Planner : public Identifier {
             const std::shared_ptr<Graph<dim>> &graph);
 
   public:
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const unsigned int numNodes,
-                             const unsigned int numThreads) = 0;
-    virtual bool expand(const unsigned int numNode, const unsigned int numthreads) = 0;
+    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads) = 0;
+    virtual bool expand(const size_t numNode, const size_t numthreads) = 0;
 
     std::shared_ptr<Graph<dim>> getGraph();
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
     virtual std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
-    std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                              const double posRes, const double oriRes);
+    std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, const double posRes,
+                                              const double oriRes);
 
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
@@ -142,8 +141,8 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
-                                                        const double posRes, const double oriRes) {
+std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, const double posRes,
+                                                        const double oriRes) {
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes = m_pathModifier->smoothPath(nodes);
 
     Logging::info("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", this);
@@ -152,7 +151,7 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     auto plannerRes = m_trajectory->getResolutions();
     m_trajectory->setResolutions(posRes, oriRes);
     std::vector<Vector<dim>> path;
-    for (int i = 0; i < smoothedNodes.size() - 1; ++i) {
+    for (size_t i = 0; i < smoothedNodes.size() - 1; ++i) {
         std::vector<Vector<dim>> tempConfigs =
             m_trajectory->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues());
         for (auto config : tempConfigs) {
@@ -176,7 +175,7 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
 */
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes) {
-    unsigned int i = 0;
+    size_t i = 0;
     auto countNodes = nodes.size() - 2;
     while (i < countNodes) {
         while (i < countNodes && m_trajectory->checkTrajectory(nodes[i]->getValues(), nodes[i + 2]->getValues())) {

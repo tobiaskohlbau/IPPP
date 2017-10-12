@@ -71,7 +71,7 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
     m_maxBoundary = environment->getRobot()->getMaxBoundary();
 
     Vector6 pose = environment->getRobot()->getPose();
-    for (int i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < dim; ++i)
         m_origin[i] = pose[i];
 
     m_generator = std::mt19937(rd());
