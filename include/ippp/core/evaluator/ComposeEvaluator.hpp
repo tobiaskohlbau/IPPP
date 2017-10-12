@@ -36,6 +36,7 @@ class ComposeEvaluator : public Evaluator<dim> {
     ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, const ComposeType type);
 
     bool evaluate();
+    void setQuery(const std::vector<Vector<dim>> &targets) override;
 
   protected:
     std::vector<std::shared_ptr<Evaluator<dim>>> m_evaluators;
@@ -62,18 +63,30 @@ ComposeEvaluator<dim>::ComposeEvaluator(const std::vector<std::shared_ptr<Evalua
 template <unsigned int dim>
 bool ComposeEvaluator<dim>::evaluate() {
     if (m_type == ComposeType::AND) {
-        for (auto &evaluator : m_evaluators) {
+        for (auto &evaluator : m_evaluators)
             if (!evaluator->evaluate())
                 return false;
-        }
+        
         return true;
     } else {    // OR
-        for (auto &evaluator : m_evaluators) {
+        for (auto &evaluator : m_evaluators)
             if (evaluator->evaluate())
                 return true;
-        }
-        return true;
+        
+        return false;
     }
+}
+
+/*!
+*  \brief      Set target nodes for evaluation inside list of evaluators.
+*  \author     Sascha Kaden
+*  \param[in]  target Nodes
+*  \date       2017-09-30
+*/
+template <unsigned int dim>
+void ComposeEvaluator<dim>::setQuery(const std::vector<Vector<dim>> &targets) {
+    for (auto &evaluator : m_evaluators)
+        evaluator->setQuery(targets);
 }
 
 } /* namespace ippp */
