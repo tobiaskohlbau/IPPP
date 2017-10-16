@@ -17,7 +17,7 @@
 
 #include <modelDirectory.h>
 #include <ui/BenchmarkReader.h>
-#include <ui/ModuleCreator.hpp>
+#include <ui/ModuleConfigurator.hpp>
 #include <ui/Writer.hpp>
 
 using namespace ippp;
@@ -54,10 +54,10 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(environment));
     std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(environment));
 
-    ModuleCreator<dim> creator;
+    ModuleConfigurator<dim> creator;
     creator.setCollisionType(CollisionType::PQP);
     creator.setEnvironment(environment);
-    ModuleCreator<dim> creatorBenchmark;
+    ModuleConfigurator<dim> creatorBenchmark;
     creatorBenchmark.setCollisionType(CollisionType::PQP);
     creatorBenchmark.setEnvironment(environment);
 
@@ -137,19 +137,18 @@ void benchmarkHedgehog() {
 }
 
 void generateMap() {
-    const unsigned int dim = 3;
-    Vector3 min(0,0,0);
-    Vector3 max(1000,1000,1000);
+    const unsigned int dim = 2;
+    Vector2 min(0,0);
+    Vector2 max(1000,1000);
     std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(min, max));
 
     MapGenerator<dim> mapGenerator(min, max, sampler);
-    auto meshes = mapGenerator.generateMap(400, Vector3(50, 50, 50));
+    auto meshes = mapGenerator.generateMap(400, Vector2(50, 50));
     auto mesh = cad::mergeMeshes(meshes);
     cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
 
-    for (size_t i = 0; i < meshes.size(); ++i) {
+    for (size_t i = 0; i < meshes.size(); ++i)
         cad::exportCad(cad::ExportFormat::OBJ, "obstacle" + std::to_string(i), meshes[i]);
-    }
 }
 
 int main(int argc, char** argv) {

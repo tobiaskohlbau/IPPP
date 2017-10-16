@@ -9,7 +9,7 @@
 
 #include <modelDirectory.h>
 #include <ui/Drawing2D.hpp>
-#include <ui/ModuleCreator.hpp>
+#include <ui/ModuleConfigurator.hpp>
 #include <ui/Writer.hpp>
 
 using namespace ippp;
@@ -30,7 +30,7 @@ void testTriangleRobot() {
     environment->addObstacles(workspace);
 
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionTriangleRobot<dim>(environment));
-    ModuleCreator<dim> creator;
+    ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setCollisionType(CollisionType::Dim2Triangle);
     creator.setEvaluatorType(EvaluatorType::Query);
@@ -92,25 +92,30 @@ void testPointRobot() {
     auto workspace = factory.createModels(getModelDirectory() + "/spaces/random2D.obj");
     environment->addObstacles(workspace);
 
-    ModuleCreator<dim> creator;
+    ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setCollisionType(CollisionType::Dim2);
-    creator.setEvaluatorType(EvaluatorType::Query);
-    creator.setEvaluatorProperties(10, 10);
+    creator.setGraphSortCount(3000);
+    creator.setEvaluatorType(EvaluatorType::QueryOrTime);
+    creator.setEvaluatorProperties(50, 60);
     creator.setSamplingType(SamplingType::NearObstacle);
+    creator.setSamplingProperties(10, 80);
+    creator.setMetricWeightVec(Vector2(1.1, 1.1));
+    creator.saveConfig("test.json");
+    creator.loadConfig("test.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    //    planner = std::shared_ptr<EST<dim>>(new EST<dim>(environment, creator.getPlannerOptions(), creator.getGraph()));
-    //    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(20), creator.getGraph()));
+    // planner = std::shared_ptr<EST<dim>>(new EST<dim>(environment, creator.getPlannerOptions(), creator.getGraph()));
+    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(20), creator.getGraph()));
     planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(35), creator.getGraph()));
-    //    planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
-    //    planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
+    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
+    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(10.0, 10.0);
     Vector2 goal(990.0, 990.0);
-    bool connected = planner->computePath(start, goal, 800, 3);
+    bool connected = planner->computePath(start, goal, 500, 3);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
@@ -123,12 +128,12 @@ void testPointRobot() {
     cv::Mat image = drawing::eigenToCV(workspace2D);
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
-    drawing::drawGraph2D(nodes, image, Eigen::Vector3i(125, 125, 125), Eigen::Vector3i(125, 125, 125), 1);
-    drawing::drawTree2D(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(0, 0, 0), 1);
+    drawing::drawGraph2D(nodes, image, Eigen::Vector3i(125, 125, 200), Eigen::Vector3i(125, 125, 200), 1);
+    drawing::drawTree2D(nodes, image, Eigen::Vector3i(0, 0, 255), Eigen::Vector3i(125, 125, 200), 1);
 
     if (connected) {
         std::vector<Vector2> pathPoints = planner->getPath();
-        drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 3);
+        drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 2);
         writer::writeVecsToFile<2>(pathPoints, "test.txt", 1);
     }
 

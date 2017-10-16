@@ -8,7 +8,7 @@
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
 
-#include <ui/ModuleCreator.hpp>
+#include <ui/ModuleConfigurator.hpp>
 #include <ui/Writer.hpp>
 
 using namespace ippp;
@@ -26,7 +26,7 @@ void simpleRRT() {
 
     robot->saveMeshConfig(util::Vecd(0, 0, 0, 0, 0, 0));
 
-    ModuleCreator<dim> creator;
+    ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setCollisionType(CollisionType::PQP);
 
@@ -70,10 +70,10 @@ void treeConnection() {
     // environment->addObstacle(obstacleModel);
 
     // create two trees from init and from goal
-    ModuleCreator<dim> creator1;
+    ModuleConfigurator<dim> creator1;
     creator1.setEnvironment(environment);
     creator1.setCollisionType(CollisionType::PQP);
-    ModuleCreator<dim> creator2;
+    ModuleConfigurator<dim> creator2;
     creator2.setEnvironment(environment);
     creator2.setCollisionType(CollisionType::PQP);
 

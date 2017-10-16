@@ -16,12 +16,12 @@
 #
 #-------------------------------------------------------------------------//
 
-find_package(Boost COMPONENTS filesystem system REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS}
+include_directories(
         ${CMAKE_SOURCE_DIR}/examples)
 
 set(source
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../ui/ModuleCreator.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/../ui/ModuleConfigurator.hpp
+		${CMAKE_SOURCE_DIR}/examples/ui/Configurator.cpp)
 
 ADD_IPPP_EXAMPLE(GettingStarted "${source}" "${ADDITIONAL_LIBRARIES}")

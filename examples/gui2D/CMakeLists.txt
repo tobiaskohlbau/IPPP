@@ -16,7 +16,6 @@
 #
 #-------------------------------------------------------------------------//
 
-find_package(Boost COMPONENTS system REQUIRED)
 find_package(OpenCV REQUIRED)
 if (OpenCV_VERSION VERSION_LESS "2.4.0")
     message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
@@ -30,8 +29,6 @@ endif()
 #find_package(Qt5Core)
 #find_package(Qt5Gui)
 #add_definitions(${QT_DEFINITIONS})
-
-include_directories(${Boost_INCLUDE_DIRS})
 
 #QT5_WRAP_UI(UIS_HDRS
 #        ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.ui)

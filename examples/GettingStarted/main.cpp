@@ -5,7 +5,7 @@
 #include <ippp/Planner.h>
 
 #include <modelDirectory.h>
-#include <ui/ModuleCreator.hpp>
+#include <ui/ModuleConfigurator.hpp>
 
 // set namespace of the motion planner lib
 using namespace ippp;
@@ -36,8 +36,8 @@ int main(int argc, char** argv) {
 
     // define step size of the trajectories and create trajectory planner
     double stepSize = 3;
-    // create all required core modules with the ModuleCreator
-    ModuleCreator<dim> creator;
+    // create all required core modules with the ModuleConfigurator
+    ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setCollisionType(CollisionType::PQP);
     creator.setMetricType(MetricType::L2);

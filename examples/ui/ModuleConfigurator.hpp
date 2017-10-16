@@ -16,15 +16,15 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef MODULECREATOR_HPP
-#define MODULECREATOR_HPP
+#ifndef MODULECONFIGURATOR_HPP
+#define MODULECONFIGURATOR_HPP
 
 #include <fstream>
 #include <type_traits>
 #include <vector>
 
+#include <ui/Configurator.h>
 #include <ippp/Core.h>
-#include <ippp/Environment.h>
 #include <ippp/Planner.h>
 
 namespace ippp {
@@ -46,15 +46,17 @@ enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, 
 enum class TrajectoryType { Linear, RotateAtS };
 
 /*!
-* \brief   Class ModuleCreator generates all defined modules for the path planner and creates the graph for the planner too. By a
-* method it returns the options for the planner.
+* \brief   Class ModuleConfigurator generates all defined modules for the path planner and creates the graph for the planner too.
+* By a method it returns the options for the planner.
 * \author  Sascha Kaden
 * \date    2017-05-22
 */
 template <unsigned int dim>
-class ModuleCreator : public Identifier {
+class ModuleConfigurator : public Configurator {
   public:
-    ModuleCreator();
+    ModuleConfigurator();
+    bool saveConfig(const std::string &filePath);
+    bool loadConfig(const std::string &filePath);
 
     std::shared_ptr<Environment> getEnvironment();
     std::shared_ptr<CollisionDetection<dim>> getCollisionDetection();
@@ -124,12 +126,12 @@ class ModuleCreator : public Identifier {
 };
 
 /*!
-*  \brief      Constructor of the class ModuleCreator
+*  \brief      Constructor of the class ModuleConfigurator
 *  \author     Sascha Kaden
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-ModuleCreator<dim>::ModuleCreator() : Identifier("ModuleCreator") {
+ModuleConfigurator<dim>::ModuleConfigurator() : Configurator("ModuleConfigurator") {
 }
 
 /*!
@@ -138,7 +140,7 @@ ModuleCreator<dim>::ModuleCreator() : Identifier("ModuleCreator") {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::initializeModules() {
+void ModuleConfigurator<dim>::initializeModules() {
     if (!m_environment) {
         Logging::error("Environment not set!", this);
         return;
@@ -237,6 +239,59 @@ void ModuleCreator<dim>::initializeModules() {
             std::shared_ptr<Sampling<dim>>(new StraightSampling<dim>(m_environment, m_collision, m_trajectory, m_sampler));
 }
 
+template <unsigned int dim>
+bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
+    // types
+    nlohmann::json json;
+    json["CollisionType"] = static_cast<int>(m_collisionType);
+    json["MetricType"] = static_cast<int>(m_metricType);
+    json["MetricWeight"] = vectorToString<dim>(m_metricWeight);
+    json["EvaluatorType"] = static_cast<int>(m_evaluatorType);
+    json["QueryEvaluatorDist"] = m_queryEvaluatorDist;
+    json["EvaluatorDuration"] = m_evaluatorDuration;
+    json["GraphSortCount"] = m_graphSortCount;
+    json["NeighborType"] = static_cast<int>(m_neighborType);
+    json["PathModifierType"] = static_cast<int>(m_pathModifierType);
+    json["SamplerType"] = static_cast<int>(m_samplerType);
+    json["SamplingType"] = static_cast<int>(m_samplingType);
+    json["SamplingAttempts"] = m_samplingAttempts;
+    json["SamplingDist"] = m_samplingDist;
+    json["MedialAxisDirs"] = m_medialAxisDirs;
+    json["TrajectoryType"] = static_cast<int>(m_trajectoryType);
+    json["PosRes"] = m_posRes;
+    json["OriRes"] = m_oriRes;
+
+    return saveJson(filePath, json);
+}
+
+template <unsigned int dim>
+bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
+    // types
+    nlohmann::json json = loadJson(filePath);
+    if (json.empty())
+        return false;
+
+    m_collisionType = static_cast<CollisionType>(json["CollisionType"].get<int>());
+    m_metricType = static_cast<MetricType>(json["MetricType"].get<int>());
+    m_metricWeight = stringToVector<dim>(json["MetricWeight"].get<std::string>());
+    m_evaluatorType = static_cast<EvaluatorType>(json["EvaluatorType"].get<int>());
+    m_queryEvaluatorDist = json["QueryEvaluatorDist"].get<double>();
+    m_evaluatorDuration = json["EvaluatorDuration"].get<size_t>();
+    m_graphSortCount = json["GraphSortCount"].get<size_t>();
+    m_neighborType = static_cast<NeighborType>(json["NeighborType"].get<int>());
+    m_pathModifierType = static_cast<PathModifierType>(json["PathModifierType"].get<int>());
+    m_samplerType = static_cast<SamplerType>(json["SamplerType"].get<int>());
+    m_samplingType = static_cast<SamplingType>(json["SamplingType"].get<int>());
+    m_samplingAttempts = json["SamplingAttempts"].get<size_t>();
+    m_samplingDist = json["SamplingDist"].get<double>();
+    m_medialAxisDirs = json["MedialAxisDirs"].get<size_t>();
+    m_trajectoryType = static_cast<TrajectoryType>(json["TrajectoryType"].get<int>());
+    m_posRes = json["PosRes"].get<double>();
+    m_posRes = json["OriRes"].get<double>();
+
+    return true;
+}
+
 /*!
 *  \brief      Sets the Environment
 *  \author     Sascha Kaden
@@ -244,7 +299,7 @@ void ModuleCreator<dim>::initializeModules() {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setEnvironment(const std::shared_ptr<Environment> &environment) {
+void ModuleConfigurator<dim>::setEnvironment(const std::shared_ptr<Environment> &environment) {
     m_environment = environment;
     m_parameterModified = true;
 }
@@ -256,7 +311,7 @@ void ModuleCreator<dim>::setEnvironment(const std::shared_ptr<Environment> &envi
 *  \date       2017-10-06
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setCollisionType(const CollisionType type) {
+void ModuleConfigurator<dim>::setCollisionType(const CollisionType type) {
     m_collisionType = type;
     m_parameterModified = true;
 }
@@ -268,7 +323,7 @@ void ModuleCreator<dim>::setCollisionType(const CollisionType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setMetricType(const MetricType type) {
+void ModuleConfigurator<dim>::setMetricType(const MetricType type) {
     m_metricType = type;
     m_parameterModified = true;
 }
@@ -280,7 +335,7 @@ void ModuleCreator<dim>::setMetricType(const MetricType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setMetricWeightVec(const Vector<dim> vector) {
+void ModuleConfigurator<dim>::setMetricWeightVec(const Vector<dim> vector) {
     m_metricWeight = vector;
     m_parameterModified = true;
 }
@@ -292,7 +347,7 @@ void ModuleCreator<dim>::setMetricWeightVec(const Vector<dim> vector) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setEvaluatorType(const EvaluatorType type) {
+void ModuleConfigurator<dim>::setEvaluatorType(const EvaluatorType type) {
     m_evaluatorType = type;
     m_parameterModified = true;
 }
@@ -304,7 +359,7 @@ void ModuleCreator<dim>::setEvaluatorType(const EvaluatorType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setEvaluatorProperties(const double queryEvaluatorDist, const size_t duration) {
+void ModuleConfigurator<dim>::setEvaluatorProperties(const double queryEvaluatorDist, const size_t duration) {
     m_queryEvaluatorDist = queryEvaluatorDist;
     m_evaluatorDuration = duration;
     m_parameterModified = true;
@@ -317,7 +372,7 @@ void ModuleCreator<dim>::setEvaluatorProperties(const double queryEvaluatorDist,
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setGraphSortCount(const size_t count) {
+void ModuleConfigurator<dim>::setGraphSortCount(const size_t count) {
     m_graphSortCount = count;
     m_parameterModified = true;
 }
@@ -329,7 +384,7 @@ void ModuleCreator<dim>::setGraphSortCount(const size_t count) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setNeighborFinderType(const NeighborType type) {
+void ModuleConfigurator<dim>::setNeighborFinderType(const NeighborType type) {
     m_neighborType = type;
     m_parameterModified = true;
 }
@@ -341,7 +396,7 @@ void ModuleCreator<dim>::setNeighborFinderType(const NeighborType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setPathModifierType(const PathModifierType type) {
+void ModuleConfigurator<dim>::setPathModifierType(const PathModifierType type) {
     m_pathModifierType = type;
     m_parameterModified = true;
 }
@@ -353,7 +408,7 @@ void ModuleCreator<dim>::setPathModifierType(const PathModifierType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setSamplerType(const SamplerType type) {
+void ModuleConfigurator<dim>::setSamplerType(const SamplerType type) {
     m_samplerType = type;
     m_parameterModified = true;
 }
@@ -365,7 +420,7 @@ void ModuleCreator<dim>::setSamplerType(const SamplerType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setSamplingType(const SamplingType type) {
+void ModuleConfigurator<dim>::setSamplingType(const SamplingType type) {
     m_samplingType = type;
     m_parameterModified = true;
 }
@@ -378,8 +433,8 @@ void ModuleCreator<dim>::setSamplingType(const SamplingType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setSamplingProperties(const size_t samplingAttempts, const double samplingDist,
-                                               const size_t medialAxisDirs) {
+void ModuleConfigurator<dim>::setSamplingProperties(const size_t samplingAttempts, const double samplingDist,
+                                                    const size_t medialAxisDirs) {
     m_samplingAttempts = samplingAttempts;
     m_samplingDist = samplingDist;
     m_medialAxisDirs = medialAxisDirs;
@@ -393,7 +448,7 @@ void ModuleCreator<dim>::setSamplingProperties(const size_t samplingAttempts, co
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setTrajectoryType(const TrajectoryType type) {
+void ModuleConfigurator<dim>::setTrajectoryType(const TrajectoryType type) {
     m_trajectoryType = type;
     m_parameterModified = true;
 }
@@ -405,7 +460,7 @@ void ModuleCreator<dim>::setTrajectoryType(const TrajectoryType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleCreator<dim>::setTrajectoryProperties(const double posRes, const double oriRes) {
+void ModuleConfigurator<dim>::setTrajectoryProperties(const double posRes, const double oriRes) {
     if (posRes <= 0) {
         m_posRes = 1;
         Logging::warning("Position resolution has to be larger than 0, it was set to 1!", this);
@@ -428,7 +483,7 @@ void ModuleCreator<dim>::setTrajectoryProperties(const double posRes, const doub
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<Environment> ModuleCreator<dim>::getEnvironment() {
+std::shared_ptr<Environment> ModuleConfigurator<dim>::getEnvironment() {
     return m_environment;
 }
 
@@ -439,7 +494,7 @@ std::shared_ptr<Environment> ModuleCreator<dim>::getEnvironment() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<CollisionDetection<dim>> ModuleCreator<dim>::getCollisionDetection() {
+std::shared_ptr<CollisionDetection<dim>> ModuleConfigurator<dim>::getCollisionDetection() {
     initializeModules();
     return m_collision;
 }
@@ -451,7 +506,7 @@ std::shared_ptr<CollisionDetection<dim>> ModuleCreator<dim>::getCollisionDetecti
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<DistanceMetric<dim>> ModuleCreator<dim>::getDistanceMetric() {
+std::shared_ptr<DistanceMetric<dim>> ModuleConfigurator<dim>::getDistanceMetric() {
     initializeModules();
     return m_metric;
 }
@@ -463,7 +518,7 @@ std::shared_ptr<DistanceMetric<dim>> ModuleCreator<dim>::getDistanceMetric() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<Evaluator<dim>> ModuleCreator<dim>::getEvaluator() {
+std::shared_ptr<Evaluator<dim>> ModuleConfigurator<dim>::getEvaluator() {
     initializeModules();
     return m_evaluator;
 }
@@ -475,7 +530,7 @@ std::shared_ptr<Evaluator<dim>> ModuleCreator<dim>::getEvaluator() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> ModuleCreator<dim>::getNeighborFinder() {
+std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> ModuleConfigurator<dim>::getNeighborFinder() {
     initializeModules();
     return m_neighborFinder;
 }
@@ -487,7 +542,7 @@ std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> ModuleCreator<d
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<Graph<dim>> ModuleCreator<dim>::getGraph() {
+std::shared_ptr<Graph<dim>> ModuleConfigurator<dim>::getGraph() {
     initializeModules();
     return m_graph;
 }
@@ -499,7 +554,7 @@ std::shared_ptr<Graph<dim>> ModuleCreator<dim>::getGraph() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<PathModifier<dim>> ModuleCreator<dim>::getPathModifier() {
+std::shared_ptr<PathModifier<dim>> ModuleConfigurator<dim>::getPathModifier() {
     initializeModules();
     return m_pathModifier;
 }
@@ -511,7 +566,7 @@ std::shared_ptr<PathModifier<dim>> ModuleCreator<dim>::getPathModifier() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<Sampler<dim>> ModuleCreator<dim>::getSampler() {
+std::shared_ptr<Sampler<dim>> ModuleConfigurator<dim>::getSampler() {
     initializeModules();
     return m_sampler;
 }
@@ -523,7 +578,7 @@ std::shared_ptr<Sampler<dim>> ModuleCreator<dim>::getSampler() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<Sampling<dim>> ModuleCreator<dim>::getSampling() {
+std::shared_ptr<Sampling<dim>> ModuleConfigurator<dim>::getSampling() {
     initializeModules();
     return m_sampling;
 }
@@ -535,7 +590,7 @@ std::shared_ptr<Sampling<dim>> ModuleCreator<dim>::getSampling() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<TrajectoryPlanner<dim>> ModuleCreator<dim>::getTrajectoryPlanner() {
+std::shared_ptr<TrajectoryPlanner<dim>> ModuleConfigurator<dim>::getTrajectoryPlanner() {
     initializeModules();
     return m_trajectory;
 }
@@ -547,7 +602,7 @@ std::shared_ptr<TrajectoryPlanner<dim>> ModuleCreator<dim>::getTrajectoryPlanner
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-PlannerOptions<dim> ModuleCreator<dim>::getPlannerOptions() {
+PlannerOptions<dim> ModuleConfigurator<dim>::getPlannerOptions() {
     initializeModules();
     return PlannerOptions<dim>(m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
@@ -560,7 +615,7 @@ PlannerOptions<dim> ModuleCreator<dim>::getPlannerOptions() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const double rangeSize) {
+PRMOptions<dim> ModuleConfigurator<dim>::getPRMOptions(const double rangeSize) {
     initializeModules();
     return PRMOptions<dim>(rangeSize, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
@@ -573,7 +628,7 @@ PRMOptions<dim> ModuleCreator<dim>::getPRMOptions(const double rangeSize) {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-RRTOptions<dim> ModuleCreator<dim>::getRRTOptions(const double stepSize) {
+RRTOptions<dim> ModuleConfigurator<dim>::getRRTOptions(const double stepSize) {
     initializeModules();
     return RRTOptions<dim>(stepSize, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
@@ -586,11 +641,11 @@ RRTOptions<dim> ModuleCreator<dim>::getRRTOptions(const double stepSize) {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-SRTOptions<dim> ModuleCreator<dim>::getSRTOptions(const unsigned int nbOfTrees) {
+SRTOptions<dim> ModuleConfigurator<dim>::getSRTOptions(const unsigned int nbOfTrees) {
     initializeModules();
     return SRTOptions<dim>(nbOfTrees, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 } /* namespace ippp */
 
-#endif    // MODULECREATOR_HPP
+#endif    // MODULECONFIGURATOR_HPP

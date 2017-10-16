@@ -19,18 +19,10 @@
 set(CMAKE_C_FLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -Wno-write-strings")
 
 set(source
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp
-    ${CMAKE_SOURCE_DIR}/examples/ui/ModuleCreator.hpp)
-
-    #${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApi.h
-    #${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApiPlatform.h
-    #${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApiInternal.h
-    #${CMAKE_SOURCE_DIR}/examples/ui/vrep/v_repConst.h
-    #${CMAKE_SOURCE_DIR}/examples/ui/vrep/Helper.h
-    #${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApi.c
-    #${CMAKE_SOURCE_DIR}/examples/ui/vrep/extApiPlatform.c
-    #${CMAKE_SOURCE_DIR}/examples/ui/vrep/Helper.cpp)
+		${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+		${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp
+		${CMAKE_SOURCE_DIR}/examples/ui/ModuleConfigurator.hpp
+		${CMAKE_SOURCE_DIR}/examples/ui/Configurator.cpp)
 
 ADD_IPPP_EXAMPLE(JacoRRT "${source}" "")
 

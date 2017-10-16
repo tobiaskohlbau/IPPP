@@ -16,19 +16,14 @@
 #
 #-------------------------------------------------------------------------//
 
-find_package(Boost COMPONENTS filesystem system REQUIRED)
 include_directories(${CMAKE_SOURCE_DIR}/examples)
-        #/usr/include)
 
 set(source
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_SOURCE_DIR}/examples/ui/ModuleCreator.hpp
+        ${CMAKE_SOURCE_DIR}/examples/ui/ModuleConfigurator.hpp
+		${CMAKE_SOURCE_DIR}/examples/ui/Configurator.cpp
         ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp
         ${CMAKE_SOURCE_DIR}/examples/ui/BenchmarkReader.h
         ${CMAKE_SOURCE_DIR}/examples/ui/BenchmarkReader.cpp)
-
-#set(ADDITIONAL_LIBRARIES profiler tcmalloc)
-
-#link_directories(/usr/lib)
 
 ADD_IPPP_EXAMPLE(ParasolBenchmarks "${source}" "${ADDITIONAL_LIBRARIES}")
