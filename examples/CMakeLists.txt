@@ -16,6 +16,8 @@
 #
 #-------------------------------------------------------------------------//
 
+find_package(nlohmann-json REQUIRED)
+
 SET(LIBRARIES
         IPPP
         ${PQP_LIBRARIES}
@@ -26,7 +28,11 @@ IF (${BUILD_FCL})
 ENDIF()
 
 MACRO(ADD_IPPP_EXAMPLE ex_name sources ADDITIONAL_LIBRARIES)
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/examples ${CMAKE_CURRENT_SOURCE_DIR})
+    INCLUDE_DIRECTORIES(
+		${CMAKE_SOURCE_DIR}/include 
+		${CMAKE_SOURCE_DIR}/examples
+		${CMAKE_CURRENT_SOURCE_DIR}
+		${NLOHMANN_JSON_INCLUDE_DIR})
     ADD_EXECUTABLE(${ex_name} ${sources})
     TARGET_LINK_LIBRARIES(${ex_name} ${LIBRARIES} ${ADDITIONAL_LIBRARIES})
 ENDMACRO()
