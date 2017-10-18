@@ -43,7 +43,6 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<dim> {
     bool checkTriangleRobot(const Vector<dim> &config);
     bool lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b, const Vector3 c);
 
-    Eigen::MatrixXi m_workspace2D;
     std::vector<Triangle2D> m_triangles;
     std::shared_ptr<ModelContainer> m_robotModel;
     AABB m_workspaceBounding;
@@ -70,9 +69,6 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
     // set boundaries
     m_workspaceBounding = m_environment->getBoundary();
     m_robotBounding = std::make_pair(robot->getMinBoundary(), robot->getMaxBoundary());
-
-    // create workspace from the 2d triangles
-    m_workspace2D = cad::create2dspace(m_environment->getBoundary(), 255);
 
     if (m_environment->getObstacleNum() == 0) {
         Logging::warning("Empty workspace", this);
@@ -143,19 +139,25 @@ bool CollisionDetectionTriangleRobot<dim>::checkPoint2D(double x, double y) {
         return true;
     }
 
-    double s, t, area;
-    Vector3 p0, p1, p2;
+    double alpha, beta, gamma;
+    Vector3 p1, p2, p3;
     for (auto &obstacle : m_obstacles) {
+        // check bounding box to point
+        if (obstacle.aabb.exteriorDistance(Vector3(x, y, 0)) != 0)
+            continue;
+
         // check if point is in triangle
         for (auto &face : obstacle.faces) {
-            p0 = obstacle.vertices[face[0]];
-            p1 = obstacle.vertices[face[1]];
-            p2 = obstacle.vertices[face[2]];
-            area = std::abs(0.5 * (-p1[1] * p2[0] + p0[1] * (-p1[0] + p2[0]) + p0[0] * (p1[1] - p2[1]) + p1[0] * p2[1]));
-            s = 1 / (2 * area) * (p0[1] * p2[0] - p0[0] * p2[1] + (p2[1] - p0[1]) * x + (p0[0] - p2[0]) * y);
-            t = 1 / (2 * area) * (p0[0] * p1[1] - p0[1] * p1[0] + (p0[1] - p1[1]) * x + (p1[0] - p0[0]) * y);
+            p1 = obstacle.vertices[face[0]];
+            p2 = obstacle.vertices[face[1]];
+            p3 = obstacle.vertices[face[2]];
+            alpha = ((p2[1] - p3[1]) * (x - p3[0]) + (p3[0] - p2[0]) * (y - p3[1])) /
+                    ((p2[1] - p3[1]) * (p1[0] - p3[0]) + (p3[0] - p2[0]) * (p1[1] - p3[1]));
+            beta = ((p3[1] - p1[1]) * (x - p3[0]) + (p1[0] - p3[0]) * (y - p3[1])) /
+                   ((p2[1] - p3[1]) * (p1[0] - p3[0]) + (p3[0] - p2[0]) * (p1[1] - p3[1]));
+            gamma = 1.0f - alpha - beta;
 
-            if (s > 0 && t > 0 && 1 - s - t > 0)
+            if (alpha > 0 && beta > 0 && gamma > 0)
                 return true;
         }
     }
