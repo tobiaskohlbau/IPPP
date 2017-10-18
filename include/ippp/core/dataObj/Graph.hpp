@@ -157,7 +157,7 @@ void Graph<dim>::addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &node
 template <unsigned int dim>
 bool Graph<dim>::containNode(const std::shared_ptr<Node<dim>> &node) {
     auto nearestNode = m_neighborFinder->searchNearestNeighbor(node->getValues());
-    if (util::equal<dim>(nearestNode->getValues(), node->getValues()))
+    if (node == nearestNode)
         return true;
 }
 
@@ -186,7 +186,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNode(const size_t index) const {
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const {
     auto nearestNode = m_neighborFinder->searchNearestNeighbor(config);
-    if (nearestNode && util::equal<dim>(nearestNode->getValues(), config))
+    if (nearestNode && nearestNode->getValues().isApprox(config, 0.00001))
         return nearestNode;
     else
         return nullptr;

@@ -18,6 +18,7 @@
 
 #include <include/ippp/environment/cad/CadProcessing.h>
 
+#include <numeric>
 #include <fstream>
 #include <iostream>
 
@@ -99,11 +100,8 @@ Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
 *  \date       2017-10-07
 */
 Vector3 getCenterOfMesh(const Mesh &mesh) {
-    Vector3 sum(0, 0, 0);
-    for (auto &vertex : mesh.vertices)
-        sum += vertex;
-
-    return sum / mesh.vertices.size();
+    Vector3 zero(0, 0, 0);
+    return std::accumulate(mesh.vertices.begin(), mesh.vertices.end(), zero) / mesh.vertices.size();
 }
 
 /*!
