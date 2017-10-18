@@ -96,25 +96,21 @@ static void drawPath2D(const std::vector<Vector2> configs, cv::Mat &image, Eigen
 *  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
-static void drawTrianglePath(std::vector<Vector3> configs, std::vector<Triangle2D> triangles, cv::Mat &image,
+static void drawTrianglePath(std::vector<Vector3> configs, Mesh mesh, cv::Mat &image,
                              Eigen::Vector3i colorPoint, int thickness) {
     if (configs.empty())
         return;
 
     Logging::info("start drawing of triangles", "Drawing2D");
 
-    Matrix2 R;
-    Vector2 t;
-    cv::Point2i pt1, pt2, pt3;
-    Triangle2D triangle;
-    for (auto config : configs) {
-        for (int i = 0; i < triangles.size(); ++i) {
-            triangle = triangles[i];
-            util::poseVecToRandT(config, R, t);
-            triangle.transform(R, t);
-            pt1 = cv::Point2i(triangle.getP(1)[0], triangle.getP(1)[1]);
-            pt2 = cv::Point2i(triangle.getP(2)[0], triangle.getP(2)[1]);
-            pt3 = cv::Point2i(triangle.getP(3)[0], triangle.getP(3)[1]);
+    for (auto &config : configs) {
+        auto tempMesh = mesh;
+        auto T = util::poseVecToRandT(config);
+        cad::transformVertices(util::createT(T.first, T.second), tempMesh.vertices);
+        for (auto &face : tempMesh.faces) {
+            auto pt1 = cv::Point2i(static_cast<int>(tempMesh.vertices[face[0]][0]), static_cast<int>(tempMesh.vertices[face[0]][1]));
+            auto pt2 = cv::Point2i(static_cast<int>(tempMesh.vertices[face[1]][0]), static_cast<int>(tempMesh.vertices[face[1]][1]));
+            auto pt3 = cv::Point2i(static_cast<int>(tempMesh.vertices[face[2]][0]), static_cast<int>(tempMesh.vertices[face[2]][1]));
             cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
             cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
             cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
