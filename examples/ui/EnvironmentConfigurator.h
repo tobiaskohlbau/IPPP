@@ -25,30 +25,44 @@
 #include <ui/Configurator.h>
 
 #include <ippp/Environment.h>
+#include <ippp/core/types.h>
 
 namespace ippp {
+
+enum class FactoryType { ModelFCL, ModelPQP, ModelTriangle2D };
+
+enum class RobotType { Jaco, Kuka, Point, Triangle2D, Serial, Mobile };
 
 /*!
 * \brief   Class EnvironmentConfigurator constructs the environment of the planner
 * \author  Sascha Kaden
 * \date    2017-10-16
 */
-template <unsigned int dim>
 class EnvironmentConfigurator : public Configurator {
   public:
     EnvironmentConfigurator();
+    bool saveConfig(const std::string &filePath);
+    bool loadConfig(const std::string &filePath);
 
-  private:
+    void setWorkspaceProperties(const unsigned int workspaceDim, const AABB &workspaceBounding);
+    void setObstaclePaths(const std::vector<std::string> &obstaclePaths);
+    void addObstaclePath(const std::string &obstaclePath);
+    void setFactoryType(const FactoryType factoryType);
+    void setRobotType(const RobotType robotType, const std::string &robotFile = "");
+
+    std::shared_ptr<Environment> getEnvironment();
+
+  protected:
+    std::shared_ptr<Environment> m_environment = nullptr;
+    std::shared_ptr<RobotBase> m_robot = nullptr;
+
+    std::vector<std::string> m_obstaclePaths;
+    unsigned int m_workspaceDim = 3;
+    AABB m_workspceBounding;
+    FactoryType m_factoryType = FactoryType::ModelTriangle2D;
+    RobotType m_robotType = RobotType::Point;
+    std::string m_robotFile;
 };
-
-/*!
-*  \brief      Constructor of the class EnvironmentConfigurator
-*  \author     Sascha Kaden
-*  \date       2017-10-16
-*/
-template <unsigned int dim>
-EnvironmentConfigurator<dim>::EnvironmentConfigurator() : Configurator("EnvironmentConfigurator") {
-}
 
 } /* namespace ippp */
 
