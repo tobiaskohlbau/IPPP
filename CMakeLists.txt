@@ -35,10 +35,6 @@ find_package(Eigen3 REQUIRED)
 find_package(PQP REQUIRED)
 find_package(Threads REQUIRED)
 
-include_directories(${CMAKE_SOURCE_DIR}/include
-        ${ASSIMP_INCLUDE_DIR}
-        ${EIGEN3_INCLUDE_DIR}
-        ${PQP_INCLUDE_DIR})
 SET(LIBRARIES
         ${PQP_LIBRARIES}
         ${ASSIMP_LIBRARIES})
@@ -68,8 +64,14 @@ if (UNIX)
     LIST(APPEND LIBRARIES pthread)
 endif()
 
-add_library(${PROJECT_NAME} STATIC ${SRCS})
+add_library(${PROJECT_NAME} ${SRCS})
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC
+        ${CMAKE_SOURCE_DIR}/include
+        ${ASSIMP_INCLUDE_DIR}
+        ${EIGEN3_INCLUDE_DIR}
+        ${PQP_INCLUDE_DIR})
+
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
 install(DIRECTORY ${EIGEN3_INCLUDE_DIR}/Eigen/ DESTINATION Eigen)
 install(DIRECTORY ${PQP_INCLUDE_DIR}/ DESTINATION PQP)

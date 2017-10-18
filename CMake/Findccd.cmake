@@ -16,20 +16,14 @@ find_package(PkgConfig QUIET)
 # Check to see if pkgconfig is installed.
 pkg_check_modules(PC_CCD ccd QUIET)
 
-# Include directories
 find_path(CCD_INCLUDE_DIRS
         NAMES ccd/ccd.h
         HINTS ${PC_CCD_INCLUDEDIR}
         PATHS "${CMAKE_INSTALL_PREFIX}/include")
 
-# Libraries
-if(MSVC)
-    set(CCD_LIBRARIES optimized ccd debug ccdd)
-else()
     find_library(CCD_LIBRARIES
             NAMES ccd
             HINTS ${PC_CCD_LIBDIR})
-endif()
 
 # Version
 set(CCD_VERSION ${PC_CCD_VERSION})

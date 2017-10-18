@@ -16,7 +16,7 @@
 #
 #-------------------------------------------------------------------------//
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV REQUIRED QUIET)
 if (OpenCV_VERSION VERSION_LESS "2.4.0")
     message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
 elseif(OpenCV_VERSION VERSION_LESS "3.0.0")

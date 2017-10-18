@@ -23,13 +23,9 @@ find_path(FCL_INCLUDE_DIRS
         PATHS "${CMAKE_INSTALL_PREFIX}/include")
 
 # Libraries
-if(MSVC)
-    set(FCL_LIBRARIES optimized fcl debug fcld)
-else()
-    find_library(FCL_LIBRARIES
-            NAMES fcl
-            HINTS ${PC_FCL_LIBDIR})
-endif()
+find_library(FCL_LIBRARIES
+        NAMES fcl
+        HINTS ${PC_FCL_LIBDIR})
 
 # Version
 set(FCL_VERSION ${PC_FCL_VERSION})

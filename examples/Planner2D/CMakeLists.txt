@@ -21,9 +21,10 @@ set(source
     ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp
     ${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp
     ${CMAKE_SOURCE_DIR}/examples/ui/ModuleConfigurator.hpp
-	${CMAKE_SOURCE_DIR}/examples/ui/Configurator.cpp)
+	${CMAKE_SOURCE_DIR}/examples/ui/Configurator.cpp
+	${CMAKE_SOURCE_DIR}/examples/ui/EnvironmentConfigurator.cpp)
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV REQUIRED QUIET)
 if (OpenCV_VERSION VERSION_LESS "2.4.0")
     message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
 elseif(OpenCV_VERSION VERSION_LESS "3.0.0")

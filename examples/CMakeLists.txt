@@ -27,14 +27,13 @@ IF (${BUILD_FCL})
     LIST(APPEND LIBRARIES ${FCL_LIBRARIES})
 ENDIF()
 
-MACRO(ADD_IPPP_EXAMPLE ex_name sources ADDITIONAL_LIBRARIES)
-    INCLUDE_DIRECTORIES(
-		${CMAKE_SOURCE_DIR}/include 
-		${CMAKE_SOURCE_DIR}/examples
-		${CMAKE_CURRENT_SOURCE_DIR}
-		${NLOHMANN_JSON_INCLUDE_DIR})
-    ADD_EXECUTABLE(${ex_name} ${sources})
-    TARGET_LINK_LIBRARIES(${ex_name} ${LIBRARIES} ${ADDITIONAL_LIBRARIES})
+MACRO(ADD_IPPP_EXAMPLE name source ADDITIONAL_LIBRARIES)
+    ADD_EXECUTABLE(${name} ${source})
+    TARGET_LINK_LIBRARIES(${name} ${LIBRARIES} ${ADDITIONAL_LIBRARIES})
+    TARGET_INCLUDE_DIRECTORIES(${name} PUBLIC
+        ${CMAKE_SOURCE_DIR}/examples
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${NLOHMANN_JSON_INCLUDE_DIR})
 ENDMACRO()
 
 # from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory

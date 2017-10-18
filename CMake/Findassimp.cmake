@@ -12,8 +12,7 @@ if(WIN32)
             NAMES
             assimp/anim.h
             HINTS
-            ${ASSIMP_ROOT_DIR}/include
-            )
+            ${ASSIMP_ROOT_DIR}/include)
 
     if(MSVC12)
         set(ASSIMP_MSVC_VERSION "vc120")
@@ -27,16 +26,14 @@ if(WIN32)
                 NAMES
                 assimp-${ASSIMP_MSVC_VERSION}-mt.lib
                 HINTS
-                ${ASSIMP_ROOT_DIR}/lib${ASSIMP_ARCHITECTURE}
-                )
+                ${ASSIMP_ROOT_DIR}/lib${ASSIMP_ARCHITECTURE})
 
-        find_library(ASSIMP_LIBRARY_RELEASE				assimp-${ASSIMP_MSVC_VERSION}-mt.lib 			PATHS ${ASSIMP_LIBRARY_DIR})
-        find_library(ASSIMP_LIBRARY_DEBUG				assimp-${ASSIMP_MSVC_VERSION}-mtd.lib			PATHS ${ASSIMP_LIBRARY_DIR})
+        find_library(ASSIMP_LIBRARY_RELEASE assimp-${ASSIMP_MSVC_VERSION}-mt.lib PATHS ${ASSIMP_LIBRARY_DIR})
+        find_library(ASSIMP_LIBRARY_DEBUG assimp-${ASSIMP_MSVC_VERSION}-mtd.lib PATHS ${ASSIMP_LIBRARY_DIR})
 
         set(ASSIMP_LIBRARY
-                optimized 	${ASSIMP_LIBRARY_RELEASE}
-                debug		${ASSIMP_LIBRARY_DEBUG}
-                )
+                optimized ${ASSIMP_LIBRARY_RELEASE}
+                debug ${ASSIMP_LIBRARY_DEBUG})
 
         set(ASSIMP_LIBRARIES "${ASSIMP_LIBRARY}")
 
@@ -46,7 +43,7 @@ if(WIN32)
                     COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll 		${TargetDirectory}/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.dll
                     COMMENT "Copying Assimp binaries to '${TargetDirectory}'"
                     VERBATIM)
-        ENDFUNCTION(ASSIMP_COPY_BINARIES)
+       ENDFUNCTION(ASSIMP_COPY_BINARIES)
 
     endif()
 
