@@ -233,7 +233,10 @@ unsigned int Environment::getSpaceDim() const {
 *  \date       2017-05-17
 */
 std::vector<unsigned int> Environment::getRobotDimSizes() const {
-    return m_robotDimSizes;
+    std::vector<unsigned int> robotDimSizes;
+    for (const auto &robot : m_robots)
+        robotDimSizes.push_back(robot->getDim());
+    return robotDimSizes;
 }
 
 /*!
@@ -263,8 +266,8 @@ std::pair<VectorX, VectorX> Environment::getConfigMasks() const {
 */
 void Environment::updateConfigurationDim() {
     m_configurationDim = 0;
-    for (const auto &dimSize : m_robotDimSizes)
-        m_configurationDim += dimSize;
+    for (const auto &robot : m_robots)
+        m_configurationDim += robot->getDim();
 
     updateMasks();
 }
