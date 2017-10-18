@@ -94,7 +94,7 @@ bool CollisionDetectionPqpBenchmark<dim>::checkTrajectory(std::vector<Vector<dim
     if (configs.empty())
         return false;
 
-    if (this->m_environment->getRobot()->getRobotType() == RobotType::mobile) {
+    if (this->m_environment->getRobot()->getRobotCategory() == RobotCategory::mobile) {
         for (auto &config : configs) {
             m_mutexCount.lock();
             ++m_count;

@@ -37,7 +37,7 @@ RobotBase::~RobotBase() {
 *  \param[in]  number of joints of the robot
 *  \date       2016-06-30
 */
-RobotBase::RobotBase(const std::string &name, const unsigned int dim, RobotType robotType, const std::pair<VectorX, VectorX> &boundary,
+RobotBase::RobotBase(const std::string &name, const unsigned int dim, RobotCategory robotType, const std::pair<VectorX, VectorX> &boundary,
                      const std::vector<DofType> &dofTypes)
     : Identifier(name), m_dim(dim), m_robotType(robotType), m_minBoundary(boundary.first), m_maxBoundary(boundary.second), m_dofTypes(dofTypes) {
     if (dim != m_dofTypes.size())
@@ -145,7 +145,7 @@ unsigned int RobotBase::getDim() const {
 *  \param[out] RobotType
 *  \date       2016-08-25
 */
-RobotType RobotBase::getRobotType() const {
+RobotCategory RobotBase::getRobotCategory() const {
     return m_robotType;
 }
 

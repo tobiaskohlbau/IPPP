@@ -33,7 +33,7 @@ namespace ippp {
 */
 SerialRobot::SerialRobot(const std::string &name, const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
                          const std::vector<DofType> &dofTypes)
-    : RobotBase(name, dim, RobotType::serial, boundary, dofTypes) {
+    : RobotBase(name, dim, RobotCategory::serial, boundary, dofTypes) {
 }
 
 /*!

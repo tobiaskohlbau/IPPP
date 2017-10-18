@@ -29,7 +29,7 @@ namespace ippp {
 *  \date       2016-06-30
 */
 PointRobot::PointRobot(const std::pair<Vector2, Vector2> &boundary)
-    : RobotBase("PointRobot", 2, RobotType::mobile, boundary, std::vector<DofType>({DofType::planarPos, DofType::planarPos})) {
+    : RobotBase("PointRobot", 2, RobotCategory::mobile, boundary, std::vector<DofType>({DofType::planarPos, DofType::planarPos})) {
     // generate minimum bounding box for robot model
 
     std::shared_ptr<ModelContainer> model(new PointModel());

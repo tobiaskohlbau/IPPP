@@ -91,7 +91,7 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<RobotBas
         m_workspaceAvaible = true;
     }
 
-    if (m_robot->getRobotType() == RobotType::serial) {
+    if (m_robot->getRobotCategory() == RobotCategory::serial) {
         std::shared_ptr<SerialRobot<dim>> serialRobot(std::static_pointer_cast<SerialRobot<dim>>(m_robot));
         std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
         if (!jointModels.empty()) {
@@ -136,7 +136,7 @@ bool CollisionDetectionFcl<dim>::checkConfig(const Vector<dim> &config) {
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::controlCollisionMesh(const Vector<dim> &config) {
-    if (m_robot->getRobotType() == RobotType::mobile) {
+    if (m_robot->getRobotCategory() == RobotCategory::mobile) {
         return checkMobileRobot(config);
     } else {
         return checkSerialRobot(config);
@@ -156,7 +156,7 @@ bool CollisionDetectionFcl<dim>::checkTrajectory(std::vector<Vector<dim>> &confi
         return false;
     }
 
-    if (m_robot->getRobotType() == RobotType::mobile) {
+    if (m_robot->getRobotCategory() == RobotCategory::mobile) {
         for (int i = 0; i < configs.size(); ++i)
             if (checkMobileRobot(configs[i]))
                 return true;

@@ -29,7 +29,7 @@ namespace ippp {
 */
 TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel,
                                  const std::pair<Vector3, Vector3> &boundary)
-    : RobotBase("TriangleRobot2D", 3, RobotType::mobile, boundary,
+    : RobotBase("TriangleRobot2D", 3, RobotCategory::mobile, boundary,
                 std::vector<DofType>({DofType::planarPos, DofType::planarPos, DofType::planarRot})) {
     setBaseModel(triangleModel);
 }

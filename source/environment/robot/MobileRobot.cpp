@@ -22,7 +22,7 @@ namespace ippp {
 
 MobileRobot::MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
                          const std::vector<DofType> &dofTypes)
-    : RobotBase("MobileRobot", dim, RobotType::mobile, boundary, dofTypes) {
+    : RobotBase("MobileRobot", dim, RobotCategory::mobile, boundary, dofTypes) {
 }
 
 /*!

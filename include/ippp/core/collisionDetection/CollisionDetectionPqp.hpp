@@ -87,7 +87,7 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
         }
     }
 
-    if (robot->getRobotType() == RobotType::serial) {
+    if (robot->getRobotCategory() == RobotCategory::serial) {
         std::shared_ptr<SerialRobot> serialRobot(std::static_pointer_cast<SerialRobot>(robot));
         std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
         if (!jointModels.empty()) {
@@ -119,7 +119,7 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
-    if (m_environment->getRobot()->getRobotType() == RobotType::mobile) {
+    if (m_environment->getRobot()->getRobotCategory() == RobotCategory::mobile) {
         return checkMobileRobot(config);
     } else {
         return checkSerialRobot(config);
@@ -139,7 +139,7 @@ bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &confi
         return false;
     }
 
-    if (m_environment->getRobot()->getRobotType() == RobotType::mobile) {
+    if (m_environment->getRobot()->getRobotCategory() == RobotCategory::mobile) {
         for (size_t i = 0; i < configs.size(); ++i) {
             if (checkMobileRobot(configs[i])) {
                 return true;
