@@ -19,6 +19,7 @@
 #include <ippp/environment/model/ModelFactoryFcl.h>
 
 #include <ippp/core/util/Logging.h>
+#include <ippp/environment/cad/CadImportExport.h>
 
 namespace ippp {
 
@@ -35,21 +36,19 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
         Logging::error("Empty file path", this);
         return nullptr;
     }
-    std::vector<Vector3> vertices;
-    std::vector<Vector3i> faces;
 
     std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
-    if (!importCad(filePath, fclModel->m_vertices, fclModel->m_faces, fclModel->m_normals)) {
+    if (!cad::importMesh(filePath, fclModel->m_mesh)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
     }
-    fclModel->m_boundingBox = computeBoundingBox(fclModel->m_vertices);
+    fclModel->m_mesh.aabb = cad::computeAABB(fclModel->m_mesh);
 
-    std::vector<fcl::Vector3f> vertices;
+    std::vector<fcl::Vec3f> vertices;
     std::vector<fcl::Triangle> triangles;
-    for (auto vertex : pqpModel->m_vertices)
-        vertices.push_back(fcl::Vector3f(vertex[0], vertex[1], vertex[2]));
-    for (auto face : fclModel->m_faces)
+    for (auto vertex : fclModel->m_mesh.vertices)
+        vertices.push_back(fcl::Vec3f(vertex[0], vertex[1], vertex[2]));
+    for (auto face : fclModel->m_mesh.faces)
         triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
     fclModel->m_fclModel.beginModel();
     fclModel->m_fclModel.addSubModel(vertices, triangles);
@@ -59,6 +58,36 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
 }
 
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const std::string &filePath) {
+    std::vector<std::shared_ptr<ModelContainer>> models;
+    if (filePath == "") {
+        Logging::error("Empty file path", this);
+        return models;
+    }
+    // create model container properties
+    std::vector<Mesh> meshes;
+
+    if (!cad::importMeshes(filePath, meshes)) {
+        Logging::error("Could not load mesh", this);
+        return models;
+    }
+
+    for (auto &mesh : meshes) {
+        std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
+        fclModel->m_mesh = mesh;
+        fclModel->m_mesh.aabb = cad::computeAABB(fclModel->m_mesh);
+
+        std::vector<fcl::Vec3f> vertices;
+        std::vector<fcl::Triangle> triangles;
+        for (auto vertex : fclModel->m_mesh.vertices)
+            vertices.push_back(fcl::Vec3f(vertex[0], vertex[1], vertex[2]));
+        for (auto face : fclModel->m_mesh.faces)
+            triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
+        fclModel->m_fclModel.beginModel();
+        fclModel->m_fclModel.addSubModel(vertices, triangles);
+        fclModel->m_fclModel.endModel();
+        models.push_back(fclModel);
+    }
+    return models;
 }
 
 /*!

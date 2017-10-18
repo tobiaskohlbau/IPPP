@@ -19,13 +19,13 @@
 #ifndef MODELFCL_H
 #define MODELFCL_H
 
-#include <fcl/fcl.h>
+#include "fcl/BVH/BVH_model.h"
 
 #include <ippp/environment/model/ModelContainer.h>
 
 namespace ippp {
 
-typedef fcl::BVHModel<fcl::OBB<double>> FCLModel;
+typedef fcl::BVHModel<fcl::AABB> FCLModel;
 
 /*!
 * \brief   Fcl model class

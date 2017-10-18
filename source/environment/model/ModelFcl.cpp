@@ -49,8 +49,8 @@ void ModelFcl::transformModel(const Matrix4 &T) {
     if (empty())
         return;
 
-    transformCad(config, m_vertices);
-    m_mesh.aabb = computeBoundingBox(m_vertices);
+    cad::transformVertices(T, m_mesh.vertices);
+    m_mesh.aabb = cad::computeAABB(m_mesh);
 
     updateFclModel();
 }
@@ -67,19 +67,19 @@ void ModelFcl::transformModel(const Vector6 &config) {
     if (empty())
         return;
 
-    transformVertices(config, m_vertices);
-    m_mesh.aabb = computeBoundingBox(m_vertices);
+    cad::transformVertices(config, m_mesh.vertices);
+    m_mesh.aabb = cad::computeAABB(m_mesh);
 
     updateFclModel();
 }
 
 void ModelFcl::updateFclModel() {
-    std::vector<fcl::Vector3> vertices;
+    std::vector<fcl::Vec3f> vertices;
     std::vector<fcl::Triangle> triangles;
-    for (auto vertex : m_vertices)
-        vertices.push_back(fcl::Vector3f(vertex[0], vertex[1], vertex[2]));
+    for (auto vertex : m_mesh.vertices)
+        vertices.push_back(fcl::Vec3f(vertex[0], vertex[1], vertex[2]));
 
-    for (auto face : m_faces)
+    for (auto face : m_mesh.faces)
         triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
 
     m_fclModel = FCLModel();
