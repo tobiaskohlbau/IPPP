@@ -15,14 +15,11 @@
 //#include <ippp/core/collisionDetection/CollisionDetectionFcl.hpp>
 //#include <ippp/environment/model/ModelFactoryFcl.h>
 
-#include <modelDirectory.h>
 #include <ui/BenchmarkReader.h>
 #include <ui/ModuleConfigurator.hpp>
 #include <ui/Writer.hpp>
 
 using namespace ippp;
-
-std::string modelDir;
 
 bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentConfig config) {
     const unsigned int dim = 6;
@@ -89,7 +86,7 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 }
 
 void benchmarkAlphaPuzzle() {
-    std::string puzzleDir = modelDir + "parasol_benchmarks/alpha1.5/";
+    std::string puzzleDir = "models/parasol_benchmarks/alpha1.5/";
     std::string envPath = puzzleDir + "alpha.env";
     std::string queryPath = puzzleDir + "alpha.query";
 
@@ -105,7 +102,7 @@ void benchmarkAlphaPuzzle() {
 }
 
 void benchmarkFlange() {
-    std::string flangeDir = modelDir + "parasol_benchmarks/flange_1.0/";
+    std::string flangeDir = "models/parasol_benchmarks/flange_1.0/";
     std::string envPath = flangeDir + "flange.env";
     std::string queryPath = flangeDir + "flange.query";
 
@@ -121,7 +118,7 @@ void benchmarkFlange() {
 }
 
 void benchmarkHedgehog() {
-    std::string hedgehogDir = modelDir + "parasol_benchmarks/Hedgehog/";
+    std::string hedgehogDir = "models/parasol_benchmarks/Hedgehog/";
     std::string envPath = hedgehogDir + "hedgehog.env";
     std::string queryPath = hedgehogDir + "hedgehog.query";
 
@@ -152,8 +149,6 @@ void generateMap() {
 }
 
 int main(int argc, char** argv) {
-    modelDir = getModelDirectory();
-
 //    std::string file = modelDir + "assembly/boxRot.dae";
 //    std::vector<Mesh> meshes;
 //    auto result = cad::importMeshes(file, meshes, 1, false, true);

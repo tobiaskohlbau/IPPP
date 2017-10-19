@@ -4,7 +4,6 @@
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
 
-#include <modelDirectory.h>
 #include <ui/ModuleConfigurator.hpp>
 
 // set namespace of the motion planner lib
@@ -14,13 +13,10 @@ int main(int argc, char** argv) {
     // specify the dimension for the motion planning
     const unsigned int dim = 6;
 
-    // get path to the model directory
-    std::string modelDir = getModelDirectory();
-
     // create a ModelFactory and the models of robot and obstacle (workspace)
     ModelFactoryPqp factoryPqp;
-    std::shared_ptr<ModelContainer> robotModel = factoryPqp.createModel(modelDir + "parasol_benchmarks/alpha1.5/robot.obj");
-    std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel(modelDir + "parasol_benchmarks/alpha1.5/obstacle.obj");
+    std::shared_ptr<ModelContainer> robotModel = factoryPqp.createModel("models/parasol_benchmarks/alpha1.5/robot.obj");
+    std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModel("models/parasol_benchmarks/alpha1.5/obstacle.obj");
 
     // specify the boundaries of the robot
     VectorX minBoundary = util::Vecd(-200, -200, -200, 0, 0, 0);

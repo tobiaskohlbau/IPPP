@@ -7,10 +7,9 @@
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
 
-#include <modelDirectory.h>
 #include <ui/Drawing2D.hpp>
-#include <ui/ModuleConfigurator.hpp>
 #include <ui/EnvironmentConfigurator.h>
+#include <ui/ModuleConfigurator.hpp>
 #include <ui/Writer.hpp>
 
 using namespace ippp;
@@ -22,7 +21,7 @@ Mesh generateMap() {
     std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(min, max));
 
     MapGenerator<dim> mapGenerator(min, max, sampler);
-    auto meshes = mapGenerator.generateMap(40, Vector2(80, 80));
+    auto meshes = mapGenerator.generateMap(80, Vector2(80, 80), Vector2(10, 10));
     auto mesh = cad::mergeMeshes(meshes);
     cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
     return mesh;
@@ -30,18 +29,14 @@ Mesh generateMap() {
 
 bool testTriangleRobot() {
     const unsigned int dim = 3;
-    auto modelDir = getModelDirectory();
 
     Vector3 min(0.0, 0.0, 0.0);
     Vector3 max(1000, 1000, util::twoPi());
 
-    ModelFactoryTriangle2D factory;
-    auto model = factory.createModel("obstacle.obj");
-    cad::centerMesh(model->m_mesh);
-
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.setRobotType(RobotType::Triangle2D, modelDir + "robots/simpleTriangleRobot.obj");
+    envConfigurator.setRobotType(RobotType::Triangle2D, "models/robots/simpleTriangleRobot.obj");
+    generateMap();
     envConfigurator.addObstaclePath("obstacle.obj");
     envConfigurator.saveConfig("envConfigTriangle.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -100,7 +95,7 @@ void testPointRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.addObstaclePath(getModelDirectory() + "/spaces/random2D.obj");
+    envConfigurator.addObstaclePath("models/spaces/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point);
     envConfigurator.saveConfig("envConfig.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -159,6 +154,8 @@ void testPointRobot() {
 int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::debug);
 
-    //testTriangleRobot();
-    testPointRobot();
+    while (1)
+        if (testTriangleRobot())
+            break;
+    // testPointRobot();
 }
