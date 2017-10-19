@@ -16,11 +16,10 @@
 #
 #-------------------------------------------------------------------------//
 
-cmake_minimum_required (VERSION 2.8.10)
+cmake_minimum_required (VERSION 3.5.1)
 project (IPPP)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
 add_definitions(-D_USE_MATH_DEFINES)
 
 option(BUILD_FCL "Build FCL collision lib")
@@ -30,8 +29,8 @@ option(BUILD_BENCHMARK "Build optional benchmark classes")
 
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
-find_package(assimp REQUIRED)
-find_package(Eigen3 REQUIRED)
+find_package(assimp CONFIG REQUIRED)
+find_package(Eigen3 CONFIG REQUIRED)
 find_package(PQP REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -41,11 +40,11 @@ SET(LIBRARIES
 
 # source files
 ADD_SUBDIRECTORY(include/ippp)
-ADD_SUBDIRECTORY(source)
+ADD_SUBDIRECTORY(src)
 
 # options
 IF (${BUILD_FCL})
-    find_package(fcl REQUIRED)
+    find_package(fcl CONFIG REQUIRED)
     find_package(ccd QUIET)
     include_directories(${FCL_INCLUDE_DIRS})
     LIST(APPEND LIBRARIES ${FCL_LIBRARIES} ${CCD_LIBRARIES})
@@ -65,6 +64,7 @@ if (UNIX)
 endif()
 
 add_library(${PROJECT_NAME} ${SRCS})
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_SOURCE_DIR}/include
