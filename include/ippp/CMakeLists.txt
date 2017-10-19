@@ -110,7 +110,7 @@ ENDIF()
 
 IF (${BUILD_BENCHMARK})
     list(APPEND SRCS
-            ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqpBenchmark.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqpBenchmark.hpp)
 ENDIF()
 
 set(SRCS "${SRCS}" PARENT_SCOPE)
