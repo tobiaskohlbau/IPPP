@@ -23,9 +23,9 @@
 #include <type_traits>
 #include <vector>
 
-#include <ui/Configurator.h>
 #include <ippp/Core.h>
 #include <ippp/Planner.h>
+#include <ui/Configurator.h>
 
 namespace ippp {
 
@@ -90,7 +90,7 @@ class ModuleConfigurator : public Configurator {
     void setTrajectoryType(const TrajectoryType type);
     void setTrajectoryProperties(const double posRes, const double oriRes);
 
-  private:
+  protected:
     void initializeModules();
 
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
@@ -266,7 +266,6 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
 
 template <unsigned int dim>
 bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
-    // types
     nlohmann::json json = loadJson(filePath);
     if (json.empty())
         return false;
@@ -288,6 +287,7 @@ bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
     m_trajectoryType = static_cast<TrajectoryType>(json["TrajectoryType"].get<int>());
     m_posRes = json["PosRes"].get<double>();
     m_posRes = json["OriRes"].get<double>();
+    initializeModules();
 
     return true;
 }
