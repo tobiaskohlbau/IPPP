@@ -64,7 +64,7 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
                 p[j][k] = pqpModel->m_mesh.faces[vertex][k];
             }
         }
-        pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], i);
+        pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], static_cast<int>(i));
     }
     pqpModel->m_pqpModel.EndModel();
     if (Logging::getLogLevel() == LogLevel::debug) {
@@ -105,7 +105,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const
                     p[j][k] = pqpModel->m_mesh.faces[vertex][k];
                 }
             }
-            pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], i);
+            pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], static_cast<int>(i));
         }
         pqpModel->m_pqpModel.EndModel();
         if (Logging::getLogLevel() == LogLevel::debug) {

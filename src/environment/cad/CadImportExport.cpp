@@ -335,12 +335,12 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
 
     // add vertices to the mesh
     pMesh->mVertices = new aiVector3D[vertices.size()];
-    pMesh->mNumVertices = vertices.size();
+    pMesh->mNumVertices = static_cast<unsigned int>(vertices.size());
     for (size_t i = 0; i < vertices.size(); ++i)
         pMesh->mVertices[i] = aiVector3D(vertices[i].x(), vertices[i].y(), vertices[i].z());
 
     pMesh->mFaces = new aiFace[faces.size()];
-    pMesh->mNumFaces = faces.size();
+    pMesh->mNumFaces = static_cast<unsigned int>(faces.size());
     for (size_t i = 0; i < faces.size(); ++i) {
         aiFace &face = pMesh->mFaces[i];
 

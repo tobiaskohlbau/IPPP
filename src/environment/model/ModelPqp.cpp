@@ -97,7 +97,7 @@ void ModelPqp::updatePqpModel() {
                 p[j][k] = m_mesh.vertices[vert][k];
             }
         }
-        m_pqpModel.AddTri(p[0], p[1], p[2], i);
+        m_pqpModel.AddTri(p[0], p[1], p[2], static_cast<int>(i));
     }
     m_pqpModel.EndModel();
 }
