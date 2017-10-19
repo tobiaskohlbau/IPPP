@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ui/EnvironmentConfigurator.h>
+#include <ippp/ui/EnvironmentConfigurator.h>
 
 namespace ippp {
 

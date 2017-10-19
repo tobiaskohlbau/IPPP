@@ -16,12 +16,7 @@
 #
 #-------------------------------------------------------------------------//
 
-include_directories(
-        ${CMAKE_SOURCE_DIR}/examples)
-
 set(source
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../ui/ModuleConfigurator.hpp
-		${CMAKE_SOURCE_DIR}/examples/ui/Configurator.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
 ADD_IPPP_EXAMPLE(GettingStarted "${source}" "${ADDITIONAL_LIBRARIES}")

@@ -17,11 +17,6 @@
 #-------------------------------------------------------------------------//
 
 set(source
-		${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-		${CMAKE_SOURCE_DIR}/examples/ui/Writer.hpp
-		${CMAKE_SOURCE_DIR}/examples/ui/ModuleConfigurator.hpp
-		${CMAKE_SOURCE_DIR}/examples/ui/Configurator.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
 ADD_IPPP_EXAMPLE(JacoRRT "${source}" "")
-
-

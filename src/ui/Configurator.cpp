@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ui/Configurator.h>
+#include <ippp/ui/Configurator.h>
 
 #include <fstream>
 

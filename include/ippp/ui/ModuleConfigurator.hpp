@@ -25,7 +25,7 @@
 
 #include <ippp/Core.h>
 #include <ippp/Planner.h>
-#include <ui/Configurator.h>
+#include <ippp/ui/Configurator.h>
 
 namespace ippp {
 

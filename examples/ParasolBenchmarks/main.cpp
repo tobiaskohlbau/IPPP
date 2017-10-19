@@ -11,13 +11,12 @@
 #include <ippp/Core.h>
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
+#include <ippp/UI.h>
 #include <ippp/core/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
 //#include <ippp/core/collisionDetection/CollisionDetectionFcl.hpp>
 //#include <ippp/environment/model/ModelFactoryFcl.h>
 
 #include <ui/BenchmarkReader.h>
-#include <ui/ModuleConfigurator.hpp>
-#include <ui/Writer.hpp>
 
 using namespace ippp;
 
@@ -140,7 +139,7 @@ void generateMap() {
     std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(min, max));
 
     MapGenerator<dim> mapGenerator(min, max, sampler);
-    auto meshes = mapGenerator.generateMap(400, Vector2(50, 50));
+    auto meshes = mapGenerator.generateMap(400, Vector2(50, 50), Vector2(10, 10));
     auto mesh = cad::mergeMeshes(meshes);
     cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
 

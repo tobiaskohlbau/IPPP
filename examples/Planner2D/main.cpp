@@ -6,11 +6,8 @@
 #include <ippp/Core.h>
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
-
+#include <ippp/UI.h>
 #include <ui/Drawing2D.hpp>
-#include <ui/EnvironmentConfigurator.h>
-#include <ui/ModuleConfigurator.hpp>
-#include <ui/Writer.hpp>
 
 using namespace ippp;
 
@@ -154,8 +151,8 @@ void testPointRobot() {
 int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::debug);
 
-    while (1)
-        if (testTriangleRobot())
-            break;
-    // testPointRobot();
+    //while (1)
+    //    if (testTriangleRobot())
+    //        break;
+     testPointRobot();
 }

@@ -19,6 +19,7 @@
 list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/Identifier.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/Logging.cpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/cad/CadDrawing.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/cad/CadImportExport.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/cad/CadProcessing.cpp
@@ -36,7 +37,10 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryTriangle2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelPqp.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelTriangle2D.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/PointModel.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/PointModel.cpp
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/ui/Configurator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/ui/EnvironmentConfigurator.cpp)
 
 IF (${BUILD_FCL})
     list(APPEND SRCS

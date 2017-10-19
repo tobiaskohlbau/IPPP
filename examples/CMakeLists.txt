@@ -16,8 +16,6 @@
 #
 #-------------------------------------------------------------------------//
 
-find_package(nlohmann-json REQUIRED)
-
 SET(LIBRARIES
         IPPP
         ${PQP_LIBRARIES}

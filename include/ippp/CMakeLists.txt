@@ -96,7 +96,12 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStarContTraj.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/SRT.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/TreePlanner.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/util/UtilPlanner.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/util/UtilPlanner.hpp
+        
+        ${CMAKE_CURRENT_SOURCE_DIR}/ui/Configurator.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/ui/EnvironmentConfigurator.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/ui/ModuleConfigurator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/ui/Writer.hpp)
 
 IF (${BUILD_FCL})
     list(APPEND SRCS

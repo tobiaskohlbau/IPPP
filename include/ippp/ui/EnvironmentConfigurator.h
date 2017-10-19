@@ -22,10 +22,9 @@
 #include <type_traits>
 #include <vector>
 
-#include <ui/Configurator.h>
-
 #include <ippp/Environment.h>
 #include <ippp/core/types.h>
+#include <ippp/ui/Configurator.h>
 
 namespace ippp {
 

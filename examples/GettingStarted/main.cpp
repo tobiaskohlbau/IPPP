@@ -3,8 +3,7 @@
 #include <ippp/Core.h>
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
-
-#include <ui/ModuleConfigurator.hpp>
+#include <ippp/UI.h>
 
 // set namespace of the motion planner lib
 using namespace ippp;
