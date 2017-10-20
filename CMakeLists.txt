@@ -33,11 +33,7 @@ find_package(assimp CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(PQP REQUIRED)
 find_package(Threads REQUIRED)
-
-find_path(NLOHMANN_JSON_INCLUDE_DIR json.hpp)
-if(NLOHMANN_JSON_INCLUDE_DIR STREQUAL "JSON_INCLUDE_DIR-NOTFOUND")
-  message(FATAL_ERROR "Could not find json Library.")
-endif()
+set (NLOHMANN_JSON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/third_party/nlohmann-json/src/)
 
 SET(LIBRARIES
         ${PQP_LIBRARIES}

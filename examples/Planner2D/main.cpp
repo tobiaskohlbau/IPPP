@@ -32,7 +32,7 @@ bool testTriangleRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.setRobotType(RobotType::Triangle2D, "models/robots/simpleTriangleRobot.obj");
+    envConfigurator.setRobotType(RobotType::Triangle2D, "assets/robots/simpleTriangleRobot.obj");
     generateMap();
     envConfigurator.addObstaclePath("obstacle.obj");
     envConfigurator.saveConfig("envConfigTriangle.json");
@@ -92,7 +92,7 @@ void testPointRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.addObstaclePath("models/spaces/random2D.obj");
+    envConfigurator.addObstaclePath("assets/spaces/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point);
     envConfigurator.saveConfig("envConfig.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -151,8 +151,11 @@ void testPointRobot() {
 int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::debug);
 
-    //while (1)
-    //    if (testTriangleRobot())
-    //        break;
-     testPointRobot();
+    std::shared_ptr<StatisticContainer> container(new StatisticSizeTContainer("container"));
+    std::shared_ptr<StatisticCollector> collector(new StatisticCountCollector("collector"));
+    collector->addContainer(container);
+    Statistics::addCollector(collector);
+
+    // testTriangleRobot();
+    testPointRobot();
 }
