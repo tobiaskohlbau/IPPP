@@ -19,6 +19,7 @@
 #ifndef MODULEBASE_H
 #define MODULEBASE_H
 
+#include <functional>
 #include <string>
 
 namespace ippp {
@@ -37,9 +38,12 @@ class Identifier {
 
   public:
     const std::string& getName() const;
+    const size_t& getHash() const;
 
   private:
+    std::hash<std::string> m_hashFn;
     const std::string m_name;
+    const size_t m_hash;
 };
 
 } /* namespace ippp */

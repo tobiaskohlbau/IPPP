@@ -34,7 +34,7 @@ Identifier::~Identifier() {
 *  \param[in]  module name
 *  \date       2016-05-30
 */
-Identifier::Identifier(const std::string& name) : m_name(name) {
+Identifier::Identifier(const std::string& name) : m_name(name), m_hash(m_hashFn(name)) {
 }
 
 /*!
@@ -45,6 +45,16 @@ Identifier::Identifier(const std::string& name) : m_name(name) {
 */
 const std::string& Identifier::getName() const {
     return m_name;
+}
+
+/*!
+*  \brief      Return name
+*  \author     Sasch Kaden
+*  \param[out] name
+*  \date       2016-05-30
+*/
+const size_t& Identifier::getHash() const {
+    return m_hash;
 }
 
 } /* namespace ippp */
