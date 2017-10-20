@@ -58,6 +58,7 @@ NeighborFinder<dim, T>::NeighborFinder(const std::string &name, const std::share
 
 template <unsigned int dim, class T>
 NeighborFinder<dim, T>::~NeighborFinder() {
+    Logging::debug("Initialize", this);
 }
 
 } /* namespace ippp */

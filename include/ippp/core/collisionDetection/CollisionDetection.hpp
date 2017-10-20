@@ -53,6 +53,7 @@ class CollisionDetection : public Identifier {
 template <unsigned int dim>
 CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment)
     : Identifier(name), m_environment(environment) {
+    Logging::debug("Initialize", this);
 }
 
 } /* namespace ippp */

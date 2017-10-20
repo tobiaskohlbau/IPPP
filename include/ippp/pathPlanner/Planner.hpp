@@ -103,6 +103,8 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
       m_pathModifier(options.getPathModifier()),
       m_trajectory(options.getTrajectoryPlanner()),
       m_sampling(options.getSampling()) {
+    Logging::debug("Initialize", this);
+
     // check dimensions of the robot to the dimension of the planner
     if (!util::checkDimensions<dim>(environment)) {
         Logging::error("Robot dimensions are unequal to planner dimension", this);

@@ -31,6 +31,8 @@ namespace ippp {
 */
 Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBoundary)
     : Identifier("Environment"), m_spaceDim(workspaceDim), m_spaceBoundary(spaceBoundary) {
+    Logging::debug("Initialize", this);
+
     if (2 > m_spaceDim || m_spaceDim > 3)
         Logging::error("Dimension of workspace have to be 2 or 3", this);
     assert(m_spaceDim == 2 || m_spaceDim == 3);
@@ -47,6 +49,8 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
 */
 Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot)
     : Identifier("Environment"), m_spaceDim(workspaceDim), m_spaceBoundary(spaceBoundary) {
+    Logging::debug("Initialize", this);
+
     if (2 > m_spaceDim || m_spaceDim > 3)
         Logging::error("Dimension of workspace have to be 2 or 3", this);
     assert(m_spaceDim == 2 || m_spaceDim == 3);
@@ -65,6 +69,8 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
 */
 Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBoundary, const std::vector<std::shared_ptr<RobotBase>> &robots)
         : Identifier("Environment"), m_spaceDim(workspaceDim), m_spaceBoundary(spaceBoundary) {
+    Logging::debug("Initialize", this);
+
     if (2 > m_spaceDim || m_spaceDim > 3)
         Logging::error("Dimension of workspace have to be 2 or 3", this);
     assert(m_spaceDim == 2 || m_spaceDim == 3);
@@ -79,11 +85,6 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
     updateConfigurationDim();
 }
 
-/*!
-*  \brief      Standard destructor of the Environment
-*  \author     Sascha Kaden
-*  \date       2017-05-17
-*/
 Environment::~Environment() {
 }
 

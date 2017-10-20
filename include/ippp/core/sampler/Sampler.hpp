@@ -67,6 +67,8 @@ class Sampler : public Identifier {
 */
 template <unsigned int dim>
 Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment> &environment) : Identifier(name) {
+    Logging::debug("Initialize", this);
+
     m_minBoundary = environment->getRobot()->getMinBoundary();
     m_maxBoundary = environment->getRobot()->getMaxBoundary();
 
@@ -89,6 +91,8 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
 template <unsigned int dim>
 Sampler<dim>::Sampler(const std::string &name, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary)
     : Identifier(name) {
+    Logging::debug("Initialize", this);
+
     m_minBoundary = minBoundary;
     m_maxBoundary = maxBoundary;
 

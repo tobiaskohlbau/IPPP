@@ -52,6 +52,7 @@ class Evaluator : public Identifier {
 */
 template <unsigned int dim>
 Evaluator<dim>::Evaluator(const std::string &name) : Identifier(name) {
+    Logging::debug("Initialize", this);
 }
 
 /*!

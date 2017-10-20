@@ -75,6 +75,7 @@ Sampling<dim>::Sampling(const std::string &name, const std::shared_ptr<Environme
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                         const size_t attempts)
     : Identifier(name), m_collision(collision), m_trajectory(trajectory), m_sampler(sampler), m_attempts(attempts) {
+    Logging::debug("Initialize", this);
 }
 
 /*!

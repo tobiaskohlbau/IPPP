@@ -61,6 +61,7 @@ PathModifier<dim>::PathModifier(const std::string &name, const std::shared_ptr<E
                                 const std::shared_ptr<CollisionDetection<dim>> &collision,
                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
     : Identifier(name), m_collision(collision), m_environment(environment), m_trajectory(trajectory) {
+    Logging::debug("Initialize", this);
 }
 
 } /* namespace ippp */

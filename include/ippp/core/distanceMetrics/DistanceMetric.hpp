@@ -54,6 +54,7 @@ class DistanceMetric : public Identifier {
 */
 template <unsigned int dim>
 DistanceMetric<dim>::DistanceMetric(const std::string &name) : Identifier(name) {
+    Logging::debug("Initialize", this);
 }
 
 /*!

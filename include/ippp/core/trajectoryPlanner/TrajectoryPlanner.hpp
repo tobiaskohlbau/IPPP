@@ -82,6 +82,8 @@ TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::sh
                                           const std::shared_ptr<Environment> &environment, const double posRes,
                                           const double oriRes)
     : Identifier(name), m_collision(collision), m_environment(environment) {
+    Logging::debug("Initialize", this);
+
     setResolutions(posRes, oriRes);
     auto masks = environment->getConfigMasks();
     m_posMask = masks.first;
