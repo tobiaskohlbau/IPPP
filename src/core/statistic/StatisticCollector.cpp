@@ -38,4 +38,9 @@ std::shared_ptr<StatisticContainer> StatisticCollector::getContainer(const size_
     return nullptr;
 }
 
+void StatisticCollector::initialize() {
+    for (auto &container : m_containers)
+        container->initialize();
+}
+
 } /* namespace ippp */

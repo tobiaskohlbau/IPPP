@@ -16,15 +16,11 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef STATISTICCOLLECTOR_H
-#define STATISTICCOLLECTOR_H
+#ifndef STATISTICSIZETCONTAINER_H
+#define STATISTICSIZETCONTAINER_H
 
-#include <functional>
-#include <mutex>
 #include <vector>
-#include <iostream>
 
-#include <ippp/core/Identifier.h>
 #include <ippp/core/statistic/StatisticContainer.h>
 
 namespace ippp {
@@ -34,20 +30,16 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2017-10-20
 */
-class StatisticCollector : public Identifier {
+class StatisticSizeTContainer : public StatisticContainer {
   public:
-    StatisticCollector(const std::string &name);
-    
-    void addContainer(const std::shared_ptr<StatisticContainer> &container);
-    std::shared_ptr<StatisticContainer> getContainer(const size_t hast);
-    void initialize();
-
-    virtual void writeData(std::ostream &stream) = 0;
+    StatisticSizeTContainer(const std::string &name);
+    virtual void initialize();
 
   private:
-    std::vector<std::shared_ptr<StatisticContainer>> m_containers;
+    size_t m_count = 0;
+    std::vector<size_t> m_counts;
 };
 
 } /* namespace ippp */
 
-#endif    // STATISTICCOLLECTOR_H
+#endif    // STATISTICSIZETCONTAINER_H

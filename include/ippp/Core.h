@@ -72,7 +72,9 @@
 #include <ippp/core/trajectoryPlanner/RotateAtS.hpp>
 
 #include <ippp/core/statistic/StatisticCollector.h>
+#include <ippp/core/statistic/StatisticCountCollector.h>
 #include <ippp/core/statistic/StatisticContainer.h>
+#include <ippp/core/statistic/StatisticSizeTContainer.h>
 #include <ippp/core/statistic/Statistics.h>
 
 #include <ippp/core/util/Logging.h>

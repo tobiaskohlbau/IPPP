@@ -21,7 +21,9 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/core/util/Logging.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/statistic/Statistics.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/statistic/StatisticCollector.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/statistic/StatisticCountCollector.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core/statistic/StatisticContainer.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core/statistic/StatisticSizeTContainer.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/cad/CadDrawing.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/cad/CadImportExport.cpp

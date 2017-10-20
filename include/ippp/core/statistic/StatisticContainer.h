@@ -34,6 +34,7 @@ namespace ippp {
 class StatisticContainer : public Identifier {
   public:
     StatisticContainer(const std::string &name);
+    virtual void initialize() = 0;
 
   private:
 };
