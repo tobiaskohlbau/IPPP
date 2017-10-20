@@ -71,6 +71,10 @@
 #include <ippp/core/trajectoryPlanner/LinearTrajectory.hpp>
 #include <ippp/core/trajectoryPlanner/RotateAtS.hpp>
 
+#include <ippp/core/statistic/StatisticCollector.h>
+#include <ippp/core/statistic/StatisticContainer.h>
+#include <ippp/core/statistic/Statistics.h>
+
 #include <ippp/core/util/Logging.h>
 #include <ippp/core/util/UtilGeo.hpp>
 #include <ippp/core/util/UtilIO.hpp>
