@@ -35,8 +35,8 @@ MACRO(ADD_IPPP_EXAMPLE name source ADDITIONAL_LIBRARIES)
         ${NLOHMANN_JSON_INCLUDE_DIR})
     add_custom_command(TARGET ${name} POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy_directory
-             ${CMAKE_SOURCE_DIR}/examples/models
-             ${CMAKE_CURRENT_BINARY_DIR}/models/)
+             ${CMAKE_SOURCE_DIR}/examples/assets
+             ${CMAKE_CURRENT_BINARY_DIR}/assets/)
 ENDMACRO()
 
 # from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
@@ -53,7 +53,7 @@ ENDMACRO()
 
 SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 list(REMOVE_ITEM SUBDIRS "ui")
-list(REMOVE_ITEM SUBDIRS "models")
+list(REMOVE_ITEM SUBDIRS "assets")
 
 FOREACH(subdir ${SUBDIRS})
     ADD_SUBDIRECTORY(${subdir})

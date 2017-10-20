@@ -85,7 +85,7 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
 }
 
 void benchmarkAlphaPuzzle() {
-    std::string puzzleDir = "models/parasol_benchmarks/alpha1.5/";
+    std::string puzzleDir = "assets/parasol_benchmarks/alpha1.5/";
     std::string envPath = puzzleDir + "alpha.env";
     std::string queryPath = puzzleDir + "alpha.query";
 
@@ -101,7 +101,7 @@ void benchmarkAlphaPuzzle() {
 }
 
 void benchmarkFlange() {
-    std::string flangeDir = "models/parasol_benchmarks/flange_1.0/";
+    std::string flangeDir = "assets/parasol_benchmarks/flange_1.0/";
     std::string envPath = flangeDir + "flange.env";
     std::string queryPath = flangeDir + "flange.query";
 
@@ -117,7 +117,7 @@ void benchmarkFlange() {
 }
 
 void benchmarkHedgehog() {
-    std::string hedgehogDir = "models/parasol_benchmarks/Hedgehog/";
+    std::string hedgehogDir = "assets/parasol_benchmarks/Hedgehog/";
     std::string envPath = hedgehogDir + "hedgehog.env";
     std::string queryPath = hedgehogDir + "hedgehog.query";
 
