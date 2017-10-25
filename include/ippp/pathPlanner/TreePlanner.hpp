@@ -107,6 +107,9 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
         computeTree(numNodes, numThreads);
     }
 
+    Logging::debug("Planner has: " + std::to_string(m_graph->nodeSize()) + " nodes", this);
+    Logging::debug("Planner has: " + std::to_string(m_graph->edgeSize()) + " edges", this);
+
     return connectGoalNode(goal);
 }
 
@@ -169,6 +172,8 @@ std::vector<std::shared_ptr<Node<dim>>> TreePlanner<dim>::getPathNodes() {
     nodes.push_back(m_goalNode);
     for (std::shared_ptr<Node<dim>> temp = m_goalNode->getParentNode(); temp != nullptr; temp = temp->getParentNode())
         nodes.push_back(temp);
+
+    std::reverse(nodes.begin(), nodes.end());
 
     Logging::info("Path has: " + std::to_string(nodes.size()) + " nodes", this);
     return nodes;

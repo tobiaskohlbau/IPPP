@@ -101,6 +101,9 @@ bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, cons
         expand(numNodes, numThreads);
     }
 
+    Logging::debug("Planner has: " + std::to_string(m_graph->nodeSize()) + " nodes", this);
+    Logging::debug("Planner has: " + std::to_string(m_graph->edgeSize()) + " edges", this);
+
     return queryPath(start, goal);
 }
 
