@@ -13,6 +13,7 @@
 #include <ippp/core/dataObj/PointList.hpp>
 #include <ippp/core/types.h>
 #include <ippp/core/util/Logging.h>
+#include <ippp/environment/robot/SerialRobot2D.h>
 
 namespace ippp {
 namespace drawing {
@@ -89,6 +90,59 @@ static void drawPath2D(const std::vector<Vector2> configs, cv::Mat &image, Eigen
 /*!
 *  \brief         Draw a triangle path with the passed triangles and posses in an image
 *  \author        Sascha Kaden
+*  \param[in]     config
+*  \param[in]     SerialRobot2D
+*  \param[in,out] image
+*  \param[in]     color of the triangle lines
+*  \param[in]     thickness of the lines
+*  \date          2016-05-25
+*/
+template <unsigned int dim>
+static void drawSerialRobot2D(const Vector<dim> config, const std::shared_ptr<SerialRobot2D> &robot, cv::Mat &image,
+                              Eigen::Vector3i colorPoint, int thickness) {
+    Logging::info("start drawing of SerialRobot2D", "Drawing2D");
+
+    auto baseMesh = robot->getBaseModel()->m_mesh;
+    auto jointModels = robot->getJointModels();
+    std::vector<Mesh> jointMeshes;
+    for (auto &model : jointModels)
+        jointMeshes.push_back(model->m_mesh);
+
+    auto AsLinks = robot->getLinkTrafos(config);
+    cad::transformVertices(robot->getPoseMat(), baseMesh.vertices);
+    for (size_t i = 0; i < AsLinks.size(); ++i)
+        cad::transformVertices(AsLinks[i], jointMeshes[i].vertices);
+
+    for (auto &face : baseMesh.faces) {
+        auto pt1 = cv::Point2i(static_cast<int>(baseMesh.vertices[face[0]][0]),
+                               static_cast<int>(baseMesh.vertices[face[0]][1]));
+        auto pt2 = cv::Point2i(static_cast<int>(baseMesh.vertices[face[1]][0]),
+                               static_cast<int>(baseMesh.vertices[face[1]][1]));
+        auto pt3 = cv::Point2i(static_cast<int>(baseMesh.vertices[face[2]][0]),
+                               static_cast<int>(baseMesh.vertices[face[2]][1]));
+        cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+        cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+        cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+    }
+
+    for (auto &mesh : jointMeshes) {
+        for (auto &face : mesh.faces) {
+            auto pt1 = cv::Point2i(static_cast<int>(mesh.vertices[face[0]][0]),
+                                   static_cast<int>(mesh.vertices[face[0]][1]));
+            auto pt2 = cv::Point2i(static_cast<int>(mesh.vertices[face[1]][0]),
+                                   static_cast<int>(mesh.vertices[face[1]][1]));
+            auto pt3 = cv::Point2i(static_cast<int>(mesh.vertices[face[2]][0]),
+                                   static_cast<int>(mesh.vertices[face[2]][1]));
+            cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+            cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+            cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+        }
+    }
+}
+
+/*!
+*  \brief         Draw a triangle path with the passed triangles and posses in an image
+*  \author        Sascha Kaden
 *  \param[in]     vector of transformations
 *  \param[in]     vector of triangles
 *  \param[in,out] image
@@ -96,8 +150,8 @@ static void drawPath2D(const std::vector<Vector2> configs, cv::Mat &image, Eigen
 *  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
-static void drawTrianglePath(std::vector<Vector3> configs, Mesh mesh, cv::Mat &image,
-                             Eigen::Vector3i colorPoint, int thickness) {
+static void drawTrianglePath(const std::vector<Vector3> configs, const Mesh mesh, cv::Mat &image, Eigen::Vector3i colorPoint,
+                             int thickness) {
     if (configs.empty())
         return;
 
@@ -108,9 +162,12 @@ static void drawTrianglePath(std::vector<Vector3> configs, Mesh mesh, cv::Mat &i
         auto T = util::poseVecToRandT(config);
         cad::transformVertices(util::createT(T.first, T.second), tempMesh.vertices);
         for (auto &face : tempMesh.faces) {
-            auto pt1 = cv::Point2i(static_cast<int>(tempMesh.vertices[face[0]][0]), static_cast<int>(tempMesh.vertices[face[0]][1]));
-            auto pt2 = cv::Point2i(static_cast<int>(tempMesh.vertices[face[1]][0]), static_cast<int>(tempMesh.vertices[face[1]][1]));
-            auto pt3 = cv::Point2i(static_cast<int>(tempMesh.vertices[face[2]][0]), static_cast<int>(tempMesh.vertices[face[2]][1]));
+            auto pt1 =
+                cv::Point2i(static_cast<int>(tempMesh.vertices[face[0]][0]), static_cast<int>(tempMesh.vertices[face[0]][1]));
+            auto pt2 =
+                cv::Point2i(static_cast<int>(tempMesh.vertices[face[1]][0]), static_cast<int>(tempMesh.vertices[face[1]][1]));
+            auto pt3 =
+                cv::Point2i(static_cast<int>(tempMesh.vertices[face[2]][0]), static_cast<int>(tempMesh.vertices[face[2]][1]));
             cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
             cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
             cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
