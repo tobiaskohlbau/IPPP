@@ -165,12 +165,15 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
 
     m_robot = nullptr;
     switch (m_robotType) {
-        case RobotType::Point:            
+        case RobotType::Point:
             for (size_t i = 0; i < 2; ++i) {
                 min2[i] = bottomLeft[i];
                 max2[i] = topRight[i];
             }
             m_robot = std::shared_ptr<RobotBase>(new PointRobot(std::make_pair(min2, max2)));
+            break;
+        case RobotType::Serial2D:
+            m_robot = std::shared_ptr<RobotBase>(new SerialRobot2D);
             break;
         case RobotType::Triangle2D:
             for (size_t i = 0; i < 2; ++i) {

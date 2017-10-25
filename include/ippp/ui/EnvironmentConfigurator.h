@@ -30,7 +30,7 @@ namespace ippp {
 
 enum class FactoryType { ModelFCL, ModelPQP, ModelTriangle2D };
 
-enum class RobotType { Jaco, Kuka, Point, Triangle2D, Serial, Mobile };
+enum class RobotType { Jaco, Kuka, Point, Triangle2D, Serial, Serial2D, Mobile };
 
 /*!
 * \brief   Class EnvironmentConfigurator constructs the environment of the planner

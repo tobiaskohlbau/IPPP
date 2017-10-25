@@ -36,21 +36,18 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/PointRobot.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/RobotBase.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/SerialRobot.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/SerialRobot2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/robot/TriangleRobot2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelContainer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryPqp.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryTriangle2D.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryFcl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFcl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelPqp.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelTriangle2D.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/PointModel.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/ui/Configurator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ui/EnvironmentConfigurator.cpp)
-
-IF (${BUILD_FCL})
-    list(APPEND SRCS
-            ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFactoryFcl.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/environment/model/ModelFcl.cpp)
-ENDIF()
 
 set(SRCS "${SRCS}" PARENT_SCOPE)
