@@ -20,6 +20,7 @@
 #define COLLISIONDETECTIONTRIANGLEROBOT_HPP
 
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
+#include <ippp/core/util/UtilCollision.hpp>
 #include <ippp/environment/cad/CadDrawing.h>
 #include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/environment/robot/TriangleRobot2D.h>
@@ -39,14 +40,13 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<dim> {
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   private:
-    bool checkPoint2D(double x, double y);
-    bool checkTriangleRobot(const Vector<dim> &config);
+    bool checkTriangles(const Matrix4 &T, const std::vector<Triangle2D> &triangles);
     bool lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b, const Vector3 c);
 
-    std::vector<Triangle2D> m_triangles;
     std::shared_ptr<ModelContainer> m_robotModel;
+    std::vector<Triangle2D> m_baseTriangles;
+
     AABB m_workspaceBounding;
-    std::pair<Vector3, Vector3> m_robotBounding;
     std::vector<Mesh> m_obstacles;
 
     using CollisionDetection<dim>::m_environment;
@@ -56,7 +56,7 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<dim> {
 *  \brief      Standard constructor of the class CollisionDetectionTriangleRobot
 *  \details    Creates local copy of base model and workspace of the robot
 *  \author     Sascha Kaden
-*  \param[in]  robot
+*  \param[in]  Environment
 *  \date       2017-02-19
 */
 template <unsigned int dim>
@@ -68,7 +68,7 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
 
     // set boundaries
     m_workspaceBounding = m_environment->getBoundary();
-    m_robotBounding = std::make_pair(robot->getMinBoundary(), robot->getMaxBoundary());
+    this->setRobotBoundings(std::make_pair(robot->getMinBoundary(), robot->getMaxBoundary()));
 
     if (m_environment->getObstacleNum() == 0) {
         Logging::warning("Empty workspace", this);
@@ -78,7 +78,9 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
     }
 
     // update obstacle models for the 2D collision check, extends the AABB of the obstacle
-    for (auto obstacle : m_obstacles) {
+    for (auto &obstacle : m_obstacles) {
+        for (auto &vertex : obstacle.vertices)
+            vertex[2] = 0;
         Vector3 bottomLeft = obstacle.aabb.corner(AABB::CornerType::BottomLeft);
         Vector3 topRight = obstacle.aabb.corner(AABB::CornerType::TopRight);
         bottomLeft[2] = -1;
@@ -90,8 +92,7 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
         Logging::error("Empty base model", this);
         return;
     } else {
-        m_robotModel = robot->getBaseModel();
-        m_triangles = std::dynamic_pointer_cast<ModelTriangle2D>(m_robotModel)->m_triangles;
+        m_baseTriangles = std::dynamic_pointer_cast<ModelTriangle2D>(robot->getBaseModel())->m_triangles;
     }
 }
 
@@ -104,82 +105,8 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
 */
 template <unsigned int dim>
 bool CollisionDetectionTriangleRobot<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
-    return checkTriangleRobot(config);
-}
-
-/*!
-*  \brief      Check collision of a trajectory of points
-*  \author     Sascha Kaden
-*  \param[in]  configurations
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
-*/
-template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
-    for (auto &config : configs)
-        if (checkTriangleRobot(config))
-            return true;
-
-    return false;
-}
-
-/*!
-*  \brief      Check for 2D point collision
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
-*/
-template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::checkPoint2D(double x, double y) {
-    if (m_workspaceBounding.min()[0] >= x || x >= m_workspaceBounding.max()[0] || m_workspaceBounding.min()[1] >= y ||
-        y >= m_workspaceBounding.max()[1]) {
-        Logging::trace("Config out of workspace bound", this);
+    if (this->checkRobotBounding(config))
         return true;
-    }
-
-    double alpha, beta, gamma;
-    Vector3 p1, p2, p3;
-    for (auto &obstacle : m_obstacles) {
-        // check bounding box to point
-        if (obstacle.aabb.exteriorDistance(Vector3(x, y, 0)) != 0)
-            continue;
-
-        // check if point is in triangle
-        for (auto &face : obstacle.faces) {
-            p1 = obstacle.vertices[face[0]];
-            p2 = obstacle.vertices[face[1]];
-            p3 = obstacle.vertices[face[2]];
-            alpha = ((p2[1] - p3[1]) * (x - p3[0]) + (p3[0] - p2[0]) * (y - p3[1])) /
-                    ((p2[1] - p3[1]) * (p1[0] - p3[0]) + (p3[0] - p2[0]) * (p1[1] - p3[1]));
-            beta = ((p3[1] - p1[1]) * (x - p3[0]) + (p1[0] - p3[0]) * (y - p3[1])) /
-                   ((p2[1] - p3[1]) * (p1[0] - p3[0]) + (p3[0] - p2[0]) * (p1[1] - p3[1]));
-            gamma = 1.0f - alpha - beta;
-
-            if (alpha > 0 && beta > 0 && gamma > 0)
-                return true;
-        }
-    }
-    return false;
-}
-
-/*!
-*  \brief      Check for TriangleRobot collision
-*  \author     Sascha Kaden
-*  \param[in]  configuration
-*  \param[out] binary result of collision, true if in collision
-*  \date       2017-02-19
-*/
-template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::checkTriangleRobot(const Vector<dim> &config) {
-    // check boundary of the robot
-    for (unsigned int i = 0; i < 3; ++i) {
-        if (config[i] < m_robotBounding.first[i] || m_robotBounding.second[i] < config[i]) {
-            Logging::trace("Out of robot boundary", this);
-            return true;
-        }
-    }
 
     if (m_obstacles.empty())
         return false;
@@ -197,13 +124,32 @@ bool CollisionDetectionTriangleRobot<dim>::checkTriangleRobot(const Vector<dim> 
     if (!intersection)
         return false;
 
-    Vector2 t(trafo.second[0], trafo.second[1]);
-    Matrix2 R = trafo.first.block(0, 0, 2, 2);
+    return checkTriangles(trafo, m_baseTriangles);
+}
 
-    Vector2 u, temp;
-    std::vector<Triangle2D> triangles = m_triangles;
-    for (auto triangle : triangles) {
-        triangle.transform(R, t);
+/*!
+*  \brief      Check collision of a trajectory of points
+*  \author     Sascha Kaden
+*  \param[in]  configurations
+*  \param[out] binary result of collision (true if in collision)
+*  \date       2017-02-19
+*/
+template <unsigned int dim>
+bool CollisionDetectionTriangleRobot<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+    for (auto &config : configs)
+        if (checkConfig(config))
+            return true;
+
+    return false;
+}
+
+template <unsigned int dim>
+bool CollisionDetectionTriangleRobot<dim>::checkTriangles(const Matrix4 &T, const std::vector<Triangle2D> &triangles) {
+    std::vector<Triangle2D> tempTriangles = triangles;
+    Matrix2 R2D = T.block<2, 2>(0, 0);
+    Vector2 t2D = T.block<2, 1>(0, 3);
+    for (auto triangle : tempTriangles) {
+        triangle.transform(R2D, t2D);
         Vector3 p1(triangle.getP(1)[0], triangle.getP(1)[1], 0);
         Vector3 p2(triangle.getP(2)[0], triangle.getP(2)[1], 0);
         Vector3 p3(triangle.getP(3)[0], triangle.getP(3)[1], 0);
@@ -219,28 +165,6 @@ bool CollisionDetectionTriangleRobot<dim>::checkTriangleRobot(const Vector<dim> 
                     return true;
             }
         }
-
-        //        u = triangle.getP(2) - triangle.getP(1);
-        //        u /= u.norm();
-        //        for (temp = triangle.getP(1) + u; (temp - triangle.getP(2)).squaredNorm() > 2; temp += u) {
-        //            if (checkPoint2D(temp[0], temp[1])) {
-        //                return true;
-        //            }
-        //        }
-        //        u = triangle.getP(3) - triangle.getP(1);
-        //        u /= u.norm();
-        //        for (temp = triangle.getP(1) + u; (temp - triangle.getP(3)).squaredNorm() > 2; temp += u) {
-        //            if (checkPoint2D(temp[0], temp[1])) {
-        //                return true;
-        //            }
-        //        }
-        //        u = triangle.getP(3) - triangle.getP(2);
-        //        u /= u.norm();
-        //        for (temp = triangle.getP(2) + u; (temp - triangle.getP(3)).squaredNorm() > 2; temp += u) {
-        //            if (checkPoint2D(temp[0], temp[1])) {
-        //                return true;
-        //            }
-        //        }
     }
     return false;
 }
@@ -252,7 +176,8 @@ bool CollisionDetectionTriangleRobot<dim>::lineTriangle(const Vector3 p, const V
     Vector3 pa = a - p;
     Vector3 pb = b - p;
     Vector3 pc = c - p;
-    // Test if pq is inside the edges bc, ca and ab. Done by testing that the signed tetrahedral volumes, computed using scalar
+    // Test if pq is inside the edges bc, ca and ab. Done by testing that the signed tetrahedral volumes, computed using
+    // scalar
     // triple products, are all positive
     double u = pq.dot(pc.cross(pb));
     if (u < 0.0)

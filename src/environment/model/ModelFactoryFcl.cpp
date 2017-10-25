@@ -23,6 +23,9 @@
 
 namespace ippp {
 
+ModelFactoryFcl::ModelFactoryFcl() : ModelFactory("ModelFactory") {
+}
+
 /*!
 *  \brief      Creates an ModelFcl from the passed source cad file.
 *  \details    The model contains the vertices and faces of the loaded cad model.

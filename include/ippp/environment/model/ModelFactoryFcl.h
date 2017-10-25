@@ -31,7 +31,7 @@ namespace ippp {
 */
 class ModelFactoryFcl : public ModelFactory {
   public:
-    ModelFactoryFcl() : ModelFactory("ModelFactory"){};
+    ModelFactoryFcl();
 
     std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
     std::vector<std::shared_ptr<ModelContainer>> createModels(const std::string &filePath);

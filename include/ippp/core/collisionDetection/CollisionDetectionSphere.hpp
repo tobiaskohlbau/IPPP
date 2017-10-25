@@ -87,7 +87,7 @@ bool CollisionDetectionSphere<dim>::checkConfig(const Vector<dim> &config, Colli
         std::vector<AABB> robotAABBs;
         for (unsigned int i = 0; i < m_robots.size(); ++i) {
             auto trafo = m_robots[i]->getTransformation(singleConfigs[i]);
-            robotAABBs.push_back(util::translateAABB(m_robotAABBs[i], trafo.second));
+            robotAABBs.push_back(util::translateAABB(m_robotAABBs[i], trafo));
         }
         // check collisions
         if (checkRobots(robotAABBs, data))
@@ -97,7 +97,7 @@ bool CollisionDetectionSphere<dim>::checkConfig(const Vector<dim> &config, Colli
                 return true;
     } else {
         auto trafo = m_robots[0]->getTransformation(config);
-        AABB robotAABB = util::translateAABB(m_robotAABBs[0], trafo.second);
+        AABB robotAABB = util::translateAABB(m_robotAABBs[0], trafo);
         return checkObstacles(robotAABB);
     }
 

@@ -19,12 +19,13 @@
 #ifndef COLLISIONDETECTIONFCL_HPP
 #define COLLISIONDETECTIONFCL_HPP
 
-#include <fcl/fcl.h>
+#include <fcl/BVH/BVH_model.h>
+#include <fcl/collision.h>
 
 #include <ippp/core/collisionDetection/CollisionDetection.hpp>
 #include <ippp/core/util/UtilCollision.hpp>
-#include <ippp/environment/SerialRobot.hpp>
 #include <ippp/environment/model/ModelFcl.h>
+#include <ippp/environment/robot/SerialRobot.h>
 
 namespace ippp {
 
@@ -49,8 +50,8 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
                   Vector3 &t2);
 
     // models for collision detection
-    fcl::CollisionObject<double> *o1 = nullptr;
-    fcl::CollisionObject<double> *o2 = nullptr;
+    fcl::CollisionObject *o1 = nullptr;
+    fcl::CollisionObject *o2 = nullptr;
 
     Matrix3 m_identity;
     Vector3 m_zeroVec;
