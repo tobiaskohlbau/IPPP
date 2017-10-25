@@ -37,10 +37,10 @@ class Joint {
     Joint(double minBound, double maxBound, std::shared_ptr<ModelContainer> model);
 
     void setModel(std::shared_ptr<ModelContainer> &model);
-    std::shared_ptr<ModelContainer> getModel();
+    std::shared_ptr<ModelContainer> getModel() const;
 
     void setBoundaries(double minBound, double maxBound);
-    void getBoundaries(double &minBound, double &maxBound);
+    std::pair<double, double> getBoundaries() const;
 
   private:
     double m_minBound = 0;
