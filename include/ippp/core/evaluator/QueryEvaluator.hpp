@@ -82,7 +82,7 @@ bool QueryEvaluator<dim>::evaluate() {
             continue;
 
         bool found = false;
-        for (size_t index = m_lastNodeIndex; index < m_graph->size(); ++index) {
+        for (size_t index = m_lastNodeIndex; index < m_graph->nodeSize(); ++index) {
             if (m_metric->calcSimpleDist(m_targets[targetIndex], m_graph->getNode(index)->getValues()) < m_simplifiedDist) {
                 found = true;
                 m_validTargets[targetIndex] = true;
