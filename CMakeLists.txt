@@ -22,7 +22,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_definitions(-D_USE_MATH_DEFINES)
 
-option(BUILD_FCL "Build FCL collision lib")
 option(BUILD_EXAMPLES "Build the examples")
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_BENCHMARK "Build optional benchmark classes")
@@ -30,6 +29,8 @@ option(BUILD_BENCHMARK "Build optional benchmark classes")
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 find_package(assimp CONFIG REQUIRED)
+find_package(fcl REQUIRED)
+find_package(ccd CONFIG QUIET)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(PQP REQUIRED)
 find_package(Threads REQUIRED)
@@ -37,19 +38,15 @@ set (NLOHMANN_JSON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/third_party/nlohmann-json/s
 
 SET(LIBRARIES
         ${PQP_LIBRARIES}
-        ${ASSIMP_LIBRARIES})
+        ${ASSIMP_LIBRARIES}
+        ${FCL_LIBRARIES}
+        ${CCD_LIBRARIES})
 
 # source files
 ADD_SUBDIRECTORY(include/ippp)
 ADD_SUBDIRECTORY(src)
 
 # options
-IF (${BUILD_FCL})
-    find_package(fcl CONFIG REQUIRED)
-    find_package(ccd QUIET)
-    include_directories(${FCL_INCLUDE_DIRS})
-    LIST(APPEND LIBRARIES ${FCL_LIBRARIES} ${CCD_LIBRARIES})
-ENDIF()
 IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)
 ENDIF()
@@ -71,6 +68,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_SOURCE_DIR}/include
         ${ASSIMP_INCLUDE_DIR}
         ${EIGEN3_INCLUDE_DIR}
+        ${FCL_INCLUDE_DIRS}
         ${PQP_INCLUDE_DIR}
         ${NLOHMANN_JSON_INCLUDE_DIR})
 
