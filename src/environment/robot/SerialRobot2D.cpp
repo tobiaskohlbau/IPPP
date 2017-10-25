@@ -18,9 +18,7 @@
 
 #include <ippp/environment/robot/SerialRobot2D.h>
 
-#include <ippp/core/util/Utility.h>
-#include <ippp/environment/model/ModelFactoryTriangle2D.h>
-#include <ippp/environment/model/ModelFactoryPQP.h>
+#include <ippp/environment/model/ModelFactoryPqp.h>
 
 namespace ippp {
 

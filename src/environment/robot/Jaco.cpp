@@ -18,8 +18,6 @@
 
 #include <ippp/environment/robot/Jaco.h>
 
-#include <ippp/core/util/Utility.h>
-
 namespace ippp {
 
 /*!

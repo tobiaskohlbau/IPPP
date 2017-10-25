@@ -19,6 +19,8 @@
 #ifndef KDTREE_HPP
 #define KDTREE_HPP
 
+#include <memory>
+
 #include <ippp/core/dataObj/KDNode.hpp>
 #include <ippp/core/neighborFinders/NeighborFinder.hpp>
 

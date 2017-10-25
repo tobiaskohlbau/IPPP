@@ -20,9 +20,10 @@
 #define STATISTICCOLLECTOR_H
 
 #include <functional>
+#include <iostream>
+#include <memory>
 #include <mutex>
 #include <vector>
-#include <iostream>
 
 #include <ippp/core/Identifier.h>
 #include <ippp/core/statistic/StatisticContainer.h>
@@ -37,7 +38,7 @@ namespace ippp {
 class StatisticCollector : public Identifier {
   public:
     StatisticCollector(const std::string &name);
-    
+
     void addContainer(const std::shared_ptr<StatisticContainer> &container);
     std::shared_ptr<StatisticContainer> getContainer(const size_t hast);
     void initialize();
