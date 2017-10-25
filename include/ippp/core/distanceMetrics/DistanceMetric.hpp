@@ -24,6 +24,7 @@
 #include <ippp/core/Identifier.h>
 #include <ippp/core/dataObj/Node.hpp>
 #include <ippp/core/types.h>
+#include <ippp/core/util/Logging.h>
 
 namespace ippp {
 
@@ -79,7 +80,8 @@ double DistanceMetric<dim>::calcDist(const std::shared_ptr<Node<dim>> &source, c
 *  \date       2017-10-08
 */
 template <unsigned int dim>
-double DistanceMetric<dim>::calcSimpleDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const {
+double DistanceMetric<dim>::calcSimpleDist(const std::shared_ptr<Node<dim>> &source,
+                                           const std::shared_ptr<Node<dim>> &target) const {
     return calcSimpleDist(source->getValues(), target->getValues());
 }
 

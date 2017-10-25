@@ -21,6 +21,7 @@
 
 #include <ippp/core/Identifier.h>
 #include <ippp/core/distanceMetrics/DistanceMetric.hpp>
+#include <ippp/core/util/Logging.h>
 
 namespace ippp {
 
