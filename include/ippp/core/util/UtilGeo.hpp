@@ -51,6 +51,34 @@ constexpr double toDeg() {
 }
 
 /*!
+*  \brief      Create 2D rotation matrix from rad
+*  \author     Sascha Kaden
+*  \param[in]  deg
+*  \param[out] rotation matrix
+*  \date       2016-11-15
+*/
+static Matrix2 getRotMat2D(const double rad) {
+    Eigen::Rotation2D<double> R(rad);
+    return R.toRotationMatrix();
+}
+
+/*!
+*  \brief      Create 3D rotation matrix from rad
+*  \author     Sascha Kaden
+*  \param[in]  deg in x direction
+*  \param[in]  deg in y direction
+*  \param[in]  deg in z direction
+*  \param[out] rotation matrix
+*  \date       2016-11-15
+*/
+static Matrix3 getRotMat3D(const double radX, const double radY, const double radZ) {
+    Matrix3 R;
+    R = Eigen::AngleAxisd(radX, Eigen::Vector3d::UnitX()) * Eigen::AngleAxisd(radY, Eigen::Vector3d::UnitY()) *
+        Eigen::AngleAxisd(radZ, Eigen::Vector3d::UnitZ());
+    return R;
+}
+
+/*!
 *  \brief      Create transformation matrix T from rotation R and translation t
 *  \author     Sascha Kaden
 *  \param[in]  rotation matrix
@@ -66,6 +94,21 @@ static Matrix4 createT(const Matrix3 &R, const Vector3 &t) {
 }
 
 /*!
+*  \brief      Create transformation matrix T from rotation R and translation t
+*  \author     Sascha Kaden
+*  \param[in]  pose vector
+*  \param[out] transformation matrix
+*  \date       2017-10-23
+*/
+static Matrix4 createT(const Vector6 &pose) {
+    Matrix4 T = Matrix4::Identity(4, 4);
+    for (unsigned int i = 0; i < 3; ++i)
+        T(i, 3) = pose[i];
+    T.block<3, 3>(0, 0) = getRotMat3D(pose[3], pose[4], pose[5]);
+    return T;
+}
+
+/*!
 *  \brief      Decompose transformation matrix T in rotation R and translation t
 *  \author     Sascha Kaden
 *  \param[in]  transformation matrix
@@ -76,47 +119,6 @@ static Matrix4 createT(const Matrix3 &R, const Vector3 &t) {
 static void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
     R = T.block<3, 3>(0, 0);
     t = T.block<3, 1>(0, 3);
-}
-
-/*!
-*  \brief      Decompose transformation matrix T in rotation R and translation t
-*  \author     Sascha Kaden
-*  \param[in]  transformation matrix
-*  \param[out] rotation matrix
-*  \param[out] translation matrix
-*  \date       2016-08-25
-*/
-static void decomposeT(const Matrix3 &T, Matrix2 &R, Vector2 &t) {
-    R = T.block<2, 2>(0, 0);
-    t = T.block<2, 1>(0, 2);
-}
-
-/*!
-*  \brief      Create 2D rotation matrix from deg
-*  \author     Sascha Kaden
-*  \param[in]  deg
-*  \param[out] rotation matrix
-*  \date       2016-11-15
-*/
-static Matrix2 getRotMat2D(const double rad) {
-    Eigen::Rotation2D<double> R(rad);
-    return R.toRotationMatrix();
-}
-
-/*!
-*  \brief      Create 3D rotation matrix from deg
-*  \author     Sascha Kaden
-*  \param[in]  deg in x direction
-*  \param[in]  deg in y direction
-*  \param[in]  deg in z direction
-*  \param[out] rotation matrix
-*  \date       2016-11-15
-*/
-static Matrix3 getRotMat3D(const double radX, const double radY, const double radZ) {
-    Matrix3 R;
-    R = Eigen::AngleAxisd(radX, Eigen::Vector3d::UnitX()) * Eigen::AngleAxisd(radY, Eigen::Vector3d::UnitY()) *
-        Eigen::AngleAxisd(radZ, Eigen::Vector3d::UnitZ());
-    return R;
 }
 
 /*!
@@ -182,12 +184,12 @@ static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector6 &pose) {
 *  \date       2016-07-07
 */
 static Matrix4 poseVecToMat(const Vector6 &pose) {
-    Matrix3 R = getRotMat3D(pose[3], pose[4], pose[5]);
     Matrix4 T = Matrix4::Identity(4, 4);
+    Matrix3 R = getRotMat3D(pose[3], pose[4], pose[5]);
     T.block<3, 3>(0, 0) = R;
     for (size_t i = 0; i < 3; ++i)
         T(i, 3) = pose[i];
-    
+
     return T;
 }
 
@@ -227,44 +229,27 @@ static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3
 *  \brief      Transforms an AABB with the passed transformations and return the new AABB.
 *  \details    The new AABB has a larger size as the original and the AABB is no more tight!
 *  \author     Sascha Kaden
-*  \param[in]  original aabb
-*  \param[in]  pair with rotation and transformation
-*  \param[out] transformed aabb
-*  \date       2017-06-21
-*/
-static AABB transformAABB(const AABB &a, const std::pair<Matrix2, Vector2> &trafo) {
-    // trafo is pair with rotation and translation
-    Vector3 center(trafo.second[0], trafo.second[1], 0);
-    Vector3 radius = Vector3::Zero(3, 1);
-    Matrix3 R = Matrix3::Identity(3, 3);
-    R.block<2, 2>(0, 0) = trafo.first;
-    for (size_t i = 0; i < 3; i++) {
-        for (size_t j = 0; j < 3; j++) {
-            center[i] += R(i, j) * a.center()[j];
-            radius[i] += std::abs(R(i, j)) * a.diagonal()[j] / 2;
-        }
-    }
-    // return AABB by new construction min and max point
-    return AABB(center - radius, center + radius);
-}
-
-/*!
-*  \brief      Transforms an AABB with the passed transformations and return the new AABB.
-*  \details    The new AABB has a larger size as the original and the AABB is no more tight!
-*  \author     Sascha Kaden
 *  \param[in]  original AABB
 *  \param[in]  pair with rotation and transformation
 *  \param[out] transformed aabb
 *  \date       2017-06-21
 */
-static AABB transformAABB(const AABB &a, const std::pair<Matrix3, Vector3> &trafo) {
+static AABB transformAABB(const AABB &a, const Matrix4 &T) {
     // trafo is pair with rotation and translation
-    Vector3 center(trafo.second);
+    Vector3 min = a.min();
+    Vector3 max = a.max();
+    Vector4 min4  = util::append<3>(min, 1);
+    Vector4 max4  = util::append<3>(max, 1);
+    min4 = T * min4;
+    max4 = T * max4;
+        return AABB(Vector3(min4[0], min4[1], min4[2]), Vector3(max4[0], max4[1], max4[2]));
+
+    Vector3 center(T.block<3,1>(0,3));
     Vector3 radius = Vector3::Zero(3, 1);
     for (size_t i = 0; i < 3; i++) {
         for (size_t j = 0; j < 3; j++) {
-            center[i] += trafo.first(i, j) * a.center()[j];
-            radius[i] += std::abs(trafo.first(i, j)) * a.diagonal()[j] / 2;
+            center[i] += T(i, j) * a.center()[j];
+            radius[i] += std::abs(T(i, j)) * a.diagonal()[j] / 2;
         }
     }
     // return AABB by new construction min and max point
@@ -280,9 +265,9 @@ static AABB transformAABB(const AABB &a, const std::pair<Matrix3, Vector3> &traf
 *  \param[out] transformed aabb
 *  \date       2017-06-21
 */
-static AABB translateAABB(const AABB &a, const Vector3 &t) {
+static AABB translateAABB(const AABB &a, const Matrix4 &T) {
     AABB result(a);
-    result.translate(t);
+    result.translate(T.block<3,1>(0,3));
     return result;
 }
 
