@@ -35,12 +35,12 @@ void testConstructor() {
     Graph<dim> graph1(0, neighborFinder);
     BOOST_CHECK(graph1.autoSort() == false);
     BOOST_CHECK(graph1.getSortCount() == 0);
-    BOOST_CHECK(graph1.size() == 0);
+    BOOST_CHECK(graph1.nodeSize() == 0);
 
     Graph<dim> graph2(10, neighborFinder);
     BOOST_CHECK(graph2.autoSort() == true);
     BOOST_CHECK(graph2.getSortCount() == 10);
-    BOOST_CHECK(graph2.size() == 0);
+    BOOST_CHECK(graph2.nodeSize() == 0);
 }
 
 BOOST_AUTO_TEST_CASE(standardConstructor) {

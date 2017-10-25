@@ -68,6 +68,7 @@ class Node {
     void addChild(const std::shared_ptr<Node> &child, const double edgeCost);
     std::vector<std::shared_ptr<Node>> getChildNodes() const;
     std::vector<std::shared_ptr<Edge<dim>>> getChildEdges() const;
+    size_t getChildSize() const;
     bool isChild(const std::shared_ptr<Node> &child) const;
     void clearChildren();
 
@@ -336,6 +337,17 @@ std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChildNodes() const {
 template <unsigned int dim>
 std::vector<std::shared_ptr<Edge<dim>>> Node<dim>::getChildEdges() const {
     return m_children;
+}
+
+/*!
+*  \brief      Return size of the child edges
+*  \author     Sascha Kaden
+*  \param[out] child size
+*  \date       2017-10-24
+*/
+template <unsigned int dim>
+size_t Node<dim>::getChildSize() const {
+    return m_children.size();
 }
 
 /*!

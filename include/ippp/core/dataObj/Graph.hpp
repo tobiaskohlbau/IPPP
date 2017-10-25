@@ -56,7 +56,8 @@ class Graph : public Identifier {
     bool eraseNode(const std::shared_ptr<Node<dim>> &node);
 
     bool empty() const;
-    size_t size() const;
+    size_t nodeSize() const;
+    size_t edgeSize() const;
     size_t getSortCount() const;
     bool autoSort() const;
     void preserveNodePtr();
@@ -326,14 +327,31 @@ bool Graph<dim>::empty() const {
 }
 
 /*!
-* \brief      Return size of the graph
+* \brief      Return size of the nodes of the graph
 * \author     Sascha Kaden
 * \param[out] size of Node vector
 * \date       2016-08-09
 */
 template <unsigned int dim>
-size_t Graph<dim>::size() const {
+size_t Graph<dim>::nodeSize() const {
     return m_nodes.size();
+}
+
+/*!
+* \brief      Return size of the edges of the graph
+* \author     Sascha Kaden
+* \param[out] size of edges
+* \date       2016-08-09
+*/
+template <unsigned int dim>
+size_t Graph<dim>::edgeSize() const {
+    size_t edgeSize = 0;
+    for (auto &node : m_nodes) {
+        edgeSize += node->getChildSize();
+        if (node->getParentEdge())
+            ++edgeSize;
+    }
+    return edgeSize;
 }
 
 /*!
