@@ -1,6 +1,6 @@
 include(FindPackageHandleStandardArgs)
 
-set(PQP_ROOT_DIR "" CACHE PATH "Folder containing PQP")
+set(PQP_ROOT_DIR "../IPPP_third_party/" CACHE PATH "Folder containing PQP")
 
 find_path(PQP_INCLUDE_DIR PQP.h
     PATHS ${PQP_ROOT_DIR}

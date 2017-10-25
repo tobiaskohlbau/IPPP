@@ -27,7 +27,8 @@ option(BUILD_TESTS "Build tests" ON)
 option(BUILD_BENCHMARK "Build optional benchmark classes")
 
 # external libraries
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
+set(CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
 find_package(assimp CONFIG REQUIRED)
 find_package(fcl REQUIRED)
 find_package(ccd CONFIG QUIET)
@@ -46,6 +47,13 @@ SET(LIBRARIES
 ADD_SUBDIRECTORY(include/ippp)
 ADD_SUBDIRECTORY(src)
 
+if (UNIX)
+    find_package(Threads REQUIRED)
+    set(append ${CMAKE_CXX_FLAGS} "-pthread")
+    LIST(APPEND LIBRARIES pthread)
+
+endif()
+
 # options
 IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)
@@ -55,19 +63,13 @@ IF (${BUILD_TESTS})
     ADD_SUBDIRECTORY(tests)
 ENDIF()
 
-if (UNIX)
-    find_package(Threads REQUIRED)
-    set(append ${CMAKE_CXX_FLAGS} "-pthread")
-    LIST(APPEND LIBRARIES pthread)
-endif()
-
 add_library(${PROJECT_NAME} ${SRCS})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_SOURCE_DIR}/include
         ${ASSIMP_INCLUDE_DIR}
-        ${EIGEN3_INCLUDE_DIR}
+        ${EIGEN3_INCLUDE_DIRS}
         ${FCL_INCLUDE_DIRS}
         ${PQP_INCLUDE_DIR}
         ${NLOHMANN_JSON_INCLUDE_DIR})
