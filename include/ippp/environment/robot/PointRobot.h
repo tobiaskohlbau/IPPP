@@ -32,7 +32,7 @@ namespace ippp {
 class PointRobot : public RobotBase {
   public:
     PointRobot(const std::pair<Vector2, Vector2> &boundary);
-    std::pair<Matrix3, Vector3> getTransformation(const VectorX &config) const override;
+    Matrix4 getTransformation(const VectorX &config) const override;
 };
 
 } /* namespace ippp */

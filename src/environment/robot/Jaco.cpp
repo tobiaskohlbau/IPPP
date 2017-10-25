@@ -56,7 +56,7 @@ Jaco::Jaco() : SerialRobot("Jaco", 6, std::make_pair(util::Vecd(0, 42, 17, 0, 0,
 *  \param[out] euclidean position Vec
 *  \date       2016-08-25
 */
-Vector6 Jaco::directKinematic(const VectorX &angles) {
+Vector6 Jaco::directKinematic(const VectorX &angles)  const {
     std::vector<Matrix4> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos);
@@ -69,7 +69,7 @@ Vector6 Jaco::directKinematic(const VectorX &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-14
 */
-std::vector<Matrix4> Jaco::getJointTrafos(const VectorX &angles) {
+std::vector<Matrix4> Jaco::getJointTrafos(const VectorX &angles)  const {
     // transform form jaco physical angles to dh angles
     Vector6 dhAngles = convertRealToDH(angles);
 
@@ -89,7 +89,7 @@ std::vector<Matrix4> Jaco::getJointTrafos(const VectorX &angles) {
 *  \param[out] D-H angles
 *  \date       2016-07-14
 */
-Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) {
+Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) const{
     Vector6 dhAngles(realAngles);
     dhAngles[0] = -realAngles[0];
     dhAngles[1] = realAngles[1] - util::halfPi();

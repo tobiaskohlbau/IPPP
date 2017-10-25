@@ -32,8 +32,8 @@ MobileRobot::MobileRobot(const unsigned int dim, const std::pair<VectorX, Vector
 *  \param[out] pair with rotation and translation
 *  \date       2017-06-21
 */
-std::pair<Matrix3, Vector3> MobileRobot::getTransformation(const VectorX &config) const {
-    return util::poseVecToRandT(Vector6(config));
+Matrix4 MobileRobot::getTransformation(const VectorX &config) const {
+    return Matrix4();
 }
 
 } /* namespace ippp */

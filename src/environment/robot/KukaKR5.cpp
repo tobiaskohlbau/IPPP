@@ -71,7 +71,7 @@ KukaKR5::KukaKR5()
 *  \param[out] euclidean position Vec
 *  \date       2016-10-22
 */
-Vector6 KukaKR5::directKinematic(const Vector6 &angles) {
+Vector6 KukaKR5::directKinematic(const Vector6 &angles)  const {
     std::vector<Matrix4> trafos = getJointTrafos(angles);
 
     return getTcpPosition(trafos);
@@ -84,7 +84,7 @@ Vector6 KukaKR5::directKinematic(const Vector6 &angles) {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-10-22
 */
-std::vector<Matrix4> KukaKR5::getJointTrafos(const Vector6 &angles) {
+std::vector<Matrix4> KukaKR5::getJointTrafos(const Vector6 &angles)  const {
     Vector6 rads = util::degToRad<6>(angles);
 
     std::vector<Matrix4> trafos;

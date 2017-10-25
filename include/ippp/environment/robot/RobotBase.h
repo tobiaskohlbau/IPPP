@@ -50,7 +50,7 @@ class RobotBase : public Identifier {
     void setPose(const Vector6 &pose);
     Vector6 getPose() const ;
     Matrix4 getPoseMat() const;
-    virtual std::pair<Matrix3, Vector3> getTransformation(const VectorX &config) const = 0;
+    virtual Matrix4 getTransformation(const VectorX &config) const = 0;
 
     void setBaseModel(const std::shared_ptr<ModelContainer> &baseModel);
     std::shared_ptr<ModelContainer> getBaseModel() const;

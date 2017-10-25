@@ -43,8 +43,11 @@ PointRobot::PointRobot(const std::pair<Vector2, Vector2> &boundary)
 *  \param[out] pair with rotation and translation
 *  \date       2017-06-21
 */
-std::pair<Matrix3, Vector3> PointRobot::getTransformation(const VectorX &config) const {
-    return std::make_pair(Matrix3::Identity(3,3), Vector3(config[0], config[1], 0));
+Matrix4 PointRobot::getTransformation(const VectorX &config) const {
+    Matrix4 T = Matrix4::Identity(4, 4);
+    T(0, 3) = config[0];
+    T(0, 3) = config[1];
+    return T;
 }
 
 } /* namespace ippp */

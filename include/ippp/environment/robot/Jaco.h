@@ -32,11 +32,11 @@ namespace ippp {
 class Jaco : public SerialRobot {
   public:
     Jaco();
-    Vector6 directKinematic(const VectorX &angles);
-    std::vector<Matrix4> getJointTrafos(const VectorX &angles);
+    Vector6 directKinematic(const VectorX &angles) const;
+    std::vector<Matrix4> getJointTrafos(const VectorX &angles) const;
 
   private:
-    Vector6 convertRealToDH(const Vector6 &realAngles);
+    Vector6 convertRealToDH(const Vector6 &realAngles) const;
 };
 
 } /* namespace ippp */

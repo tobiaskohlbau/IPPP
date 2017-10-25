@@ -34,17 +34,21 @@ class SerialRobot : public RobotBase {
     SerialRobot(const std::string &name, const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
                 const std::vector<DofType> &dofTypes);
 
-    virtual std::pair<Matrix3, Vector3> getTransformation(const VectorX &config) const ;
-    virtual Vector6 directKinematic(const VectorX &angles) = 0;
-    virtual std::vector<Matrix4> getJointTrafos(const VectorX &angles) = 0;
-    Matrix4 getTrafo(double alpha, double a, double d, double q);
-    Vector6 getTcpPosition(const std::vector<Matrix4> &trafos);
+    virtual Matrix4 getTransformation(const VectorX &config) const;
+    virtual Vector6 directKinematic(const VectorX &angles) const = 0;
+    virtual std::vector<Matrix4> getJointTrafos(const VectorX &angles) const = 0;
+    std::vector<Matrix4> getLinkTrafos(const VectorX &angles) const;
+    Matrix4 getTrafo(double alpha, double a, double d, double q) const;
+    Vector6 getTcpPosition(const std::vector<Matrix4> &trafos) const;
 
-    void setJoints(std::vector<Joint> joints);
-    size_t getNbJoints();
+    void setBaseOffset(const Vector6 &baseOffset);
+    void setBaseOffset(const Matrix4 &baseOffset);
+    Matrix4 getBaseOffset() const;
+    void setJoints(const std::vector<Joint> joints);
+    size_t getNbJoints() const;
 
-    std::shared_ptr<ModelContainer> getModelFromJoint(size_t jointIndex);
-    std::vector<std::shared_ptr<ModelContainer>> getJointModels();
+    std::shared_ptr<ModelContainer> getModelFromJoint(const size_t jointIndex) const;
+    std::vector<std::shared_ptr<ModelContainer>> getJointModels() const;
 
     void saveMeshConfig(const VectorX angles);
     void saveMeshConfig(const std::vector<Matrix4> As);
@@ -54,6 +58,7 @@ class SerialRobot : public RobotBase {
     VectorX m_alpha;
     VectorX m_a;
     VectorX m_d;
+    Matrix4 m_baseOffset;
 };
 
 } /* namespace ippp */
