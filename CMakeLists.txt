@@ -28,8 +28,8 @@ option(BUILD_BENCHMARK "Build optional benchmark classes")
 
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
-set(CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
-find_package(assimp CONFIG REQUIRED)
+list(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
+find_package(assimp REQUIRED)
 find_package(fcl REQUIRED)
 find_package(ccd CONFIG QUIET)
 find_package(Eigen3 CONFIG REQUIRED)
@@ -51,7 +51,6 @@ if (UNIX)
     find_package(Threads REQUIRED)
     set(append ${CMAKE_CXX_FLAGS} "-pthread")
     LIST(APPEND LIBRARIES pthread)
-
 endif()
 
 # options
