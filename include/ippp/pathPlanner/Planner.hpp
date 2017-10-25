@@ -154,12 +154,11 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     m_trajectory->setResolutions(posRes, oriRes);
     std::vector<Vector<dim>> path;
     for (size_t i = 0; i < smoothedNodes.size() - 1; ++i) {
-        std::vector<Vector<dim>> tempConfigs =
-            m_trajectory->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues());
-        for (auto config : tempConfigs) {
+        path.push_back(smoothedNodes[i]->getValues());
+        for (auto config : m_trajectory->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues()))
             path.push_back(config);
-        }
     }
+    path.push_back(smoothedNodes.back()->getValues());
 
     // set the resolution again to the planner resolution
     m_trajectory->setResolutions(plannerRes.first, plannerRes.second);
