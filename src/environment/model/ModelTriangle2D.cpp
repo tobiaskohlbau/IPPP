@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/environment/model/ModelTriangle2D.h>
 #include <include/ippp/environment/cad/CadProcessing.h>
+#include <ippp/environment/model/ModelTriangle2D.h>
 
 namespace ippp {
 
@@ -38,11 +38,9 @@ bool ModelTriangle2D::empty() const {
 }
 
 void ModelTriangle2D::transformModel(const Matrix4 &T) {
-    Matrix2 R;
-    Vector2 t;
-    Matrix3 transformation = T.block<3, 3>(0, 0);
-    util::decomposeT(transformation, R, t);
-    for (auto triangle : m_triangles)
+    Matrix2 R = T.block<2, 2>(0, 0);
+    Vector2 t = T.block<2, 1>(0, 3);
+    for (auto &triangle : m_triangles)
         triangle.transform(R, t);
 
     m_mesh = cad::generateMesh(m_triangles);
@@ -52,7 +50,7 @@ void ModelTriangle2D::transformModel(const Matrix4 &T) {
 void ModelTriangle2D::transformModel(const Vector6 &config) {
     Matrix2 R = util::getRotMat2D(config[2]);
     Vector2 t(config[0], config[1]);
-    for (auto triangle : m_triangles)
+    for (auto &triangle : m_triangles)
         triangle.transform(R, t);
 
     m_mesh = cad::generateMesh(m_triangles);

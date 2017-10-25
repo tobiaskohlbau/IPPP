@@ -54,22 +54,23 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
     // create PQP model
     pqpModel->m_pqpModel.BeginModel();
     // create pqp triangles
-    PQP_REAL p[3][3];
+    
     for (size_t i = 0; i < pqpModel->m_mesh.faces.size(); ++i) {
+        PQP_REAL p[3][3];
         // go through faces
         for (size_t j = 0; j < 3; ++j) {
             // go through face
             int vertex = pqpModel->m_mesh.faces[i][j];
             for (size_t k = 0; k < 3; ++k) {
-                p[j][k] = pqpModel->m_mesh.faces[vertex][k];
+                p[j][k] = pqpModel->m_mesh.vertices[vertex][k];
             }
         }
         pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], static_cast<int>(i));
     }
     pqpModel->m_pqpModel.EndModel();
-    if (Logging::getLogLevel() == LogLevel::debug) {
+
+    if (Logging::getLogLevel() == LogLevel::trace)
         pqpModel->m_pqpModel.MemUsage(1);
-    }
     return pqpModel;
 }
 
@@ -102,7 +103,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const
                 // go through face
                 int vertex = pqpModel->m_mesh.faces[i][j];
                 for (size_t k = 0; k < 3; ++k) {
-                    p[j][k] = pqpModel->m_mesh.faces[vertex][k];
+                    p[j][k] = pqpModel->m_mesh.vertices[vertex][k];
                 }
             }
             pqpModel->m_pqpModel.AddTri(p[0], p[1], p[2], static_cast<int>(i));
