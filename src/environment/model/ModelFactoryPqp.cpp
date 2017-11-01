@@ -60,7 +60,7 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
         // go through faces
         for (size_t j = 0; j < 3; ++j) {
             // go through face
-            int vertex = pqpModel->m_mesh.faces[i][j];
+            size_t vertex = pqpModel->m_mesh.faces[i][j];
             for (size_t k = 0; k < 3; ++k) {
                 p[j][k] = pqpModel->m_mesh.vertices[vertex][k];
             }
@@ -101,7 +101,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const
             // go through faces
             for (size_t j = 0; j < 3; ++j) {
                 // go through face
-                int vertex = pqpModel->m_mesh.faces[i][j];
+                size_t vertex = pqpModel->m_mesh.faces[i][j];
                 for (size_t k = 0; k < 3; ++k) {
                     p[j][k] = pqpModel->m_mesh.vertices[vertex][k];
                 }

@@ -198,10 +198,12 @@ bool importBYU(const std::string &filePath, Mesh &mesh) {
         Vector3i vec;
         std::string::size_type sz;
         for (unsigned int j = 0; j < 3; ++j) {
-            vec[j] = std::stoi(str, &sz);
-            if (vec[j] < 0) {
-                vec[j] = -vec[j] - 1;
+            int index = std::stoi(str, &sz);
+            if (index < 0) {
+                vec[j] = -index - 1;
                 break;
+            } else {
+                vec[j] = index;
             }
             vec[j] -= 1;
             str = str.substr(sz);
@@ -337,7 +339,7 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
     pMesh->mVertices = new aiVector3D[vertices.size()];
     pMesh->mNumVertices = static_cast<unsigned int>(vertices.size());
     for (size_t i = 0; i < vertices.size(); ++i)
-        pMesh->mVertices[i] = aiVector3D(vertices[i].x(), vertices[i].y(), vertices[i].z());
+        pMesh->mVertices[i] = aiVector3D(static_cast<ai_real>(vertices[i].x()), static_cast<ai_real>(vertices[i].y()), static_cast<ai_real>(vertices[i].z()));
 
     pMesh->mFaces = new aiFace[faces.size()];
     pMesh->mNumFaces = static_cast<unsigned int>(faces.size());
@@ -346,9 +348,8 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
 
         face.mIndices = new unsigned int[3];
         face.mNumIndices = 3;
-        for (size_t j = 0; j < 3; ++j) {
-            face.mIndices[j] = faces[i][j];
-        }
+        for (size_t j = 0; j < 3; ++j)
+            face.mIndices[j] = static_cast<unsigned int>(faces[i][j]);
     }
     return scene;
 }

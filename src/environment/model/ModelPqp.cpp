@@ -92,7 +92,7 @@ void ModelPqp::updatePqpModel() {
         // go through faces
         for (size_t j = 0; j < 3; ++j) {
             // go through face
-            int vert = m_mesh.faces[i][j];
+            size_t vert = m_mesh.faces[i][j];
             for (size_t k = 0; k < 3; ++k) {
                 p[j][k] = m_mesh.vertices[vert][k];
             }

@@ -38,6 +38,7 @@ using Vector4 = Eigen::Matrix<double, 4, 1>;
 using Vector5 = Eigen::Matrix<double, 5, 1>;
 using Vector6 = Eigen::Matrix<double, 6, 1>;
 using VectorX = Eigen::Matrix<double, Eigen::Dynamic, 1>;
+using Vector3i = Eigen::Matrix<size_t, 3, 1>;
 
 // Eigen Matrices
 template <unsigned int dim>
@@ -46,8 +47,8 @@ using Matrix2 = Eigen::Matrix2d;
 using Matrix3 = Eigen::Matrix3d;
 using Matrix4 = Eigen::Matrix4d;
 using MatrixX = Eigen::MatrixXd;
-using Vector3i = Eigen::Matrix<int, 3, 1>;
 
+// Eigen Geometry
 using AABB = Eigen::AlignedBox<double, 3>;
 using Transform = Eigen::Transform<double, 3, Eigen::AffineCompact>;
 using Translation = Eigen::Translation<double, 3>;
