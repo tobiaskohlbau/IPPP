@@ -24,9 +24,9 @@ find_package(OpenCV REQUIRED QUIET)
 if (OpenCV_VERSION VERSION_LESS "2.4.0")
     message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
 elseif(OpenCV_VERSION VERSION_LESS "3.0.0")
-    find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+    find_package(OpenCV REQUIRED QUIET COMPONENTS opencv_core opencv_highgui opencv_imgproc)
 else()
-    find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
+    find_package(OpenCV REQUIRED QUIET COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
 endif()
 
 set(ADDITIONAL_LIBRARIES
