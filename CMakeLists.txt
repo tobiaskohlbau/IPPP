@@ -29,29 +29,34 @@ option(BUILD_BENCHMARK "Build optional benchmark classes")
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
 list(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
-find_package(assimp REQUIRED)
+if (UNIX)
+    find_package(assimp REQUIRED)
+    find_package(ccd REQUIRED)
+ else(UNIX)
+    find_package(assimp CONFIG REQUIRED)
+    find_package(ccd CONFIG REQUIRED)
+endif()
 find_package(fcl REQUIRED)
-find_package(ccd CONFIG QUIET)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(PQP REQUIRED)
 find_package(Threads REQUIRED)
 set (NLOHMANN_JSON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/third_party/nlohmann-json/src/)
 
 SET(LIBRARIES
-        ${PQP_LIBRARIES}
         ${ASSIMP_LIBRARIES}
-        ${FCL_LIBRARIES}
-        ${CCD_LIBRARIES})
-
-# source files
-ADD_SUBDIRECTORY(include/ippp)
-ADD_SUBDIRECTORY(src)
+        ${CCD_LIBRARIES}
+        ${fcl_LIBRARIES}
+        ${PQP_LIBRARIES})
 
 if (UNIX)
     find_package(Threads REQUIRED)
     set(append ${CMAKE_CXX_FLAGS} "-pthread")
     LIST(APPEND LIBRARIES pthread)
 endif()
+
+# source files
+ADD_SUBDIRECTORY(include/ippp)
+ADD_SUBDIRECTORY(src)
 
 # options
 IF (${BUILD_EXAMPLES})
@@ -68,6 +73,7 @@ target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_SOURCE_DIR}/include
         ${ASSIMP_INCLUDE_DIR}
+        ${CCD_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIRS}
         ${FCL_INCLUDE_DIRS}
         ${PQP_INCLUDE_DIR}

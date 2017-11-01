@@ -23,6 +23,7 @@
 #include <ippp/core/collisionDetection/CollisionDetection2D.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionAABB.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionAlwaysValid.hpp>
+#include <ippp/core/collisionDetection/CollisionDetectionFcl.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionPqp.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionSphere.hpp>
 #include <ippp/core/collisionDetection/CollisionDetectionTriangleRobot.hpp>
@@ -72,8 +73,8 @@
 #include <ippp/core/trajectoryPlanner/RotateAtS.hpp>
 
 #include <ippp/core/statistic/StatisticCollector.h>
-#include <ippp/core/statistic/StatisticCountCollector.h>
 #include <ippp/core/statistic/StatisticContainer.h>
+#include <ippp/core/statistic/StatisticCountCollector.h>
 #include <ippp/core/statistic/StatisticSizeTContainer.h>
 #include <ippp/core/statistic/Statistics.h>
 

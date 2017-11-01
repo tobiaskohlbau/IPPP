@@ -18,10 +18,10 @@
 
 SET(LIBRARIES
         IPPP
-        ${PQP_LIBRARIES}
         ${ASSIMP_LIBRARIES}
-        ${fcl_LIBRARIES}
-        ${CCD_LIBRARIES})
+        ${CCD_LIBRARIES}
+        ${FCL_LIBRARIES}
+        ${PQP_LIBRARIES})
 
 MACRO(ADD_IPPP_EXAMPLE name source ADDITIONAL_LIBRARIES)
     ADD_EXECUTABLE(${name} ${source})
