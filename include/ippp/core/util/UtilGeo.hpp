@@ -86,25 +86,9 @@ static Matrix3 getRotMat3D(const double radX, const double radY, const double ra
 *  \param[out] transformation matrix
 *  \date       2016-08-25
 */
-static Matrix4 createT(const Matrix3 &R, const Vector3 &t) {
-    Matrix4 T = Matrix4::Identity(4, 4);
-    T.block<3, 3>(0, 0) = R;
-    T.block<3, 1>(0, 3) = t;
-    return T;
-}
-
-/*!
-*  \brief      Create transformation matrix T from rotation R and translation t
-*  \author     Sascha Kaden
-*  \param[in]  pose vector
-*  \param[out] transformation matrix
-*  \date       2017-10-23
-*/
-static Matrix4 createT(const Vector6 &pose) {
-    Matrix4 T = Matrix4::Identity(4, 4);
-    for (unsigned int i = 0; i < 3; ++i)
-        T(i, 3) = pose[i];
-    T.block<3, 3>(0, 0) = getRotMat3D(pose[3], pose[4], pose[5]);
+static Transform createTransform(const Matrix3 &R, const Vector3 &t) {
+    Transform T;
+    T = Translation(t) * R;
     return T;
 }
 
@@ -122,61 +106,6 @@ static void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
 }
 
 /*!
-*  \brief      Convert pose config to R and t in 2D
-*  \author     Sascha Kaden
-*  \param[in]  pose Vector
-*  \param[out] rotation matrix
-*  \param[out] translation vector
-*  \date       2016-11-15
-*/
-static void poseVecToRandT(const Vector3 &pose, Matrix2 &R, Vector2 &t) {
-    R = getRotMat2D(pose[2]);
-    t(0) = pose[0];
-    t(1) = pose[1];
-}
-
-/*!
-*  \brief      Convert pose config to R and t in 2D
-*  \author     Sascha Kaden
-*  \param[in]  pose Vector
-*  \param[out] rotation matrix and translation vector
-*  \date       2017-06-20
-*/
-static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector3 &pose) {
-    Vector3 t(pose[0], pose[1], 0);
-    Matrix3 R = Matrix3::Identity(3, 3);
-    R.block<2, 2>(0, 0) = getRotMat2D(pose[2]);
-    return std::make_pair(R, t);
-}
-
-/*!
-*  \brief      Convert pose config to R and t in 3D
-*  \author     Sascha Kaden
-*  \param[in]  pose Vector
-*  \param[out] rotation matrix
-*  \param[out] translation vector
-*  \date       2016-11-15
-*/
-static void poseVecToRandT(const Vector6 &pose, Matrix3 &R, Vector3 &t) {
-    R = getRotMat3D(pose[3], pose[4], pose[5]);
-    for (unsigned int i = 0; i < 3; ++i)
-        t(i) = pose[i];
-}
-
-/*!
-*  \brief      Convert pose Vec to R and t in 2D
-*  \author     Sascha Kaden
-*  \param[in]  pose Vector
-*  \param[out] rotation matrix and translation vector
-*  \date       2017-06-20
-*/
-static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector6 &pose) {
-    Vector3 t(pose[0], pose[1], pose[2]);
-    Matrix3 R = getRotMat3D(pose[3], pose[4], pose[5]);
-    return std::make_pair(R, t);
-}
-
-/*!
 *  \brief      Convert pose config to transformation matrix
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
@@ -188,19 +117,6 @@ static Transform poseVecToTransform(const Vector6 &pose) {
     T = Translation(Vector3(pose[0], pose[1], pose[2])) * Eigen::AngleAxisd(pose[3], Eigen::Vector3d::UnitX()) * Eigen::AngleAxisd(pose[4], Eigen::Vector3d::UnitY()) *
         Eigen::AngleAxisd(pose[5], Eigen::Vector3d::UnitZ());
     return T;
-}
-
-/*!
-*  \brief      Convert transformation matrix into poseVec
-*  \author     Sascha Kaden
-*  \param[in]  transformation matrix
-*  \param[out] pose Vector (angles)
-*  \date       2016-07-07
-*/
-static Vector6 poseMatToVec(const Matrix4 &pose) {
-    Vector3 vec(pose.block<3, 1>(0, 3));
-    Vector3 euler(pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2));
-    return util::append<3, 3>(vec, euler);
 }
 
 /*!

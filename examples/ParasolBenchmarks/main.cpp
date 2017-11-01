@@ -3,18 +3,10 @@
 #include <memory>
 #include <string>
 
-//#include <gperftools/profiler.h>
-
-//#include <boost/filesystem.hpp>
-//#include <boost/range/iterator_range.hpp>
-
 #include <ippp/Core.h>
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
 #include <ippp/UI.h>
-#include <ippp/core/collisionDetection/CollisionDetectionFcl.hpp>
-#include <ippp/environment/model/ModelFactoryFcl.h>
-//#include <ippp/environment/model/ModelFactoryFcl.h>
 
 #include <ui/BenchmarkReader.h>
 

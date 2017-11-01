@@ -32,59 +32,32 @@ BOOST_AUTO_TEST_CASE(pi) {
     BOOST_CHECK(util::pi() > 3.141591);
 }
 
-BOOST_AUTO_TEST_CASE(decomposeT) {
-    Matrix4 T0 = Matrix4::Zero(4, 4);
-    Matrix4 T1 = Matrix4::Identity(4, 4);
-    Matrix3 R0, R1;
-    Vector3 t0, t1;
-    util::decomposeT(T0, R0, t0);
-    util::decomposeT(T1, R1, t1);
-
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            BOOST_CHECK(R0(i, j) == 0);
-            if (i != j)
-                BOOST_CHECK(R1(i, j) == 0);
-            else
-                BOOST_CHECK(R1(i, j) == 1);
-        }
-        BOOST_CHECK(t0(i, 0) == 0);
-        BOOST_CHECK(t1(i, 0) == 0);
-    }
-}
-
 BOOST_AUTO_TEST_CASE(poseVecToMat) {
     Vector6 poseZero = util::Vecd(0, 0, 0, 0, 0, 0);
-    ippp::Transform poseMat = util::poseVecToTransform(poseZero);
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            if (i == j) {
-                BOOST_CHECK(poseMat(i, j) == 1);
-            } else {
-                BOOST_CHECK(poseMat(i, j) == 0);
-            }
-        }
-    }
-    Vector6 poseVec = util::transformToVec(poseMat);
+    ippp::Transform pose = util::poseVecToTransform(poseZero);
+    for (size_t i = 0; i < 3; ++i)
+        BOOST_CHECK(pose.translation()(i) == 0);
+
+    Vector6 poseVec = util::transformToVec(pose);
     for (int i = 0; i < 6; ++i)
-        if (poseVec[i] < 0.0001 && poseVec[i] > -0.0001)
+        if (poseVec[i] < ippp::EPSILON && poseVec[i] > -ippp::EPSILON)
             poseVec[i] = 0;
     for (int i = 0; i < 6; ++i)
         BOOST_CHECK(poseZero[i] == poseVec[i]);
 
     Vector6 poseTwo = util::Vecd(1, 1, 1, 0, 0, 0);
-    poseMat = util::poseVecToTransform(poseTwo);
-    for (int i = 0; i < 4; ++i)
-        BOOST_CHECK(poseMat(i, 3) == 1);
+    pose = util::poseVecToTransform(poseTwo);
+    for (size_t i = 0; i < 3; ++i)
+        BOOST_CHECK(pose.translation()(i) == 1);
 
     for (double x = 0; x < 359; x += 5) {
         for (double y = 0; y < 359; y += 5) {
             for (double z = 0; z < 359; z += 5) {
-                poseMat = util::poseVecToTransform(poseTwo);
-                poseVec = util::transformToVec(poseMat);
+                pose = util::poseVecToTransform(poseTwo);
+                poseVec = util::transformToVec(pose);
                 for (int i = 0; i < 6; ++i) {
-                    BOOST_CHECK(poseTwo[i] <= poseVec[i] + 0.0001);
-                    BOOST_CHECK(poseTwo[i] >= poseVec[i] - 0.0001);
+                    BOOST_CHECK(poseTwo[i] <= poseVec[i] + ippp::EPSILON);
+                    BOOST_CHECK(poseTwo[i] >= poseVec[i] - ippp::EPSILON);
                 }
             }
         }
@@ -102,10 +75,10 @@ BOOST_AUTO_TEST_CASE(degToRad) {
     for (int i = 0; i < 11; ++i)
         temp2[i] = deg[i] * util::toRad();
     for (int i = 0; i < deg.rows(); ++i) {
-        BOOST_CHECK(rad[i] <= temp1[i] + 0.0001);
-        BOOST_CHECK(rad[i] >= temp1[i] - 0.0001);
-        BOOST_CHECK(rad[i] <= temp2[i] + 0.0001);
-        BOOST_CHECK(rad[i] >= temp2[i] - 0.0001);
+        BOOST_CHECK(rad[i] <= temp1[i] + ippp::EPSILON);
+        BOOST_CHECK(rad[i] >= temp1[i] - ippp::EPSILON);
+        BOOST_CHECK(rad[i] <= temp2[i] + ippp::EPSILON);
+        BOOST_CHECK(rad[i] >= temp2[i] - ippp::EPSILON);
     }
 }
 
@@ -120,10 +93,10 @@ BOOST_AUTO_TEST_CASE(radToDeg) {
     for (int i = 0; i < 11; ++i)
         temp2[i] = rad[i] * util::toDeg();
     for (int i = 0; i < deg.rows(); ++i) {
-        BOOST_CHECK(deg[i] <= temp1[i] + 0.0001);
-        BOOST_CHECK(deg[i] >= temp1[i] - 0.0001);
-        BOOST_CHECK(deg[i] <= temp2[i] + 0.0001);
-        BOOST_CHECK(deg[i] >= temp2[i] - 0.0001);
+        BOOST_CHECK(deg[i] <= temp1[i] + ippp::EPSILON);
+        BOOST_CHECK(deg[i] >= temp1[i] - ippp::EPSILON);
+        BOOST_CHECK(deg[i] <= temp2[i] + ippp::EPSILON);
+        BOOST_CHECK(deg[i] >= temp2[i] - ippp::EPSILON);
     }
 }
 
