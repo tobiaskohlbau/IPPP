@@ -11,6 +11,8 @@
 # CCD_LIBRARIES
 # CCD_VERSION
 
+set(CCD_ROOT_DIR "../IPPP_third_party/" CACHE PATH "ccd root dir")
+
 find_package(PkgConfig QUIET)
 
 # Check to see if pkgconfig is installed.
@@ -19,11 +21,16 @@ pkg_check_modules(PC_CCD ccd QUIET)
 find_path(CCD_INCLUDE_DIRS
         NAMES ccd/ccd.h
         HINTS ${PC_CCD_INCLUDEDIR}
-        PATHS "${CMAKE_INSTALL_PREFIX}/include")
+        PATHS "${CMAKE_INSTALL_PREFIX}/include" "${CCD_ROOT_DIR}/include"
+        PATH_SUFFIXES
+        include)
 
-    find_library(CCD_LIBRARIES
-            NAMES ccd
-            HINTS ${PC_CCD_LIBDIR})
+find_library(CCD_LIBRARIES
+        NAMES ccd
+        HINTS ${PC_CCD_LIBDIR}
+        PATHS "${CMAKE_INSTALL_PREFIX}" "${CCD_ROOT_DIR}"
+        PATH_SUFFIXES
+        lib)
 
 # Version
 set(CCD_VERSION ${PC_CCD_VERSION})

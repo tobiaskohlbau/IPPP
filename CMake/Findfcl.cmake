@@ -16,20 +16,23 @@ find_package(PkgConfig QUIET)
 set(FCL_ROOT_DIR "../IPPP_third_party/" CACHE PATH "FCL root dir")
 
 # Check to see if pkgconfig is installed.
-pkg_check_modules(PC_FCL fcl QUIET)
+pkg_check_modules(PC_FCL FCL QUIET)
 
 # Include directories
 find_path(FCL_INCLUDE_DIRS
         NAMES fcl/collision.h
         HINTS ${PC_FCL_INCLUDEDIR}
-        PATHS "${CMAKE_INSTALL_PREFIX}/include" ${FCL_ROOT_DIR}
+        PATHS "${CMAKE_INSTALL_PREFIX}/include" "${FCL_ROOT_DIR}/include"
         PATH_SUFFIXES
         include)
 
 # Libraries
 find_library(FCL_LIBRARIES
         NAMES fcl
-        HINTS ${PC_FCL_LIBDIR})
+        HINTS ${PC_FCL_LIBDIR}
+        PATHS "${CMAKE_INSTALL_PREFIX}" "${FCL_ROOT_DIR}"
+        PATH_SUFFIXES
+        lib)
 
 # Version
 set(FCL_VERSION ${PC_FCL_VERSION})
