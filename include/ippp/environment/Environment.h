@@ -45,13 +45,13 @@ class Environment : public Identifier {
 
     void addObstacle(const std::shared_ptr<ModelContainer> &model);
     void addObstacles(const std::vector<std::shared_ptr<ModelContainer>> &models);
-    std::shared_ptr<ModelContainer> getObstacle(const unsigned int index) const;
+    std::shared_ptr<ModelContainer> getObstacle(const size_t index) const;
     std::vector<std::shared_ptr<ModelContainer>> getObstacles() const;
     size_t getObstacleNum() const;
 
     void addRobot(const std::shared_ptr<RobotBase> &robot);
     std::shared_ptr<RobotBase> getRobot() const;
-    std::shared_ptr<RobotBase> getRobot(const unsigned int index) const;
+    std::shared_ptr<RobotBase> getRobot(const size_t index) const;
     std::vector<std::shared_ptr<RobotBase>> getRobots() const;
     size_t numRobots() const;
 
