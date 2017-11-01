@@ -42,16 +42,15 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
     bool checkSerialRobot(const Vector<dim> &config);
     bool checkMobileRobot(const Vector<dim> &config);
 
-    bool checkPQP(PQP_Model *model1, PQP_Model *model2, const Matrix4 &T1, const Matrix4 &T2);
+    bool checkPQP(PQP_Model *model1, PQP_Model *model2, const Transform &T1, const Transform &T2);
 
-    Matrix4 m_identity;
-
+    Transform m_identity;
     AABB m_workspaceBounding;
     std::vector<PQP_Model *> m_obstacles;
+    bool m_workspaceAvaible = false;
 
     PQP_Model *m_baseModel = nullptr;
     bool m_baseMeshAvaible = false;
-    bool m_workspaceAvaible = false;
     std::vector<PQP_Model *> m_jointModels;
 
     using CollisionDetection<dim>::m_environment;
@@ -67,7 +66,7 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
 template <unsigned int dim>
 CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environment> &environment)
     : CollisionDetection<dim>("CollisionDetectionPQP", environment) {
-    m_identity = Matrix4::Identity(4, 4);
+    m_identity = Transform::Identity();
     auto robot = m_environment->getRobot();
     this->setRobotBoundings(std::make_pair(robot->getMinBoundary(), robot->getMaxBoundary()));
     m_workspaceBounding = environment->getBoundary();
@@ -85,6 +84,8 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
             m_obstacles.push_back(&std::static_pointer_cast<ModelPqp>(obstacle)->m_pqpModel);
             m_workspaceAvaible = true;
         }
+    } else {
+        Logging::warning("No obstacles set", this);
     }
 
     if (robot->getRobotCategory() == RobotCategory::serial) {
@@ -119,9 +120,6 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkConfig(const Vector<dim> &config, CollisionData *data) {
-    if (this->checkRobotBounding(config))
-        return true;
-
     if (m_environment->getRobot()->getRobotCategory() == RobotCategory::mobile)
         return checkMobileRobot(config);
     else
@@ -161,9 +159,12 @@ bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &confi
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) {
+    if (this->checkRobotBounding(config))
+        return true;
+
     auto robot = std::dynamic_pointer_cast<SerialRobot>(this->m_environment->getRobot());
     auto linkTrafos = robot->getLinkTrafos(config);
-    auto pose = robot->getPoseMat();
+    auto pose = robot->getPose();
 
     // check models against workspace boundaries
     auto jointModels = robot->getJointModels();
@@ -205,6 +206,9 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) {
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &config) {
+    if (this->checkRobotBounding(config))
+        return true;
+
     auto T = m_environment->getRobot()->getTransformation(config);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {
@@ -230,16 +234,16 @@ bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &config) {
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model *model1, PQP_Model *model2, const Matrix4 &T1, const Matrix4 &T2) {
+bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model *model1, PQP_Model *model2, const Transform &T1, const Transform &T2) {
     PQP_REAL pqpR1[3][3], pqpR2[3][3], pqpT1[3], pqpT2[3];
 
     for (size_t i = 0; i < 3; ++i) {
         for (size_t j = 0; j < 3; ++j) {
-            pqpR1[i][j] = T1(i, j);
-            pqpR2[i][j] = T2(i, j);
+            pqpR1[i][j] = T1.linear()(i, j);
+            pqpR2[i][j] = T2.linear()(i, j);
         }
-        pqpT1[i] = T1(i, 3);
-        pqpT2[i] = T2(i, 3);
+        pqpT1[i] = T1.translation()(i);
+        pqpT2[i] = T2.translation()(i);
     }
 
     PQP_CollideResult cres;

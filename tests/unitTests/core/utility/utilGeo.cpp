@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(decomposeT) {
 
 BOOST_AUTO_TEST_CASE(poseVecToMat) {
     Vector6 poseZero = util::Vecd(0, 0, 0, 0, 0, 0);
-    Matrix4 poseMat = util::poseVecToMat(poseZero);
+    ippp::Transform poseMat = util::poseVecToTransform(poseZero);
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
             if (i == j) {
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(poseVecToMat) {
             }
         }
     }
-    Vector6 poseVec = util::poseMatToVec(poseMat);
+    Vector6 poseVec = util::transformToVec(poseMat);
     for (int i = 0; i < 6; ++i)
         if (poseVec[i] < 0.0001 && poseVec[i] > -0.0001)
             poseVec[i] = 0;
@@ -73,15 +73,15 @@ BOOST_AUTO_TEST_CASE(poseVecToMat) {
         BOOST_CHECK(poseZero[i] == poseVec[i]);
 
     Vector6 poseTwo = util::Vecd(1, 1, 1, 0, 0, 0);
-    poseMat = util::poseVecToMat(poseTwo);
+    poseMat = util::poseVecToTransform(poseTwo);
     for (int i = 0; i < 4; ++i)
         BOOST_CHECK(poseMat(i, 3) == 1);
 
     for (double x = 0; x < 359; x += 5) {
         for (double y = 0; y < 359; y += 5) {
             for (double z = 0; z < 359; z += 5) {
-                poseMat = util::poseVecToMat(poseTwo);
-                poseVec = util::poseMatToVec(poseMat);
+                poseMat = util::poseVecToTransform(poseTwo);
+                poseVec = util::transformToVec(poseMat);
                 for (int i = 0; i < 6; ++i) {
                     BOOST_CHECK(poseTwo[i] <= poseVec[i] + 0.0001);
                     BOOST_CHECK(poseTwo[i] >= poseVec[i] - 0.0001);

@@ -39,7 +39,7 @@ void centerMeshes(std::vector<Mesh> &meshes);
 void centerMesh(Mesh &mesh);
 
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices);
-void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices);
+void transformVertices(const Transform &T, std::vector<Vector3> &vertices);
 std::vector<Vector3> computeNormals(const std::vector<Vector3> &vertices, const std::vector<Vector3i> &faces);
 
 AABB computeAABB(const std::vector<Vector3> &vertices);

@@ -35,7 +35,7 @@ bool PointModel::empty() const {
     return false;
 }
 
-void PointModel::transformModel(const Matrix4 &T) {
+void PointModel::transformModel(const Transform &T) {
 }
 
 void PointModel::transformModel(const Vector6 &config) {

@@ -48,9 +48,9 @@ class RobotBase : public Identifier {
 
   public:
     void setPose(const Vector6 &pose);
-    Vector6 getPose() const ;
-    Matrix4 getPoseMat() const;
-    virtual Matrix4 getTransformation(const VectorX &config) const = 0;
+    void setPose(const Transform &pose);
+    Transform getPose() const;
+    virtual Transform getTransformation(const VectorX &config) const = 0;
 
     void setBaseModel(const std::shared_ptr<ModelContainer> &baseModel);
     std::shared_ptr<ModelContainer> getBaseModel() const;
@@ -68,8 +68,7 @@ class RobotBase : public Identifier {
 
     const unsigned int m_dim;
     const std::vector<DofType> m_dofTypes;
-    Vector6 m_pose;
-    Matrix4 m_poseMat;
+    Transform m_pose;
 
     std::shared_ptr<ModelContainer> m_baseModel;
 };

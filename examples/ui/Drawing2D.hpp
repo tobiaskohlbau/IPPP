@@ -109,7 +109,7 @@ static void drawSerialRobot2D(const Vector<dim> config, const std::shared_ptr<Se
         jointMeshes.push_back(model->m_mesh);
 
     auto AsLinks = robot->getLinkTrafos(config);
-    cad::transformVertices(robot->getPoseMat(), baseMesh.vertices);
+    cad::transformVertices(robot->getPose(), baseMesh.vertices);
     for (size_t i = 0; i < AsLinks.size(); ++i)
         cad::transformVertices(AsLinks[i], jointMeshes[i].vertices);
 
@@ -159,8 +159,9 @@ static void drawTrianglePath(const std::vector<Vector3> configs, const Mesh mesh
 
     for (auto &config : configs) {
         auto tempMesh = mesh;
-        auto T = util::poseVecToRandT(config);
-        cad::transformVertices(util::createT(T.first, T.second), tempMesh.vertices);
+        Vector6 tmpConfig = util::Vecd(config[0], config[1], 0, 0, 0, config[2]);
+        auto T = util::poseVecToTransform(tmpConfig);
+        cad::transformVertices(T, tempMesh.vertices);
         for (auto &face : tempMesh.faces) {
             auto pt1 =
                 cv::Point2i(static_cast<int>(tempMesh.vertices[face[0]][0]), static_cast<int>(tempMesh.vertices[face[0]][1]));

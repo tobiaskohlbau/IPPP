@@ -148,43 +148,54 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
     m_environment = std::shared_ptr<Environment>(new Environment(m_workspaceDim, m_workspceBounding));
 
     std::shared_ptr<ModelFactory> factory;
-    if (m_factoryType == FactoryType::ModelTriangle2D)
-        factory = std::shared_ptr<ModelFactory>(new ModelFactoryTriangle2D);
-    else
-        factory = std::shared_ptr<ModelFactory>(new ModelFactoryPqp);
-
-    for (auto &obstaclePath : m_obstaclePaths) {
-        auto workspace = factory->createModel(obstaclePath);
-        m_environment->addObstacle(workspace);
+    switch (m_factoryType) {
+        case ippp::FactoryType::ModelFCL:
+            factory = std::shared_ptr<ModelFactory>(new ModelFactoryFcl);
+            break;
+        case ippp::FactoryType::ModelPQP:
+            factory = std::shared_ptr<ModelFactory>(new ModelFactoryPqp);
+            break;
+        case ippp::FactoryType::ModelTriangle2D:
+            factory = std::shared_ptr<ModelFactory>(new ModelFactoryTriangle2D);
+            break;
+        default:
+            factory = std::shared_ptr<ModelFactory>(new ModelFactoryPqp);
+            break;
     }
 
-    Vector3 bottomLeft = m_workspceBounding.corner(AABB::CornerType::BottomLeft);
-    Vector3 topRight = m_workspceBounding.corner(AABB::CornerType::TopRight);
-    Vector2 min2, max2;
-    Vector3 min3, max3;
+    for (auto &obstaclePath : m_obstaclePaths)
+        m_environment->addObstacle(factory->createModel(obstaclePath));
 
+    Vector3 min = m_workspceBounding.min();
+    Vector3 max = m_workspceBounding.max();
     m_robot = nullptr;
-    switch (m_robotType) {
-        case RobotType::Point:
-            for (size_t i = 0; i < 2; ++i) {
-                min2[i] = bottomLeft[i];
-                max2[i] = topRight[i];
-            }
-            m_robot = std::shared_ptr<RobotBase>(new PointRobot(std::make_pair(min2, max2)));
-            break;
-        case RobotType::Serial2D:
-            m_robot = std::shared_ptr<RobotBase>(new SerialRobot2D);
-            break;
-        case RobotType::Triangle2D:
-            for (size_t i = 0; i < 2; ++i) {
-                min3[i] = bottomLeft[i];
-                max3[i] = topRight[i];
-            }
-            min3[2] = 0;
-            max3[2] = 360 * util::toRad();
-            auto robotModel = factory->createModel(m_robotFile);
-            m_robot = std::shared_ptr<RobotBase>(new TriangleRobot2D(robotModel, std::make_pair(min3, max3)));
-            break;
+    if (m_robotType == RobotType::Point) {
+        Vector2 tempMin, tempMax;
+        for (size_t i = 0; i < 2; ++i) {
+            tempMin[i] = min[i];
+            tempMax[i] = max[i];
+        }
+        m_robot = std::shared_ptr<RobotBase>(new PointRobot(std::make_pair(tempMin, tempMax)));
+    } else if (m_robotType == RobotType::Serial2D) {
+        m_robot = std::shared_ptr<RobotBase>(new SerialRobot2D);
+    } else if (m_robotType == RobotType::Mobile) {
+        Vector6 min6, max6;
+        min6 = util::Vecd(min[0], min[1], min[2], 0, 0, 0);
+        max6 = util::Vecd(max[0], max[1], max[2], util::twoPi(), util::twoPi(), util::twoPi());
+        std::vector<DofType> types = {volumetricPos, volumetricPos, volumetricPos, volumetricRot, volumetricRot, volumetricRot};
+        auto robotModel = factory->createModel(m_robotFile);
+        m_robot = std::shared_ptr<RobotBase>(new MobileRobot(6, std::make_pair(min6, max6), types));
+        m_robot->setBaseModel(robotModel);
+    } else if (m_robotType == RobotType::Triangle2D) {
+        Vector3 tempMin, tempMax;
+        for (size_t i = 0; i < 2; ++i) {
+            tempMin[i] = min[i];
+            tempMax[i] = max[i];
+        }
+        tempMin[2] = 0;
+        tempMax[2] = 360 * util::toRad();
+        auto robotModel = factory->createModel(m_robotFile);
+        m_robot = std::shared_ptr<RobotBase>(new TriangleRobot2D(robotModel, std::make_pair(tempMin, tempMax)));
     }
 
     if (m_robot)

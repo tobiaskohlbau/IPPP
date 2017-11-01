@@ -26,7 +26,7 @@ namespace ippp {
 class MobileRobot : public RobotBase {
   public:
     MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary, const std::vector<DofType> &dofTypes);
-    Matrix4 getTransformation(const VectorX &config) const override;
+    Transform getTransformation(const VectorX &config) const override;
 };
 
 } /* namespace ippp */

@@ -46,6 +46,9 @@ using MatrixX = Eigen::MatrixXd;
 using Vector3i = Eigen::Matrix<int, 3, 1>;
 
 using AABB = Eigen::AlignedBox<double, 3>;
+using Transform = Eigen::Transform<double, 3, Eigen::AffineCompact>;
+using Translation = Eigen::Translation<double, 3>;
+using Rotation2D = Eigen::Rotation2D<double>;
 
 } /* namespace ippp */
 

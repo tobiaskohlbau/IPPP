@@ -69,7 +69,7 @@ void ModelPqp::transformModel(const Vector6 &config) {
 *  \param[in]  transformation matrix
 *  \date       2017-04-04
 */
-void ModelPqp::transformModel(const Matrix4 &T) {
+void ModelPqp::transformModel(const Transform &T) {
     if (empty()) {
         return;
     }

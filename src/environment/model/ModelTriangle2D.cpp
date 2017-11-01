@@ -37,9 +37,9 @@ bool ModelTriangle2D::empty() const {
         return false;
 }
 
-void ModelTriangle2D::transformModel(const Matrix4 &T) {
-    Matrix2 R = T.block<2, 2>(0, 0);
-    Vector2 t = T.block<2, 1>(0, 3);
+void ModelTriangle2D::transformModel(const Transform &T) {
+    Matrix2 R = T.rotation().block<2, 2>(0, 0);
+    Vector2 t = T.translation().block<2, 1>(0, 0);
     for (auto &triangle : m_triangles)
         triangle.transform(R, t);
 

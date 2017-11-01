@@ -31,8 +31,8 @@ namespace ippp {
 class KukaKR5 : public SerialRobot {
   public:
     KukaKR5();
-    Vector6 directKinematic(const Vector6 &angles) const;
-    std::vector<Matrix4> getJointTrafos(const Vector6 &angles) const;
+    Transform directKinematic(const Vector6 &angles) const;
+    std::vector<Transform> getJointTrafos(const Vector6 &angles) const;
 };
 
 } /* namespace ippp */

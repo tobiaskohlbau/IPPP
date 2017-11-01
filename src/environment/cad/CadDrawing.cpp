@@ -25,7 +25,7 @@ namespace cad {
 
 Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue) {
     Vector3 dia = boundary.diagonal();
-    Eigen::MatrixXi space = Eigen::MatrixXi::Constant(dia[0], dia[1], fillValue);
+    Eigen::MatrixXi space = Eigen::MatrixXi::Constant(static_cast<size_t>(dia[0]), static_cast<size_t>(dia[1]), fillValue);
     return space;
 }
 
@@ -47,7 +47,7 @@ void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triang
     for (auto &triangle : triangles) {
         std::vector<Vector2> points;
         for (size_t i = 1; i < 4; ++i)
-            points.push_back(triangle.getP(i));
+            points.push_back(triangle.getP(static_cast<unsigned int>(i)));
         
         struct Vector2Sorter {
             bool operator()(const Vector2 &lhs, const Vector2 &rhs) const {
@@ -81,7 +81,7 @@ void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vect
     double curx1 = v1[0];
     double curx2 = v1[0];
 
-    for (int scanlineY = v1[1]; scanlineY <= v2[1]; scanlineY++) {
+    for (int scanlineY = static_cast<int>(v1[1]); scanlineY <= v2[1]; scanlineY++) {
         drawLine(space, (int)curx1, (int)curx2, scanlineY, value);
         curx1 += invslope1;
         curx2 += invslope2;
@@ -95,7 +95,7 @@ void fillTopFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2
     double curx1 = v3[0];
     double curx2 = v3[0];
 
-    for (int scanlineY = v3[1]; scanlineY > v1[1]; scanlineY--) {
+    for (int scanlineY = static_cast<int>(v3[1]); scanlineY > v1[1]; scanlineY--) {
         drawLine(space, (int)curx1, (int)curx2, scanlineY, value);
         curx1 -= invslope1;
         curx2 -= invslope2;

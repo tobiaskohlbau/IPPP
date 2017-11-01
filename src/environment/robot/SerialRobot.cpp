@@ -44,8 +44,8 @@ SerialRobot::SerialRobot(const std::string &name, const unsigned int dim, const 
 *  \param[out] pair with rotation and translation
 *  \date       2017-06-21
 */
-Matrix4 SerialRobot::getTransformation(const VectorX &config) const {
-    return util::createT(getTcpPosition(this->getJointTrafos(config)));
+Transform SerialRobot::getTransformation(const VectorX &config) const {
+    return getTcp(this->getJointTrafos(config));
 }
 
 /*!
@@ -58,25 +58,29 @@ Matrix4 SerialRobot::getTransformation(const VectorX &config) const {
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Matrix4 SerialRobot::getTrafo(double alpha, double a, double d, double q) const {
-    double sinAlpha = sin(alpha);
-    double cosAlpha = cos(alpha);
-    double sinQ = sin(q);
-    double cosQ = cos(q);
+Transform SerialRobot::getTrafo(double alpha, double a, double d, double q) const {
+    // double sinAlpha = sin(alpha);
+    // double cosAlpha = cos(alpha);
+    // double sinQ = sin(q);
+    // double cosQ = cos(q);
 
-    Matrix4 T = Matrix4::Zero(4, 4);
-    T(0, 0) = cosQ;
-    T(0, 1) = -sinQ * cosAlpha;
-    T(0, 2) = sinQ * sinAlpha;
-    T(0, 3) = a * cosQ;
-    T(1, 0) = sinQ;
-    T(1, 1) = cosQ * cosAlpha;
-    T(1, 2) = -cosQ * sinAlpha;
-    T(1, 3) = a * sinQ;
-    T(2, 1) = sinAlpha;
-    T(2, 2) = cosAlpha;
-    T(2, 3) = d;
-    T(3, 3) = 1;
+    // Matrix4 T = Matrix4::Zero(4, 4);
+    // T(0, 0) = cosQ;
+    // T(0, 1) = -sinQ * cosAlpha;
+    // T(0, 2) = sinQ * sinAlpha;
+    // T(0, 3) = a * cosQ;
+    // T(1, 0) = sinQ;
+    // T(1, 1) = cosQ * cosAlpha;
+    // T(1, 2) = -cosQ * sinAlpha;
+    // T(1, 3) = a * sinQ;
+    // T(2, 1) = sinAlpha;
+    // T(2, 2) = cosAlpha;
+    // T(2, 3) = d;
+    // T(3, 3) = 1;
+
+    Transform T;
+    T = Translation(Vector3(0, 0, 3)) * Eigen::AngleAxisd(q, Eigen::Vector3d::UnitZ()) * Translation(Vector3(a, 0, 0)) *
+        Eigen::AngleAxisd(alpha, Eigen::Vector3d::UnitX());
 
     return T;
 }
@@ -88,41 +92,37 @@ Matrix4 SerialRobot::getTrafo(double alpha, double a, double d, double q) const 
 *  \param[out] vector of transformation matrizes
 *  \date       2016-10-22
 */
-std::vector<Matrix4> SerialRobot::getLinkTrafos(const VectorX &angles) const {
-    std::vector<Matrix4> jointTrafos = getJointTrafos(angles);
-    Vector3 zeros = Vector3::Zero(3, 1);
-    std::vector<Matrix4> AsLink(jointTrafos.size());
-    std::vector<Matrix4> AsJoint(jointTrafos.size());
+std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
+    std::vector<Transform> jointTrafos = getJointTrafos(angles);
+    std::vector<Transform> AsLink(jointTrafos.size());
+    std::vector<Transform> AsJoint(jointTrafos.size());
 
-    AsJoint[0] = m_poseMat * m_baseOffset * jointTrafos[0];
-    jointTrafos[0].block<3, 1>(0, 3) = zeros;
-    AsLink[0] = m_poseMat * m_baseOffset * jointTrafos[0];
+    AsJoint[0] = m_pose * m_baseOffset * jointTrafos[0];
+    AsLink[0] = m_pose * m_baseOffset;// *jointTrafos[0].translation();
     for (size_t i = 1; i < jointTrafos.size(); ++i) {
         AsJoint[i] = AsJoint[i - 1] * jointTrafos[i];
-        jointTrafos[i].block<3, 1>(0, 3) = zeros;
-        AsLink[i] = AsJoint[i - 1] * jointTrafos[i];
+        AsLink[i] = AsJoint[i - 1];// *jointTrafos[i].translation();
     }
     return AsLink;
 }
 
 /*!
-*  \brief      Compute TCP pose from transformation matrizes and the basis pose
+*  \brief      Compute tool center pose from transformation matrizes and the basis pose
 *  \author     Sascha Kaden
 *  \param[in]  transformation matrizes
-*  \param[in]  basis pose
 *  \param[out] TCP pose
 *  \date       2016-07-07
 */
-Vector6 SerialRobot::getTcpPosition(const std::vector<Matrix4> &trafos) const {
+Transform SerialRobot::getTcp(const std::vector<Transform> &trafos) const {
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
-    Matrix4 robotToTcp = trafos[0];
+    Transform robotToTcp = trafos[0];
     for (size_t i = 1; i < 6; ++i)
-        robotToTcp *= trafos[i];
+        robotToTcp = robotToTcp * trafos[i];
 
-    Matrix4 basisToTcp = this->m_poseMat * robotToTcp;
+    // Transform basisToTcp = this->m_pose * robotToTcp;
 
-    return util::poseMatToVec(basisToTcp);
+    return this->m_pose * robotToTcp;
 }
 
 /*!
@@ -155,14 +155,14 @@ std::vector<std::shared_ptr<ModelContainer>> SerialRobot::getJointModels() const
 }
 
 void SerialRobot::setBaseOffset(const Vector6 &baseOffset) {
-    setBaseOffset(util::createT(baseOffset));
+    setBaseOffset(util::poseVecToTransform(baseOffset));
 }
 
-void SerialRobot::setBaseOffset(const Matrix4 &baseOffset) {
+void SerialRobot::setBaseOffset(const Transform &baseOffset) {
     m_baseOffset = baseOffset;
 }
 
-Matrix4 SerialRobot::getBaseOffset() const {
+Transform SerialRobot::getBaseOffset() const {
     return m_baseOffset;
 }
 
@@ -190,10 +190,10 @@ size_t SerialRobot::getNbJoints() const {
 *  \date       2016-10-22
 */
 void SerialRobot::saveMeshConfig(const VectorX angles) {
-    std::vector<Matrix4> jointTrafos = getJointTrafos(angles);
-    std::vector<Matrix4> As(jointTrafos.size());
+    std::vector<Transform> jointTrafos = getJointTrafos(angles);
+    std::vector<Transform> As(jointTrafos.size());
 
-    As[0] = m_poseMat * jointTrafos[0];
+    As[0] = m_pose * jointTrafos[0];
     for (size_t i = 1; i < jointTrafos.size(); ++i)
         As[i] = As[i - 1] * jointTrafos[i];
 
@@ -206,23 +206,23 @@ void SerialRobot::saveMeshConfig(const VectorX angles) {
 *  \param[in]  transformation matrizes
 *  \date       2016-10-22
 */
-void SerialRobot::saveMeshConfig(const std::vector<Matrix4> As) {
+void SerialRobot::saveMeshConfig(const std::vector<Transform> As) {
     if (this->m_baseModel != nullptr) {
         std::vector<Vector3> verts;
         for (auto vertice : this->m_baseModel->m_mesh.vertices) {
             Vector4 temp(util::append<3>(vertice, (double)1));
-            temp = this->m_poseMat * temp;
+            temp = this->m_pose * temp;
             verts.push_back(Vector3(temp(0), temp(1), temp(2)));
         }
         cad::exportCad(cad::ExportFormat::OBJ, "base", verts, this->m_baseModel->m_mesh.faces);
     }
-    // this->m_baseModel->saveObj("base.obj", this->m_poseMat);
+    // this->m_baseModel->saveObj("base.obj", this->m_pose);
 
     for (size_t i = 0; i < m_joints.size(); ++i) {
         std::vector<Vector3> verts;
         for (auto vertex : getModelFromJoint(i)->m_mesh.vertices) {
             Vector4 temp(util::append<3>(vertex, (double)1));
-            temp = this->m_poseMat * temp;
+            temp = this->m_pose * temp;
             verts.push_back(Vector3(temp(0), temp(1), temp(2)));
         }
         cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), verts, getModelFromJoint(i)->m_mesh.faces);

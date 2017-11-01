@@ -33,7 +33,7 @@ class PointModel : public ModelContainer {
   public:
     PointModel();
     bool empty() const;
-    void transformModel(const Matrix4 &T);
+    void transformModel(const Transform &T);
     void transformModel(const Vector6 &config);
 };
 

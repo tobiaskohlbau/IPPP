@@ -38,7 +38,6 @@ KukaKR5::KukaKR5()
     m_alpha = util::degToRad<6>(m_alpha);
     m_a = util::Vecd(180, 600, 120, 0, 0, 0);
     m_d = util::Vecd(400, 0, 0, 620, 0, 115);
-    m_pose = util::Vecd(0, 0, 0, 0, 0, 0);
 
     ModelFactoryPqp modelFactoryPqp;
     m_baseModel = modelFactoryPqp.createModel("meshes/KukaKR5/link0.stl");
@@ -70,10 +69,10 @@ KukaKR5::KukaKR5()
 *  \param[out] euclidean position Vec
 *  \date       2016-10-22
 */
-Vector6 KukaKR5::directKinematic(const Vector6 &angles)  const {
-    std::vector<Matrix4> trafos = getJointTrafos(angles);
+Transform KukaKR5::directKinematic(const Vector6 &angles)  const {
+    std::vector<Transform> trafos = getJointTrafos(angles);
 
-    return getTcpPosition(trafos);
+    return getTcp(trafos);
 }
 
 /*!
@@ -83,13 +82,12 @@ Vector6 KukaKR5::directKinematic(const Vector6 &angles)  const {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-10-22
 */
-std::vector<Matrix4> KukaKR5::getJointTrafos(const Vector6 &angles)  const {
+std::vector<Transform> KukaKR5::getJointTrafos(const Vector6 &angles)  const {
     Vector6 rads = util::degToRad<6>(angles);
 
-    std::vector<Matrix4> trafos;
-    for (size_t i = 0; i < 6; ++i) {
+    std::vector<Transform> trafos;
+    for (size_t i = 0; i < 6; ++i)
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));
-    }
     return trafos;
 }
 

@@ -43,10 +43,9 @@ PointRobot::PointRobot(const std::pair<Vector2, Vector2> &boundary)
 *  \param[out] pair with rotation and translation
 *  \date       2017-06-21
 */
-Matrix4 PointRobot::getTransformation(const VectorX &config) const {
-    Matrix4 T = Matrix4::Identity(4, 4);
-    T(0, 3) = config[0];
-    T(0, 3) = config[1];
+Transform PointRobot::getTransformation(const VectorX &config) const {
+    Transform T;
+    T = Translation(Vector3(config[0], config[1], 0));
     return T;
 }
 

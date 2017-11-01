@@ -116,7 +116,7 @@ void Environment::addObstacles(const std::vector<std::shared_ptr<ModelContainer>
 *  \param[out] obstacle
 *  \date       2017-05-17
 */
-std::shared_ptr<ModelContainer> Environment::getObstacle(const unsigned int index) const {
+std::shared_ptr<ModelContainer> Environment::getObstacle(const size_t index) const {
     if (index < m_obstacles.size()) {
         return m_obstacles[index];
     } else {
@@ -178,7 +178,7 @@ std::shared_ptr<RobotBase> Environment::getRobot() const {
 *  \param[out] robot
 *  \date       2017-05-17
 */
-std::shared_ptr<RobotBase> Environment::getRobot(const unsigned int index) const {
+std::shared_ptr<RobotBase> Environment::getRobot(const size_t index) const {
     if (index < m_robots.size()) {
         return m_robots[index];
     } else {

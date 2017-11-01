@@ -41,11 +41,9 @@ TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangle
 *  \param[out] pair with rotation and translation
 *  \date       2017-06-21
 */
-Matrix4 TriangleRobot2D::getTransformation(const VectorX &config) const {
-    Matrix4 T = Matrix4::Identity(4, 4);
-    for (unsigned int i = 0; i < 2; ++i)
-        T(i, 3) = config[i];
-    T.block<2, 2>(0, 0) = util::getRotMat2D(config[2]);
+Transform TriangleRobot2D::getTransformation(const VectorX &config) const {
+    Transform T;
+    T = Translation(Vector3(config[0], config[1], 0)) * Eigen::AngleAxisd(config[2], Eigen::Vector3d::UnitZ());
     return T;
 }
 

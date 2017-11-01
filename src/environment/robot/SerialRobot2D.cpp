@@ -29,29 +29,29 @@ namespace ippp {
 *  \date        2016-10-22
 */
 SerialRobot2D::SerialRobot2D()
-    : SerialRobot("SerialRobot2D", 5, std::make_pair(util::Vecd(0, 0, 0, 0, 0), util::Vecd(util::twoPi(), util::twoPi(), util::twoPi(),
-                                                                                  util::twoPi(), util::twoPi())),
+    : SerialRobot("SerialRobot2D", 5, std::make_pair(util::Vecd(-util::pi(), -util::pi(), -util::pi(), -util::pi(), -util::pi()), util::Vecd(util::pi(), util::pi(), util::pi(),
+                                                                                  util::pi(), util::pi())),
                   std::vector<DofType>(
                       {DofType::planarRot, DofType::planarRot, DofType::planarRot, DofType::planarRot, DofType::planarRot})) {
     m_alpha = util::Vecd(0, 0, 0, 0, 0);
     m_alpha = util::degToRad<5>(m_alpha);
     m_a = util::Vecd(100, 100, 100, 100, 100);
     m_d = util::Vecd(0, 0, 0, 0, 0);
-    setPose(util::Vecd(0, 0, 0, 0, 0, 0));
+
     setBaseOffset(util::Vecd(100, 0, 0, 0, 0, 0));
 
     ModelFactoryPqp modelFactory;
     m_baseModel = modelFactory.createModel("assets/robotModels/2Dline.obj");
     Joint joint;
-    joint = Joint(0, util::twoPi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
-    joint = Joint(0, util::twoPi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
-    joint = Joint(0, util::twoPi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
-    joint = Joint(0, util::twoPi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
-    joint = Joint(0, util::twoPi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
 }
 
@@ -62,8 +62,8 @@ SerialRobot2D::SerialRobot2D()
 *  \param[out] euclidean position Vec
 *  \date       2016-10-22
 */
-Vector6 SerialRobot2D::directKinematic(const VectorX &angles) const {
-    return getTcpPosition(getJointTrafos(angles));
+Transform SerialRobot2D::directKinematic(const VectorX &angles) const {
+    return getTcp(getJointTrafos(angles));
 }
 
 /*!
@@ -73,11 +73,10 @@ Vector6 SerialRobot2D::directKinematic(const VectorX &angles) const {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-10-22
 */
-std::vector<Matrix4> SerialRobot2D::getJointTrafos(const VectorX &angles) const {
-    std::vector<Matrix4> trafos;
+std::vector<Transform> SerialRobot2D::getJointTrafos(const VectorX &angles) const {
+    std::vector<Transform> trafos;
     for (size_t i = 0; i < getDim(); ++i)
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], angles[i]));
-
     return trafos;
 }
 

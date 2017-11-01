@@ -139,12 +139,8 @@ void centerMesh(Mesh &mesh) {
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices) {
     if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0)
         return;
-
-    Matrix3 R;
-    Vector3 t;
-    util::poseVecToRandT(config, R, t);
-    for (auto &&vertex : vertices)
-        vertex = (R * vertex) + t;
+    auto T = util::poseVecToTransform(config);
+    transformVertices(T, vertices);
 }
 
 /*!
@@ -154,12 +150,9 @@ void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices) {
 *  \param[in, out] list of vertices
 *  \date           2017-04-07
 */
-void transformVertices(const Matrix4 &T, std::vector<Vector3> &vertices) {
-    Matrix3 R;
-    Vector3 t;
-    util::decomposeT(T, R, t);
+void transformVertices(const Transform &T, std::vector<Vector3> &vertices) {
     for (auto &&vertex : vertices)
-        vertex = (R * vertex) + t;
+        vertex = T * vertex;
 }
 
 /*!

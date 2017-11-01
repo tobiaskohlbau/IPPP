@@ -48,43 +48,40 @@ RobotBase::RobotBase(const std::string &name, const unsigned int dim, RobotCateg
     if (dim != m_dofTypes.size())
         Logging::error("DoF Types have not the size of the robot dimension", this);
     assert(dim == m_dofTypes.size());
-    m_pose = util::Vecd(0, 0, 0, 0, 0, 0);
-    m_poseMat = util::poseVecToMat(m_pose);
     m_baseModel = nullptr;
 }
 
 /*!
-*  \brief      Set pose of robot, translation and rotation (x,y,z,rx,ry,rz)
+*  \brief      Set pose of robot
 *  \author     Sascha Kaden
-*  \param[in]  pose Vec
-*  \date       2016-07-24
+*  \param[in]  Transform pose
+*  \date       2017-11-01
 */
 void RobotBase::setPose(const Vector6 &pose) {
     if (util::empty<6>(pose))
-        return;
+        Logging::warning("Set empty pose", this);
+    
+    m_pose = util::poseVecToTransform(pose);
+}
 
+/*!
+*  \brief      Set pose of robot
+*  \author     Sascha Kaden
+*  \param[in]  Transform pose
+*  \date       2017-11-01
+*/
+void RobotBase::setPose(const Transform &pose) {
     m_pose = pose;
-    m_poseMat = util::poseVecToMat(pose);
 }
 
 /*!
-*  \brief      Get pose of robot, translation and rotation (x,y,z,rx,ry,rz)
+*  \brief      Get pose of robot
 *  \author     Sascha Kaden
-*  \param[out] pose Vec
-*  \date       2016-07-24
+*  \param[out] Transform pose
+*  \date       2017-11-01
 */
-Vector6 RobotBase::getPose() const {
+Transform RobotBase::getPose() const {
     return m_pose;
-}
-
-/*!
-*  \brief      Get pose transformation matrix
-*  \author     Sascha Kaden
-*  \param[out] pose matrix
-*  \date       2016-07-24
-*/
-Matrix4 RobotBase::getPoseMat() const {
-    return m_poseMat;
 }
 
 /*!

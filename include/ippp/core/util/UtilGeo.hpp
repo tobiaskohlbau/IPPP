@@ -183,13 +183,10 @@ static std::pair<Matrix3, Vector3> poseVecToRandT(const Vector6 &pose) {
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-static Matrix4 poseVecToMat(const Vector6 &pose) {
-    Matrix4 T = Matrix4::Identity(4, 4);
-    Matrix3 R = getRotMat3D(pose[3], pose[4], pose[5]);
-    T.block<3, 3>(0, 0) = R;
-    for (size_t i = 0; i < 3; ++i)
-        T(i, 3) = pose[i];
-
+static Transform poseVecToTransform(const Vector6 &pose) {
+    Transform T;
+    T = Translation(Vector3(pose[0], pose[1], pose[2])) * Eigen::AngleAxisd(pose[3], Eigen::Vector3d::UnitX()) * Eigen::AngleAxisd(pose[4], Eigen::Vector3d::UnitY()) *
+        Eigen::AngleAxisd(pose[5], Eigen::Vector3d::UnitZ());
     return T;
 }
 
@@ -203,6 +200,19 @@ static Matrix4 poseVecToMat(const Vector6 &pose) {
 static Vector6 poseMatToVec(const Matrix4 &pose) {
     Vector3 vec(pose.block<3, 1>(0, 3));
     Vector3 euler(pose.block<3, 3>(0, 0).eulerAngles(0, 1, 2));
+    return util::append<3, 3>(vec, euler);
+}
+
+/*!
+*  \brief      Convert transformation matrix into poseVec
+*  \author     Sascha Kaden
+*  \param[in]  transformation matrix
+*  \param[out] pose Vector (angles)
+*  \date       2016-07-07
+*/
+static Vector6 transformToVec(const Transform &T) {
+    Vector3 vec(T.translation());
+    Vector3 euler(T.rotation().eulerAngles(0, 1, 2));
     return util::append<3, 3>(vec, euler);
 }
 
@@ -234,7 +244,7 @@ static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3
 *  \param[out] transformed aabb
 *  \date       2017-06-21
 */
-static AABB transformAABB(const AABB &a, const Matrix4 &T) {
+static AABB transformAABB(const AABB &a, const Transform &T) {
     // trafo is pair with rotation and translation
     Vector3 min = a.min();
     Vector3 max = a.max();
@@ -244,7 +254,7 @@ static AABB transformAABB(const AABB &a, const Matrix4 &T) {
     max4 = T * max4;
         return AABB(Vector3(min4[0], min4[1], min4[2]), Vector3(max4[0], max4[1], max4[2]));
 
-    Vector3 center(T.block<3,1>(0,3));
+    Vector3 center(T.translation());
     Vector3 radius = Vector3::Zero(3, 1);
     for (size_t i = 0; i < 3; i++) {
         for (size_t j = 0; j < 3; j++) {

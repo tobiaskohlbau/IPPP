@@ -34,16 +34,16 @@ class SerialRobot : public RobotBase {
     SerialRobot(const std::string &name, const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
                 const std::vector<DofType> &dofTypes);
 
-    virtual Matrix4 getTransformation(const VectorX &config) const;
-    virtual Vector6 directKinematic(const VectorX &angles) const = 0;
-    virtual std::vector<Matrix4> getJointTrafos(const VectorX &angles) const = 0;
-    std::vector<Matrix4> getLinkTrafos(const VectorX &angles) const;
-    Matrix4 getTrafo(double alpha, double a, double d, double q) const;
-    Vector6 getTcpPosition(const std::vector<Matrix4> &trafos) const;
+    virtual Transform getTransformation(const VectorX &config) const;
+    virtual Transform directKinematic(const VectorX &angles) const = 0;
+    virtual std::vector<Transform> getJointTrafos(const VectorX &angles) const = 0;
+    std::vector<Transform> getLinkTrafos(const VectorX &angles) const;
+    Transform getTrafo(double alpha, double a, double d, double q) const;
+    Transform getTcp(const std::vector<Transform> &trafos) const;
 
     void setBaseOffset(const Vector6 &baseOffset);
-    void setBaseOffset(const Matrix4 &baseOffset);
-    Matrix4 getBaseOffset() const;
+    void setBaseOffset(const Transform &baseOffset);
+    Transform getBaseOffset() const;
     void setJoints(const std::vector<Joint> joints);
     size_t getNbJoints() const;
 
@@ -51,14 +51,14 @@ class SerialRobot : public RobotBase {
     std::vector<std::shared_ptr<ModelContainer>> getJointModels() const;
 
     void saveMeshConfig(const VectorX angles);
-    void saveMeshConfig(const std::vector<Matrix4> As);
+    void saveMeshConfig(const std::vector<Transform> As);
 
   protected:
     std::vector<Joint> m_joints;
     VectorX m_alpha;
     VectorX m_a;
     VectorX m_d;
-    Matrix4 m_baseOffset;
+    Transform m_baseOffset;
 };
 
 } /* namespace ippp */

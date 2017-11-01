@@ -150,93 +150,166 @@ void ModuleConfigurator<dim>::initializeModules() {
         return;
     m_parameterModified = false;
 
-    if (m_collisionType == CollisionType::Dim2)
-        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetection2D<dim>(m_environment));
-    else if (m_collisionType == CollisionType::Dim2Triangle)
-        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionTriangleRobot<dim>(m_environment));
-    else if (m_collisionType == CollisionType::AABB)
-        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionAABB<dim>(m_environment));
-    else if (m_collisionType == CollisionType::Sphere)
-        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionSphere<dim>(m_environment));
-    else if (m_collisionType == CollisionType::AlwaysValid)
-        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionAlwaysValid<dim>(m_environment));
-    else
-        m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionPqp<dim>(m_environment));
+    switch (m_collisionType) {
+        case ippp::CollisionType::Dim2:
+            m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetection2D<dim>(m_environment));
+            break;
+        case ippp::CollisionType::Dim2Triangle:
+            m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionTriangleRobot<dim>(m_environment));
+            break;
+        case ippp::CollisionType::AlwaysValid:
+            m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionAlwaysValid<dim>(m_environment));
+            break;
+        case ippp::CollisionType::FCL:
+            m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionFcl<dim>(m_environment));
+            break;
+        case ippp::CollisionType::AABB:
+            m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionAABB<dim>(m_environment));
+            break;
+        case ippp::CollisionType::Sphere:
+            m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionAABB<dim>(m_environment));
+            break;
+        default:
+            m_collision = std::shared_ptr<CollisionDetection<dim>>(new CollisionDetectionPqp<dim>(m_environment));
+            break;
+    }
 
-    if (m_trajectoryType == TrajectoryType::RotateAtS)
-        m_trajectory =
-            std::shared_ptr<TrajectoryPlanner<dim>>(new RotateAtS<dim>(m_collision, m_environment, m_posRes, m_oriRes));
-    else
-        m_trajectory =
-            std::shared_ptr<TrajectoryPlanner<dim>>(new LinearTrajectory<dim>(m_collision, m_environment, m_posRes, m_oriRes));
+    switch (m_trajectoryType) {
+        case ippp::TrajectoryType::Linear:
+            m_trajectory = std::shared_ptr<TrajectoryPlanner<dim>>(
+                new LinearTrajectory<dim>(m_collision, m_environment, m_posRes, m_oriRes));
+            break;
+        case ippp::TrajectoryType::RotateAtS:
+            m_trajectory =
+                std::shared_ptr<TrajectoryPlanner<dim>>(new RotateAtS<dim>(m_collision, m_environment, m_posRes, m_oriRes));
+            break;
+        default:
+            m_trajectory = std::shared_ptr<TrajectoryPlanner<dim>>(
+                new LinearTrajectory<dim>(m_collision, m_environment, m_posRes, m_oriRes));
+            break;
+    }
 
-    if (m_metricType == MetricType::L1)
-        m_metric = std::shared_ptr<DistanceMetric<dim>>(new L1Metric<dim>());
-    else if (m_metricType == MetricType::Inf)
-        m_metric = std::shared_ptr<DistanceMetric<dim>>(new InfMetric<dim>());
-    else if (m_metricType == MetricType::L1Weighted)
-        m_metric = std::shared_ptr<DistanceMetric<dim>>(new WeightedL1Metric<dim>(m_metricWeight));
-    else if (m_metricType == MetricType::L2Weighted)
-        m_metric = std::shared_ptr<DistanceMetric<dim>>(new WeightedL2Metric<dim>(m_metricWeight));
-    else if (m_metricType == MetricType::InfWeighted)
-        m_metric = std::shared_ptr<DistanceMetric<dim>>(new WeightedInfMetric<dim>(m_metricWeight));
-    else
-        m_metric = std::shared_ptr<DistanceMetric<dim>>(new L2Metric<dim>());
+    switch (m_metricType) {
+        case ippp::MetricType::L1:
+            m_metric = std::shared_ptr<DistanceMetric<dim>>(new L1Metric<dim>());
+            break;
+        case ippp::MetricType::L2:
+            m_metric = std::shared_ptr<DistanceMetric<dim>>(new L2Metric<dim>());
+            break;
+        case ippp::MetricType::Inf:
+            m_metric = std::shared_ptr<DistanceMetric<dim>>(new InfMetric<dim>());
+            break;
+        case ippp::MetricType::L1Weighted:
+            m_metric = std::shared_ptr<DistanceMetric<dim>>(new WeightedL1Metric<dim>(m_metricWeight));
+            break;
+        case ippp::MetricType::L2Weighted:
+            m_metric = std::shared_ptr<DistanceMetric<dim>>(new WeightedL2Metric<dim>(m_metricWeight));
+            break;
+        case ippp::MetricType::InfWeighted:
+            m_metric = std::shared_ptr<DistanceMetric<dim>>(new WeightedInfMetric<dim>(m_metricWeight));
+            break;
+        default:
+            m_metric = std::shared_ptr<DistanceMetric<dim>>(new L2Metric<dim>());
+            break;
+    }
 
-    if (m_neighborType == NeighborType::BruteForce)
-        m_neighborFinder = std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(
-            new BruteForceNF<dim, std::shared_ptr<Node<dim>>>(m_metric));
-    else
-        m_neighborFinder = std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(
-            new KDTree<dim, std::shared_ptr<Node<dim>>>(m_metric));
+    switch (m_neighborType) {
+        case ippp::NeighborType::KDTree:
+            m_neighborFinder = std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(
+                new KDTree<dim, std::shared_ptr<Node<dim>>>(m_metric));
+            break;
+        case ippp::NeighborType::BruteForce:
+            m_neighborFinder = std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(
+                new BruteForceNF<dim, std::shared_ptr<Node<dim>>>(m_metric));
+            break;
+        default:
+            m_neighborFinder = std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(
+                new KDTree<dim, std::shared_ptr<Node<dim>>>(m_metric));
+            break;
+    }
 
     m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(m_graphSortCount, m_neighborFinder));
 
-    if (m_evaluatorType == EvaluatorType::SingleIteration)
-        m_evaluator = std::shared_ptr<Evaluator<dim>>(new SingleIterationEvaluator<dim>());
-    else if (m_evaluatorType == EvaluatorType::Time)
-        m_evaluator = std::shared_ptr<Evaluator<dim>>(new TimeEvaluator<dim>(m_evaluatorDuration));
-    else if (m_evaluatorType == EvaluatorType::QueryOrTime) {
-        std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-        evaluators.push_back(std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_metric, m_graph, m_queryEvaluatorDist)));
-        evaluators.push_back(std::shared_ptr<Evaluator<dim>>(new TimeEvaluator<dim>(m_evaluatorDuration)));
-        m_evaluator = std::shared_ptr<Evaluator<dim>>(new ComposeEvaluator<dim>(evaluators, ComposeType::OR));
-    } else
-        m_evaluator = std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_metric, m_graph, m_queryEvaluatorDist));
+    switch (m_evaluatorType) {
+        case ippp::EvaluatorType::SingleIteration:
+            m_evaluator = std::shared_ptr<Evaluator<dim>>(new SingleIterationEvaluator<dim>());
+            break;
+        case ippp::EvaluatorType::Query:
+            m_evaluator = std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_metric, m_graph, m_queryEvaluatorDist));
+            break;
+        case ippp::EvaluatorType::Time:
+            m_evaluator = std::shared_ptr<Evaluator<dim>>(new TimeEvaluator<dim>(m_evaluatorDuration));
+            break;
+        case ippp::EvaluatorType::QueryOrTime:
+            std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
+            evaluators.push_back(
+                std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_metric, m_graph, m_queryEvaluatorDist)));
+            evaluators.push_back(std::shared_ptr<Evaluator<dim>>(new TimeEvaluator<dim>(m_evaluatorDuration)));
+            m_evaluator = std::shared_ptr<Evaluator<dim>>(new ComposeEvaluator<dim>(evaluators, ComposeType::OR));
+            break;
+    }
 
-    if (m_pathModifierType == PathModifierType::NodeCut)
-        m_pathModifier =
+    switch (m_pathModifierType) {
+        case ippp::PathModifierType::Dummy:
+            m_pathModifier =
+                std::shared_ptr<PathModifier<dim>>(new DummyPathModifier<dim>(m_environment, m_collision, m_trajectory));
+            break;
+        case ippp::PathModifierType::NodeCut:
             std::shared_ptr<PathModifier<dim>>(new NodeCutPathModifier<dim>(m_environment, m_collision, m_trajectory));
-    else
-        m_pathModifier = std::shared_ptr<PathModifier<dim>>(new DummyPathModifier<dim>(m_environment, m_collision, m_trajectory));
+            break;
+        default:
+            std::shared_ptr<PathModifier<dim>>(new NodeCutPathModifier<dim>(m_environment, m_collision, m_trajectory));
+            break;
+    }
 
-    if (m_samplerType == SamplerType::SamplerNormalDist)
-        m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(m_environment));
-    else if (m_samplerType == SamplerType::SamplerUniform)
-        m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(m_environment));
-    else if (m_samplerType == SamplerType::SeedSampler)
-        m_sampler = std::shared_ptr<Sampler<dim>>(new SeedSampler<dim>(m_environment));
-    else
-        m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerRandom<dim>(m_environment));
+    switch (m_samplerType) {
+        case ippp::SamplerType::SamplerRandom:
+            m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerRandom<dim>(m_environment));
+            break;
+        case ippp::SamplerType::SamplerNormalDist:
+            m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(m_environment));
+            break;
+        case ippp::SamplerType::SamplerUniform:
+            m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(m_environment));
+            break;
+        case ippp::SamplerType::SeedSampler:
+            m_sampler = std::shared_ptr<Sampler<dim>>(new SeedSampler<dim>(m_environment));
+            break;
+        default:
+            m_sampler = std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(m_environment));
+            break;
+    }
 
-    if (m_samplingType == SamplingType::Bridge)
-        m_sampling = std::shared_ptr<Sampling<dim>>(
-            new BridgeSampling<dim>(m_environment, m_collision, m_trajectory, m_sampler, m_samplingAttempts, m_samplingDist));
-    else if (m_samplingType == SamplingType::Gaussian)
-        m_sampling = std::shared_ptr<Sampling<dim>>(
-            new GaussianSampling<dim>(m_environment, m_collision, m_trajectory, m_sampler, m_samplingAttempts, m_samplingDist));
-    else if (m_samplingType == SamplingType::GaussianDist)
-        m_sampling = std::shared_ptr<Sampling<dim>>(new GaussianDistSampling<dim>(m_environment, m_collision, m_trajectory,
+    switch (m_samplingType) {
+        case ippp::SamplingType::Bridge:
+            m_sampling = std::shared_ptr<Sampling<dim>>(
+                new BridgeSampling<dim>(m_environment, m_collision, m_trajectory, m_sampler, m_samplingAttempts, m_samplingDist));
+            break;
+        case ippp::SamplingType::Gaussian:
+            m_sampling = std::shared_ptr<Sampling<dim>>(new GaussianSampling<dim>(m_environment, m_collision, m_trajectory,
                                                                                   m_sampler, m_samplingAttempts, m_samplingDist));
-    else if (m_samplingType == SamplingType::MedialAxis)
-        m_sampling = std::shared_ptr<Sampling<dim>>(new MedialAxisSampling<dim>(m_environment, m_collision, m_trajectory,
-                                                                                m_sampler, m_samplingAttempts, m_medialAxisDirs));
-    else if (m_samplingType == SamplingType::NearObstacle)
-        m_sampling = std::shared_ptr<Sampling<dim>>(
-            new SamplingNearObstacle<dim>(m_environment, m_collision, m_trajectory, m_sampler, m_samplingAttempts));
-    else
-        m_sampling =
-            std::shared_ptr<Sampling<dim>>(new StraightSampling<dim>(m_environment, m_collision, m_trajectory, m_sampler));
+            break;
+        case ippp::SamplingType::GaussianDist:
+            m_sampling = std::shared_ptr<Sampling<dim>>(new GaussianDistSampling<dim>(
+                m_environment, m_collision, m_trajectory, m_sampler, m_samplingAttempts, m_samplingDist));
+            break;
+        case ippp::SamplingType::Straight:
+            m_sampling =
+                std::shared_ptr<Sampling<dim>>(new StraightSampling<dim>(m_environment, m_collision, m_trajectory, m_sampler));
+            break;
+        case ippp::SamplingType::MedialAxis:
+            m_sampling = std::shared_ptr<Sampling<dim>>(new MedialAxisSampling<dim>(
+                m_environment, m_collision, m_trajectory, m_sampler, m_samplingAttempts, m_medialAxisDirs));
+            break;
+        case ippp::SamplingType::NearObstacle:
+            m_sampling = std::shared_ptr<Sampling<dim>>(
+                new SamplingNearObstacle<dim>(m_environment, m_collision, m_trajectory, m_sampler, m_samplingAttempts));
+            break;
+        default:
+            m_sampling =
+                std::shared_ptr<Sampling<dim>>(new StraightSampling<dim>(m_environment, m_collision, m_trajectory, m_sampler));
+            break;
+    }
 }
 
 template <unsigned int dim>

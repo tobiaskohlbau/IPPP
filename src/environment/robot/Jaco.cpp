@@ -34,8 +34,6 @@ Jaco::Jaco() : SerialRobot("Jaco", 6, std::make_pair(util::Vecd(0, 42, 17, 0, 0,
     m_a = util::Vecd(0, 410, 0, 0, 0, 0);
     m_d = util::Vecd(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
-    m_pose = util::Vecd(0, 0, 0, 0, 0, 0);
-
     ModelFactoryPqp modelFactoryPqp;
     m_baseModel = modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_base.dae");
 
@@ -54,10 +52,10 @@ Jaco::Jaco() : SerialRobot("Jaco", 6, std::make_pair(util::Vecd(0, 42, 17, 0, 0,
 *  \param[out] euclidean position Vec
 *  \date       2016-08-25
 */
-Vector6 Jaco::directKinematic(const VectorX &angles)  const {
-    std::vector<Matrix4> trafos = getJointTrafos(angles);
+Transform Jaco::directKinematic(const VectorX &angles)  const {
+    std::vector<Transform> trafos = getJointTrafos(angles);
 
-    return getTcpPosition(trafos);
+    return getTcp(trafos);
 }
 
 /*!
@@ -67,15 +65,14 @@ Vector6 Jaco::directKinematic(const VectorX &angles)  const {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-14
 */
-std::vector<Matrix4> Jaco::getJointTrafos(const VectorX &angles)  const {
+std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles)  const {
     // transform form jaco physical angles to dh angles
     Vector6 dhAngles = convertRealToDH(angles);
 
-    std::vector<Matrix4> trafos;
+    std::vector<Transform> trafos;
     // create transformation matrizes
-    for (size_t i = 0; i < 6; ++i) {
+    for (size_t i = 0; i < 6; ++i)
         trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], dhAngles[i]));
-    }
     return trafos;
 }
 

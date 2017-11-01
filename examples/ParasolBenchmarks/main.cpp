@@ -12,8 +12,8 @@
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
 #include <ippp/UI.h>
-#include <ippp/core/collisionDetection/CollisionDetectionPqpBenchmark.hpp>
-//#include <ippp/core/collisionDetection/CollisionDetectionFcl.hpp>
+#include <ippp/core/collisionDetection/CollisionDetectionFcl.hpp>
+#include <ippp/environment/model/ModelFactoryFcl.h>
 //#include <ippp/environment/model/ModelFactoryFcl.h>
 
 #include <ui/BenchmarkReader.h>
@@ -48,7 +48,6 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     environment->addObstacle(obstacleModel);
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(environment));
-    std::shared_ptr<CollisionDetection<6>> collisionBenchmark(new CollisionDetectionPqpBenchmark<6>(environment));
 
     ModuleConfigurator<dim> creator;
     creator.setCollisionType(CollisionType::PQP);
@@ -76,11 +75,6 @@ bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentCon
     }
 
     std::cout << "Computation time: " << duration.count() / 1000.0 << std::endl;
-    std::shared_ptr<CollisionDetectionPqpBenchmark<6>> collisionDetectionPqpBenchmark =
-        std::static_pointer_cast<CollisionDetectionPqpBenchmark<6>>(collisionBenchmark);
-    std::cout << "Collision count: " << collisionDetectionPqpBenchmark->getCount() << std::endl;
-    std::cout << "Mean collision computation time: " << collisionDetectionPqpBenchmark->getMeanComputationTime().count()
-              << " nano seconds" << std::endl;
     return result;
 }
 
@@ -147,6 +141,44 @@ void generateMap() {
         cad::exportCad(cad::ExportFormat::OBJ, "obstacle" + std::to_string(i), meshes[i]);
 }
 
+void testFCL() {
+    const unsigned int dim = 6;
+
+    EnvironmentConfigurator envConfigurator;
+    envConfigurator.setFactoryType(FactoryType::ModelFCL);
+    envConfigurator.setWorkspaceProperties(3, AABB(Vector3(-1000, -1000, -1000), Vector3(1000, 1000, 1000)));
+    envConfigurator.setRobotType(RobotType::Mobile, "C:/develop/A2056260831.obj");
+    envConfigurator.addObstaclePath("C:/develop/A2056260652.obj");
+    envConfigurator.saveConfig("envConfigTriangle.json");
+    std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
+
+    ModuleConfigurator<dim> creator;
+    creator.setEnvironment(environment);
+    creator.setGraphSortCount(3000);
+    creator.setCollisionType(CollisionType::FCL);
+    creator.setEvaluatorType(EvaluatorType::QueryOrTime);
+    creator.setEvaluatorProperties(50, 60);
+    creator.setSamplingType(SamplingType::Straight);
+    creator.saveConfig("moduleConfig.json");
+
+    std::shared_ptr<ippp::Planner<dim>> planner;
+    //    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(30), creator.getGraph()));
+    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(40), creator.getGraph()));
+    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
+    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
+
+    auto startTime = std::chrono::system_clock::now();
+    Vector6 start = util::Vecd(0, 0, 0, 0, 0, 0);
+    Vector6 goal = util::Vecd(100, 100, 100, 0, 0, 0);
+    bool connected = planner->computePath(start, goal, 5000, 3);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
+    std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
+
+    int n;
+    std::cin >> n;
+    
+}
+
 int main(int argc, char** argv) {
 //    std::string file = modelDir + "assembly/boxRot.dae";
 //    std::vector<Mesh> meshes;
@@ -156,7 +188,7 @@ int main(int argc, char** argv) {
 //    for (int i = 0; i < meshes.size(); ++i)
 //        cad::exportCad(cad::ExportFormat::OBJ, std::to_string(i), meshes[i]);
 
-    generateMap();
+    testFCL();
 
     // ProfilerStart("/tmp/cpu.prof");
     //    benchmarkFlange();

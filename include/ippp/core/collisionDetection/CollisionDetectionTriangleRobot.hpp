@@ -40,7 +40,7 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<dim> {
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   private:
-    bool checkTriangles(const Matrix4 &T, const std::vector<Triangle2D> &triangles);
+    bool checkTriangles(const Transform &T, const std::vector<Triangle2D> &triangles);
     bool lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b, const Vector3 c);
 
     std::shared_ptr<ModelContainer> m_robotModel;
@@ -144,10 +144,10 @@ bool CollisionDetectionTriangleRobot<dim>::checkTrajectory(std::vector<Vector<di
 }
 
 template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::checkTriangles(const Matrix4 &T, const std::vector<Triangle2D> &triangles) {
+bool CollisionDetectionTriangleRobot<dim>::checkTriangles(const Transform &T, const std::vector<Triangle2D> &triangles) {
     std::vector<Triangle2D> tempTriangles = triangles;
-    Matrix2 R2D = T.block<2, 2>(0, 0);
-    Vector2 t2D = T.block<2, 1>(0, 3);
+    Matrix2 R2D = T.rotation().block<2, 2>(0, 0);
+    Vector2 t2D = T.translation().block<2, 1>(0, 0);
     for (auto triangle : tempTriangles) {
         triangle.transform(R2D, t2D);
         Vector3 p1(triangle.getP(1)[0], triangle.getP(1)[1], 0);

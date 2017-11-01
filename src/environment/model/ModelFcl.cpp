@@ -45,7 +45,7 @@ bool ModelFcl::empty() const {
 *  \param[in]  transformation matrix
 *  \date       2017-04-04
 */
-void ModelFcl::transformModel(const Matrix4 &T) {
+void ModelFcl::transformModel(const Transform &T) {
     if (empty())
         return;
 

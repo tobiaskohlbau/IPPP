@@ -41,7 +41,7 @@ class ModelContainer : public Identifier {
   public:
     AABB getAABB() const ;
     virtual bool empty() const = 0;
-    virtual void transformModel(const Matrix4 &T) = 0;
+    virtual void transformModel(const Transform &T) = 0;
     virtual void transformModel(const Vector6 &config) = 0;
 
     Mesh m_mesh;

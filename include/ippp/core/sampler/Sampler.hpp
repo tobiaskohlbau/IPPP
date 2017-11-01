@@ -72,9 +72,7 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
     m_minBoundary = environment->getRobot()->getMinBoundary();
     m_maxBoundary = environment->getRobot()->getMaxBoundary();
 
-    Vector6 pose = environment->getRobot()->getPose();
-    for (unsigned int i = 0; i < dim; ++i)
-        m_origin[i] = pose[i];
+    m_origin = Vector<dim>::Zero();
 
     m_generator = std::mt19937(rd());
     m_distAngle = std::uniform_real_distribution<double>(0, util::twoPi());

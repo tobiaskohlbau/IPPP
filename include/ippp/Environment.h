@@ -16,12 +16,13 @@
 //
 //-------------------------------------------------------------------------//
 
+#include <ippp/environment/Environment.h>
 #include <ippp/environment/cad/CadDrawing.h>
 #include <ippp/environment/cad/CadImportExport.h>
 #include <ippp/environment/cad/CadProcessing.h>
-#include <ippp/environment/Environment.h>
 #include <ippp/environment/util/MapGenerator.hpp>
 
+#include <ippp/environment/model/ModelFactoryFcl.h>
 #include <ippp/environment/model/ModelFactoryPqp.h>
 #include <ippp/environment/model/ModelFactoryTriangle2D.h>
 #include <ippp/environment/model/ModelPqp.h>
