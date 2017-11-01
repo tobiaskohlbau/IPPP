@@ -38,11 +38,11 @@ namespace util {
 template <unsigned int dim>
 static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, const double res) {
     std::vector<Vector<dim>> configs;
-    
+
     Vector<dim> u(target - source);    // u = a - b
     configs.reserve((int)(u.norm() / res) + 1);
     u /= u.norm() / res;    // u = |u|
-    for (Vector<dim> temp(source + u); !(temp-target).isZero(res* 2); temp += u)
+    for (Vector<dim> temp(source + u); !(temp - target).isZero(res * 2); temp += u)
         configs.push_back(temp);
     return configs;
 }
@@ -64,6 +64,9 @@ template <unsigned int dim>
 static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, const double posRes,
                                                      const double oriRes, const Vector<dim> &posMask,
                                                      const Vector<dim> &oriMask) {
+    if ((source - target).isZero(EPSILON))
+        return std::vector<Vector<dim>>();
+
     double uNormPos = (util::multiplyElementWise<dim>((target - source), posMask)).squaredNorm();
     double uNormOri = (util::multiplyElementWise<dim>((target - source), oriMask)).squaredNorm();
 
@@ -117,6 +120,9 @@ static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, c
 template <unsigned int dim>
 static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, const double posRes,
                                                     const double oriRes, const Vector<dim> &posMask, const Vector<dim> &oriMask) {
+    if ((source - target).isZero(EPSILON))
+        return std::vector<Vector<dim>>();
+
     double uNormPos = (util::multiplyElementWise<dim>((target - source), posMask)).squaredNorm();
     double uNormOri = (util::multiplyElementWise<dim>((target - source), oriMask)).squaredNorm();
 

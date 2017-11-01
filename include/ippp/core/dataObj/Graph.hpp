@@ -187,7 +187,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNode(const size_t index) const {
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const {
     auto nearestNode = m_neighborFinder->searchNearestNeighbor(config);
-    if (nearestNode && nearestNode->getValues().isApprox(config, 0.00001))
+    if (nearestNode && nearestNode->getValues().isApprox(config, EPSILON))
         return nearestNode;
     else
         return nullptr;

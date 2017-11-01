@@ -26,6 +26,9 @@
 
 namespace ippp {
 
+// global definitions
+const double EPSILON = 0.00001;
+
 // Eigen Vectors
 template <unsigned int dim>
 using Vector = Eigen::Matrix<double, dim, 1>;

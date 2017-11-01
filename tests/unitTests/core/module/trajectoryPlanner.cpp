@@ -21,7 +21,7 @@
 #include <ippp/core/collisionDetection/CollisionDetectionPqp.hpp>
 #include <ippp/core/trajectoryPlanner/LinearTrajectory.hpp>
 #include <ippp/core/util/Utility.h>
-#include <ippp/environment/robot/Jaco.h>
+#include <ippp/environment/robot/MobileRobot.h>
 
 using namespace ippp;
 
@@ -30,7 +30,10 @@ BOOST_AUTO_TEST_SUITE(constructor)
 BOOST_AUTO_TEST_CASE(computeTrajectory) {
     // init TrajectoryPlanner
     const unsigned int dim = 6;
-    std::shared_ptr<Jaco> robot(new Jaco());
+    std::vector<DofType> dofTypes = {DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos,
+                                     DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos};
+    std::shared_ptr<MobileRobot> robot(new MobileRobot(
+        dim, std::make_pair(util::Vecd(-10, -10, -10, -10, -10, -10), util::Vecd(10, 10, 10, 10, 10, 10)), dofTypes));
     std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     std::shared_ptr<TrajectoryPlanner<dim>> planner(new LinearTrajectory<dim>(collision, environment, 0.1));
