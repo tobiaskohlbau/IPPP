@@ -25,8 +25,8 @@
 #include <time.h>
 
 #include <ippp/Identifier.h>
-#include <ippp/types.h>
 #include <ippp/environment/Environment.h>
+#include <ippp/types.h>
 
 namespace ippp {
 
@@ -38,8 +38,9 @@ namespace ippp {
 template <unsigned int dim>
 class Sampler : public Identifier {
   public:
-    Sampler(const std::string &name, const std::shared_ptr<Environment> &environment);
-    Sampler(const std::string &name, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary);
+    Sampler(const std::string &name, const std::shared_ptr<Environment> &environment, const std::string &seed = "");
+    Sampler(const std::string &name, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary,
+            const std::string &seed = "");
     virtual Vector<dim> getSample() = 0;
     double getRandomAngle();
     double getRandomNumber();
@@ -54,7 +55,7 @@ class Sampler : public Identifier {
     Vector<dim> m_origin;
 
     std::random_device rd;
-    std::mt19937 m_generator;
+    std::minstd_rand0 m_generator;
     std::uniform_real_distribution<double> m_distAngle;
     std::uniform_real_distribution<double> m_distNumber;
 };
@@ -66,7 +67,8 @@ class Sampler : public Identifier {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment> &environment) : Identifier(name) {
+Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment> &environment, const std::string &seed)
+    : Identifier(name) {
     Logging::debug("Initialize", this);
 
     m_minBoundary = environment->getRobot()->getMinBoundary();
@@ -74,7 +76,13 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
 
     m_origin = Vector<dim>::Zero();
 
-    m_generator = std::mt19937(rd());
+    if (seed.empty()) {
+        m_generator = std::minstd_rand0(rd());
+    } else {
+        std::seed_seq seed_seq(seed.begin(), seed.end());
+        m_generator = std::minstd_rand0(seed_seq);
+    }
+
     m_distAngle = std::uniform_real_distribution<double>(0, util::twoPi());
     m_distNumber = std::uniform_real_distribution<double>(0, 1.0);
 }
@@ -87,14 +95,21 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Sampler<dim>::Sampler(const std::string &name, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary)
+Sampler<dim>::Sampler(const std::string &name, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary,
+                      const std::string &seed)
     : Identifier(name) {
     Logging::debug("Initialize", this);
 
     m_minBoundary = minBoundary;
     m_maxBoundary = maxBoundary;
 
-    m_generator = std::mt19937(rd());
+    if (seed.empty()) {
+        m_generator = std::minstd_rand0(rd());
+    } else {
+        std::seed_seq seed_seq(seed.begin(), seed.end());
+        m_generator = std::minstd_rand0(seed_seq);
+    }
+
     m_distAngle = std::uniform_real_distribution<double>(0, util::twoPi());
     m_distNumber = std::uniform_real_distribution<double>(0, 1.0);
 }

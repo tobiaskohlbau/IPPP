@@ -31,7 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class SamplerNormalDist : public Sampler<dim> {
   public:
-    SamplerNormalDist(const std::shared_ptr<Environment> &environment);
+    SamplerNormalDist(const std::shared_ptr<Environment> &environment, const std::string &seed = "");
     Vector<dim> getSample() override;
     void setOrigin(const Vector<dim> &origin) override;
 
@@ -46,8 +46,8 @@ class SamplerNormalDist : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerNormalDist<dim>::SamplerNormalDist(const std::shared_ptr<Environment> &environment)
-    : Sampler<dim>("SamplerNormalDist", environment) {
+SamplerNormalDist<dim>::SamplerNormalDist(const std::shared_ptr<Environment> &environment, const std::string &seed)
+    : Sampler<dim>("SamplerNormalDist", environment, seed) {
     m_distNormal.clear();
     for (unsigned int i = 0; i < dim; ++i) {
         std::normal_distribution<double> distribution(this->m_origin[i], this->m_maxBoundary[i] - this->m_minBoundary[i]);

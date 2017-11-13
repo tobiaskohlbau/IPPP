@@ -39,7 +39,7 @@ enum class NeighborType { KDTree, BruteForce };
 
 enum class PathModifierType { Dummy, NodeCut };
 
-enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, SeedSampler, GridSampler };
+enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, GridSampler };
 
 enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle };
 
@@ -84,6 +84,7 @@ class ModuleConfigurator : public Configurator {
     void setNeighborFinderType(const NeighborType type);
     void setPathModifierType(const PathModifierType type);
     void setSamplerType(const SamplerType type);
+    void setSamplerProperties(const std::string &seed, const double gridResolution);
     void setSamplingProperties(const size_t samplingAttempts = 10, const double samplingDist = 10,
                                const size_t medialAxisDirs = 15);
     void setSamplingType(const SamplingType type);
@@ -114,6 +115,8 @@ class ModuleConfigurator : public Configurator {
     NeighborType m_neighborType = NeighborType::KDTree;
     PathModifierType m_pathModifierType = PathModifierType::NodeCut;
     SamplerType m_samplerType = SamplerType::SamplerRandom;
+    std::string m_samplerSeed = "";
+    double m_samplerGridResolution = 1;
     SamplingType m_samplingType = SamplingType::Straight;
     size_t m_samplingAttempts = 10;
     double m_samplingDist = 10;
@@ -257,21 +260,18 @@ void ModuleConfigurator<dim>::initializeModules() {
 
     switch (m_samplerType) {
         case ippp::SamplerType::SamplerRandom:
-            m_sampler = std::make_shared<SamplerRandom<dim>>(m_environment);
+            m_sampler = std::make_shared<SamplerRandom<dim>>(m_environment, m_samplerSeed);
             break;
         case ippp::SamplerType::SamplerNormalDist:
-            m_sampler = std::make_shared<SamplerNormalDist<dim>>(m_environment);
+            m_sampler = std::make_shared<SamplerNormalDist<dim>>(m_environment, m_samplerSeed);
             break;
         case ippp::SamplerType::SamplerUniform:
-            m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment);
-            break;
-        case ippp::SamplerType::SeedSampler:
-            m_sampler = std::make_shared<SeedSampler<dim>>(m_environment);
+            m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment, m_samplerSeed);
             break;
         case ippp::SamplerType::GridSampler:
-            m_sampler = std::make_shared<GridSampler<dim>>(m_environment);
+            m_sampler = std::make_shared<GridSampler<dim>>(m_environment, m_samplerGridResolution);
         default:
-            m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment);
+            m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment, m_samplerSeed);
             break;
     }
 
@@ -319,6 +319,8 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     json["NeighborType"] = static_cast<int>(m_neighborType);
     json["PathModifierType"] = static_cast<int>(m_pathModifierType);
     json["SamplerType"] = static_cast<int>(m_samplerType);
+    json["SamplerSeed"] = m_samplerSeed;
+    json["SamplerGridResolution"] = m_samplerGridResolution;
     json["SamplingType"] = static_cast<int>(m_samplingType);
     json["SamplingAttempts"] = m_samplingAttempts;
     json["SamplingDist"] = m_samplingDist;
@@ -346,6 +348,8 @@ bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
     m_neighborType = static_cast<NeighborType>(json["NeighborType"].get<int>());
     m_pathModifierType = static_cast<PathModifierType>(json["PathModifierType"].get<int>());
     m_samplerType = static_cast<SamplerType>(json["SamplerType"].get<int>());
+    m_samplerSeed = json["SamplerSeed"].get<std::string>();
+    m_samplerGridResolution = json["SamplerGridResolution"].get<double>();
     m_samplingType = static_cast<SamplingType>(json["SamplingType"].get<int>());
     m_samplingAttempts = json["SamplingAttempts"].get<size_t>();
     m_samplingDist = json["SamplingDist"].get<double>();
@@ -478,6 +482,15 @@ template <unsigned int dim>
 void ModuleConfigurator<dim>::setSamplerType(const SamplerType type) {
     m_samplerType = type;
     m_parameterModified = true;
+}
+
+template <unsigned int dim>
+void ModuleConfigurator<dim>::setSamplerProperties(const std::string &seed, const double gridResolution) {
+    m_samplerSeed = seed;
+    if (gridResolution > 0)
+        m_samplerGridResolution = gridResolution;
+    else
+        Logging::warning("SamplerGridResolution has to be > 0", this);
 }
 
 /*!

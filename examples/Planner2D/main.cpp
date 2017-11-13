@@ -30,7 +30,6 @@ bool testTriangleRobot() {
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
     envConfigurator.setRobotType(RobotType::Triangle2D, "assets/robots/simpleTriangleRobot.obj");
-    generateMap();
     envConfigurator.addObstaclePath("obstacle.obj");
     envConfigurator.saveConfig("envConfigTriangle.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -78,7 +77,6 @@ bool testTriangleRobot() {
         cv::imwrite("result.png", image);
         cv::waitKey(0);
         return true;
-        ;
     }
     return false;
 }
@@ -164,17 +162,18 @@ void testPointRobot() {
     creator.setEnvironment(environment);
     creator.setCollisionType(CollisionType::Dim2);
     creator.setGraphSortCount(3000);
-    creator.setEvaluatorType(EvaluatorType::QueryOrTime);
-    creator.setEvaluatorProperties(50, 30);
-    creator.setSamplingType(SamplingType::NearObstacle);
+    creator.setEvaluatorType(EvaluatorType::Query);
+    creator.setEvaluatorProperties(50, 20);
+    creator.setSamplerType(SamplerType::SamplerRandom);
+    creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
+    creator.setSamplingType(SamplingType::Straight);
     creator.setSamplingProperties(10, 80);
-    creator.setMetricWeightVec(Vector2(1.1, 1.1));
     creator.saveConfig("moduleConfig.json");
     creator.loadConfig("moduleConfig.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::shared_ptr<EST<dim>>(new EST<dim>(environment, creator.getPlannerOptions(), creator.getGraph()));
-    // planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(20), creator.getGraph()));
+    //planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(30), creator.getGraph()));
     planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(35), creator.getGraph()));
     // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
     // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
@@ -183,7 +182,7 @@ void testPointRobot() {
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(10.0, 10.0);
     Vector2 goal(990.0, 990.0);
-    bool connected = planner->computePath(start, goal, 500, 3);
+    bool connected = planner->computePath(start, goal, 500, 1);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
@@ -215,6 +214,6 @@ int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::trace);
 
     // testTriangleRobot();
-    //test2DSerialRobot();;
+    //test2DSerialRobot();
     testPointRobot();
 }

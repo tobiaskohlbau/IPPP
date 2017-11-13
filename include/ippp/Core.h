@@ -60,7 +60,6 @@
 #include <ippp/modules/sampler/SamplerNormalDist.hpp>
 #include <ippp/modules/sampler/SamplerRandom.hpp>
 #include <ippp/modules/sampler/SamplerUniform.hpp>
-#include <ippp/modules/sampler/SeedSampler.hpp>
 
 #include <ippp/modules/sampling/BridgeSampling.hpp>
 #include <ippp/modules/sampling/GaussianDistSampling.hpp>

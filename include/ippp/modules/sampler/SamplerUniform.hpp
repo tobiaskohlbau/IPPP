@@ -31,8 +31,8 @@ namespace ippp {
 template <unsigned int dim>
 class SamplerUniform : public Sampler<dim> {
   public:
-    SamplerUniform(const std::shared_ptr<Environment> &environment);
-    SamplerUniform(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary);
+    SamplerUniform(const std::shared_ptr<Environment> &environment, const std::string &seed = "");
+    SamplerUniform(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::string &seed = "");
     Vector<dim> getSample() override;
 
   private:
@@ -46,8 +46,8 @@ class SamplerUniform : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<Environment> &environment)
-    : Sampler<dim>("SamplerUniform", environment) {
+SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<Environment> &environment, const std::string &seed)
+    : Sampler<dim>("SamplerUniform", environment, seed) {
     for (unsigned int i = 0; i < dim; ++i) {
         std::uniform_real_distribution<double> dist(this->m_minBoundary[i], this->m_maxBoundary[i]);
         m_distUniform.push_back(dist);
@@ -62,8 +62,8 @@ SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<Environment> &environm
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerUniform<dim>::SamplerUniform(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary)
-    : Sampler<dim>("SamplerUniform", minBoundary, maxBoundary) {
+SamplerUniform<dim>::SamplerUniform(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::string &seed)
+    : Sampler<dim>("SamplerUniform", minBoundary, maxBoundary, seed) {
     for (unsigned int i = 0; i < dim; ++i) {
         std::uniform_real_distribution<double> dist(this->m_minBoundary[i], this->m_maxBoundary[i]);
         m_distUniform.push_back(dist);

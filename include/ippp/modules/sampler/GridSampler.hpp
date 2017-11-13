@@ -61,7 +61,7 @@ class GridSampler : public Sampler<dim> {
 */
 template <unsigned int dim>
 GridSampler<dim>::GridSampler(const std::shared_ptr<Environment> &environment, const double res)
-    : Sampler<dim>("GridSampler", environment) {
+    : Sampler<dim>("GridSampler", environment, std::string()) {
     setResolution(res);
     generateGridConfigs();
 }
@@ -75,7 +75,7 @@ GridSampler<dim>::GridSampler(const std::shared_ptr<Environment> &environment, c
 */
 template <unsigned int dim>
 GridSampler<dim>::GridSampler(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const double res)
-    : Sampler<dim>("RandomSampler", minBoundary, maxBoundary) {
+    : Sampler<dim>("RandomSampler", minBoundary, maxBoundary, , std::string()) {
     setResolution(res);
     generateGridConfigs();
 }

@@ -31,8 +31,8 @@ namespace ippp {
 template <unsigned int dim>
 class SamplerRandom : public Sampler<dim> {
   public:
-    SamplerRandom(const std::shared_ptr<Environment> &environment);
-    SamplerRandom(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary);
+    SamplerRandom(const std::shared_ptr<Environment> &environment, const std::string &seed = "");
+    SamplerRandom(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::string &seed = "");
     virtual Vector<dim> getSample();
 
   protected:
@@ -48,7 +48,8 @@ class SamplerRandom : public Sampler<dim> {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerRandom<dim>::SamplerRandom(const std::shared_ptr<Environment> &environment) : Sampler<dim>("RandomSampler", environment) {
+SamplerRandom<dim>::SamplerRandom(const std::shared_ptr<Environment> &environment, const std::string &seed)
+    : Sampler<dim>("RandomSampler", environment, seed) {
 }
 
 /*!
@@ -59,8 +60,8 @@ SamplerRandom<dim>::SamplerRandom(const std::shared_ptr<Environment> &environmen
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerRandom<dim>::SamplerRandom(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary)
-    : Sampler<dim>("RandomSampler", minBoundary, maxBoundary) {
+SamplerRandom<dim>::SamplerRandom(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::string &seed)
+    : Sampler<dim>("RandomSampler", minBoundary, maxBoundary, seed) {
 }
 
 /*!
@@ -73,7 +74,8 @@ template <unsigned int dim>
 Vector<dim> SamplerRandom<dim>::getSample() {
     Vector<dim> config;
     for (unsigned int i = 0; i < dim; ++i)
-        config[i] = this->m_minBoundary[i] + (double)(this->m_generator() % (int)(this->m_maxBoundary[i] - this->m_minBoundary[i]));
+        config[i] =
+            this->m_minBoundary[i] + (double)(this->m_generator() % (int)(this->m_maxBoundary[i] - this->m_minBoundary[i]));
     return config;
 }
 
