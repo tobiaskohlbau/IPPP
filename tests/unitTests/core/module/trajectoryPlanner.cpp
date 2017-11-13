@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include <ippp/modules/collisionDetection/CollisionDetectionPqp.hpp>
 #include <ippp/modules/trajectoryPlanner/LinearTrajectory.hpp>

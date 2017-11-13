@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include <ippp/util/UtilGeo.hpp>
 

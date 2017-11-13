@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include <ippp/dataObj/Node.hpp>
 #include <ippp/util/UtilList.hpp>

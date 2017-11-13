@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/modules/distanceMetrics/L2Metric.hpp>
