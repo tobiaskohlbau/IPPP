@@ -16,15 +16,13 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #include <ippp/dataObj/PointList.hpp>
 
 using namespace ippp;
 
-BOOST_AUTO_TEST_SUITE(constructor)
-
-BOOST_AUTO_TEST_CASE(standardConstructor2D) {
+TEST(POINTLIST, standardConstructor2D) {
     std::vector<Vector2> vecs;
     for (int i = 0; i < 4; ++i)
         vecs.push_back(Vector2(i, i));
@@ -32,18 +30,18 @@ BOOST_AUTO_TEST_CASE(standardConstructor2D) {
     Triangle2D triangle(vecs[0], vecs[1], vecs[2]);
     Square2D square(vecs[0], vecs[1], vecs[2], vecs[3]);
 
-    BOOST_CHECK(line.getP(1) == vecs[0]);
-    BOOST_CHECK(line.getP(2) == vecs[1]);
-    BOOST_CHECK(triangle.getP(1) == vecs[0]);
-    BOOST_CHECK(triangle.getP(2) == vecs[1]);
-    BOOST_CHECK(triangle.getP(3) == vecs[2]);
-    BOOST_CHECK(square.getP(1) == vecs[0]);
-    BOOST_CHECK(square.getP(2) == vecs[1]);
-    BOOST_CHECK(square.getP(3) == vecs[2]);
-    BOOST_CHECK(square.getP(4) == vecs[3]);
+    EXPECT_EQ(line.getP(1) , vecs[0]);
+    EXPECT_EQ(line.getP(2) , vecs[1]);
+    EXPECT_EQ(triangle.getP(1), vecs[0]);
+    EXPECT_EQ(triangle.getP(2), vecs[1]);
+    EXPECT_EQ(triangle.getP(3), vecs[2]);
+    EXPECT_EQ(square.getP(1), vecs[0]);
+    EXPECT_EQ(square.getP(2), vecs[1]);
+    EXPECT_EQ(square.getP(3), vecs[2]);
+    EXPECT_EQ(square.getP(4), vecs[3]);
 }
 
-BOOST_AUTO_TEST_CASE(standardConstructor3D) {
+TEST(POINTLIST, standardConstructor3D) {
     std::vector<Vector3> vecs;
     for (int i = 0; i < 4; ++i)
         vecs.push_back(Vector3(i, i, i));
@@ -51,15 +49,13 @@ BOOST_AUTO_TEST_CASE(standardConstructor3D) {
     Triangle3D triangle(vecs[0], vecs[1], vecs[2]);
     Square3D square(vecs[0], vecs[1], vecs[2], vecs[3]);
 
-    BOOST_CHECK(line.getP(1) == vecs[0]);
-    BOOST_CHECK(line.getP(2) == vecs[1]);
-    BOOST_CHECK(triangle.getP(1) == vecs[0]);
-    BOOST_CHECK(triangle.getP(2) == vecs[1]);
-    BOOST_CHECK(triangle.getP(3) == vecs[2]);
-    BOOST_CHECK(square.getP(1) == vecs[0]);
-    BOOST_CHECK(square.getP(2) == vecs[1]);
-    BOOST_CHECK(square.getP(3) == vecs[2]);
-    BOOST_CHECK(square.getP(4) == vecs[3]);
+    EXPECT_EQ(line.getP(1), vecs[0]);
+    EXPECT_EQ(line.getP(2), vecs[1]);
+    EXPECT_EQ(triangle.getP(1), vecs[0]);
+    EXPECT_EQ(triangle.getP(2), vecs[1]);
+    EXPECT_EQ(triangle.getP(3), vecs[2]);
+    EXPECT_EQ(square.getP(1), vecs[0]);
+    EXPECT_EQ(square.getP(2), vecs[1]);
+    EXPECT_EQ(square.getP(3), vecs[2]);
+    EXPECT_EQ(square.getP(4), vecs[3]);
 }
-
-BOOST_AUTO_TEST_SUITE_END()

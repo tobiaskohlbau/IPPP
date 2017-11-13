@@ -16,25 +16,23 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #include <ippp/dataObj/Node.hpp>
 #include <ippp/util/UtilList.hpp>
 
 using namespace ippp;
 
-BOOST_AUTO_TEST_SUITE(constructor)
-
 template <unsigned int dim>
 void testStandardConstrurctor() {
     Node<dim> node;
-    BOOST_CHECK(node.empty() == true);
-    BOOST_CHECK(node.getParentNode() == nullptr);
-    BOOST_CHECK(node.getChildNodes().size() == 0);
-    BOOST_CHECK(node.getCost() == -1);
+    EXPECT_TRUE(node.empty());
+    EXPECT_EQ(node.getParentNode(), nullptr);
+    EXPECT_EQ(node.getChildNodes().size(), 0);
+    EXPECT_EQ(node.getCost(), -1);
 }
 
-BOOST_AUTO_TEST_CASE(standardConstructor) {
+TEST(NODE, standardConstructor) {
     testStandardConstrurctor<2>();
     testStandardConstrurctor<3>();
     testStandardConstrurctor<4>();
@@ -47,15 +45,15 @@ BOOST_AUTO_TEST_CASE(standardConstructor) {
 
 template <unsigned int dim>
 void testVectorConstructor(Node<dim> node) {
-    BOOST_CHECK(node.empty() == false);
-    BOOST_CHECK(node.getParentNode() == nullptr);
-    BOOST_CHECK(node.getChildNodes().size() == 0);
-    BOOST_CHECK(node.getCost() == -1);
+    EXPECT_FALSE(node.empty());
+    EXPECT_EQ(node.getParentNode(), nullptr);
+    EXPECT_EQ(node.getChildNodes().size(), 0);
+    EXPECT_EQ(node.getCost(), -1);
     for (int i = 0; i < dim; ++i)
-        BOOST_CHECK(node.getValues()[i] == i);
+        EXPECT_EQ(node.getValues()[i], i);
 }
 
-BOOST_AUTO_TEST_CASE(vectorConstructor) {
+TEST(NODE, vectorConstructor) {
     Node<2> node2(Vector2(0, 1));
     Node<3> node3(Vector3(0, 1, 2));
     Node<4> node4(Vector4(0, 1, 2, 3));
@@ -68,10 +66,6 @@ BOOST_AUTO_TEST_CASE(vectorConstructor) {
     testVectorConstructor<6>(node6);
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(parent_childes)
-
 template <unsigned int dim>
 void testParent() {
     Node<dim> node(Vector<dim>::Constant(dim, 1, 0));
@@ -79,14 +73,14 @@ void testParent() {
 
     std::shared_ptr<Node<dim>> ptrParent = std::make_shared<Node<dim>>(parent);
     node.setParent(ptrParent, 1);
-    BOOST_CHECK(node.getParentNode() == ptrParent);
-    BOOST_CHECK(node.getParentEdge()->getTarget() == ptrParent);
+    EXPECT_EQ(node.getParentNode(), ptrParent);
+    EXPECT_EQ(node.getParentEdge()->getTarget(), ptrParent);
     node.clearParent();
-    BOOST_CHECK(node.getParentNode() == nullptr);
-    BOOST_CHECK(node.getParentEdge() == nullptr);
+    EXPECT_EQ(node.getParentNode(), nullptr);
+    EXPECT_EQ(node.getParentEdge(), nullptr);
 }
 
-BOOST_AUTO_TEST_CASE(parent) {
+TEST(NODE, parent) {
     testParent<2>();
     testParent<3>();
     testParent<4>();
@@ -107,20 +101,20 @@ void testChildes() {
     }
 
     std::vector<std::shared_ptr<Node<dim>>> resultNodes = node.getChildNodes();
-    BOOST_CHECK(util::contains(resultNodes, childes[0]));
-    BOOST_CHECK(util::contains(resultNodes, childes[1]));
-    BOOST_CHECK(util::contains(resultNodes, childes[2]));
+    EXPECT_TRUE(util::contains(resultNodes, childes[0]));
+    EXPECT_TRUE(util::contains(resultNodes, childes[1]));
+    EXPECT_TRUE(util::contains(resultNodes, childes[2]));
 
     std::vector<std::shared_ptr<Edge<dim>>> resultEdges = node.getChildEdges();
-    BOOST_CHECK(util::contains(childes, resultEdges[0]->getTarget()));
-    BOOST_CHECK(util::contains(childes, resultEdges[1]->getTarget()));
-    BOOST_CHECK(util::contains(childes, resultEdges[2]->getTarget()));
+    EXPECT_TRUE(util::contains(childes, resultEdges[0]->getTarget()));
+    EXPECT_TRUE(util::contains(childes, resultEdges[1]->getTarget()));
+    EXPECT_TRUE(util::contains(childes, resultEdges[2]->getTarget()));
     node.clearChildes();
-    BOOST_CHECK(node.getChildNodes().size() == 0);
-    BOOST_CHECK(node.getChildEdges().size() == 0);
+    EXPECT_EQ(node.getChildNodes().size(), 0);
+    EXPECT_EQ(node.getChildEdges().size(), 0);
 }
 
-BOOST_AUTO_TEST_CASE(childes) {
+TEST(NODE, children) {
     testParent<2>();
     testParent<3>();
     testParent<4>();
@@ -130,5 +124,3 @@ BOOST_AUTO_TEST_CASE(childes) {
     testParent<8>();
     testParent<9>();
 }
-
-BOOST_AUTO_TEST_SUITE_END()

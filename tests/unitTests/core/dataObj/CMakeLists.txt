@@ -16,10 +16,7 @@
 #
 #-------------------------------------------------------------------------//
 
-set(MODULE "core_dataObj")
-add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
-
-ADD_IPPP_TEST(edge "")
-ADD_IPPP_TEST(graph "")
-ADD_IPPP_TEST(node "")
-ADD_IPPP_TEST(pointList "")
+ADD_IPPP_TEST(edge "dataObj" "")
+ADD_IPPP_TEST(graph "dataObj" "")
+ADD_IPPP_TEST(node "dataObj" "")
+ADD_IPPP_TEST(pointList "dataObj" "")

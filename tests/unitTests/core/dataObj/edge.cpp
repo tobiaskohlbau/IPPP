@@ -16,13 +16,11 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #include <ippp/dataObj/Node.hpp>
 
 using namespace ippp;
-
-BOOST_AUTO_TEST_SUITE(constructor)
 
 template <unsigned int dim>
 void testConstructor() {
@@ -32,12 +30,12 @@ void testConstructor() {
     std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
 
     Edge<dim> edge(source, target, 1);
-    BOOST_CHECK(edge.getCost() == 1);
-    BOOST_CHECK(source == edge.getSource());
-    BOOST_CHECK(target == edge.getTarget());
+    EXPECT_EQ(edge.getCost(), 1);
+    EXPECT_EQ(source, edge.getSource());
+    EXPECT_EQ(target, edge.getTarget());
 }
 
-BOOST_AUTO_TEST_CASE(standardConstructor) {
+TEST(EDGE, Constructor) {
     testConstructor<2>();
     testConstructor<3>();
     testConstructor<4>();
@@ -47,10 +45,6 @@ BOOST_AUTO_TEST_CASE(standardConstructor) {
     testConstructor<8>();
     testConstructor<9>();
 }
-
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(node)
 
 template <unsigned int dim>
 void testSourceNode() {
@@ -63,11 +57,11 @@ void testSourceNode() {
 
     Edge<dim> edge(source, target, 1);
     edge.setSource(sourceNew);
-    BOOST_CHECK(sourceNew == edge.getSource());
-    BOOST_CHECK(edge.getCost() == 1);
+    EXPECT_EQ(sourceNew, edge.getSource());
+    EXPECT_EQ(edge.getCost(), 1);
 }
 
-BOOST_AUTO_TEST_CASE(sourceNode) {
+TEST(EDGE, SourceNode) {
     testSourceNode<2>();
     testSourceNode<3>();
     testSourceNode<4>();
@@ -89,11 +83,11 @@ void testTargetNode() {
 
     Edge<dim> edge(source, target, 1);
     edge.setTarget(targetNew);
-    BOOST_CHECK(targetNew == edge.getTarget());
-    BOOST_CHECK(edge.getCost() == 1);
+    EXPECT_EQ(targetNew, edge.getTarget());
+    EXPECT_EQ(edge.getCost(), 1);
 }
 
-BOOST_AUTO_TEST_CASE(targetNode) {
+TEST(EDGE, TargetNode) {
     testTargetNode<2>();
     testTargetNode<3>();
     testTargetNode<4>();
@@ -103,5 +97,3 @@ BOOST_AUTO_TEST_CASE(targetNode) {
     testTargetNode<8>();
     testTargetNode<9>();
 }
-
-BOOST_AUTO_TEST_SUITE_END()

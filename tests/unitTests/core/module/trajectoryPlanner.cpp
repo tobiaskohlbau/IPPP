@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #include <ippp/modules/collisionDetection/CollisionDetectionPqp.hpp>
 #include <ippp/modules/trajectoryPlanner/LinearTrajectory.hpp>
@@ -25,9 +25,7 @@
 
 using namespace ippp;
 
-BOOST_AUTO_TEST_SUITE(constructor)
-
-BOOST_AUTO_TEST_CASE(computeTrajectory) {
+TEST(TRAJECTORY, computeTrajectory) {
     // init TrajectoryPlanner
     const unsigned int dim = 6;
     std::vector<DofType> dofTypes = {DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos,
@@ -43,15 +41,15 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     Vector6 goal = util::Vecd(0, 0, 0, 0, 0, 0);
     std::vector<Vector6> path;
     path = planner->calcTrajectoryCont(init, goal);
-    BOOST_CHECK(path.size() == 0);
+    EXPECT_EQ(path.size(), 0);
 
     goal = util::Vecd(1, 1, 1, 1, 1, 1);
     path = planner->calcTrajectoryCont(init, goal);
     double dist = 1 / goal.norm() * 0.1;
     for (double i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
-            BOOST_CHECK(path[i][j] <= dist + 0.0001);
-            BOOST_CHECK(path[i][j] >= dist - 0.0001);
+            EXPECT_TRUE(path[i][j] <= dist + 0.0001);
+            EXPECT_TRUE(path[i][j] >= dist - 0.0001);
         }
         dist += 1 / goal.norm() * 0.1;
     }
@@ -61,11 +59,9 @@ BOOST_AUTO_TEST_CASE(computeTrajectory) {
     dist = -1 / goal.norm() * 0.1;
     for (double i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
-            BOOST_CHECK(path[i][j] <= dist + 0.0001);
-            BOOST_CHECK(path[i][j] >= dist - 0.0001);
+            EXPECT_TRUE(path[i][j] <= dist + 0.0001);
+            EXPECT_TRUE(path[i][j] >= dist - 0.0001);
         }
         dist -= 1 / goal.norm() * 0.1;
     }
 }
-
-BOOST_AUTO_TEST_SUITE_END()

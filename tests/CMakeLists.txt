@@ -16,28 +16,24 @@
 #
 #-------------------------------------------------------------------------//
 
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-include_directories (${Boost_INCLUDE_DIRS})
-add_definitions(-DBOOST_TEST_DYN_LINK)
-SET(LIBRARIES IPPP ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${ASSIMP_LIBRARIES} ${FCL_LIBRARIES} ${CCD_LIBRARIES})
+enable_testing()
 
-ADD_DEFINITIONS("-DBOOST_TEST_MAIN")
+find_package(GTEST REQUIRED)
+SET(LIBRARIES IPPP ${GTEST_BOTH_LIBRARIES})
 
-MACRO(ADD_IPPP_TEST TEST_NAME ADDITIONAL_LIBRARIES)
-    SET(EXE_NAME Test_${MODULE}_${TEST_NAME})
+MACRO(ADD_IPPP_TEST TEST_NAME BRANCH ADDITIONAL_LIBRARIES)
+    SET(EXE_NAME Test_${BRANCH}_${TEST_NAME})
+    
+    add_executable(${EXE_NAME} ${TEST_NAME}.cpp)
+    target_link_libraries(${EXE_NAME} ${LIBRARIES} ${ADDITIONAL_LIBRARIES})
+    target_include_directories(${EXE_NAME} PUBLIC ${GTEST_INCLUDE_DIRS})
 
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
-    ADD_EXECUTABLE(${EXE_NAME} ${TEST_NAME}.cpp)
-    set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 11)
-    TARGET_LINK_LIBRARIES(${EXE_NAME} ${LIBRARIES} ${ADDITIONAL_LIBRARIES})
-
-    SET(TEST_NAME ${MODULE}_${TEST_NAME})
+    SET(TEST_NAME ${BRANCH}_${TEST_NAME})
     ADD_TEST(${TEST_NAME} ${EXE_NAME} COMMAND Test)
 
     SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES
             FAIL_REGULAR_EXPRESSION "FAILED")
-
-ENDMACRO(ADD_IPPP_TEST TEST_NAME)
+ENDMACRO(ADD_IPPP_TEST)
 
 # from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
 MACRO(SUBDIRLIST result curdir)

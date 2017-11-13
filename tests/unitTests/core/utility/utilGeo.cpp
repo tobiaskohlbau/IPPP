@@ -18,37 +18,35 @@
 
 #include <iostream>
 
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #include <ippp/util/UtilGeo.hpp>
 
 using namespace ippp;
 using namespace Eigen;
 
-BOOST_AUTO_TEST_SUITE(staticFunctions)
-
-BOOST_AUTO_TEST_CASE(pi) {
-    BOOST_CHECK(util::pi() < 3.141593);
-    BOOST_CHECK(util::pi() > 3.141591);
+TEST(GEO, pi) {
+    EXPECT_TRUE(util::pi() < 3.141593);
+    EXPECT_TRUE(util::pi() > 3.141591);
 }
 
-BOOST_AUTO_TEST_CASE(poseVecToMat) {
+TEST(GEO, poseVecToMat) {
     Vector6 poseZero = util::Vecd(0, 0, 0, 0, 0, 0);
     ippp::Transform pose = util::poseVecToTransform(poseZero);
     for (size_t i = 0; i < 3; ++i)
-        BOOST_CHECK(pose.translation()(i) == 0);
+        EXPECT_EQ(pose.translation()(i), 0);
 
     Vector6 poseVec = util::transformToVec(pose);
     for (int i = 0; i < 6; ++i)
         if (poseVec[i] < ippp::EPSILON && poseVec[i] > -ippp::EPSILON)
             poseVec[i] = 0;
     for (int i = 0; i < 6; ++i)
-        BOOST_CHECK(poseZero[i] == poseVec[i]);
+        EXPECT_EQ(poseZero[i], poseVec[i]);
 
     Vector6 poseTwo = util::Vecd(1, 1, 1, 0, 0, 0);
     pose = util::poseVecToTransform(poseTwo);
     for (size_t i = 0; i < 3; ++i)
-        BOOST_CHECK(pose.translation()(i) == 1);
+        EXPECT_EQ(pose.translation()(i), 1);
 
     for (double x = 0; x < 359; x += 5) {
         for (double y = 0; y < 359; y += 5) {
@@ -56,15 +54,15 @@ BOOST_AUTO_TEST_CASE(poseVecToMat) {
                 pose = util::poseVecToTransform(poseTwo);
                 poseVec = util::transformToVec(pose);
                 for (int i = 0; i < 6; ++i) {
-                    BOOST_CHECK(poseTwo[i] <= poseVec[i] + ippp::EPSILON);
-                    BOOST_CHECK(poseTwo[i] >= poseVec[i] - ippp::EPSILON);
+                    EXPECT_TRUE(poseTwo[i] <= poseVec[i] + ippp::EPSILON);
+                    EXPECT_TRUE(poseTwo[i] >= poseVec[i] - ippp::EPSILON);
                 }
             }
         }
     }
 }
 
-BOOST_AUTO_TEST_CASE(degToRad) {
+TEST(GEO, degToRad) {
     double pi = util::pi();
     double a1[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
     double a2[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
@@ -75,14 +73,14 @@ BOOST_AUTO_TEST_CASE(degToRad) {
     for (int i = 0; i < 11; ++i)
         temp2[i] = deg[i] * util::toRad();
     for (int i = 0; i < deg.rows(); ++i) {
-        BOOST_CHECK(rad[i] <= temp1[i] + ippp::EPSILON);
-        BOOST_CHECK(rad[i] >= temp1[i] - ippp::EPSILON);
-        BOOST_CHECK(rad[i] <= temp2[i] + ippp::EPSILON);
-        BOOST_CHECK(rad[i] >= temp2[i] - ippp::EPSILON);
+        EXPECT_TRUE(rad[i] <= temp1[i] + ippp::EPSILON);
+        EXPECT_TRUE(rad[i] >= temp1[i] - ippp::EPSILON);
+        EXPECT_TRUE(rad[i] <= temp2[i] + ippp::EPSILON);
+        EXPECT_TRUE(rad[i] >= temp2[i] - ippp::EPSILON);
     }
 }
 
-BOOST_AUTO_TEST_CASE(radToDeg) {
+TEST(GEO, radToDeg) {
     double pi = util::pi();
     double a1[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
     double a2[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
@@ -93,11 +91,9 @@ BOOST_AUTO_TEST_CASE(radToDeg) {
     for (int i = 0; i < 11; ++i)
         temp2[i] = rad[i] * util::toDeg();
     for (int i = 0; i < deg.rows(); ++i) {
-        BOOST_CHECK(deg[i] <= temp1[i] + ippp::EPSILON);
-        BOOST_CHECK(deg[i] >= temp1[i] - ippp::EPSILON);
-        BOOST_CHECK(deg[i] <= temp2[i] + ippp::EPSILON);
-        BOOST_CHECK(deg[i] >= temp2[i] - ippp::EPSILON);
+        EXPECT_TRUE(deg[i] <= temp1[i] + ippp::EPSILON);
+        EXPECT_TRUE(deg[i] >= temp1[i] - ippp::EPSILON);
+        EXPECT_TRUE(deg[i] <= temp2[i] + ippp::EPSILON);
+        EXPECT_TRUE(deg[i] >= temp2[i] - ippp::EPSILON);
     }
 }
-
-BOOST_AUTO_TEST_SUITE_END()

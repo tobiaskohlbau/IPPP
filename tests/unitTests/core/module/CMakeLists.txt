@@ -16,7 +16,4 @@
 #
 #-------------------------------------------------------------------------//
 
-set(MODULE "core_module")
-add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
-
-ADD_IPPP_TEST(trajectoryPlanner "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_TEST(trajectoryPlanner "modules" "${ADDITIONAL_LIBRARIES}")
