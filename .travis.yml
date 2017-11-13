@@ -17,7 +17,7 @@ before_script:
   - cd IPPP
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=${CONFIGURATION} -DCMAKE_C_COMPILER=gcc-4.9 -DCMAKE_CXX_COMPILER=g++-4.9 ..
+  - cmake -Dtest=ON -DCMAKE_BUILD_TYPE=${CONFIGURATION} -DCMAKE_C_COMPILER=gcc-4.9 -DCMAKE_CXX_COMPILER=g++-4.9 ..
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
           make -j4 || travis_terminate 1;
