@@ -73,6 +73,8 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
 
     m_minBoundary = environment->getRobot()->getMinBoundary();
     m_maxBoundary = environment->getRobot()->getMaxBoundary();
+    for (unsigned int i = 0; i < dim; ++i)
+        assert(m_minBoundary[i] != m_maxBoundary[i]);
 
     m_origin = Vector<dim>::Zero();
 
@@ -102,6 +104,8 @@ Sampler<dim>::Sampler(const std::string &name, const Vector<dim> &minBoundary, c
 
     m_minBoundary = minBoundary;
     m_maxBoundary = maxBoundary;
+    for (unsigned int i = 0; i < dim; ++i)
+        assert(m_minBoundary[i] != m_maxBoundary[i]);
 
     if (seed.empty()) {
         m_generator = std::minstd_rand0(rd());

@@ -30,15 +30,12 @@ TEST(POINTLIST, standardConstructor2D) {
     Triangle2D triangle(vecs[0], vecs[1], vecs[2]);
     Square2D square(vecs[0], vecs[1], vecs[2], vecs[3]);
 
-    EXPECT_EQ(line.getP(1) , vecs[0]);
-    EXPECT_EQ(line.getP(2) , vecs[1]);
-    EXPECT_EQ(triangle.getP(1), vecs[0]);
-    EXPECT_EQ(triangle.getP(2), vecs[1]);
-    EXPECT_EQ(triangle.getP(3), vecs[2]);
-    EXPECT_EQ(square.getP(1), vecs[0]);
-    EXPECT_EQ(square.getP(2), vecs[1]);
-    EXPECT_EQ(square.getP(3), vecs[2]);
-    EXPECT_EQ(square.getP(4), vecs[3]);
+    for (size_t i = 0; i < 2; ++i)
+        EXPECT_EQ(line.getP(i + 1), vecs[i]);
+    for (size_t i = 0; i < 3; ++i)
+        EXPECT_EQ(triangle.getP(i + 1), vecs[i]);
+    for (size_t i = 0; i < 4; ++i)
+        EXPECT_EQ(square.getP(i + 1), vecs[i]);
 }
 
 TEST(POINTLIST, standardConstructor3D) {
@@ -49,13 +46,10 @@ TEST(POINTLIST, standardConstructor3D) {
     Triangle3D triangle(vecs[0], vecs[1], vecs[2]);
     Square3D square(vecs[0], vecs[1], vecs[2], vecs[3]);
 
-    EXPECT_EQ(line.getP(1), vecs[0]);
-    EXPECT_EQ(line.getP(2), vecs[1]);
-    EXPECT_EQ(triangle.getP(1), vecs[0]);
-    EXPECT_EQ(triangle.getP(2), vecs[1]);
-    EXPECT_EQ(triangle.getP(3), vecs[2]);
-    EXPECT_EQ(square.getP(1), vecs[0]);
-    EXPECT_EQ(square.getP(2), vecs[1]);
-    EXPECT_EQ(square.getP(3), vecs[2]);
-    EXPECT_EQ(square.getP(4), vecs[3]);
+    for (size_t i = 0; i < 2; ++i)
+        EXPECT_EQ(line.getP(i + 1), vecs[i]);
+    for (size_t i = 0; i < 3; ++i)
+        EXPECT_EQ(triangle.getP(i + 1), vecs[i]);
+    for (size_t i = 0; i < 4; ++i)
+        EXPECT_EQ(square.getP(i + 1), vecs[i]);
 }
