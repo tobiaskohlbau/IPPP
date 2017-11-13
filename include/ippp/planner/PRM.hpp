@@ -176,7 +176,7 @@ void PRM<dim>::samplingPhase(const size_t nbOfNodes) {
 */
 template <unsigned int dim>
 void PRM<dim>::startPlannerPhase(const size_t nbOfThreads) {
-    size_t nodeCount = m_graph->size();
+    size_t nodeCount = m_graph->nodeSize();
     if (nbOfThreads == 1) {
         plannerPhase(0, nodeCount);
     } else {

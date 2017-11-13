@@ -39,7 +39,7 @@ enum class NeighborType { KDTree, BruteForce };
 
 enum class PathModifierType { Dummy, NodeCut };
 
-enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, SeedSampler };
+enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, SeedSampler, GridSampler };
 
 enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle };
 
@@ -268,6 +268,8 @@ void ModuleConfigurator<dim>::initializeModules() {
         case ippp::SamplerType::SeedSampler:
             m_sampler = std::make_shared<SeedSampler<dim>>(m_environment);
             break;
+        case ippp::SamplerType::GridSampler:
+            m_sampler = std::make_shared<GridSampler<dim>>(m_environment);
         default:
             m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment);
             break;
@@ -419,7 +421,8 @@ void ModuleConfigurator<dim>::setEvaluatorType(const EvaluatorType type) {
 /*!
 *  \brief      Sets the queryEvaluatorDist
 *  \author     Sascha Kaden
-*  \param[in]  queryEvaluatorDist
+*  \param[in]  query evaluator distance
+*  \param[in]  duration time in seconds
 *  \date       2017-10-03
 */
 template <unsigned int dim>

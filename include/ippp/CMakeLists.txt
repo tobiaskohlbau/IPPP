@@ -56,6 +56,7 @@ list(APPEND SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/modules/pathModifier/PathModifier.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/modules/pathModifier/NodeCutPathModifier.hpp
 
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampler/GridSampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampler/Sampler.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampler/SamplerRandom.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampler/SamplerNormalDist.hpp

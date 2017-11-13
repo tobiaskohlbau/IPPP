@@ -55,6 +55,7 @@
 #include <ippp/modules/pathModifier/NodeCutPathModifier.hpp>
 #include <ippp/modules/pathModifier/PathModifier.hpp>
 
+#include <ippp/modules/sampler/GridSampler.hpp>
 #include <ippp/modules/sampler/Sampler.hpp>
 #include <ippp/modules/sampler/SamplerNormalDist.hpp>
 #include <ippp/modules/sampler/SamplerRandom.hpp>
