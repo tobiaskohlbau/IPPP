@@ -22,9 +22,9 @@
 #include <string>
 #include <vector>
 
-#include <ippp/core/dataObj/PointList.hpp>
-#include <ippp/core/types.h>
-#include <ippp/core/util/UtilList.hpp>
+#include <ippp/dataObj/PointList.hpp>
+#include <ippp/types.h>
+#include <ippp/util/UtilList.hpp>
 #include <ippp/environment/model/Mesh.h>
 
 namespace ippp {

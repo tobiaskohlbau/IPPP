@@ -18,8 +18,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <ippp/core/dataObj/Node.hpp>
-#include <ippp/core/util/UtilList.hpp>
+#include <ippp/dataObj/Node.hpp>
+#include <ippp/util/UtilList.hpp>
 
 using namespace ippp;
 

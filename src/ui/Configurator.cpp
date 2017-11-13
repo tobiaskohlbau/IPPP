@@ -20,7 +20,7 @@
 
 #include <fstream>
 
-#include <ippp/core/util/Logging.h>
+#include <ippp/util/Logging.h>
 
 namespace ippp {
 

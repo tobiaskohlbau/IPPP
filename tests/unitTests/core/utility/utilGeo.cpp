@@ -20,7 +20,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <ippp/core/util/Utility.h>
+#include <ippp/util/UtilGeo.hpp>
 
 using namespace ippp;
 using namespace Eigen;

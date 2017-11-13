@@ -45,13 +45,15 @@ set (NLOHMANN_JSON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/third_party/nlohmann-json/s
 SET(LIBRARIES
         ${ASSIMP_LIBRARIES}
         ${CCD_LIBRARIES}
-        ${fcl_LIBRARIES}
+        ${FCL_LIBRARIES}
         ${PQP_LIBRARIES})
 
 if (UNIX)
     find_package(Threads REQUIRED)
     set(append ${CMAKE_CXX_FLAGS} "-pthread")
     LIST(APPEND LIBRARIES pthread)
+else (UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 endif()
 
 # source files
@@ -78,5 +80,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${FCL_INCLUDE_DIRS}
         ${PQP_INCLUDE_DIR}
         ${NLOHMANN_JSON_INCLUDE_DIR})
+        
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)

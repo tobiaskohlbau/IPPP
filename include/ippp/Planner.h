@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/pathPlanner/EST.hpp>
-#include <ippp/pathPlanner/PRM.hpp>
-#include <ippp/pathPlanner/RRT.hpp>
-#include <ippp/pathPlanner/RRTStar.hpp>
-#include <ippp/pathPlanner/SRT.hpp>
+#include <ippp/planner/EST.hpp>
+#include <ippp/planner/PRM.hpp>
+#include <ippp/planner/RRT.hpp>
+#include <ippp/planner/RRTStar.hpp>
+#include <ippp/planner/SRT.hpp>

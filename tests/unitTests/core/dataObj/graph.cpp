@@ -18,9 +18,9 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <ippp/core/dataObj/Graph.hpp>
-#include <ippp/core/distanceMetrics/L2Metric.hpp>
-#include <ippp/core/util/UtilList.hpp>
+#include <ippp/dataObj/Graph.hpp>
+#include <ippp/modules/distanceMetrics/L2Metric.hpp>
+#include <ippp/util/UtilList.hpp>
 
 using namespace ippp;
 

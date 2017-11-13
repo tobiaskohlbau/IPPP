@@ -16,70 +16,70 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/core/Identifier.h>
-#include <ippp/core/types.h>
+#include <ippp/Identifier.h>
+#include <ippp/types.h>
 
-#include <ippp/core/collisionDetection/CollisionDetection.hpp>
-#include <ippp/core/collisionDetection/CollisionDetection2D.hpp>
-#include <ippp/core/collisionDetection/CollisionDetectionAABB.hpp>
-#include <ippp/core/collisionDetection/CollisionDetectionAlwaysValid.hpp>
-#include <ippp/core/collisionDetection/CollisionDetectionFcl.hpp>
-#include <ippp/core/collisionDetection/CollisionDetectionPqp.hpp>
-#include <ippp/core/collisionDetection/CollisionDetectionSphere.hpp>
-#include <ippp/core/collisionDetection/CollisionDetectionTriangleRobot.hpp>
+#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
+#include <ippp/modules/collisionDetection/CollisionDetection2D.hpp>
+#include <ippp/modules/collisionDetection/CollisionDetectionAABB.hpp>
+#include <ippp/modules/collisionDetection/CollisionDetectionAlwaysValid.hpp>
+#include <ippp/modules/collisionDetection/CollisionDetectionFcl.hpp>
+#include <ippp/modules/collisionDetection/CollisionDetectionPqp.hpp>
+#include <ippp/modules/collisionDetection/CollisionDetectionSphere.hpp>
+#include <ippp/modules/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 
-#include <ippp/core/dataObj/Edge.hpp>
-#include <ippp/core/dataObj/Graph.hpp>
-#include <ippp/core/dataObj/Node.hpp>
-#include <ippp/core/dataObj/PointList.hpp>
+#include <ippp/dataObj/Edge.hpp>
+#include <ippp/dataObj/Graph.hpp>
+#include <ippp/dataObj/Node.hpp>
+#include <ippp/dataObj/PointList.hpp>
 
-#include <ippp/core/distanceMetrics/DistanceMetric.hpp>
-#include <ippp/core/distanceMetrics/InfMetric.hpp>
-#include <ippp/core/distanceMetrics/L1Metric.hpp>
-#include <ippp/core/distanceMetrics/L2Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightedInfMetric.hpp>
-#include <ippp/core/distanceMetrics/WeightedL1Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightedL2Metric.hpp>
+#include <ippp/modules/distanceMetrics/DistanceMetric.hpp>
+#include <ippp/modules/distanceMetrics/InfMetric.hpp>
+#include <ippp/modules/distanceMetrics/L1Metric.hpp>
+#include <ippp/modules/distanceMetrics/L2Metric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedInfMetric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedL1Metric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedL2Metric.hpp>
 
-#include <ippp/core/evaluator/ComposeEvaluator.hpp>
-#include <ippp/core/evaluator/Evaluator.hpp>
-#include <ippp/core/evaluator/QueryEvaluator.hpp>
-#include <ippp/core/evaluator/SingleIterationEvaluator.hpp>
-#include <ippp/core/evaluator/TimeEvaluator.hpp>
+#include <ippp/modules/evaluator/ComposeEvaluator.hpp>
+#include <ippp/modules/evaluator/Evaluator.hpp>
+#include <ippp/modules/evaluator/QueryEvaluator.hpp>
+#include <ippp/modules/evaluator/SingleIterationEvaluator.hpp>
+#include <ippp/modules/evaluator/TimeEvaluator.hpp>
 
-#include <ippp/core/neighborFinders/BruteForceNF.hpp>
-#include <ippp/core/neighborFinders/KDTree.hpp>
-#include <ippp/core/neighborFinders/NeighborFinder.hpp>
+#include <ippp/modules/neighborFinders/BruteForceNF.hpp>
+#include <ippp/modules/neighborFinders/KDTree.hpp>
+#include <ippp/modules/neighborFinders/NeighborFinder.hpp>
 
-#include <ippp/core/pathModifier/DummyPathModifier.hpp>
-#include <ippp/core/pathModifier/NodeCutPathModifier.hpp>
-#include <ippp/core/pathModifier/PathModifier.hpp>
+#include <ippp/modules/pathModifier/DummyPathModifier.hpp>
+#include <ippp/modules/pathModifier/NodeCutPathModifier.hpp>
+#include <ippp/modules/pathModifier/PathModifier.hpp>
 
-#include <ippp/core/sampler/Sampler.hpp>
-#include <ippp/core/sampler/SamplerNormalDist.hpp>
-#include <ippp/core/sampler/SamplerRandom.hpp>
-#include <ippp/core/sampler/SamplerUniform.hpp>
-#include <ippp/core/sampler/SeedSampler.hpp>
+#include <ippp/modules/sampler/Sampler.hpp>
+#include <ippp/modules/sampler/SamplerNormalDist.hpp>
+#include <ippp/modules/sampler/SamplerRandom.hpp>
+#include <ippp/modules/sampler/SamplerUniform.hpp>
+#include <ippp/modules/sampler/SeedSampler.hpp>
 
-#include <ippp/core/sampling/BridgeSampling.hpp>
-#include <ippp/core/sampling/GaussianDistSampling.hpp>
-#include <ippp/core/sampling/GaussianSampling.hpp>
-#include <ippp/core/sampling/MedialAxisSampling.hpp>
-#include <ippp/core/sampling/Sampling.hpp>
-#include <ippp/core/sampling/SamplingNearObstacle.hpp>
-#include <ippp/core/sampling/StraightSampling.hpp>
+#include <ippp/modules/sampling/BridgeSampling.hpp>
+#include <ippp/modules/sampling/GaussianDistSampling.hpp>
+#include <ippp/modules/sampling/GaussianSampling.hpp>
+#include <ippp/modules/sampling/MedialAxisSampling.hpp>
+#include <ippp/modules/sampling/Sampling.hpp>
+#include <ippp/modules/sampling/SamplingNearObstacle.hpp>
+#include <ippp/modules/sampling/StraightSampling.hpp>
 
-#include <ippp/core/trajectoryPlanner/LinearTrajectory.hpp>
-#include <ippp/core/trajectoryPlanner/RotateAtS.hpp>
+#include <ippp/modules/trajectoryPlanner/LinearTrajectory.hpp>
+#include <ippp/modules/trajectoryPlanner/RotateAtS.hpp>
 
-#include <ippp/core/statistic/StatisticCollector.h>
-#include <ippp/core/statistic/StatisticContainer.h>
-#include <ippp/core/statistic/StatisticCountCollector.h>
-#include <ippp/core/statistic/StatisticSizeTContainer.h>
-#include <ippp/core/statistic/Statistics.h>
+#include <ippp/statistic/StatisticCollector.h>
+#include <ippp/statistic/StatisticContainer.h>
+#include <ippp/statistic/StatisticCountCollector.h>
+#include <ippp/statistic/StatisticSizeTContainer.h>
+#include <ippp/statistic/Statistics.h>
 
-#include <ippp/core/util/Logging.h>
-#include <ippp/core/util/UtilGeo.hpp>
-#include <ippp/core/util/UtilIO.hpp>
-#include <ippp/core/util/UtilList.hpp>
-#include <ippp/core/util/UtilVec.hpp>
+#include <ippp/util/Logging.h>
+#include <ippp/util/UtilGeo.hpp>
+#include <ippp/util/UtilIO.hpp>
+#include <ippp/util/UtilList.hpp>
+#include <ippp/util/UtilVec.hpp>

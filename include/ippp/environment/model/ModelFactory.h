@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include <ippp/core/Identifier.h>
+#include <ippp/Identifier.h>
 #include <ippp/environment/cad/CadImportExport.h>
 #include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/environment/model/ModelContainer.h>

@@ -20,7 +20,7 @@
 #include <ippp/environment/cad/CadDrawing.h>
 #include <ippp/environment/cad/CadImportExport.h>
 #include <ippp/environment/cad/CadProcessing.h>
-#include <ippp/environment/util/MapGenerator.hpp>
+#include <ippp/util/MapGenerator.hpp>
 
 #include <ippp/environment/model/ModelFactoryFcl.h>
 #include <ippp/environment/model/ModelFactoryPqp.h>

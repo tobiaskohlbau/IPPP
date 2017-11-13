@@ -24,7 +24,7 @@
 
 #include <Eigen/Core>
 
-#include <ippp/core/types.h>
+#include <ippp/types.h>
 
 namespace ippp {
 

@@ -18,7 +18,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <ippp/core/dataObj/Node.hpp>
+#include <ippp/dataObj/Node.hpp>
 
 using namespace ippp;
 

@@ -23,8 +23,8 @@
 
 #include <json.hpp>
 
-#include <ippp/core/Identifier.h>
-#include <ippp/core/types.h>
+#include <ippp/Identifier.h>
+#include <ippp/types.h>
 
 namespace ippp {
 

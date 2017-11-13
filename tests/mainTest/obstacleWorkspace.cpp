@@ -18,16 +18,16 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <ippp/core/collisionDetection/CollisionDetection2D.hpp>
-#include <ippp/core/distanceMetrics/InfMetric.hpp>
-#include <ippp/core/distanceMetrics/L1Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightedInfMetric.hpp>
-#include <ippp/core/distanceMetrics/WeightedL1Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightedL2Metric.hpp>
-#include <pathPlanner/NormalRRT.hpp>
-#include <pathPlanner/PRM.hpp>
-#include <pathPlanner/RRTStar.hpp>
-#include <environment/PointRobot.h>
+#include <ippp/modules/collisionDetection/CollisionDetection2D.hpp>
+#include <ippp/modules/distanceMetrics/InfMetric.hpp>
+#include <ippp/modules/distanceMetrics/L1Metric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedInfMetric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedL1Metric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedL2Metric.hpp>
+#include <ippp/pathPlanner/NormalRRT.hpp>
+#include <ippp/pathPlanner/PRM.hpp>
+#include <ippp/pathPlanner/RRTStar.hpp>
+#include <ippp/environment/PointRobot.h>
 
 using namespace ippp;
 

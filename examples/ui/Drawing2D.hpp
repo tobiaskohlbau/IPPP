@@ -8,11 +8,11 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <Eigen/Core>
 
-#include <ippp/core/Identifier.h>
-#include <ippp/core/dataObj/Node.hpp>
-#include <ippp/core/dataObj/PointList.hpp>
-#include <ippp/core/types.h>
-#include <ippp/core/util/Logging.h>
+#include <ippp/Identifier.h>
+#include <ippp/dataObj/Node.hpp>
+#include <ippp/dataObj/PointList.hpp>
+#include <ippp/types.h>
+#include <ippp/util/Logging.h>
 #include <ippp/environment/robot/SerialRobot2D.h>
 
 namespace ippp {

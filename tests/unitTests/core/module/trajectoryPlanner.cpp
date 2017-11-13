@@ -18,9 +18,9 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <ippp/core/collisionDetection/CollisionDetectionPqp.hpp>
-#include <ippp/core/trajectoryPlanner/LinearTrajectory.hpp>
-#include <ippp/core/util/Utility.h>
+#include <ippp/modules/collisionDetection/CollisionDetectionPqp.hpp>
+#include <ippp/modules/trajectoryPlanner/LinearTrajectory.hpp>
+#include <ippp/util/Utility.h>
 #include <ippp/environment/robot/MobileRobot.h>
 
 using namespace ippp;

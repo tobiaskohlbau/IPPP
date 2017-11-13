@@ -14,9 +14,9 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <Eigen/Core>
 
-#include <Core>
-#include <Environment>
-#include <Planner>
+#include <Core.h>
+#include <Environment.h>
+#include <Planner.h>
 
 namespace Ui {
 class MainWindow;

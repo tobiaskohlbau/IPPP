@@ -23,7 +23,7 @@
 #include <vector>
 
 #include <ippp/Environment.h>
-#include <ippp/core/types.h>
+#include <ippp/types.h>
 #include <ippp/ui/Configurator.h>
 
 namespace ippp {

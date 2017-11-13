@@ -16,7 +16,7 @@ find_package(PkgConfig QUIET)
 set(FCL_ROOT_DIR "../IPPP_third_party/" CACHE PATH "FCL root dir")
 
 # Check to see if pkgconfig is installed.
-pkg_check_modules(PC_FCL FCL QUIET)
+pkg_check_modules(PC_FCL FCL)
 
 # Include directories
 find_path(FCL_INCLUDE_DIRS
@@ -27,12 +27,23 @@ find_path(FCL_INCLUDE_DIRS
         include)
 
 # Libraries
-find_library(FCL_LIBRARIES
+find_library(FCL_LIBRARY_RELEASE
         NAMES fcl
         HINTS ${PC_FCL_LIBDIR}
         PATHS "${CMAKE_INSTALL_PREFIX}" "${FCL_ROOT_DIR}"
         PATH_SUFFIXES
         lib)
+
+find_library(FCL_LIBRARY_DEBUG
+        NAMES fcl
+        HINTS ${PC_FCL_LIBDIR}
+        PATHS "${CMAKE_INSTALL_PREFIX}" "${FCL_ROOT_DIR}"
+        PATH_SUFFIXES
+        debug/lib)
+
+set(FCL_LIBRARIES
+        optimized ${FCL_LIBRARY_RELEASE}
+        debug ${FCL_LIBRARY_DEBUG})
 
 # Version
 set(FCL_VERSION ${PC_FCL_VERSION})

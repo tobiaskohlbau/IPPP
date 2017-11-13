@@ -19,7 +19,7 @@
 #ifndef TRIANGLEMODEL2D_H
 #define TRIANGLEMODEL2D_H
 
-#include <ippp/core/dataObj/PointList.hpp>
+#include <ippp/dataObj/PointList.hpp>
 #include <ippp/environment/model/ModelContainer.h>
 
 namespace ippp {

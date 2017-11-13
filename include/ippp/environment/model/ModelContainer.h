@@ -19,8 +19,8 @@
 #ifndef MODELCONTAINER_H
 #define MODELCONTAINER_H
 
-#include <ippp/core/Identifier.h>
-#include <ippp/core/util/UtilVec.hpp>
+#include <ippp/Identifier.h>
+#include <ippp/util/UtilVec.hpp>
 
 #include <ippp/environment/model/Mesh.h>
 

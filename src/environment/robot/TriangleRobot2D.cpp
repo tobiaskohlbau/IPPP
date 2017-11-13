@@ -18,7 +18,7 @@
 
 #include <ippp/environment/robot/TriangleRobot2D.h>
 
-#include <ippp/core/util/UtilGeo.hpp>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 

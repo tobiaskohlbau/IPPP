@@ -18,17 +18,17 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <ippp/core/collisionDetection/CollisionDetection2D.hpp>
-#include <ippp/core/sampler/SamplerNormalDist.hpp>
-#include <ippp/core/sampler/SamplerUniform.hpp>
-#include <ippp/core/sampling/SamplingNearObstacle.hpp>
-#include <ippp/core/distanceMetrics/InfMetric.hpp>
-#include <ippp/core/distanceMetrics/L1Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightedInfMetric.hpp>
-#include <ippp/core/distanceMetrics/WeightedL1Metric.hpp>
-#include <ippp/core/distanceMetrics/WeightedL2Metric.hpp>
-#include <pathPlanner/PRM.hpp>
-#include <pathPlanner/RRTStar.hpp>
+#include <ippp/modules/collisionDetection/CollisionDetection2D.hpp>
+#include <ippp/modules/sampler/SamplerNormalDist.hpp>
+#include <ippp/modules/sampler/SamplerUniform.hpp>
+#include <ippp/modules/sampling/SamplingNearObstacle.hpp>
+#include <ippp/modules/distanceMetrics/InfMetric.hpp>
+#include <ippp/modules/distanceMetrics/L1Metric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedInfMetric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedL1Metric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedL2Metric.hpp>
+#include <ippp/planner/PRM.hpp>
+#include <ippp/planner/RRTStar.hpp>
 #include <environment/PointRobot.h>
 
 using namespace ippp;

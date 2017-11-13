@@ -18,7 +18,7 @@
 
 #include <include/ippp/environment/cad/CadDrawing.h>
 
-#include <ippp/core/util/Logging.h>
+#include <ippp/util/Logging.h>
 
 namespace ippp {
 namespace cad {

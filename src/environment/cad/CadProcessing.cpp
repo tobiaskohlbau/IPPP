@@ -22,8 +22,8 @@
 #include <fstream>
 #include <iostream>
 
-#include <ippp/core/util/Logging.h>
-#include <ippp/core/util/UtilGeo.hpp>
+#include <ippp/util/Logging.h>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 namespace cad {

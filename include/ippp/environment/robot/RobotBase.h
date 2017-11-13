@@ -22,10 +22,10 @@
 #include <string>
 #include <vector>
 
-#include <ippp/core/Identifier.h>
-#include <ippp/core/types.h>
-#include <ippp/core/util/Logging.h>
-#include <ippp/core/util/Utility.h>
+#include <ippp/Identifier.h>
+#include <ippp/types.h>
+#include <ippp/util/Logging.h>
+#include <ippp/util/Utility.h>
 #include <ippp/environment/model/ModelContainer.h>
 
 namespace ippp {

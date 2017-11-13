@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include <ippp/core/Identifier.h>
+#include <ippp/Identifier.h>
 #include <ippp/environment/robot/RobotBase.h>
 #include <ippp/environment/model/ModelContainer.h>
 

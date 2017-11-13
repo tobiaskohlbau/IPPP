@@ -19,7 +19,7 @@
 #ifndef POINTMODEL_H
 #define POINTMODEL_H
 
-#include <ippp/core/dataObj/PointList.hpp>
+#include <ippp/dataObj/PointList.hpp>
 #include <ippp/environment/model/ModelContainer.h>
 
 namespace ippp {

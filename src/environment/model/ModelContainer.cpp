@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/core/util/Logging.h>
+#include <ippp/util/Logging.h>
 #include <ippp/environment/model/ModelContainer.h>
 
 namespace ippp {

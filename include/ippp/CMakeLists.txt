@@ -17,101 +17,97 @@
 #-------------------------------------------------------------------------//
 
 list(APPEND SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionAABB.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionAlwaysValid.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionFcl.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqp.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionSphere.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetection2D.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionTriangleRobot.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionResult.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionRequest.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionDetection.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionDetectionAABB.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionDetectionAlwaysValid.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionDetectionFcl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionDetectionPqp.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionDetectionSphere.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionDetection2D.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionDetectionTriangleRobot.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/CollisionData.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Edge.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Graph.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/KDNode.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/Node.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/dataObj/PointList.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/dataObj/Edge.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/dataObj/Graph.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/dataObj/KDNode.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/dataObj/Node.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/dataObj/PointList.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/DistanceMetric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L1Metric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/L2Metric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/InfMetric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedL1Metric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedL2Metric.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/distanceMetrics/WeightedInfMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/distanceMetrics/DistanceMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/distanceMetrics/L1Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/distanceMetrics/L2Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/distanceMetrics/InfMetric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/distanceMetrics/WeightedL1Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/distanceMetrics/WeightedL2Metric.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/distanceMetrics/WeightedInfMetric.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/ComposeEvaluator.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/Evaluator.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/QueryEvaluator.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/SingleIterationEvaluator.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/evaluator/TimeEvaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/evaluator/ComposeEvaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/evaluator/Evaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/evaluator/QueryEvaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/evaluator/SingleIterationEvaluator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/evaluator/TimeEvaluator.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/BruteForceNF.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/KDTree.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/neighborFinders/NeighborFinder.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/neighborFinders/BruteForceNF.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/neighborFinders/KDTree.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/neighborFinders/NeighborFinder.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/DummyPathModifier.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/PathModifier.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/pathModifier/NodeCutPathModifier.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/pathModifier/DummyPathModifier.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/pathModifier/PathModifier.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/pathModifier/NodeCutPathModifier.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/Sampler.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerRandom.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerNormalDist.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SamplerUniform.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampler/SeedSampler.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampler/Sampler.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampler/SamplerRandom.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampler/SamplerNormalDist.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampler/SamplerUniform.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampler/SeedSampler.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/BridgeSampling.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianSampling.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/GaussianDistSampling.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/MedialAxisSampling.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/Sampling.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/SamplingNearObstacle.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/sampling/StraightSampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampling/BridgeSampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampling/GaussianSampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampling/GaussianDistSampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampling/MedialAxisSampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampling/Sampling.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampling/SamplingNearObstacle.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/sampling/StraightSampling.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/LinearTrajectory.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/RotateAtS.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/trajectoryPlanner/TrajectoryPlanner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/trajectoryPlanner/LinearTrajectory.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/trajectoryPlanner/RotateAtS.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/trajectoryPlanner/TrajectoryPlanner.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilCollision.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilGeo.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilIO.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilList.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilTrajectory.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/util/UtilVec.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/util/UtilCollision.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/util/UtilGeo.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/util/UtilIO.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/util/UtilList.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/util/UtilTrajectory.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/util/UtilVec.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/util/UtilEnvironment.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/util/MapGenerator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/util/UtilPlanner.hpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/environment/Environment.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/util/UtilEnvironment.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/environment/util/MapGenerator.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PlannerOptions.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/PRMOptions.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/RRTOptions.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/options/SRTOptions.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/options/PlannerOptions.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/options/PRMOptions.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/options/RRTOptions.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/options/SRTOptions.hpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/EST.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/Planner.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/PRM.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRT.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStar.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/RRTStarContTraj.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/SRT.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/TreePlanner.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/pathPlanner/util/UtilPlanner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/EST.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/Planner.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/PRM.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/RRT.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/RRTStar.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/RRTStarContTraj.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/SRT.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/planner/TreePlanner.hpp
         
         ${CMAKE_CURRENT_SOURCE_DIR}/ui/Configurator.h
         ${CMAKE_CURRENT_SOURCE_DIR}/ui/EnvironmentConfigurator.h
         ${CMAKE_CURRENT_SOURCE_DIR}/ui/ModuleConfigurator.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ui/Writer.hpp)
 
-IF (${BUILD_FCL})
-    list(APPEND SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionFcl.hpp)
-ENDIF()
-
 IF (${BUILD_BENCHMARK})
     list(APPEND SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/core/collisionDetection/CollisionDetectionPqpBenchmark.hpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/modules/collisionDetection/CollisionDetectionPqpBenchmark.hpp)
 ENDIF()
 
 set(SRCS "${SRCS}" PARENT_SCOPE)
