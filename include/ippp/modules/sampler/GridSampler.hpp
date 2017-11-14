@@ -138,13 +138,13 @@ void GridSampler<dim>::generateGridConfigs() {
 template <unsigned int dim>
 void GridSampler<dim>::fillConfig(Vector<dim> values, unsigned int index) {
     if (index == dim - 1) {
-        for (double value = m_minBoundary[index]; value < m_maxBoundary[index]; value += m_res) {
+        for (double value = m_minBoundary[index]; value <= m_maxBoundary[index]; value += m_res) {
             Vector<dim> config = values;
             config[index] = value;
             m_gridConfigs.push_back(config);
         }
     } else {
-        for (double value = m_minBoundary[index]; value < m_maxBoundary[index]; value += m_res) {
+        for (double value = m_minBoundary[index]; value <= m_maxBoundary[index]; value += m_res) {
             values[index] = value;
             fillConfig(values, index + 1);
         }

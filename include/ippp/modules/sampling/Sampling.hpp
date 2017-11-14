@@ -51,10 +51,15 @@ class Sampling : public Identifier {
     double getRandomNumber() const;
     void setOrigin(const Vector<dim> &origin);
 
+    void setRobotBoundings(const std::pair<Vector<dim>, Vector<dim>> &robotBoundings);
+    bool checkRobotBounding(const Vector<dim> &config) const;
+
   protected:
     const size_t m_attempts;
+    std::pair<Vector<dim>, Vector<dim>> m_robotBounding;
 
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
+    std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
 };
@@ -75,7 +80,8 @@ Sampling<dim>::Sampling(const std::string &name, const std::shared_ptr<Environme
                         const std::shared_ptr<CollisionDetection<dim>> &collision,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                         const size_t attempts)
-    : Identifier(name), m_collision(collision), m_trajectory(trajectory), m_sampler(sampler), m_attempts(attempts) {
+    : Identifier(name), m_environment(environment), m_collision(collision), m_trajectory(trajectory), m_sampler(sampler), m_attempts(attempts) {
+    setRobotBoundings(m_environment->getRobotBoundaries());
     Logging::debug("Initialize", this);
 }
 
@@ -139,6 +145,35 @@ double Sampling<dim>::getRandomNumber() const {
 template <unsigned int dim>
 void Sampling<dim>::setOrigin(const Vector<dim> &origin) {
     m_sampler->setOrigin(origin);
+}
+
+/*!
+*  \brief      Sets the robot boundings of all robots, dimension should be the same.
+*  \author     Sascha Kaden
+*  \param[in]  pair of min and max boundary Vector
+*  \date       2017-11-14
+*/
+template <unsigned int dim>
+void Sampling<dim>::setRobotBoundings(const std::pair<Vector<dim>, Vector<dim>> &robotBoundings) {
+    m_robotBounding = robotBoundings;
+}
+
+/*!
+*  \brief      Checks the boundaries of the robot to the passed configuration, return true if valid.
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[out] validity of boundary check.
+*  \date       2017-11-14
+*/
+template <unsigned int dim>
+bool Sampling<dim>::checkRobotBounding(const Vector<dim> &config) const {
+    for (unsigned int i = 0; i < dim; ++i) {
+        if (config[i] <= m_robotBounding.first[i] || m_robotBounding.second[i] <= config[i]) {
+            Logging::trace("Robot out of robot boundary", this);
+            return true;
+        }
+    }
+    return false;
 }
 
 } /* namespace ippp */

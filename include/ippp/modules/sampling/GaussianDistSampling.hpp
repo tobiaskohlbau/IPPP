@@ -92,7 +92,7 @@ Vector<dim> GaussianDistSampling<dim>::getSample(const Vector<dim> &prevSample) 
         ray = m_sampler->getRandomRay();
         ray *= m_maxDist * m_sampler->getRandomNumber();
         sample = prevSample + ray;
-        if (!m_collision->checkConfig(sample))
+        if (this->checkRobotBounding(sample) && !m_collision->checkConfig(sample))
             return sample;
     }
     return util::NaNVector<dim>();
