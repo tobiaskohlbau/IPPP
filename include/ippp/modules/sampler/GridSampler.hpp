@@ -26,7 +26,7 @@
 namespace ippp {
 
 /*!
-* \brief   GridSampler, creates uniform grid samples between the boudaries of the robot.
+* \brief   GridSampler, creates uniform grid samples between the boudaries of the robot(s).
 * \details All samples will generated at the construction of the module.
 * \author  Sascha Kaden
 * \date    2017-11-13
@@ -71,28 +71,35 @@ GridSampler<dim>::GridSampler(const std::shared_ptr<Environment> &environment, c
 *  \author     Sascha Kaden
 *  \param[in]  minimum boundary
 *  \param[in]  maximum boundary
+*  \param[in]  grid resolution
 *  \date       2017-11-13
 */
 template <unsigned int dim>
 GridSampler<dim>::GridSampler(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const double res)
-    : Sampler<dim>("RandomSampler", minBoundary, maxBoundary, , std::string()) {
+    : Sampler<dim>("RandomSampler", minBoundary, maxBoundary, std::string()) {
     setResolution(res);
     generateGridConfigs();
 }
 
+/*!
+*  \brief      Sets the grid resolution and checks, that it is > 0.
+*  \author     Sascha Kaden
+*  \param[in]  grid resolution
+*  \date       2017-11-13
+*/
 template <unsigned int dim>
 void GridSampler<dim>::setResolution(const double res) {
     if (res <= 0)
-        Logging::error("Resolution has to be larger than 0!", this);
+        Logging::error("Resolution has to be > 0!", this);
     else
         m_res = res;
 }
 
 /*!
-*  \brief      Return random sample
+*  \brief      Return grid sample
 *  \author     Sascha Kaden
 *  \param[out] sample
-*  \date       2016-05-24
+*  \date       2017-11-13
 */
 template <unsigned int dim>
 Vector<dim> GridSampler<dim>::getSample() {
@@ -110,10 +117,9 @@ Vector<dim> GridSampler<dim>::getSample() {
 }
 
 /*!
-*  \brief      Generate all grid configs to the defined resolution
+*  \brief      Generate all grid configs to the defined resolution and save them as member.
 *  \author     Sascha Kaden
-*  \param[out] sample
-*  \date       2016-05-24
+*  \date       2017-11-13
 */
 template <unsigned int dim>
 void GridSampler<dim>::generateGridConfigs() {
@@ -122,6 +128,13 @@ void GridSampler<dim>::generateGridConfigs() {
     fillConfig(Vector<dim>(), 0);
 }
 
+/*!
+*  \brief      Recursive for the calculation of all grid samples.
+*  \author     Sascha Kaden
+*  \param[in]  Current Vector
+*  \param[in]  dimension index
+*  \date       2017-11-13
+*/
 template <unsigned int dim>
 void GridSampler<dim>::fillConfig(Vector<dim> values, unsigned int index) {
     if (index == dim - 1) {
