@@ -47,23 +47,23 @@ void testSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
         EXPECT_TRUE(number >= 0);
         EXPECT_TRUE(number <= 1);
 
+        size_t sampleAmount = 10;
+        auto samples = sampling->getSamples(sampleAmount);
+        for (auto sample : samples) {
+            if (util::empty<dim>(sample))
+                continue;
+            for (unsigned int index = 0; index < dim; ++index) {
+                EXPECT_TRUE(sample[index] >= min);
+                EXPECT_TRUE(sample[index] <= max);
+            }
+        }
+
         auto config = sampling->getSample();
         if (util::empty<dim>(config))
             continue;
         for (unsigned int index = 0; index < dim; ++index) {
             EXPECT_TRUE(config[index] >= min);
             EXPECT_TRUE(config[index] <= max);
-        }
-
-        size_t sampleAmount = 10;
-        auto samples = sampling->getSamples(sampleAmount);
-        for (auto &config : samples) {
-            if (util::empty<dim>(config))
-                continue;
-            for (unsigned int index = 0; index < dim; ++index) {
-                EXPECT_TRUE(config[index] >= min);
-                EXPECT_TRUE(config[index] <= max);
-            }
         }
     }
 }
@@ -97,7 +97,7 @@ void createSampling() {
         samplings.push_back(std::make_shared<BridgeSampling<dim>>(environment, collision, trajectory, sampler, 1));
         samplings.push_back(std::make_shared<GaussianDistSampling<dim>>(environment, collision, trajectory, sampler, 1));
         samplings.push_back(std::make_shared<GaussianSampling<dim>>(environment, collision, trajectory, sampler, 1));
-        samplings.push_back(std::make_shared<MedialAxisSampling<dim>>(environment, collision, trajectory, sampler, 1));
+        //samplings.push_back(std::make_shared<MedialAxisSampling<dim>>(environment, collision, trajectory, sampler, 1));
         samplings.push_back(std::make_shared<SamplingNearObstacle<dim>>(environment, collision, trajectory, sampler, 1));
         samplings.push_back(std::make_shared<StraightSampling<dim>>(environment, collision, trajectory, sampler, 1));
     }
@@ -106,8 +106,8 @@ void createSampling() {
         testSampling(sampling);
 }
 
-TEST(SAMPLER, sample) {
-    Logging::setLogLevel(LogLevel::info);
+TEST(SAMPLING, standardSampling) {
+    Logging::setLogLevel(LogLevel::debug);
 
     createSampling<2>();
     createSampling<3>();
