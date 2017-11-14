@@ -71,8 +71,9 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
     : Identifier(name) {
     Logging::debug("Initialize", this);
 
-    m_minBoundary = environment->getRobot()->getMinBoundary();
-    m_maxBoundary = environment->getRobot()->getMaxBoundary();
+    auto boundaries = environment->getRobotBoundaries();
+    m_minBoundary = boundaries.first;
+    m_maxBoundary = boundaries.second;
     for (unsigned int i = 0; i < dim; ++i)
         assert(m_minBoundary[i] != m_maxBoundary[i]);
 
@@ -149,9 +150,8 @@ double Sampler<dim>::getRandomNumber() {
 template <unsigned int dim>
 Vector<dim> Sampler<dim>::getRandomRay() {
     Vector<dim> ray;
-    for (unsigned int i = 0; i < dim; ++i) {
+    for (unsigned int i = 0; i < dim; ++i)
         ray[i] = m_generator();
-    }
     return ray.normalized();
 }
 

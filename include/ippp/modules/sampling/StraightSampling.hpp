@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Class Sampling creates sample Vectors with the passed strategy, for creating single Vectors the Sampler is used.
+* \brief   Class StraightSampling return just the sample of the passed Sampler
 * \author  Sascha Kaden
 * \date    2016-12-20
 */
@@ -32,7 +32,7 @@ template <unsigned int dim>
 class StraightSampling : public Sampling<dim> {
   public:
     StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler);
+                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler, const size_t attempts = 10);
 
     virtual Vector<dim> getSample();
 
@@ -47,15 +47,15 @@ class StraightSampling : public Sampling<dim> {
 *  \param[in]  CollisionDetection
 *  \param[in]  TrajectoryPlanner
 *  \param[in]  Sampler
-*  \param[in]  Sampler
+*  \param[in]  attempts
 *  \date       2016-12-20
 */
 template <unsigned int dim>
 StraightSampling<dim>::StraightSampling(const std::shared_ptr<Environment> &environment,
                                         const std::shared_ptr<CollisionDetection<dim>> &collision,
                                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                        const std::shared_ptr<Sampler<dim>> &sampler)
-    : Sampling<dim>("StraightSampling", environment, collision, trajectory, sampler, 10) {
+                                        const std::shared_ptr<Sampler<dim>> &sampler, const size_t attempts)
+    : Sampling<dim>("StraightSampling", environment, collision, trajectory, sampler, attempts) {
 }
 
 /*!

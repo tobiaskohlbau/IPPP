@@ -47,6 +47,7 @@ class Sampling : public Identifier {
     virtual Vector<dim> getSample(const Vector<dim> &prevSample);
     virtual std::vector<Vector<dim>> getSamples(const unsigned int amount);
 
+    std::shared_ptr<Sampler<dim>> getSampler() const;
     double getRandomNumber() const;
     void setOrigin(const Vector<dim> &origin);
 
@@ -105,6 +106,17 @@ std::vector<Vector<dim>> Sampling<dim>::getSamples(const unsigned int amount) {
         samples.push_back(getSample());
 
     return samples;
+}
+
+/*!
+*  \brief      Return the Sampler of the Sampling strategy.
+*  \author     Sascha Kaden
+*  \param[out] Sampler instance
+*  \date       2017-11-14
+*/
+template <unsigned int dim>
+std::shared_ptr<Sampler<dim>> Sampling<dim>::getSampler() const {
+    return m_sampler;
 }
 
 /*!

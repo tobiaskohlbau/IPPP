@@ -32,31 +32,6 @@ double max = 5;
 using namespace ippp;
 
 template <unsigned int dim>
-void createSampler() {
-    std::vector<DofType> dofTypes;
-    Vector<dim> minBound, maxBound;
-    for (size_t i = 0; i < dim; ++i) {
-        dofTypes.push_back(DofType::volumetricPos);
-        minBound[i] = min;
-        maxBound[i] = max;
-    }
-
-    std::shared_ptr<MobileRobot> robot(new MobileRobot(dim, std::make_pair(minBound, maxBound), dofTypes));
-    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
-
-    auto randomSampler = std::make_shared<SamplerRandom<dim>>(environment);
-    testSampler<dim>(randomSampler);
-    auto distSampler = std::make_shared<SamplerNormalDist<dim>>(environment);
-    testSampler<dim>(distSampler);
-    auto uniformSampler = std::make_shared<SamplerUniform<dim>>(environment);
-    testSampler<dim>(uniformSampler);
-    if (dim < 4) {
-        auto gridSampler = std::make_shared<GridSampler<dim>>(environment);
-        testSampler<dim>(gridSampler);
-    }
-}
-
-template <unsigned int dim>
 void testSampler(const std::shared_ptr<Sampler<dim>> &sampler) {
     for (size_t i = 0; i < 10; ++i) {
         auto config = sampler->getSample();
@@ -73,7 +48,37 @@ void testSampler(const std::shared_ptr<Sampler<dim>> &sampler) {
         double angle = sampler->getRandomAngle();
         EXPECT_TRUE(angle >= 0);
         EXPECT_TRUE(angle <= util::twoPi());
+
+        auto ray = sampler->getRandomRay();
+        for (unsigned int index = 0; index < dim; ++index) {
+            EXPECT_TRUE(ray[index] >= 0);
+            EXPECT_TRUE(ray[index] <= 1);
+        }
     }
+}
+
+template <unsigned int dim>
+void createSampler() {
+    std::vector<DofType> dofTypes;
+    Vector<dim> minBound, maxBound;
+    for (size_t i = 0; i < dim; ++i) {
+        dofTypes.push_back(DofType::volumetricPos);
+        minBound[i] = min;
+        maxBound[i] = max;
+    }
+
+    std::shared_ptr<MobileRobot> robot(new MobileRobot(dim, std::make_pair(minBound, maxBound), dofTypes));
+    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
+
+    std::vector<std::shared_ptr<Sampler<dim>>> samplers;
+    samplers.push_back(std::make_shared<SamplerRandom<dim>>(environment));
+    samplers.push_back(std::make_shared<SamplerNormalDist<dim>>(environment));
+    samplers.push_back(std::make_shared<SamplerUniform<dim>>(environment));
+    if (dim < 4)
+        samplers.push_back(std::make_shared<GridSampler<dim>>(environment));
+
+    for (auto &sampler : samplers)
+        testSampler(sampler);
 }
 
 TEST(SAMPLER, sample) {

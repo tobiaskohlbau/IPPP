@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Class Sampling creates sample Vectors with the passed strategy, for creating single Vectors the Sampler is used.
+* \brief   Class BridgeSampling creates two samples and only return a valid sample, if one is invalid and one is valid.
 * \author  Sascha Kaden
 * \date    2016-12-20
 */
@@ -53,14 +53,14 @@ class BridgeSampling : public Sampling<dim> {
 *  \param[in]  TrajectoryPlanner
 *  \param[in]  Sampler
 *  \param[in]  attempts for one sampling
+*  \param[in]  distance between the samples
 *  \date       2016-12-20
 */
 template <unsigned int dim>
 BridgeSampling<dim>::BridgeSampling(const std::shared_ptr<Environment> &environment,
                                     const std::shared_ptr<CollisionDetection<dim>> &collision,
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                    const std::shared_ptr<Sampler<dim>> &sampler, const size_t attempts,
-                                    const double distance)
+                                    const std::shared_ptr<Sampler<dim>> &sampler, const size_t attempts, const double distance)
     : Sampling<dim>("BridgeSampling", environment, collision, trajectory, sampler, attempts), m_distance(distance) {
 }
 
@@ -75,6 +75,11 @@ Vector<dim> BridgeSampling<dim>::getSample() {
     size_t count = 0;
     Vector<dim> sample1, sample2, ray;
     do {
+        if (count > m_attempts)
+            return util::NaNVector<dim>();
+        else
+            ++count;
+
         sample1 = m_sampler->getSample();
         ++count;
     } while (!m_collision->checkConfig(sample1));
