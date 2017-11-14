@@ -23,7 +23,7 @@
 
 namespace ippp {
 
-LogLevel Logging::m_level = LogLevel::all;
+LogLevel Logging::m_level = LogLevel::info;
 LogOutput Logging::m_output = LogOutput::terminal;
 std::string Logging::m_file = "";
 std::mutex Logging::m_mutex;
