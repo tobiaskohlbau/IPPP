@@ -65,15 +65,28 @@ CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::
     Logging::debug("Initialize", this);
 }
 
+/*!
+*  \brief      Sets the robot boundings of all robots, dimension should be the same.
+*  \author     Sascha Kaden
+*  \param[in]  pair of min and max boundary Vector
+*  \date       2017-11-14
+*/
 template <unsigned int dim>
 void CollisionDetection<dim>::setRobotBoundings(const std::pair<Vector<dim>, Vector<dim>> &robotBoundings) {
     m_robotBounding = robotBoundings;
 }
 
+/*!
+*  \brief      Checks the boundaries of the robot to the passed configuration, return true if valid.
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[out] validity of boundary check.
+*  \date       2017-11-14
+*/
 template <unsigned int dim>
 bool CollisionDetection<dim>::checkRobotBounding(const Vector<dim> &config) const {
     for (unsigned int i = 0; i < dim; ++i) {
-        if (config[i] < m_robotBounding.first[i] || m_robotBounding.second[i] < config[i]) {
+        if (config[i] <= m_robotBounding.first[i] || m_robotBounding.second[i] <= config[i]) {
             Logging::trace("Robot out of robot boundary", this);
             return true;
         }

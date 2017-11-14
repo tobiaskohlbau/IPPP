@@ -68,8 +68,8 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
     auto robot = m_environment->getRobot();
 
     // set boundaries
-    m_workspaceBounding = m_environment->getBoundary();
-    this->setRobotBoundings(std::make_pair(robot->getMinBoundary(), robot->getMaxBoundary()));
+    m_workspaceBounding = m_environment->getSpaceBoundary();
+    this->setRobotBoundings(m_environment->getRobotBoundaries());
 
     if (m_environment->getObstacleNum() == 0) {
         Logging::warning("Empty workspace", this);

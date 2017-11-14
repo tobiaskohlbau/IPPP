@@ -59,7 +59,7 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
     : CollisionDetection<dim>("CollisionDetection2D", environment, request) {
     assert(dim % 2 == 0);
     // set boundaries
-    auto bound = m_environment->getBoundary();
+    auto bound = m_environment->getSpaceBoundary();
     m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
     m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
 

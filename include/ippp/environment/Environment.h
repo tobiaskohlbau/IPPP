@@ -55,8 +55,9 @@ class Environment : public Identifier {
     std::vector<std::shared_ptr<RobotBase>> getRobots() const;
     size_t numRobots() const;
 
-    AABB getBoundary() const;
+    AABB getSpaceBoundary() const;
     unsigned int getSpaceDim() const;
+    std::pair<VectorX, VectorX> getRobotBoundaries() const;
     std::vector<unsigned int> getRobotDimSizes() const;
     unsigned int getConfigDim() const;
     std::pair<VectorX, VectorX> getConfigMasks() const;
@@ -65,7 +66,7 @@ class Environment : public Identifier {
     void updateConfigurationDim();
     void updateMasks();
 
-    unsigned int m_configurationDim = 0;
+    unsigned int m_configDim = 0;
     const unsigned int m_spaceDim = 0;
     const AABB m_spaceBoundary;
 

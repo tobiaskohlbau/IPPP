@@ -29,7 +29,7 @@ bool testTriangleRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.setRobotType(RobotType::Triangle2D, "assets/robots/simpleTriangleRobot.obj");
+    envConfigurator.setRobotType(RobotType::Triangle2D, "assets/robotModels/simpleTriangleRobot.obj");
     envConfigurator.addObstaclePath("obstacle.obj");
     envConfigurator.saveConfig("envConfigTriangle.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -56,7 +56,7 @@ bool testTriangleRobot() {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
-    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getBoundary(), 255);
+    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (auto obstacle : environment->getObstacles())
         meshes.push_back(obstacle->m_mesh);
@@ -116,7 +116,7 @@ bool test2DSerialRobot() {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
-    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getBoundary(), 255);
+    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (auto obstacle : environment->getObstacles())
         meshes.push_back(obstacle->m_mesh);
@@ -187,7 +187,7 @@ void testPointRobot() {
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
 
-    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getBoundary(), 255);
+    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (auto obstacle : environment->getObstacles())
         meshes.push_back(obstacle->m_mesh);

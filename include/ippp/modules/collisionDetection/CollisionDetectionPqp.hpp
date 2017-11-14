@@ -69,8 +69,8 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
     : CollisionDetection<dim>("CollisionDetectionPQP", environment, request) {
     m_identity = Transform::Identity();
     auto robot = m_environment->getRobot();
-    this->setRobotBoundings(std::make_pair(robot->getMinBoundary(), robot->getMaxBoundary()));
-    m_workspaceBounding = environment->getBoundary();
+    this->setRobotBoundings(m_environment->getRobotBoundaries());
+    m_workspaceBounding = environment->getSpaceBoundary();
 
     if (robot->getBaseModel() != nullptr && !robot->getBaseModel()->empty()) {
         m_baseModel = &std::static_pointer_cast<ModelPqp>(robot->getBaseModel())->m_pqpModel;

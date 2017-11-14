@@ -75,8 +75,8 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<Environm
     : CollisionDetection<dim>("FCL", environment, request) {
     m_identity = Transform::Identity();
     auto robot = m_environment->getRobot();
-    this->setRobotBoundings(std::make_pair(robot->getMinBoundary(), robot->getMaxBoundary()));
-    m_workspaceBounding = environment->getBoundary();
+    this->setRobotBoundings(m_environment->getRobotBoundaries());
+    m_workspaceBounding = environment->getSpaceBoundary();
 
     if (robot->getBaseModel() != nullptr && !robot->getBaseModel()->empty()) {
         m_baseModel =
@@ -157,11 +157,9 @@ bool CollisionDetectionFcl<dim>::checkTrajectory(std::vector<Vector<dim>> &confi
             if (checkMobileRobot(configs[i], this->m_request))
                 return true;
     } else {
-        for (int i = 0; i < configs.size(); ++i) {
-            if (checkSerialRobot(configs[i], this->m_request)) {
+        for (int i = 0; i < configs.size(); ++i)
+            if (checkSerialRobot(configs[i], this->m_request))
                 return true;
-            }
-        }
     }
 
     return false;
@@ -229,11 +227,9 @@ bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &config, con
     Transform T = m_environment->getRobot()->getTransformation(config);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {
-        for (auto obstacle : m_obstacles) {
-            if (checkFCL(obstacle, m_baseModel, m_identity, T)) {
+        for (auto obstacle : m_obstacles)
+            if (checkFCL(obstacle, m_baseModel, m_identity, T))
                 return true;
-            }
-        }
     }
     return false;
 }

@@ -78,11 +78,8 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
     if (robots.empty())
         Logging::error("No robot passed", this);
     assert(!robots.empty());
-    m_robots = robots;
     for (auto &robot : m_robots)
-        m_robotDimSizes.push_back(robot->getDim());
-
-    updateConfigurationDim();
+        addRobot(robot);
 }
 
 Environment::~Environment() {
@@ -152,8 +149,10 @@ size_t Environment::getObstacleNum() const {
 *  \date       2017-05-17
 */
 void Environment::addRobot(const std::shared_ptr<RobotBase> &robot) {
-    m_robots.push_back(robot);
-    updateConfigurationDim();
+    if (robot) {
+        m_robots.push_back(robot);
+        updateConfigurationDim();
+    }
 }
 
 /*!
@@ -182,7 +181,7 @@ std::shared_ptr<RobotBase> Environment::getRobot(const size_t index) const {
     if (index < m_robots.size()) {
         return m_robots[index];
     } else {
-        Logging::error("Robot index is to high!", this);
+        Logging::error("Robot index is out of range!", this);
         return nullptr;
     }
 }
@@ -213,7 +212,7 @@ size_t Environment::numRobots() const {
 *  \param[out] bounding box
 *  \date       2017-05-17
 */
-AABB Environment::getBoundary() const {
+AABB Environment::getSpaceBoundary() const {
     return m_spaceBoundary;
 }
 
@@ -247,7 +246,29 @@ std::vector<unsigned int> Environment::getRobotDimSizes() const {
 *  \date       2017-09-30
 */
 unsigned int Environment::getConfigDim() const {
-    return m_configurationDim;
+    return m_configDim;
+}
+
+/*!
+*  \brief      Return the boundaries (minimum and maximum) of all robots in one Vector
+*  \author     Sascha Kaden
+*  \param[out] pair of a min and max Vector
+*  \date       2017-11-14
+*/
+std::pair<VectorX, VectorX> Environment::getRobotBoundaries() const {
+    VectorX minBoundary(m_configDim, 1);
+    VectorX maxBoundary(m_configDim, 1);
+
+    size_t index = 0;
+    for (size_t i = 0; i < m_robots.size(); ++i) {
+        auto min = getRobot(i)->getMinBoundary();
+        auto max = getRobot(i)->getMaxBoundary();
+        for (unsigned int dim = 0; dim < getRobot(i)->getDim(); ++dim, ++index) {
+            minBoundary[index] = min[dim];
+            maxBoundary[index] = max[dim];
+        }
+    }
+    return std::make_pair(minBoundary, maxBoundary);
 }
 
 /*!
@@ -266,9 +287,9 @@ std::pair<VectorX, VectorX> Environment::getConfigMasks() const {
 *  \date       2017-09-30
 */
 void Environment::updateConfigurationDim() {
-    m_configurationDim = 0;
+    m_configDim = 0;
     for (const auto &robot : m_robots)
-        m_configurationDim += robot->getDim();
+        m_configDim += robot->getDim();
 
     updateMasks();
 }
@@ -279,8 +300,8 @@ void Environment::updateConfigurationDim() {
 *  \date       2017-09-30
 */
 void Environment::updateMasks() {
-    m_positionMask = VectorX(m_configurationDim, 1);
-    m_rotationMask = VectorX(m_configurationDim, 1);
+    m_positionMask = VectorX(m_configDim, 1);
+    m_rotationMask = VectorX(m_configDim, 1);
     size_t index = 0;
     for (size_t i = 0; i < m_robots.size(); ++i) {
         auto dofTypes = getRobot(i)->getDofTypes();
