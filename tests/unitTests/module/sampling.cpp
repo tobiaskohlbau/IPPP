@@ -29,10 +29,10 @@
 #include <ippp/modules/sampling/SamplingNearObstacle.hpp>
 #include <ippp/modules/sampling/StraightSampling.hpp>
 
+#include <ippp/environment/model/ModelFactoryFcl.h>
 #include <ippp/environment/robot/MobileRobot.h>
 #include <ippp/modules/collisionDetection/CollisionDetectionFcl.hpp>
 #include <ippp/modules/trajectoryPlanner/LinearTrajectory.hpp>
-#include <ippp/environment/model/ModelFactoryFcl.h>
 #include <ippp/util/Utility.h>
 
 double min = -5;
@@ -53,6 +53,17 @@ void testSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
         for (unsigned int index = 0; index < dim; ++index) {
             EXPECT_TRUE(config[index] >= min);
             EXPECT_TRUE(config[index] <= max);
+        }
+
+        size_t sampleAmount = 10;
+        auto samples = sampling->getSamples(sampleAmount);
+        for (auto &config : sampels) {
+            if (util::empty<dim>(config))
+                continue;
+            for (unsigned int index = 0; index < dim; ++index) {
+                EXPECT_TRUE(config[index] >= min);
+                EXPECT_TRUE(config[index] <= max);
+            }
         }
     }
 }

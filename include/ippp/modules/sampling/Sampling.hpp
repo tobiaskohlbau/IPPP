@@ -45,7 +45,7 @@ class Sampling : public Identifier {
 
     virtual Vector<dim> getSample() = 0;
     virtual Vector<dim> getSample(const Vector<dim> &prevSample);
-    virtual std::vector<Vector<dim>> getSamples(const unsigned int amount);
+    virtual std::vector<Vector<dim>> getSamples(const size_t amount);
 
     std::shared_ptr<Sampler<dim>> getSampler() const;
     double getRandomNumber() const;
@@ -99,10 +99,10 @@ Vector<dim> Sampling<dim>::getSample(const Vector<dim> &prevSample) {
 *  \date       2017-06-07
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> Sampling<dim>::getSamples(const unsigned int amount) {
+std::vector<Vector<dim>> Sampling<dim>::getSamples(const size_t amount) {
     std::vector<Vector<dim>> samples;
     samples.reserve(amount);
-    for (unsigned int i = 0; i < amount; ++i)
+    for (size_t i = 0; i < amount; ++i)
         samples.push_back(getSample());
 
     return samples;
