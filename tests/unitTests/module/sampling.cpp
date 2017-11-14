@@ -57,7 +57,7 @@ void testSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
 
         size_t sampleAmount = 10;
         auto samples = sampling->getSamples(sampleAmount);
-        for (auto &config : sampels) {
+        for (auto &config : samples) {
             if (util::empty<dim>(config))
                 continue;
             for (unsigned int index = 0; index < dim; ++index) {
