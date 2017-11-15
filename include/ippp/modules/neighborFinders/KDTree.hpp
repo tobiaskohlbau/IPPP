@@ -142,7 +142,7 @@ void KDTree<dim, T>::rebaseSorted(std::vector<T> &nodes) {
 */
 template <unsigned int dim, class T>
 void KDTree<dim, T>::addNode(const Vector<dim> &config, const T &node) {
-    std::shared_ptr<KDNode<dim, T>> shrKDNode(new KDNode<dim, T>(config, node));
+    auto shrKDNode = std::make_shared<KDNode<dim, T>>(config, node);
     if (m_root == nullptr) {
         m_root = shrKDNode;
         return;
@@ -150,7 +150,7 @@ void KDTree<dim, T>::addNode(const Vector<dim> &config, const T &node) {
     // insert(shrKDNode, m_root, 0);
 
     std::shared_ptr<KDNode<dim, T>> leaf = nullptr;
-    std::shared_ptr<KDNode<dim, T>> last(m_root);
+    auto last = m_root;
     Direction dir;
     if (shrKDNode->config[0] < m_root->config[0]) {
         leaf = m_root->left;
@@ -176,11 +176,10 @@ void KDTree<dim, T>::addNode(const Vector<dim> &config, const T &node) {
     // TODO: add control for mutex, if leaf is no nullptr
     shrKDNode->axis = cd;
     shrKDNode->value = shrKDNode->config[cd];
-    if (dir == left) {
+    if (dir == left)
         last->left = shrKDNode;
-    } else {
+    else
         last->right = shrKDNode;
-    }
 }
 
 /*!
@@ -236,13 +235,13 @@ void KDTree<dim, T>::removeNodes(std::shared_ptr<KDNode<dim, T>> node) {
 */
 template <unsigned int dim, class T>
 T KDTree<dim, T>::searchNearestNeighbor(const Vector<dim> &config) {
-    if (m_root == nullptr) {
+    if (m_root == nullptr)
         return nullptr;
-    }
-    std::shared_ptr<KDNode<dim, T>> node;
-    double bestDist = std::numeric_limits<double>::max();
-    NNS(config, m_root, node, bestDist);
-    return node->node;
+
+    std::shared_ptr<KDNode<dim, T>> kdNode;
+    double dist = std::numeric_limits<double>::max();
+    NNS(config, m_root, kdNode, dist);
+    return kdNode->node;
 }
 
 /*!
@@ -256,9 +255,9 @@ T KDTree<dim, T>::searchNearestNeighbor(const Vector<dim> &config) {
 template <unsigned int dim, class T>
 std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &config, double range) {
     std::vector<T> nodes;
-    if (m_root == nullptr) {
+    if (m_root == nullptr)
         return nodes;
-    }
+
     std::vector<std::shared_ptr<KDNode<dim, T>>> kdNodes;
     Vector<dim> maxBoundary = config;
     Vector<dim> minBoundary = config;
@@ -272,6 +271,7 @@ std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &config, double ran
             nodes.push_back(kdNode->node);
         }
     }
+
     return nodes;
 }
 
@@ -296,19 +296,15 @@ void KDTree<dim, T>::NNS(const Vector<dim> &config, std::shared_ptr<KDNode<dim, 
         return;
     } else {
         if (config[node->axis] <= node->value) {
-            if (config[node->axis] - bestDist <= node->value && node->left != nullptr) {
+            if (config[node->axis] - bestDist <= node->value && node->left != nullptr)
                 NNS(config, node->left, refNode, bestDist);
-            }
-            if (config[node->axis] + bestDist > node->value && node->right != nullptr) {
+            if (config[node->axis] + bestDist > node->value && node->right != nullptr)
                 NNS(config, node->right, refNode, bestDist);
-            }
         } else {
-            if (config[node->axis] + bestDist > node->value && node->right != nullptr) {
+            if (config[node->axis] + bestDist > node->value && node->right != nullptr)
                 NNS(config, node->right, refNode, bestDist);
-            }
-            if (config[node->axis] - bestDist <= node->value && node->left != nullptr) {
+            if (config[node->axis] - bestDist <= node->value && node->left != nullptr)
                 NNS(config, node->left, refNode, bestDist);
-            }
         }
     }
 }
