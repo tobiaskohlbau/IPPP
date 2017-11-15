@@ -30,8 +30,7 @@ namespace util {
 *  \author     Sascha Kaden
 *  \param[in]  source Vector
 *  \param[in]  target Vector
-*  \param[in]  positional resolution
-*  \param[in]  rotational resolution
+*  \param[in]  resolution
 *  \param[out] trajectory
 *  \date       2017-09-30
 */
@@ -40,7 +39,7 @@ static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, 
     std::vector<Vector<dim>> configs;
 
     Vector<dim> u(target - source);    // u = a - b
-    configs.reserve((int)(u.norm() / res) + 1);
+    configs.reserve((size_t)(u.norm() / res) + 1);
     u /= u.norm() / res;    // u = |u|
     for (Vector<dim> temp(source + u); !(temp - target).isZero(res * 2); temp += u)
         configs.push_back(temp);

@@ -16,6 +16,10 @@
 #
 #-------------------------------------------------------------------------//
 
-ADD_IPPP_TEST(trajectoryPlanner "modules" "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_TEST(distanceMetric "modules" "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_TEST(evaluator "modules" "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_TEST(neighborFinders "modules" "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_TEST(pathModifier "modules" "${ADDITIONAL_LIBRARIES}")
 ADD_IPPP_TEST(sampler "modules" "${ADDITIONAL_LIBRARIES}")
 ADD_IPPP_TEST(sampling "modules" "${ADDITIONAL_LIBRARIES}")
+ADD_IPPP_TEST(trajectoryPlanner "modules" "${ADDITIONAL_LIBRARIES}")
