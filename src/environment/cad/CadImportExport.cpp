@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <include/ippp/environment/cad/CadImportExport.h>
+#include <ippp/environment/cad/CadImportExport.h>
 
 #include <fstream>
 #include <iostream>

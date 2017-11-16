@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <include/ippp/environment/cad/CadProcessing.h>
+#include <ippp/environment/cad/CadProcessing.h>
 
 #include <numeric>
 #include <fstream>

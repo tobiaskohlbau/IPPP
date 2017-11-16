@@ -18,7 +18,7 @@
 
 #include <ippp/environment/model/ModelPqp.h>
 
-#include <include/ippp/environment/cad/CadProcessing.h>
+#include <ippp/environment/cad/CadProcessing.h>
 
 namespace ippp {
 

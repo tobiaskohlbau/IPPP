@@ -18,8 +18,8 @@
 
 #include <ippp/environment/robot/SerialRobot.h>
 
-#include <include/ippp/environment/cad/CadImportExport.h>
-#include <include/ippp/environment/cad/CadProcessing.h>
+#include <ippp/environment/cad/CadImportExport.h>
+#include <ippp/environment/cad/CadProcessing.h>
 
 namespace ippp {
 
