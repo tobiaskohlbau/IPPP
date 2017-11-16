@@ -35,8 +35,8 @@ namespace util {
 */
 template <unsigned int dim>
 static std::shared_ptr<Node<dim>> getNearestValidNode(const Vector<dim> &config, const std::shared_ptr<Graph<dim>> &graph,
-                                               const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                               const std::shared_ptr<DistanceMetric<dim>> &metric, const double range) {
+                                                      const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                                                      const std::shared_ptr<DistanceMetric<dim>> &metric, const double range) {
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph->getNearNodes(config, range);
     double dist = std::numeric_limits<double>::max();
@@ -61,9 +61,13 @@ static std::shared_ptr<Node<dim>> getNearestValidNode(const Vector<dim> &config,
 */
 template <unsigned int dim>
 static void expandNode(const std::shared_ptr<Node<dim>> currentNode, std::vector<std::shared_ptr<Node<dim>>> &openList,
-                std::vector<std::shared_ptr<Node<dim>>> &closedList, const std::shared_ptr<DistanceMetric<dim>> &metric) {
+                       std::vector<std::shared_ptr<Node<dim>>> &closedList, const std::shared_ptr<DistanceMetric<dim>> &metric) {
     double dist, edgeCost;
-    for (auto successor : currentNode->getChildNodes()) {
+    auto successors = currentNode->getChildNodes();
+    if (currentNode->getParentNode())
+        successors.push_back(currentNode->getParentNode());
+
+    for (auto &successor : successors) {
         if (util::contains(closedList, successor))
             continue;
 
@@ -92,10 +96,13 @@ static void expandNode(const std::shared_ptr<Node<dim>> currentNode, std::vector
 */
 template <unsigned int dim>
 static bool aStar(const std::shared_ptr<Node<dim>> sourceNode, const std::shared_ptr<Node<dim>> targetNode,
-           const std::shared_ptr<DistanceMetric<dim>> &metric) {
+                  const std::shared_ptr<DistanceMetric<dim>> &metric) {
     std::vector<std::shared_ptr<Node<dim>>> openList, closedList;
 
     std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
+    if (sourceNode->getParentEdge())
+        edges.push_back(sourceNode->getParentEdge());
+
     for (size_t i = 0; i < edges.size(); ++i) {
         edges[i]->getTarget()->setCost(edges[i]->getCost());
         edges[i]->getTarget()->setQueryParent(sourceNode, metric->calcDist(edges[i]->getTarget(), sourceNode));
@@ -108,9 +115,9 @@ static bool aStar(const std::shared_ptr<Node<dim>> sourceNode, const std::shared
     while (!openList.empty()) {
         currentNode = util::removeMinFromList(openList);
 
-        if (currentNode == targetNode) {
+        if (currentNode == targetNode)
             return true;
-        }
+
         closedList.push_back(currentNode);
         ++count;
 

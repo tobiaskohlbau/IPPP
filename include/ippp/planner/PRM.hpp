@@ -161,9 +161,8 @@ void PRM<dim>::samplingPhase(const size_t nbOfNodes) {
         if (util::empty<dim>(sample))
             continue;
 
-        if (!m_collision->checkConfig(sample)) {
+        if (!m_collision->checkConfig(sample))
             m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
-        }
     }
 }
 
@@ -270,7 +269,7 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
 *  \author     Sascha Kaden
 *  \param[in]  Node
 *  \param[in]  nearest Node
-*  \date       2016-08-09
+*  \date       2017-11-16
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &config) {
@@ -279,16 +278,30 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &config) {
     if (nearestNode)
         return nearestNode;
 
-    nearestNode = util::getNearestValidNode<dim>(config, m_graph, m_trajectory, m_metric, m_rangeSize);
-    // create new Node with connection to the nearest Node, if a valid path exists
-    if (nearestNode) {
-        std::shared_ptr<Node<dim>> node(new Node<dim>(config));
-        node->setParent(nearestNode, m_metric->calcDist(nearestNode, node));
-        nearestNode->addChild(node, m_metric->calcDist(nearestNode, node));
-        return node;
-    } else {
-        return nullptr;
+    // if not, create a new node and connect near nodes
+    auto newNode = std::make_shared<Node<dim>>(config);
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(newNode, m_rangeSize);
+    for (auto &nearNode : nearNodes) {
+        if (m_trajectory->checkTrajectory(newNode, nearNode)) {
+            newNode->addChild(nearNode, m_metric->calcDist(newNode, nearNode));
+            nearNode->addChild(newNode, m_metric->calcDist(nearNode, newNode));
+        } else {
+            newNode->addInvalidChild(nearNode);
+        }
     }
+    m_graph->addNode(newNode);
+    return newNode;
+
+    // nearestNode = util::getNearestValidNode<dim>(config, m_graph, m_trajectory, m_metric, m_rangeSize);
+    //// create new Node with connection to the nearest Node, if a valid path exists
+    // if (nearestNode) {
+    //    std::shared_ptr<Node<dim>> node(new Node<dim>(config));
+    //    node->setParent(nearestNode, m_metric->calcDist(nearestNode, node));
+    //    nearestNode->addChild(node, m_metric->calcDist(nearestNode, node));
+    //    return node;
+    //} else {
+    //    return nullptr;
+    //}
 }
 
 /*!
