@@ -22,9 +22,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_definitions(-D_USE_MATH_DEFINES)
 
-option(BUILD_EXAMPLES "Build the examples")
+option(BUILD_EXAMPLES "Build the examples" OFF)
 option(BUILD_TESTS "Build tests" ON)
-option(BUILD_BENCHMARK "Build optional benchmark classes")
+option(BUILD_BENCHMARK "Build optional benchmark classes" OFF)
 
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake ${PROJECT_SOURCE_DIR}/../IPPP_third_party)

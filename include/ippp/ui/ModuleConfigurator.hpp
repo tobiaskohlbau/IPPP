@@ -57,6 +57,7 @@ class ModuleConfigurator : public Configurator {
     ModuleConfigurator();
     bool saveConfig(const std::string &filePath);
     bool loadConfig(const std::string &filePath);
+    void resetModules();
 
     std::shared_ptr<Environment> getEnvironment();
     std::shared_ptr<CollisionDetection<dim>> getCollisionDetection();
@@ -305,6 +306,13 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 }
 
+/*!
+*  \brief      Save all properties of the ModuleConfigurator to the defined json file.
+*  \author     Sascha Kaden
+*  \param[in]  file path
+*  \param[out] true if saving was successful
+*  \date       2017-10-03
+*/
 template <unsigned int dim>
 bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     // types
@@ -332,6 +340,13 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     return saveJson(filePath, json);
 }
 
+/*!
+*  \brief      Loads all properties of the ModuleConfigurator from the defined json file.
+*  \author     Sascha Kaden
+*  \param[in]  file path
+*  \param[out] true if loading was successful
+*  \date       2017-10-03
+*/
 template <unsigned int dim>
 bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
     nlohmann::json json = loadJson(filePath);
@@ -360,6 +375,11 @@ bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
     initializeModules();
 
     return true;
+}
+
+template <unsigned int dim>
+void ModuleConfigurator<dim>::resetModules() {
+    m_parameterModified = true;
 }
 
 /*!

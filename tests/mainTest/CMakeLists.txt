@@ -16,8 +16,5 @@
 #
 #-------------------------------------------------------------------------//
 
-set(MODULE "main")
-add_definitions("-DBOOST_TEST_MODULE=${MODULE}")
-
-#ADD_IPPP_TEST(clearWorkspace "")
+ADD_IPPP_TEST(clearWorkspace "main" "")
 #ADD_IPPP_TEST(obstacleWorkspace "")

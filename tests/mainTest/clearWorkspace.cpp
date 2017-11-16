@@ -16,78 +16,102 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <boost/test/unit_test.hpp>
+#include <gtest\gtest.h>
 
-#include <ippp/modules/collisionDetection/CollisionDetection2D.hpp>
-#include <ippp/modules/sampler/SamplerNormalDist.hpp>
-#include <ippp/modules/sampler/SamplerUniform.hpp>
-#include <ippp/modules/sampling/SamplingNearObstacle.hpp>
-#include <ippp/modules/distanceMetrics/InfMetric.hpp>
-#include <ippp/modules/distanceMetrics/L1Metric.hpp>
-#include <ippp/modules/distanceMetrics/WeightedInfMetric.hpp>
-#include <ippp/modules/distanceMetrics/WeightedL1Metric.hpp>
-#include <ippp/modules/distanceMetrics/WeightedL2Metric.hpp>
-#include <ippp/planner/PRM.hpp>
-#include <ippp/planner/RRTStar.hpp>
-#include <environment/PointRobot.h>
+#include <ippp/Core.h>
+#include <ippp/Environment.h>
+#include <ippp/Planner.h>
+#include <ippp/ui/ModuleConfigurator.hpp>
+#include <ippp/ui/EnvironmentConfigurator.h>
 
 using namespace ippp;
 
-BOOST_AUTO_TEST_SUITE(constructor)
-
-BOOST_AUTO_TEST_CASE(clearWorkspace) {
+TEST(MAIN, clearWorkspace2D) {
+    Logging::setLogLevel(LogLevel::off);
     const unsigned int dim = 2;
-    Logging::setLogLevel(LogLevel::none);
 
-    std::vector<std::shared_ptr<DistanceMetric<dim>>> metrics;
-    metrics.push_back(std::make_shared<DistanceMetric<dim>>(DistanceMetric<dim>()));
-    metrics.push_back(std::make_shared<L1Metric<dim>>(L1Metric<dim>()));
-    metrics.push_back(std::make_shared<InfMetric<dim>>(InfMetric<dim>()));
-    metrics.push_back(std::make_shared<WeightVecL2Metric<dim>>(WeightVecL2Metric<dim>()));
-    metrics.push_back(std::make_shared<WeightVecL1Metric<dim>>(WeightVecL1Metric<dim>()));
-    metrics.push_back(std::make_shared<WeightVecInfMetric<dim>>(WeightVecInfMetric<dim>()));
+    EnvironmentConfigurator environmentConfig;
+    AABB workspaceBounding(Vector3(0, 0, 0), Vector3(100, 100, 100));
+    environmentConfig.setWorkspaceProperties(2, workspaceBounding);
+    environmentConfig.setRobotType(RobotType::Point);
+    auto environment = environmentConfig.getEnvironment();
 
-    Eigen::MatrixXi workspace = Eigen::MatrixXi::Constant(100, 100, 250);
-    Vector2 minBoundary(0.0, 0.0);
-    Vector2 maxBoundary(workspace.rows(), workspace.cols());
-    std::shared_ptr<PointRobot> robot(new PointRobot(minBoundary, maxBoundary));
-    std::shared_ptr<ModelContainer> model(new Model2D(workspace));
-    robot->setWorkspace(model);
-    std::shared_ptr<CollisionDetection<2>> collision(new CollisionDetection2D(robot));
-    std::shared_ptr<TrajectoryPlanner<2>> trajectory(new TrajectoryPlanner<2>(1.5, collision));
-    std::shared_ptr<Planner<dim>> planner;
+    ModuleConfigurator<dim> modulConfig;
+    modulConfig.setEnvironment(environment);
+    modulConfig.setCollisionType(CollisionType::Dim2);
+    modulConfig.setSamplerProperties("asldkf2o345;lfdnsa;f", 1);
 
-    std::vector<std::shared_ptr<Sampler<dim>>> sampler;
-    sampler.push_back(std::shared_ptr<Sampler<dim>>(new Sampler<dim>(robot)));
-    sampler.push_back(std::shared_ptr<Sampler<dim>>(new SamplerUniform<dim>(robot)));
-    sampler.push_back(std::shared_ptr<Sampler<dim>>(new SamplerNormalDist<dim>(robot)));
-    std::vector<std::shared_ptr<Sampling<2>>> samplings;
-    for (auto samp : sampler) {
-        samplings.push_back(std::shared_ptr<Sampling<dim>>(new Sampling<2>(robot, collision, trajectory, samp)));
-        samplings.push_back(std::shared_ptr<Sampling<dim>>(new SamplingNearObstacle<2>(robot, collision, trajectory, samp)));
-    }
+    std::vector<MetricType> metricTypes;
+    std::vector<EvaluatorType> evalTypes;
+    std::vector<NeighborType> neighborTypes;
+    std::vector<PathModifierType> modifierTypes;
+    std::vector<SamplerType> samplerTypes;
+    std::vector<SamplingType> samplingTypes;
+    std::vector<TrajectoryType> trajectoryTypes;
+
+    metricTypes.push_back(MetricType::L1);
+    metricTypes.push_back(MetricType::L2);
+    metricTypes.push_back(MetricType::Inf);
+    metricTypes.push_back(MetricType::L1Weighted);
+    metricTypes.push_back(MetricType::L2Weighted);
+    metricTypes.push_back(MetricType::InfWeighted);
+
+    evalTypes.push_back(EvaluatorType::SingleIteration);
+    //evalTypes.push_back(EvaluatorType::Time);
+    //evalTypes.push_back(EvaluatorType::Query);
+    //evalTypes.push_back(EvaluatorType::QueryOrTime);
+    modulConfig.setEvaluatorProperties(10, 3);
+
+    neighborTypes.push_back(NeighborType::BruteForce);
+    neighborTypes.push_back(NeighborType::KDTree);
+
+    modifierTypes.push_back(PathModifierType::Dummy);
+    modifierTypes.push_back(PathModifierType::NodeCut);
+
+    samplerTypes.push_back(SamplerType::SamplerRandom);
+    samplerTypes.push_back(SamplerType::SamplerUniform);
+    //samplerTypes.push_back(SamplerType::SamplerNormalDist);
+
+    samplingTypes.push_back(SamplingType::Straight);
+    samplingTypes.push_back(SamplingType::NearObstacle);
+    //samplingTypes.push_back(SamplingType::Bridge);
+    //samplingTypes.push_back(SamplingType::Gaussian);
+    //samplingTypes.push_back(SamplingType::GaussianDist);
+
+    trajectoryTypes.push_back(TrajectoryType::Linear);
+    trajectoryTypes.push_back(TrajectoryType::RotateAtS);
 
     Vector2 start(5, 5);
     Vector2 goal(95, 95);
 
-    BOOST_TEST_CHECKPOINT("Options order: sampler, sampling, distanceMetric");
-    for (auto metric : metrics) {
-        for (auto sampling : samplings) {
-            PRMOptions<dim> prmOptions(30, collision, trajectory, sampling, metric);
-            PRMPlanner<dim> prmPlanner(robot, prmOptions);
-            BOOST_TEST_CHECKPOINT("Calling PRM planning");
-            prmPlanner.computePath(start, goal, 500, 2);
+    for (auto &metricType : metricTypes) {
+        modulConfig.setMetricType(metricType);
+        for (auto &evalType : evalTypes) {
+            modulConfig.setEvaluatorType(evalType);
+            for (auto &neighborType : neighborTypes) {
+                modulConfig.setNeighborFinderType(neighborType);
+                for (auto &modifier : modifierTypes) {
+                    modulConfig.setPathModifierType(modifier);
+                    for (auto &sampler : samplerTypes) {
+                        modulConfig.setSamplerType(sampler);
+                        for (auto &sampling : samplingTypes) {
+                            modulConfig.setSamplingType(sampling);
+                            for (auto &trajectory : trajectoryTypes) {
+                                modulConfig.setTrajectoryType(trajectory);
 
-            RRTOptions<dim> rrtOptions(30, collision, trajectory, sampling, metric);
-            RRT<dim> normalRRTPlanner(robot, rrtOptions);
-            BOOST_TEST_CHECKPOINT("Calling normal RRT planning");
-            normalRRTPlanner.computePath(start, goal, 500, 2);
-
-            RRTStarPlanner<dim> starRRTPlanner(robot, rrtOptions);
-            BOOST_TEST_CHECKPOINT("Calling RRT* planning");
-            starRRTPlanner.computePath(start, goal, 500, 2);
+                                PRM<dim> prm(environment, modulConfig.getPRMOptions(15), modulConfig.getGraph());
+                                EXPECT_TRUE(prm.computePath(start, goal, 300, 1));
+                                modulConfig.resetModules();
+                                RRT<dim> rrt(environment, modulConfig.getRRTOptions(15), modulConfig.getGraph());
+                                EXPECT_TRUE(rrt.computePath(start, goal, 300, 1));
+                                modulConfig.resetModules();
+                                RRTStar<dim> rrtStar(environment, modulConfig.getRRTOptions(15), modulConfig.getGraph());
+                                EXPECT_TRUE(rrtStar.computePath(start, goal, 300, 1));
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
-
-BOOST_AUTO_TEST_SUITE_END()
