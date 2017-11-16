@@ -25,7 +25,7 @@ before_script:
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
           make -j4 || travis_terminate 1;
-          make test || travis_terminate 1;
+          ctest || travis_terminate 1;
           fi
 
 env:
