@@ -61,6 +61,7 @@ IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY (examples)
 ENDIF ()
 IF (${BUILD_TESTS})
+    enable_testing()
     ADD_SUBDIRECTORY (tests)
 ENDIF ()
 

@@ -16,8 +16,6 @@
 #
 #-------------------------------------------------------------------------//
 
-enable_testing()
-
 find_package(GTest REQUIRED)
 SET(LIBRARIES IPPP ${GTEST_BOTH_LIBRARIES})
 
