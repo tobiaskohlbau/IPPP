@@ -52,8 +52,6 @@ if (UNIX)
     find_package(Threads REQUIRED)
     set(append ${CMAKE_CXX_FLAGS} "-pthread")
     LIST(APPEND LIBRARIES pthread)
-else (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 endif()
 
 # source files
@@ -65,7 +63,6 @@ IF (${BUILD_EXAMPLES})
     ADD_SUBDIRECTORY(examples)
 ENDIF()
 IF (${BUILD_TESTS})
-    enable_testing ()
     ADD_SUBDIRECTORY(tests)
 ENDIF()
 
@@ -78,8 +75,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${CCD_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIRS}
         ${FCL_INCLUDE_DIRS}
-        ${PQP_INCLUDE_DIR}
-        ${NLOHMANN_JSON_INCLUDE_DIR})
+        ${NLOHMANN_JSON_INCLUDE_DIR}
+        ${PQP_INCLUDE_DIR})
         
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
