@@ -21,7 +21,38 @@
 #include <ippp/modules/neighborFinders/BruteForceNF.hpp>
 #include <ippp/modules/neighborFinders/KDTree.hpp>
 
+#include <ippp/modules/distanceMetrics/L1Metric.hpp>
+#include <ippp/modules/distanceMetrics/L2Metric.hpp>
+#include <ippp/modules/distanceMetrics/InfMetric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedL1Metric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedL2Metric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedInfMetric.hpp>
+
 using namespace ippp;
 
+template <unsigned int dim>
+void testConstructor() {
+    std::vector<std::shared_ptr<DistanceMetric<dim>>> metrics;
+    metrics.push_back(std::make_shared<L1Metric<dim>>());
+    metrics.push_back(std::make_shared<L2Metric<dim>>());
+    metrics.push_back(std::make_shared<InfMetric<dim>>());
+    metrics.push_back(std::make_shared<WeightedL1Metric<dim>>());
+    metrics.push_back(std::make_shared<WeightedL2Metric<dim>>());
+    metrics.push_back(std::make_shared<WeightedInfMetric<dim>>());
+
+    for (auto &metric : metrics) {
+        auto finder1 = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
+        auto finder2 = std::make_shared<BruteForceNF<dim, std::shared_ptr<Node<dim>>>>(metric);
+    }
+}
+
 TEST(NEIGHBORFINDERS, constructor) {
+    testConstructor<2>();
+    testConstructor<3>();
+    testConstructor<4>();
+    testConstructor<5>();
+    testConstructor<6>();
+    testConstructor<7>();
+    testConstructor<8>();
+    testConstructor<9>();
 }

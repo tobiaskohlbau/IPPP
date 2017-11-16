@@ -26,9 +26,8 @@ using namespace ippp;
 
 template <unsigned int dim>
 void testConstructor() {
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new L2Metric<dim>());
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    auto metric = std::make_shared<L2Metric<dim>>();
+    auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
 
     Graph<dim> graph1(0, neighborFinder);
     EXPECT_FALSE(graph1.autoSort());
@@ -54,9 +53,9 @@ TEST(GRAPH, constructor) {
 
 template <unsigned int dim>
 void NNS() {
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new L2Metric<dim>());
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder1(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    auto metric = std::make_shared<L2Metric<dim>>();
+    auto neighborFinder1 = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
+
     Graph<dim> graph1(0, neighborFinder1);
     std::vector<Vector<dim>> vecs;
     std::vector<std::shared_ptr<Node<dim>>> nodes;
@@ -71,8 +70,7 @@ void NNS() {
     EXPECT_EQ(nodes[1], graph1.getNearestNode(*(nodes[0])));
     EXPECT_EQ(nodes[1], graph1.getNearestNode(vecs[0]));
 
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder2(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
+    auto neighborFinder2 = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
     Graph<dim> graph2(0, neighborFinder2);
     for (int i = 1; i < 10; ++i)
         graph2.addNode(nodes[i]);
@@ -109,10 +107,10 @@ void contains(std::vector<std::shared_ptr<Node<dim>>> result, std::vector<std::s
 
 template <unsigned int dim>
 void RS() {
-    std::shared_ptr<DistanceMetric<dim>> distanceMetric(new L2Metric<dim>());
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder1(
-        new KDTree<dim, std::shared_ptr<Node<dim>>>(distanceMetric));
-    Graph<dim> graph1(0, neighborFinder1);
+    auto metric = std::make_shared<L2Metric<dim>>();
+    auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
+
+    Graph<dim> graph1(0, neighborFinder);
     std::vector<Vector<dim>> vecs;
     std::vector<std::shared_ptr<Node<dim>>> nodes;
     for (int i = 0; i < 10; ++i) {
@@ -136,4 +134,7 @@ TEST(GRAPH, RS) {
     RS<4>();
     RS<5>();
     RS<6>();
+    NNS<7>();
+    NNS<8>();
+    NNS<9>();
 }
