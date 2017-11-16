@@ -31,7 +31,7 @@ MACRO(ADD_IPPP_TEST TEST_NAME BRANCH)
              ${CMAKE_SOURCE_DIR}/tests/assets
              ${CMAKE_CURRENT_BINARY_DIR}/assets/)
 
-    ADD_TEST(UnitTests ${EXE_NAME})
+    ADD_TEST(TEST_NAME ${EXE_NAME})
 ENDMACRO(ADD_IPPP_TEST)
 
 # from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
