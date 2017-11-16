@@ -27,7 +27,7 @@ namespace ippp {
 
 /*!
 * \brief   Class BruteForceNF for a brute force search
-* \details The brute force approach goes through all nodes and returns the matches.
+* \details The brute force approach goes through all nodes and returns the matches of the search.
 * \author  Sascha Kaden
 * \date    2017-05-16
 */
@@ -90,9 +90,8 @@ template <unsigned int dim, class T>
 void BruteForceNF<dim, T>::rebaseSorted(std::vector<T> &nodes) {
     if (m_nodes.size() != nodes.size()) {
         m_nodes.clear();
-        for (auto &node : nodes) {
+        for (auto &node : nodes)
             addNode(node->getValues(), node);
-        }
     }
 }
 
