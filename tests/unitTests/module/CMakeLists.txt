@@ -16,10 +16,10 @@
 #
 #-------------------------------------------------------------------------//
 
-ADD_IPPP_TEST(distanceMetric "modules" "")
-ADD_IPPP_TEST(evaluator "modules" "")
-ADD_IPPP_TEST(neighborFinders "modules" "")
-ADD_IPPP_TEST(pathModifier "modules" "")
-ADD_IPPP_TEST(sampler "modules" "")
-ADD_IPPP_TEST(sampling "modules" "")
-ADD_IPPP_TEST(trajectoryPlanner "modules" "")
+ADD_IPPP_TEST(distanceMetric "modules")
+ADD_IPPP_TEST(evaluator "modules")
+ADD_IPPP_TEST(neighborFinders "modules")
+ADD_IPPP_TEST(pathModifier "modules")
+ADD_IPPP_TEST(sampler "modules")
+ADD_IPPP_TEST(sampling "modules")
+ADD_IPPP_TEST(trajectoryPlanner "modules")

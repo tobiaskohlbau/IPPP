@@ -19,9 +19,8 @@
 cmake_minimum_required (VERSION 3.2.2)
 project (IPPP)
 set (CMAKE_AUTOMOC ON)
-add_definitions (-D_USE_MATH_DEFINES)
 
-option (BUILD_EXAMPLES "Build the examples" OFF)
+option (BUILD_EXAMPLES "Build examples" OFF)
 option (BUILD_TESTS "Build tests" ON)
 option (BUILD_BENCHMARK "Build optional benchmark classes" OFF)
 
@@ -68,6 +67,7 @@ ENDIF ()
 # generate library
 add_library (${PROJECT_NAME} ${SRCS})
 set_property (TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+target_compile_definitions(${PROJECT_NAME} PUBLIC -D_USE_MATH_DEFINES)
 target_link_libraries (${PROJECT_NAME} ${LIBRARIES})
 target_include_directories (${PROJECT_NAME} PUBLIC
         ${CMAKE_SOURCE_DIR}/include
