@@ -154,10 +154,10 @@ void testFCL() {
     creator.saveConfig("moduleConfig.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    //    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(30), creator.getGraph()));
-    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(40), creator.getGraph()));
-    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
-    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
+    //planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
+    planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(40), creator.getGraph());
+    //planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
+    //planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
     auto startTime = std::chrono::system_clock::now();
     Vector6 start = util::Vecd(0, 0, 0, 0, 0, 0);

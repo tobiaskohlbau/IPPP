@@ -26,8 +26,8 @@ template <unsigned int dim>
 void testConstructor() {
     VectorX sourceVec = Eigen::MatrixXd::Constant(dim, 1, 0);
     VectorX targetVec = Eigen::MatrixXd::Constant(dim, 1, 3);
-    std::shared_ptr<Node<dim>> source = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVec));
-    std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
+    auto source = std::make_shared<Node<dim>>(sourceVec);
+    auto target = std::make_shared<Node<dim>>(targetVec);
 
     Edge<dim> edge(source, target, 1);
     EXPECT_EQ(edge.getCost(), 1);
@@ -51,9 +51,9 @@ void testSourceNode() {
     VectorX sourceVec = Eigen::MatrixXd::Constant(dim, 1, 0);
     VectorX targetVec = Eigen::MatrixXd::Constant(dim, 1, 3);
     VectorX sourceVecNew = Eigen::MatrixXd::Constant(dim, 1, -10);
-    std::shared_ptr<Node<dim>> source = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVec));
-    std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
-    std::shared_ptr<Node<dim>> sourceNew = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVecNew));
+    auto source = std::make_shared<Node<dim>>(sourceVec);
+    auto target = std::make_shared<Node<dim>>(targetVec);
+    auto sourceNew = std::make_shared<Node<dim>>(sourceVecNew);
 
     Edge<dim> edge(source, target, 1);
     edge.setSource(sourceNew);
@@ -77,9 +77,9 @@ void testTargetNode() {
     VectorX sourceVec = Eigen::MatrixXd::Constant(dim, 1, 0);
     VectorX targetVec = Eigen::MatrixXd::Constant(dim, 1, 3);
     VectorX targetVecNew = Eigen::MatrixXd::Constant(dim, 1, 10);
-    std::shared_ptr<Node<dim>> source = std::shared_ptr<Node<dim>>(new Node<dim>(sourceVec));
-    std::shared_ptr<Node<dim>> target = std::shared_ptr<Node<dim>>(new Node<dim>(targetVec));
-    std::shared_ptr<Node<dim>> targetNew = std::shared_ptr<Node<dim>>(new Node<dim>(targetVecNew));
+    auto source = std::make_shared<Node<dim>>(sourceVec);
+    auto target = std::make_shared<Node<dim>>(targetVec);
+    auto targetNew = std::make_shared<Node<dim>>(targetVecNew);
 
     Edge<dim> edge(source, target, 1);
     edge.setTarget(targetNew);

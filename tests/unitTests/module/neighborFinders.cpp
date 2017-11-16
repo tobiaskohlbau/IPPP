@@ -18,15 +18,14 @@
 
 #include <gtest/gtest.h>
 
-#include <ippp/modules/neighborFinders/BruteForceNF.hpp>
-#include <ippp/modules/neighborFinders/KDTree.hpp>
-
+#include <ippp/modules/distanceMetrics/InfMetric.hpp>
 #include <ippp/modules/distanceMetrics/L1Metric.hpp>
 #include <ippp/modules/distanceMetrics/L2Metric.hpp>
-#include <ippp/modules/distanceMetrics/InfMetric.hpp>
+#include <ippp/modules/distanceMetrics/WeightedInfMetric.hpp>
 #include <ippp/modules/distanceMetrics/WeightedL1Metric.hpp>
 #include <ippp/modules/distanceMetrics/WeightedL2Metric.hpp>
-#include <ippp/modules/distanceMetrics/WeightedInfMetric.hpp>
+#include <ippp/modules/neighborFinders/BruteForceNF.hpp>
+#include <ippp/modules/neighborFinders/KDTree.hpp>
 
 using namespace ippp;
 

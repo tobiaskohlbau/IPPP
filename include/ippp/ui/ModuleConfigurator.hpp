@@ -240,10 +240,9 @@ void ModuleConfigurator<dim>::initializeModules() {
             break;
         case ippp::EvaluatorType::QueryOrTime:
             std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-            evaluators.push_back(
-                std::shared_ptr<Evaluator<dim>>(new QueryEvaluator<dim>(m_metric, m_graph, m_queryEvaluatorDist)));
-            evaluators.push_back(std::shared_ptr<Evaluator<dim>>(new TimeEvaluator<dim>(m_evaluatorDuration)));
-            m_evaluator = std::shared_ptr<Evaluator<dim>>(new ComposeEvaluator<dim>(evaluators, ComposeType::OR));
+            evaluators.push_back(std::make_shared<QueryEvaluator<dim>>(m_metric, m_graph, m_queryEvaluatorDist));
+            evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration));
+            m_evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
             break;
     }
 

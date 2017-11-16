@@ -94,7 +94,7 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randC
     if (!m_trajectory->checkTrajectory(newConfig, nearestNode->getValues()))
         return nullptr;
 
-    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newConfig));
+    std::shared_ptr<Node<dim>> newNode = std::make_shared<Node<dim>>(newConfig);
     double edgeCost = m_metric->calcDist(newNode, nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);

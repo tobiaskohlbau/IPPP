@@ -183,7 +183,7 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randConfi
 
     // compute Node<dim> new with fixed step size
     Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
-    std::shared_ptr<Node<dim>> newNode = std::shared_ptr<Node<dim>>(new Node<dim>(newConfig));
+    std::shared_ptr<Node<dim>> newNode = std::make_shared<Node<dim>>(newConfig);
 
     if (m_collision->checkConfig(newNode->getValues()))
         return nullptr;

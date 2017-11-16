@@ -141,7 +141,7 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
             return true;
         } else {
             Logging::info("New start node, new tree will be created", this);
-            m_graph = std::shared_ptr<Graph<dim>>(new Graph<dim>(m_graph->getSortCount(), m_graph->getNeighborFinder()));
+            m_graph = std::make_shared<Graph<dim>>(m_graph->getSortCount(), m_graph->getNeighborFinder());
             m_graph->sortTree();
         }
     }
@@ -152,7 +152,7 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
     }
 
     this->m_sampling->setOrigin(start);
-    m_initNode = std::shared_ptr<Node<dim>>(new Node<dim>(start));
+    m_initNode = std::make_shared<Node<dim>>(start);
     m_graph->addNode(m_initNode);
     return true;
 }

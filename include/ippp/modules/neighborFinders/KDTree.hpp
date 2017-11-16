@@ -85,7 +85,7 @@ template <unsigned int dim, class T>
 KDTree<dim, T>::KDTree(const std::shared_ptr<DistanceMetric<dim>> &distanceMetric, std::vector<T> &nodes)
     : NeighborFinder<dim, T>("KD Tree", distanceMetric) {
     quickSort(nodes, 0, nodes.size() - 1, 0);
-    m_root = std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(nodes[nodes.size() / 2]->getValues(), nodes[nodes.size() / 2]));
+    m_root = std::make_shared<KDNode<dim, T>>(nodes[nodes.size() / 2]->getValues(), nodes[nodes.size() / 2]);
     m_root->axis = 0;
     m_root->value = m_root->config[0];
 
@@ -117,7 +117,7 @@ template <unsigned int dim, class T>
 void KDTree<dim, T>::rebaseSorted(std::vector<T> &nodes) {
     std::shared_ptr<KDNode<dim, T>> root;
     quickSort(nodes, 0, nodes.size() - 1, 0);
-    root = std::shared_ptr<KDNode<dim, T>>(new KDNode<dim, T>(nodes[nodes.size() / 2]->getValues(), nodes[nodes.size() / 2]));
+    root = std::make_shared<KDNode<dim, T>>(nodes[nodes.size() / 2]->getValues(), nodes[nodes.size() / 2]);
     root->axis = 0;
     root->value = m_root->config[0];
 
@@ -370,8 +370,8 @@ std::shared_ptr<KDNode<dim, T>> KDTree<dim, T>::sortNodes(std::vector<T> &config
         return kdNode;
     } else {
         quickSort(config, 0, config.size() - 1, cd);
-        std::shared_ptr<KDNode<dim, T>> kdNode = std::shared_ptr<KDNode<dim, T>>(
-            new KDNode<dim, T>(config[config.size() / 2]->getValues(), config[config.size() / 2]));
+        std::shared_ptr<KDNode<dim, T>> kdNode =
+            std::make_shared<KDNode<dim, T>>(config[config.size() / 2]->getValues(), config[config.size() / 2]);
         kdNode->axis = cd;
         kdNode->value = kdNode->config[cd];
 

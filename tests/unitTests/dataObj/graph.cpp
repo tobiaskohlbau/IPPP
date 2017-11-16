@@ -117,7 +117,7 @@ void RS() {
         int value = i * 10;
         Vector<dim> vec = Eigen::VectorXd::Constant(dim, 1, value);
         vecs.push_back(vec);
-        std::shared_ptr<Node<dim>> node = std::shared_ptr<Node<dim>>(new Node<dim>(vec));
+        std::shared_ptr<Node<dim>> node = std::make_shared<Node<dim>>(vec);
         nodes.push_back(node);
         graph1.addNode(node);
     }

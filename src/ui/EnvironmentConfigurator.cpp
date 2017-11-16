@@ -145,21 +145,21 @@ void EnvironmentConfigurator::setRobotType(const RobotType robotType, const std:
 *  \date       2017-10-18
 */
 std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
-    m_environment = std::shared_ptr<Environment>(new Environment(m_workspaceDim, m_workspceBounding));
+    m_environment = std::make_shared<Environment>(m_workspaceDim, m_workspceBounding);
 
     std::shared_ptr<ModelFactory> factory;
     switch (m_factoryType) {
         case ippp::FactoryType::ModelFCL:
-            factory = std::shared_ptr<ModelFactory>(new ModelFactoryFcl);
+            factory = std::make_shared<ModelFactoryFcl>();
             break;
         case ippp::FactoryType::ModelPQP:
-            factory = std::shared_ptr<ModelFactory>(new ModelFactoryPqp);
+            factory = std::make_shared<ModelFactoryPqp>();
             break;
         case ippp::FactoryType::ModelTriangle2D:
-            factory = std::shared_ptr<ModelFactory>(new ModelFactoryTriangle2D);
+            factory = std::make_shared<ModelFactoryTriangle2D>();
             break;
         default:
-            factory = std::shared_ptr<ModelFactory>(new ModelFactoryPqp);
+            factory = std::make_shared<ModelFactoryFcl>();
             break;
     }
 
@@ -175,16 +175,16 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
             tempMin[i] = min[i];
             tempMax[i] = max[i];
         }
-        m_robot = std::shared_ptr<RobotBase>(new PointRobot(std::make_pair(tempMin, tempMax)));
+        m_robot = std::make_shared<PointRobot>(std::make_pair(tempMin, tempMax));
     } else if (m_robotType == RobotType::Serial2D) {
-        m_robot = std::shared_ptr<RobotBase>(new SerialRobot2D);
+        m_robot = std::make_shared<SerialRobot2D>();
     } else if (m_robotType == RobotType::Mobile) {
         Vector6 min6, max6;
         min6 = util::Vecd(min[0], min[1], min[2], 0, 0, 0);
         max6 = util::Vecd(max[0], max[1], max[2], util::twoPi(), util::twoPi(), util::twoPi());
         std::vector<DofType> types = {volumetricPos, volumetricPos, volumetricPos, volumetricRot, volumetricRot, volumetricRot};
         auto robotModel = factory->createModel(m_robotFile);
-        m_robot = std::shared_ptr<RobotBase>(new MobileRobot(6, std::make_pair(min6, max6), types));
+        m_robot = std::make_shared<MobileRobot>(6, std::make_pair(min6, max6), types);
         m_robot->setBaseModel(robotModel);
     } else if (m_robotType == RobotType::Triangle2D) {
         Vector3 tempMin, tempMax;
@@ -195,7 +195,7 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
         tempMin[2] = 0;
         tempMax[2] = 360 * util::toRad();
         auto robotModel = factory->createModel(m_robotFile);
-        m_robot = std::shared_ptr<RobotBase>(new TriangleRobot2D(robotModel, std::make_pair(tempMin, tempMax)));
+        m_robot = std::make_shared<TriangleRobot2D>(robotModel, std::make_pair(tempMin, tempMax));
     }
 
     if (m_robot)

@@ -44,10 +44,10 @@ bool testTriangleRobot() {
     creator.saveConfig("moduleConfigTriangle.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    //    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(30), creator.getGraph()));
-    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(40), creator.getGraph()));
-    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
-    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
+    //planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
+    planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(40), creator.getGraph());
+    //planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
+    //planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(50, 50, 0);
@@ -104,10 +104,10 @@ bool test2DSerialRobot() {
     creator.saveConfig("moduleConfigTriangle.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    //    planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(30), creator.getGraph()));
-    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(5), creator.getGraph()));
-    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
-    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
+    //planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
+    planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(5), creator.getGraph());
+    //planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
+    //planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
     auto startTime = std::chrono::system_clock::now();
     Vector5 start = util::Vecd(-55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad());
@@ -163,26 +163,26 @@ void testPointRobot() {
     creator.setCollisionType(CollisionType::Dim2);
     creator.setGraphSortCount(3000);
     creator.setEvaluatorType(EvaluatorType::Query);
-    creator.setEvaluatorProperties(50, 20);
+    creator.setEvaluatorProperties(50, 10);
     creator.setSamplerType(SamplerType::SamplerRandom);
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
-    creator.setSamplingType(SamplingType::Straight);
+    creator.setSamplingType(SamplingType::NearObstacle);
     creator.setSamplingProperties(10, 80);
     creator.saveConfig("moduleConfig.json");
     creator.loadConfig("moduleConfig.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    // planner = std::shared_ptr<EST<dim>>(new EST<dim>(environment, creator.getPlannerOptions(), creator.getGraph()));
-    //planner = std::shared_ptr<PRM<dim>>(new PRM<dim>(environment, creator.getPRMOptions(30), creator.getGraph()));
-    planner = std::shared_ptr<RRTStar<dim>>(new RRTStar<dim>(environment, creator.getRRTOptions(35), creator.getGraph()));
-    // planner = std::shared_ptr<RRT<dim>>(new RRT<dim>(environment, creator.getRRTOptions(50), creator.getGraph()));
-    // planner = std::shared_ptr<SRT<dim>>(new SRT<dim>(environment, creator.getSRTOptions(20), creator.getGraph()));
+    //planner = std::make_shared<EST<dim>>(environment, creator.getPlannerOptions(), creator.getGraph());
+    //planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(40), creator.getGraph());
+    planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(35), creator.getGraph());
+    //planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
+    //planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(10.0, 10.0);
     Vector2 goal(990.0, 990.0);
-    bool connected = planner->computePath(start, goal, 500, 1);
+    bool connected = planner->computePath(start, goal, 1000, 3);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
