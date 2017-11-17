@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Random Sampler class
+* \brief   RandomSampler generates random samples within the boundaries of the robot(s).
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
@@ -45,6 +45,7 @@ class SamplerRandom : public Sampler<dim> {
 *  \brief      Constructor of the RandomSampler class
 *  \author     Sascha Kaden
 *  \param[in]  Environment
+*  \param[in]  seed
 *  \date       2016-05-24
 */
 template <unsigned int dim>
@@ -57,6 +58,7 @@ SamplerRandom<dim>::SamplerRandom(const std::shared_ptr<Environment> &environmen
 *  \author     Sascha Kaden
 *  \param[in]  minimum boundary
 *  \param[in]  maximum boundary
+*  \param[in]  seed
 *  \date       2016-05-24
 */
 template <unsigned int dim>

@@ -20,6 +20,14 @@
 
 namespace ippp {
 
+/*!
+*  \brief      Compute the transformation of the robot from the configuration
+*  \author     Sascha Kaden
+*  \param[in]  dimension
+*  \param[in]  robot boundary
+*  \param[out] dimension of freedom types of the robot
+*  \date       2017-06-21
+*/
 MobileRobot::MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
                          const std::vector<DofType> &dofTypes)
     : RobotBase("MobileRobot", dim, RobotCategory::mobile, boundary, dofTypes) {
@@ -29,7 +37,7 @@ MobileRobot::MobileRobot(const unsigned int dim, const std::pair<VectorX, Vector
 *  \brief      Compute the transformation of the robot from the configuration
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] pair with rotation and translation
+*  \param[out] Transform
 *  \date       2017-06-21
 */
 Transform MobileRobot::getTransformation(const VectorX &config) const {

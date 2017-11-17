@@ -21,16 +21,16 @@
 namespace ippp {
 
 /*!
-*  \brief      Standard deconstructor of the ModuleBase
-*  \author     Sasch Kaden
+*  \brief      Standard destructor of the Identifier
+*  \author     Sascha Kaden
 *  \date       2016-05-30
 */
 Identifier::~Identifier() {
 }
 
 /*!
-*  \brief      Constructor of the ModuleBase
-*  \author     Sasch Kaden
+*  \brief      Constructor of the Identifier. The hash will be generated automatically.
+*  \author     Sascha Kaden
 *  \param[in]  module name
 *  \date       2016-05-30
 */
@@ -39,7 +39,7 @@ Identifier::Identifier(const std::string& name) : m_name(name), m_hash(m_hashFn(
 
 /*!
 *  \brief      Return name
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \param[out] name
 *  \date       2016-05-30
 */
@@ -48,10 +48,10 @@ const std::string& Identifier::getName() const {
 }
 
 /*!
-*  \brief      Return name
-*  \author     Sasch Kaden
-*  \param[out] name
-*  \date       2016-05-30
+*  \brief      Return the generated hash (from the name)
+*  \author     Sascha Kaden
+*  \param[out] hash of the name
+*  \date       2017-11-10
 */
 const size_t& Identifier::getHash() const {
     return m_hash;

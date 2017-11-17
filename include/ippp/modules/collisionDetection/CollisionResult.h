@@ -23,6 +23,12 @@
 
 namespace ippp {
 
+/*!
+* \brief   Result of all single collision requests.
+* \details The result will never be filled completely, it varies with the used CollisionDetection.
+* \author  Sascha Kaden
+* \date    2017-11-10
+*/
 struct CollisionResult {
     bool collision = false;
 

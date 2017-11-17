@@ -25,6 +25,11 @@
 
 namespace ippp {
 
+/*!
+* \brief   The Mesh class holds all information and data of a mesh, always used at the ModelContainer classes.
+* \author  Sascha Kaden
+* \date    2017-11-10
+*/
 class Mesh {
 public:
     std::vector<Vector3> vertices;

@@ -32,6 +32,8 @@ namespace ippp {
 
 /*!
 * \brief   Base class of all Sampler modules, return random samples.
+* \details The sampler used the std::minstd_rand0 generator for the generation of the samples. If no seed is passed, a random seed
+* will be generated.
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
@@ -63,7 +65,9 @@ class Sampler : public Identifier {
 /*!
 *  \brief      Constructor of the base Sampler class
 *  \author     Sascha Kaden
+*  \param[in]  name
 *  \param[in]  Environment
+*  \param[in]  seed
 *  \date       2016-05-24
 */
 template <unsigned int dim>
@@ -93,8 +97,10 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
 /*!
 *  \brief      Constructor of the base Sampler class
 *  \author     Sascha Kaden
+*  \param[in]  name
 *  \param[in]  minimum boundary
 *  \param[in]  maximum boundary
+*  \param[in]  seed
 *  \date       2016-05-24
 */
 template <unsigned int dim>

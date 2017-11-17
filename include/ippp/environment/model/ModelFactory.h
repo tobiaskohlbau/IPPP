@@ -30,6 +30,11 @@
 
 namespace ippp {
 
+/*!
+* \brief   Superclass of all models factories. It defines the general interface of the factories.
+* \author  Sascha Kaden
+* \date    2017-11-10
+*/
 class ModelFactory : public Identifier {
   public:
     ModelFactory(const std::string &name) : Identifier(name){};

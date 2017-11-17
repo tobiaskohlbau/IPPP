@@ -23,6 +23,11 @@
 
 namespace ippp {
 
+/*!
+* \brief   Request for the CollisionDetection class and single collision method requests.
+* \author  Sascha Kaden
+* \date    2017-11-10
+*/
 struct CollisionRequest {
     bool checkInterRobot = true;
     bool checkObstacle = true;

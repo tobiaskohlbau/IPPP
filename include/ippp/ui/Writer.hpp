@@ -35,7 +35,7 @@ namespace writer {
 *  \param[in]  vector of Vec
 *  \param[in]  filename
 *  \param[in]  scale
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 template <unsigned int dim>
@@ -54,7 +54,7 @@ void writeVecsToFile(const std::vector<Vector<dim>> &configs, const std::string 
 *  \param[in]  vector of Vec
 *  \param[in]  filename
 *  \param[in]  scale
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 template <unsigned int dim>
@@ -73,7 +73,7 @@ void appendVecsToFile(const std::vector<Vector<dim>> &configs, const std::string
 *  \brief      Write transformation vectors to defined file
 *  \param[in]  vector of vector of Vec
 *  \param[in]  filename
-*  \author     Sasch Kaden
+*  \author     Sascha Kaden
 *  \date       2016-11-14
 */
 static void writeTrafosToFile(const std::vector<std::vector<Vector6>> &configs, const std::string &filename) {

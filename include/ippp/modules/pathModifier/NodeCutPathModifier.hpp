@@ -31,7 +31,8 @@ namespace ippp {
 template <unsigned int dim>
 class NodeCutPathModifier : public PathModifier<dim> {
   public:
-    NodeCutPathModifier(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    NodeCutPathModifier(const std::shared_ptr<Environment> &environment,
+                        const std::shared_ptr<CollisionDetection<dim>> &collision,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
@@ -73,7 +74,6 @@ std::vector<std::shared_ptr<Node<dim>>> NodeCutPathModifier<dim>::smoothPath(
     while (i != std::end(smoothedNodes) - 2) {
         auto j = i + 2;
         while (j != std::end(smoothedNodes) - 1) {
-
             if (m_trajectory->checkTrajectory(*i, *j)) {
                 j = smoothedNodes.erase(j - 1);
                 ++j;

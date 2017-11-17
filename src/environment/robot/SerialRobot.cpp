@@ -41,7 +41,7 @@ SerialRobot::SerialRobot(const std::string &name, const unsigned int dim, const 
 *  \brief      Compute the transformation of the robot from the configuration
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] pair with rotation and translation
+*  \param[out] Transform
 *  \date       2017-06-21
 */
 Transform SerialRobot::getTransformation(const VectorX &config) const {
@@ -55,7 +55,7 @@ Transform SerialRobot::getTransformation(const VectorX &config) const {
 *  \param[in]  D-H a parameter
 *  \param[in]  D-H d parameter
 *  \param[in]  joint angle
-*  \param[out] transformation matrix
+*  \param[out] Transform
 *  \date       2016-07-07
 */
 Transform SerialRobot::getTrafo(double alpha, double a, double d, double q) const {
@@ -89,7 +89,7 @@ Transform SerialRobot::getTrafo(double alpha, double a, double d, double q) cons
 *  \brief      Get vector of Jaco transformation matrizes
 *  \author     Sascha Kaden
 *  \param[in]  real angles
-*  \param[out] vector of transformation matrizes
+*  \param[out] vector of Transforms
 *  \date       2016-10-22
 */
 std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
@@ -110,7 +110,7 @@ std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
 *  \brief      Compute tool center pose from transformation matrizes and the basis pose
 *  \author     Sascha Kaden
 *  \param[in]  transformation matrizes
-*  \param[out] TCP pose
+*  \param[out] TCP pose as Transform
 *  \date       2016-07-07
 */
 Transform SerialRobot::getTcp(const std::vector<Transform> &trafos) const {
@@ -120,8 +120,6 @@ Transform SerialRobot::getTcp(const std::vector<Transform> &trafos) const {
     for (size_t i = 1; i < 6; ++i)
         robotToTcp = robotToTcp * trafos[i];
 
-    // Transform basisToTcp = this->m_pose * robotToTcp;
-
     return this->m_pose * robotToTcp;
 }
 
@@ -129,7 +127,7 @@ Transform SerialRobot::getTcp(const std::vector<Transform> &trafos) const {
 *  \brief      Return MeshContainer from joint by index
 *  \author     Sascha Kaden
 *  \param[in]  joint index
-*  \param[out] MeshContainer
+*  \param[out] shared_ptr of the ModelContainer
 *  \date       2016-08-25
 */
 std::shared_ptr<ModelContainer> SerialRobot::getModelFromJoint(const size_t jointIndex) const {
@@ -144,7 +142,7 @@ std::shared_ptr<ModelContainer> SerialRobot::getModelFromJoint(const size_t join
 /*!
 *  \brief      Return MeshContainer vector from joints
 *  \author     Sascha Kaden
-*  \param[out] vector of MeshContainer
+*  \param[out] vector of ModelContainer
 *  \date       2016-08-25
 */
 std::vector<std::shared_ptr<ModelContainer>> SerialRobot::getJointModels() const {
@@ -154,18 +152,42 @@ std::vector<std::shared_ptr<ModelContainer>> SerialRobot::getJointModels() const
     return models;
 }
 
+/*!
+*  \brief      Set the base offset (rotation and translation) of the base model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[in]  configuration of the base offset
+*  \date       2017-11-17
+*/
 void SerialRobot::setBaseOffset(const Vector6 &baseOffset) {
     setBaseOffset(util::poseVecToTransform(baseOffset));
 }
 
+/*!
+*  \brief      Set the base offset (Transform) of the base model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[in]  Transform of the base offset
+*  \date       2017-11-17
+*/
 void SerialRobot::setBaseOffset(const Transform &baseOffset) {
     m_baseOffset = baseOffset;
 }
 
+/*!
+*  \brief      Return the base offset (Transform) of the base model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[out] Transform of the base offset
+*  \date       2017-11-17
+*/
 Transform SerialRobot::getBaseOffset() const {
     return m_baseOffset;
 }
 
+/*!
+*  \brief      Sets the joints of the serial robot, deletes at this step all old joints.
+*  \author     Sascha Kaden
+*  \param[in]  list of joints
+*  \date       2017-11-17
+*/
 void SerialRobot::setJoints(const std::vector<Joint> joints) {
     if (joints.empty())
         return;

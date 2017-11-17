@@ -25,7 +25,7 @@
 namespace ippp {
 
 /*!
-* \brief   Base class of all modules, at the time it is an identifier.
+* \brief   Identifier class to define names for all modules and generate a hash from the name to ensure a fast comparing.
 * \author  Sascha Kaden
 * \date    2016-06-02
 */

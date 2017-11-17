@@ -24,6 +24,11 @@
 namespace ippp {
 namespace data {
 
+/*!
+* \brief   General data container to save extra data inside a Node.
+* \author  Sascha Kaden
+* \date    2017-11-10
+*/
 class NodeContainer {
   public:
     std::vector<double> values;

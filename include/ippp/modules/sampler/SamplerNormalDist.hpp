@@ -42,7 +42,8 @@ class SamplerNormalDist : public Sampler<dim> {
 /*!
 *  \brief      Constructor of the class SamplerNormalDist
 *  \author     Sascha Kaden
-*  \param[in]  robot
+*  \param[in]  Environment
+*  \param[in]  seed
 *  \date       2016-05-24
 */
 template <unsigned int dim>

@@ -21,8 +21,8 @@
 namespace ippp {
 
 /*!
-*  \brief      Standard deconstructor of the RobotBase
-*  \author     Sasch Kaden
+*  \brief      Standard destructor of the RobotBase
+*  \author     Sascha Kaden
 *  \date       2016-12-23
 */
 RobotBase::~RobotBase() {
@@ -60,7 +60,7 @@ RobotBase::RobotBase(const std::string &name, const unsigned int dim, RobotCateg
 void RobotBase::setPose(const Vector6 &pose) {
     if (util::empty<6>(pose))
         Logging::warning("Set empty pose", this);
-    
+
     m_pose = util::poseVecToTransform(pose);
 }
 
@@ -111,7 +111,7 @@ std::shared_ptr<ModelContainer> RobotBase::getBaseModel() const {
 /*!
 *  \brief      Get minimum boundary of the robot
 *  \author     Sascha Kaden
-*  \param[out] minimum Boudaries
+*  \param[out] minimum Boundaries
 *  \date       2016-07-15
 */
 VectorX RobotBase::getMinBoundary() const {
@@ -121,7 +121,7 @@ VectorX RobotBase::getMinBoundary() const {
 /*!
 *  \brief      Get maximum boundary of the robot
 *  \author     Sascha Kaden
-*  \param[out] maximum Boudaries
+*  \param[out] maximum Boundaries
 *  \date       2016-07-15
 */
 VectorX RobotBase::getMaxBoundary() const {

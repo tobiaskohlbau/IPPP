@@ -57,6 +57,7 @@ class GridSampler : public Sampler<dim> {
 *  \brief      Constructor of the GridSampler class
 *  \author     Sascha Kaden
 *  \param[in]  Environment
+*  \param[in]  resolution of the grid
 *  \date       2017-11-13
 */
 template <unsigned int dim>

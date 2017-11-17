@@ -27,7 +27,7 @@
 namespace ippp {
 
 /*!
-* \brief   Base class for all robot models
+* \brief   Base class for all models
 * \author  Sascha Kaden
 * \date    2017-02-19
 */

@@ -20,10 +20,10 @@
 #define PATHMODIFIER_HPP
 
 #include <ippp/Identifier.h>
+#include <ippp/environment/Environment.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
 #include <ippp/types.h>
-#include <ippp/environment/Environment.h>
 
 namespace ippp {
 

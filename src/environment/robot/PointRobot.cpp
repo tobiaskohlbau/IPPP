@@ -40,7 +40,7 @@ PointRobot::PointRobot(const std::pair<Vector2, Vector2> &boundary)
 *  \brief      Compute the transformation of the robot from the configuration
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] pair with rotation and translation
+*  \param[out] Transform
 *  \date       2017-06-21
 */
 Transform PointRobot::getTransformation(const VectorX &config) const {

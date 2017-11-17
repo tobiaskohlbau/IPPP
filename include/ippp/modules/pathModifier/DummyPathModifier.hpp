@@ -57,7 +57,7 @@ DummyPathModifier<dim>::DummyPathModifier(const std::shared_ptr<Environment> &en
 /*!
 *  \brief         Dummy function, it returns just the passed node path.
 *  \author        Sascha Kaden
-*  \param[in,out] list of path nodes
+*  \param[in,out] list of path nodes (unchanged)
 *  \date          2017-05-23
 */
 template <unsigned int dim>

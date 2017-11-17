@@ -43,6 +43,7 @@ class SamplerUniform : public Sampler<dim> {
 *  \brief      Constructor of the class SamplerUniform
 *  \author     Sascha Kaden
 *  \param[in]  Environment
+*  \param[in]  seed
 *  \date       2016-05-24
 */
 template <unsigned int dim>
@@ -59,6 +60,7 @@ SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<Environment> &environm
 *  \author     Sascha Kaden
 *  \param[in]  minimum boundary
 *  \param[in]  maximum boundary
+*  \param[in]  seed
 *  \date       2016-05-24
 */
 template <unsigned int dim>
@@ -79,9 +81,9 @@ SamplerUniform<dim>::SamplerUniform(const Vector<dim> &minBoundary, const Vector
 template <unsigned int dim>
 Vector<dim> SamplerUniform<dim>::getSample() {
     Vector<dim> config;
-    for (unsigned int i = 0; i < dim; ++i) {
+    for (unsigned int i = 0; i < dim; ++i)
         config[i] = m_distUniform[i](this->m_generator);
-    }
+
     return config;
 }
 

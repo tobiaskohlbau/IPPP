@@ -25,7 +25,9 @@ namespace ippp {
 /*!
 *  \brief      Standard constructor of the 2D TriangleRobot
 *  \author     Sascha Kaden
-*  \date       2016-11-15
+*  \param[in]  ModelContainer with triangle model
+*  \param[in]  robot boundary (min, max)
+*  \date       2017-06-21
 */
 TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel,
                                  const std::pair<Vector3, Vector3> &boundary)
@@ -38,7 +40,7 @@ TriangleRobot2D::TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangle
 *  \brief      Compute the transformation of the robot from the configuration
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] pair with rotation and translation
+*  \param[out] Transform
 *  \date       2017-06-21
 */
 Transform TriangleRobot2D::getTransformation(const VectorX &config) const {

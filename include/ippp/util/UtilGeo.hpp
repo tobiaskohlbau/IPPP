@@ -156,30 +156,28 @@ static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3
 *  \details    The new AABB has a larger size as the original and the AABB is no more tight!
 *  \author     Sascha Kaden
 *  \param[in]  original AABB
-*  \param[in]  pair with rotation and transformation
-*  \param[out] transformed aabb
+*  \param[in]  Transform
+*  \param[out] transformed AABB
 *  \date       2017-06-21
 */
-static AABB transformAABB(const AABB &a, const Transform &T) {
-    // trafo is pair with rotation and translation
-    Vector3 min = a.min();
-    Vector3 max = a.max();
+static AABB transformAABB(const AABB &aabb, const Transform &T) {
+    Vector3 min = aabb.min();
+    Vector3 max = aabb.max();
     Vector4 min4  = util::append<3>(min, 1);
     Vector4 max4  = util::append<3>(max, 1);
     min4 = T * min4;
     max4 = T * max4;
-        return AABB(Vector3(min4[0], min4[1], min4[2]), Vector3(max4[0], max4[1], max4[2]));
+    return AABB(Vector3(min4[0], min4[1], min4[2]), Vector3(max4[0], max4[1], max4[2]));
 
-    Vector3 center(T.translation());
-    Vector3 radius = Vector3::Zero(3, 1);
-    for (size_t i = 0; i < 3; i++) {
-        for (size_t j = 0; j < 3; j++) {
-            center[i] += T(i, j) * a.center()[j];
-            radius[i] += std::abs(T(i, j)) * a.diagonal()[j] / 2;
-        }
-    }
-    // return AABB by new construction min and max point
-    return AABB(center - radius, center + radius);
+//    Vector3 center(T.translation());
+//    Vector3 radius = Vector3::Zero(3, 1);
+//    for (size_t i = 0; i < 3; i++) {
+//        for (size_t j = 0; j < 3; j++) {
+//            center[i] += T(i, j) * aabb.center()[j];
+//            radius[i] += std::abs(T(i, j)) * aabb.diagonal()[j] / 2;
+//        }
+//    }
+//    return AABB(center - radius, center + radius);
 }
 
 /*!
