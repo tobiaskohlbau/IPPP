@@ -79,4 +79,7 @@ target_include_directories (${PROJECT_NAME} PUBLIC
         ${NLOHMANN_JSON_INCLUDE_DIR}
         ${PQP_INCLUDE_DIR})
 
+INSTALL(TARGETS ${PROJECT_NAME}
+        DESTINATION "lib")
 install (DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
+install (FILES ${NLOHMANN_JSON_INCLUDE_DIR}/json.hpp DESTINATION include)
