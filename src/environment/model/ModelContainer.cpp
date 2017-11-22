@@ -26,8 +26,7 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2017-02-19
 */
-ModelContainer::~ModelContainer() {
-}
+ModelContainer::~ModelContainer() = default;
 
 /*!
 *  \brief      Standard constructor of ModelContainer

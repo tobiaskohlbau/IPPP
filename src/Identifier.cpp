@@ -25,8 +25,7 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-05-30
 */
-Identifier::~Identifier() {
-}
+Identifier::~Identifier() = default;
 
 /*!
 *  \brief      Constructor of the Identifier. The hash will be generated automatically.

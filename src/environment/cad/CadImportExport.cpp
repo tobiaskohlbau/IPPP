@@ -128,12 +128,11 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std
             aiVector3D vertex = aimesh->mVertices[j];
             if (useTrafo)
                 aiTransformVecByMatrix4(&vertex, trafo);
-            mesh.vertices.push_back(Vector3(vertex.x, vertex.y, vertex.z));
+            mesh.vertices.emplace_back(vertex.x, vertex.y, vertex.z);
         }
         for (size_t j = 0; j < aimesh->mNumFaces; ++j) {
             if (aimesh->mFaces[j].mNumIndices > 2) {
-                mesh.faces.push_back(
-                    Vector3i(aimesh->mFaces[j].mIndices[0], aimesh->mFaces[j].mIndices[1], aimesh->mFaces[j].mIndices[2]));
+                mesh.faces.emplace_back(aimesh->mFaces[j].mIndices[0], aimesh->mFaces[j].mIndices[1], aimesh->mFaces[j].mIndices[2]);
             } else {
                 Logging::warning("Face array is to short", "CadProcessing");
             }
