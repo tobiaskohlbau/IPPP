@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Static class for the computation of distance costs from Edge
+* \brief   WeightedL1Metric computes the distance of nodes/configurations with the L1 metric and a weighted vector.
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
@@ -56,7 +56,7 @@ WeightedL1Metric<dim>::WeightedL1Metric() : DistanceMetric<dim>("weightVecL1 met
 /*!
 *  \brief      Constructor of the class WeightVecL1Metric
 *  \author     Sascha Kaden
-*  \param[in]  weightVec
+*  \param[in]  vector of the weights
 *  \date       2017-02-19
 */
 template <unsigned int dim>
@@ -67,8 +67,8 @@ WeightedL1Metric<dim>::WeightedL1Metric(const Vector<dim> &weightVec) : Distance
 /*!
 *  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
+*  \param[in]  source vector
+*  \param[in]  target vector
 *  \param[out] distance cost
 *  \date       2017-01-02
 */
@@ -80,9 +80,9 @@ double WeightedL1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<d
 /*!
 *  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] squared distance cost
+*  \param[in]  source vector
+*  \param[in]  target vector
+*  \param[out] distance cost
 *  \date       2017-10-08
 */
 template <unsigned int dim>
