@@ -41,8 +41,8 @@ void simpleRRT() {
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner.getGraphNodes();
     std::vector<Transform> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
-    for (int i = 0; i < nodes.size(); ++i)
-        graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(nodes[i]->getValues()));
+    for (auto & node : nodes)
+        graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(node->getValues()));
     //writer::writeVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     if (connected) {
@@ -110,14 +110,14 @@ void treeConnection() {
     std::vector<std::shared_ptr<Node<dim>>> nodes = plannerInitNode.getGraphNodes();
     std::vector<Transform> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
-    for (int i = 0; i < nodes.size(); ++i)
-        graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(nodes[i]->getValues()));
+    for (auto & node : nodes)
+        graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(node->getValues()));
     //writer::writeVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     nodes = plannerGoalNode.getGraphNodes();
     std::cout << "Goal Graph has: " << nodes.size() << "nodes" << std::endl;
-    for (int i = 0; i < nodes.size(); ++i)
-        graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(nodes[i]->getValues()));
+    for (auto & node : nodes)
+        graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(node->getValues()));
     //writer::appendVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     if (connected) {

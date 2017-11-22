@@ -27,8 +27,7 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-10-25
 */
-Joint::Joint() {
-}
+Joint::Joint() = default;
 
 /*!
 *  \brief      Contructor of the Joint class

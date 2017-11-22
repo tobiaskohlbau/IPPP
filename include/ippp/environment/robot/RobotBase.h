@@ -44,7 +44,7 @@ class RobotBase : public Identifier {
 
   protected:
     RobotBase(const std::string &name, const unsigned int dim, const RobotCategory robotType, const std::pair<VectorX, VectorX> &boundary,
-              const std::vector<DofType> &dofTypes);
+              std::vector<DofType> dofTypes);
 
   public:
     void setPose(const Vector6 &pose);

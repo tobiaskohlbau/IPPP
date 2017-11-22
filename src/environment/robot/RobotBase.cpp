@@ -18,6 +18,8 @@
 
 #include <ippp/environment/robot/RobotBase.h>
 
+#include <utility>
+
 namespace ippp {
 
 /*!
@@ -25,8 +27,7 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-12-23
 */
-RobotBase::~RobotBase() {
-}
+RobotBase::~RobotBase() = default;
 
 /*!
 *  \brief      Constructor of the class RobotBase
@@ -38,13 +39,13 @@ RobotBase::~RobotBase() {
 *  \date       2016-06-30
 */
 RobotBase::RobotBase(const std::string &name, const unsigned int dim, RobotCategory robotType,
-                     const std::pair<VectorX, VectorX> &boundary, const std::vector<DofType> &dofTypes)
+                     const std::pair<VectorX, VectorX> &boundary, std::vector<DofType> dofTypes)
     : Identifier(name),
       m_dim(dim),
       m_robotType(robotType),
       m_minBoundary(boundary.first),
       m_maxBoundary(boundary.second),
-      m_dofTypes(dofTypes) {
+      m_dofTypes(std::move(dofTypes)) {
     if (dim != m_dofTypes.size())
         Logging::error("DoF Types have not the size of the robot dimension", this);
     assert(dim == m_dofTypes.size());

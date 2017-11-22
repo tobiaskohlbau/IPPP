@@ -82,8 +82,7 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
         addRobot(robot);
 }
 
-Environment::~Environment() {
-}
+Environment::~Environment() = default;
 
 /*!
 *  \brief      Add obstacle to the Environment

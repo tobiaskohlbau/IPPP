@@ -234,7 +234,7 @@ void SerialRobot::saveMeshConfig(const std::vector<Transform> As) {
         for (auto vertice : this->m_baseModel->m_mesh.vertices) {
             Vector4 temp(util::append<3>(vertice, (double)1));
             temp = this->m_pose * temp;
-            verts.push_back(Vector3(temp(0), temp(1), temp(2)));
+            verts.emplace_back(temp(0), temp(1), temp(2));
         }
         cad::exportCad(cad::ExportFormat::OBJ, "base", verts, this->m_baseModel->m_mesh.faces);
     }
@@ -245,7 +245,7 @@ void SerialRobot::saveMeshConfig(const std::vector<Transform> As) {
         for (auto vertex : getModelFromJoint(i)->m_mesh.vertices) {
             Vector4 temp(util::append<3>(vertex, (double)1));
             temp = this->m_pose * temp;
-            verts.push_back(Vector3(temp(0), temp(1), temp(2)));
+            verts.emplace_back(temp(0), temp(1), temp(2));
         }
         cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), verts, getModelFromJoint(i)->m_mesh.faces);
         // getModelFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
