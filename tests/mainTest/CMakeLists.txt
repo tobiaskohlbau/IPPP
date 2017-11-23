@@ -16,5 +16,5 @@
 #
 #-------------------------------------------------------------------------//
 
-ADD_IPPP_TEST(clearWorkspace "main")
+add_ippp_test(clearWorkspace "main")
 #ADD_IPPP_TEST(obstacleWorkspace "main")

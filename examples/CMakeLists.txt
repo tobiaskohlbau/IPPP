@@ -16,43 +16,25 @@
 #
 #-------------------------------------------------------------------------//
 
-SET(LIBRARIES
-        IPPP
-        ${ASSIMP_LIBRARIES}
-        ${CCD_LIBRARIES}
-        ${FCL_LIBRARIES}
-        ${PQP_LIBRARIES})
+find_package(gflags REQUIRED)
 
-MACRO(ADD_IPPP_EXAMPLE name source ADDITIONAL_LIBRARIES)
-    ADD_EXECUTABLE(${name} ${source})
-	set_property(TARGET ${name} PROPERTY CXX_STANDARD 11)
-    TARGET_LINK_LIBRARIES(${name} ${LIBRARIES} ${ADDITIONAL_LIBRARIES})
-    TARGET_INCLUDE_DIRECTORIES(${name} PUBLIC
-        ${CMAKE_SOURCE_DIR}/examples
-        ${CMAKE_CURRENT_SOURCE_DIR})
-    add_custom_command(TARGET ${name} POST_BUILD
-         COMMAND ${CMAKE_COMMAND} -E copy_directory
-             ${CMAKE_SOURCE_DIR}/examples/assets
-             ${CMAKE_CURRENT_BINARY_DIR}/assets/)
-ENDMACRO()
+macro(ADD_IPPP_EXAMPLE name source)
+    add_executable(${name} ${source})
+    target_link_libraries(${name}
+        PRIVATE
+            IPPP
+            gflags
+            ${ARGN})
+endmacro()
 
-# from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
-MACRO(SUBDIRLIST result curdir)
-    FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
-    SET(dirlist "")
-    FOREACH(child ${children})
-        IF(IS_DIRECTORY ${curdir}/${child})
-            SET(dirlist ${dirlist} ${child})
-        ENDIF()
-    ENDFOREACH()
-    SET(${result} ${dirlist})
-ENDMACRO()
+add_subdirectory(ui)
 
-SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
+subdirlist(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 list(REMOVE_ITEM SUBDIRS "ui")
 list(REMOVE_ITEM SUBDIRS "assets")
+list(REMOVE_ITEM SUBDIRS "gui2D")
 
-FOREACH(subdir ${SUBDIRS})
-    ADD_SUBDIRECTORY(${subdir})
-ENDFOREACH()
+foreach(subdir ${SUBDIRS})
+    add_subdirectory(${subdir})
+endforeach()
 
