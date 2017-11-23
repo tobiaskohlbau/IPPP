@@ -16,70 +16,132 @@
 #
 #-------------------------------------------------------------------------//
 
-cmake_minimum_required (VERSION 3.2.2)
-project (IPPP)
-set (CMAKE_AUTOMOC ON)
+cmake_minimum_required(VERSION 3.2.2)
+project(IPPP)
 
-option (BUILD_EXAMPLES "Build examples" OFF)
-option (BUILD_TESTS "Build tests" ON)
-option (BUILD_BENCHMARK "Build optional benchmark classes" OFF)
+option(BUILD_EXAMPLES "Build examples" OFF)
+option(BUILD_TESTS "Build tests" ON)
+option(BUILD_BENCHMARK "Build optional benchmark classes" OFF)
+
+# macros
+
+# from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
+macro(SUBDIRLIST result curdir)
+    file(GLOB children RELATIVE ${curdir} ${curdir}/*)
+    set(dirlist "")
+    foreach(child ${children})
+        if(IS_DIRECTORY ${curdir}/${child})
+            set(dirlist ${dirlist} ${child})
+        endif()
+    endforeach()
+    set(${result} ${dirlist})
+endmacro()
 
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
-if (UNIX)
-    list (APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
-    find_package (assimp REQUIRED)
-    find_package (ccd REQUIRED)
- else (UNIX)
-    find_package (assimp CONFIG REQUIRED)
-    find_package (ccd CONFIG REQUIRED)
-endif ()
-find_package (fcl REQUIRED)
-find_package (Eigen3 CONFIG REQUIRED)
-find_package (PQP REQUIRED)
-find_package (Threads REQUIRED)
-set (NLOHMANN_JSON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/third_party/nlohmann-json/src/)
+list(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
+find_package(assimp REQUIRED)
+find_package(fcl REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(PQP REQUIRED)
+find_package(Threads REQUIRED)
 
-set(LIBRARIES
-        ${ASSIMP_LIBRARIES}
-        ${CCD_LIBRARIES}
-        ${FCL_LIBRARIES}
-        ${PQP_LIBRARIES})
+add_library(json::json INTERFACE IMPORTED)
+set_target_properties(json::json PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/third_party/nlohmann-json/src")
 
-if (UNIX)
-    find_package (Threads REQUIRED)
-    set (append ${CMAKE_CXX_FLAGS} "-pthread")
-    list (APPEND LIBRARIES pthread)
-endif ()
+add_library(gsl::gsl INTERFACE IMPORTED)
+set_target_properties(gsl::gsl PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/third_party/GSL/include")
 
-# source files
-ADD_SUBDIRECTORY (include/ippp)
-ADD_SUBDIRECTORY (src)
-
-# options
-IF (${BUILD_EXAMPLES})
-    ADD_SUBDIRECTORY (examples)
-ENDIF ()
-IF (${BUILD_TESTS})
-    enable_testing()
-    ADD_SUBDIRECTORY (tests)
-ENDIF ()
+# copy assets
+execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
+             ${CMAKE_SOURCE_DIR}/assets
+             ${CMAKE_CURRENT_BINARY_DIR}/assets/)
 
 # generate library
-add_library (${PROJECT_NAME} ${SRCS})
-set_property (TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-target_compile_definitions(${PROJECT_NAME} PUBLIC -D_USE_MATH_DEFINES)
-target_link_libraries (${PROJECT_NAME} ${LIBRARIES})
-target_include_directories (${PROJECT_NAME} PUBLIC
-        ${CMAKE_SOURCE_DIR}/include
-        ${ASSIMP_INCLUDE_DIR}
-        ${CCD_INCLUDE_DIRS}
-        ${EIGEN3_INCLUDE_DIRS}
-        ${FCL_INCLUDE_DIRS}
-        ${NLOHMANN_JSON_INCLUDE_DIR}
-        ${PQP_INCLUDE_DIR})
+add_library(${PROJECT_NAME}
+    src/Identifier.cpp
+    src/util/Logging.cpp
+    src/statistic/Statistics.cpp
+    src/statistic/StatisticCollector.cpp
+    src/statistic/StatisticCountCollector.cpp
+    src/statistic/StatisticContainer.cpp
+    src/statistic/StatisticSizeTContainer.cpp
 
-INSTALL(TARGETS ${PROJECT_NAME}
-        DESTINATION "lib")
-install (DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
-install (FILES ${NLOHMANN_JSON_INCLUDE_DIR}/json.hpp DESTINATION include)
+    src/environment/cad/CadDrawing.cpp
+    src/environment/cad/CadImportExport.cpp
+    src/environment/cad/CadProcessing.cpp
+    src/environment/Environment.cpp
+    src/environment/robot/Jaco.cpp
+    src/environment/robot/Joint.cpp
+    src/environment/robot/KukaKR5.cpp
+    src/environment/robot/MobileRobot.cpp
+    src/environment/robot/PointRobot.cpp
+    src/environment/robot/RobotBase.cpp
+    src/environment/robot/SerialRobot.cpp
+    src/environment/robot/SerialRobot2D.cpp
+    src/environment/robot/TriangleRobot2D.cpp
+    src/environment/model/ModelContainer.cpp
+    src/environment/model/ModelFactoryPqp.cpp
+    src/environment/model/ModelFactoryTriangle2D.cpp
+    src/environment/model/ModelFactoryFcl.cpp
+    src/environment/model/ModelFcl.cpp
+    src/environment/model/ModelPqp.cpp
+    src/environment/model/ModelTriangle2D.cpp
+    src/environment/model/PointModel.cpp
+
+    src/ui/Configurator.cpp
+    src/ui/EnvironmentConfigurator.cpp
+)
+
+target_compile_features(${PROJECT_NAME}
+    PUBLIC
+        cxx_auto_type
+        cxx_defaulted_functions
+        cxx_lambdas
+        cxx_nullptr
+        cxx_nullptr
+        cxx_override
+        cxx_rvalue_references
+        cxx_right_angle_brackets)
+
+target_compile_definitions(${PROJECT_NAME}
+    PUBLIC
+        _USE_MATH_DEFINES)
+
+target_link_libraries(${PROJECT_NAME} 
+    PUBLIC
+        Eigen3::Eigen
+        json::json
+        assimp::assimp
+        fcl::fcl
+    PRIVATE
+        pqp::pqp)
+
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-pthread" pthread)
+if(pthread)
+    find_package(Threads REQUIRED)
+    target_compile_options(${PROJECT_NAME}
+        PRIVATE
+            "-pthread")
+    target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+            pthread)
+endif()
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${CMAKE_SOURCE_DIR}/include)
+
+# options
+if(${BUILD_EXAMPLES})
+    add_subdirectory(examples)
+endif()
+if(${BUILD_TESTS})
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
+install(TARGETS ${PROJECT_NAME} DESTINATION "lib")
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include)
+install(FILES ${NLOHMANN_JSON_INCLUDE_DIR}/json.hpp DESTINATION include)

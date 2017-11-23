@@ -8,7 +8,7 @@
 #include <ippp/Planner.h>
 #include <ippp/UI.h>
 
-#include <ui/BenchmarkReader.h>
+#include <BenchmarkReader.h>
 
 using namespace ippp;
 

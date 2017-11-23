@@ -16,8 +16,8 @@
 #
 #-------------------------------------------------------------------------//
 
-SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
+subdirlist(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
-FOREACH(subdir ${SUBDIRS})
-    ADD_SUBDIRECTORY(${subdir})
-ENDFOREACH()
+foreach(subdir ${SUBDIRS})
+    add_subdirectory(${subdir})
+endforeach()

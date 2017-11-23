@@ -3,7 +3,7 @@
 
 #include <QFileDialog>
 
-#include <ui/Drawing2D.hpp>
+#include <Drawing2D.hpp>
 
 using namespace ippp;
 
@@ -56,15 +56,15 @@ void MainWindow::computePath() {
         } else if (m_metricLabel == 2) {
             metric = std::make_shared<ippp::InfMetric<dim>>(ippp::InfMetric<dim>());
         } else if (m_metricLabel == 3) {
-            std::shared_ptr<WeightVecL2Metric<dim>> tempMetric(new ippp::WeightVecL2Metric<dim>());
+            std::shared_ptr<WeightedL2Metric<dim>> tempMetric(new ippp::WeightedL2Metric<dim>());
             tempMetric->setWeightVec(m_weightVec);
             metric = tempMetric;
         } else if (m_metricLabel == 4) {
-            std::shared_ptr<WeightVecL1Metric<dim>> tempMetric(new ippp::WeightVecL1Metric<dim>());
+            std::shared_ptr<WeightedL1Metric<dim>> tempMetric(new ippp::WeightedL1Metric<dim>());
             tempMetric->setWeightVec(m_weightVec);
             metric = tempMetric;
         } else if (m_metricLabel == 5) {
-            std::shared_ptr<WeightVecInfMetric<dim>> tempMetric(new ippp::WeightVecInfMetric<dim>());
+            std::shared_ptr<WeightedInfMetric<dim>> tempMetric(new ippp::WeightedInfMetric<dim>());
             tempMetric->setWeightVec(m_weightVec);
             metric = tempMetric;
         }
@@ -118,15 +118,15 @@ void MainWindow::computePath() {
         } else if (m_metricLabel == 2) {
             metric = std::make_shared<ippp::InfMetric<dim>>(ippp::InfMetric<dim>());
         } else if (m_metricLabel == 3) {
-            std::shared_ptr<WeightVecL2Metric<dim>> tempMetric(new ippp::WeightVecL2Metric<dim>());
+            std::shared_ptr<WeightedL2Metric<dim>> tempMetric(new ippp::WeightedL2Metric<dim>());
             tempMetric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
             metric = tempMetric;
         } else if (m_metricLabel == 4) {
-            std::shared_ptr<WeightVecL1Metric<dim>> tempMetric(new ippp::WeightVecL1Metric<dim>());
+            std::shared_ptr<WeightedL1Metric<dim>> tempMetric(new ippp::WeightedL1Metric<dim>());
             tempMetric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
             metric = tempMetric;
         } else if (m_metricLabel == 5) {
-            std::shared_ptr<WeightVecInfMetric<2>> tempMetric(new ippp::WeightVecInfMetric<2>());
+            std::shared_ptr<WeightedInfMetric<2>> tempMetric(new ippp::WeightedInfMetric<2>());
             tempMetric->setWeightVec(Vector2(m_weightVecX, m_weightVecY));
             metric = tempMetric;
         }

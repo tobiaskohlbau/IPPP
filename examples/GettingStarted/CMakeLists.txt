@@ -16,7 +16,4 @@
 #
 #-------------------------------------------------------------------------//
 
-set(source
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
-
-ADD_IPPP_EXAMPLE(GettingStarted "${source}" "${ADDITIONAL_LIBRARIES}")
+add_ippp_example(GettingStarted main.cpp)

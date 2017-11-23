@@ -75,3 +75,22 @@ else(WIN32)
     endif (ASSIMP_FOUND)
 
 endif(WIN32)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(ASSIMP
+        FAIL_MESSAGE  DEFAULT_MSG
+        REQUIRED_VARS ASSIMP_INCLUDE_DIR ASSIMP_LIBRARIES)
+
+if(ASSIMP_FOUND)
+    add_library(assimp::assimp UNKNOWN IMPORTED)
+    set_target_properties(assimp::assimp PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${ASSIMP_INCLUDE_DIR}")
+    if(EXISTS "${ASSIMP_LIBRARY}")
+        set_target_properties(assimp::assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_LIBRARY}")
+    endif()
+    if(EXISTS "${ASSIMP_LIBRARY_DEBUG}")
+        set_target_properties(assimp::assimp PROPERTIES IMPORTED_LOCATION_DEBUG "${ASSIMP_LIBRARY_DEBUG}")
+    endif()
+    if(EXISTS "${ASSIMP_LIBRARY_RELEASE}")
+        set_target_properties(assimp::assimp PROPERTIES IMPORTED_LOCATION_RELEASE "${ASSIMP_LIBRARY_RELEASE}")
+    endif()
+endif()    

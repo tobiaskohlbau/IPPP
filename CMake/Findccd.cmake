@@ -18,19 +18,30 @@ find_package(PkgConfig QUIET)
 # Check to see if pkgconfig is installed.
 pkg_check_modules(PC_CCD ccd QUIET)
 
-find_path(CCD_INCLUDE_DIRS
+find_path(CCD_INCLUDE_DIR
         NAMES ccd/ccd.h
         HINTS ${PC_CCD_INCLUDEDIR}
-        PATHS "${CMAKE_INSTALL_PREFIX}/include" "${CCD_ROOT_DIR}/include"
+        PATHS ${CCD_ROOT_DIR}/include
         PATH_SUFFIXES
         include)
 
-find_library(CCD_LIBRARIES
+find_library(CCD_LIBRARY_DEBUG
         NAMES ccd
         HINTS ${PC_CCD_LIBDIR}
-        PATHS "${CMAKE_INSTALL_PREFIX}" "${CCD_ROOT_DIR}"
+        PATHS ${CCD_ROOT_DIR}
+        PATH_SUFFIXES
+        debug/lib)
+
+find_library(CCD_LIBRARY_RELEASE
+        NAMES ccd
+        HINTS ${PC_CCD_LIBDIR}
+        PATHS ${CCD_ROOT_DIR}
         PATH_SUFFIXES
         lib)
+
+set(CCD_LIBRARY
+        debug ${FCL_LIBRARY_DEBUG}
+        optimized ${CCD_LIBRARY_RELEASE})
 
 # Version
 set(CCD_VERSION ${PC_CCD_VERSION})
@@ -39,5 +50,19 @@ set(CCD_VERSION ${PC_CCD_VERSION})
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(CCD
         FAIL_MESSAGE  DEFAULT_MSG
-        REQUIRED_VARS CCD_INCLUDE_DIRS CCD_LIBRARIES
+        REQUIRED_VARS CCD_INCLUDE_DIR CCD_LIBRARY
         VERSION_VAR CCD_VERSION)
+
+if(CCD_FOUND)
+    add_library(ccd::ccd UNKNOWN IMPORTED ${CCD_LIBRARY})
+    set_target_properties(ccd::ccd PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CCD_INCLUDE_DIR}")
+    if(EXISTS "${CCD_LIBRARY}")
+        set_target_properties(ccd::ccd PROPERTIES IMPORTED_LOCATION "${CCD_LIBRARY}")
+    endif()
+    if(EXISTS "${CCD_LIBRARY_DEBUG}")
+        set_target_properties(ccd::ccd PROPERTIES IMPORTED_LOCATION_DEBUG "${CCD_LIBRARY_DEBUG}")
+    endif()
+    if(EXISTS "${CCD_LIBRARY_RELEASE}")
+        set_target_properties(ccd::ccd PROPERTIES IMPORTED_LOCATION_RELEASE "${CCD_LIBRARY_RELEASE}")
+    endif()
+endif()    

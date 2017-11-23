@@ -12,10 +12,16 @@ find_library(PQP_LIBRARY PQP
     PATH_SUFFIXES
     lib)
 
-find_package_handle_standard_args(PQP DEFAULT_MSG
-    PQP_INCLUDE_DIR PQP_LIBRARY)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(PQP
+        FAIL_MESSAGE  DEFAULT_MSG
+        REQUIRED_VARS PQP_INCLUDE_DIR PQP_LIBRARY
+        VERSION_VAR FCL_VERSION)
 
 if(PQP_FOUND)
-    set(PQP ${PQP_INCLUDE_DIR})
-    set(PQP_LIBRARIES ${PQP_LIBRARY})
+    add_library(pqp::pqp UNKNOWN IMPORTED ${PQP_LIBRARY})
+    set_target_properties(pqp::pqp PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${PQP_INCLUDE_DIR}")
+    if(EXISTS "${PQP_LIBRARY}")
+        set_target_properties(pqp::pqp PROPERTIES IMPORTED_LOCATION "${PQP_LIBRARY}")
+    endif()
 endif()    

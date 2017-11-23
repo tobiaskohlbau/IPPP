@@ -12,6 +12,7 @@
 # FCL_VERSION
 
 find_package(PkgConfig QUIET)
+find_package(ccd REQUIRED)
 
 set(FCL_ROOT_DIR "../IPPP_third_party/" CACHE PATH "FCL root dir")
 
@@ -19,31 +20,31 @@ set(FCL_ROOT_DIR "../IPPP_third_party/" CACHE PATH "FCL root dir")
 pkg_check_modules(PC_FCL FCL)
 
 # Include directories
-find_path(FCL_INCLUDE_DIRS
+find_path(FCL_INCLUDE_DIR
         NAMES fcl/collision.h
         HINTS ${PC_FCL_INCLUDEDIR}
-        PATHS "${CMAKE_INSTALL_PREFIX}/include" "${FCL_ROOT_DIR}/include"
+        PATHS "${FCL_ROOT_DIR}/include"
         PATH_SUFFIXES
         include)
 
 # Libraries
-find_library(FCL_LIBRARY_RELEASE
-        NAMES fcl
-        HINTS ${PC_FCL_LIBDIR}
-        PATHS "${CMAKE_INSTALL_PREFIX}" "${FCL_ROOT_DIR}"
-        PATH_SUFFIXES
-        lib)
-
 find_library(FCL_LIBRARY_DEBUG
         NAMES fcl
         HINTS ${PC_FCL_LIBDIR}
-        PATHS "${CMAKE_INSTALL_PREFIX}" "${FCL_ROOT_DIR}"
+        PATHS ${FCL_ROOT_DIR}
         PATH_SUFFIXES
         debug/lib)
 
-set(FCL_LIBRARIES
-        optimized ${FCL_LIBRARY_RELEASE}
-        debug ${FCL_LIBRARY_DEBUG})
+find_library(FCL_LIBRARY_RELEASE
+        NAMES fcl
+        HINTS ${PC_FCL_LIBDIR}
+        PATHS ${FCL_ROOT_DIR}
+        PATH_SUFFIXES
+        lib)
+
+set(FCL_LIBRARY
+        debug ${FCL_LIBRARY_DEBUG}
+        optimized ${FCL_LIBRARY_RELEASE})
 
 # Version
 set(FCL_VERSION ${PC_FCL_VERSION})
@@ -52,5 +53,21 @@ set(FCL_VERSION ${PC_FCL_VERSION})
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(FCL
         FAIL_MESSAGE  DEFAULT_MSG
-        REQUIRED_VARS FCL_INCLUDE_DIRS FCL_LIBRARIES
+        REQUIRED_VARS FCL_INCLUDE_DIR FCL_LIBRARY
         VERSION_VAR FCL_VERSION)
+
+if(FCL_FOUND)
+    add_library(fcl::fcl UNKNOWN IMPORTED ${FCL_LIBRARY})
+    set_target_properties(fcl::fcl PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${FCL_INCLUDE_DIR}")
+    set_target_properties(fcl::fcl PROPERTIES INTERFACE_LINK_LIBRARIES ccd::ccd)
+    if(EXISTS "${FCL_LIBRARY}")
+        set_target_properties(fcl::fcl PROPERTIES IMPORTED_LOCATION "${FCL_LIBRARY}")
+    endif()
+    if(EXISTS "${FCL_LIBRARY_DEBUG}")
+        set_target_properties(fcl::fcl PROPERTIES IMPORTED_LOCATION_DEBUG "${FCL_LIBRARY_DEBUG}")
+    endif()
+    if(EXISTS "${FCL_LIBRARY_RELEASE}")
+        set_target_properties(fcl::fcl PROPERTIES IMPORTED_LOCATION_RELEASE "${FCL_LIBRARY_RELEASE}")
+    endif()
+endif()    
+
