@@ -35,7 +35,7 @@ ModelFactoryFcl::ModelFactoryFcl() : ModelFactory("ModelFactory") {
 *  \date       2017-02-19
 */
 std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &filePath) {
-    if (filePath == "") {
+    if (filePath.empty()) {
         Logging::error("Empty file path", this);
         return nullptr;
     }
@@ -50,9 +50,9 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
     std::vector<fcl::Vec3f> vertices;
     std::vector<fcl::Triangle> triangles;
     for (auto vertex : fclModel->m_mesh.vertices)
-        vertices.push_back(fcl::Vec3f(vertex[0], vertex[1], vertex[2]));
+        vertices.emplace_back(vertex[0], vertex[1], vertex[2]);
     for (auto face : fclModel->m_mesh.faces)
-        triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
+        triangles.emplace_back(face[0], face[1], face[2]);
     fclModel->m_fclModel.beginModel();
     fclModel->m_fclModel.addSubModel(vertices, triangles);
     fclModel->m_fclModel.endModel();
@@ -62,7 +62,7 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
 
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const std::string &filePath) {
     std::vector<std::shared_ptr<ModelContainer>> models;
-    if (filePath == "") {
+    if (filePath.empty()) {
         Logging::error("Empty file path", this);
         return models;
     }
@@ -82,9 +82,9 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const
         std::vector<fcl::Vec3f> vertices;
         std::vector<fcl::Triangle> triangles;
         for (auto vertex : fclModel->m_mesh.vertices)
-            vertices.push_back(fcl::Vec3f(vertex[0], vertex[1], vertex[2]));
+            vertices.emplace_back(vertex[0], vertex[1], vertex[2]);
         for (auto face : fclModel->m_mesh.faces)
-            triangles.push_back(fcl::Triangle(face[0], face[1], face[2]));
+            triangles.emplace_back(face[0], face[1], face[2]);
         fclModel->m_fclModel.beginModel();
         fclModel->m_fclModel.addSubModel(vertices, triangles);
         fclModel->m_fclModel.endModel();
@@ -103,7 +103,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;
-    for (auto filePath : filePaths) {
+    for (const auto &filePath : filePaths) {
         model = createModel(filePath);
         if (model)
             models.push_back(model);

@@ -58,7 +58,7 @@ Transform SerialRobot::getTransformation(const VectorX &config) const {
 *  \param[out] Transform
 *  \date       2016-07-07
 */
-Transform SerialRobot::getTrafo(double alpha, double a, double d, double q) const {
+Transform SerialRobot::getTrafo(double alpha, double a, double /*d*/, double q) const {
     // double sinAlpha = sin(alpha);
     // double cosAlpha = cos(alpha);
     // double sinQ = sin(q);
@@ -133,10 +133,9 @@ Transform SerialRobot::getTcp(const std::vector<Transform> &trafos) const {
 std::shared_ptr<ModelContainer> SerialRobot::getModelFromJoint(const size_t jointIndex) const {
     if (jointIndex < m_joints.size()) {
         return m_joints[jointIndex].getModel();
-    } else {
-        Logging::error("Joint index larger than joint size", this);
-        return nullptr;
     }
+    Logging::error("Joint index larger than joint size", this);
+    return nullptr;
 }
 
 /*!
@@ -147,7 +146,7 @@ std::shared_ptr<ModelContainer> SerialRobot::getModelFromJoint(const size_t join
 */
 std::vector<std::shared_ptr<ModelContainer>> SerialRobot::getJointModels() const {
     std::vector<std::shared_ptr<ModelContainer>> models;
-    for (auto joint : m_joints)
+    for (const auto &joint : m_joints)
         models.push_back(joint.getModel());
     return models;
 }
@@ -188,7 +187,7 @@ Transform SerialRobot::getBaseOffset() const {
 *  \param[in]  list of joints
 *  \date       2017-11-17
 */
-void SerialRobot::setJoints(const std::vector<Joint> joints) {
+void SerialRobot::setJoints(const std::vector<Joint> &joints) {
     if (joints.empty())
         return;
 
@@ -211,7 +210,7 @@ size_t SerialRobot::getNbJoints() const {
 *  \param[in]  joint angles
 *  \date       2016-10-22
 */
-void SerialRobot::saveMeshConfig(const VectorX angles) {
+void SerialRobot::saveMeshConfig(const VectorX &angles) {
     std::vector<Transform> jointTrafos = getJointTrafos(angles);
     std::vector<Transform> As(jointTrafos.size());
 
@@ -228,13 +227,13 @@ void SerialRobot::saveMeshConfig(const VectorX angles) {
 *  \param[in]  transformation matrizes
 *  \date       2016-10-22
 */
-void SerialRobot::saveMeshConfig(const std::vector<Transform> As) {
+void SerialRobot::saveMeshConfig(const std::vector<Transform> & /*As*/) {
     if (this->m_baseModel != nullptr) {
         std::vector<Vector3> verts;
-        for (auto vertice : this->m_baseModel->m_mesh.vertices) {
+        for (const auto &vertice : this->m_baseModel->m_mesh.vertices) {
             Vector4 temp(util::append<3>(vertice, (double)1));
             temp = this->m_pose * temp;
-            verts.push_back(Vector3(temp(0), temp(1), temp(2)));
+            verts.emplace_back(temp(0), temp(1), temp(2));
         }
         cad::exportCad(cad::ExportFormat::OBJ, "base", verts, this->m_baseModel->m_mesh.faces);
     }
@@ -242,14 +241,14 @@ void SerialRobot::saveMeshConfig(const std::vector<Transform> As) {
 
     for (size_t i = 0; i < m_joints.size(); ++i) {
         std::vector<Vector3> verts;
-        for (auto vertex : getModelFromJoint(i)->m_mesh.vertices) {
+        for (const auto &vertex : getModelFromJoint(i)->m_mesh.vertices) {
             Vector4 temp(util::append<3>(vertex, (double)1));
             temp = this->m_pose * temp;
-            verts.push_back(Vector3(temp(0), temp(1), temp(2)));
+            verts.emplace_back(temp(0), temp(1), temp(2));
         }
         cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), verts, getModelFromJoint(i)->m_mesh.faces);
-        // getModelFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj", As[i]);
-        // std::cout<< As[i] << std::endl <<std::endl;
+        // getModelFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj",
+        // As[i]); std::cout<< As[i] << std::endl <<std::endl;
     }
 }
 

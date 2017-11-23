@@ -31,10 +31,7 @@ ModelTriangle2D::ModelTriangle2D() : ModelContainer("ModelTriangle2D") {
 *  \date       2017-02-19
 */
 bool ModelTriangle2D::empty() const {
-    if (m_triangles.empty())
-        return true;
-    else
-        return false;
+    return m_triangles.empty();
 }
 
 void ModelTriangle2D::transformModel(const Transform &T) {

@@ -65,7 +65,7 @@ bool EnvironmentConfigurator::loadConfig(const std::string &filePath) {
         return false;
 
     m_obstaclePaths.clear();
-    size_t numObstacles = json["NumObstacles"].get<size_t>();
+    auto numObstacles = json["NumObstacles"].get<size_t>();
     for (size_t i = 0; i < numObstacles; ++i)
         m_obstaclePaths.push_back(json["ObstaclePath" + std::to_string(i)].get<std::string>());
     m_workspaceDim = json["WorkspaceDim"].get<unsigned int>();

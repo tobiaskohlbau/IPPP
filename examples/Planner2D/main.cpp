@@ -44,10 +44,10 @@ bool testTriangleRobot() {
     creator.saveConfig("moduleConfigTriangle.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    //planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
+    // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
     planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(40), creator.getGraph());
-    //planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
-    //planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
+    // planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
+    // planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
     auto startTime = std::chrono::system_clock::now();
     Vector3 start(50, 50, 0);
@@ -58,7 +58,7 @@ bool testTriangleRobot() {
 
     Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
-    for (auto obstacle : environment->getObstacles())
+    for (const auto& obstacle : environment->getObstacles())
         meshes.push_back(obstacle->m_mesh);
     cad::drawTriangles(workspace2D, meshes, 50);
     cv::Mat image = drawing::eigenToCV(workspace2D);
@@ -104,13 +104,14 @@ bool test2DSerialRobot() {
     creator.saveConfig("moduleConfigTriangle.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    //planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
+    // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
     planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(5), creator.getGraph());
-    //planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
-    //planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
+    // planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
+    // planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
     auto startTime = std::chrono::system_clock::now();
-    Vector5 start = util::Vecd(-55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad());
+    Vector5 start =
+        util::Vecd(-55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad());
     Vector5 goal = util::Vecd(55 * util::toRad(), 55 * util::toRad(), 55 * util::toRad(), 55 * util::toRad(), 55 * util::toRad());
     bool connected = planner->computePath(start, goal, 500, 3);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
@@ -118,7 +119,7 @@ bool test2DSerialRobot() {
 
     Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
-    for (auto obstacle : environment->getObstacles())
+    for (const auto& obstacle : environment->getObstacles())
         meshes.push_back(obstacle->m_mesh);
     cad::drawTriangles(workspace2D, meshes, 50);
     cv::Mat image = drawing::eigenToCV(workspace2D);
@@ -133,7 +134,7 @@ bool test2DSerialRobot() {
         for (auto& config : path) {
             cv::Mat imageCopy = image.clone();
             drawing::drawSerialRobot2D<dim>(config, std::dynamic_pointer_cast<SerialRobot2D>(environment->getRobot()), imageCopy,
-                Eigen::Vector3i(0, 0, 255), 2);
+                                            Eigen::Vector3i(0, 0, 255), 2);
             cv::imshow("pathPlanner", imageCopy);
             cv::waitKey(0);
         }
@@ -143,7 +144,7 @@ bool test2DSerialRobot() {
     }
 
     cv::imshow("pathPlanner", image);
-    cv::waitKey(0);;
+    cv::waitKey(0);
 
     return connected;
 }
@@ -172,11 +173,11 @@ void testPointRobot() {
     creator.loadConfig("moduleConfig.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    //planner = std::make_shared<EST<dim>>(environment, creator.getPlannerOptions(), creator.getGraph());
-    //planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(40), creator.getGraph());
+    // planner = std::make_shared<EST<dim>>(environment, creator.getPlannerOptions(), creator.getGraph());
+    // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(40), creator.getGraph());
     planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(35), creator.getGraph());
-    //planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
-    //planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
+    // planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
+    // planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
     // compute the tree
     auto startTime = std::chrono::system_clock::now();
@@ -189,7 +190,7 @@ void testPointRobot() {
 
     Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
-    for (auto obstacle : environment->getObstacles())
+    for (const auto& obstacle : environment->getObstacles())
         meshes.push_back(obstacle->m_mesh);
     cad::drawTriangles(workspace2D, meshes, 50);
     cv::Mat image = drawing::eigenToCV(workspace2D);
@@ -210,10 +211,10 @@ void testPointRobot() {
     cv::waitKey(0);
 }
 
-int main(int argc, char** argv) {
+int main(int /*argc*/, char** /*argv*/) {
     Logging::setLogLevel(LogLevel::trace);
 
     // testTriangleRobot();
-    //test2DSerialRobot();
+    // test2DSerialRobot();
     testPointRobot();
 }

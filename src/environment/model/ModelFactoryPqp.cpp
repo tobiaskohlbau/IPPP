@@ -38,7 +38,7 @@ ModelFactoryPqp::ModelFactoryPqp() : ModelFactory("ModelFactoryPqp"){};
 *  \date       2017-02-19
 */
 std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &filePath) {
-    if (filePath == "") {
+    if (filePath.empty()) {
         Logging::error("Empty file path", this);
         return nullptr;
     }
@@ -76,7 +76,7 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const std::string &
 
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const std::string &filePath) {
     std::vector<std::shared_ptr<ModelContainer>> models;
-    if (filePath == "") {
+    if (filePath.empty()) {
         Logging::error("Empty file path", this);
         return models;
     }
@@ -88,7 +88,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const
         return models;
     }
 
-    for (auto mesh : meshes) {
+    for (const auto &mesh : meshes) {
         std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
         pqpModel->m_mesh = mesh;
         pqpModel->m_mesh.aabb = cad::computeAABB(pqpModel->m_mesh);
@@ -127,7 +127,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModels(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;
-    for (auto filePath : filePaths) {
+    for (const auto &filePath : filePaths) {
         model = createModel(filePath);
         if (model)
             models.push_back(model);

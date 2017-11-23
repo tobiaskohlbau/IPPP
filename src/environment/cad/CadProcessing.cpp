@@ -62,9 +62,9 @@ Mesh generateMesh(const std::vector<Triangle2D> &triangles) {
         vertexCount = mesh.vertices.size();
         for (unsigned int i = 1; i < 4; ++i) {
             auto pt = tri.getP(i);
-            mesh.vertices.push_back(Vector3(pt[0], pt[1], 0));
+            mesh.vertices.emplace_back(pt[0], pt[1], 0);
         }
-        mesh.faces.push_back(Vector3i(vertexCount, vertexCount + 1, vertexCount + 2));
+        mesh.faces.emplace_back(vertexCount, vertexCount + 1, vertexCount + 2);
     }
     mesh.aabb = computeAABB(mesh.vertices);
 
@@ -87,7 +87,7 @@ Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
             mesh.vertices.push_back(vertex);
         
         for (auto &face : tmpMesh.faces)
-            mesh.faces.push_back(Vector3i(face[0] + vertexCount, face[1] + vertexCount, face[2] + vertexCount));
+            mesh.faces.emplace_back(face[0] + vertexCount, face[1] + vertexCount, face[2] + vertexCount);
     }
     return mesh;
 }

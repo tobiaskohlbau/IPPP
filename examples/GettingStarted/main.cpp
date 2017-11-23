@@ -8,7 +8,7 @@
 // set namespace of the motion planner lib
 using namespace ippp;
 
-int main(int argc, char** argv) {
+int main(int /*argc*/, char** /*argv*/) {
     // specify the dimension for the motion planning
     const unsigned int dim = 6;
 

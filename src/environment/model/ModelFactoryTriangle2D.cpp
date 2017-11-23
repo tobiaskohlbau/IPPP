@@ -36,7 +36,7 @@ ModelFactoryTriangle2D::ModelFactoryTriangle2D() : ModelFactory("ModelFactoryTri
 *  \date       2017-02-19
 */
 std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::string &filePath) {
-    if (filePath == "") {
+    if (filePath.empty()) {
         Logging::error("Empty file path", this);
         return nullptr;
     }
@@ -56,7 +56,7 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::s
 
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModels(const std::string &filePath) {
     std::vector<std::shared_ptr<ModelContainer>> models;
-    if (filePath == "") {
+    if (filePath.empty()) {
         Logging::error("Empty file path", this);
         return models;
     }
@@ -66,7 +66,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
         return models;
     }
 
-    for (auto mesh : meshes) {
+    for (const auto& mesh : meshes) {
         std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
         triangleModel->m_mesh = mesh;
         for (auto vertex : triangleModel->m_mesh.vertices)
@@ -88,7 +88,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModels(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;
-    for (auto filePath : filePaths) {
+    for (const auto& filePath : filePaths) {
         model = createModel(filePath);
         if (model) {
             models.push_back(model);
@@ -106,7 +106,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
 *  \param[out] triangle model
 *  \date       2017-02-19
 */
-std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::vector<Triangle2D> triangles) {
+std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::vector<Triangle2D>& triangles) {
     std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
     triangleModel->m_triangles = triangles;
     triangleModel->m_mesh = cad::generateMesh(triangles);

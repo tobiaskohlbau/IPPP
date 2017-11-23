@@ -43,8 +43,8 @@ class RobotBase : public Identifier {
     virtual ~RobotBase();
 
   protected:
-    RobotBase(const std::string &name, const unsigned int dim, const RobotCategory robotType, const std::pair<VectorX, VectorX> &boundary,
-              const std::vector<DofType> &dofTypes);
+    RobotBase(const std::string &name, const unsigned int dim, const RobotCategory robotType,
+              const std::pair<VectorX, VectorX> &boundary, std::vector<DofType> dofTypes);
 
   public:
     void setPose(const Vector6 &pose);
@@ -52,7 +52,7 @@ class RobotBase : public Identifier {
     Transform getPose() const;
     virtual Transform getTransformation(const VectorX &config) const = 0;
 
-    void setBaseModel(const std::shared_ptr<ModelContainer> &baseModel);
+    void setBaseModel(const std::shared_ptr<ModelContainer> &model);
     std::shared_ptr<ModelContainer> getBaseModel() const;
 
     VectorX getMinBoundary() const;

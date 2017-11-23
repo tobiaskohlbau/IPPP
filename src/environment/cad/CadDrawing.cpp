@@ -81,7 +81,7 @@ void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vect
     double curx1 = v1[0];
     double curx2 = v1[0];
 
-    for (int scanlineY = static_cast<int>(v1[1]); scanlineY <= v2[1]; scanlineY++) {
+    for (auto scanlineY = static_cast<int>(v1[1]); scanlineY <= v2[1]; scanlineY++) {
         drawLine(space, (int)curx1, (int)curx2, scanlineY, value);
         curx1 += invslope1;
         curx2 += invslope2;
@@ -95,7 +95,7 @@ void fillTopFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2
     double curx1 = v3[0];
     double curx2 = v3[0];
 
-    for (int scanlineY = static_cast<int>(v3[1]); scanlineY > v1[1]; scanlineY--) {
+    for (auto scanlineY = static_cast<int>(v3[1]); scanlineY > v1[1]; scanlineY--) {
         drawLine(space, (int)curx1, (int)curx2, scanlineY, value);
         curx1 -= invslope1;
         curx2 -= invslope2;
