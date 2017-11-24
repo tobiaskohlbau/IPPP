@@ -7,7 +7,7 @@
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
 #include <ippp/UI.h>
-#include <ui/Drawing2D.hpp>
+#include <Drawing2D.hpp>
 
 using namespace ippp;
 

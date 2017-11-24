@@ -16,10 +16,6 @@
 #
 #-------------------------------------------------------------------------//
 
-set(source
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../ui/Drawing2D.hpp)
-
 find_package(OpenCV REQUIRED QUIET)
 if (OpenCV_VERSION VERSION_LESS "2.4.0")
     message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
@@ -29,7 +25,4 @@ else()
     find_package(OpenCV REQUIRED QUIET COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
 endif()
 
-set(ADDITIONAL_LIBRARIES
-    ${OpenCV_LIBS})
-
-ADD_IPPP_EXAMPLE(Planner2D "${source}" "${ADDITIONAL_LIBRARIES}")
+add_ippp_example(Planner2D main.cpp ${OpenCV_LIBS} ui)
