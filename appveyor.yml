@@ -47,6 +47,13 @@ matrix:
 #  assembly_file_version: "{version}"
 #  assembly_informational_version: "{version}"
 
+install:
+  - vcpkg install eigen3:x64-windows
+  - vcpkg install assimp:x64-windows
+  - vcpkg install fcl:x64-windows
+  - vcpkg install pqp:x64-windows
+  - vcpkg install gtest:x64-windows
+
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
@@ -72,7 +79,7 @@ build:
 before_build:
   - echo Running cmake...
   - cd c:\projects\IPPP
-  - cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=%P%
+  - cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX=%P%
 
 # scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
 before_package:
