@@ -12,7 +12,7 @@ using namespace ippp;
 DEFINE_string(assetsDir, "../../assets",
                  "assets directory");
 
-int main(int /*argc*/, char** /*argv*/) {
+int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
 
     // specify the dimension for the motion planning
