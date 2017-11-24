@@ -52,7 +52,7 @@ class RobotBase : public Identifier {
     Transform getPose() const;
     virtual Transform getTransformation(const VectorX &config) const = 0;
 
-    void setBaseModel(const std::shared_ptr<ModelContainer> &baseModel);
+    void setBaseModel(const std::shared_ptr<ModelContainer> &model);
     std::shared_ptr<ModelContainer> getBaseModel() const;
 
     VectorX getMinBoundary() const;

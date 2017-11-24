@@ -37,11 +37,7 @@ ModelPqp::ModelPqp() : ModelContainer("ModelPqp") {
 *  \date       2017-02-19
 */
 bool ModelPqp::empty() const {
-    if (m_pqpModel.num_tris == 0) {
-        return true;
-    } else {
-        return false;
-    }
+    return m_pqpModel.num_tris == 0;
 }
 
 /*!

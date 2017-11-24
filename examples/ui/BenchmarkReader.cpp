@@ -27,7 +27,7 @@
 namespace ippp {
 
 EnvironmentConfig readEnvironment(const std::string &file) {
-    std::string extension = file.substr(file.find_last_of("."));
+    std::string extension = file.substr(file.find_last_of('.'));
     if (extension != ".env") {
         Logging::error("Wrong file type", "BenchmarkReader");
         return EnvironmentConfig();
@@ -39,11 +39,11 @@ EnvironmentConfig readEnvironment(const std::string &file) {
     std::string str;
     while (getline(is, str)) {
         if (util::contains(str, "Boundary Box")) {
-            size_t firstLim = str.find("[");
-            size_t lastLim = str.find("]");
+            size_t firstLim = str.find('[');
+            size_t lastLim = str.find(']');
             std::string box = str.substr(firstLim + 1, lastLim);
 
-            std::size_t found = box.find_first_of(";");
+            std::size_t found = box.find_first_of(';');
             unsigned int count = 0;
             std::string::size_type sz;
             while (found != std::string::npos) {
@@ -52,7 +52,7 @@ EnvironmentConfig readEnvironment(const std::string &file) {
                 config.maxBoundary[count] = std::stof(box.substr(sz));
 
                 box = box.substr(found + 2);
-                found = box.find_first_of(";");
+                found = box.find_first_of(';');
                 ++count;
             }
             config.minBoundary[count] = std::stof(box, &sz);
@@ -63,12 +63,12 @@ EnvironmentConfig readEnvironment(const std::string &file) {
             getline(is, str);
             if (util::contains(str, "#"))
                 getline(is, str);
-            std::size_t found = str.find_first_of(" ");
+            std::size_t found = str.find_first_of(' ');
             config.obstacleFile = str.substr(0, found);
 
             str = str.substr(found + 1);
             if (util::contains(str, "-c")) {
-                str = str.substr(str.find_first_of(")") + 1);
+                str = str.substr(str.find_first_of(')') + 1);
             }
 
             util::trimWhitespaces(str);
@@ -84,7 +84,7 @@ EnvironmentConfig readEnvironment(const std::string &file) {
             getline(is, str);
             if (util::contains(str, "#"))
                 getline(is, str);
-            std::size_t found = str.find_first_of(" ");
+            std::size_t found = str.find_first_of(' ');
             config.robotFile = str.substr(0, found);
         }
     }
@@ -97,7 +97,7 @@ std::vector<Vector6> readQuery(const std::string &path) {
     std::string str;
     while (getline(is, str)) {
         util::trimWhitespaces(str);
-        if (str == "")
+        if (str.empty())
             continue;
 
         std::string::size_type sz;

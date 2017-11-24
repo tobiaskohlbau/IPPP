@@ -40,32 +40,32 @@ class Logging {
     static LogLevel getLogLevel();
     static void setLogOutput(LogOutput output);
     static LogOutput getLogOutput();
-    static void setOutputFile(const std::string file);
+    static void setOutputFile(const std::string& file);
     static std::string getOutputFile();
 
-    static void info(std::string message, Identifier *module = nullptr);
-    static void warning(std::string message, Identifier *module = nullptr);
-    static void error(std::string message, Identifier *module = nullptr);
-    static void debug(std::string message, Identifier *module = nullptr);
-    static void trace(std::string message, Identifier *module = nullptr);
+    static void info(const std::string& message, Identifier* module = nullptr);
+    static void warning(const std::string& message, Identifier* module = nullptr);
+    static void error(const std::string& message, Identifier* module = nullptr);
+    static void debug(const std::string& message, Identifier* module = nullptr);
+    static void trace(const std::string& message, Identifier* module = nullptr);
 
-    static void info(std::string message, const Identifier *module = nullptr);
-    static void warning(std::string message, const  Identifier *module = nullptr);
-    static void error(std::string message, const  Identifier *module = nullptr);
-    static void debug(std::string message, const  Identifier *module = nullptr);
-    static void trace(std::string message, const  Identifier *module = nullptr);
+    static void info(const std::string& message, const Identifier* module = nullptr);
+    static void warning(const std::string& message, const Identifier* module = nullptr);
+    static void error(const std::string& message, const Identifier* module = nullptr);
+    static void debug(const std::string& message, const Identifier* module = nullptr);
+    static void trace(const std::string& message, const Identifier* module = nullptr);
 
-    static void info(std::string message, std::string moduleName);
-    static void warning(std::string message, std::string moduleName);
-    static void error(std::string message, std::string moduleName);
-    static void debug(std::string message, std::string moduleName);
-    static void trace(std::string message, std::string moduleName);
+    static void info(const std::string& message, const std::string& moduleName);
+    static void warning(const std::string& message, const std::string& moduleName);
+    static void error(const std::string& message, const std::string& moduleName);
+    static void debug(const std::string& message, const std::string& moduleName);
+    static void trace(const std::string& message, const std::string& moduleName);
 
-    static void printToTerminal(std::string message);
-    static void writeToFile(std::string message);
+    static void printToTerminal(const std::string& message);
+    static void writeToFile(const std::string& message);
 
   private:
-    static void sendString(std::string message, LogLevel level);
+    static void sendString(const std::string& message, LogLevel level);
 
     static LogLevel m_level;
     static LogOutput m_output;

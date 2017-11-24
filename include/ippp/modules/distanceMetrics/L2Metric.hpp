@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Static class for the computation of distance costs from Edge
+* \brief   L2Metric computes the distance of nodes/configurations with the L2 metric.
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
@@ -49,8 +49,8 @@ L2Metric<dim>::L2Metric() : DistanceMetric<dim>("L2 Metric") {
 /*!
 *  \brief      Calculates the distance cost of an Edge from the source and target Node by the L2 metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
+*  \param[in]  source vector
+*  \param[in]  target vector
 *  \param[out] distance cost
 *  \date       2017-01-02
 */
@@ -62,8 +62,8 @@ double L2Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &tar
 /*!
 *  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the L2 metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
+*  \param[in]  source vector
+*  \param[in]  target vector
 *  \param[out] squared distance cost
 *  \date       2017-10-08
 */
@@ -76,7 +76,7 @@ double L2Metric<dim>::calcSimpleDist(const Vector<dim> &source, const Vector<dim
 *  \brief      Calculates the simplified distance of the passed distance.
 *  \author     Sascha Kaden
 *  \param[in]  distance
-*  \param[out] simplified distance
+*  \param[out] simplified distance (square it)
 *  \date       2017-10-08
 */
 template <unsigned int dim>

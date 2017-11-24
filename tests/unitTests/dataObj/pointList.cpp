@@ -24,6 +24,7 @@ using namespace ippp;
 
 TEST(POINTLIST, standardConstructor2D) {
     std::vector<Vector2> vecs;
+    vecs.reserve(4);
     for (int i = 0; i < 4; ++i)
         vecs.emplace_back(i, i);
     Line2D line(vecs[0], vecs[1]);
@@ -40,6 +41,7 @@ TEST(POINTLIST, standardConstructor2D) {
 
 TEST(POINTLIST, standardConstructor3D) {
     std::vector<Vector3> vecs;
+    vecs.reserve(4);
     for (int i = 0; i < 4; ++i)
         vecs.emplace_back(i, i, i);
     Line3D line(vecs[0], vecs[1]);

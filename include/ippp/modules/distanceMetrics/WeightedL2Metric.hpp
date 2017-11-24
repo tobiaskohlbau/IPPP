@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Static class for the computation of distance costs from Edge
+* \brief   WeightedL2Metric computes the distance of nodes/configurations with the L2 metric and a weighted vector.
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
@@ -56,7 +56,7 @@ WeightedL2Metric<dim>::WeightedL2Metric() : DistanceMetric<dim>("weightVecL2 met
 /*!
 *  \brief      Constructor of the class WeightVecL2Metric
 *  \author     Sascha Kaden
-*  \param[in]  weightVec
+*  \param[in]  vector of the weights
 *  \date       2017-02-19
 */
 template <unsigned int dim>
@@ -67,8 +67,8 @@ WeightedL2Metric<dim>::WeightedL2Metric(const Vector<dim> &weightVec) : Distance
 /*!
 *  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
+*  \param[in]  source vector
+*  \param[in]  target vector
 *  \param[out] distance cost
 *  \date       2017-01-02
 */
@@ -80,8 +80,8 @@ double WeightedL2Metric<dim>::calcDist(const Vector<dim> &source, const Vector<d
 /*!
 *  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
+*  \param[in]  source vector
+*  \param[in]  target vector
 *  \param[out] squared distance cost
 *  \date       2017-10-08
 */

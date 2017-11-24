@@ -25,7 +25,7 @@ namespace ippp {
 
 LogLevel Logging::m_level = LogLevel::info;
 LogOutput Logging::m_output = LogOutput::terminal;
-std::string Logging::m_file = "";
+std::string Logging::m_file;
 std::mutex Logging::m_mutex;
 
 /*!
@@ -74,8 +74,8 @@ LogOutput Logging::getLogOutput() {
 *  \author     Sascha Kaden
 *  \date       2016-11-14
 */
-void Logging::setOutputFile(const std::string file) {
-    if (file == "") {
+void Logging::setOutputFile(const std::string& file) {
+    if (file.empty()) {
         return;
     }
     m_file = file;
@@ -98,7 +98,7 @@ std::string Logging::getOutputFile() {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::info(std::string message, Identifier *module) {
+void Logging::info(const std::string& message, Identifier* module) {
     if (module == nullptr) {
         info(message, "Unknown");
     } else {
@@ -113,7 +113,7 @@ void Logging::info(std::string message, Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::warning(std::string message, Identifier *module) {
+void Logging::warning(const std::string& message, Identifier* module) {
     if (module == nullptr) {
         warning(message, "Unknown");
     } else {
@@ -128,7 +128,7 @@ void Logging::warning(std::string message, Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::error(std::string message, Identifier *module) {
+void Logging::error(const std::string& message, Identifier* module) {
     if (module == nullptr) {
         error(message, "Unknown");
     } else {
@@ -143,7 +143,7 @@ void Logging::error(std::string message, Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::debug(std::string message, Identifier *module) {
+void Logging::debug(const std::string& message, Identifier* module) {
     if (module == nullptr) {
         debug(message, "Unknown");
     } else {
@@ -158,7 +158,7 @@ void Logging::debug(std::string message, Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::trace(std::string message, Identifier *module) {
+void Logging::trace(const std::string& message, Identifier* module) {
     if (module == nullptr) {
         trace(message, "Unknown");
     } else {
@@ -173,7 +173,7 @@ void Logging::trace(std::string message, Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::info(std::string message, const Identifier *module) {
+void Logging::info(const std::string& message, const Identifier* module) {
     if (module == nullptr) {
         info(message, "Unknown");
     } else {
@@ -188,7 +188,7 @@ void Logging::info(std::string message, const Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::warning(std::string message, const Identifier *module) {
+void Logging::warning(const std::string& message, const Identifier* module) {
     if (module == nullptr) {
         warning(message, "Unknown");
     } else {
@@ -203,7 +203,7 @@ void Logging::warning(std::string message, const Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::error(std::string message, const Identifier *module) {
+void Logging::error(const std::string& message, const Identifier* module) {
     if (module == nullptr) {
         error(message, "Unknown");
     } else {
@@ -218,7 +218,7 @@ void Logging::error(std::string message, const Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::debug(std::string message, const Identifier *module) {
+void Logging::debug(const std::string& message, const Identifier* module) {
     if (module == nullptr) {
         debug(message, "Unknown");
     } else {
@@ -233,7 +233,7 @@ void Logging::debug(std::string message, const Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::trace(std::string message, const Identifier *module) {
+void Logging::trace(const std::string& message, const Identifier* module) {
     if (module == nullptr) {
         trace(message, "Unknown");
     } else {
@@ -248,7 +248,7 @@ void Logging::trace(std::string message, const Identifier *module) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::info(std::string message, std::string moduleName) {
+void Logging::info(const std::string& message, const std::string& moduleName) {
     sendString("Info " + moduleName + ": " + message, LogLevel::info);
 }
 
@@ -259,7 +259,7 @@ void Logging::info(std::string message, std::string moduleName) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::warning(std::string message, std::string moduleName) {
+void Logging::warning(const std::string& message, const std::string& moduleName) {
     sendString("Warning " + moduleName + ": " + message, LogLevel::warn);
 }
 
@@ -270,7 +270,7 @@ void Logging::warning(std::string message, std::string moduleName) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::error(std::string message, std::string moduleName) {
+void Logging::error(const std::string& message, const std::string& moduleName) {
     sendString("Error " + moduleName + ": " + message, LogLevel::error);
 }
 
@@ -281,7 +281,7 @@ void Logging::error(std::string message, std::string moduleName) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::debug(std::string message, std::string moduleName) {
+void Logging::debug(const std::string& message, const std::string& moduleName) {
     sendString("Debug " + moduleName + ": " + message, LogLevel::debug);
 }
 
@@ -292,7 +292,7 @@ void Logging::debug(std::string message, std::string moduleName) {
 *  \author     Sascha Kaden
 *  \date       2016-10-22
 */
-void Logging::trace(std::string message, std::string moduleName) {
+void Logging::trace(const std::string& message, const std::string& moduleName) {
     sendString("Trace " + moduleName + ": " + message, LogLevel::trace);
 }
 
@@ -302,7 +302,7 @@ void Logging::trace(std::string message, std::string moduleName) {
 *  \author     Sascha Kaden
 *  \date       2016-11-14
 */
-void Logging::sendString(std::string message, LogLevel level) {
+void Logging::sendString(const std::string& message, LogLevel level) {
     if (level > m_level)
         return;
 
@@ -324,7 +324,7 @@ void Logging::sendString(std::string message, LogLevel level) {
 *  \author     Sascha Kaden
 *  \date       2016-11-14
 */
-void Logging::printToTerminal(std::string message) {
+void Logging::printToTerminal(const std::string& message) {
     std::cout << message << std::endl;
 }
 
@@ -334,8 +334,8 @@ void Logging::printToTerminal(std::string message) {
 *  \author     Sascha Kaden
 *  \date       2016-11-14
 */
-void Logging::writeToFile(std::string message) {
-    if (m_file == "") {
+void Logging::writeToFile(const std::string& message) {
+    if (m_file.empty()) {
         return;
     }
     std::ofstream myfile;

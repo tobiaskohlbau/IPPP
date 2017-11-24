@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Static class for the computation of distance costs from Edge
+* \brief   InfMetric computes the distance of nodes/configurations with the infinity metric.
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
@@ -49,8 +49,8 @@ InfMetric<dim>::InfMetric() : DistanceMetric<dim>("Inf Metric") {
 /*!
 *  \brief      Calculates the distance cost of an Edge from the source and target Node by the infinity metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
+*  \param[in]  source vector
+*  \param[in]  target vector
 *  \param[out] distance cost
 *  \date       2017-01-02
 */
@@ -62,9 +62,9 @@ double InfMetric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &ta
 /*!
 *  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the infinity metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] squared distance cost
+*  \param[in]  source vector
+*  \param[in]  target vector
+*  \param[out] distance cost
 *  \date       2017-10-08
 */
 template <unsigned int dim>

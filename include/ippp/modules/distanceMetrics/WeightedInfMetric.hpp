@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Static class for the computation of distance costs from an Edge
+* \brief   WeightedInfMetric computes the distance of nodes/configurations with the infinity metric and a weighted vector.
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
@@ -56,7 +56,7 @@ WeightedInfMetric<dim>::WeightedInfMetric() : DistanceMetric<dim>("weightVecInf 
 /*!
 *  \brief      Standard constructor of the class WeightVecInfMetric
 *  \author     Sascha Kaden
-*  \param[in]  weightVec
+*  \param[in]  vector of the weights
 *  \date       2017-02-19
 */
 template <unsigned int dim>
@@ -67,8 +67,8 @@ WeightedInfMetric<dim>::WeightedInfMetric(const Vector<dim> &weightVec) : Distan
 /*!
 *  \brief      Calculates the distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
+*  \param[in]  source vector
+*  \param[in]  target vector
 *  \param[out] distance cost
 *  \date       2017-01-02
 */
@@ -80,9 +80,9 @@ double WeightedInfMetric<dim>::calcDist(const Vector<dim> &source, const Vector<
 /*!
 *  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the specified metric.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] squared distance cost
+*  \param[in]  source vector
+*  \param[in]  target vector
+*  \param[out] distance cost
 *  \date       2017-10-08
 */
 template <unsigned int dim>

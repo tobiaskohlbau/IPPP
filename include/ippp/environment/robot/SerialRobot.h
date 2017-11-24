@@ -44,14 +44,14 @@ class SerialRobot : public RobotBase {
     void setBaseOffset(const Vector6 &baseOffset);
     void setBaseOffset(const Transform &baseOffset);
     Transform getBaseOffset() const;
-    void setJoints(const std::vector<Joint> joints);
+    void setJoints(const std::vector<Joint> &joints);
     size_t getNbJoints() const;
 
     std::shared_ptr<ModelContainer> getModelFromJoint(const size_t jointIndex) const;
     std::vector<std::shared_ptr<ModelContainer>> getJointModels() const;
 
-    void saveMeshConfig(const VectorX angles);
-    void saveMeshConfig(const std::vector<Transform> As);
+    void saveMeshConfig(const VectorX &angles);
+    void saveMeshConfig(const std::vector<Transform> &As);
 
   protected:
     std::vector<Joint> m_joints;
