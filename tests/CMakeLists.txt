@@ -17,6 +17,7 @@
 #-------------------------------------------------------------------------//
 
 find_package(GTest REQUIRED)
+find_package(gflags REQUIRED)
 
 if(CMAKE_VERSION VERSION_LESS 3.5)
     add_library(GTest::GTest UNKNOWN IMPORTED ${GTEST_LIBRARIES})
@@ -36,7 +37,7 @@ macro(ADD_IPPP_TEST TEST_NAME BRANCH)
     set(EXE_NAME Test_${BRANCH}_${TEST_NAME})
     
     add_executable(${EXE_NAME} ${TEST_NAME}.cpp)
-    target_link_libraries(${EXE_NAME} IPPP GTest::GTest GTest::Main)
+    target_link_libraries(${EXE_NAME} IPPP GTest::GTest GTest::Main gflags)
 
     add_test(${TEST_NAME} ${EXE_NAME})
 endmacro(ADD_IPPP_TEST)

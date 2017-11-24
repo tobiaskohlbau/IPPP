@@ -16,6 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
+#include <gflags/gflags.h>
 #include <gtest/gtest.h>
 
 #include <ippp/modules/sampler/GridSampler.hpp>
@@ -39,6 +40,8 @@ double min = -5;
 double max = 5;
 
 using namespace ippp;
+
+DEFINE_string(assetsDir, "assets", "assets directory");
 
 template <unsigned int dim>
 void testSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
@@ -80,7 +83,7 @@ void createSampling() {
 
     std::shared_ptr<MobileRobot> robot(new MobileRobot(dim, std::make_pair(minBound, maxBound), dofTypes));
     ModelFactoryFcl factory;
-    robot->setBaseModel(factory.createModel("../../../assets/robotModels/2dLine.obj"));
+    robot->setBaseModel(factory.createModel(FLAGS_assetsDir + "/robotModels/2dLine.obj"));
     std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionFcl<dim>(environment));
     std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new LinearTrajectory<dim>(collision, environment, 0.1));
@@ -97,7 +100,7 @@ void createSampling() {
         samplings.push_back(std::make_shared<BridgeSampling<dim>>(environment, collision, trajectory, sampler, 1));
         samplings.push_back(std::make_shared<GaussianDistSampling<dim>>(environment, collision, trajectory, sampler, 1));
         samplings.push_back(std::make_shared<GaussianSampling<dim>>(environment, collision, trajectory, sampler, 1));
-        //samplings.push_back(std::make_shared<MedialAxisSampling<dim>>(environment, collision, trajectory, sampler, 1));
+        // samplings.push_back(std::make_shared<MedialAxisSampling<dim>>(environment, collision, trajectory, sampler, 1));
         samplings.push_back(std::make_shared<SamplingNearObstacle<dim>>(environment, collision, trajectory, sampler, 1));
         samplings.push_back(std::make_shared<StraightSampling<dim>>(environment, collision, trajectory, sampler, 1));
     }
