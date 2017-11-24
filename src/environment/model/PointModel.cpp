@@ -35,10 +35,10 @@ bool PointModel::empty() const {
     return false;
 }
 
-void PointModel::transformModel(const Transform &T) {
+void PointModel::transformModel(const Transform& /*T*/) {
 }
 
-void PointModel::transformModel(const Vector6 &config) {
+void PointModel::transformModel(const Vector6& /*config*/) {
 }
 
 } /* namespace ippp */

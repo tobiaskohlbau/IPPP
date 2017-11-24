@@ -32,11 +32,7 @@ ModelFcl::ModelFcl() : ModelContainer("ModelFcl") {
 *  \date       2017-02-19
 */
 bool ModelFcl::empty() const {
-    if (m_fclModel.num_vertices == 0) {
-        return true;
-    } else {
-        return false;
-    }
+    return m_fclModel.num_vertices == 0;
 }
 
 /*!

@@ -35,7 +35,7 @@ namespace cad {
 *  \date       2017-05-09
 */
 bool importMesh(const std::string &filePath, Mesh &mesh, const double scale, const bool calcNormals, const bool useTrafo) {
-    std::size_t found = filePath.find_last_of(".");
+    std::size_t found = filePath.find_last_of('.');
     if (filePath.substr(found) == ".g")
         return importBYU(filePath, mesh);
 
@@ -60,7 +60,7 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const 
                   const bool useTrafo) {
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
-    if (!scene) {
+    if (scene == nullptr) {
         Logging::error("Could not load cad", "CadProcessing");
         Logging::error("Assimp message: " + std::string(importer.GetErrorString()), "CadProcessing");
         return false;
@@ -174,7 +174,7 @@ bool importBYU(const std::string &filePath, Mesh &mesh) {
 
     getline(is, str);
     getline(is, str);
-    while (str == "")
+    while (str.empty())
         getline(is, str);
     util::trimWhitespaces(str);
     for (unsigned int i = 0; i < numVertices; ++i) {
@@ -190,7 +190,7 @@ bool importBYU(const std::string &filePath, Mesh &mesh) {
             util::trimWhitespaces(str);
         }
     }
-    while (str == "")
+    while (str.empty())
         getline(is, str);
     for (unsigned int i = 0; i < numFaces; ++i) {
         util::trimWhitespaces(str);
@@ -201,9 +201,9 @@ bool importBYU(const std::string &filePath, Mesh &mesh) {
             if (index < 0) {
                 vec[j] = -index - 1;
                 break;
-            } else {
-                vec[j] = index;
             }
+            vec[j] = index;
+
             vec[j] -= 1;
             str = str.substr(sz);
         }
@@ -239,7 +239,7 @@ bool exportCad(ExportFormat format, const std::string &filePath, const Mesh &mes
 */
 bool exportCad(ExportFormat format, const std::string &filePath, const std::vector<Vector3> &vertices,
                const std::vector<Vector3i> &faces) {
-    if (filePath == "") {
+    if (filePath.empty()) {
         Logging::warning("Empty output file path", "CadProcessing");
         return false;
     }

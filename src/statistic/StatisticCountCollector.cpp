@@ -23,7 +23,7 @@ namespace ippp {
 StatisticCountCollector::StatisticCountCollector(const std::string &name) : StatisticCollector(name) {
 }
 
-void StatisticCountCollector::writeData(std::ostream &stream) {
+void StatisticCountCollector::writeData(std::ostream & /*stream*/) {
 }
 
 } /* namespace ippp */
