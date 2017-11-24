@@ -43,7 +43,7 @@ MobileRobot::MobileRobot(const unsigned int dim, const std::pair<VectorX, Vector
 Transform MobileRobot::getTransformation(const VectorX &config) const {
     if (m_dim != 6)
         return Transform::Identity();
-    else
+
         return util::poseVecToTransform(config);
 }
 

@@ -35,7 +35,7 @@ ModelFactoryFcl::ModelFactoryFcl() : ModelFactory("ModelFactory") {
 *  \date       2017-02-19
 */
 std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &filePath) {
-    if (filePath == "") {
+    if (filePath.empty()) {
         Logging::error("Empty file path", this);
         return nullptr;
     }
@@ -62,7 +62,7 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const std::string &
 
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const std::string &filePath) {
     std::vector<std::shared_ptr<ModelContainer>> models;
-    if (filePath == "") {
+    if (filePath.empty()) {
         Logging::error("Empty file path", this);
         return models;
     }
@@ -103,7 +103,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModels(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;
-    for (auto filePath : filePaths) {
+    for (const auto &filePath : filePaths) {
         model = createModel(filePath);
         if (model)
             models.push_back(model);

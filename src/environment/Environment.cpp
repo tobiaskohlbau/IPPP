@@ -115,10 +115,9 @@ void Environment::addObstacles(const std::vector<std::shared_ptr<ModelContainer>
 std::shared_ptr<ModelContainer> Environment::getObstacle(const size_t index) const {
     if (index < m_obstacles.size()) {
         return m_obstacles[index];
-    } else {
-        Logging::error("Obstacel index is to high!", this);
-        return nullptr;
     }
+    Logging::error("Obstacel index is to high!", this);
+    return nullptr;
 }
 
 /*!
@@ -164,9 +163,8 @@ std::shared_ptr<RobotBase> Environment::getRobot() const {
     if (m_robots.empty()) {
         Logging::error("No robot exists!", this);
         return nullptr;
-    } else {
-        return m_robots[0];
     }
+    return m_robots[0];
 }
 
 /*!
@@ -179,10 +177,9 @@ std::shared_ptr<RobotBase> Environment::getRobot() const {
 std::shared_ptr<RobotBase> Environment::getRobot(const size_t index) const {
     if (index < m_robots.size()) {
         return m_robots[index];
-    } else {
-        Logging::error("Robot index is out of range!", this);
-        return nullptr;
     }
+    Logging::error("Robot index is out of range!", this);
+    return nullptr;
 }
 
 /*!

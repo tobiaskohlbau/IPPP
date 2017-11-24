@@ -12,7 +12,7 @@
 
 using namespace ippp;
 
-bool computePath(std::string benchmarkDir, std::string queryPath, EnvironmentConfig config) {
+bool computePath(const std::string& benchmarkDir, const std::string& queryPath, EnvironmentConfig config) {
     const unsigned int dim = 6;
     // ModelFactoryFcl factoryFcl;
     // std::shared_ptr<ModelContainer> robotModel = factoryFcl.createModel(benchmarkDir + config.robotFile);
@@ -171,14 +171,15 @@ void testFCL() {
     
 }
 
-int main(int argc, char** argv) {
-//    std::string file = modelDir + "assembly/boxRot.dae";
-//    std::vector<Mesh> meshes;
-//    auto result = cad::importMeshes(file, meshes, 1, false, true);
-//    if (result)
-//        std::cout << "successful reading" << std::endl;
-//    for (int i = 0; i < meshes.size(); ++i)
-//        cad::exportCad(cad::ExportFormat::OBJ, std::to_string(i), meshes[i]);
+int main(int /*argc*/, char** /*argv*/) {
+    //    std::string file = modelDir + "assembly/boxRot.dae";
+    //    std::vector<Mesh> meshes;
+    //    auto result = cad::importMeshes(file, meshes, 1, false, true);
+    //    if (result)
+    //        std::cout << "successful reading" << std::endl;
+    //    for (int i = 0; i < meshes.size(); ++i)
+    //        cad::exportCad(cad::ExportFormat::OBJ, std::to_string(i),
+    //        meshes[i]);
 
     testFCL();
 

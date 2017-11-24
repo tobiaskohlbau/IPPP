@@ -37,7 +37,7 @@ typedef struct EnvironmentConfig {
     Vector6 obstacleConfig;
 } EnvironmentConfig_t;
 
-EnvironmentConfig readEnvironment(const std::string &path);
+EnvironmentConfig readEnvironment(const std::string &file);
 std::vector<Vector6> readQuery(const std::string &path);
 
 } /* namespace ippp */
