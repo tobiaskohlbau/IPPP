@@ -41,10 +41,10 @@ void simpleRRT() {
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner.getGraphNodes();
     std::vector<Transform> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
-    graphPoints.reserve(nodes.size());
-    for (auto& node : nodes)
+
+    for (auto & node : nodes)
         graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(node->getValues()));
-    // writer::writeVecsToFile<dim>(graphPoints, "example.ASC", 10);
+    //writer::writeVecsToFile<dim>(graphPoints, "example.ASC", 10);
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
@@ -112,6 +112,7 @@ void treeConnection() {
     std::vector<std::shared_ptr<Node<dim>>> nodes = plannerInitNode.getGraphNodes();
     std::vector<Transform> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
+
     graphPoints.reserve(nodes.size());
     for (auto& node : nodes)
         graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(node->getValues()));

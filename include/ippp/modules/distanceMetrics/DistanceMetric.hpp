@@ -32,7 +32,7 @@ template <unsigned int dim>
 class Node;
 
 /*!
-* \brief   Virtual class for the computation of distance costs from an Edge
+* \brief   Interface class for the computation of the distance costs between two nodes/configurations.
 * \author  Sascha Kaden
 * \date    2017-01-02
 */

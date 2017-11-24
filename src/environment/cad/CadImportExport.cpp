@@ -132,8 +132,7 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std
         }
         for (size_t j = 0; j < aimesh->mNumFaces; ++j) {
             if (aimesh->mFaces[j].mNumIndices > 2) {
-                mesh.faces.emplace_back(aimesh->mFaces[j].mIndices[0], aimesh->mFaces[j].mIndices[1],
-                                        aimesh->mFaces[j].mIndices[2]);
+                mesh.faces.emplace_back(aimesh->mFaces[j].mIndices[0], aimesh->mFaces[j].mIndices[1], aimesh->mFaces[j].mIndices[2]);
             } else {
                 Logging::warning("Face array is to short", "CadProcessing");
             }
