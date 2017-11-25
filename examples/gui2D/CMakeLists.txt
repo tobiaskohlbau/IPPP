@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------//
 
 find_package(OpenCV REQUIRED QUIET)
-if (OpenCV_VERSION VERSION_LESS "2.4.0")
+if(OpenCV_VERSION VERSION_LESS "2.4.0")
     message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
 elseif(OpenCV_VERSION VERSION_LESS "3.0.0")
     find_package(OpenCV REQUIRED QUIET COMPONENTS opencv_core opencv_highgui opencv_imgproc)
@@ -27,23 +27,24 @@ endif()
 
 find_package(Qt5Core)
 if(Qt5Core_FOUND)
-    find_package(Qt5Widgets)
-    find_package(Qt5Gui)
-    add_definitions(${QT_DEFINITIONS})
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+    find_package(Qt5Widgets REQUIRED)
+    find_package(Qt5Gui REQUIRED)
 
     QT5_WRAP_UI(UIS_HDRS
             ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.ui)
 
-    set(source
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.h
-        ${CMAKE_SOURCE_DIR}/examples/ui/Drawing2D.hpp
-        ${UIS_HDRS})
+    add_ippp_example(Gui2D main.cpp mainwindow.cpp ui Qt5::Core Qt5::Widgets Qt5::Gui ${OPENCV_LIBS})
+    target_compile_definitions(Gui2D
+        PRIVATE
+            ${QT_DEFINITIONS})
 
-    set(ADDITIONAL_LIBRARIES
-        ${OpenCV_LIBS})
-
-    ADD_IPPP_EXAMPLE(Gui2D "${source}" "${ADDITIONAL_LIBRARIES}")
-    qt5_use_modules(Gui2D Widgets Gui)
+    # needed for clang-cl, fixed in qt 5.9 which is not available from vcpkg right now
+    if (Qt5Gui_VERSION VERSION_EQUAL 5.8.0 AND ${CMAKE_CXX_COMPILER} MATCHES ".*clang-cl.*")
+        target_compile_definitions(Gui2D
+            PRIVATE
+                _HAS_RVALUE_REFERENCES)
+    endif()
 endif()

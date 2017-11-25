@@ -16,9 +16,4 @@
 #
 #-------------------------------------------------------------------------//
 
-set(source
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_SOURCE_DIR}/examples/ui/BenchmarkReader.h
-        ${CMAKE_SOURCE_DIR}/examples/ui/BenchmarkReader.cpp)
-
-ADD_IPPP_EXAMPLE(ParasolBenchmarks "${source}" "${ADDITIONAL_LIBRARIES}")
+add_ippp_example(ParasolBenchmarks main.cpp ui)

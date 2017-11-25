@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ui/BenchmarkReader.h>
+#include "BenchmarkReader.h"
 
 #include <fstream>
 #include <iostream>
