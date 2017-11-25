@@ -43,6 +43,7 @@ cache:
 #  assembly_informational_version: "{version}"
 
 install:
+  - git submodule update --init --recursive
   - vcpkg install eigen3:x64-windows
   - vcpkg install assimp:x64-windows
   - vcpkg install fcl:x64-windows
