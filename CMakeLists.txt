@@ -40,6 +40,7 @@ endmacro()
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 list(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
+#todo: workaround for the findassimp (no more difference of windows and linux because of the cmake of assimp)
 if (UNIX)
     find_package (assimp REQUIRED)
 else (UNIX)
