@@ -31,8 +31,7 @@ matrix:
     - platform: x64
       configuration: Release
 
-cache:
-  - c:\tools\vcpkg\installed\
+cache: c:\tools\vcpkg\installed\
 
 # enable patching of AssemblyInfo.* files
 #assembly_info:
@@ -48,6 +47,7 @@ install:
   - vcpkg install fcl:x64-windows
   - vcpkg install pqp:x64-windows
   - vcpkg install gtest:x64-windows
+  - vcpkg install gflags:x64-windows
 
 #---------------------------------#
 #       build configuration       #
