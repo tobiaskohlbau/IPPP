@@ -31,8 +31,6 @@ matrix:
     - platform: x64
       configuration: Release
 
-cache: c:\tools\vcpkg\installed\
-
 # enable patching of AssemblyInfo.* files
 #assembly_info:
 #  patch: true
@@ -48,6 +46,8 @@ install:
   - vcpkg install pqp:x64-windows
   - vcpkg install gtest:x64-windows
   - vcpkg install gflags:x64-windows
+
+cache: c:\tools\vcpkg\installed\ -> vcpkg_cache.txt
 
 #---------------------------------#
 #       build configuration       #
@@ -95,3 +95,4 @@ build_script:
 # to run your custom scripts instead of automatic tests
 test_script:
   - ctest
+
