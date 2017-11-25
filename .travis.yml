@@ -9,12 +9,6 @@ before_script:
   - sudo apt-get update
   - sudo apt-get -qq update
   - yes '' | sudo apt-get -y install gcc-4.9 g++-4.9
-  - sudo apt-get install libgtest-dev
-  - cd /usr/src/gtest
-  - sudo cmake CMakeLists.txt
-  - sudo make
-  - sudo cp *.a /usr/lib
-  - cd /home/travis/build/SaschaKaden
   - git clone https://github.com/SaschaKaden/IPPP_third_party.git
 
   # cmake
