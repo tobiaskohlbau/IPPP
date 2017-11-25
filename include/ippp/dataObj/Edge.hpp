@@ -57,6 +57,7 @@ class Edge {
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
+*  \param[in]  cost
 *  \date       2016-05-25
 */
 template <unsigned int dim>
@@ -68,7 +69,7 @@ Edge<dim>::Edge(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<
 /*!
 *  \brief      Return the euclidean length of the Edge
 *  \author     Sascha Kaden
-*  \param[out] length
+*  \param[out] cost
 *  \date       2016-05-25
 */
 template <unsigned int dim>
@@ -79,7 +80,7 @@ void Edge<dim>::setCost(const double cost) {
 /*!
 *  \brief      Return the euclidean length of the Edge
 *  \author     Sascha Kaden
-*  \param[out] length
+*  \param[out] cost
 *  \date       2016-05-25
 */
 template <unsigned int dim>

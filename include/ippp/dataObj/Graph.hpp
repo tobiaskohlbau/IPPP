@@ -110,7 +110,7 @@ Graph<dim>::~Graph() {
                 node->clearParent();
                 node->clearQueryParent();
                 node->clearChildren();
-				node->clearInvalidChildren();
+                node->clearInvalidChildren();
                 node = nullptr;
             }
         }
@@ -205,7 +205,7 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() const {
 }
 
 /*!
-* \brief      Search for nearrest neighbor
+* \brief      Search for nearest neighbor
 * \author     Sascha Kaden
 * \param[in]  Vector from where the search starts
 * \param[out] nearest neighbor Node
@@ -217,7 +217,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Vector<dim> &config)
 }
 
 /*!
-* \brief      Search for nearrest neighbor
+* \brief      Search for nearest neighbor
 * \author     Sascha Kaden
 * \param[in]  Node from where the search starts
 * \param[out] nearest neighbor Node
@@ -229,7 +229,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> &node) con
 }
 
 /*!
-* \brief      Search for nearrest neighbor
+* \brief      Search for nearest neighbor
 * \author     Sascha Kaden
 * \param[in]  Node from where the search starts
 * \param[out] nearest neighbor Node
@@ -419,6 +419,12 @@ void Graph<dim>::preserveNodePtr() {
     m_preserveNodePtr = true;
 }
 
+/*!
+* \brief      Return the NeighborFinder instance of the Graph
+* \author     Sascha Kaden
+* \param[out] NeighborFinder
+* \date       2017-04-03
+*/
 template <unsigned int dim>
 std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> Graph<dim>::getNeighborFinder() {
     return m_neighborFinder;
