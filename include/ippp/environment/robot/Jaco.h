@@ -25,7 +25,7 @@
 namespace ippp {
 
 /*!
-* \brief   Class for the jaco robot
+* \brief   Class for the Jaco robot
 * \author  Sascha Kaden
 * \date    2016-06-30
 */

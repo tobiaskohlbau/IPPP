@@ -17,38 +17,30 @@
 #-------------------------------------------------------------------------//
 
 find_package(GTest REQUIRED)
-SET(LIBRARIES IPPP ${GTEST_BOTH_LIBRARIES})
 
-MACRO(ADD_IPPP_TEST TEST_NAME BRANCH)
-    SET(EXE_NAME Test_${BRANCH}_${TEST_NAME})
+if(CMAKE_VERSION VERSION_LESS 3.5)
+    add_library(GTest::GTest UNKNOWN IMPORTED ${GTEST_LIBRARIES})
+    set_target_properties(GTest::GTest PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${GTEST_INCLUDE_DIRS}")
+    if(EXISTS "${GTEST_LIBRARIES}")
+        set_target_properties(GTest::GTest PROPERTIES IMPORTED_LOCATION "${GTEST_LIBRARIES}")
+    endif()
+
+    add_library(GTest::Main UNKNOWN IMPORTED ${GTEST_MAIN_LIBRARIES})
+    set_target_properties(GTest::Main PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${GTEST_INCLUDE_DIRS}")
+    if(EXISTS "${GTEST_MAIN_LIBRARIES}")
+        set_target_properties(GTest::Main PROPERTIES IMPORTED_LOCATION "${GTEST_MAIN_LIBRARIES}")
+    endif()
+endif()
+
+macro(ADD_IPPP_TEST TEST_NAME BRANCH)
+    set(EXE_NAME Test_${BRANCH}_${TEST_NAME})
     
     add_executable(${EXE_NAME} ${TEST_NAME}.cpp)
-    set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 11)
-    target_link_libraries(${EXE_NAME} ${LIBRARIES})
-    target_include_directories(${EXE_NAME} PUBLIC ${GTEST_INCLUDE_DIRS})
-    add_custom_command(TARGET ${EXE_NAME} POST_BUILD
-         COMMAND ${CMAKE_COMMAND} -E copy_directory
-             ${CMAKE_SOURCE_DIR}/tests/assets
-             ${CMAKE_CURRENT_BINARY_DIR}/assets/)
+    target_link_libraries(${EXE_NAME} IPPP GTest::GTest GTest::Main)
 
-    ADD_TEST(${TEST_NAME} ${EXE_NAME})
-ENDMACRO(ADD_IPPP_TEST)
+    add_test(${TEST_NAME} ${EXE_NAME})
+endmacro(ADD_IPPP_TEST)
 
-# from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
-MACRO(SUBDIRLIST result curdir)
-    FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
-    SET(dirlist "")
-    FOREACH(child ${children})
-        IF(IS_DIRECTORY ${curdir}/${child})
-            SET(dirlist ${dirlist} ${child})
-        ENDIF()
-    ENDFOREACH()
-    SET(${result} ${dirlist})
-ENDMACRO()
-
-SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
-list(REMOVE_ITEM SUBDIRS "assets")
-
-FOREACH(subdir ${SUBDIRS})
-    ADD_SUBDIRECTORY(${subdir})
-ENDFOREACH()
+foreach(subdir ${SUBDIRS})
+    add_subdirectory(${subdir})
+endforeach()

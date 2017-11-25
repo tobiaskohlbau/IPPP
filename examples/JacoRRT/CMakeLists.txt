@@ -16,7 +16,4 @@
 #
 #-------------------------------------------------------------------------//
 
-set(source
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
-
-ADD_IPPP_EXAMPLE(JacoRRT "${source}" "")
+add_ippp_example(JacoRRT main.cpp)

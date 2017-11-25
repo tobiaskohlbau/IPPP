@@ -92,7 +92,7 @@ Transform RobotBase::getPose() const {
 *  \date       2016-06-30
 */
 void RobotBase::setBaseModel(const std::shared_ptr<ModelContainer> &model) {
-    if (model->empty()) {
+    if (!model || model->empty()) {
         Logging::error("Empty base model", this);
         return;
     }
