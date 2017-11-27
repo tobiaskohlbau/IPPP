@@ -27,14 +27,11 @@ macro(ADD_IPPP_EXAMPLE name source)
             ${ARGN})
 endmacro()
 
+ADD_IPPP_EXAMPLE(GettingStarted GettingStarted.cpp)
+ADD_IPPP_EXAMPLE(JacoRRT JacoRRT.cpp)
+
 add_subdirectory(ui)
-
-subdirlist(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
-list(REMOVE_ITEM SUBDIRS "ui")
-list(REMOVE_ITEM SUBDIRS "assets")
-list(REMOVE_ITEM SUBDIRS "gui2D")
-
-foreach(subdir ${SUBDIRS})
-    add_subdirectory(${subdir})
-endforeach()
+add_subdirectory(Planner2D)
+add_subdirectory(gui2D)
+add_subdirectory(ParasolBenchmarks)
 
