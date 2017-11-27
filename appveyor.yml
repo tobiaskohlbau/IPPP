@@ -73,5 +73,5 @@ before_build:
 #---------------------------------#
 
 # to run your custom scripts instead of automatic tests
-#test_script:
-#  - ctest
+test_script:
+  - ctest
