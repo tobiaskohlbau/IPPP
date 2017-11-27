@@ -36,9 +36,6 @@ install:
   - vcpkg install eigen3:x64-windows
   - vcpkg install assimp:x64-windows
   - vcpkg install fcl:x64-windows
-  - vcpkg install pqp:x64-windows
-  - vcpkg install gtest:x64-windows
-  - vcpkg install gflags:x64-windows
 
 cache: c:\tools\vcpkg\installed\
 

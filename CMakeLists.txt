@@ -48,7 +48,6 @@ else (UNIX)
 endif ()
 find_package(fcl REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(PQP REQUIRED)
 find_package(Threads REQUIRED)
 
 # workarround: generated cmake config does not provide library target
@@ -67,6 +66,10 @@ set_target_properties(json::json PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${PRO
 
 add_library(gsl::gsl INTERFACE IMPORTED)
 set_target_properties(gsl::gsl PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/third_party/GSL/include")
+
+add_subdirectory(third_party/PQP
+    ${CMAKE_BINARY_DIR}/third_party/PQP
+    EXCLUDE_FROM_ALL)
 
 # copy assets
 execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
@@ -131,7 +134,7 @@ target_link_libraries(${PROJECT_NAME}
         assimp::assimp
         fcl
     PRIVATE
-        pqp::pqp)
+        PQP)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-pthread" pthread)
@@ -154,6 +157,22 @@ if(${BUILD_EXAMPLES})
     add_subdirectory(examples)
 endif()
 if(${BUILD_TESTS})
+    # Prevent overriding the parent project's compiler/linker
+    # settings on Windows
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest
+        ${CMAKE_BINARY_DIR}/third_party/googletest
+        EXCLUDE_FROM_ALL
+    )
+    if(WIN32)
+        # Prevent deprecated warnings
+        # https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-3-c4996
+        target_compile_definitions(gtest PRIVATE _CRT_SECURE_NO_WARNINGS)
+        target_compile_definitions(gtest PRIVATE _CRT_NONSTDC_NO_WARNINGS)
+        target_compile_definitions(gtest_main PRIVATE _CRT_SECURE_NO_WARNINGS)
+        target_compile_definitions(gtest_main PRIVATE _CRT_NONSTDC_NO_WARNINGS)
+    endif()
+
     enable_testing()
     add_subdirectory(tests)
 endif()
