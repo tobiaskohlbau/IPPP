@@ -16,8 +16,6 @@
 #
 #-------------------------------------------------------------------------//
 
-subdirlist(UNIT_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
-
-foreach(subdir ${UNIT_DIRS})
-    add_subdirectory(${subdir})
-endforeach()
+add_subdirectory(dataObj)
+add_subdirectory(module)
+add_subdirectory(utility)
