@@ -41,6 +41,7 @@ macro(ADD_IPPP_TEST TEST_NAME BRANCH)
     add_test(${TEST_NAME} ${EXE_NAME})
 endmacro(ADD_IPPP_TEST)
 
+SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 foreach(subdir ${SUBDIRS})
     add_subdirectory(${subdir})
 endforeach()

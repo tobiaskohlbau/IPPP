@@ -25,7 +25,7 @@ else()
     find_package(OpenCV REQUIRED QUIET COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
 endif()
 
-find_package(Qt5Core)
+find_package(Qt5Core QUIET)
 if(Qt5Core_FOUND)
     set(CMAKE_AUTOMOC ON)
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
