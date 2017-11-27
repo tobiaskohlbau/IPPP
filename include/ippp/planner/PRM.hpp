@@ -35,20 +35,20 @@ class PRM : public Planner<dim> {
     PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
 
-    bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads);
-    bool expand(const size_t numNodes, const size_t numThreads);
+    bool computePath(Vector<dim> start, Vector<dim> goal, size_t numNodes, size_t numThreads) override;
+    bool expand(size_t numNodes, size_t numThreads) override;
 
-    void startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads = 1);
-    void startPlannerPhase(const size_t nbOfThreads = 1);
+    void startSamplingPhase(size_t nbOfNodes, size_t nbOfThreads = 1);
+    void startPlannerPhase(size_t nbOfThreads = 1);
 
-    bool queryPath(const Vector<dim> start, const Vector<dim> goal);
+    bool queryPath(Vector<dim> start, Vector<dim> goal);
 
-    std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1);
+    std::vector<std::shared_ptr<Node<dim>>> getPathNodes() override;
+    std::vector<Vector<dim>> getPath(double posRes = 1, double oriRes = 0.1) override;
 
   protected:
-    void samplingPhase(const size_t nbOfNodes);
-    void plannerPhase(const size_t startNodeIndex, const size_t endNodeIndex);
+    void samplingPhase(size_t nbOfNodes);
+    void plannerPhase(size_t startNodeIndex, size_t endNodeIndex);
     std::shared_ptr<Node<dim>> connectNode(const Vector<dim> &config);
 
     double m_rangeSize;
@@ -258,10 +258,9 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
         }
         m_nodePath.push_back(std::shared_ptr<Node<dim>>(new Node<dim>(start)));
         return true;
-    } else {
-        Logging::info("Path could NOT be planned", this);
-        return false;
     }
+    Logging::info("Path could NOT be planned", this);
+    return false;
 }
 
 /*!

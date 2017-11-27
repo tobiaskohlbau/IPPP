@@ -36,13 +36,13 @@ class RRTStar : public RRT<dim> {
     RRTStar(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
             const std::shared_ptr<Graph<dim>> &graph);
 
-    bool connectGoalNode(const Vector<dim> goal) override;
+    bool connectGoalNode(Vector<dim> goal) override;
 
   protected:
-    std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec);
-    virtual void chooseParent(const Vector<dim> &newVec, std::shared_ptr<Node<dim>> &nearestNode,
+    std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randConfig) override;
+    virtual void chooseParent(const Vector<dim> &newConfig, std::shared_ptr<Node<dim>> &nearestNode,
                               std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
-    void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
+    void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
                 std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
     using Planner<dim>::m_collision;
@@ -121,7 +121,7 @@ void RRTStar<dim>::chooseParent(const Vector<dim> &newConfig, std::shared_ptr<No
     nearNodes = m_graph->getNearNodes(newConfig, m_stepSize);
 
     double nearestNodeCost = nearestNode->getCost();
-    for (auto nearNode : nearNodes) {
+    for (const auto &nearNode : nearNodes) {
         if (nearNode->getCost() < nearestNodeCost) {
             if (m_trajectory->checkTrajectory(newConfig, nearNode->getValues())) {
                 nearestNodeCost = nearNode->getCost();
@@ -143,7 +143,7 @@ template <unsigned int dim>
 void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
                           std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     double oldDist, newDist, edgeCost;
-    for (auto nearNode : nearNodes) {
+    for (const auto &nearNode : nearNodes) {
         if (nearNode != parentNode) {
             edgeCost = m_metric->calcDist(nearNode, newNode);
             oldDist = nearNode->getCost();
@@ -184,10 +184,9 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
         m_pathPlanned = true;
         Logging::info("Goal is connected", this);
         return true;
-    } else {
-        Logging::warning("Goal could NOT connected", this);
-        return false;
     }
+    Logging::warning("Goal could NOT connected", this);
+    return false;
 }
 
 } /* namespace ippp */

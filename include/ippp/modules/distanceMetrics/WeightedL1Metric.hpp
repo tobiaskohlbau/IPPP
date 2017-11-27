@@ -33,9 +33,9 @@ class WeightedL1Metric : public DistanceMetric<dim> {
   public:
     WeightedL1Metric();
     WeightedL1Metric(const Vector<dim> &weightVec);
-    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const;
-    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
-    void simplifyDist(double &dist) const;
+    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    void simplifyDist(double &dist) const override;
 
     void setWeightVec(const Vector<dim> &weight);
     Vector<dim> getWeightVec() const;

@@ -33,9 +33,9 @@ class ModelFactoryTriangle2D : public ModelFactory {
   public:
     ModelFactoryTriangle2D();
 
-    std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
-    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::string &filePath);
-    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths);
+    std::shared_ptr<ModelContainer> createModel(const std::string &filePath) override;
+    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::string &filePath) override;
+    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths) override;
     std::shared_ptr<ModelContainer> createModel(const std::vector<Triangle2D> &triangles);
 };
 

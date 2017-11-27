@@ -37,15 +37,15 @@ class TreePlanner : public Planner<dim> {
     TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
                 const std::shared_ptr<Graph<dim>> &graph);
 
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads);
-    virtual bool expand(const size_t numNodes, const size_t numThreads);
-    virtual bool setInitNode(const Vector<dim> start);
+    bool computePath(Vector<dim> start, Vector<dim> goal, size_t numNodes, size_t numThreads) override;
+    bool expand(size_t numNodes, size_t numThreads) override;
+    virtual bool setInitNode(Vector<dim> start);
 
     virtual bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1) = 0;
-    virtual bool connectGoalNode(const Vector<dim> goal) = 0;
+    virtual bool connectGoalNode(Vector<dim> goal) = 0;
 
-    std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1);
+    std::vector<std::shared_ptr<Node<dim>>> getPathNodes() override;
+    std::vector<Vector<dim>> getPath(double posRes = 1, double oriRes = 0.1) override;
     std::shared_ptr<Node<dim>> getInitNode() const;
     std::shared_ptr<Node<dim>> getGoalNode() const;
 
@@ -139,11 +139,10 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
         if (start == m_initNode->getValues()) {
             Logging::info("Equal start node, tree will be expanded", this);
             return true;
-        } else {
-            Logging::info("New start node, new tree will be created", this);
-            m_graph = std::make_shared<Graph<dim>>(m_graph->getSortCount(), m_graph->getNeighborFinder());
-            m_graph->sortTree();
         }
+        Logging::info("New start node, new tree will be created", this);
+        m_graph = std::make_shared<Graph<dim>>(m_graph->getSortCount(), m_graph->getNeighborFinder());
+        m_graph->sortTree();
     }
 
     if (m_collision->checkConfig(start)) {

@@ -43,11 +43,11 @@ class EnvironmentConfigurator : public Configurator {
     bool saveConfig(const std::string &filePath);
     bool loadConfig(const std::string &filePath);
 
-    void setWorkspaceProperties(const unsigned int workspaceDim, const AABB &workspaceBounding);
+    void setWorkspaceProperties(unsigned int workspaceDim, const AABB &workspaceBounding);
     void setObstaclePaths(const std::vector<std::string> &obstaclePaths);
     void addObstaclePath(const std::string &obstaclePath);
-    void setFactoryType(const FactoryType factoryType);
-    void setRobotType(const RobotType robotType, const std::string &robotFile = "");
+    void setFactoryType(FactoryType factoryType);
+    void setRobotType(RobotType robotType, const std::string &robotFile = "");
 
     std::shared_ptr<Environment> getEnvironment();
 

@@ -37,22 +37,22 @@ class SRT : public Planner<dim> {
     SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
 
-    bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads);
-    bool expand(const size_t numNodes, const size_t numThreads);
+    bool computePath(Vector<dim> start, Vector<dim> goal, size_t numNodes, size_t numThreads);
+    bool expand(size_t numNodes, size_t numThreads);
 
-    void startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads = 1);
+    void startSamplingPhase(size_t nbOfNodes, size_t nbOfThreads = 1);
     bool plannerPhase(std::vector<std::shared_ptr<Graph<dim>>> &trees);
 
-    bool queryPath(const Vector<dim> start, const Vector<dim> goal);
+    bool queryPath(Vector<dim> start, Vector<dim> goal);
     bool aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode);
     void expandNode(std::shared_ptr<Node<dim>> currentNode);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1);
+    std::vector<Vector<dim>> getPath(double trajectoryStepSize = 1);
 
   protected:
-    void samplingPhase(const size_t nbOfNodes, const size_t nbOfTrees);
-    std::shared_ptr<Graph<dim>> computeTree(const size_t nbOfNodes, const Vector<dim> &origin);
+    void samplingPhase(size_t nbOfNodes, size_t nbOfTrees);
+    std::shared_ptr<Graph<dim>> computeTree(size_t nbOfNodes, const Vector<dim> &origin);
 
     size_t m_nbOfTrees;
     std::vector<std::shared_ptr<Graph<dim>>> m_treeGraphs;

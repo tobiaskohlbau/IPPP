@@ -28,6 +28,7 @@
 #include <ippp/modules/pathModifier/PathModifier.hpp>
 #include <ippp/modules/sampling/Sampling.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <utility>
 
 namespace ippp {
 
@@ -39,9 +40,9 @@ namespace ippp {
 template <unsigned int dim>
 class PlannerOptions : public Identifier {
   public:
-    PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<DistanceMetric<dim>> &metric,
-                   const std::shared_ptr<Evaluator<dim>> &evalutor, const std::shared_ptr<PathModifier<dim>> &pathModifier,
-                   const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    PlannerOptions(std::shared_ptr<CollisionDetection<dim>> collision, std::shared_ptr<DistanceMetric<dim>> metric,
+                   std::shared_ptr<Evaluator<dim>> evaluator, std::shared_ptr<PathModifier<dim>> pathModifier,
+                   std::shared_ptr<Sampling<dim>> sampling, std::shared_ptr<TrajectoryPlanner<dim>> trajectory);
 
     void setCollisionDetection(const std::shared_ptr<CollisionDetection<dim>> &collision);
     std::shared_ptr<CollisionDetection<dim>> getCollisionDetection() const;
@@ -89,12 +90,12 @@ PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim
                                     const std::shared_ptr<Sampling<dim>> &sampling,
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
     : Identifier("PlannerOptions"),
-      m_collision(collision),
-      m_metric(metric),
-      m_evaluator(evaluator),
-      m_pathModifier(pathModifier),
-      m_sampling(sampling),
-      m_trajectory(trajectory) {
+      m_collision(std::move(collision)),
+      m_metric(std::move(metric)),
+      m_evaluator(std::move(evaluator)),
+      m_pathModifier(std::move(pathModifier)),
+      m_sampling(std::move(sampling)),
+      m_trajectory(std::move(trajectory)) {
 }
 
 /*!

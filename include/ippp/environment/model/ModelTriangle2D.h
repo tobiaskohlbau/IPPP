@@ -32,9 +32,9 @@ namespace ippp {
 class ModelTriangle2D : public ModelContainer {
   public:
     ModelTriangle2D();
-    bool empty() const;
-    void transformModel(const Transform &T);
-    void transformModel(const Vector6 &config);
+    bool empty() const override;
+    void transformModel(const Transform &T) override;
+    void transformModel(const Vector6 &config) override;
 
     std::vector<Triangle2D> m_triangles;
 };

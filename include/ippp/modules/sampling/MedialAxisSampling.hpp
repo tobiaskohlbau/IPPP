@@ -33,7 +33,7 @@ class MedialAxisSampling : public Sampling<dim> {
   public:
     MedialAxisSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                       const size_t attempts = 10, const size_t numDirs = 50);
+                       size_t attempts = 10, size_t numberDirs = 50);
 
     Vector<dim> getSample() override;
 

@@ -20,6 +20,7 @@
 #define COMPOSEEVALUATOR_HPP
 
 #include <ippp/modules/evaluator/Evaluator.hpp>
+#include <utility>
 
 namespace ippp {
 
@@ -33,9 +34,9 @@ enum class ComposeType { AND, OR };
 template <unsigned int dim>
 class ComposeEvaluator : public Evaluator<dim> {
   public:
-    ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, const ComposeType type);
+    ComposeEvaluator(std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type);
 
-    bool evaluate();
+    bool evaluate() override;
     void setQuery(const std::vector<Vector<dim>> &targets) override;
 
   protected:
@@ -51,7 +52,7 @@ class ComposeEvaluator : public Evaluator<dim> {
 */
 template <unsigned int dim>
 ComposeEvaluator<dim>::ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, const ComposeType type)
-    : Evaluator<dim>("ComposeEvaluator"), m_evaluators(evaluators), m_type(type) {
+    : Evaluator<dim>("ComposeEvaluator"), m_evaluators(std::move(evaluators)), m_type(type) {
 }
 
 /*!
@@ -68,13 +69,12 @@ bool ComposeEvaluator<dim>::evaluate() {
                 return false;
         
         return true;
-    } else {    // OR
-        for (auto &evaluator : m_evaluators)
-            if (evaluator->evaluate())
-                return true;
-        
-        return false;
-    }
+    }    // OR
+    for (auto &evaluator : m_evaluators)
+        if (evaluator->evaluate())
+            return true;
+
+    return false;
 }
 
 /*!

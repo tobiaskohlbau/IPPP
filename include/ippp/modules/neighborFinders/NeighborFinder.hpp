@@ -22,6 +22,7 @@
 #include <ippp/Identifier.h>
 #include <ippp/modules/distanceMetrics/DistanceMetric.hpp>
 #include <ippp/util/Logging.h>
+#include <utility>
 
 namespace ippp {
 
@@ -33,8 +34,8 @@ namespace ippp {
 template <unsigned int dim, class T>
 class NeighborFinder : public Identifier {
   public:
-    NeighborFinder(const std::string &name, const std::shared_ptr<DistanceMetric<dim>> &distanceMetric);
-    virtual ~NeighborFinder();
+    NeighborFinder(const std::string &name, std::shared_ptr<DistanceMetric<dim>> distanceMetric);
+    ~NeighborFinder() override;
 
     virtual void addNode(const Vector<dim> &config, const T &node) = 0;
     virtual void rebaseSorted(std::vector<T> &nodes) = 0;
@@ -54,7 +55,7 @@ class NeighborFinder : public Identifier {
 */
 template <unsigned int dim, class T>
 NeighborFinder<dim, T>::NeighborFinder(const std::string &name, const std::shared_ptr<DistanceMetric<dim>> &distanceMetric)
-    : Identifier(name), m_metric(distanceMetric) {
+    : Identifier(name), m_metric(std::move(distanceMetric)) {
 }
 
 template <unsigned int dim, class T>

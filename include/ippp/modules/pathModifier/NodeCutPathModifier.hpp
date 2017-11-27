@@ -35,7 +35,7 @@ class NodeCutPathModifier : public PathModifier<dim> {
                         const std::shared_ptr<CollisionDetection<dim>> &collision,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
-    std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
+    std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const override;
 
   protected:
     using PathModifier<dim>::m_collision;

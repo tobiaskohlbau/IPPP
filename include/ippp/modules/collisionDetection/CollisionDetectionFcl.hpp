@@ -26,6 +26,7 @@
 #include <ippp/environment/robot/SerialRobot.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/util/UtilCollision.hpp>
+#include <memory>
 
 namespace ippp {
 
@@ -38,7 +39,7 @@ template <unsigned int dim>
 class CollisionDetectionFcl : public CollisionDetection<dim> {
   public:
     CollisionDetectionFcl(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
+    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr) override;
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   private:
@@ -79,8 +80,7 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<Environm
     m_workspaceBounding = environment->getSpaceBoundary();
 
     if (robot->getBaseModel() != nullptr && !robot->getBaseModel()->empty()) {
-        m_baseModel =
-            std::shared_ptr<FCLModel>(new FCLModel(std::static_pointer_cast<ModelFcl>(robot->getBaseModel())->m_fclModel));
+        m_baseModel = std::make_shared<FCLModel>(std::static_pointer_cast<ModelFcl>(robot->getBaseModel())->m_fclModel);
         m_baseMeshAvaible = true;
     } else {
         Logging::error("Empty base model", this);
@@ -89,8 +89,7 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<Environm
 
     if (!environment->getObstacles().empty()) {
         for (auto &obstacle : environment->getObstacles()) {
-            m_obstacles.push_back(
-                std::shared_ptr<FCLModel>(new FCLModel(std::static_pointer_cast<ModelFcl>(obstacle)->m_fclModel)));
+            m_obstacles.push_back(std::make_shared<FCLModel>(std::static_pointer_cast<ModelFcl>(obstacle)->m_fclModel));
             m_workspaceAvaible = true;
         }
     } else {
@@ -102,15 +101,15 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<Environm
         std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
         if (!jointModels.empty()) {
             bool emptyJoint = false;
-            for (auto model : jointModels) {
+            for (const auto &model : jointModels) {
                 if (!model || model->empty()) {
                     emptyJoint = true;
                 }
             }
             if (!emptyJoint) {
                 for (unsigned int i = 0; i < dim; ++i) {
-                    m_jointModels.push_back(std::shared_ptr<FCLModel>(
-                        new FCLModel(std::static_pointer_cast<ModelFcl>(serialRobot->getModelFromJoint(i))->m_fclModel)));
+                    m_jointModels.push_back(std::make_shared<FCLModel>(
+                        std::static_pointer_cast<ModelFcl>(serialRobot->getModelFromJoint(i))->m_fclModel));
                 }
             } else {
                 Logging::error("Emtpy joint model", this);
@@ -131,12 +130,12 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<Environm
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
     CollisionRequest collisionRequest = this->m_request;
-    if (request)
+    if (request != nullptr)
         collisionRequest = *request;
 
     if (m_environment->getRobot()->getRobotCategory() == RobotCategory::mobile)
         return checkMobileRobot(config, collisionRequest);
-    else
+
         return checkSerialRobot(config, collisionRequest);
 }
 
@@ -227,7 +226,7 @@ bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &config, con
     Transform T = m_environment->getRobot()->getTransformation(config);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {
-        for (auto obstacle : m_obstacles)
+        for (const auto &obstacle : m_obstacles)
             if (checkFCL(obstacle, m_baseModel, m_identity, T))
                 return true;
     }

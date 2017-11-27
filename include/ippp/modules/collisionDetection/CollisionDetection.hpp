@@ -36,7 +36,7 @@ namespace ippp {
 template <unsigned int dim>
 class CollisionDetection : public Identifier {
   public:
-    CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment,
+    CollisionDetection(const std::string &name, std::shared_ptr<Environment> environment,
                        const CollisionRequest &request = CollisionRequest());
     virtual bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr,
                              CollisionResult *result = nullptr) = 0;
@@ -59,9 +59,9 @@ class CollisionDetection : public Identifier {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment,
+CollisionDetection<dim>::CollisionDetection(const std::string &name, std::shared_ptr<Environment> environment,
                                             const CollisionRequest &request)
-    : Identifier(name), m_environment(environment), m_request(request) {
+    : Identifier(name), m_environment(std::move(environment)), m_request(request) {
     Logging::debug("Initialize", this);
 }
 

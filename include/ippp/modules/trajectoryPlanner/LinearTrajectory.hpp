@@ -32,10 +32,10 @@ template <unsigned int dim>
 class LinearTrajectory : public TrajectoryPlanner<dim> {
   public:
     LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Environment> &environment,
-                     const double posRes = 1, const double oriRes = 0.1);
+                     double posRes = 1, double oriRes = 0.1);
 
-    std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
-    std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
+    std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) override;
+    std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) override;
 
   private:
     using TrajectoryPlanner<dim>::m_collision;

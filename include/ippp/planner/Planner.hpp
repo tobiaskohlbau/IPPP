@@ -29,6 +29,7 @@
 #include <ippp/types.h>
 #include <ippp/util/UtilEnvironment.hpp>
 #include <ippp/util/UtilPlanner.hpp>
+#include <utility>
 
 namespace ippp {
 
@@ -40,22 +41,21 @@ namespace ippp {
 template <unsigned int dim>
 class Planner : public Identifier {
   public:
-    ~Planner();
+    ~Planner() override;
 
   protected:
     Planner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
-            const std::shared_ptr<Graph<dim>> &graph);
+            std::shared_ptr<Graph<dim>> graph);
 
   public:
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads) = 0;
-    virtual bool expand(const size_t numNode, const size_t numthreads) = 0;
+    virtual bool computePath(Vector<dim> start, Vector<dim> goal, size_t numNodes, size_t numThreads) = 0;
+    virtual bool expand(size_t numNode, size_t numthreads) = 0;
 
     std::shared_ptr<Graph<dim>> getGraph();
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
-    virtual std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1) = 0;
+    virtual std::vector<Vector<dim>> getPath(double posRes = 1, double oriRes = 0.1) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
-    std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, const double posRes,
-                                              const double oriRes);
+    std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, double posRes, double oriRes);
 
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
@@ -79,8 +79,7 @@ class Planner : public Identifier {
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Planner<dim>::~Planner() {
-}
+Planner<dim>::~Planner() = default;
 
 /*!
 *  \brief      Constructor of the class Planner
@@ -97,7 +96,7 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
       m_collision(options.getCollisionDetection()),
       m_environment(environment),
       m_evaluator(options.getEvaluator()),
-      m_graph(graph),
+      m_graph(std::move(graph)),
       m_metric(options.getDistanceMetric()),
       m_options(options),
       m_pathModifier(options.getPathModifier()),
@@ -155,7 +154,8 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     std::vector<Vector<dim>> path;
     for (size_t i = 0; i < smoothedNodes.size() - 1; ++i) {
         path.push_back(smoothedNodes[i]->getValues());
-        for (auto config : m_trajectory->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues()))
+        for (const auto &config :
+             m_trajectory->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues()))
             path.push_back(config);
     }
     path.push_back(smoothedNodes.back()->getValues());

@@ -31,9 +31,10 @@ namespace ippp {
 template <unsigned int dim>
 class CollisionDetectionAlwaysValid : public CollisionDetection<dim> {
   public:
-    CollisionDetectionAlwaysValid(const std::shared_ptr<Environment> &environmen, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(std::vector<Vector<dim>> &config);
+    CollisionDetectionAlwaysValid(const std::shared_ptr<Environment> &environment,
+                                  const CollisionRequest &request = CollisionRequest());
+    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr) override;
+    bool checkTrajectory(std::vector<Vector<dim>> &config) override;
 };
 
 /*!

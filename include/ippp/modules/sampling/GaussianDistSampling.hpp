@@ -31,9 +31,10 @@ namespace ippp {
 template <unsigned int dim>
 class GaussianDistSampling : public Sampling<dim> {
   public:
-    GaussianDistSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                     const size_t attempts = 10, const double maxDist = 15);
+    GaussianDistSampling(const std::shared_ptr<Environment> &environment,
+                         const std::shared_ptr<CollisionDetection<dim>> &collision,
+                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
+                         size_t attempts = 10, double maxDist = 15);
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;

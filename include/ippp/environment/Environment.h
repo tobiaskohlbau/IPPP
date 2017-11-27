@@ -19,7 +19,7 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
-#include <assert.h>
+#include <cassert>
 #include <string>
 #include <vector>
 
@@ -38,21 +38,20 @@ enum class BodyType { Planar, Volumetric };
 */
 class Environment : public Identifier {
   public:
-    Environment(const unsigned int workspaceDim, const AABB &spaceBoundary);
-    Environment(const unsigned int workspaceDim, const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot);
-    Environment(const unsigned int workspaceDim, const AABB &spaceBoundary,
-                const std::vector<std::shared_ptr<RobotBase>> &robots);
-    ~Environment();
+    Environment(unsigned int workspaceDim, const AABB &spaceBoundary);
+    Environment(unsigned int workspaceDim, const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot);
+    Environment(unsigned int workspaceDim, const AABB &spaceBoundary, const std::vector<std::shared_ptr<RobotBase>> &robots);
+    ~Environment() override;
 
     void addObstacle(const std::shared_ptr<ModelContainer> &model);
     void addObstacles(const std::vector<std::shared_ptr<ModelContainer>> &models);
-    std::shared_ptr<ModelContainer> getObstacle(const size_t index) const;
+    std::shared_ptr<ModelContainer> getObstacle(size_t index) const;
     std::vector<std::shared_ptr<ModelContainer>> getObstacles() const;
     size_t getObstacleNum() const;
 
     void addRobot(const std::shared_ptr<RobotBase> &robot);
     std::shared_ptr<RobotBase> getRobot() const;
-    std::shared_ptr<RobotBase> getRobot(const size_t index) const;
+    std::shared_ptr<RobotBase> getRobot(size_t index) const;
     std::vector<std::shared_ptr<RobotBase>> getRobots() const;
     size_t numRobots() const;
 

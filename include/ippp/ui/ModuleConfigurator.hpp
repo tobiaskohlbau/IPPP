@@ -71,26 +71,25 @@ class ModuleConfigurator : public Configurator {
     std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner();
 
     PlannerOptions<dim> getPlannerOptions();
-    PRMOptions<dim> getPRMOptions(const double rangeSize);
-    RRTOptions<dim> getRRTOptions(const double stepSize);
-    SRTOptions<dim> getSRTOptions(const unsigned int nbOfTrees);
+    PRMOptions<dim> getPRMOptions(double rangeSize);
+    RRTOptions<dim> getRRTOptions(double stepSize);
+    SRTOptions<dim> getSRTOptions(unsigned int nbOfTrees);
 
     void setEnvironment(const std::shared_ptr<Environment> &environment);
-    void setCollisionType(const CollisionType type);
-    void setMetricType(const MetricType type);
-    void setMetricWeightVec(const Vector<dim> vector);
-    void setEvaluatorType(const EvaluatorType type);
-    void setEvaluatorProperties(const double queryEvaluatorDist, const size_t duration);
-    void setGraphSortCount(const size_t count);
-    void setNeighborFinderType(const NeighborType type);
-    void setPathModifierType(const PathModifierType type);
-    void setSamplerType(const SamplerType type);
-    void setSamplerProperties(const std::string &seed, const double gridResolution);
-    void setSamplingProperties(const size_t samplingAttempts = 10, const double samplingDist = 10,
-                               const size_t medialAxisDirs = 15);
-    void setSamplingType(const SamplingType type);
-    void setTrajectoryType(const TrajectoryType type);
-    void setTrajectoryProperties(const double posRes, const double oriRes);
+    void setCollisionType(CollisionType type);
+    void setMetricType(MetricType type);
+    void setMetricWeightVec(Vector<dim> vector);
+    void setEvaluatorType(EvaluatorType type);
+    void setEvaluatorProperties(double queryEvaluatorDist, size_t duration);
+    void setGraphSortCount(size_t count);
+    void setNeighborFinderType(NeighborType type);
+    void setPathModifierType(PathModifierType type);
+    void setSamplerType(SamplerType type);
+    void setSamplerProperties(const std::string &seed, double gridResolution);
+    void setSamplingProperties(size_t samplingAttempts = 10, double samplingDist = 10, size_t medialAxisDirs = 15);
+    void setSamplingType(SamplingType type);
+    void setTrajectoryType(TrajectoryType type);
+    void setTrajectoryProperties(double posRes, double oriRes);
 
   protected:
     void initializeModules();

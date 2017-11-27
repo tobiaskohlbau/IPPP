@@ -20,8 +20,9 @@
 #define MAPGENERATOR_HPP
 
 #include <ippp/Identifier.h>
-#include <ippp/modules/sampler/Sampler.hpp>
 #include <ippp/environment/cad/CadProcessing.h>
+#include <ippp/modules/sampler/Sampler.hpp>
+#include <utility>
 
 namespace ippp {
 
@@ -35,11 +36,11 @@ namespace ippp {
 template <unsigned int dim>
 class MapGenerator : public Identifier {
   public:
-    MapGenerator(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::shared_ptr<Sampler<dim>> &sampler);
-    std::vector<Mesh> generateMap(const size_t numObstacles, const Vector<dim> &minExtensions, const Vector<dim> &maxExtensions);
+    MapGenerator(Vector<dim> minBoundary, Vector<dim> maxBoundary, std::shared_ptr<Sampler<dim>> sampler);
+    std::vector<Mesh> generateMap(size_t numObstacles, const Vector<dim> &minExtensions, const Vector<dim> &maxExtensions);
 
   protected:
-    bool checkBounding(const Vector<dim> &sample, const Vector<dim> &extension);
+    bool checkBounding(const Vector<dim> &sample, const Vector<dim> &ext);
 
     Vector<dim> m_minBoundary;
     Vector<dim> m_maxBoundary;
@@ -57,7 +58,10 @@ class MapGenerator : public Identifier {
 template <unsigned int dim>
 MapGenerator<dim>::MapGenerator(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary,
                                 const std::shared_ptr<Sampler<dim>> &sampler)
-    : Identifier("MapGenerator"), m_minBoundary(minBoundary), m_maxBoundary(maxBoundary), m_sampler(sampler) {
+    : Identifier("MapGenerator"),
+      m_minBoundary(std::move(minBoundary)),
+      m_maxBoundary(std::move(maxBoundary)),
+      m_sampler(std::move(sampler)) {
 }
 
 /*!
@@ -85,15 +89,15 @@ std::vector<Mesh> MapGenerator<dim>::generateMap(const size_t numObstacles, cons
             continue;
         }
 
-        int faceCount = static_cast<int>(mesh.vertices.size());
+        auto faceCount = static_cast<int>(mesh.vertices.size());
         if (dim == 2) {
             mesh.vertices.push_back(Vector3(sample[0], sample[1], 0));
             mesh.vertices.push_back(Vector3(sample[0] + ext[0], sample[1], 0));
             mesh.vertices.push_back(Vector3(sample[0], sample[1] + ext[1], 0));
             mesh.vertices.push_back(Vector3(sample[0] + ext[0], sample[1] + ext[1], 0));
 
-            mesh.faces.push_back(Vector3i(faceCount, faceCount + 1, faceCount + 2));
-            mesh.faces.push_back(Vector3i(faceCount + 1, faceCount + 2, faceCount + 3));
+            mesh.faces.emplace_back(faceCount, faceCount + 1, faceCount + 2);
+            mesh.faces.emplace_back(faceCount + 1, faceCount + 2, faceCount + 3);
         }
 
         if (dim == 3) {
@@ -106,18 +110,18 @@ std::vector<Mesh> MapGenerator<dim>::generateMap(const size_t numObstacles, cons
             mesh.vertices.push_back(Vector3(sample[0] + ext[0], sample[1] + ext[1], sample[2] + ext[2]));
             mesh.vertices.push_back(Vector3(sample[0], sample[1] + ext[1], sample[2] + ext[2]));
 
-            mesh.faces.push_back(Vector3i(faceCount, faceCount + 2, faceCount + 1));
-            mesh.faces.push_back(Vector3i(faceCount, faceCount + 3, faceCount + 2));
-            mesh.faces.push_back(Vector3i(faceCount + 1, faceCount + 2, faceCount + 6));
-            mesh.faces.push_back(Vector3i(faceCount + 6, faceCount + 5, faceCount + 1));
-            mesh.faces.push_back(Vector3i(faceCount + 4, faceCount + 5, faceCount + 6));
-            mesh.faces.push_back(Vector3i(faceCount + 6, faceCount + 7, faceCount + 4));
-            mesh.faces.push_back(Vector3i(faceCount + 2, faceCount + 3, faceCount + 6));
-            mesh.faces.push_back(Vector3i(faceCount + 6, faceCount + 3, faceCount + 7));
-            mesh.faces.push_back(Vector3i(faceCount, faceCount + 7, faceCount + 3));
-            mesh.faces.push_back(Vector3i(faceCount, faceCount + 4, faceCount + 7));
-            mesh.faces.push_back(Vector3i(faceCount, faceCount + 1, faceCount + 5));
-            mesh.faces.push_back(Vector3i(faceCount, faceCount + 5, faceCount + 4));
+            mesh.faces.emplace_back(faceCount, faceCount + 2, faceCount + 1);
+            mesh.faces.emplace_back(faceCount, faceCount + 3, faceCount + 2);
+            mesh.faces.emplace_back(faceCount + 1, faceCount + 2, faceCount + 6);
+            mesh.faces.emplace_back(faceCount + 6, faceCount + 5, faceCount + 1);
+            mesh.faces.emplace_back(faceCount + 4, faceCount + 5, faceCount + 6);
+            mesh.faces.emplace_back(faceCount + 6, faceCount + 7, faceCount + 4);
+            mesh.faces.emplace_back(faceCount + 2, faceCount + 3, faceCount + 6);
+            mesh.faces.emplace_back(faceCount + 6, faceCount + 3, faceCount + 7);
+            mesh.faces.emplace_back(faceCount, faceCount + 7, faceCount + 3);
+            mesh.faces.emplace_back(faceCount, faceCount + 4, faceCount + 7);
+            mesh.faces.emplace_back(faceCount, faceCount + 1, faceCount + 5);
+            mesh.faces.emplace_back(faceCount, faceCount + 5, faceCount + 4);
         }
         meshes.push_back(mesh);
     }

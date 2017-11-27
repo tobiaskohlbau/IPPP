@@ -36,9 +36,9 @@ class Node;
 template <unsigned int dim>
 class Edge {
   public:
-    Edge(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target, const double cost);
+    Edge(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target, double cost);
 
-    void setCost(const double cost);
+    void setCost(double cost);
     double getCost() const;
 
     void setSource(const std::shared_ptr<Node<dim>> &source);

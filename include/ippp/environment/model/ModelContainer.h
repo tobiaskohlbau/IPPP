@@ -33,7 +33,7 @@ namespace ippp {
 */
 class ModelContainer : public Identifier {
   public:
-    virtual ~ModelContainer();
+    ~ModelContainer() override;
 
   protected:
     ModelContainer(const std::string &name, const AABB &boundingBox = AABB());

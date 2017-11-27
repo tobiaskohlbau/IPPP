@@ -31,8 +31,8 @@ namespace ippp {
 class SerialRobot2D : public SerialRobot {
   public:
     SerialRobot2D();
-    Transform directKinematic(const VectorX &angles) const;
-    std::vector<Transform> getJointTrafos(const VectorX &angles) const;
+    Transform directKinematic(const VectorX &angles) const override;
+    std::vector<Transform> getJointTrafos(const VectorX &angles) const override;
 };
 
 } /* namespace ippp */

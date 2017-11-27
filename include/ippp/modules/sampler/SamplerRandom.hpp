@@ -33,7 +33,7 @@ class SamplerRandom : public Sampler<dim> {
   public:
     SamplerRandom(const std::shared_ptr<Environment> &environment, const std::string &seed = "");
     SamplerRandom(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::string &seed = "");
-    virtual Vector<dim> getSample();
+    Vector<dim> getSample() override;
 
   protected:
     using Sampler<dim>::m_minBoundary;

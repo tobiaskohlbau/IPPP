@@ -31,10 +31,10 @@ namespace ippp {
 */
 class SerialRobot : public RobotBase {
   public:
-    SerialRobot(const std::string &name, const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
+    SerialRobot(const std::string &name, unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
                 const std::vector<DofType> &dofTypes);
 
-    virtual Transform getTransformation(const VectorX &config) const;
+    Transform getTransformation(const VectorX &config) const override;
     virtual Transform directKinematic(const VectorX &angles) const = 0;
     virtual std::vector<Transform> getJointTrafos(const VectorX &angles) const = 0;
     std::vector<Transform> getLinkTrafos(const VectorX &angles) const;
@@ -47,7 +47,7 @@ class SerialRobot : public RobotBase {
     void setJoints(const std::vector<Joint> &joints);
     size_t getNbJoints() const;
 
-    std::shared_ptr<ModelContainer> getModelFromJoint(const size_t jointIndex) const;
+    std::shared_ptr<ModelContainer> getModelFromJoint(size_t jointIndex) const;
     std::vector<std::shared_ptr<ModelContainer>> getJointModels() const;
 
     void saveMeshConfig(const VectorX &angles);

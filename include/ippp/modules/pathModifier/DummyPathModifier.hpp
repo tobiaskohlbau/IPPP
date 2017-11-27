@@ -34,7 +34,7 @@ class DummyPathModifier : public PathModifier<dim> {
     DummyPathModifier(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
                       const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
-    std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
+    std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const override;
 
   protected:
 };

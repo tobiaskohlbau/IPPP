@@ -37,11 +37,7 @@ bool checkDimensions(const std::shared_ptr<Environment> &environment) {
     for (auto &robot : environment->getRobots()) {
         robotDims += robot->getDim();
     }
-    if (robotDims == dim) {
-        return true;
-    } else {
-        return false;
-    }
+    return robotDims == dim;
 }
 
 } /* namespace util */

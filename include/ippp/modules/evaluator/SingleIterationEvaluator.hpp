@@ -33,7 +33,7 @@ class SingleIterationEvaluator : public Evaluator<dim> {
   public:
     SingleIterationEvaluator();
 
-    bool evaluate();
+    bool evaluate() override;
 
   protected:
     bool m_firstEvaluation = true;
@@ -60,9 +60,8 @@ bool SingleIterationEvaluator<dim>::evaluate() {
     if (m_firstEvaluation) {
         m_firstEvaluation = false;
         return false;
-    } else {
-        return true;
     }
+    return true;
 }
 
 } /* namespace ippp */

@@ -31,12 +31,12 @@ namespace ippp {
 template <unsigned int dim>
 class RRTOptions : public PlannerOptions<dim> {
   public:
-    RRTOptions(const double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    RRTOptions(double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
-    void setStepSize(const double stepSize);
+    void setStepSize(double stepSize);
     double getStepSize() const;
 
   private:

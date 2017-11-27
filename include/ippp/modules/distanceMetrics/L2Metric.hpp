@@ -32,9 +32,9 @@ template <unsigned int dim>
 class L2Metric : public DistanceMetric<dim> {
   public:
     L2Metric();
-    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const;
-    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
-    void simplifyDist(double &dist) const;
+    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    void simplifyDist(double &dist) const override;
 };
 
 /*!

@@ -32,9 +32,9 @@ namespace ippp {
 class PointModel : public ModelContainer {
   public:
     PointModel();
-    bool empty() const;
-    void transformModel(const Transform &T);
-    void transformModel(const Vector6 &config);
+    bool empty() const override;
+    void transformModel(const Transform &T) override;
+    void transformModel(const Vector6 &config) override;
 };
 
 } /* namespace ippp */

@@ -23,6 +23,7 @@
 #include <ippp/dataObj/Node.hpp>
 #include <ippp/modules/neighborFinders/KDTree.hpp>
 #include <ippp/util/Logging.h>
+#include <utility>
 
 namespace ippp {
 
@@ -34,23 +35,23 @@ namespace ippp {
 template <unsigned int dim>
 class Graph : public Identifier {
   public:
-    Graph(const size_t sortCount, const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder);
-    ~Graph();
+    Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder);
+    ~Graph() override;
 
     bool addNode(const std::shared_ptr<Node<dim>> &node);
     void addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &nodes);
     bool containNode(const std::shared_ptr<Node<dim>> &node);
 
-    std::shared_ptr<Node<dim>> getNode(const size_t index) const;
+    std::shared_ptr<Node<dim>> getNode(size_t index) const;
     std::shared_ptr<Node<dim>> getNode(const Vector<dim> &config) const;
     std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
 
     std::shared_ptr<Node<dim>> getNearestNode(const Vector<dim> &config) const;
     std::shared_ptr<Node<dim>> getNearestNode(const Node<dim> &node) const;
     std::shared_ptr<Node<dim>> getNearestNode(const std::shared_ptr<Node<dim>> &node) const;
-    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Vector<dim> &config, const double range) const;
-    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, const double range) const;
-    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, const double range) const;
+    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Vector<dim> &config, double range) const;
+    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, double range) const;
+    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(std::shared_ptr<Node<dim>> node, double range) const;
 
     void sortTree();
     bool eraseNode(const std::shared_ptr<Node<dim>> &node);
@@ -91,7 +92,7 @@ class Graph : public Identifier {
 */
 template <unsigned int dim>
 Graph<dim>::Graph(const size_t sortCount, const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder)
-    : Identifier("Graph"), m_sortCount(sortCount), m_neighborFinder(neighborFinder) {
+    : Identifier("Graph"), m_sortCount(sortCount), m_neighborFinder(std::move(neighborFinder)) {
     m_autoSort = (sortCount != 0);
     // reserve memory for the node vector to reduce computation time at new memory allocation
     m_nodes.reserve(10000);
@@ -173,7 +174,7 @@ template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const size_t index) const {
     if (index < m_nodes.size())
         return m_nodes[index];
-    else
+
         return nullptr;
 }
 
@@ -189,7 +190,7 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const 
     auto nearestNode = m_neighborFinder->searchNearestNeighbor(config);
     if (nearestNode && nearestNode->getValues().isApprox(config, EPSILON))
         return nearestNode;
-    else
+
         return nullptr;
 }
 

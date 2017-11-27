@@ -35,8 +35,8 @@ template <unsigned int dim>
 class CollisionDetection2D : public CollisionDetection<dim> {
   public:
     CollisionDetection2D(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(std::vector<Vector<dim>> &configs);
+    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr) override;
+    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   private:
     bool checkPoint2D(double x, double y);
@@ -66,7 +66,7 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
     if (m_environment->getObstacleNum() == 0) {
         Logging::warning("Empty workspace", this);
     } else {
-        for (auto obstacle : m_environment->getObstacles())
+        for (const auto &obstacle : m_environment->getObstacles())
             m_obstacles.push_back(obstacle->m_mesh);
     }
 

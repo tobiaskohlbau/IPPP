@@ -72,17 +72,11 @@ std::shared_ptr<Node<dim>> removeMinFromList(std::vector<std::shared_ptr<Node<di
 */
 template <unsigned int dim>
 bool contains(const std::vector<std::shared_ptr<Node<dim>>> &list, const std::shared_ptr<Node<dim>> &node) {
-    if (std::find(list.begin(), list.end(), node) != list.end())
-        return true;
-    else
-        return false;
+    return std::find(list.begin(), list.end(), node) != list.end();
 }
 
 static bool contains(const std::string &string, const std::string &subject) {
-    if (string.find(subject) != std::string::npos)
-        return true;
-    else
-        return false;
+    return string.find(subject) != std::string::npos;
 }
 
 /*!
@@ -93,7 +87,7 @@ static bool contains(const std::string &string, const std::string &subject) {
 */
 static void trimWhitespaces(std::string &str) {
     size_t first = str.find_first_not_of(' ');
-    if (str.npos == first)
+    if (std::string::npos == first)
         return;
 
     size_t last = str.find_last_not_of(' ');

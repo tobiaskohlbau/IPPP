@@ -47,13 +47,11 @@ enum class ExportFormat {
     EXTENSIBLE_3D
 };
 
-bool importMesh(const std::string &filePath, Mesh &mesh, const double scale = 1, const bool calcNormals = false,
-                const bool useTrafo = true);
-bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const double scale = 1, const bool calcNormals = false,
-                  const bool useTrafo = true);
+bool importMesh(const std::string &filePath, Mesh &mesh, double scale = 1, bool calcNormals = false, bool useTrafo = true);
+bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, double scale = 1, bool calcNormals = false,
+                  bool useTrafo = true);
 Matrix4 importTransformation(const std::string &filePath);
-void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std::vector<Mesh> &meshes,
-               const bool useTrafo = true);
+void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std::vector<Mesh> &meshes, bool useTrafo = true);
 bool importBYU(const std::string &filePath, Mesh &mesh);
 
 bool exportCad(ExportFormat format, const std::string &filePath, const Mesh &mesh);

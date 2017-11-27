@@ -36,12 +36,12 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<dim> {
   public:
     CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment,
                                     const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
+    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr) override;
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   private:
     bool checkTriangles(const Transform &T, const std::vector<Triangle2D> &triangles);
-    bool lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b, const Vector3 c);
+    bool lineTriangle(Vector3 &p, Vector3 &q, Vector3 &a, Vector3 &b, Vector3 &c);
 
     std::shared_ptr<ModelContainer> m_robotModel;
     std::vector<Triangle2D> m_baseTriangles;
@@ -74,7 +74,7 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
     if (m_environment->getObstacleNum() == 0) {
         Logging::warning("Empty workspace", this);
     } else {
-        for (auto obstacle : m_environment->getObstacles())
+        for (const auto &obstacle : m_environment->getObstacles())
             m_obstacles.push_back(obstacle->m_mesh);
     }
 
@@ -92,9 +92,8 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
     if (!robot->getBaseModel() || robot->getBaseModel()->empty()) {
         Logging::error("Empty base model", this);
         return;
-    } else {
-        m_baseTriangles = std::dynamic_pointer_cast<ModelTriangle2D>(robot->getBaseModel())->m_triangles;
     }
+    m_baseTriangles = std::dynamic_pointer_cast<ModelTriangle2D>(robot->getBaseModel())->m_triangles;
 }
 
 /*!
@@ -172,8 +171,8 @@ bool CollisionDetectionTriangleRobot<dim>::checkTriangles(const Transform &T, co
 }
 
 template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b,
-                                                        const Vector3 c) {
+bool CollisionDetectionTriangleRobot<dim>::lineTriangle(const Vector3 &p, const Vector3 &q, const Vector3 &a, const Vector3 &b,
+                                                        const Vector3 &c) {
     Vector3 pq = q - p;
     Vector3 pa = a - p;
     Vector3 pb = b - p;
@@ -188,10 +187,7 @@ bool CollisionDetectionTriangleRobot<dim>::lineTriangle(const Vector3 p, const V
     if (v < 0.0)
         return false;
     double w = pq.dot(pb.cross(pa));
-    if (w < 0.0)
-        return false;
-
-    return true;
+    return w >= 0.0;
 }
 
 } /* namespace ippp */

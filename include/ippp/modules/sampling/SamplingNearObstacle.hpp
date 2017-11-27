@@ -35,7 +35,7 @@ class SamplingNearObstacle : public Sampling<dim> {
     SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
                          const std::shared_ptr<CollisionDetection<dim>> &collision,
                          const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                         const size_t attempts = 10);
+                         size_t attempts = 10);
 
     Vector<dim> getSample() override;
 
@@ -77,21 +77,20 @@ Vector<dim> SamplingNearObstacle<dim>::getSample() {
     Vector<dim> sample1 = m_sampler->getSample();
     if (!m_collision->checkConfig(sample1)) {
         return sample1;
-    } else {
-        Vector<dim> sample2;
-        do {
-            sample2 = m_sampler->getSample();
+    }
+    Vector<dim> sample2;
+    do {
+        sample2 = m_sampler->getSample();
         } while (m_collision->checkConfig(sample2));
         std::vector<Vector<dim>> path = m_trajectory->calcTrajectoryBin(sample2, sample1);
         sample1 = path[0];
-        for (auto point : path) {
+        for (const auto &point : path) {
             if (!m_collision->checkConfig(point))
                 sample1 = point;
             else
                 break;
         }
         return sample1;
-    }
 }
 
 } /* namespace ippp */

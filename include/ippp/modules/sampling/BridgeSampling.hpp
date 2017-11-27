@@ -33,7 +33,7 @@ class BridgeSampling : public Sampling<dim> {
   public:
     BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
                    const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                   const size_t attempts = 10, const double distance = 15);
+                   size_t attempts = 10, double distance = 15);
 
     Vector<dim> getSample() override;
 
@@ -77,7 +77,7 @@ Vector<dim> BridgeSampling<dim>::getSample() {
     do {
         if (count > m_attempts)
             return util::NaNVector<dim>();
-        else
+
             ++count;
 
         sample1 = m_sampler->getSample();
@@ -87,7 +87,7 @@ Vector<dim> BridgeSampling<dim>::getSample() {
     do {
         if (count > m_attempts)
             return util::NaNVector<dim>();
-        else
+
             ++count;
 
         ray = m_sampler->getRandomRay();

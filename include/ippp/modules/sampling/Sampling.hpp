@@ -19,15 +19,16 @@
 #ifndef SAMPLING_HPP
 #define SAMPLING_HPP
 
-#include <math.h>
+#include <cmath>
 
 #include <Eigen/Core>
 
 #include <ippp/Identifier.h>
+#include <ippp/environment/Environment.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/modules/sampler/Sampler.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
-#include <ippp/environment/Environment.h>
+#include <utility>
 
 namespace ippp {
 
@@ -39,13 +40,13 @@ namespace ippp {
 template <unsigned int dim>
 class Sampling : public Identifier {
   public:
-    Sampling(const std::string &name, const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-             const size_t attempts = 10);
+    Sampling(const std::string &name, std::shared_ptr<Environment> environment,
+             std::shared_ptr<CollisionDetection<dim>> collision, std::shared_ptr<TrajectoryPlanner<dim>> trajectory,
+             std::shared_ptr<Sampler<dim>> sampler, size_t attempts = 10);
 
     virtual Vector<dim> getSample() = 0;
     virtual Vector<dim> getSample(const Vector<dim> &prevSample);
-    virtual std::vector<Vector<dim>> getSamples(const size_t amount);
+    virtual std::vector<Vector<dim>> getSamples(size_t amount);
 
     std::shared_ptr<Sampler<dim>> getSampler() const;
     double getRandomNumber() const;
@@ -76,11 +77,16 @@ class Sampling : public Identifier {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Sampling<dim>::Sampling(const std::string &name, const std::shared_ptr<Environment> &environment,
+Sampling<dim>::Sampling(const std::string &name, std::shared_ptr<Environment> environment,
                         const std::shared_ptr<CollisionDetection<dim>> &collision,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                         const size_t attempts)
-    : Identifier(name), m_environment(environment), m_collision(collision), m_trajectory(trajectory), m_sampler(sampler), m_attempts(attempts) {
+    : Identifier(name),
+      m_environment(std::move(environment)),
+      m_collision(std::move(collision)),
+      m_trajectory(std::move(trajectory)),
+      m_sampler(std::move(sampler)),
+      m_attempts(attempts) {
     setRobotBoundings(m_environment->getRobotBoundaries());
     Logging::debug("Initialize", this);
 }

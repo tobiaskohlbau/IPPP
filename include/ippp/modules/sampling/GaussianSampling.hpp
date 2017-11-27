@@ -33,7 +33,7 @@ class GaussianSampling : public Sampling<dim> {
   public:
     GaussianSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
                      const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                     const size_t attempts = 10, const double distance = 15);
+                     size_t attempts = 10, double distance = 15);
 
     Vector<dim> getSample() override;
 
@@ -82,7 +82,7 @@ Vector<dim> GaussianSampling<dim>::getSample() {
 
         if (!m_collision->checkConfig(sample1) && m_collision->checkConfig(sample2))
             return sample1;
-        else if (m_collision->checkConfig(sample1) && !m_collision->checkConfig(sample2))
+        if (m_collision->checkConfig(sample1) && !m_collision->checkConfig(sample2))
             return sample2;
     }
     return util::NaNVector<dim>();

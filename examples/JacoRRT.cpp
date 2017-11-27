@@ -42,7 +42,8 @@ void simpleRRT() {
     std::vector<Transform> graphPoints;
     std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
 
-    for (auto & node : nodes)
+    graphPoints.reserve(nodes.size());
+    for (auto& node : nodes)
         graphPoints.push_back(std::dynamic_pointer_cast<Jaco>(robot)->directKinematic(node->getValues()));
     //writer::writeVecsToFile<dim>(graphPoints, "example.ASC", 10);
 

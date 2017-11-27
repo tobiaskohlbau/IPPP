@@ -31,12 +31,12 @@ namespace ippp {
 template <unsigned int dim>
 class SRTOptions : public PlannerOptions<dim> {
   public:
-    SRTOptions(const unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    SRTOptions(unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
-    void setNbOfTrees(const unsigned int nbOfTrees);
+    void setNbOfTrees(unsigned int nbOfTrees);
     unsigned int getNbOfTrees() const;
 
   private:

@@ -40,7 +40,7 @@ class StatisticCollector : public Identifier {
     StatisticCollector(const std::string &name);
 
     void addContainer(const std::shared_ptr<StatisticContainer> &container);
-    std::shared_ptr<StatisticContainer> getContainer(const size_t hash);
+    std::shared_ptr<StatisticContainer> getContainer(size_t hash);
     void initialize();
 
     virtual void writeData(std::ostream &stream) = 0;

@@ -161,8 +161,8 @@ static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3
 *  \date       2017-06-21
 */
 static AABB transformAABB(const AABB &aabb, const Transform &T) {
-    Vector3 min = aabb.min();
-    Vector3 max = aabb.max();
+    const Vector3 &min = aabb.min();
+    const Vector3 &max = aabb.max();
     Vector4 min4  = util::append<3>(min, 1);
     Vector4 max4  = util::append<3>(max, 1);
     min4 = T * min4;

@@ -36,13 +36,13 @@ class BruteForceNF : public NeighborFinder<dim, T> {
   public:
     BruteForceNF(const std::shared_ptr<DistanceMetric<dim>> &distanceMetric);
     BruteForceNF(const std::shared_ptr<DistanceMetric<dim>> &distanceMetric, std::vector<T> &nodes);
-    ~BruteForceNF();
+    ~BruteForceNF() override;
 
-    void addNode(const Vector<dim> &config, const T &node);
-    void rebaseSorted(std::vector<T> &nodes);
+    void addNode(const Vector<dim> &config, const T &node) override;
+    void rebaseSorted(std::vector<T> &nodes) override;
 
-    T searchNearestNeighbor(const Vector<dim> &config);
-    std::vector<T> searchRange(const Vector<dim> &config, double range);
+    T searchNearestNeighbor(const Vector<dim> &config) override;
+    std::vector<T> searchRange(const Vector<dim> &config, double range) override;
 
   private:
     std::vector<std::pair<const Vector<dim>, T>> m_nodes;

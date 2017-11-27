@@ -74,7 +74,7 @@ static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, 
     auto pRes = uNormPos / posRes;
     if (pRes == 0 || (oRes > 0 && oRes < pRes))
         return linearTrajectoryCont<dim>(source, target, oriRes);
-    else
+
         return linearTrajectoryCont<dim>(source, target, posRes);
 }
 
@@ -130,7 +130,7 @@ static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, c
     auto pRes = uNormPos / posRes;
     if (pRes == 0 || (oRes > 0 && oRes < pRes))
         return linearTrajectoryBin<dim>(source, target, oriRes);
-    else
+
         return linearTrajectoryBin<dim>(source, target, posRes);
 }
 

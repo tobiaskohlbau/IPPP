@@ -33,9 +33,9 @@ namespace ippp {
 template <unsigned int dim>
 class TimeEvaluator : public Evaluator<dim> {
   public:
-    TimeEvaluator(const size_t maxDuration = 30);
+    TimeEvaluator(size_t maxDuration = 30);
 
-    bool evaluate();
+    bool evaluate() override;
 
   protected:
     size_t m_maxDuration;
@@ -73,9 +73,8 @@ bool TimeEvaluator<dim>::evaluate() {
             "Maximum duration achieved with: " + std::to_string(static_cast<double>(duration.count() / 1000)) + " seconds.",
             this);
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 } /* namespace ippp */

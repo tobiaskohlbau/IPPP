@@ -19,7 +19,7 @@
 #ifndef NODE_HPP
 #define NODE_HPP
 
-#include <assert.h>
+#include <cassert>
 #include <cmath>
 #include <memory>
 #include <vector>
@@ -55,21 +55,21 @@ class Node {
     std::shared_ptr<data::NodeContainer> getData();
     bool checkData() const;
 
-    void setParent(const std::shared_ptr<Node> &parent, const double edgeCost);
+    void setParent(const std::shared_ptr<Node> &parent, double edgeCost);
     std::shared_ptr<Node> getParentNode() const;
     std::shared_ptr<Edge<dim>> getParentEdge() const;
     void clearParent();
 
-    void setQueryParent(const std::shared_ptr<Node> &parent, const double edgeCost);
+    void setQueryParent(const std::shared_ptr<Node> &queryParent, double edgeCost);
     std::shared_ptr<Node> getQueryParentNode() const;
     std::shared_ptr<Edge<dim>> getQueryParentEdge() const;
     void clearQueryParent();
 
-    void addChild(const std::shared_ptr<Node> &child, const double edgeCost);
+    void addChild(const std::shared_ptr<Node> &child, double edgeCost);
     std::vector<std::shared_ptr<Node>> getChildNodes() const;
     std::vector<std::shared_ptr<Edge<dim>>> getChildEdges() const;
     size_t getChildSize() const;
-    bool isChild(const std::shared_ptr<Node> &child) const;
+    bool isChild(const std::shared_ptr<Node> &node) const;
     void clearChildren();
 
     void addInvalidChild(const std::shared_ptr<Node> &child);
@@ -77,7 +77,7 @@ class Node {
     void clearInvalidChildren();
 
     Vector<dim> getValues() const;
-    double getValue(const unsigned int index) const;
+    double getValue(unsigned int index) const;
 
   private:
     Vector<dim> m_config;

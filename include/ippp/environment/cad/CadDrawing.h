@@ -27,10 +27,10 @@
 namespace ippp {
 namespace cad {
 
-Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue);
-void drawTriangles(Eigen::MatrixXi &space, const Mesh &mesh, const int fillValue);
-void drawTriangles(Eigen::MatrixXi &space, std::vector<Mesh> &meshes, const int fillValue);
-void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue);
+Eigen::MatrixXi create2dspace(const AABB &boundary, int fillValue);
+void drawTriangles(Eigen::MatrixXi &space, const Mesh &mesh, int fillValue);
+void drawTriangles(Eigen::MatrixXi &space, std::vector<Mesh> &meshes, int fillValue);
+void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, int fillValue);
 
 void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
 void fillTopFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);

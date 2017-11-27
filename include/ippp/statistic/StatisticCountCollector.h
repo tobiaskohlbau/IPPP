@@ -32,7 +32,7 @@ class StatisticCountCollector : public StatisticCollector {
   public:
     StatisticCountCollector(const std::string &name);
 
-    void writeData(std::ostream &stream);
+    void writeData(std::ostream &stream) override;
 };
 
 } /* namespace ippp */

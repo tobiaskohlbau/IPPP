@@ -35,7 +35,7 @@ template <unsigned int dim>
 class CollisionDetectionPqp : public CollisionDetection<dim> {
   public:
     CollisionDetectionPqp(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
+    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr) override;
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   protected:
@@ -94,7 +94,7 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
         std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
         if (!jointModels.empty()) {
             bool emptyJoint = false;
-            for (auto model : jointModels) {
+            for (const auto &model : jointModels) {
                 if (!model || model->empty()) {
                     emptyJoint = true;
                 }
@@ -123,7 +123,7 @@ template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
     if (m_environment->getRobot()->getRobotCategory() == RobotCategory::mobile)
         return checkMobileRobot(config);
-    else
+
         return checkSerialRobot(config);
 }
 
@@ -249,10 +249,7 @@ bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model *model1, PQP_Model *model2, 
 
     PQP_CollideResult cres;
     PQP_Collide(&cres, pqpR1, pqpT1, model1, pqpR2, pqpT2, model2, PQP_FIRST_CONTACT);
-    if (cres.NumPairs() > 0)
-        return true;
-    else
-        return false;
+    return cres.NumPairs() > 0;
 }
 
 } /* namespace ippp */

@@ -33,9 +33,9 @@ class ModelFactoryFcl : public ModelFactory {
   public:
     ModelFactoryFcl();
 
-    std::shared_ptr<ModelContainer> createModel(const std::string &filePath);
-    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::string &filePath);
-    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths);
+    std::shared_ptr<ModelContainer> createModel(const std::string &filePath) override;
+    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::string &filePath) override;
+    std::vector<std::shared_ptr<ModelContainer>> createModels(const std::vector<std::string> &filePaths) override;
 };
 
 } /* namespace ippp */

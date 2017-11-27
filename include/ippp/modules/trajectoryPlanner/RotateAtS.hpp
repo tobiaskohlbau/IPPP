@@ -33,13 +33,13 @@ namespace ippp {
 template <unsigned int dim>
 class RotateAtS : public TrajectoryPlanner<dim> {
   public:
-    RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision,
-              const std::shared_ptr<Environment> &environment, const double posRes = 1, const double oriRes = 0.1, const double rotPoint = 0.5);
+    RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Environment> &environment,
+              double posRes = 1, double oriRes = 0.1, double rotPoint = 0.5);
 
-    std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
-    std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
+    std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) override;
+    std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) override;
 
-    void setRotationPoint(const double rotPoint);
+    void setRotationPoint(double rotPoint);
     double getRotationPoint();
 
   private:
@@ -116,7 +116,7 @@ std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &s
     std::vector<Vector<dim>> oriConfigs = util::linearTrajectoryCont<dim>(rotSource, rotTarget, m_posRes, m_oriRes, m_posMask, m_oriMask);
 
     // get middle point and insert rotation configurations
-    size_t middleIndex = static_cast<size_t>(configs.size() * m_rotationPoint);
+    auto middleIndex = static_cast<size_t>(configs.size() * m_rotationPoint);
     configs.insert(std::begin(configs) + middleIndex, std::begin(oriConfigs), std::end(oriConfigs));
 
     return configs;

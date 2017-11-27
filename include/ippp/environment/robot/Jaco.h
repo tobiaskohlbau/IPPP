@@ -32,8 +32,8 @@ namespace ippp {
 class Jaco : public SerialRobot {
   public:
     Jaco();
-    Transform directKinematic(const VectorX &angles) const;
-    std::vector<Transform> getJointTrafos(const VectorX &angles) const;
+    Transform directKinematic(const VectorX &angles) const override;
+    std::vector<Transform> getJointTrafos(const VectorX &angles) const override;
 
   private:
     Vector6 convertRealToDH(const Vector6 &realAngles) const;

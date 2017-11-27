@@ -36,12 +36,12 @@ class CollisionDetectionSphere : public CollisionDetection<dim> {
   public:
     CollisionDetectionSphere(const std::shared_ptr<Environment> &environment,
                              const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
+    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr) override;
     bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
 
   private:
     bool checkObstacles(const AABB &robotAABB, CollisionResult *result);
-    bool checkRobots(const std::vector<AABB> &robotAABB, CollisionResult *result);
+    bool checkRobots(const std::vector<AABB> &robots, CollisionResult *result);
     double checkSphere(const AABB &a, const AABB &b);
 
     bool m_multiRobot = false;
@@ -67,10 +67,10 @@ CollisionDetectionSphere<dim>::CollisionDetectionSphere(const std::shared_ptr<En
 
     m_robots = m_environment->getRobots();
 
-    for (auto robot : environment->getRobots())
+    for (const auto &robot : environment->getRobots())
         m_robotAABBs.push_back(robot->getBaseModel()->getAABB());
 
-    for (auto obstacle : environment->getObstacles())
+    for (const auto &obstacle : environment->getObstacles())
         m_obstacleAABBs.push_back(obstacle->getAABB());
 }
 
@@ -84,7 +84,7 @@ CollisionDetectionSphere<dim>::CollisionDetectionSphere(const std::shared_ptr<En
 template <unsigned int dim>
 bool CollisionDetectionSphere<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
     CollisionRequest collisionRequest;
-    if (request)
+    if (request != nullptr)
         collisionRequest = *request;
     else
         collisionRequest = this->m_request;
@@ -134,7 +134,7 @@ bool CollisionDetectionSphere<dim>::checkTrajectory(std::vector<Vector<dim>> &co
 
 template <unsigned int dim>
 bool CollisionDetectionSphere<dim>::checkRobots(const std::vector<AABB> &robots, CollisionResult *result) {
-    if (result) {
+    if (result != nullptr) {
         double dist;
         for (auto a = robots.begin(); a != robots.end() - 1; ++a) {
             for (auto b = robots.begin() + 1; b != robots.end(); ++b) {
@@ -161,7 +161,7 @@ bool CollisionDetectionSphere<dim>::checkRobots(const std::vector<AABB> &robots,
 
 template <unsigned int dim>
 bool CollisionDetectionSphere<dim>::checkObstacles(const AABB &robotAABB, CollisionResult *result) {
-    if (result) {
+    if (result != nullptr) {
         double dist;
         for (auto &obstacle : m_obstacleAABBs) {
             dist = checkSphere(robotAABB, obstacle);

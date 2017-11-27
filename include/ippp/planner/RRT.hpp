@@ -37,12 +37,12 @@ class RRT : public TreePlanner<dim> {
     RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph,
         const std::string &name = "RRT");
 
-    virtual bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1);
-    virtual bool connectGoalNode(const Vector<dim> goal);
+    bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1) override;
+    bool connectGoalNode(Vector<dim> goal) override;
 
   protected:
     void computeTreeThread(size_t nbOfNodes);
-    virtual std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec);
+    virtual std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randConfig);
     Vector<dim> computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode);
 
     // variables
@@ -148,7 +148,7 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(goalNode, m_stepSize * 3);
 
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
-    for (auto node : nearNodes) {
+    for (const auto &node : nearNodes) {
         if (m_trajectory->checkTrajectory(goal, node->getValues())) {
             nearestNode = node;
             break;
@@ -187,7 +187,7 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randConfi
 
     if (m_collision->checkConfig(newNode->getValues()))
         return nullptr;
-    else if (!m_trajectory->checkTrajectory(newNode, nearestNode))
+    if (!m_trajectory->checkTrajectory(newNode, nearestNode))
         return nullptr;
 
     double edgeCost = this->m_metric->calcDist(nearestNode, newNode);

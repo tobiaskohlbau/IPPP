@@ -40,7 +40,7 @@ class CollisionDetectionAABB : public CollisionDetection<dim> {
 
   private:
     bool checkObstacles(const AABB &robotAABB, CollisionResult *result);
-    bool checkRobots(const std::vector<AABB> &robotAABB, CollisionResult *result);
+    bool checkRobots(const std::vector<AABB> &robots, CollisionResult *result);
 
     bool m_multiRobot = false;
     std::vector<AABB> m_robotAABBs;
@@ -64,10 +64,10 @@ CollisionDetectionAABB<dim>::CollisionDetectionAABB(const std::shared_ptr<Enviro
 
     m_robots = m_environment->getRobots();
 
-    for (auto robot : environment->getRobots())
+    for (const auto &robot : environment->getRobots())
         m_robotAABBs.push_back(robot->getBaseModel()->getAABB());
 
-    for (auto obstacle : environment->getObstacles())
+    for (const auto &obstacle : environment->getObstacles())
         m_obstacleAABBs.push_back(obstacle->getAABB());
 }
 
@@ -81,7 +81,7 @@ CollisionDetectionAABB<dim>::CollisionDetectionAABB(const std::shared_ptr<Enviro
 template <unsigned int dim>
 bool CollisionDetectionAABB<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
     CollisionRequest collisionRequest = this->m_request;
-    if (request)
+    if (request != nullptr)
         collisionRequest = *request;
 
     if (m_multiRobot && collisionRequest.checkInterRobot) {
@@ -129,7 +129,7 @@ bool CollisionDetectionAABB<dim>::checkTrajectory(std::vector<Vector<dim>> &conf
 
 template <unsigned int dim>
 bool CollisionDetectionAABB<dim>::checkRobots(const std::vector<AABB> &robots, CollisionResult *result) {
-    if (result){
+    if (result != nullptr) {
         double dist;
         for (auto a = robots.begin(); a != robots.end() - 1; ++a) {
             for (auto b = robots.begin() + 1; b != robots.end(); ++b) {
@@ -156,7 +156,7 @@ bool CollisionDetectionAABB<dim>::checkRobots(const std::vector<AABB> &robots, C
 
 template <unsigned int dim>
 bool CollisionDetectionAABB<dim>::checkObstacles(const AABB &robotAABB, CollisionResult *result) {
-    if (result) {
+    if (result != nullptr) {
         double dist;
         for (auto &obstacle : m_obstacleAABBs) {
             dist = std::sqrt(robotAABB.squaredExteriorDistance(obstacle));

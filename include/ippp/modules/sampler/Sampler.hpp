@@ -19,10 +19,10 @@
 #ifndef SAMPLER_HPP
 #define SAMPLER_HPP
 
-#include <math.h>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
 #include <random>
-#include <stdlib.h>
-#include <time.h>
 
 #include <ippp/Identifier.h>
 #include <ippp/environment/Environment.h>
@@ -48,7 +48,7 @@ class Sampler : public Identifier {
     double getRandomNumber();
     Vector<dim> getRandomRay();
 
-    virtual void setOrigin(const Vector<dim> &mean);
+    virtual void setOrigin(const Vector<dim> &origin);
     Vector<dim> getOrigin() const;
 
   protected:

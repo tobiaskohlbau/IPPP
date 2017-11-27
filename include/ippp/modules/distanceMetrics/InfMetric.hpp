@@ -32,9 +32,9 @@ template <unsigned int dim>
 class InfMetric : public DistanceMetric<dim> {
   public:
     InfMetric();
-    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const;
-    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
-    void simplifyDist(double &dist) const;
+    double calcDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const override;
+    void simplifyDist(double &dist) const override;
 };
 
 /*!

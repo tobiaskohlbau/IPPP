@@ -37,7 +37,7 @@ class EST : public TreePlanner<dim> {
         const std::shared_ptr<Graph<dim>> &graph);
 
     bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1);
-    bool connectGoalNode(const Vector<dim> goal);
+    bool connectGoalNode(Vector<dim> goal);
 
   protected:
     void computeTreeThread(size_t nbOfNodes);

@@ -27,7 +27,7 @@
 
 namespace ippp {
 
-typedef fcl::BVHModel<fcl::OBB> FCLModel;
+using FCLModel = fcl::BVHModel<fcl::OBB>;
 
 /*!
 * \brief   Fcl model class
@@ -37,9 +37,9 @@ typedef fcl::BVHModel<fcl::OBB> FCLModel;
 class ModelFcl : public ModelContainer {
   public:
     ModelFcl();
-    bool empty() const;
-    void transformModel(const Transform &T);
-    void transformModel(const Vector6 &config);
+    bool empty() const override;
+    void transformModel(const Transform &T) override;
+    void transformModel(const Vector6 &config) override;
 
     FCLModel m_fclModel;
 

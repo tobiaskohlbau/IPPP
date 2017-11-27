@@ -33,7 +33,7 @@ namespace ippp {
 class StatisticSizeTContainer : public StatisticContainer {
   public:
     StatisticSizeTContainer(const std::string &name);
-    virtual void initialize();
+    void initialize() override;
 
   private:
     size_t m_count = 0;

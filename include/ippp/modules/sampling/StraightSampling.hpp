@@ -32,9 +32,10 @@ template <unsigned int dim>
 class StraightSampling : public Sampling<dim> {
   public:
     StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler, const size_t attempts = 10);
+                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
+                     size_t attempts = 10);
 
-    virtual Vector<dim> getSample();
+    Vector<dim> getSample() override;
 
   protected:
     using Sampling<dim>::m_sampler;

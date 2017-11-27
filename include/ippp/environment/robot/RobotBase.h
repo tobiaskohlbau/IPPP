@@ -40,10 +40,10 @@ enum DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint, positi
 */
 class RobotBase : public Identifier {
   public:
-    virtual ~RobotBase();
+    ~RobotBase() override;
 
   protected:
-    RobotBase(const std::string &name, const unsigned int dim, const RobotCategory robotType, const std::pair<VectorX, VectorX> &boundary,
+    RobotBase(const std::string &name, unsigned int dim, RobotCategory robotType, const std::pair<VectorX, VectorX> &boundary,
               std::vector<DofType> dofTypes);
 
   public:

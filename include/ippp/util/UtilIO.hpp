@@ -39,7 +39,7 @@ namespace util {
 */
 static Matrix4 readT(const std::string &path, const double scale = 1) {
     Matrix4 T;
-    if (path.substr(path.find_last_of(".")) != ".dat") {
+    if (path.substr(path.find_last_of('.')) != ".dat") {
         Logging::error("Wrong file type", "UtilIO");
     }
     std::ifstream fin(path);
