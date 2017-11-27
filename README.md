@@ -1,6 +1,7 @@
 # IPPP -- Interchangeable Probalistic Path Planning
 
 [![Build Status](https://travis-ci.org/SaschaKaden/IPPP.svg?branch=master)](https://travis-ci.org/SaschaKaden/IPPP)
+[![Build status](https://ci.appveyor.com/api/projects/status/fxqb3k2b4csn0gur/branch/master?svg=true)](https://ci.appveyor.com/project/SaschaKaden/ippp/branch/master)
 [![Coverity Status](https://scan.coverity.com/projects/9839/badge.svg)](https://scan.coverity.com/projects/saschakaden-ippp)
 
 IPPP has the target to provide a coherent interchangeable for path planning with a serial or mobile robots.
@@ -19,21 +20,23 @@ All robots are based on a container interface, therefore the user can build his 
 Currently available algorithms:
 * RRT
 * RRT*
-* sPRM
+* PRM
+* EST
 * SRT
 
 
 ## Dependencies
 * [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) for matrix manipulation 
 * [PQP](http://gamma.cs.unc.edu/SSV/)(Proximity Query Package) for collision detection between 3d meshes
-* [Assimp](http://www.assimp.org)(Open Asset Import Library) for import and export of meshes
-* [boost test framework](http://www.boost.org/doc/libs/1_63_0/libs/test/doc/html/index.html)
-* optional [FCL](https://github.com/flexible-collision-library/fcl)(Flexible Collision Library) for collision detection between 3d meshes
+* [FCL](https://github.com/flexible-collision-library/fcl)(Flexible Collision Library) for collision detection between 3d meshes
+* [Assimp](http://www.assimp.org)(Open Asset Import Library) for import and export of meshes (cad models)
+* [JSON](https://github.com/nlohmann/json)
+* [Googletest](https://github.com/google/googletest)
+* [gflags](https://github.com/gflags/gflags)
 
 #### Dependencies of the examples
 * [OpenCV](http://opencv.org/) for manipulation and illustration of 2D examples
 * [QT](https://www.qt.io/) for the user interface
-* optional [vrep](http://www.coppeliarobotics.com/) simulation
 
 
 ## Getting Started
