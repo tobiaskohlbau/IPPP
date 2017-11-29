@@ -16,7 +16,9 @@
 #
 #-------------------------------------------------------------------------//
 
-find_package(gflags REQUIRED)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/gflags
+    ${CMAKE_CURRENT_BINARY_DIR}/../third_party/gflags
+    EXCLUDE_FROM_ALL)
 
 macro(ADD_IPPP_EXAMPLE name source)
     add_executable(${name} ${source})
@@ -32,6 +34,6 @@ ADD_IPPP_EXAMPLE(JacoRRT JacoRRT.cpp)
 
 add_subdirectory(ui)
 add_subdirectory(Planner2D)
-add_subdirectory(gui2D)
+#add_subdirectory(gui2D)
 add_subdirectory(ParasolBenchmarks)
 
