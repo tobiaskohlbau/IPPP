@@ -348,7 +348,7 @@ size_t Graph<dim>::edgeSize() const {
     size_t edgeSize = 0;
     for (auto &node : m_nodes) {
         edgeSize += node->getChildSize();
-        if (node->getParentEdge())
+        if (node->getParentEdge().first)
             ++edgeSize;
     }
     return edgeSize;

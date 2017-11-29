@@ -99,14 +99,14 @@ static bool aStar(const std::shared_ptr<Node<dim>> sourceNode, const std::shared
                   const std::shared_ptr<DistanceMetric<dim>> &metric) {
     std::vector<std::shared_ptr<Node<dim>>> openList, closedList;
 
-    std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
-    if (sourceNode->getParentEdge())
+    auto edges = sourceNode->getChildEdges();
+    if (sourceNode->getParentEdge().first)
         edges.push_back(sourceNode->getParentEdge());
 
     for (size_t i = 0; i < edges.size(); ++i) {
-        edges[i]->getTarget()->setCost(edges[i]->getCost());
-        edges[i]->getTarget()->setQueryParent(sourceNode, metric->calcDist(edges[i]->getTarget(), sourceNode));
-        openList.push_back(edges[i]->getTarget());
+        edges[i].first->setCost(edges[i].second);
+        edges[i].first->setQueryParent(sourceNode, metric->calcDist(edges[i].first, sourceNode));
+        openList.push_back(edges[i].first);
     }
     closedList.push_back(sourceNode);
 

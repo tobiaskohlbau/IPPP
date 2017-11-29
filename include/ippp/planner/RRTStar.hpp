@@ -177,7 +177,7 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
     if (nearestNode) {
         std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
         goalNode->setParent(nearestNode, m_metric->calcDist(goalNode, nearestNode));
-        goalNode->setCost(goalNode->getParentEdge()->getCost() + nearestNode->getCost());
+        goalNode->setCost(goalNode->getParentEdge().second + nearestNode->getCost());
         nearestNode->addChild(goalNode, m_metric->calcDist(goalNode, nearestNode));
 
         m_goalNode = goalNode;

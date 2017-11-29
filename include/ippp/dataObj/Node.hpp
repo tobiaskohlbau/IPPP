@@ -26,7 +26,6 @@
 
 #include <Eigen/Core>
 
-#include <ippp/dataObj/Edge.hpp>
 #include <ippp/dataObj/NodeContainer.h>
 #include <ippp/types.h>
 #include <ippp/util/UtilVec.hpp>
@@ -57,17 +56,17 @@ class Node {
 
     void setParent(const std::shared_ptr<Node> &parent, const double edgeCost);
     std::shared_ptr<Node> getParentNode() const;
-    std::shared_ptr<Edge<dim>> getParentEdge() const;
+    std::pair<std::shared_ptr<Node<dim>>, double> getParentEdge() const;
     void clearParent();
 
     void setQueryParent(const std::shared_ptr<Node> &parent, const double edgeCost);
     std::shared_ptr<Node> getQueryParentNode() const;
-    std::shared_ptr<Edge<dim>> getQueryParentEdge() const;
+    std::pair<std::shared_ptr<Node<dim>>, double> getQueryParentEdge() const;
     void clearQueryParent();
 
     void addChild(const std::shared_ptr<Node> &child, const double edgeCost);
     std::vector<std::shared_ptr<Node>> getChildNodes() const;
-    std::vector<std::shared_ptr<Edge<dim>>> getChildEdges() const;
+    std::vector<std::pair<std::shared_ptr<Node<dim>>, double>> getChildEdges() const;
     size_t getChildSize() const;
     bool isChild(const std::shared_ptr<Node> &child) const;
     void clearChildren();
@@ -84,9 +83,9 @@ class Node {
     double m_cost = -1;
     std::shared_ptr<data::NodeContainer> m_data;
 
-    std::shared_ptr<Edge<dim>> m_parent = nullptr;
-    std::shared_ptr<Edge<dim>> m_queryParent = nullptr;
-    std::vector<std::shared_ptr<Edge<dim>>> m_children;
+    std::pair<std::shared_ptr<Node<dim>>, double> m_parent = std::make_pair(nullptr, 0);
+    std::pair<std::shared_ptr<Node<dim>>, double> m_queryParent = std::make_pair(nullptr, 0);
+    std::vector<std::pair<std::shared_ptr<Node<dim>>, double>> m_children;
     std::vector<std::shared_ptr<Node>> m_invalidChildren;
 };
 
@@ -205,10 +204,8 @@ bool Node<dim>::checkData() const {
 */
 template <unsigned int dim>
 void Node<dim>::setParent(const std::shared_ptr<Node> &parent, const double edgeCost) {
-    if (!parent->empty()) {
-        std::shared_ptr<Edge<dim>> edge(new Edge<dim>(std::make_shared<Node>(*this), parent, edgeCost));
-        m_parent = edge;
-    }
+    if (!parent->empty())
+        m_parent = std::make_pair(parent, edgeCost);
 }
 
 /*!
@@ -219,10 +216,7 @@ void Node<dim>::setParent(const std::shared_ptr<Node> &parent, const double edge
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Node<dim>::getParentNode() const {
-    if (!m_parent)
-        return nullptr;
-
-    return m_parent->getTarget();
+    return m_parent.first;
 }
 
 /*!
@@ -232,7 +226,7 @@ std::shared_ptr<Node<dim>> Node<dim>::getParentNode() const {
 *  \date       2016-10-22
 */
 template <unsigned int dim>
-std::shared_ptr<Edge<dim>> Node<dim>::getParentEdge() const {
+std::pair<std::shared_ptr<Node<dim>>, double> Node<dim>::getParentEdge() const {
     return m_parent;
 }
 
@@ -243,7 +237,7 @@ std::shared_ptr<Edge<dim>> Node<dim>::getParentEdge() const {
 */
 template <unsigned int dim>
 void Node<dim>::clearParent() {
-    m_parent = nullptr;
+    m_parent = std::make_pair(nullptr, 0);
 }
 
 /*!
@@ -254,10 +248,8 @@ void Node<dim>::clearParent() {
 */
 template <unsigned int dim>
 void Node<dim>::setQueryParent(const std::shared_ptr<Node> &queryParent, const double edgeCost) {
-    if (!queryParent->empty()) {
-        std::shared_ptr<Edge<dim>> edge(new Edge<dim>(std::make_shared<Node>(*this), queryParent, edgeCost));
-        m_queryParent = edge;
-    }
+    if (!queryParent->empty())
+        m_queryParent = std::make_pair(queryParent, edgeCost);
 }
 
 /*!
@@ -268,10 +260,7 @@ void Node<dim>::setQueryParent(const std::shared_ptr<Node> &queryParent, const d
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Node<dim>::getQueryParentNode() const {
-    if (!m_queryParent)
-        return nullptr;
-
-        return m_queryParent->getTarget();
+    return m_queryParent.first;
 }
 
 /*!
@@ -281,7 +270,7 @@ std::shared_ptr<Node<dim>> Node<dim>::getQueryParentNode() const {
 *  \date       2016-10-22
 */
 template <unsigned int dim>
-std::shared_ptr<Edge<dim>> Node<dim>::getQueryParentEdge() const {
+std::pair<std::shared_ptr<Node<dim>>, double> Node<dim>::getQueryParentEdge() const {
     return m_queryParent;
 }
 
@@ -292,7 +281,7 @@ std::shared_ptr<Edge<dim>> Node<dim>::getQueryParentEdge() const {
 */
 template <unsigned int dim>
 void Node<dim>::clearQueryParent() {
-    m_queryParent = nullptr;
+    m_queryParent = std::make_pair(nullptr, -1);
 }
 
 /*!
@@ -303,10 +292,8 @@ void Node<dim>::clearQueryParent() {
 */
 template <unsigned int dim>
 void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child, const double edgeCost) {
-    if (!child->empty()) {
-        std::shared_ptr<Edge<dim>> edge(new Edge<dim>(std::make_shared<Node>(*this), child, edgeCost));
-        m_children.push_back(edge);
-    }
+    if (!child->empty())
+        m_children.push_back(std::make_pair(child, edgeCost));
 }
 
 /*!
@@ -319,7 +306,7 @@ template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChildNodes() const {
     std::vector<std::shared_ptr<Node>> childNodes;
     for (auto &&child : m_children)
-        childNodes.push_back(child->getTarget());
+        childNodes.push_back(child.first);
 
     return childNodes;
 }
@@ -331,7 +318,7 @@ std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChildNodes() const {
 *  \date       2016-07-15
 */
 template <unsigned int dim>
-std::vector<std::shared_ptr<Edge<dim>>> Node<dim>::getChildEdges() const {
+std::vector<std::pair<std::shared_ptr<Node<dim>>, double>> Node<dim>::getChildEdges() const {
     return m_children;
 }
 
@@ -355,8 +342,8 @@ size_t Node<dim>::getChildSize() const {
 */
 template <unsigned int dim>
 bool Node<dim>::isChild(const std::shared_ptr<Node<dim>> &node) const {
-    for (auto &edge : m_children)
-        if (edge->getTarget() == node)
+    for (auto &child : m_children)
+        if (child.first == node)
             return true;
 
     return false;

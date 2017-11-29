@@ -74,10 +74,10 @@ void testParent() {
     std::shared_ptr<Node<dim>> ptrParent = std::make_shared<Node<dim>>(parent);
     node.setParent(ptrParent, 1);
     EXPECT_EQ(node.getParentNode(), ptrParent);
-    EXPECT_EQ(node.getParentEdge()->getTarget(), ptrParent);
+    EXPECT_EQ(node.getParentEdge().first, ptrParent);
     node.clearParent();
     EXPECT_EQ(node.getParentNode(), nullptr);
-    EXPECT_EQ(node.getParentEdge(), nullptr);
+    EXPECT_EQ(node.getParentEdge().first, nullptr);
 }
 
 TEST(NODE, parent) {
@@ -105,10 +105,10 @@ void testChildes() {
     EXPECT_TRUE(util::contains(resultNodes, childes[1]));
     EXPECT_TRUE(util::contains(resultNodes, childes[2]));
 
-    std::vector<std::shared_ptr<Edge<dim>>> resultEdges = node.getChildEdges();
-    EXPECT_TRUE(util::contains(childes, resultEdges[0]->getTarget()));
-    EXPECT_TRUE(util::contains(childes, resultEdges[1]->getTarget()));
-    EXPECT_TRUE(util::contains(childes, resultEdges[2]->getTarget()));
+    auto resultEdges = node.getChildEdges();
+    EXPECT_TRUE(util::contains(childes, resultEdges[0].first));
+    EXPECT_TRUE(util::contains(childes, resultEdges[1].first));
+    EXPECT_TRUE(util::contains(childes, resultEdges[2].first));
     node.clearChildes();
     EXPECT_EQ(node.getChildNodes().size(), 0);
     EXPECT_EQ(node.getChildEdges().size(), 0);

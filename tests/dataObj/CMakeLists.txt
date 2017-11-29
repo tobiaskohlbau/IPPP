@@ -16,7 +16,6 @@
 #
 #-------------------------------------------------------------------------//
 
-add_ippp_test(edge "dataObj" "")
 add_ippp_test(graph "dataObj" "")
 add_ippp_test(node "dataObj" "")
 add_ippp_test(pointList "dataObj" "")
