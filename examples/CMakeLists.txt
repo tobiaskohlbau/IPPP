@@ -29,8 +29,8 @@ macro(ADD_IPPP_EXAMPLE name source)
             ${ARGN})
 endmacro()
 
-ADD_IPPP_EXAMPLE(GettingStarted GettingStarted.cpp)
-ADD_IPPP_EXAMPLE(JacoRRT JacoRRT.cpp)
+add_ippp_example(GettingStarted GettingStarted.cpp)
+add_ippp_example(JacoRRT JacoRRT.cpp)
 
 add_subdirectory(ui)
 add_subdirectory(Planner2D)

@@ -109,10 +109,6 @@ target_compile_features(${PROJECT_NAME}
         cxx_rvalue_references
         cxx_right_angle_brackets)
 
-target_compile_definitions(${PROJECT_NAME}
-    PUBLIC
-        _USE_MATH_DEFINES)
-
 target_link_libraries(${PROJECT_NAME} 
     PUBLIC
         Eigen3::Eigen

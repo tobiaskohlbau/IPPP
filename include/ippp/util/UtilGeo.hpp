@@ -31,23 +31,23 @@ namespace ippp {
 namespace util {
 
 constexpr double pi() {
-    return M_PI;
+    return 3.141592653589793;
 }
 
 constexpr double twoPi() {
-    return M_PI * 2;
+    return 3.141592653589793 * 2;
 }
 
 constexpr double halfPi() {
-    return M_PI / 2;
+    return 3.141592653589793 / 2;
 }
 
 constexpr double toRad() {
-    return M_PI / 180;
+    return 3.141592653589793 / 180;
 }
 
 constexpr double toDeg() {
-    return 180 / M_PI;
+    return 180 / 3.141592653589793;
 }
 
 /*!
