@@ -23,20 +23,6 @@ option(BUILD_EXAMPLES "Build examples" OFF)
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_BENCHMARK "Build optional benchmark classes" OFF)
 
-# macros
-
-# from: http://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
-macro(SUBDIRLIST result curdir)
-    file(GLOB children RELATIVE ${curdir} ${curdir}/*)
-    set(dirlist "")
-    foreach(child ${children})
-        if(IS_DIRECTORY ${curdir}/${child})
-            set(dirlist ${dirlist} ${child})
-        endif()
-    endforeach()
-    set(${result} ${dirlist})
-endmacro()
-
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 list(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
@@ -133,7 +119,6 @@ target_link_libraries(${PROJECT_NAME}
         json::json
         assimp::assimp
         fcl
-    PRIVATE
         PQP)
 
 include(CheckCXXCompilerFlag)
