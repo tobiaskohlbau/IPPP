@@ -29,7 +29,7 @@ bool testTriangleRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.setRobotType(RobotType::Triangle2D, "assets/robotModels/simpleTriangleRobot.obj");
+    envConfigurator.setRobotType(RobotType::Triangle2D, "../../assets/robotModels/simpleTriangleRobot.obj");
     envConfigurator.addObstaclePath("obstacle.obj");
     envConfigurator.saveConfig("envConfigTriangle.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -154,7 +154,7 @@ void testPointRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.addObstaclePath("assets/spaces/random2D.obj");
+    envConfigurator.addObstaclePath("../../assets/spaces/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point);
     envConfigurator.saveConfig("envConfig.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
