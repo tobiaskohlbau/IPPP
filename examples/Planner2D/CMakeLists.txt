@@ -26,4 +26,7 @@ else()
 endif()
 
 add_ippp_example(Planner2D main.cpp ${OpenCV_LIBS} ui)
-target_compile_options(Planner2D PUBLIC -bigobj)  
+# Planner2D example needs more sections than the normal MSVC case delivers
+if(MSVC)
+    target_compile_options(Planner2D PUBLIC -bigobj)  
+endif()

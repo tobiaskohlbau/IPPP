@@ -26,7 +26,6 @@
 
 #include <Eigen/Core>
 
-#include <ippp/dataObj/NodeContainer.h>
 #include <ippp/types.h>
 #include <ippp/util/UtilVec.hpp>
 
@@ -49,10 +48,6 @@ class Node {
     void setCost(double cost);
     void addCost(double cost);
     double getCost() const;
-
-    void setData(const std::shared_ptr<data::NodeContainer> &data);
-    std::shared_ptr<data::NodeContainer> getData();
-    bool checkData() const;
 
     void setParent(const std::shared_ptr<Node> &parent, const double edgeCost);
     std::shared_ptr<Node> getParentNode() const;
@@ -81,7 +76,6 @@ class Node {
   private:
     Vector<dim> m_config;
     double m_cost = -1;
-    std::shared_ptr<data::NodeContainer> m_data;
 
     std::pair<std::shared_ptr<Node<dim>>, double> m_parent = std::make_pair(nullptr, 0);
     std::pair<std::shared_ptr<Node<dim>>, double> m_queryParent = std::make_pair(nullptr, 0);
@@ -99,8 +93,6 @@ template <unsigned int dim>
 Node<dim>::Node() {
     for (unsigned int i = 0; i < dim; ++i)
         m_config[i] = NAN;
-
-    m_data = std::make_shared<data::NodeContainer>();
 }
 
 /*!
@@ -112,7 +104,6 @@ Node<dim>::Node() {
 template <unsigned int dim>
 Node<dim>::Node(const Vector<dim> &config) {
     m_config = config;
-    m_data = std::make_shared<data::NodeContainer>();
 }
 
 /*!
@@ -161,39 +152,6 @@ void Node<dim>::addCost(const double cost) {
 template <unsigned int dim>
 double Node<dim>::getCost() const {
     return m_cost;
-}
-
-/*!
-*  \brief      Set data container of the node
-*  \author     Sascha Kaden
-*  \param[in]  data container
-*  \date       2017-06-09
-*/
-template <unsigned int dim>
-void Node<dim>::setData(const std::shared_ptr<data::NodeContainer> &data) {
-    m_data = data;
-}
-
-/*!
-*  \brief      Return data container of the Node
-*  \author     Sascha Kaden
-*  \param[out] data container
-*  \date       2017-06-09
-*/
-template <unsigned int dim>
-std::shared_ptr<data::NodeContainer> Node<dim>::getData() {
-    return m_data;
-}
-
-/*!
-*  \brief      Return true if data container is initialized
-*  \author     Sascha Kaden
-*  \param[out] validity of the data container
-*  \date       2017-06-09
-*/
-template <unsigned int dim>
-bool Node<dim>::checkData() const {
-    return m_data == nullptr;
 }
 
 /*!

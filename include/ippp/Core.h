@@ -28,7 +28,6 @@
 #include <ippp/modules/collisionDetection/CollisionDetectionSphere.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 
-#include <ippp/dataObj/Edge.hpp>
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/dataObj/Node.hpp>
 #include <ippp/dataObj/PointList.hpp>

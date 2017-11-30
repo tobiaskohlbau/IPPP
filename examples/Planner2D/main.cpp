@@ -70,7 +70,8 @@ bool testTriangleRobot() {
         std::vector<Vector3> path = planner->getPath(80, 5);
 
         drawing::drawTrianglePath(path, environment->getRobot()->getBaseModel()->m_mesh, image, Eigen::Vector3i(0, 0, 255), 2);
-        writer::writeVecsToFile<dim>(path, "test.txt", 1);
+        //JsonSerializer writer;
+        //writer.write<dim>(path, "test.txt");
 
         cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
         cv::imshow("pathPlanner", image);
@@ -154,7 +155,7 @@ void testPointRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.addObstaclePath("../../assets/spaces/random2D.obj");
+    //envConfigurator.addObstaclePath("../../assets/spaces/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point);
     envConfigurator.saveConfig("envConfig.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -201,8 +202,11 @@ void testPointRobot() {
 
     if (connected) {
         std::vector<Vector2> pathPoints = planner->getPath();
+        
+        JsonSerializer serializer;
+        std::string string = serializer.serialize<dim>(pathPoints);
+        ui::save("test.json", string);
         drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 2);
-        writer::writeVecsToFile<2>(pathPoints, "test.txt", 1);
     }
 
     cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);

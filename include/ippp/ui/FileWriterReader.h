@@ -16,26 +16,19 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef NODECONTAINER_H
-#define NODECONTAINER_H
+#ifndef FILEWRITERREADER_H
+#define FILEWRITERREADER_H
 
-#include <vector>
+#include <string>
+#include <fstream>
 
 namespace ippp {
-namespace data {
+namespace ui {
 
-/*!
-* \brief   General data container to save extra data inside a Node.
-* \author  Sascha Kaden
-* \date    2017-11-10
-*/
-class NodeContainer {
-  public:
-    std::vector<double> values;
-    std::vector<int> flags;
-};
+bool save(const std::string &filePath, const std::string &data);
+std::string load(const std::string &filePath);
 
-} /* namespace data */
+} /* namespace ui */
 } /* namespace ippp */
 
-#endif    // NODECONTAINER_H
+#endif    // FILEWRITERREADER_H
