@@ -19,13 +19,3 @@ Variable names
 * class member variables start with m_
   * m_name or m_type
 * variable names have no underscores
-
-clamps (),{}
-------------
-
-* between for, if an the clamp is one free space
-  * if (...) or for (...)
-* the first bracket is set behind the function name or the instruction
-  * void foo (...) { 
-  * ...
-  * }
