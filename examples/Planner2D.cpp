@@ -3,6 +3,7 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+#include <gflags/gflags.h>
 #include <ippp/Core.h>
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
@@ -10,6 +11,9 @@
 #include <Drawing2D.hpp>
 
 using namespace ippp;
+
+DEFINE_string(assetsDir, "../assets",
+	"assets directory");
 
 Mesh generateMap() {
     const unsigned int dim = 2;
@@ -29,7 +33,7 @@ bool testTriangleRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.setRobotType(RobotType::Triangle2D, "../../assets/robotModels/simpleTriangleRobot.obj");
+    envConfigurator.setRobotType(RobotType::Triangle2D, FLAGS_assetsDir + "/robotModels/simpleTriangleRobot.obj");
     envConfigurator.addObstaclePath("obstacle.obj");
     envConfigurator.saveConfig("envConfigTriangle.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -215,7 +219,9 @@ void testPointRobot() {
     cv::waitKey(0);
 }
 
-int main(int /*argc*/, char** /*argv*/) {
+int main(int argc, char** argv) {
+	gflags::ParseCommandLineFlags(&argc, &argv, true);
+
     Logging::setLogLevel(LogLevel::trace);
 
     // testTriangleRobot();
