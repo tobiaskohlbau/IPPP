@@ -262,7 +262,7 @@ bool SRT<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
 
     auto sourceNode = trees[0]->getNode(0);
     auto targetNode = trees[1]->getNode(0);
-    bool pathPlanned = util::aStar<dim>(sourceNode, goalNode, m_metric);
+    bool pathPlanned = util::aStar<dim>(sourceNode, targetNode, m_metric);
 
     if (pathPlanned) {
         Logging::info("Path could be planned", this);
