@@ -23,6 +23,7 @@
 
 #include <ippp/planner/Planner.hpp>
 #include <ippp/planner/options/SRTOptions.hpp>
+#include <ippp/util/UtilPlanner.hpp>
 
 namespace ippp {
 
@@ -259,9 +260,9 @@ bool SRT<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
         return false;
     }
 
-    std::shared_ptr<Node<dim>> sourceNode = trees[0]->getNode(0);
-    std::shared_ptr<Node<dim>> targetNode = trees[1]->getNode(0);
-    bool pathPlanned = aStar(sourceNode, targetNode);
+    auto sourceNode = trees[0]->getNode(0);
+    auto targetNode = trees[1]->getNode(0);
+    bool pathPlanned = util::aStar<dim>(sourceNode, goalNode, m_metric);
 
     if (pathPlanned) {
         Logging::info("Path could be planned", this);
@@ -278,87 +279,6 @@ bool SRT<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
     } else {
         Logging::info("Path could NOT be planned", this);
         return false;
-    }
-}
-
-/*!
-*  \brief      A* algorithm to find best path
-*  \author     Sascha Kaden
-*  \param[in]  source Node (start)
-*  \param[in]  target Node (goal)
-*  \param[out] result of algorithm
-*  \date       2017-04-03
-*/
-template <unsigned int dim>
-bool SRT<dim>::aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode) {
-    m_graph->clearQueryParents();
-    m_closedList.clear();
-    m_openList.clear();
-
-    std::vector<std::shared_ptr<Edge<dim>>> edges = sourceNode->getChildEdges();
-    for (size_t i = 0; i < edges.size(); ++i) {
-        edges[i]->getTarget()->setCost(edges[i]->getCost());
-        edges[i]->getTarget()->setQueryParent(sourceNode, m_metric->calcEdgeCost(edges[i]->getTarget(), sourceNode));
-        m_openList.push_back(edges[i]->getTarget());
-    }
-    m_closedList.push_back(sourceNode);
-
-    int count = 0;
-    std::shared_ptr<Node<dim>> currentNode;
-    while (!m_openList.empty()) {
-        currentNode = util::removeMinFromList(m_openList);
-
-        if (currentNode == targetNode)
-            return true;
-
-        m_closedList.push_back(currentNode);
-        ++count;
-
-        expandNode(currentNode);
-    }
-    return false;
-}
-
-/*!
-*  \brief      Expands the openList of the A* algorithm from the childes of the passed Node
-*  \author     Sascha Kaden
-*  \param[in]  current node
-*  \date       2017-04-03
-*/
-template <unsigned int dim>
-void SRT<dim>::expandNode(std::shared_ptr<Node<dim>> currentNode) {
-    double dist, edgeCost;
-    for (auto successor : currentNode->getChildNodes()) {
-        if (util::contains(m_closedList, successor))
-            continue;
-
-        edgeCost = m_metric->calcEdgeCost(currentNode, successor);
-        dist = currentNode->getCost() + edgeCost;
-
-        if (util::contains(m_openList, successor) && dist >= successor->getCost())
-            continue;
-
-        successor->setQueryParent(currentNode, edgeCost);
-        successor->setCost(dist);
-        if (!util::contains(m_openList, successor)) {
-            m_openList.push_back(successor);
-        }
-    }
-    if (currentNode->getParentNode() != nullptr) {
-        auto successor = currentNode->getParentNode();
-        if (util::contains(m_closedList, successor))
-            return;
-
-        edgeCost = m_metric->calcEdgeCost(currentNode, successor);
-        dist = currentNode->getCost() + edgeCost;
-
-        if (util::contains(m_openList, successor) && dist >= successor->getCost())
-            return;
-
-        successor->setQueryParent(currentNode, edgeCost);
-        successor->setCost(dist);
-        if (!util::contains(m_openList, successor))
-            m_openList.push_back(successor);
     }
 }
 
