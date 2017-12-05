@@ -23,6 +23,14 @@
 namespace ippp {
 namespace ui {
 
+/*!
+*  \brief      Saves the passed string to the specified file path
+*  \author     Sascha Kaden
+*  \param[in]  file path
+*  \param[in]  string data
+*  \param[out] validity of the saving
+*  \date       2017-12-01
+*/
 bool save(const std::string &filePath, const std::string &data) {
     std::ofstream file;
     file.open(filePath);
@@ -38,6 +46,13 @@ bool save(const std::string &filePath, const std::string &data) {
     return true;
 }
 
+/*!
+*  \brief      Loads the file from the speciefied file path
+*  \author     Sascha Kaden
+*  \param[in]  file path
+*  \param[out] string data
+*  \date       2017-12-01
+*/
 std::string load(const std::string &filePath) {
     std::string data;
 
