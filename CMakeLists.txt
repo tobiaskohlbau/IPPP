@@ -25,28 +25,20 @@ option(BUILD_BENCHMARK "Build optional benchmark classes" OFF)
 option(BUILD_DOC "Build documentation" OFF)
 
 # external libraries
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
-list(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
-#todo: workaround for the findassimp (no more difference of windows and linux because of the cmake of assimp)
-if(UNIX)
-    find_package (assimp REQUIRED)
-else(UNIX)
-    find_package (assimp CONFIG REQUIRED)
-endif()
+find_package(assimp 4.0 REQUIRED)
 find_package(fcl REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(Threads REQUIRED)
 
 # workarround: generated cmake config does not provide library target
 add_library(assimp::assimp UNKNOWN IMPORTED)
 set_target_properties(assimp::assimp PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${ASSIMP_INCLUDE_DIRS}")
-if(EXISTS "${ASSIMP_LIBRARIES}")
-    set_target_properties(assimp::assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_LIBRARIES}")
-endif()
+set_target_properties(assimp::assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_LIBRARIES}")
 
-# worarround: fcl required ccd but dos not pull dependency by it's own
-find_package(ccd REQUIRED)
-set_target_properties(fcl PROPERTIES INTERFACE_LINK_LIBRARIES ccd)
+# workarround: older versions of eigen does not provide interface target
+if(NOT TARGET Eigen3::Eigen)
+	add_library(Eigen3::Eigen INTERFACE IMPORTED)
+	set_target_properties(Eigen3::Eigen PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${EIGEN3_INCLUDE_DIR}")
+endif()
 
 add_library(json::json INTERFACE IMPORTED)
 set_target_properties(json::json PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/third_party/nlohmann-json/src")
