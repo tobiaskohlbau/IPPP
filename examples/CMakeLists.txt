@@ -20,20 +20,32 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/gflags
     ${CMAKE_CURRENT_BINARY_DIR}/../third_party/gflags
     EXCLUDE_FROM_ALL)
 
+find_package(OpenCV REQUIRED QUIET)
+if (OpenCV_VERSION VERSION_LESS "2.4.0")
+    message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
+elseif(OpenCV_VERSION VERSION_LESS "3.0.0")
+    find_package(OpenCV REQUIRED QUIET COMPONENTS opencv_core opencv_highgui opencv_imgproc)
+else()
+    find_package(OpenCV REQUIRED QUIET COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
+endif()
+
 macro(ADD_IPPP_EXAMPLE name source)
     add_executable(${name} ${source})
     target_link_libraries(${name}
         PRIVATE
             IPPP
-            gflags
             ${ARGN})
 endmacro()
 
-add_ippp_example(GettingStarted GettingStarted.cpp)
-add_ippp_example(JacoRRT JacoRRT.cpp)
-
 add_subdirectory(ui)
-add_subdirectory(Planner2D)
+
+add_ippp_example(GettingStarted GettingStarted.cpp gflags)
+add_ippp_example(JacoRRT JacoRRT.cpp)
+if(OpenCV_FOUND)
+	add_ippp_example(Planner2D Planner2D.cpp ${OpenCV_LIBS} ui gflags)
+endif()
+add_ippp_example(ParasolBenchmarks ParasolBenchmarks.cpp ui)
+
 #add_subdirectory(gui2D)
-add_subdirectory(ParasolBenchmarks)
+
 
