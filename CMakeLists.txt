@@ -22,16 +22,17 @@ project(IPPP)
 option(BUILD_EXAMPLES "Build examples" OFF)
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_BENCHMARK "Build optional benchmark classes" OFF)
+option(BUILD_DOC "Build documentation" ON)
 
 # external libraries
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 list(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
 #todo: workaround for the findassimp (no more difference of windows and linux because of the cmake of assimp)
-if (UNIX)
+if(UNIX)
     find_package (assimp REQUIRED)
-else (UNIX)
+else(UNIX)
     find_package (assimp CONFIG REQUIRED)
-endif ()
+endif()
 find_package(fcl REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Threads REQUIRED)
@@ -158,6 +159,24 @@ if(${BUILD_TESTS})
 
     enable_testing()
     add_subdirectory(tests)
+endif()
+if(${BUILD_DOC})
+    find_package(Doxygen)
+    if(DOXYGEN_FOUND)
+        # set input and output files
+        set(DOXYGEN_IN ${CMAKE_SOURCE_DIR}/docs/Doxyfile)
+        set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+        configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+
+        # note the option ALL which allows to build the docs together with the application
+        add_custom_target(doc_doxygen ALL
+            COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMENT "Generating API documentation with Doxygen"
+            VERBATIM)
+    else(DOXYGEN_FOUND)
+        message("Doxygen need to be installed to generate the doxygen documentation")
+    endif()
 endif()
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "lib")
