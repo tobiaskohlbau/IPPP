@@ -58,6 +58,10 @@ add_subdirectory(third_party/PQP
     ${CMAKE_BINARY_DIR}/third_party/PQP
     EXCLUDE_FROM_ALL)
 
+add_subdirectory(${CMAKE_SOURCE_DIR}/third_party/gflags
+    ${CMAKE_BINARY_DIR}/third_party/gflags
+    EXCLUDE_FROM_ALL)
+
 # copy assets
 execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
              ${CMAKE_SOURCE_DIR}/assets

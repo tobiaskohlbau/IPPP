@@ -34,6 +34,7 @@ bool testTriangleRobot() {
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
     envConfigurator.setRobotType(RobotType::Triangle2D, FLAGS_assetsDir + "/robotModels/simpleTriangleRobot.obj");
+    generateMap();
     envConfigurator.addObstaclePath("obstacle.obj");
     envConfigurator.saveConfig("envConfigTriangle.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -92,7 +93,7 @@ bool test2DSerialRobot() {
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(2, AABB(Vector3(0, 0, -1), Vector3(1000, 1000, 1000)));
     envConfigurator.setRobotType(RobotType::Serial2D);
-    envConfigurator.setFactoryType(FactoryType::ModelPQP);
+    envConfigurator.setFactoryType(FactoryType::ModelFCL);
     envConfigurator.saveConfig("envConfigSerial2D.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
     environment->getRobot()->setPose(util::Vecd(200, 500, 0, 0, 0, 0));
@@ -100,7 +101,7 @@ bool test2DSerialRobot() {
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setGraphSortCount(3000);
-    creator.setCollisionType(CollisionType::PQP);
+    creator.setCollisionType(CollisionType::FCL);
     creator.setTrajectoryProperties(10, 0.01);
     creator.setEvaluatorType(EvaluatorType::Query);
     creator.setEvaluatorProperties(2, 60);
@@ -159,7 +160,7 @@ void testPointRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    //envConfigurator.addObstaclePath("../../assets/spaces/random2D.obj");
+    envConfigurator.addObstaclePath(FLAGS_assetsDir + "/spaces/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point);
     envConfigurator.saveConfig("envConfig.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
@@ -224,7 +225,8 @@ int main(int argc, char** argv) {
 
     Logging::setLogLevel(LogLevel::trace);
 
+    while (!testTriangleRobot());
     // testTriangleRobot();
     // test2DSerialRobot();
-    testPointRobot();
+    //testPointRobot();
 }

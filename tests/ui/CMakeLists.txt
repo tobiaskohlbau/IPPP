@@ -16,25 +16,4 @@
 #
 #-------------------------------------------------------------------------//
 
-add_library(GTest::GTest ALIAS gtest)
-add_library(GTest::Main ALIAS gtest_main)
-
-macro(ADD_IPPP_TEST TEST_NAME BRANCH)
-    set(EXE_NAME Test_${BRANCH}_${TEST_NAME})
-    
-    add_executable(${EXE_NAME} ${TEST_NAME}.cpp)
-    target_link_libraries(${EXE_NAME} 
-        PRIVATE
-             IPPP
-             GTest::GTest
-             GTest::Main
-             ${ARGN})
-
-    add_test(${TEST_NAME} ${EXE_NAME})
-endmacro(ADD_IPPP_TEST)
-
-add_subdirectory(dataObj)
-add_subdirectory(main)
-add_subdirectory(module)
-add_subdirectory(ui)
-add_subdirectory(utility)
+add_ippp_test(jsonSerializer "ui" gflags)

@@ -54,8 +54,6 @@ bool save(const std::string &filePath, const std::string &data) {
 *  \date       2017-12-01
 */
 std::string load(const std::string &filePath) {
-    std::string data;
-
     std::ifstream file;
     file.open(filePath);
 
@@ -63,8 +61,8 @@ std::string load(const std::string &filePath) {
         Logging::error("Could not open file", "FileWriterReader");
         return std::string();
     }
-    
-    file >> data;
+
+    std::string data((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
 
     return data;

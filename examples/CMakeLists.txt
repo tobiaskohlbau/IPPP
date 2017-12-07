@@ -16,10 +16,6 @@
 #
 #-------------------------------------------------------------------------//
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/gflags
-    ${CMAKE_CURRENT_BINARY_DIR}/../third_party/gflags
-    EXCLUDE_FROM_ALL)
-
 find_package(OpenCV REQUIRED QUIET)
 if (OpenCV_VERSION VERSION_LESS "2.4.0")
     message (FATAL_ERROR "ERROR: can|t find OpenCV 2.4.0+")
@@ -50,5 +46,3 @@ endif()
 add_ippp_example(ParasolBenchmarks ParasolBenchmarks.cpp ui)
 
 #add_subdirectory(gui2D)
-
-
