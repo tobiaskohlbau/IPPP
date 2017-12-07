@@ -23,6 +23,13 @@ namespace ippp {
 JsonSerializer::JsonSerializer() : Configurator("JsonSerializer") {
 }
 
+/*!
+*  \brief      Serialize Transforms to a std::string
+*  \param[in]  vector of Transforms
+*  \param[out] serialized string
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
 std::string JsonSerializer::serialize(const std::vector<Transform> &configs) {
     if (configs.empty())
         return std::string();
@@ -39,6 +46,13 @@ std::string JsonSerializer::serialize(const std::vector<Transform> &configs) {
     return json.dump(4);
 }
 
+/*!
+*  \brief      Deserialize std::string to a std::vector of Transforms
+*  \param[in]  serialized string
+*  \param[out] vector of Transforms
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
 std::vector<Transform> JsonSerializer::deserializeTransforms(const std::string &data) {
     std::vector<Transform> transforms;
     if (data.empty())
