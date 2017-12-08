@@ -266,11 +266,8 @@ std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &config, double ran
     minBoundary = minBoundary.array() - range;
     RS(config, m_root, kdNodes, range, maxBoundary, minBoundary);
 
-    for (auto kdNode : kdNodes) {
-        if (kdNode->config != config) {
-            nodes.push_back(kdNode->node);
-        }
-    }
+    for (auto kdNode : kdNodes)
+        nodes.push_back(kdNode->node);
 
     return nodes;
 }

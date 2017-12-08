@@ -56,7 +56,7 @@ InfMetric<dim>::InfMetric() : DistanceMetric<dim>("Inf Metric") {
 */
 template <unsigned int dim>
 double InfMetric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
-    return (source - target).maxCoeff();
+    return std::abs((source - target).maxCoeff());
 }
 
 /*!
@@ -69,7 +69,7 @@ double InfMetric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &ta
 */
 template <unsigned int dim>
 double InfMetric<dim>::calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const {
-    return (source - target).maxCoeff();
+    return std::abs((source - target).maxCoeff());
 }
 
 /*!

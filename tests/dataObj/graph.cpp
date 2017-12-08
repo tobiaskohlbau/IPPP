@@ -19,6 +19,7 @@
 #include <gtest/gtest.h>
 
 #include <ippp/dataObj/Graph.hpp>
+#include <ippp/modules/distanceMetrics/InfMetric.hpp>
 #include <ippp/modules/distanceMetrics/L2Metric.hpp>
 #include <ippp/util/UtilList.hpp>
 
@@ -38,6 +39,14 @@ void testConstructor() {
     EXPECT_TRUE(graph2.autoSort());
     EXPECT_EQ(graph2.getSortCount(), 10);
     EXPECT_EQ(graph2.nodeSize(), 0);
+
+    for (size_t i = 0; i < 5; ++i) {
+        graph1.addNode(std::make_shared<Node<dim>>());
+        graph2.addNode(std::make_shared<Node<dim>>());
+    }
+
+    EXPECT_EQ(graph1.nodeSize(), 5);
+    EXPECT_EQ(graph2.nodeSize(), 5);
 }
 
 TEST(GRAPH, constructor) {
@@ -102,39 +111,73 @@ void contains(std::vector<std::shared_ptr<Node<dim>>> result, std::vector<std::s
     EXPECT_FALSE(util::contains(result, nodes[4]));
     EXPECT_FALSE(util::contains(result, nodes[7]));
     EXPECT_FALSE(util::contains(result, nodes[8]));
-    EXPECT_FALSE(util::contains(result, nodes[9]));
 }
 
 template <unsigned int dim>
 void RS() {
-    auto metric = std::make_shared<L2Metric<dim>>();
+    auto metric = std::make_shared<InfMetric<dim>>();
     auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
 
     Graph<dim> graph1(0, neighborFinder);
     std::vector<Vector<dim>> vecs;
     std::vector<std::shared_ptr<Node<dim>>> nodes;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 9; ++i) {
         int value = i * 10;
         Vector<dim> vec = Eigen::VectorXd::Constant(dim, 1, value);
         vecs.push_back(vec);
-        std::shared_ptr<Node<dim>> node = std::make_shared<Node<dim>>(vec);
+        auto node = std::make_shared<Node<dim>>(vec);
         nodes.push_back(node);
         graph1.addNode(node);
     }
-    std::vector<std::shared_ptr<Node<dim>>> result = graph1.getNearNodes(nodes[4], 50);
+    auto result = graph1.getNearNodes(nodes[4], 21);
     contains(result, nodes);
-    result = graph1.getNearNodes(*(nodes[4]), 50);
+    result = graph1.getNearNodes(*(nodes[4]), 21);
     contains(result, nodes);
-    result = graph1.getNearNodes(nodes[4]->getValues(), 50);
+    result = graph1.getNearNodes(nodes[4]->getValues(), 21);
     contains(result, nodes);
 }
 
 TEST(GRAPH, RS) {
+    RS<2>();
     RS<3>();
     RS<4>();
     RS<5>();
     RS<6>();
-    NNS<7>();
-    NNS<8>();
-    NNS<9>();
+    RS<7>();
+    RS<8>();
+    RS<9>();
+}
+
+template<unsigned int dim>
+void getNode() {
+    auto metric = std::make_shared<L2Metric<dim>>();
+    auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
+    Graph<dim> graph(0, neighborFinder);
+
+    std::vector<std::shared_ptr<Node<dim>>> nodes;
+    for (size_t i = 0; i < 10; ++i) {
+        Vector<dim> vec = Eigen::VectorXd::Constant(dim, 1, i);
+        auto node = std::make_shared<Node<dim>>(vec);
+        graph.addNode(node);
+        nodes.push_back(node);
+    }
+    
+    for (size_t i = 0; i < 10; ++i) {
+        Vector<dim> vec = Eigen::VectorXd::Constant(dim, 1, i);
+        auto node = graph.getNode(vec);
+        EXPECT_TRUE(graph.getNode(vec) != nullptr);
+        EXPECT_TRUE(graph.getNode(i) == nodes[i]);
+        EXPECT_TRUE(graph.containNode(nodes[i]));
+    }
+}
+
+TEST(GRAPH, getNode) {
+    getNode<2>();
+    getNode<3>();
+    getNode<4>();
+    getNode<5>();
+    getNode<6>();
+    getNode<7>();
+    getNode<8>();
+    getNode<9>();
 }

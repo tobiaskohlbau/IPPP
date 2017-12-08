@@ -176,7 +176,6 @@ void testPointRobot() {
     creator.setSamplingType(SamplingType::NearObstacle);
     creator.setSamplingProperties(10, 80);
     creator.saveConfig("moduleConfig.json");
-    creator.loadConfig("moduleConfig.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::make_shared<EST<dim>>(environment, creator.getPlannerOptions(), creator.getGraph());

@@ -34,7 +34,7 @@ namespace ippp {
 template <unsigned int dim>
 class Graph : public Identifier {
   public:
-    Graph(const size_t sortCount, const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder);
+    Graph(const size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder);
     ~Graph();
 
     bool addNode(const std::shared_ptr<Node<dim>> &node);
@@ -87,10 +87,12 @@ class Graph : public Identifier {
 /*!
 *  \brief      Default constructor of the class Graph
 *  \author     Sascha Kaden
+*  \param[in]  count when the graph has to be sorted
+*  \param[in]  NeighborFinder
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-Graph<dim>::Graph(const size_t sortCount, const std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> &neighborFinder)
+Graph<dim>::Graph(const size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder)
     : Identifier("Graph"), m_sortCount(sortCount), m_neighborFinder(neighborFinder) {
     m_autoSort = (sortCount != 0);
     // reserve memory for the node vector to reduce computation time at new memory allocation
@@ -98,7 +100,7 @@ Graph<dim>::Graph(const size_t sortCount, const std::shared_ptr<NeighborFinder<d
 }
 
 /*!
-*  \brief      Destructor of the class Graph
+*  \brief      Destructor of the class Graph, if preserve Node ptr is set false, all ptr inside the nodes will be removed.
 *  \author     Sascha Kaden
 *  \date       2017-01-07
 */
@@ -157,9 +159,10 @@ void Graph<dim>::addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &node
 */
 template <unsigned int dim>
 bool Graph<dim>::containNode(const std::shared_ptr<Node<dim>> &node) {
-    auto nearestNode = m_neighborFinder->searchNearestNeighbor(node->getValues());
-    if (node == nearestNode)
-        return true;
+    for (const auto& graphNode : m_nodes)
+        if (node == graphNode)
+            return true;
+    return false;
 }
 
 /*!
@@ -173,8 +176,7 @@ template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const size_t index) const {
     if (index < m_nodes.size())
         return m_nodes[index];
-    else
-        return nullptr;
+    return nullptr;
 }
 
 /*!
@@ -186,11 +188,11 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNode(const size_t index) const {
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const {
-    auto nearestNode = m_neighborFinder->searchNearestNeighbor(config);
-    if (nearestNode && nearestNode->getValues().isApprox(config, EPSILON))
-        return nearestNode;
-    else
-        return nullptr;
+    //todo: at the time brute force search over all nodes, add a more clever search
+    for (const auto& node : m_nodes)
+        if (node->getValues().isApprox(config, EPSILON))
+            return node;
+    return nullptr;
 }
 
 /*!
@@ -309,7 +311,6 @@ bool Graph<dim>::eraseNode(const std::shared_ptr<Node<dim>> &node) {
         }
     }
     return false;
-    // Todo: add removing Node at KDTree
 }
 
 /*!
@@ -322,8 +323,7 @@ template <unsigned int dim>
 bool Graph<dim>::empty() const {
     if (m_nodes.empty())
         return true;
-    else
-        return false;
+    return false;
 }
 
 /*!
