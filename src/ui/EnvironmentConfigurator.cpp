@@ -164,7 +164,7 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
     }
 
     for (auto &obstaclePath : m_obstaclePaths)
-        m_environment->addObstacle(factory->createModel(obstaclePath));
+        m_environment->addObstacle(factory->createModelFromFile(obstaclePath));
 
     Vector3 min = m_workspceBounding.min();
     Vector3 max = m_workspceBounding.max();
@@ -183,7 +183,7 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
         min6 = util::Vecd(min[0], min[1], min[2], 0, 0, 0);
         max6 = util::Vecd(max[0], max[1], max[2], util::twoPi(), util::twoPi(), util::twoPi());
         std::vector<DofType> types = {volumetricPos, volumetricPos, volumetricPos, volumetricRot, volumetricRot, volumetricRot};
-        auto robotModel = factory->createModel(m_robotFile);
+        auto robotModel = factory->createModelFromFile(m_robotFile);
         m_robot = std::make_shared<MobileRobot>(6, std::make_pair(min6, max6), types);
         m_robot->setBaseModel(robotModel);
     } else if (m_robotType == RobotType::Triangle2D) {
@@ -194,7 +194,7 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
         }
         tempMin[2] = 0;
         tempMax[2] = 360 * util::toRad();
-        auto robotModel = factory->createModel(m_robotFile);
+        auto robotModel = factory->createModelFromFile(m_robotFile);
         m_robot = std::make_shared<TriangleRobot2D>(robotModel, std::make_pair(tempMin, tempMax));
     }
 

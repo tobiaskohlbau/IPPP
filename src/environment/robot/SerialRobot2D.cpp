@@ -41,17 +41,17 @@ SerialRobot2D::SerialRobot2D()
     setBaseOffset(util::Vecd(100, 0, 0, 0, 0, 0));
 
     ModelFactoryPqp modelFactory;
-    m_baseModel = modelFactory.createModel("assets/robotModels/2Dline.obj");
+    m_baseModel = modelFactory.createModelFromFile("assets/robotModels/2Dline.obj");
     Joint joint;
-    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModelFromFile("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
-    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModelFromFile("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
-    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModelFromFile("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
-    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModelFromFile("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
-    joint = Joint(-util::pi(), util::pi(), modelFactory.createModel("assets/robotModels/2Dline.obj"));
+    joint = Joint(-util::pi(), util::pi(), modelFactory.createModelFromFile("assets/robotModels/2Dline.obj"));
     m_joints.push_back(joint);
 }
 

@@ -40,25 +40,25 @@ KukaKR5::KukaKR5()
     m_d = util::Vecd(400, 0, 0, 620, 0, 115);
 
     ModelFactoryPqp modelFactoryPqp;
-    m_baseModel = modelFactoryPqp.createModel("meshes/KukaKR5/link0.stl");
+    m_baseModel = modelFactoryPqp.createModelFromFile("meshes/KukaKR5/link0.stl");
     Joint joint;
     // -155, 155
-    joint = Joint(-2.70526f, 2.70526f, modelFactoryPqp.createModel("meshes/KukaKR5/link1.stl"));
+    joint = Joint(-2.70526f, 2.70526f, modelFactoryPqp.createModelFromFile("meshes/KukaKR5/link1.stl"));
     m_joints.push_back(joint);
     // -65, 180
-    joint = Joint(-1.13446f, util::pi(), modelFactoryPqp.createModel("meshes/KukaKR5/link2.stl"));
+    joint = Joint(-1.13446f, util::pi(), modelFactoryPqp.createModelFromFile("meshes/KukaKR5/link2.stl"));
     m_joints.push_back(joint);
     // -68, 105
-    joint = Joint(-1.18682f, 1.8326f, modelFactoryPqp.createModel("meshes/KukaKR5/link3.stl"));
+    joint = Joint(-1.18682f, 1.8326f, modelFactoryPqp.createModelFromFile("meshes/KukaKR5/link3.stl"));
     m_joints.push_back(joint);
     // -350, 350
-    joint = Joint(-6.10865f, 6.10865f, modelFactoryPqp.createModel("meshes/KukaKR5/link4.stl"));
+    joint = Joint(-6.10865f, 6.10865f, modelFactoryPqp.createModelFromFile("meshes/KukaKR5/link4.stl"));
     m_joints.push_back(joint);
     // 50, 310
-    joint = Joint(0.872665f, 5.41052f, modelFactoryPqp.createModel("meshes/KukaKR5/link5.stl"));
+    joint = Joint(0.872665f, 5.41052f, modelFactoryPqp.createModelFromFile("meshes/KukaKR5/link5.stl"));
     m_joints.push_back(joint);
     // -360, 170
-    joint = Joint(-util::twoPi(), 2.96706f, modelFactoryPqp.createModel("meshes/KukaKR5/link6.stl"));
+    joint = Joint(-util::twoPi(), 2.96706f, modelFactoryPqp.createModelFromFile("meshes/KukaKR5/link6.stl"));
     m_joints.push_back(joint);
 }
 

@@ -35,14 +35,14 @@ Jaco::Jaco() : SerialRobot("Jaco", 6, std::make_pair(util::Vecd(0, 42, 17, 0, 0,
     m_d = util::Vecd(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
 
     ModelFactoryPqp modelFactoryPqp;
-    m_baseModel = modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_base.dae");
+    m_baseModel = modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_base.dae");
 
-    m_joints.emplace_back(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_1.dae"));
-    m_joints.emplace_back(42, 318, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_2.dae"));
-    m_joints.emplace_back(17, 343, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_3.dae"));
-    m_joints.emplace_back(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_4.dae"));
-    m_joints.emplace_back(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_5.dae"));
-    m_joints.emplace_back(0, 360, modelFactoryPqp.createModel("meshes/Jaco/jaco2_link_5.dae"));
+    m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_1.dae"));
+    m_joints.emplace_back(42, 318, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_2.dae"));
+    m_joints.emplace_back(17, 343, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_3.dae"));
+    m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_4.dae"));
+    m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_5.dae"));
+    m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_5.dae"));
 }
 
 /*!

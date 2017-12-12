@@ -35,7 +35,7 @@ ModelFactoryTriangle2D::ModelFactoryTriangle2D() : ModelFactory("ModelFactoryTri
 *  \param[out] smart pointer to ModelTriangle2D
 *  \date       2017-02-19
 */
-std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::string &filePath) {
+std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModelFromFile(const std::string &filePath) {
     if (filePath.empty()) {
         Logging::error("Empty file path", this);
         return nullptr;
@@ -54,7 +54,15 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModel(const std::s
     return triangleModel;
 }
 
-std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModels(const std::string &filePath) {
+/*!
+*  \brief      Creates a list of ModelTriangle2D from the passed source cad file.
+*  \details    Each model contains the vertices and faces of the loaded cad model.
+*  \author     Sascha Kaden
+*  \param[in]  filePath
+*  \param[out] list of smart pointer to the ModelTriangle2D
+*  \date       2017-02-19
+*/
+std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModelsFromFile(const std::string &filePath) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     if (filePath.empty()) {
         Logging::error("Empty file path", this);
@@ -85,11 +93,11 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
 *  \param[out] list of triangle models
 *  \date       2017-02-19
 */
-std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModels(const std::vector<std::string> &filePaths) {
+std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModelsFromFiles(const std::vector<std::string> &filePaths) {
     std::vector<std::shared_ptr<ModelContainer>> models;
     std::shared_ptr<ModelContainer> model;
     for (const auto& filePath : filePaths) {
-        model = createModel(filePath);
+        model = createModelFromFile(filePath);
         if (model) {
             models.push_back(model);
         } else {
