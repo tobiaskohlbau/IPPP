@@ -1,19 +1,15 @@
 #include <chrono>
 
-#include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-
+#include <Drawing2D.hpp>
 #include <gflags/gflags.h>
 #include <ippp/Core.h>
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
 #include <ippp/UI.h>
-#include <Drawing2D.hpp>
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../assets",
-	"assets directory");
+DEFINE_string(assetsDir, "../assets", "assets directory");
 
 Mesh generateMap() {
     const unsigned int dim = 2;
@@ -32,11 +28,11 @@ bool testTriangleRobot() {
     const unsigned int dim = 3;
 
     EnvironmentConfigurator envConfigurator;
-    envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.setRobotType(RobotType::Triangle2D, FLAGS_assetsDir + "/robotModels/simpleTriangleRobot.obj");
+    envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
+    envConfigurator.setRobotType(RobotType::Triangle2D);
+    envConfigurator.setRobotBaseModelFile(FLAGS_assetsDir + "/robotModels/simpleTriangleRobot.obj");
     generateMap();
     envConfigurator.addObstaclePath("obstacle.obj");
-    envConfigurator.saveConfig("envConfigTriangle.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
 
     ModuleConfigurator<dim> creator;
@@ -46,7 +42,6 @@ bool testTriangleRobot() {
     creator.setEvaluatorType(EvaluatorType::QueryOrTime);
     creator.setEvaluatorProperties(50, 60);
     creator.setSamplingType(SamplingType::Straight);
-    creator.saveConfig("moduleConfigTriangle.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
@@ -73,10 +68,7 @@ bool testTriangleRobot() {
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
         std::vector<Vector3> path = planner->getPath(80, 5);
-
         drawing::drawTrianglePath(path, environment->getRobot()->getBaseModel()->m_mesh, image, Eigen::Vector3i(0, 0, 255), 2);
-        //JsonSerializer writer;
-        //writer.write<dim>(path, "test.txt");
 
         cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
         cv::imshow("pathPlanner", image);
@@ -88,13 +80,21 @@ bool testTriangleRobot() {
 }
 
 bool test2DSerialRobot() {
-    const unsigned int dim = 5;
+    const unsigned int dim = 3;
 
     EnvironmentConfigurator envConfigurator;
-    envConfigurator.setWorkspaceProperties(2, AABB(Vector3(0, 0, -1), Vector3(1000, 1000, 1000)));
-    envConfigurator.setRobotType(RobotType::Serial2D);
+    envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, -1), Vector3(1000, 1000, 1000)));
+    envConfigurator.setRobotType(RobotType::Serial);
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
+    Vector3 min(-util::pi(), -util::pi(), -util::pi());
+    Vector3 max(util::pi(), util::pi(), util::pi());
+    envConfigurator.setRobotBaseProperties(dim, std::vector<DofType>({DofType::joint, DofType::joint, DofType::joint}),
+                                           std::make_pair(min, max));
+    std::vector<DhParameter> dhParameters(3, DhParameter(0, 100));
+    std::vector<std::string> jointModelFiles(3, std::string(FLAGS_assetsDir + "/robotModels/2dLine.obj"));
+    envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles);
     envConfigurator.saveConfig("envConfigSerial2D.json");
+    envConfigurator.loadConfig("envConfigSerial2D.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
     environment->getRobot()->setPose(util::Vecd(200, 500, 0, 0, 0, 0));
 
@@ -103,23 +103,18 @@ bool test2DSerialRobot() {
     creator.setGraphSortCount(3000);
     creator.setCollisionType(CollisionType::FCL);
     creator.setTrajectoryProperties(10, 0.01);
-    creator.setEvaluatorType(EvaluatorType::Query);
+    creator.setEvaluatorType(EvaluatorType::QueryOrTime);
     creator.setEvaluatorProperties(2, 60);
     creator.setSamplerType(SamplerType::SamplerUniform);
     creator.setSamplingType(SamplingType::Straight);
-    creator.saveConfig("moduleConfigTriangle.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
     planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(5), creator.getGraph());
-    // planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
-    // planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
     auto startTime = std::chrono::system_clock::now();
-    Vector5 start =
-        util::Vecd(-55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad());
-    Vector5 goal = util::Vecd(55 * util::toRad(), 55 * util::toRad(), 55 * util::toRad(), 55 * util::toRad(), 55 * util::toRad());
-    bool connected = planner->computePath(start, goal, 500, 3);
+    Vector3 start(-55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad());
+    Vector3 goal(55 * util::toRad(), 55 * util::toRad(), 55 * util::toRad());
+    bool connected = planner->computePath(start, goal, 100, 3);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
@@ -136,16 +131,18 @@ bool test2DSerialRobot() {
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
         std::vector<Vector<dim>> path = planner->getPath(10, 0.1);
+        auto data = jsonSerializer::serialize<dim>(path);
+        ui::save("2dSerialRobotPath.json", data);
 
-        for (auto& config : path) {
+        for (const auto& config : path) {
             cv::Mat imageCopy = image.clone();
-            drawing::drawSerialRobot2D<dim>(config, std::dynamic_pointer_cast<SerialRobot2D>(environment->getRobot()), imageCopy,
+            drawing::drawSerialRobot2D<dim>(config, std::dynamic_pointer_cast<SerialRobot>(environment->getRobot()), imageCopy,
                                             Eigen::Vector3i(0, 0, 255), 2);
             cv::imshow("pathPlanner", imageCopy);
             cv::waitKey(0);
         }
     } else {
-        drawing::drawSerialRobot2D<dim>(goal, std::dynamic_pointer_cast<SerialRobot2D>(environment->getRobot()), image,
+        drawing::drawSerialRobot2D<dim>(goal, std::dynamic_pointer_cast<SerialRobot>(environment->getRobot()), image,
                                         Eigen::Vector3i(0, 0, 255), 2);
     }
 
@@ -159,10 +156,9 @@ void testPointRobot() {
     const unsigned int dim = 2;
 
     EnvironmentConfigurator envConfigurator;
-    envConfigurator.setWorkspaceProperties(dim, AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
+    envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
     envConfigurator.addObstaclePath(FLAGS_assetsDir + "/spaces/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point);
-    envConfigurator.saveConfig("envConfig.json");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
 
     ModuleConfigurator<dim> creator;
@@ -175,16 +171,10 @@ void testPointRobot() {
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
     creator.setSamplingType(SamplingType::NearObstacle);
     creator.setSamplingProperties(10, 80);
-    creator.saveConfig("moduleConfig.json");
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    // planner = std::make_shared<EST<dim>>(environment, creator.getPlannerOptions(), creator.getGraph());
-    // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(40), creator.getGraph());
     planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(35), creator.getGraph());
-    // planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
-    // planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
-    // compute the tree
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(10.0, 10.0);
     Vector2 goal(990.0, 990.0);
@@ -206,10 +196,9 @@ void testPointRobot() {
 
     if (connected) {
         std::vector<Vector2> pathPoints = planner->getPath();
-        
-        JsonSerializer serializer;
-        std::string string = serializer.serialize<dim>(pathPoints);
-        ui::save("test.json", string);
+
+        auto json = jsonSerializer::serialize<dim>(pathPoints);
+        ui::save("test.json", json);
         drawing::drawPath2D(pathPoints, image, Eigen::Vector3i(255, 0, 0), 2);
     }
 
@@ -220,12 +209,12 @@ void testPointRobot() {
 }
 
 int main(int argc, char** argv) {
-	gflags::ParseCommandLineFlags(&argc, &argv, true);
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
     Logging::setLogLevel(LogLevel::trace);
 
-    while (!testTriangleRobot());
+     //while (!testTriangleRobot());
     // testTriangleRobot();
-    // test2DSerialRobot();
-    //testPointRobot();
+    test2DSerialRobot();
+    // testPointRobot();
 }

@@ -32,7 +32,7 @@ TEST(MAIN, clearWorkspace2D) {
 
     EnvironmentConfigurator environmentConfig;
     AABB workspaceBounding(Vector3(0, 0, 0), Vector3(100, 100, 100));
-    environmentConfig.setWorkspaceProperties(2, workspaceBounding);
+    environmentConfig.setWorkspaceProperties(workspaceBounding);
     environmentConfig.setRobotType(RobotType::Point);
     auto environment = environmentConfig.getEnvironment();
 

@@ -32,7 +32,7 @@ TEST(TRAJECTORY, computeTrajectory) {
                                      DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos};
     std::shared_ptr<MobileRobot> robot(new MobileRobot(
         dim, std::make_pair(util::Vecd(-10, -10, -10, -10, -10, -10), util::Vecd(10, 10, 10, 10, 10, 10)), dofTypes));
-    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
+    std::shared_ptr<Environment> environment(new Environment(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
     std::shared_ptr<TrajectoryPlanner<dim>> planner(new LinearTrajectory<dim>(collision, environment, 0.1));
 

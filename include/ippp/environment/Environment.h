@@ -38,9 +38,9 @@ enum class BodyType { Planar, Volumetric };
 */
 class Environment : public Identifier {
   public:
-    Environment(const unsigned int workspaceDim, const AABB &spaceBoundary);
-    Environment(const unsigned int workspaceDim, const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot);
-    Environment(const unsigned int workspaceDim, const AABB &spaceBoundary,
+    Environment(const AABB &spaceBoundary);
+    Environment(const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot);
+    Environment(const AABB &spaceBoundary,
                 const std::vector<std::shared_ptr<RobotBase>> &robots);
     ~Environment();
 
@@ -57,7 +57,6 @@ class Environment : public Identifier {
     size_t numRobots() const;
 
     AABB getSpaceBoundary() const;
-    unsigned int getSpaceDim() const;
     std::pair<VectorX, VectorX> getRobotBoundaries() const;
     std::vector<unsigned int> getRobotDimSizes() const;
     unsigned int getConfigDim() const;
@@ -68,7 +67,6 @@ class Environment : public Identifier {
     void updateMasks();
 
     unsigned int m_configDim = 0;
-    const unsigned int m_spaceDim = 0;
     const AABB m_spaceBoundary;
 
     std::vector<unsigned int> m_robotDimSizes;

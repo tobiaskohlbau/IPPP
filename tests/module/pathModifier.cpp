@@ -68,7 +68,7 @@ void createSampler() {
     }
 
     std::shared_ptr<MobileRobot> robot(new MobileRobot(dim, std::make_pair(minBound, maxBound), dofTypes));
-    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
+    std::shared_ptr<Environment> environment(new Environment(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
 
     std::vector<std::shared_ptr<Sampler<dim>>> samplers;
     samplers.push_back(std::make_shared<SamplerRandom<dim>>(environment));

@@ -79,7 +79,7 @@ void createSampling() {
 
     std::shared_ptr<MobileRobot> robot(new MobileRobot(dim, std::make_pair(minBound, maxBound), dofTypes));
     robot->setBaseModel(nullptr);
-    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
+    std::shared_ptr<Environment> environment(new Environment(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionFcl<dim>(environment));
     std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new LinearTrajectory<dim>(collision, environment, 0.1));
 

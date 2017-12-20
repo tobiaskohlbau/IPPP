@@ -29,13 +29,10 @@ namespace ippp {
 *  \param[in]  workspace boundary
 *  \date       2017-05-17
 */
-Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBoundary)
-    : Identifier("Environment"), m_spaceDim(workspaceDim), m_spaceBoundary(spaceBoundary) {
+Environment::Environment(const AABB &spaceBoundary)
+    : Identifier("Environment"), m_spaceBoundary(spaceBoundary) {
     Logging::debug("Initialize", this);
 
-    if (2 > m_spaceDim || m_spaceDim > 3)
-        Logging::error("Dimension of workspace have to be 2 or 3", this);
-    assert(m_spaceDim == 2 || m_spaceDim == 3);
     updateConfigurationDim();
 }
 
@@ -47,13 +44,10 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
 *  \param[in]  robot
 *  \date       2017-05-17
 */
-Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot)
-    : Identifier("Environment"), m_spaceDim(workspaceDim), m_spaceBoundary(spaceBoundary) {
+Environment::Environment(const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot)
+    : Identifier("Environment"), m_spaceBoundary(spaceBoundary) {
     Logging::debug("Initialize", this);
 
-    if (2 > m_spaceDim || m_spaceDim > 3)
-        Logging::error("Dimension of workspace have to be 2 or 3", this);
-    assert(m_spaceDim == 2 || m_spaceDim == 3);
     m_robots.push_back(robot);
     m_robotDimSizes.push_back(robot->getDim());
     updateConfigurationDim();
@@ -67,13 +61,9 @@ Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBound
 *  \param[in]  list of robots
 *  \date       2017-05-17
 */
-Environment::Environment(const unsigned int workspaceDim, const AABB &spaceBoundary, const std::vector<std::shared_ptr<RobotBase>> &robots)
-        : Identifier("Environment"), m_spaceDim(workspaceDim), m_spaceBoundary(spaceBoundary) {
+Environment::Environment(const AABB &spaceBoundary, const std::vector<std::shared_ptr<RobotBase>> &robots)
+        : Identifier("Environment"), m_spaceBoundary(spaceBoundary) {
     Logging::debug("Initialize", this);
-
-    if (2 > m_spaceDim || m_spaceDim > 3)
-        Logging::error("Dimension of workspace have to be 2 or 3", this);
-    assert(m_spaceDim == 2 || m_spaceDim == 3);
 
     if (robots.empty())
         Logging::error("No robot passed", this);
@@ -210,16 +200,6 @@ size_t Environment::numRobots() const {
 */
 AABB Environment::getSpaceBoundary() const {
     return m_spaceBoundary;
-}
-
-/*!
-*  \brief      Return dimension of the workspace
-*  \author     Sascha Kaden
-*  \param[out] dimension
-*  \date       2017-05-17
-*/
-unsigned int Environment::getSpaceDim() const {
-    return m_spaceDim;
 }
 
 /*!
