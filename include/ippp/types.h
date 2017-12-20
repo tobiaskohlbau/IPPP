@@ -37,6 +37,9 @@ using Vector3 = Eigen::Matrix<double, 3, 1>;
 using Vector4 = Eigen::Matrix<double, 4, 1>;
 using Vector5 = Eigen::Matrix<double, 5, 1>;
 using Vector6 = Eigen::Matrix<double, 6, 1>;
+using Vector7 = Eigen::Matrix<double, 7, 1>;
+using Vector8 = Eigen::Matrix<double, 8, 1>;
+using Vector9 = Eigen::Matrix<double, 9, 1>;
 using VectorX = Eigen::Matrix<double, Eigen::Dynamic, 1>;
 using Vector3i = Eigen::Matrix<size_t, 3, 1>;
 

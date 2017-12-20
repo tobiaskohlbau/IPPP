@@ -93,19 +93,6 @@ static Transform createTransform(const Matrix3 &R, const Vector3 &t) {
 }
 
 /*!
-*  \brief      Decompose transformation matrix T in rotation R and translation t
-*  \author     Sascha Kaden
-*  \param[in]  transformation matrix
-*  \param[out] rotation matrix
-*  \param[out] translation matrix
-*  \date       2016-08-25
-*/
-static void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
-    R = T.block<3, 3>(0, 0);
-    t = T.block<3, 1>(0, 3);
-}
-
-/*!
 *  \brief      Convert pose config to transformation matrix
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
@@ -117,6 +104,20 @@ static Transform poseVecToTransform(const Vector6 &pose) {
     T = Translation(Vector3(pose[0], pose[1], pose[2])) * Eigen::AngleAxisd(pose[3], Eigen::Vector3d::UnitX()) * Eigen::AngleAxisd(pose[4], Eigen::Vector3d::UnitY()) *
         Eigen::AngleAxisd(pose[5], Eigen::Vector3d::UnitZ());
     return T;
+}
+
+/*!
+*  \brief      Convert pose config to transformation matrix
+*  \author     Sascha Kaden
+*  \param[in]  pose Vector witr degree angles
+*  \param[out] transformation matrix
+*  \date       2016-07-07
+*/
+static Transform poseVecToTransformFromDeg(const Vector6 &pose) {
+    auto poseVec = pose;
+    for (size_t i = 3; i < 6; ++i)
+        poseVec[i] *= toRad();
+    return poseVecToTransform(poseVec);
 }
 
 /*!
@@ -220,6 +221,14 @@ static void removeDuplicates(std::vector<Vector3> &vectors) {
                 ++i;
         }
     }
+}
+
+static double toDeg(double rad) {
+    return rad * toDeg();
+}
+
+static double toRad(double deg) {
+    return deg * toRad();
 }
 
 /*!

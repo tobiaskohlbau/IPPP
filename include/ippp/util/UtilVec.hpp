@@ -178,6 +178,24 @@ static Vector6 Vecd(double x, double y, double z, double rx, double ry, double r
 }
 
 /*!
+*  \brief      Creates a 6 dimensional Vector with passed values
+*  \author     Sascha Kaden
+*  \param[in]  x
+*  \param[in]  y
+*  \param[in]  z
+*  \param[in]  rx
+*  \param[in]  ry
+*  \param[in]  rz
+*  \param[out] result Vector
+*  \date       2016-12-23
+*/
+static Vector7 Vecd(double a1, double a2, double a3, double a4, double a5, double a6, double a7) {
+    Vector7 vec;
+    vec << a1, a2, a3, a4, a5, a6, a7;
+    return vec;
+}
+
+/*!
 *  \brief      Creates a Vector with template dimension and all elements are set to the passed value
 *  \author     Sascha Kaden
 *  \param[in]  value
