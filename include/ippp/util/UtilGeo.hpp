@@ -93,6 +93,19 @@ static Transform createTransform(const Matrix3 &R, const Vector3 &t) {
 }
 
 /*!
+ *  \brief      Decompose transformation matrix T in rotation R and translation t
+ *  \author     Sascha Kaden
+ *  \param[in]  transformation matrix
+ *  \param[out] rotation matrix
+ *  \param[out] translation matrix
+ *  \date       2016-08-25
+ */
+static void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
+    R = T.block<3, 3>(0, 0);
+    t = T.block<3, 1>(0, 3);
+}
+
+/*!
 *  \brief      Convert pose config to transformation matrix
 *  \author     Sascha Kaden
 *  \param[in]  pose Vector
@@ -101,8 +114,8 @@ static Transform createTransform(const Matrix3 &R, const Vector3 &t) {
 */
 static Transform poseVecToTransform(const Vector6 &pose) {
     Transform T;
-    T = Translation(Vector3(pose[0], pose[1], pose[2])) * Eigen::AngleAxisd(pose[3], Eigen::Vector3d::UnitX()) * Eigen::AngleAxisd(pose[4], Eigen::Vector3d::UnitY()) *
-        Eigen::AngleAxisd(pose[5], Eigen::Vector3d::UnitZ());
+    T = Translation(Vector3(pose[0], pose[1], pose[2])) * Eigen::AngleAxisd(pose[3], Eigen::Vector3d::UnitX()) *
+        Eigen::AngleAxisd(pose[4], Eigen::Vector3d::UnitY()) * Eigen::AngleAxisd(pose[5], Eigen::Vector3d::UnitZ());
     return T;
 }
 
@@ -164,21 +177,21 @@ static Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3
 static AABB transformAABB(const AABB &aabb, const Transform &T) {
     Vector3 min = aabb.min();
     Vector3 max = aabb.max();
-    Vector4 min4  = util::append<3>(min, 1);
-    Vector4 max4  = util::append<3>(max, 1);
+    Vector4 min4 = util::append<3>(min, 1);
+    Vector4 max4 = util::append<3>(max, 1);
     min4 = T * min4;
     max4 = T * max4;
     return AABB(Vector3(min4[0], min4[1], min4[2]), Vector3(max4[0], max4[1], max4[2]));
 
-//    Vector3 center(T.translation());
-//    Vector3 radius = Vector3::Zero(3, 1);
-//    for (size_t i = 0; i < 3; i++) {
-//        for (size_t j = 0; j < 3; j++) {
-//            center[i] += T(i, j) * aabb.center()[j];
-//            radius[i] += std::abs(T(i, j)) * aabb.diagonal()[j] / 2;
-//        }
-//    }
-//    return AABB(center - radius, center + radius);
+    //    Vector3 center(T.translation());
+    //    Vector3 radius = Vector3::Zero(3, 1);
+    //    for (size_t i = 0; i < 3; i++) {
+    //        for (size_t j = 0; j < 3; j++) {
+    //            center[i] += T(i, j) * aabb.center()[j];
+    //            radius[i] += std::abs(T(i, j)) * aabb.diagonal()[j] / 2;
+    //        }
+    //    }
+    //    return AABB(center - radius, center + radius);
 }
 
 /*!
