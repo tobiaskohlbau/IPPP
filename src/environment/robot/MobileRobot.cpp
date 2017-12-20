@@ -29,8 +29,10 @@ namespace ippp {
 *  \date       2017-06-21
 */
 MobileRobot::MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
-                         const std::vector<DofType> &dofTypes)
-    : RobotBase("MobileRobot", dim, RobotCategory::mobile, boundary, dofTypes) {
+                         const std::vector<DofType> &dofTypes, const std::string &name)
+    : RobotBase(name, dim, RobotCategory::mobile, dofTypes) {
+    m_minBoundary = boundary.first;
+    m_maxBoundary = boundary.second;
 }
 
 /*!
@@ -44,7 +46,7 @@ Transform MobileRobot::getTransformation(const VectorX &config) const {
     if (m_dim != 6)
         return Transform::Identity();
 
-        return util::poseVecToTransform(config);
+    return util::poseVecToTransform(config);
 }
 
 } /* namespace ippp */

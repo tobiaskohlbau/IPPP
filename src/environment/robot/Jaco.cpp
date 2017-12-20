@@ -26,36 +26,19 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco() : SerialRobot("Jaco", 6, std::make_pair(util::Vecd(0, 42, 17, 0, 0, 0),
-                                                     util::Vecd(360, 318, 343, 360, 360, 360)),
-                           std::vector<DofType>({DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos,
-                                                 DofType::volumetricRot, DofType::volumetricRot, DofType::volumetricRot})) {
-    m_alpha = util::Vecd(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());
-    m_a = util::Vecd(0, 410, 0, 0, 0, 0);
-    m_d = util::Vecd(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
-
-    ModelFactoryPqp modelFactoryPqp;
-    m_baseModel = modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_base.dae");
-
-    m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_1.dae"));
-    m_joints.emplace_back(42, 318, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_2.dae"));
-    m_joints.emplace_back(17, 343, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_3.dae"));
-    m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_4.dae"));
-    m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_5.dae"));
-    m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("meshes/Jaco/jaco2_link_5.dae"));
-}
-
-/*!
-*  \brief      Computes the euclidean tcp position from the passed robot angles.
-*  \author     Sascha Kaden
-*  \param[in]  real angles
-*  \param[out] euclidean position Vec
-*  \date       2016-08-25
-*/
-Transform Jaco::directKinematic(const VectorX &angles)  const {
-    std::vector<Transform> trafos = getJointTrafos(angles);
-
-    return getTcp(trafos);
+Jaco::Jaco(const unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
+           const std::vector<DofType> &dofTypes)
+    : SerialRobot(dim, joints, dhParameters, dofTypes, "Jaco") {
+    // m_alpha = util::Vecd(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());
+    // m_a = util::Vecd(0, 410, 0, 0, 0, 0);
+    // m_d = util::Vecd(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
+    // m_baseModel = modelFactoryPqp.createModelFromFile("link_base_fixed_origin.obj");
+    // m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("link_1_fixed_origin.obj"));
+    // m_joints.emplace_back(42, 318, modelFactoryPqp.createModelFromFile("link_2_fixed_origin.obj"));
+    // m_joints.emplace_back(17, 343, modelFactoryPqp.createModelFromFile("link_3_fixed_origin.obj"));
+    // m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("link_4_fixed_origin.obj"));
+    // m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("link_5_fixed_origin.obj"));
+    // m_joints.emplace_back(0, 360, modelFactoryPqp.createModelFromFile("link_hand_fixed_origin.obj"));
 }
 
 /*!
@@ -65,14 +48,14 @@ Transform Jaco::directKinematic(const VectorX &angles)  const {
 *  \param[out] vector of transformation matrizes
 *  \date       2016-07-14
 */
-std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles)  const {
+std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles) const {
     // transform form jaco physical angles to dh angles
     Vector6 dhAngles = convertRealToDH(angles);
 
     std::vector<Transform> trafos;
     // create transformation matrizes
     for (size_t i = 0; i < 6; ++i)
-        trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], dhAngles[i]));
+        trafos.push_back(getTrafo(m_dhParameters[i], dhAngles[i]));
     return trafos;
 }
 
@@ -84,7 +67,7 @@ std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles)  const {
 *  \param[out] D-H angles
 *  \date       2016-07-14
 */
-Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) const{
+Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) const {
     Vector6 dhAngles(realAngles);
     dhAngles[0] = -realAngles[0];
     dhAngles[1] = realAngles[1] - util::halfPi();

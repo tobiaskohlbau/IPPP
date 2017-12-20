@@ -34,5 +34,4 @@
 #include <ippp/environment/robot/PointRobot.h>
 #include <ippp/environment/robot/RobotBase.h>
 #include <ippp/environment/robot/SerialRobot.h>
-#include <ippp/environment/robot/SerialRobot2D.h>
 #include <ippp/environment/robot/TriangleRobot2D.h>

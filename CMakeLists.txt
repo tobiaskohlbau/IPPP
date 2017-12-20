@@ -70,6 +70,7 @@ execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
 # generate library
 add_library(${PROJECT_NAME}
     src/Identifier.cpp
+    src/dataObj/DhParameter.cpp
     src/util/Logging.cpp
     src/statistic/Statistics.cpp
     src/statistic/StatisticCollector.cpp
@@ -83,12 +84,10 @@ add_library(${PROJECT_NAME}
     src/environment/Environment.cpp
     src/environment/robot/Jaco.cpp
     src/environment/robot/Joint.cpp
-    src/environment/robot/KukaKR5.cpp
     src/environment/robot/MobileRobot.cpp
     src/environment/robot/PointRobot.cpp
     src/environment/robot/RobotBase.cpp
     src/environment/robot/SerialRobot.cpp
-    src/environment/robot/SerialRobot2D.cpp
     src/environment/robot/TriangleRobot2D.cpp
     src/environment/model/ModelContainer.cpp
     src/environment/model/ModelFactoryPqp.cpp

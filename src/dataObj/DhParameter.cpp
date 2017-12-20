@@ -16,25 +16,26 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SERIALROBOT2D_H
-#define SERIALROBOT2D_H
+#include <ippp/dataObj/DhParameter.h>
 
-#include <ippp/environment/robot/SerialRobot.h>
+#include <ippp/util/Logging.h>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 
-/*!
-* \brief   Class for the Kuka KR5 robot
-* \author  Sascha Kaden
-* \date    2016-10-22
-*/
-class SerialRobot2D : public SerialRobot {
-  public:
-    SerialRobot2D();
-    Transform directKinematic(const VectorX &angles) const;
-    std::vector<Transform> getJointTrafos(const VectorX &angles) const;
-};
+DhParameter::DhParameter(double alphaAngle, double aOffset, double dOffset, double thetaAngle) {
+    if (-util::twoPi() <= alphaAngle && alphaAngle <= util::twoPi())
+        alpha = alphaAngle;
+    else
+        Logging::error("Alpha angle has to be 0 < alpha < 2 * pi", "DhParameter");
+
+    if (-util::twoPi() <= thetaAngle && thetaAngle <= util::twoPi())
+        theta = thetaAngle;
+    else
+        Logging::error("Alpha angle has to be 0 < alpha < 2 * pi", "DhParameter");
+
+    a = aOffset;
+    d = dOffset;
+}
 
 } /* namespace ippp */
-
-#endif /* SERIALROBOT2D_H */

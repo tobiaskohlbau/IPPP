@@ -16,25 +16,26 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef POINTROBOT_H
-#define POINTROBOT_H
-
-#include <ippp/environment/model/PointModel.h>
-#include <ippp/environment/robot/MobileRobot.h>
+#ifndef DHPARAMETER_HPP
+#define DHPARAMETER_HPP
 
 namespace ippp {
 
 /*!
-* \brief   Class for the 2D point robot
+* \brief   DH parameter class contains the four parameter alpha, theta, d offset and a offset from the parameter definition.
 * \author  Sascha Kaden
-* \date    2016-06-30
+* \date    2017-12-13
 */
-class PointRobot : public MobileRobot {
+class DhParameter {
   public:
-    PointRobot(const std::pair<Vector2, Vector2> &boundary);
-    Transform getTransformation(const VectorX &config) const override;
+    DhParameter(double alpha = 0, double a = 0, double d = 0, double theta = 0);
+
+    double alpha = 0;
+    double a = 0;
+    double d = 0;
+    double theta = 0;
 };
 
 } /* namespace ippp */
 
-#endif /* POINTROBOT_H */
+#endif /* DHPARAMETER_HPP */

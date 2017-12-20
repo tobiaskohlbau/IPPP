@@ -19,6 +19,7 @@
 #ifndef SERIALROBOT_HPP
 #define SERIALROBOT_HPP
 
+#include <ippp/dataObj/DhParameter.h>
 #include <ippp/environment/robot/Joint.h>
 #include <ippp/environment/robot/RobotBase.h>
 
@@ -31,33 +32,28 @@ namespace ippp {
 */
 class SerialRobot : public RobotBase {
   public:
-    SerialRobot(const std::string &name, const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
-                const std::vector<DofType> &dofTypes);
+    SerialRobot(const unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
+                const std::vector<DofType> &dofTypes, const std::string &name = "SerialRobot");
 
     virtual Transform getTransformation(const VectorX &config) const;
-    virtual Transform directKinematic(const VectorX &angles) const = 0;
-    virtual std::vector<Transform> getJointTrafos(const VectorX &angles) const = 0;
+    virtual std::vector<Transform> getJointTrafos(const VectorX &angles) const;
     std::vector<Transform> getLinkTrafos(const VectorX &angles) const;
-    Transform getTrafo(double alpha, double a, double d, double q) const;
+    Transform getTrafo(const DhParameter &dhParam, double q) const;
     Transform getTcp(const std::vector<Transform> &trafos) const;
 
     void setBaseOffset(const Vector6 &baseOffset);
     void setBaseOffset(const Transform &baseOffset);
     Transform getBaseOffset() const;
-    void setJoints(const std::vector<Joint> &joints);
     size_t getNbJoints() const;
 
     std::shared_ptr<ModelContainer> getModelFromJoint(const size_t jointIndex) const;
     std::vector<std::shared_ptr<ModelContainer>> getJointModels() const;
 
     void saveMeshConfig(const VectorX &angles);
-    void saveMeshConfig(const std::vector<Transform> &As);
 
   protected:
     std::vector<Joint> m_joints;
-    VectorX m_alpha;
-    VectorX m_a;
-    VectorX m_d;
+    std::vector<DhParameter> m_dhParameters;
     Transform m_baseOffset;
 };
 

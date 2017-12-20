@@ -20,6 +20,7 @@
 
 #include <ippp/environment/cad/CadImportExport.h>
 #include <ippp/environment/cad/CadProcessing.h>
+#include <ippp/util/Logging.h>
 
 namespace ippp {
 
@@ -31,10 +32,24 @@ namespace ippp {
 *  \param[in]  maximum boundary
 *  \date       2016-07-19
 */
-SerialRobot::SerialRobot(const std::string &name, const unsigned int dim, const std::pair<VectorX, VectorX> &boundary,
-                         const std::vector<DofType> &dofTypes)
-    : RobotBase(name, dim, RobotCategory::serial, boundary, dofTypes) {
-    m_baseOffset = Matrix4::Identity(4, 4);
+SerialRobot::SerialRobot(const unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
+                         const std::vector<DofType> &dofTypes, const std::string &name)
+    : RobotBase(name, dim, RobotCategory::serial, dofTypes),
+      m_baseOffset(Transform::Identity()),
+      m_joints(joints),
+      m_dhParameters(dhParameters) {
+    if (joints.size() != dim || dhParameters.size() != dim || dofTypes.size() != dim) {
+        Logging::error("Dimension to parameter sizes is unequal", this);
+        return;
+    }
+
+    m_minBoundary = VectorX::Zero(dim);
+    m_maxBoundary = VectorX::Zero(dim);
+    for (size_t i = 0; i < dim; ++i) {
+        auto boundaries = joints[i].getBoundaries();
+        m_minBoundary[i] = boundaries.first;
+        m_maxBoundary[i] = boundaries.second;
+    }
 }
 
 /*!
@@ -49,6 +64,20 @@ Transform SerialRobot::getTransformation(const VectorX &config) const {
 }
 
 /*!
+*  \brief      Get vector of Jaco transformation matrizes
+*  \author     Sascha Kaden
+*  \param[in]  real angles
+*  \param[out] vector of transformation matrizes
+*  \date       2016-10-22
+*/
+std::vector<Transform> SerialRobot::getJointTrafos(const VectorX &angles) const {
+    std::vector<Transform> trafos;
+    for (size_t i = 0; i < m_dim; ++i)
+        trafos.push_back(getTrafo(m_dhParameters[i], angles[i]));
+    return trafos;
+}
+
+/*!
 *  \brief      Create transformation matrix from the passed D-H parameter and the joint angle
 *  \author     Sascha Kaden
 *  \param[in]  D-H alpha parameter
@@ -58,29 +87,10 @@ Transform SerialRobot::getTransformation(const VectorX &config) const {
 *  \param[out] Transform
 *  \date       2016-07-07
 */
-Transform SerialRobot::getTrafo(double alpha, double a, double /*d*/, double q) const {
-    // double sinAlpha = sin(alpha);
-    // double cosAlpha = cos(alpha);
-    // double sinQ = sin(q);
-    // double cosQ = cos(q);
-
-    // Matrix4 T = Matrix4::Zero(4, 4);
-    // T(0, 0) = cosQ;
-    // T(0, 1) = -sinQ * cosAlpha;
-    // T(0, 2) = sinQ * sinAlpha;
-    // T(0, 3) = a * cosQ;
-    // T(1, 0) = sinQ;
-    // T(1, 1) = cosQ * cosAlpha;
-    // T(1, 2) = -cosQ * sinAlpha;
-    // T(1, 3) = a * sinQ;
-    // T(2, 1) = sinAlpha;
-    // T(2, 2) = cosAlpha;
-    // T(2, 3) = d;
-    // T(3, 3) = 1;
-
+Transform SerialRobot::getTrafo(const DhParameter &dhParams, double q) const {
     Transform T;
-    T = Translation(Vector3(0, 0, 3)) * Eigen::AngleAxisd(q, Eigen::Vector3d::UnitZ()) * Translation(Vector3(a, 0, 0)) *
-        Eigen::AngleAxisd(alpha, Eigen::Vector3d::UnitX());
+    T = Translation(Vector3(0, 0, dhParams.d)) * Eigen::AngleAxisd(dhParams.theta + q, Eigen::Vector3d::UnitZ()) * Translation(Vector3(dhParams.a, 0, 0)) *
+        Eigen::AngleAxisd(dhParams.alpha, Eigen::Vector3d::UnitX());
 
     return T;
 }
@@ -95,13 +105,13 @@ Transform SerialRobot::getTrafo(double alpha, double a, double /*d*/, double q) 
 std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
     std::vector<Transform> jointTrafos = getJointTrafos(angles);
     std::vector<Transform> AsLink(jointTrafos.size());
-    std::vector<Transform> AsJoint(jointTrafos.size());
+    Transform AsJoint = jointTrafos.front();
 
-    AsJoint[0] = m_pose * m_baseOffset * jointTrafos[0];
-    AsLink[0] = m_pose * m_baseOffset;// *jointTrafos[0].translation();
+    AsJoint = m_pose * m_baseOffset * jointTrafos[0];
+    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ());
     for (size_t i = 1; i < jointTrafos.size(); ++i) {
-        AsJoint[i] = AsJoint[i - 1] * jointTrafos[i];
-        AsLink[i] = AsJoint[i - 1];// *jointTrafos[i].translation();
+        AsLink[i] = AsJoint * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ());
+        AsJoint = AsJoint * jointTrafos[i];
     }
     return AsLink;
 }
@@ -116,11 +126,11 @@ std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
 Transform SerialRobot::getTcp(const std::vector<Transform> &trafos) const {
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
-    Transform robotToTcp = trafos[0];
-    for (size_t i = 1; i < 6; ++i)
-        robotToTcp = robotToTcp * trafos[i];
+    Transform robotToTcp = this->m_pose;
+    for (const auto &trafo : trafos)
+        robotToTcp = robotToTcp * trafo;
 
-    return this->m_pose * robotToTcp;
+    return robotToTcp;
 }
 
 /*!
@@ -182,19 +192,6 @@ Transform SerialRobot::getBaseOffset() const {
 }
 
 /*!
-*  \brief      Sets the joints of the serial robot, deletes at this step all old joints.
-*  \author     Sascha Kaden
-*  \param[in]  list of joints
-*  \date       2017-11-17
-*/
-void SerialRobot::setJoints(const std::vector<Joint> &joints) {
-    if (joints.empty())
-        return;
-
-    m_joints = joints;
-}
-
-/*!
 *  \brief      Return number of the joints from the robot
 *  \author     Sascha Kaden
 *  \param[out] number of joints
@@ -211,44 +208,18 @@ size_t SerialRobot::getNbJoints() const {
 *  \date       2016-10-22
 */
 void SerialRobot::saveMeshConfig(const VectorX &angles) {
-    std::vector<Transform> jointTrafos = getJointTrafos(angles);
-    std::vector<Transform> As(jointTrafos.size());
-
-    As[0] = m_pose * jointTrafos[0];
-    for (size_t i = 1; i < jointTrafos.size(); ++i)
-        As[i] = As[i - 1] * jointTrafos[i];
-
-    saveMeshConfig(As);
-}
-
-/*!
-*  \brief      Saves the configuration of the robot by obj files in the working directory
-*  \author     Sascha Kaden
-*  \param[in]  transformation matrizes
-*  \date       2016-10-22
-*/
-void SerialRobot::saveMeshConfig(const std::vector<Transform> & /*As*/) {
     if (this->m_baseModel != nullptr) {
-        std::vector<Vector3> verts;
-        for (const auto &vertice : this->m_baseModel->m_mesh.vertices) {
-            Vector4 temp(util::append<3>(vertice, (double)1));
-            temp = this->m_pose * temp;
-            verts.emplace_back(temp(0), temp(1), temp(2));
-        }
-        cad::exportCad(cad::ExportFormat::OBJ, "base", verts, this->m_baseModel->m_mesh.faces);
+        std::vector<Vector3> vertices = this->m_baseModel->m_mesh.vertices;
+        cad::transformVertices(m_pose, vertices);
+        cad::exportCad(cad::ExportFormat::OBJ, "base", vertices, this->m_baseModel->m_mesh.faces);
     }
-    // this->m_baseModel->saveObj("base.obj", this->m_pose);
 
+    auto linkTrafos = getLinkTrafos(angles);
     for (size_t i = 0; i < m_joints.size(); ++i) {
-        std::vector<Vector3> verts;
-        for (const auto &vertex : getModelFromJoint(i)->m_mesh.vertices) {
-            Vector4 temp(util::append<3>(vertex, (double)1));
-            temp = this->m_pose * temp;
-            verts.emplace_back(temp(0), temp(1), temp(2));
-        }
-        cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), verts, getModelFromJoint(i)->m_mesh.faces);
-        // getModelFromJoint(i)->saveObj("link" + std::to_string(i) + ".obj",
-        // As[i]); std::cout<< As[i] << std::endl <<std::endl;
+        Mesh mesh = getModelFromJoint(i)->m_mesh;
+        std::vector<Vector3> vertices = mesh.vertices;
+        cad::transformVertices(linkTrafos[i], vertices);
+        cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), vertices, mesh.faces);
     }
 }
 

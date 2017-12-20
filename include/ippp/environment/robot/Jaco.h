@@ -19,7 +19,6 @@
 #ifndef JACO_H
 #define JACO_H
 
-#include <ippp/environment/model/ModelFactoryPqp.h>
 #include <ippp/environment/robot/SerialRobot.h>
 
 namespace ippp {
@@ -31,9 +30,9 @@ namespace ippp {
 */
 class Jaco : public SerialRobot {
   public:
-    Jaco();
-    Transform directKinematic(const VectorX &angles) const;
-    std::vector<Transform> getJointTrafos(const VectorX &angles) const;
+    Jaco(const unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
+        const std::vector<DofType> &dofTypes);
+    std::vector<Transform> getJointTrafos(const VectorX &angles) const override;
 
   private:
     Vector6 convertRealToDH(const Vector6 &realAngles) const;

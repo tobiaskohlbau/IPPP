@@ -46,11 +46,7 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
     bool checkMobileRobot(const Vector<dim> &config, const CollisionRequest &request);
     bool checkFCL(const std::shared_ptr<FCLModel> &model1, const std::shared_ptr<FCLModel> &model2, const Transform &T1,
                   const Transform &T2);
-
-    // models for collision detection
-    fcl::CollisionObject *o1 = nullptr;
-    fcl::CollisionObject *o2 = nullptr;
-
+    
     Transform m_identity;
     AABB m_workspaceBounding;
     std::vector<std::shared_ptr<FCLModel>> m_obstacles;
@@ -83,8 +79,7 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<Environm
             std::shared_ptr<FCLModel>(new FCLModel(std::static_pointer_cast<ModelFcl>(robot->getBaseModel())->m_fclModel));
         m_baseMeshAvaible = true;
     } else {
-        Logging::error("Empty base model", this);
-        return;
+        Logging::warning("Empty base model", this);
     }
 
     if (!environment->getObstacles().empty()) {
@@ -259,13 +254,11 @@ bool CollisionDetectionFcl<dim>::checkFCL(const std::shared_ptr<FCLModel> &model
     fcl::Matrix3f fclR2(R2(0), R2(1), R2(2), R2(3), R2(4), R2(5), R2(6), R2(7), R2(8));
     fcl::Vec3f fclT2(t2(0), t2(1), t2(2));
 
-    o1 = new fcl::CollisionObject(model1, fclR1, fclT1);
-    o2 = new fcl::CollisionObject(model2, fclR2, fclT2);
+    fcl::CollisionObject o1(model1, fclR1, fclT1);
+    fcl::CollisionObject o2(model2, fclR2, fclT2);
     fcl::CollisionRequest request;    // default setting
     fcl::CollisionResult result;
-    fcl::collide(o1, o2, request, result);
-    delete o1;
-    delete o2;
+    fcl::collide(&o1, &o2, request, result);
 
     return result.isCollision();
 }

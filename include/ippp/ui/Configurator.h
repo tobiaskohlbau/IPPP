@@ -45,6 +45,8 @@ class Configurator : public Identifier {
     std::string vectorToString(const Vector<dim> &vector);
     template <unsigned int dim>
     Vector<dim> stringToVector(const std::string &string);
+    std::vector<double> eigenToStdVector(const VectorX vec);
+    VectorX stdVectorToEigen(std::vector<double> vec);
 };
 
 /*!

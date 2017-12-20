@@ -43,7 +43,7 @@ class RobotBase : public Identifier {
     virtual ~RobotBase();
 
   protected:
-    RobotBase(const std::string &name, const unsigned int dim, const RobotCategory robotType, const std::pair<VectorX, VectorX> &boundary,
+    RobotBase(const std::string &name, const unsigned int dim, const RobotCategory robotType,
               std::vector<DofType> dofTypes);
 
   public:
@@ -63,8 +63,8 @@ class RobotBase : public Identifier {
 
   protected:
     const RobotCategory m_robotType;
-    const VectorX m_minBoundary;
-    const VectorX m_maxBoundary;
+    VectorX m_minBoundary;
+    VectorX m_maxBoundary;
 
     const unsigned int m_dim;
     const std::vector<DofType> m_dofTypes;

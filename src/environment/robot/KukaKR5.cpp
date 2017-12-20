@@ -87,7 +87,7 @@ std::vector<Transform> KukaKR5::getJointTrafos(const Vector6 &angles)  const {
 
     std::vector<Transform> trafos;
     for (size_t i = 0; i < 6; ++i)
-        trafos.push_back(getTrafo(m_alpha[i], m_a[i], m_d[i], rads[i]));
+        trafos.push_back(getTrafo(m_dhParameters[i].alpha, m_dhParameters[i].a, m_dhParameters[i].d, rads[i]));
     return trafos;
 }
 

@@ -20,7 +20,7 @@
 #define TRIANGLEROBOT2D_H
 
 #include <ippp/environment/model/ModelTriangle2D.h>
-#include <ippp/environment/robot/RobotBase.h>
+#include <ippp/environment/robot/MobileRobot.h>
 
 namespace ippp {
 
@@ -30,10 +30,10 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2016-11-14
 */
-class TriangleRobot2D : public RobotBase {
+class TriangleRobot2D : public MobileRobot {
   public:
     TriangleRobot2D(const std::shared_ptr<ModelContainer> &triangleModel, const std::pair<Vector3, Vector3> &boundary);
-    Transform getTransformation(const VectorX &config) const override ;
+    Transform getTransformation(const VectorX &config) const override;
 };
 
 } /* namespace ippp */

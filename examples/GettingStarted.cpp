@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
                                      DofType::volumetricRot, DofType::volumetricRot, DofType::volumetricRot};
     std::shared_ptr<RobotBase> robot(new MobileRobot(2, std::make_pair(minBoundary, maxBoundary), dofTypes));
     robot->setBaseModel(robotModel);
-    std::shared_ptr<Environment> environment(new Environment(3, AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
+    std::shared_ptr<Environment> environment(new Environment(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
     environment->addObstacle(obstacleModel);
 
     // define step size of the trajectories and create trajectory planner
