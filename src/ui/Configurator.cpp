@@ -74,4 +74,16 @@ bool Configurator::saveJson(const std::string &filePath, const nlohmann::json &d
     return true;
 }
 
+std::vector<double> Configurator::eigenToStdVector(const VectorX vec) {
+    return std::vector<double>(vec.data(), vec.data() + vec.size());
+}
+
+VectorX Configurator::stdVectorToEigen(std::vector<double> vec) {
+    VectorX eigenVec(vec.size());
+    for (size_t i = 0; i < vec.size(); ++i)
+        eigenVec[i] = vec[i];
+    return eigenVec;
+}
+
+
 } /* namespace ippp */

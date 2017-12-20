@@ -22,9 +22,12 @@
 #include <string>
 #include <fstream>
 
+#include <json.hpp>
+
 namespace ippp {
 namespace ui {
 
+bool save(const std::string &filePath, const nlohmann::json &data);
 bool save(const std::string &filePath, const std::string &data);
 std::string load(const std::string &filePath);
 

@@ -43,24 +43,42 @@ class EnvironmentConfigurator : public Configurator {
     bool saveConfig(const std::string &filePath);
     bool loadConfig(const std::string &filePath);
 
-    void setWorkspaceProperties(const unsigned int workspaceDim, const AABB &workspaceBounding);
+    void setWorkspaceProperties(const AABB &workspaceBounding);
     void setObstaclePaths(const std::vector<std::string> &obstaclePaths);
     void addObstaclePath(const std::string &obstaclePath);
     void setFactoryType(const FactoryType factoryType);
-    void setRobotType(const RobotType robotType, const std::string &robotFile = "");
+    void setRobotType(const RobotType robotType);
+    void setRobotBaseModelFile(const std::string robotBaseModelFile);
+    void setRobotBaseProperties(const size_t robotDim, const std::vector<DofType> &dofTypes,
+                                const std::pair<VectorX, VectorX> &robotBoundaries);
+    void setSerialRobotProperties(const std::vector<DhParameter> &dhParameters, const std::vector<std::string> &jointModelFiles);
 
     std::shared_ptr<Environment> getEnvironment();
 
   protected:
+      std::shared_ptr<RobotBase> createPointRobot();
+    std::shared_ptr<RobotBase> createTriangleRobot(const std::shared_ptr<ModelFactory> factory);
+    std::shared_ptr<RobotBase> createMobileRobot(const std::shared_ptr<ModelFactory> factory);
+    std::shared_ptr<RobotBase> createSerialRobot(const std::shared_ptr<ModelFactory> factory, RobotType type = RobotType::Serial);
+
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<RobotBase> m_robot = nullptr;
 
     std::vector<std::string> m_obstaclePaths;
-    unsigned int m_workspaceDim = 3;
     AABB m_workspceBounding;
+
     FactoryType m_factoryType = FactoryType::ModelTriangle2D;
     RobotType m_robotType = RobotType::Point;
-    std::string m_robotFile;
+
+    // robot base properties
+    size_t m_robotDim;
+    std::vector<DofType> m_dofTypes;
+    std::pair<VectorX, VectorX> m_robotBoundaries;
+    std::string m_robotBaseModelFile;
+
+    // serial robot properties
+    std::vector<DhParameter> m_dhParameters;
+    std::vector<std::string> m_jointModelFiles;
 };
 
 } /* namespace ippp */

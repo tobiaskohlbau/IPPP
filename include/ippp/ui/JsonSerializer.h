@@ -22,81 +22,94 @@
 #include <string>
 #include <vector>
 
+#include <json.hpp>
+
+#include <ippp/dataObj/DhParameter.h>
+#include <ippp/environment/robot/RobotBase.h>
 #include <ippp/types.h>
-#include <ippp/ui/Configurator.h>
 #include <ippp/util/Logging.h>
 
 namespace ippp {
+namespace jsonSerializer {
 
-class JsonSerializer : public Configurator {
-  public:
-    JsonSerializer();
+std::string serialize(const nlohmann::json &data);
 
-    std::string serialize(const std::vector<Transform> &configs);
-    std::vector<Transform> deserializeTransforms(const std::string &data);
+nlohmann::json serialize(const std::vector<Transform> &configs);
+std::vector<Transform> deserializeTransforms(const nlohmann::json &data);
 
-    /*!
-     *  \brief      Serialize vectors to a std::string
-     *  \param[in]  vector of configurations
-     *  \param[in]  scale
-     *  \param[out] serialized string
-     *  \author     Sascha Kaden
-     *  \date       2017-11-30
-     */
-    template <unsigned int dim>
-    std::string serialize(const std::vector<Vector<dim>> &configs, double scale = 1) {
-        if (configs.empty())
-            return std::string();
+nlohmann::json serialize(const std::vector<DhParameter> &parameters);
+std::vector<DhParameter> deserializeDhParameters(const nlohmann::json &data);
 
-        nlohmann::json json;
-        json["Dimension"] = dim;
-        json["NumberConfigurations"] = configs.size();
+nlohmann::json serialize(const VectorX &vector);
+VectorX deserializeVector(const nlohmann::json &data);
 
-        std::vector<std::vector<double>> data;
-        for (const auto &config : configs) {
-            Vector<dim> tempConfig = scale * config;
-            data.push_back(std::vector<double>(tempConfig.data(), tempConfig.data() + tempConfig.size()));
-        }
-        json["data"] = data;
-        return json.dump(4);
-    }
+nlohmann::json serialize(const AABB &aabb);
+AABB deserializeAABB(const nlohmann::json &data);
 
-    /*!
-    *  \brief      Deserialize std::string to a std::vector of Vector
-    *  \param[in]  serialized string
-    *  \param[out] vector of configurations
+nlohmann::json serialize(const std::vector<DofType> &dofTypes);
+std::vector<DofType> deserializeDofTypes(const nlohmann::json &data);
+
+/*!
+    *  \brief      Serialize vectors to a std::string
+    *  \param[in]  vector of configurations
+    *  \param[in]  scale
+    *  \param[out] serialized string
     *  \author     Sascha Kaden
     *  \date       2017-11-30
     */
-    template <unsigned int dim>
-    std::vector<Vector<dim>> deserializeVectors(const std::string &data) {
-        std::vector<Vector<dim>> vectors;
-        if (data.empty())
-            return vectors;
+template <unsigned int dim>
+nlohmann::json serialize(const std::vector<Vector<dim>> &configs, double scale = 1) {
+    if (configs.empty())
+        return std::string();
 
-        nlohmann::json json = nlohmann::json::parse(data);
-        if (json["Dimension"].get<unsigned int>() != dim) {
-            Logging::error("Data has wrong dimension", this);
-            return vectors;
-        }
+    nlohmann::json json;
+    json["Dimension"] = dim;
+    json["NumberConfigurations"] = configs.size();
 
-        std::vector<std::vector<double>> stdVectors = json["data"].get<std::vector<std::vector<double>>>();
-        size_t size = json["NumberConfigurations"].get<size_t>();
-        if (stdVectors.size() != size) {
-            Logging::error("Wrong vector size of file", this);
-            return vectors;
-        }
+    std::vector<std::vector<double>> data;
+    for (const auto &config : configs) {
+        Vector<dim> tempConfig = scale * config;
+        data.push_back(std::vector<double>(tempConfig.data(), tempConfig.data() + tempConfig.size()));
+    }
+    json["data"] = data;
+    return json;
+}
 
-        for (const auto &vec : stdVectors) {
-            Vector<dim> eigenVec;
-            for (unsigned int j = 0; j < dim; ++j)
-                eigenVec[j] = vec[j];
-            vectors.push_back(eigenVec);
-        }
+/*!
+*  \brief      Deserialize std::string to a std::vector of Vector
+*  \param[in]  serialized string
+*  \param[out] vector of configurations
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
+template <unsigned int dim>
+std::vector<Vector<dim>> deserializeVectors(const nlohmann::json &data) {
+    std::vector<Vector<dim>> vectors;
+    if (data.empty())
+        return vectors;
+
+    if (data["Dimension"].get<unsigned int>() != dim) {
+        Logging::error("Data has wrong dimension", "JsonSerializer");
         return vectors;
     }
-};
 
+    std::vector<std::vector<double>> stdVectors = data["data"].get<std::vector<std::vector<double>>>();
+    size_t size = data["NumberConfigurations"].get<size_t>();
+    if (stdVectors.size() != size) {
+        Logging::error("Wrong vector size of file", "JsonSerializer");
+        return vectors;
+    }
+
+    for (const auto &vec : stdVectors) {
+        Vector<dim> eigenVec;
+        for (unsigned int j = 0; j < dim; ++j)
+            eigenVec[j] = vec[j];
+        vectors.push_back(eigenVec);
+    }
+    return vectors;
+}
+
+} /* namespace jsonSerializer */
 } /* namespace ippp */
 
 #endif    // JSONSERIALIZER_H

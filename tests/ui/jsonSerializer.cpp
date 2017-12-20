@@ -26,11 +26,6 @@ using namespace ippp;
 
 DEFINE_string(assetsDir, "../../assets", "assets directory");
 
-TEST(JSONSERIALIZER, constructor) {
-    JsonSerializer serializer;
-    EXPECT_TRUE(serializer.getName() == "JsonSerializer");
-}
-
 template <unsigned int dim>
 void testSerialization() {
     std::vector<Vector<dim>> vectors;
@@ -42,11 +37,11 @@ void testSerialization() {
 
         vectors.push_back(vec);
     }
-    JsonSerializer serializer;
-    auto serializedData = serializer.serialize<dim>(vectors);
+    auto serializedData = jsonSerializer::serialize<dim>(vectors);
+    auto stringData = jsonSerializer::serialize(serializedData);
     auto data = ui::load(FLAGS_assetsDir + "/tests/jsonSerializationTestDim" + std::to_string(dim) + ".json");
 
-    EXPECT_TRUE(!serializedData.compare(data));
+    EXPECT_TRUE(!stringData.compare(data));
 }
 
 TEST(JSONSERIALIZER, serialize) {
@@ -63,8 +58,10 @@ TEST(JSONSERIALIZER, serialize) {
 template <unsigned int dim>
 void testDeserialization() {
     std::string serializedData = ui::load(FLAGS_assetsDir + "/tests/jsonSerializationTestDim" + std::to_string(dim) + ".json");
-    JsonSerializer serializer;
-    std::vector<Vector<dim>> vectors = serializer.deserializeVectors<dim>(serializedData);
+    nlohmann::json json;
+    std::istringstream iss(serializedData);
+    iss >> json;
+    std::vector<Vector<dim>> vectors = jsonSerializer::deserializeVectors<dim>(json);
     for (auto &vec : vectors) {
         double value = -1.23456789;
         for (unsigned int j = 0; j < dim; ++j, ++value)

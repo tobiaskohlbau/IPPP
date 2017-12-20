@@ -23,6 +23,10 @@
 namespace ippp {
 namespace ui {
 
+bool save(const std::string &filePath, const nlohmann::json &data) {
+    return save(filePath, data.dump(4));
+}
+
 /*!
 *  \brief      Saves the passed string to the specified file path
 *  \author     Sascha Kaden
