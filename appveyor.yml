@@ -37,7 +37,7 @@ install:
   - vcpkg install assimp:x64-windows
   - vcpkg install fcl:x64-windows
 
-cache: c:\tools\vcpkg\installed\
+cache: c:\tools\vcpkg\installed\ -> appveyor.yml
 
 #---------------------------------#
 #       build configuration       #
