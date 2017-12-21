@@ -26,22 +26,56 @@ std::string serialize(const nlohmann::json &data) {
 }
 
 /*!
-*  \brief      Serialize Transforms to a std::string
-*  \param[in]  vector of Transforms
-*  \param[out] serialized string
+*  \brief      Serialize Transform to a json
+*  \param[in]  Transform
+*  \param[out] nlohmann::json
 *  \author     Sascha Kaden
 *  \date       2017-11-30
 */
-nlohmann::json serialize(const std::vector<Transform> &configs) {
-    if (configs.empty())
+nlohmann::json serialize(const Transform &transform) {
+    nlohmann::json json;
+
+    MatrixX trafo = transform.matrix();
+    std::vector<double> data(trafo.data(), trafo.data() + trafo.size());
+
+    json["Transform"] = data;
+    return json;
+}
+
+/*!
+*  \brief      Deserialize nlohmann::json to Transform.
+*  \param[in]  nlohmann::json
+*  \param[out] Transform
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
+Transform deserializeTransform(const nlohmann::json &data) {
+    if (data.empty())
+        return Transform::Identity();
+
+    std::vector<double> stdVector = data["Transform"].get<std::vector<double>>();
+    Eigen::Map<Eigen::Matrix<double, 3, 4>> map(stdVector.data());
+
+    return Transform(map);
+}
+
+/*!
+*  \brief      Serialize Transforms to a nlohmann::json.
+*  \param[in]  vector of Transforms
+*  \param[out] nlohmann::json
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
+nlohmann::json serialize(const std::vector<Transform> &transforms) {
+    if (transforms.empty())
         return std::string();
 
     nlohmann::json json;
-    json["NumberTransformations"] = configs.size();
+    json["NumberTransformations"] = transforms.size();
 
     std::vector<std::vector<double>> data;
-    for (const auto &config : configs) {
-        MatrixX trafo = config.matrix();
+    for (const auto &transform : transforms) {
+        MatrixX trafo = transform.matrix();
         data.push_back(std::vector<double>(trafo.data(), trafo.data() + trafo.size()));
     }
     json["Transforms"] = data;
@@ -49,8 +83,8 @@ nlohmann::json serialize(const std::vector<Transform> &configs) {
 }
 
 /*!
-*  \brief      Deserialize std::string to a std::vector of Transforms
-*  \param[in]  serialized string
+*  \brief      Deserialize nlohmann::json to a std::vector of Transforms.
+*  \param[in]  nlohmann::json
 *  \param[out] vector of Transforms
 *  \author     Sascha Kaden
 *  \date       2017-11-30
@@ -68,7 +102,6 @@ std::vector<Transform> deserializeTransforms(const nlohmann::json &data) {
     }
 
     for (auto &vec : stdVectors) {
-        double *ptr = &vec[0];
         Eigen::Map<Eigen::Matrix<double, 3, 4>> map(vec.data());
         transforms.push_back(Transform(map));
     }
@@ -76,9 +109,9 @@ std::vector<Transform> deserializeTransforms(const nlohmann::json &data) {
 }
 
 /*!
-*  \brief      Serialize Transforms to a std::string
-*  \param[in]  vector of Transforms
-*  \param[out] serialized string
+*  \brief      Serialize vector of DhParameter to a nlohmann::json.
+*  \param[in]  std::vector of DhParameter
+*  \param[out] nlohmann::json
 *  \author     Sascha Kaden
 *  \date       2017-11-30
 */
@@ -98,9 +131,9 @@ nlohmann::json serialize(const std::vector<DhParameter> &parameters) {
 }
 
 /*!
-*  \brief      Deserialize std::string to a std::vector of Transforms
-*  \param[in]  serialized string
-*  \param[out] vector of Transforms
+*  \brief      Deserialize nlohmann::json to a std::vector of DhParameter.
+*  \param[in]  nlohmann::json
+*  \param[out] vector of DhParameter
 *  \author     Sascha Kaden
 *  \date       2017-11-30
 */
@@ -121,6 +154,13 @@ std::vector<DhParameter> deserializeDhParameters(const nlohmann::json &data) {
     return params;
 }
 
+/*!
+*  \brief      Serialize VectorX with dynamic size to a nlohmann::json.
+*  \param[in]  dynamical VectorX
+*  \param[out] nlohmann::json
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
 nlohmann::json serialize(const VectorX &vector) {
     nlohmann::json json;
     size_t size = vector.rows();
@@ -134,6 +174,13 @@ nlohmann::json serialize(const VectorX &vector) {
     return json;
 }
 
+/*!
+*  \brief      Deserialize nlohmann::json to a dynamic VectorX.
+*  \param[in]  nlohmann::json
+*  \param[out] dynamic VectorX
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
 VectorX deserializeVector(const nlohmann::json &data) {
     if (data.empty())
         return VectorX();
@@ -153,6 +200,13 @@ VectorX deserializeVector(const nlohmann::json &data) {
     return eigenVec;
 }
 
+/*!
+*  \brief      Serialize AABB (axis aligned bounding box) to a nlohmann::json.
+*  \param[in]  AABB
+*  \param[out] nlohmann::json
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
 nlohmann::json serialize(const AABB &aabb) {
     nlohmann::json json;
 
@@ -164,6 +218,13 @@ nlohmann::json serialize(const AABB &aabb) {
     return json;
 }
 
+/*!
+*  \brief      Deserialize nlohmann::json to a AABB (axis aligned bounding box).
+*  \param[in]  nlohmann::json
+*  \param[out] AABB
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
 AABB deserializeAABB(const nlohmann::json &data) {
     if (data.empty())
         return AABB();
@@ -174,6 +235,13 @@ AABB deserializeAABB(const nlohmann::json &data) {
     return AABB(bottomLeft, topRight);
 }
 
+/*!
+*  \brief      Serialize std::vector of DofType to a nlohmann::json.
+*  \param[in]  std::vector of DofType 
+*  \param[out] nlohmann::json
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
 nlohmann::json serialize(const std::vector<DofType> &dofTypes) {
     nlohmann::json json;
     if (dofTypes.empty())
@@ -188,6 +256,13 @@ nlohmann::json serialize(const std::vector<DofType> &dofTypes) {
     return json;
 }
 
+/*!
+*  \brief      Deserialize nlohmann::json to a std::vector of DofType.
+*  \param[in]  nlohmann::json
+*  \param[out] std::vector of DofType
+*  \author     Sascha Kaden
+*  \date       2017-11-30
+*/
 std::vector<DofType> deserializeDofTypes(const nlohmann::json &data) {
     std::vector<DofType> dofTypes;
     if (data.empty())

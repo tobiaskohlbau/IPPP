@@ -51,12 +51,14 @@ class EnvironmentConfigurator : public Configurator {
     void setRobotBaseModelFile(const std::string robotBaseModelFile);
     void setRobotBaseProperties(const size_t robotDim, const std::vector<DofType> &dofTypes,
                                 const std::pair<VectorX, VectorX> &robotBoundaries);
-    void setSerialRobotProperties(const std::vector<DhParameter> &dhParameters, const std::vector<std::string> &jointModelFiles);
+    void setSerialRobotProperties(const std::vector<DhParameter> &dhParameters, const std::vector<std::string> &jointModelFiles,
+                                  const Transform &baseOffset = Transform::Identity(),
+                                  const std::vector<Transform> &linkOffsets = std::vector<Transform>());
 
     std::shared_ptr<Environment> getEnvironment();
 
   protected:
-      std::shared_ptr<RobotBase> createPointRobot();
+    std::shared_ptr<RobotBase> createPointRobot();
     std::shared_ptr<RobotBase> createTriangleRobot(const std::shared_ptr<ModelFactory> factory);
     std::shared_ptr<RobotBase> createMobileRobot(const std::shared_ptr<ModelFactory> factory);
     std::shared_ptr<RobotBase> createSerialRobot(const std::shared_ptr<ModelFactory> factory, RobotType type = RobotType::Serial);
@@ -79,6 +81,8 @@ class EnvironmentConfigurator : public Configurator {
     // serial robot properties
     std::vector<DhParameter> m_dhParameters;
     std::vector<std::string> m_jointModelFiles;
+    Transform m_baseOffset;
+    std::vector<Transform> m_linkOffsets;
 };
 
 } /* namespace ippp */

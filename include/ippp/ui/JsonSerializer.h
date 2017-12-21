@@ -34,6 +34,9 @@ namespace jsonSerializer {
 
 std::string serialize(const nlohmann::json &data);
 
+nlohmann::json serialize(const Transform &transform);
+Transform deserializeTransform(const nlohmann::json &data);
+
 nlohmann::json serialize(const std::vector<Transform> &configs);
 std::vector<Transform> deserializeTransforms(const nlohmann::json &data);
 
@@ -50,10 +53,10 @@ nlohmann::json serialize(const std::vector<DofType> &dofTypes);
 std::vector<DofType> deserializeDofTypes(const nlohmann::json &data);
 
 /*!
-    *  \brief      Serialize vectors to a std::string
+    *  \brief      Serialize vectors to a nlohmann::json
     *  \param[in]  vector of configurations
     *  \param[in]  scale
-    *  \param[out] serialized string
+    *  \param[out] nlohmann::json
     *  \author     Sascha Kaden
     *  \date       2017-11-30
     */
@@ -76,8 +79,8 @@ nlohmann::json serialize(const std::vector<Vector<dim>> &configs, double scale =
 }
 
 /*!
-*  \brief      Deserialize std::string to a std::vector of Vector
-*  \param[in]  serialized string
+*  \brief      Deserialize nlohmann::json to a std::vector of Vector<dim>
+*  \param[in]  nlohmann::json
 *  \param[out] vector of configurations
 *  \author     Sascha Kaden
 *  \date       2017-11-30
