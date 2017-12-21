@@ -43,6 +43,9 @@ class SerialRobot : public RobotBase {
 
     void setBaseOffset(const Vector6 &baseOffset);
     void setBaseOffset(const Transform &baseOffset);
+    void setLinkOffsets(const std::vector<Vector6> &offsets);
+    void setLinkOffsets(const std::vector<Transform> &offsets);
+    std::vector<Transform> getLinkOffsets() const;
     Transform getBaseOffset() const;
     size_t getNbJoints() const;
 
@@ -55,6 +58,7 @@ class SerialRobot : public RobotBase {
     std::vector<Joint> m_joints;
     std::vector<DhParameter> m_dhParameters;
     Transform m_baseOffset;
+    std::vector<Transform> m_linkOffsets;
 };
 
 } /* namespace ippp */

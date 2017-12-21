@@ -37,7 +37,8 @@ SerialRobot::SerialRobot(const unsigned int dim, const std::vector<Joint> &joint
     : RobotBase(name, dim, RobotCategory::serial, dofTypes),
       m_baseOffset(Transform::Identity()),
       m_joints(joints),
-      m_dhParameters(dhParameters) {
+      m_dhParameters(dhParameters),
+      m_linkOffsets(dim, Transform::Identity()) {
     if (joints.size() != dim || dhParameters.size() != dim || dofTypes.size() != dim) {
         Logging::error("Dimension to parameter sizes is unequal", this);
         return;
@@ -89,8 +90,8 @@ std::vector<Transform> SerialRobot::getJointTrafos(const VectorX &angles) const 
 */
 Transform SerialRobot::getTrafo(const DhParameter &dhParams, double q) const {
     Transform T;
-    T = Translation(Vector3(0, 0, dhParams.d)) * Eigen::AngleAxisd(dhParams.theta + q, Eigen::Vector3d::UnitZ()) * Translation(Vector3(dhParams.a, 0, 0)) *
-        Eigen::AngleAxisd(dhParams.alpha, Eigen::Vector3d::UnitX());
+    T = Translation(Vector3(0, 0, dhParams.d)) * Eigen::AngleAxisd(dhParams.theta + q, Eigen::Vector3d::UnitZ()) *
+        Translation(Vector3(dhParams.a, 0, 0)) * Eigen::AngleAxisd(dhParams.alpha, Eigen::Vector3d::UnitX());
 
     return T;
 }
@@ -108,11 +109,12 @@ std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
     Transform AsJoint = jointTrafos.front();
 
     AsJoint = m_pose * m_baseOffset * jointTrafos[0];
-    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ());
+    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
     for (size_t i = 1; i < jointTrafos.size(); ++i) {
-        AsLink[i] = AsJoint * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ());
+        AsLink[i] = AsJoint * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ()) * m_linkOffsets[i];
         AsJoint = AsJoint * jointTrafos[i];
     }
+
     return AsLink;
 }
 
@@ -189,6 +191,46 @@ void SerialRobot::setBaseOffset(const Transform &baseOffset) {
 */
 Transform SerialRobot::getBaseOffset() const {
     return m_baseOffset;
+}
+
+/*!
+*  \brief      Set the base offset (rotation and translation) of the base model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[in]  configuration of the base offset
+*  \date       2017-11-17
+*/
+void SerialRobot::setLinkOffsets(const std::vector<Vector6> &linkOffsets) {
+    if (linkOffsets.empty())
+        return;
+
+    std::vector<Transform> transforms;
+    transforms.reserve(linkOffsets.size());
+    for (const auto &offset : linkOffsets)
+        transforms.push_back(util::poseVecToTransform(offset));
+    setLinkOffsets(transforms);
+}
+
+/*!
+*  \brief      Set the link offsets (Transform) from the dh parameter joint position to the link position.
+*  \author     Sascha Kaden
+*  \param[in]  Transforms of the link offsets
+*  \date       2017-11-17
+*/
+void SerialRobot::setLinkOffsets(const std::vector<Transform> &linkOffsets) {
+    if (linkOffsets.empty())
+        return;
+
+    m_linkOffsets = linkOffsets;
+}
+
+/*!
+*  \brief      Return the link offsets (Transform) from the dh parameter joint position to the link position.
+*  \author     Sascha Kaden
+*  \param[out] Transform of the link offsets
+*  \date       2017-11-17
+*/
+std::vector<Transform> SerialRobot::getLinkOffsets() const {
+    return m_linkOffsets;
 }
 
 /*!
