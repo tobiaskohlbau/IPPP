@@ -46,9 +46,9 @@ class CollisionDetection : public Identifier {
     bool checkRobotBounding(const Vector<dim> &config) const;
 
   protected:
-    const std::shared_ptr<Environment> m_environment;
-    std::pair<Vector<dim>, Vector<dim>> m_robotBounding;
-    const CollisionRequest m_request;
+    const std::shared_ptr<Environment> m_environment;    /*!< Pointer to the Environment */
+    std::pair<Vector<dim>, Vector<dim>> m_robotBounding; /*!< Boundaries of the robot, fetched from the Environment */
+    const CollisionRequest m_request;                    /*!< Default request for single collision tests (not trajectories) */
 };
 
 /*!

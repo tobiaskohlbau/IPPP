@@ -76,12 +76,13 @@ class Graph : public Identifier {
     }
 
   private:
-    std::vector<std::shared_ptr<Node<dim>>> m_nodes;
-    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr;
-    std::mutex m_mutex;
-    const size_t m_sortCount = 0;
-    bool m_autoSort = false;
-    bool m_preserveNodePtr = false;
+    std::vector<std::shared_ptr<Node<dim>>> m_nodes;                                             /*!< vector of all graph nodes */
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr; /*!< search module */
+    std::mutex m_mutex; /*!< mutex for adding and changing of the vector of nodes */
+
+    const size_t m_sortCount = 0;   /*!< divider, when the NeighborFinder has to be sorted */
+    bool m_autoSort = false;        /*!< Flag to set the auto sorting */
+    bool m_preserveNodePtr = false; /*!< Flag to save all pointers inside of the nodes */
 };
 
 /*!
@@ -159,7 +160,7 @@ void Graph<dim>::addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &node
 */
 template <unsigned int dim>
 bool Graph<dim>::containNode(const std::shared_ptr<Node<dim>> &node) {
-    for (const auto& graphNode : m_nodes)
+    for (const auto &graphNode : m_nodes)
         if (node == graphNode)
             return true;
     return false;
@@ -188,8 +189,8 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNode(const size_t index) const {
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const {
-    //todo: at the time brute force search over all nodes, add a more clever search
-    for (const auto& node : m_nodes)
+    // todo: at the time brute force search over all nodes, add a more clever search
+    for (const auto &node : m_nodes)
         if (node->getValues().isApprox(config, EPSILON))
             return node;
     return nullptr;

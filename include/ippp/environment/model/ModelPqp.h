@@ -37,7 +37,7 @@ class ModelPqp : public ModelContainer {
     void transformModel(const Transform &T);
     void transformModel(const Vector6 &config);
 
-    PQP_Model m_pqpModel;
+    PQP_Model m_pqpModel; /*!< PQP model for the collision check with the PQP library */
 
   private:
     void updatePqpModel();

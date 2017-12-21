@@ -23,15 +23,15 @@
 #include <vector>
 
 #include <ippp/Identifier.h>
+#include <ippp/environment/model/ModelContainer.h>
 #include <ippp/types.h>
 #include <ippp/util/Logging.h>
 #include <ippp/util/Utility.h>
-#include <ippp/environment/model/ModelContainer.h>
 
 namespace ippp {
 
 enum RobotCategory { serial, mobile };
-enum DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint, position, rotation};
+enum DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint, position, rotation };
 
 /*!
 * \brief   Base class of all robots
@@ -43,8 +43,7 @@ class RobotBase : public Identifier {
     virtual ~RobotBase();
 
   protected:
-    RobotBase(const std::string &name, const unsigned int dim, const RobotCategory robotType,
-              std::vector<DofType> dofTypes);
+    RobotBase(const std::string &name, const unsigned int dim, const RobotCategory robotType, std::vector<DofType> dofTypes);
 
   public:
     void setPose(const Vector6 &pose);
@@ -62,15 +61,16 @@ class RobotBase : public Identifier {
     std::vector<DofType> getDofTypes() const;
 
   protected:
-    const RobotCategory m_robotType;
-    VectorX m_minBoundary;
-    VectorX m_maxBoundary;
+    const RobotCategory m_robotType; /*!< category of the robot (serial or mobile) */
+    VectorX m_minBoundary;           /*!< minimal boundaries of the robot */
+    VectorX m_maxBoundary;           /*!< maximal boundaries of the robot */
 
-    const unsigned int m_dim;
-    const std::vector<DofType> m_dofTypes;
-    Transform m_pose;
+    const unsigned int m_dim;              /*!< dimension of the robot */
+    const std::vector<DofType> m_dofTypes; /*!< list of the types of every dimension  */
+    Transform m_pose;                      /*!< pose of the robot inside of the world coordinate system */
 
-    std::shared_ptr<ModelContainer> m_baseModel;
+    std::shared_ptr<ModelContainer>
+        m_baseModel; /*!< Basis model of the robot. For the mobile robot it is the model of the complete robot. */
 };
 
 } /* namespace ippp */

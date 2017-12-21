@@ -19,8 +19,8 @@
 #ifndef MODELFCL_H
 #define MODELFCL_H
 
-#include <fcl/BVH/BVH_model.h>
 #include <fcl/BV/BV.h>
+#include <fcl/BVH/BVH_model.h>
 #include <fcl/shape/geometric_shapes.h>
 
 #include <ippp/environment/model/ModelContainer.h>
@@ -41,7 +41,7 @@ class ModelFcl : public ModelContainer {
     void transformModel(const Transform &T);
     void transformModel(const Vector6 &config);
 
-    FCLModel m_fclModel;
+    FCLModel m_fclModel; /*!< fcl model for the collision check with the fcl library */
 
   private:
     void updateFclModel();

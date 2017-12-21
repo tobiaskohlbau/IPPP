@@ -74,13 +74,15 @@ class Node {
     double getValue(const unsigned int index) const;
 
   private:
-    Vector<dim> m_config;
-    double m_cost = -1;
+    Vector<dim> m_config; /*!< configuration of the Node */
+    double m_cost = -1;   /*!< cost parameter */
 
-    std::pair<std::shared_ptr<Node<dim>>, double> m_parent = std::make_pair(nullptr, 0);
-    std::pair<std::shared_ptr<Node<dim>>, double> m_queryParent = std::make_pair(nullptr, 0);
-    std::vector<std::pair<std::shared_ptr<Node<dim>>, double>> m_children;
-    std::vector<std::shared_ptr<Node>> m_invalidChildren;
+    std::pair<std::shared_ptr<Node<dim>>, double> m_parent =
+        std::make_pair(nullptr, 0); /*!< parent edge (pointer to the node + edge cost) */
+    std::pair<std::shared_ptr<Node<dim>>, double> m_queryParent =
+        std::make_pair(nullptr, 0); /*!< query parent edge (pointer to the node + edge cost) */
+    std::vector<std::pair<std::shared_ptr<Node<dim>>, double>> m_children; /*!< child edges (pointer to the node + edge cost) */
+    std::vector<std::shared_ptr<Node>> m_invalidChildren; /*!< list of near children, with them no connection was possible */
 };
 
 /*!

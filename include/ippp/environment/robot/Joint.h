@@ -43,9 +43,9 @@ class Joint {
     std::pair<double, double> getBoundaries() const;
 
   private:
-    double m_minBound = 0;
-    double m_maxBound = 0;
-    std::shared_ptr<ModelContainer> m_model = nullptr;
+    double m_minBound = 0;                             /*!< minimal joint boundary */
+    double m_maxBound = 0;                             /*!< maximal joint boundary */
+    std::shared_ptr<ModelContainer> m_model = nullptr; /*!< model container of the link related to the joint */
 };
 
 } /* namespace ippp */

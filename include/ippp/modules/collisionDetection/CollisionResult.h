@@ -32,10 +32,10 @@ namespace ippp {
 struct CollisionResult {
     bool collision = false;
 
-    double penetrationDepth = std::numeric_limits<double>::max();
-    double minDist = std::numeric_limits<double>::max();
-    double minObstacleDist = std::numeric_limits<double>::max();
-    double minRobotDist = std::numeric_limits<double>::max();
+    double penetrationDepth = std::numeric_limits<double>::max(); /*!< collision depth, valid if in collision */
+    double minDist = std::numeric_limits<double>::max();          /*!< minimum distance to obstacles and robot bodies */
+    double minObstacleDist = std::numeric_limits<double>::max();  /*!< minimum distance to obstacles */
+    double minRobotDist = std::numeric_limits<double>::max();     /*!< minimum distance between robot bodies */
 };
 
 } /* namespace ippp */

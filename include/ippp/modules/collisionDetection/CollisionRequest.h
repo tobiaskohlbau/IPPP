@@ -29,10 +29,10 @@ namespace ippp {
 * \date    2017-11-10
 */
 struct CollisionRequest {
-    bool checkInterRobot = true;
-    bool checkObstacle = true;
-    bool computeDistance = false;
-    bool computePenetrationDepth = false;
+    bool checkInterRobot = true;          /*!< check inner collision of the robot */
+    bool checkObstacle = true;            /*!< check collision to the obstacles */
+    bool computeDistance = false;         /*!< compute the distance to obstacles and inner robot collisions */
+    bool computePenetrationDepth = false; /*!< compute depth of collisions */
 };
 
 } /* namespace ippp */

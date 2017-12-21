@@ -52,9 +52,9 @@ class Sampler : public Identifier {
     Vector<dim> getOrigin() const;
 
   protected:
-    Vector<dim> m_minBoundary;
-    Vector<dim> m_maxBoundary;
-    Vector<dim> m_origin;
+    Vector<dim> m_minBoundary; /*!< minimum boundary of the robot */
+    Vector<dim> m_maxBoundary; /*!< maximum boundary of the robot */
+    Vector<dim> m_origin;      /*!< origin of the sampler (used for normal distribution) */
 
     std::random_device rd;
     std::minstd_rand0 m_generator;

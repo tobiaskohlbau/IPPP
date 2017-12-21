@@ -55,10 +55,10 @@ class SerialRobot : public RobotBase {
     void saveMeshConfig(const VectorX &angles);
 
   protected:
-    std::vector<Joint> m_joints;
-    std::vector<DhParameter> m_dhParameters;
-    Transform m_baseOffset;
-    std::vector<Transform> m_linkOffsets;
+    std::vector<Joint> m_joints;             /*!< joints of the serial robot */
+    std::vector<DhParameter> m_dhParameters; /*!< dh parameter to the joints */
+    Transform m_baseOffset;                  /*!< transformation offset of the base model, if used. */
+    std::vector<Transform> m_linkOffsets;    /*!< extra offset transforms of the links */
 };
 
 } /* namespace ippp */

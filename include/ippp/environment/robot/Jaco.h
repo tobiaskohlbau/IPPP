@@ -26,12 +26,12 @@ namespace ippp {
 /*!
 * \brief   Class for the Jaco robot
 * \author  Sascha Kaden
-* \date    2016-06-30
+* \date    2017-12-15
 */
 class Jaco : public SerialRobot {
   public:
     Jaco(const unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
-        const std::vector<DofType> &dofTypes);
+         const std::vector<DofType> &dofTypes);
     std::vector<Transform> getJointTrafos(const VectorX &angles) const override;
 
   private:

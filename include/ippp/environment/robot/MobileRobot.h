@@ -24,13 +24,15 @@
 namespace ippp {
 
 /*!
-* \brief   Superclass of all mobile robots. If the class is used as robot, it should have six dimensions.
+* \brief   Superclass of all mobile robots. If the class is used as robot, it should have six dimensions, like the eucliedean
+* space.
 * \author  Sascha Kaden
 * \date    2017-11-10
 */
 class MobileRobot : public RobotBase {
   public:
-    MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary, const std::vector<DofType> &dofTypes, const std::string &name = "MobileRobot");
+    MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary, const std::vector<DofType> &dofTypes,
+                const std::string &name = "MobileRobot");
     Transform getTransformation(const VectorX &config) const override;
 };
 

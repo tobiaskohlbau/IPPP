@@ -31,13 +31,13 @@ namespace ippp {
 * \date    2017-11-10
 */
 class Mesh {
-public:
-    std::vector<Vector3> vertices;
-    std::vector<Vector3i> faces;
-    std::vector<Vector3> normals;
-    AABB aabb;
+  public:
+    std::vector<Vector3> vertices; /*!< vertex list of the mesh */
+    std::vector<Vector3i> faces;   /*!< faces list of the mesh with indexes to the vertices */
+    std::vector<Vector3> normals;  /*!< normals to every vertex */
+    AABB aabb;                     /*!< axis aligned bounding box of the mesh */
 };
 
 } /* namespace ippp */
 
-#endif //MESH_H
+#endif    // MESH_H

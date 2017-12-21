@@ -39,7 +39,7 @@ class ModelContainer : public Identifier {
     ModelContainer(const std::string &name, const AABB &boundingBox = AABB());
 
   public:
-    AABB getAABB() const ;
+    AABB getAABB() const;
     virtual bool empty() const = 0;
     virtual void transformModel(const Transform &T) = 0;
     virtual void transformModel(const Vector6 &config) = 0;

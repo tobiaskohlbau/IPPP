@@ -30,10 +30,10 @@ class DhParameter {
   public:
     DhParameter(double alpha = 0, double a = 0, double d = 0, double theta = 0);
 
-    double alpha = 0;
-    double a = 0;
-    double d = 0;
-    double theta = 0;
+    double alpha = 0; /*!< offset angle (x axis) */
+    double a = 0;     /*!< distance offset along the z axis */
+    double d = 0;     /*!< distance offset along the x axis */
+    double theta = 0; /*!< joint angle (z axis) */
 };
 
 } /* namespace ippp */

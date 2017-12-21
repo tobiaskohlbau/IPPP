@@ -25,7 +25,7 @@
 namespace ippp {
 
 /*!
-* \brief   Class for the 2D point robot
+* \brief   Class for the 2D point robot (this robot owns no model).
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
