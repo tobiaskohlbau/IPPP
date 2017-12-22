@@ -20,10 +20,10 @@
 #define TRAJECTORYPLANNER_HPP
 
 #include <ippp/Identifier.h>
+#include <ippp/environment/Environment.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/types.h>
 #include <ippp/util/UtilTrajectory.hpp>
-#include <ippp/environment/Environment.h>
 
 namespace ippp {
 
@@ -36,7 +36,7 @@ template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
     TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                      const std::shared_ptr<Environment> &environment, const double posRes = 1, const double oriRes = 0.1);
+                      const std::shared_ptr<Environment> &environment, double posRes = 1, double oriRes = 0.1);
 
     bool checkTrajectory(const Node<dim> &source, const Node<dim> &target);
     bool checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
@@ -49,7 +49,7 @@ class TrajectoryPlanner : public Identifier {
     virtual std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) = 0;
     virtual std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) = 0;
 
-    void setResolutions(const double posRes, const double oriRes = 0.1);
+    void setResolutions(double posRes, double oriRes = 0.1);
     double getPosRes() const;
     double getOriRes() const;
     std::pair<double, double> getResolutions() const;
@@ -79,8 +79,7 @@ class TrajectoryPlanner : public Identifier {
 */
 template <unsigned int dim>
 TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                          const std::shared_ptr<Environment> &environment, const double posRes,
-                                          const double oriRes)
+                                          const std::shared_ptr<Environment> &environment, double posRes, double oriRes)
     : Identifier(name), m_collision(collision), m_environment(environment) {
     Logging::debug("Initialize", this);
 
@@ -194,7 +193,7 @@ Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, con
 *  \date       2017-10-07
 */
 template <unsigned int dim>
-void TrajectoryPlanner<dim>::setResolutions(const double posRes, const double oriRes) {
+void TrajectoryPlanner<dim>::setResolutions(double posRes, double oriRes) {
     if (posRes <= 0) {
         m_posRes = 1;
         Logging::warning("Position resolution has to be larger than 0, it was set to 1!", this);

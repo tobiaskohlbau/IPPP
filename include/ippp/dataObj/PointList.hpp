@@ -85,7 +85,7 @@ class PointList {
     *  \author     Sascha Kaden
     *  \date       2016-12-19
     */
-    void setP(const T p, const unsigned int index) {
+    void setP(const T p, unsigned int index) {
         assert(index > 0);
         assert(index <= P);
         m_p[index - 1] = p;
@@ -98,7 +98,7 @@ class PointList {
     *  \author     Sascha Kaden
     *  \date       2016-12-19
     */
-    T getP(const unsigned int index) const {
+    T getP(unsigned int index) const {
         assert(index > 0);
         assert(index <= P);
         return m_p[index - 1];

@@ -36,7 +36,7 @@ namespace util {
 template <unsigned int dim>
 static std::shared_ptr<Node<dim>> getNearestValidNode(const Vector<dim> &config, const std::shared_ptr<Graph<dim>> &graph,
                                                       const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                                      const std::shared_ptr<DistanceMetric<dim>> &metric, const double range) {
+                                                      const std::shared_ptr<DistanceMetric<dim>> &metric, double range) {
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph->getNearNodes(config, range);
     double dist = std::numeric_limits<double>::max();

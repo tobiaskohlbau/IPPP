@@ -31,7 +31,7 @@ namespace ippp {
 */
 class MobileRobot : public RobotBase {
   public:
-    MobileRobot(const unsigned int dim, const std::pair<VectorX, VectorX> &boundary, const std::vector<DofType> &dofTypes,
+    MobileRobot(unsigned int dim, const std::pair<VectorX, VectorX> &boundary, const std::vector<DofType> &dofTypes,
                 const std::string &name = "MobileRobot");
     Transform getTransformation(const VectorX &config) const override;
 };

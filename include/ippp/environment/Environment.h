@@ -24,8 +24,8 @@
 #include <vector>
 
 #include <ippp/Identifier.h>
-#include <ippp/environment/robot/RobotBase.h>
 #include <ippp/environment/model/ModelContainer.h>
+#include <ippp/environment/robot/RobotBase.h>
 
 namespace ippp {
 
@@ -40,19 +40,18 @@ class Environment : public Identifier {
   public:
     Environment(const AABB &spaceBoundary);
     Environment(const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot);
-    Environment(const AABB &spaceBoundary,
-                const std::vector<std::shared_ptr<RobotBase>> &robots);
+    Environment(const AABB &spaceBoundary, const std::vector<std::shared_ptr<RobotBase>> &robots);
     ~Environment();
 
     void addObstacle(const std::shared_ptr<ModelContainer> &model);
     void addObstacles(const std::vector<std::shared_ptr<ModelContainer>> &models);
-    std::shared_ptr<ModelContainer> getObstacle(const size_t index) const;
+    std::shared_ptr<ModelContainer> getObstacle(size_t index) const;
     std::vector<std::shared_ptr<ModelContainer>> getObstacles() const;
     size_t getObstacleNum() const;
 
     void addRobot(const std::shared_ptr<RobotBase> &robot);
     std::shared_ptr<RobotBase> getRobot() const;
-    std::shared_ptr<RobotBase> getRobot(const size_t index) const;
+    std::shared_ptr<RobotBase> getRobot(size_t index) const;
     std::vector<std::shared_ptr<RobotBase>> getRobots() const;
     size_t numRobots() const;
 
@@ -66,12 +65,12 @@ class Environment : public Identifier {
     void updateConfigurationDim();
     void updateMasks();
 
-    unsigned int m_configDim = 0;
-    const AABB m_spaceBoundary;
+    unsigned int m_configDim = 0; /*!< summarized configuration dimension of all robots */
+    const AABB m_spaceBoundary;   /*!< 3D boundary of the euclidean workspace */
 
-    std::vector<unsigned int> m_robotDimSizes;
-    std::vector<std::shared_ptr<RobotBase>> m_robots;
-    std::vector<std::shared_ptr<ModelContainer>> m_obstacles;
+    std::vector<unsigned int> m_robotDimSizes;                /*!< list of dimension size of each robot */
+    std::vector<std::shared_ptr<RobotBase>> m_robots;         /*!< list with pointers to the robots */
+    std::vector<std::shared_ptr<ModelContainer>> m_obstacles; /*!< model container list with the obstacles */
     VectorX m_positionMask;
     VectorX m_rotationMask;
 };

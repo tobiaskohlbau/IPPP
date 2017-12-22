@@ -35,20 +35,20 @@ class PRM : public Planner<dim> {
     PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
 
-    bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads);
-    bool expand(const size_t numNodes, const size_t numThreads);
+    bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads);
+    bool expand(size_t numNodes, size_t numThreads);
 
-    void startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads = 1);
-    void startPlannerPhase(const size_t nbOfThreads = 1);
+    void startSamplingPhase(size_t nbOfNodes, size_t nbOfThreads = 1);
+    void startPlannerPhase(size_t nbOfThreads = 1);
 
     bool queryPath(const Vector<dim> start, const Vector<dim> goal);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1);
+    std::vector<Vector<dim>> getPath(double posRes = 1, double oriRes = 0.1);
 
   protected:
-    void samplingPhase(const size_t nbOfNodes);
-    void plannerPhase(const size_t startNodeIndex, const size_t endNodeIndex);
+    void samplingPhase(size_t nbOfNodes);
+    void plannerPhase(size_t startNodeIndex, size_t endNodeIndex);
     std::shared_ptr<Node<dim>> connectNode(const Vector<dim> &config);
 
     double m_rangeSize;
@@ -91,7 +91,7 @@ PRM<dim>::PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads) {
+bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
     std::vector<Vector<dim>> query = {start, goal};
     m_evaluator->setQuery(query);
 
@@ -116,7 +116,7 @@ bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, cons
 *  \date       2017-03-01
 */
 template <unsigned int dim>
-bool PRM<dim>::expand(const size_t numNodes, const size_t numThreads) {
+bool PRM<dim>::expand(size_t numNodes, size_t numThreads) {
     startSamplingPhase(numNodes, numThreads);
     m_graph->sortTree();
     startPlannerPhase(numThreads);
@@ -131,7 +131,7 @@ bool PRM<dim>::expand(const size_t numNodes, const size_t numThreads) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRM<dim>::startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads) {
+void PRM<dim>::startSamplingPhase(size_t nbOfNodes, size_t nbOfThreads) {
     size_t countNodes = nbOfNodes;
     if (nbOfThreads == 1) {
         samplingPhase(nbOfNodes);
@@ -154,7 +154,7 @@ void PRM<dim>::startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThrea
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRM<dim>::samplingPhase(const size_t nbOfNodes) {
+void PRM<dim>::samplingPhase(size_t nbOfNodes) {
     Vector<dim> sample;
     for (size_t i = 0; i < nbOfNodes; ++i) {
         sample = m_sampling->getSample();
@@ -174,7 +174,7 @@ void PRM<dim>::samplingPhase(const size_t nbOfNodes) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRM<dim>::startPlannerPhase(const size_t nbOfThreads) {
+void PRM<dim>::startPlannerPhase(size_t nbOfThreads) {
     size_t nodeCount = m_graph->nodeSize();
     if (nbOfThreads == 1) {
         plannerPhase(0, nodeCount);
@@ -199,7 +199,7 @@ void PRM<dim>::startPlannerPhase(const size_t nbOfThreads) {
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-void PRM<dim>::plannerPhase(const size_t startNodeIndex, const size_t endNodeIndex) {
+void PRM<dim>::plannerPhase(size_t startNodeIndex, size_t endNodeIndex) {
     if (startNodeIndex > endNodeIndex) {
         Logging::error("Start index is larger than end index", this);
         return;
@@ -323,7 +323,7 @@ std::vector<std::shared_ptr<Node<dim>>> PRM<dim>::getPathNodes() {
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> PRM<dim>::getPath(const double posRes, const double oriRes) {
+std::vector<Vector<dim>> PRM<dim>::getPath(double posRes, double oriRes) {
     return this->getPathFromNodes(m_nodePath, posRes, oriRes);
 }
 

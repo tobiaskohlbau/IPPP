@@ -36,7 +36,7 @@ template <unsigned int dim>
 class QueryEvaluator : public Evaluator<dim> {
   public:
     QueryEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
-                   const double dist = 10);
+                   double dist = 10);
 
     bool evaluate();
     void setQuery(const std::vector<Vector<dim>> &targets) override;
@@ -64,7 +64,7 @@ class QueryEvaluator : public Evaluator<dim> {
 */
 template <unsigned int dim>
 QueryEvaluator<dim>::QueryEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
-                                    const double dist)
+                                    double dist)
     : Evaluator<dim>("QueryEvaluator"), m_graph(graph), m_metric(metric), m_dist(dist), m_simplifiedDist(dist) {
     m_metric->simplifyDist(m_simplifiedDist);
 }
@@ -95,7 +95,7 @@ bool QueryEvaluator<dim>::evaluate() {
     for (auto validTarget : m_validTargets)
         if (!validTarget)
             return false;
-    
+
     Logging::info("Queries solved.", this);
     return true;
 }

@@ -31,12 +31,12 @@ namespace ippp {
 template <unsigned int dim>
 class SRTOptions : public PlannerOptions<dim> {
   public:
-    SRTOptions(const unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    SRTOptions(unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
-    void setNbOfTrees(const unsigned int nbOfTrees);
+    void setNbOfTrees(unsigned int nbOfTrees);
     unsigned int getNbOfTrees() const;
 
   private:
@@ -56,7 +56,7 @@ class SRTOptions : public PlannerOptions<dim> {
 *  \date       2017-04-02
 */
 template <unsigned int dim>
-SRTOptions<dim>::SRTOptions(const unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
+SRTOptions<dim>::SRTOptions(unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
                             const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                             const std::shared_ptr<PathModifier<dim>> &pathModifier,
                             const std::shared_ptr<Sampling<dim>> &sampling,
@@ -72,7 +72,7 @@ SRTOptions<dim>::SRTOptions(const unsigned int nbOfTrees, const std::shared_ptr<
 *  \date       2017-04-02
 */
 template <unsigned int dim>
-void SRTOptions<dim>::setNbOfTrees(const unsigned int nbOfTrees) {
+void SRTOptions<dim>::setNbOfTrees(unsigned int nbOfTrees) {
     if (nbOfTrees <= 0) {
         Logging::warning("Tree size was smaller than 1 and is set up to 1", this);
         m_nbOfTrees = 1;

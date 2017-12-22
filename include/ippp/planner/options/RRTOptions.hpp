@@ -31,12 +31,12 @@ namespace ippp {
 template <unsigned int dim>
 class RRTOptions : public PlannerOptions<dim> {
   public:
-    RRTOptions(const double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    RRTOptions(double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
-    void setStepSize(const double stepSize);
+    void setStepSize(double stepSize);
     double getStepSize() const;
 
   private:
@@ -56,7 +56,7 @@ class RRTOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-RRTOptions<dim>::RRTOptions(const double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+RRTOptions<dim>::RRTOptions(double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                             const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                             const std::shared_ptr<PathModifier<dim>> &pathModifier,
                             const std::shared_ptr<Sampling<dim>> &sampling,
@@ -72,7 +72,7 @@ RRTOptions<dim>::RRTOptions(const double stepSize, const std::shared_ptr<Collisi
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-void RRTOptions<dim>::setStepSize(const double stepSize) {
+void RRTOptions<dim>::setStepSize(double stepSize) {
     if (stepSize <= 0) {
         Logging::warning("Step size was smaller than 0 and was set up to 1", this);
         m_stepSize = 1;

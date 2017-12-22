@@ -19,10 +19,9 @@
 #ifndef COLLISIONDETECTION2D_HPP
 #define COLLISIONDETECTION2D_HPP
 
-#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
-#include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/environment/model/ModelTriangle2D.h>
 #include <ippp/environment/robot/PointRobot.h>
+#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 
 namespace ippp {
 

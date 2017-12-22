@@ -9,8 +9,7 @@
 // set namespace of the motion planner lib
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../assets",
-                 "assets directory");
+DEFINE_string(assetsDir, "../assets", "assets directory");
 
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
@@ -20,8 +19,10 @@ int main(int argc, char** argv) {
 
     // create a ModelFactory and the models of robot and obstacle (workspace)
     ModelFactoryPqp factoryPqp;
-    std::shared_ptr<ModelContainer> robotModel = factoryPqp.createModelFromFile(FLAGS_assetsDir + "/parasol_benchmarks/alpha1.5/robot.obj");
-    std::shared_ptr<ModelContainer> obstacleModel = factoryPqp.createModelFromFile(FLAGS_assetsDir + "/parasol_benchmarks/alpha1.5/obstacle.obj");
+    std::shared_ptr<ModelContainer> robotModel =
+        factoryPqp.createModelFromFile(FLAGS_assetsDir + "/parasol_benchmarks/alpha1.5/robot.obj");
+    std::shared_ptr<ModelContainer> obstacleModel =
+        factoryPqp.createModelFromFile(FLAGS_assetsDir + "/parasol_benchmarks/alpha1.5/obstacle.obj");
 
     // specify the boundaries of the robot
     VectorX minBoundary = util::Vecd(-200, -200, -200, 0, 0, 0);

@@ -49,17 +49,17 @@ class Node {
     void addCost(double cost);
     double getCost() const;
 
-    void setParent(const std::shared_ptr<Node> &parent, const double edgeCost);
+    void setParent(const std::shared_ptr<Node> &parent, double edgeCost);
     std::shared_ptr<Node> getParentNode() const;
     std::pair<std::shared_ptr<Node<dim>>, double> getParentEdge() const;
     void clearParent();
 
-    void setQueryParent(const std::shared_ptr<Node> &parent, const double edgeCost);
+    void setQueryParent(const std::shared_ptr<Node> &parent, double edgeCost);
     std::shared_ptr<Node> getQueryParentNode() const;
     std::pair<std::shared_ptr<Node<dim>>, double> getQueryParentEdge() const;
     void clearQueryParent();
 
-    void addChild(const std::shared_ptr<Node> &child, const double edgeCost);
+    void addChild(const std::shared_ptr<Node> &child, double edgeCost);
     std::vector<std::shared_ptr<Node>> getChildNodes() const;
     std::vector<std::pair<std::shared_ptr<Node<dim>>, double>> getChildEdges() const;
     size_t getChildSize() const;
@@ -71,7 +71,7 @@ class Node {
     void clearInvalidChildren();
 
     Vector<dim> getValues() const;
-    double getValue(const unsigned int index) const;
+    double getValue(unsigned int index) const;
 
   private:
     Vector<dim> m_config; /*!< configuration of the Node */
@@ -126,7 +126,7 @@ bool Node<dim>::empty() const {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-void Node<dim>::setCost(const double cost) {
+void Node<dim>::setCost(double cost) {
     if (cost >= 0) {
         m_cost = cost;
     }
@@ -139,7 +139,7 @@ void Node<dim>::setCost(const double cost) {
 *  \date       2016-10-22
 */
 template <unsigned int dim>
-void Node<dim>::addCost(const double cost) {
+void Node<dim>::addCost(double cost) {
     if (cost >= 0) {
         m_cost += cost;
     }
@@ -163,7 +163,7 @@ double Node<dim>::getCost() const {
 *  \date       2016-07-15
 */
 template <unsigned int dim>
-void Node<dim>::setParent(const std::shared_ptr<Node> &parent, const double edgeCost) {
+void Node<dim>::setParent(const std::shared_ptr<Node> &parent, double edgeCost) {
     if (!parent->empty())
         m_parent = std::make_pair(parent, edgeCost);
 }
@@ -207,7 +207,7 @@ void Node<dim>::clearParent() {
 *  \date       2016-07-15
 */
 template <unsigned int dim>
-void Node<dim>::setQueryParent(const std::shared_ptr<Node> &queryParent, const double edgeCost) {
+void Node<dim>::setQueryParent(const std::shared_ptr<Node> &queryParent, double edgeCost) {
     if (!queryParent->empty())
         m_queryParent = std::make_pair(queryParent, edgeCost);
 }
@@ -251,7 +251,7 @@ void Node<dim>::clearQueryParent() {
 *  \date       2016-07-15
 */
 template <unsigned int dim>
-void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child, const double edgeCost) {
+void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child, double edgeCost) {
     if (!child->empty())
         m_children.push_back(std::make_pair(child, edgeCost));
 }
@@ -378,7 +378,7 @@ Vector<dim> Node<dim>::getValues() const {
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-double Node<dim>::getValue(const unsigned int index) const {
+double Node<dim>::getValue(unsigned int index) const {
     return m_config[index];
 }
 

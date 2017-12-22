@@ -32,7 +32,7 @@ namespace ippp {
 *  \param[in]  maximum boundary
 *  \date       2016-07-19
 */
-SerialRobot::SerialRobot(const unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
+SerialRobot::SerialRobot(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
                          const std::vector<DofType> &dofTypes, const std::string &name)
     : RobotBase(name, dim, RobotCategory::serial, dofTypes),
       m_baseOffset(Transform::Identity()),
@@ -142,7 +142,7 @@ Transform SerialRobot::getTcp(const std::vector<Transform> &trafos) const {
 *  \param[out] shared_ptr of the ModelContainer
 *  \date       2016-08-25
 */
-std::shared_ptr<ModelContainer> SerialRobot::getModelFromJoint(const size_t jointIndex) const {
+std::shared_ptr<ModelContainer> SerialRobot::getModelFromJoint(size_t jointIndex) const {
     if (jointIndex < m_joints.size()) {
         return m_joints[jointIndex].getModel();
     }

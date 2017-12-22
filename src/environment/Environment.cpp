@@ -29,8 +29,7 @@ namespace ippp {
 *  \param[in]  workspace boundary
 *  \date       2017-05-17
 */
-Environment::Environment(const AABB &spaceBoundary)
-    : Identifier("Environment"), m_spaceBoundary(spaceBoundary) {
+Environment::Environment(const AABB &spaceBoundary) : Identifier("Environment"), m_spaceBoundary(spaceBoundary) {
     Logging::debug("Initialize", this);
 
     updateConfigurationDim();
@@ -62,7 +61,7 @@ Environment::Environment(const AABB &spaceBoundary, const std::shared_ptr<RobotB
 *  \date       2017-05-17
 */
 Environment::Environment(const AABB &spaceBoundary, const std::vector<std::shared_ptr<RobotBase>> &robots)
-        : Identifier("Environment"), m_spaceBoundary(spaceBoundary) {
+    : Identifier("Environment"), m_spaceBoundary(spaceBoundary) {
     Logging::debug("Initialize", this);
 
     if (robots.empty())
@@ -102,7 +101,7 @@ void Environment::addObstacles(const std::vector<std::shared_ptr<ModelContainer>
 *  \param[out] obstacle
 *  \date       2017-05-17
 */
-std::shared_ptr<ModelContainer> Environment::getObstacle(const size_t index) const {
+std::shared_ptr<ModelContainer> Environment::getObstacle(size_t index) const {
     if (index < m_obstacles.size()) {
         return m_obstacles[index];
     }
@@ -164,7 +163,7 @@ std::shared_ptr<RobotBase> Environment::getRobot() const {
 *  \param[out] robot
 *  \date       2017-05-17
 */
-std::shared_ptr<RobotBase> Environment::getRobot(const size_t index) const {
+std::shared_ptr<RobotBase> Environment::getRobot(size_t index) const {
     if (index < m_robots.size()) {
         return m_robots[index];
     }

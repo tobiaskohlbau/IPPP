@@ -38,22 +38,19 @@ class SRT : public Planner<dim> {
     SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
 
-    bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads);
-    bool expand(const size_t numNodes, const size_t numThreads);
+    bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads);
+    bool expand(size_t numNodes, size_t numThreads);
 
-    void startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads = 1);
+    void startSamplingPhase(size_t nbOfNodes, size_t nbOfThreads = 1);
     bool plannerPhase(std::vector<std::shared_ptr<Graph<dim>>> &trees);
-
-    bool queryPath(const Vector<dim> start, const Vector<dim> goal);
-    bool aStar(std::shared_ptr<Node<dim>> sourceNode, std::shared_ptr<Node<dim>> targetNode);
-    void expandNode(std::shared_ptr<Node<dim>> currentNode);
+    bool queryPath(Vector<dim> start, Vector<dim> goal);
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double trajectoryStepSize = 1);
+    std::vector<Vector<dim>> getPath(double trajectoryStepSize = 1);
 
   protected:
-    void samplingPhase(const size_t nbOfNodes, const size_t nbOfTrees);
-    std::shared_ptr<Graph<dim>> computeTree(const size_t nbOfNodes, const Vector<dim> &origin);
+    void samplingPhase(size_t nbOfNodes, size_t nbOfTrees);
+    std::shared_ptr<Graph<dim>> computeTree(size_t nbOfNodes, const Vector<dim> &origin);
 
     size_t m_nbOfTrees;
     std::vector<std::shared_ptr<Graph<dim>>> m_treeGraphs;
@@ -98,7 +95,7 @@ SRT<dim>::SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads) {
+bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
     if (m_collision->checkConfig(start)) {
         Logging::error("Start Node in collision", this);
         return false;
@@ -126,7 +123,7 @@ bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, cons
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-bool SRT<dim>::expand(const size_t numNodes, const size_t numThreads) {
+bool SRT<dim>::expand(size_t numNodes, size_t numThreads) {
     startSamplingPhase(numNodes, numThreads);
     plannerPhase(m_treeGraphs);
     m_treeGraphs.clear();
@@ -141,7 +138,7 @@ bool SRT<dim>::expand(const size_t numNodes, const size_t numThreads) {
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-void SRT<dim>::startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThreads) {
+void SRT<dim>::startSamplingPhase(size_t nbOfNodes, size_t nbOfThreads) {
     if (nbOfThreads == 1) {
         samplingPhase(nbOfNodes, m_nbOfTrees);
     } else {
@@ -164,7 +161,7 @@ void SRT<dim>::startSamplingPhase(const size_t nbOfNodes, const size_t nbOfThrea
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-void SRT<dim>::samplingPhase(const size_t nbOfNodes, const size_t nbOfTrees) {
+void SRT<dim>::samplingPhase(size_t nbOfNodes, size_t nbOfTrees) {
     Vector<dim> sample;
     for (size_t i = 0; i < nbOfTrees; ++i) {
         do {
@@ -186,7 +183,7 @@ void SRT<dim>::samplingPhase(const size_t nbOfNodes, const size_t nbOfTrees) {
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-std::shared_ptr<Graph<dim>> SRT<dim>::computeTree(const size_t nbOfNodes, const Vector<dim> &origin) {
+std::shared_ptr<Graph<dim>> SRT<dim>::computeTree(size_t nbOfNodes, const Vector<dim> &origin) {
     RRTOptions<dim> rrtOptions(30, m_collision, m_metric, m_evaluator, this->m_pathModifier, m_sampling, m_trajectory);
     RRT<dim> rrt(m_environment, rrtOptions);
     rrt.setInitNode(origin);
@@ -301,7 +298,7 @@ std::vector<std::shared_ptr<Node<dim>>> SRT<dim>::getPathNodes() {
 *  \date       2017-04-03
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> SRT<dim>::getPath(const double trajectoryStepSize) {
+std::vector<Vector<dim>> SRT<dim>::getPath(double trajectoryStepSize) {
     return this->getPathFromNodes(m_nodePath, trajectoryStepSize);
 }
 

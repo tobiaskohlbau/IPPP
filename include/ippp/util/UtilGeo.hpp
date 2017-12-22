@@ -57,7 +57,7 @@ constexpr double toDeg() {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix2 getRotMat2D(const double rad) {
+static Matrix2 getRotMat2D(double rad) {
     Eigen::Rotation2D<double> R(rad);
     return R.toRotationMatrix();
 }
@@ -71,7 +71,7 @@ static Matrix2 getRotMat2D(const double rad) {
 *  \param[out] rotation matrix
 *  \date       2016-11-15
 */
-static Matrix3 getRotMat3D(const double radX, const double radY, const double radZ) {
+static Matrix3 getRotMat3D(double radX, double radY, double radZ) {
     Matrix3 R;
     R = Eigen::AngleAxisd(radX, Eigen::Vector3d::UnitX()) * Eigen::AngleAxisd(radY, Eigen::Vector3d::UnitY()) *
         Eigen::AngleAxisd(radZ, Eigen::Vector3d::UnitZ());
@@ -279,7 +279,7 @@ Vector<dim> radToDeg(Vector<dim> rad) {
 *  \param[out] rad
 *  \date       2016-11-16
 */
-static double degToRad(const double deg) {
+static double degToRad(double deg) {
     return deg * toRad();
 }
 

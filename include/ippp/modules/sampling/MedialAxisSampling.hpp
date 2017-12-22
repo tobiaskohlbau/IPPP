@@ -33,7 +33,7 @@ class MedialAxisSampling : public Sampling<dim> {
   public:
     MedialAxisSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                       const size_t attempts = 10, const size_t numDirs = 50);
+                       size_t attempts = 10, size_t numDirs = 50);
 
     Vector<dim> getSample() override;
 
@@ -61,8 +61,7 @@ template <unsigned int dim>
 MedialAxisSampling<dim>::MedialAxisSampling(const std::shared_ptr<Environment> &environment,
                                             const std::shared_ptr<CollisionDetection<dim>> &collision,
                                             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                            const std::shared_ptr<Sampler<dim>> &sampler, const size_t attempts,
-                                            const size_t numberDirs)
+                                            const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, size_t numberDirs)
     : Sampling<dim>("MedialAxisSampling", environment, collision, trajectory, sampler, attempts), m_numberDirections(numberDirs) {
     m_directions.reserve(m_numberDirections);
     for (unsigned int i = 0; i < numberDirs; ++i)

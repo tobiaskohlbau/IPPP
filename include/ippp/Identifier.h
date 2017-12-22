@@ -38,7 +38,7 @@ class Identifier {
 
   public:
     const std::string& getName() const;
-    const size_t& getHash() const;
+    size_t getHash() const;
 
   private:
     std::hash<std::string> m_hashFn;

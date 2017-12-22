@@ -56,10 +56,10 @@ class Sampler : public Identifier {
     Vector<dim> m_maxBoundary; /*!< maximum boundary of the robot */
     Vector<dim> m_origin;      /*!< origin of the sampler (used for normal distribution) */
 
-    std::random_device rd;
-    std::minstd_rand0 m_generator;
-    std::uniform_real_distribution<double> m_distAngle;
-    std::uniform_real_distribution<double> m_distNumber;
+    std::random_device rd;                               /*!< random device, will be used, if no seed is passed */
+    std::minstd_rand0 m_generator;                       /*!< generator for the different distributions */
+    std::uniform_real_distribution<double> m_distAngle;  /*!< distribution to generate random rad angle [0,2*pi] */
+    std::uniform_real_distribution<double> m_distNumber; /*!< distriburtion to generate a random number [0,1] */
 };
 
 /*!

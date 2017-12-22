@@ -78,10 +78,10 @@ Vector<dim1 + dim2> append(const Vector<dim1> &first, const Vector<dim2> &second
     Vector<dim1 + dim2> vec;
     for (unsigned int i = 0; i < dim1; ++i)
         vec[i] = first[i];
-    
+
     for (unsigned int i = 0; i < dim2; ++i)
         vec[dim1 + i] = second[i];
-    
+
     return vec;
 }
 
@@ -94,11 +94,11 @@ Vector<dim1 + dim2> append(const Vector<dim1> &first, const Vector<dim2> &second
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Vector<dim + 1> append(const Vector<dim> &source, const double add) {
+Vector<dim + 1> append(const Vector<dim> &source, double add) {
     Vector<dim + 1> vec;
     for (unsigned int i = 0; i < dim; ++i)
         vec[i] = source[i];
-    
+
     vec[dim] = add;
     return vec;
 }
@@ -203,7 +203,7 @@ static Vector7 Vecd(double a1, double a2, double a3, double a4, double a5, doubl
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Vector<dim> Vecd(const double data) {
+Vector<dim> Vecd(double data) {
     Vector<dim> vec;
     for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data;
@@ -219,7 +219,7 @@ Vector<dim> Vecd(const double data) {
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Vector<dim> Vecd(const double data[]) {
+Vector<dim> Vecd(double data[]) {
     Vector<dim> vec;
     for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data[i];
@@ -235,7 +235,7 @@ Vector<dim> Vecd(const double data[]) {
 *  \param[out] result Vector
 *  \date       2016-12-23
 */
-static VectorX Vecd(const unsigned int dim, const double data[]) {
+static VectorX Vecd(unsigned int dim, double data[]) {
     VectorX vec(dim);
     for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data[i];
@@ -258,9 +258,9 @@ Vector<dim> NaNVector() {
     return vec;
 }
 
-template<unsigned int N>
+template <unsigned int N>
 static bool equal(const Vector<N> &vec1, const Vector<N> &vec2) {
-	return (vec1 - vec2).isZero(EPSILON);
+    return (vec1 - vec2).isZero(EPSILON);
 }
 
 } /* namespace util */

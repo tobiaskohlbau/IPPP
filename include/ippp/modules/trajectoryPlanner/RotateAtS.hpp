@@ -33,13 +33,13 @@ namespace ippp {
 template <unsigned int dim>
 class RotateAtS : public TrajectoryPlanner<dim> {
   public:
-    RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision,
-              const std::shared_ptr<Environment> &environment, const double posRes = 1, const double oriRes = 0.1, const double rotPoint = 0.5);
+    RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Environment> &environment,
+              double posRes = 1, double oriRes = 0.1, double rotPoint = 0.5);
 
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
 
-    void setRotationPoint(const double rotPoint);
+    void setRotationPoint(double rotPoint);
     double getRotationPoint();
 
   private:
@@ -69,10 +69,9 @@ class RotateAtS : public TrajectoryPlanner<dim> {
 */
 template <unsigned int dim>
 RotateAtS<dim>::RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision,
-                          const std::shared_ptr<Environment> &environment, const double posRes, const double oriRes, const double rotPoint)
+                          const std::shared_ptr<Environment> &environment, double posRes, double oriRes, double rotPoint)
     : TrajectoryPlanner<dim>("RotateAtS", collision, environment, posRes, oriRes) {
     setRotationPoint(rotPoint);
-
 }
 
 /*!
@@ -113,7 +112,8 @@ std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &s
     // compute the linear rotation points
     Vector<dim> rotSource = util::multiplyElementWise<dim>(source, m_oriMask);
     Vector<dim> rotTarget = util::multiplyElementWise<dim>(target, m_oriMask);
-    std::vector<Vector<dim>> oriConfigs = util::linearTrajectoryCont<dim>(rotSource, rotTarget, m_posRes, m_oriRes, m_posMask, m_oriMask);
+    std::vector<Vector<dim>> oriConfigs =
+        util::linearTrajectoryCont<dim>(rotSource, rotTarget, m_posRes, m_oriRes, m_posMask, m_oriMask);
 
     // get middle point and insert rotation configurations
     size_t middleIndex = static_cast<size_t>(configs.size() * m_rotationPoint);
@@ -129,7 +129,7 @@ std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &s
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-void RotateAtS<dim>::setRotationPoint(const double rotPoint) {
+void RotateAtS<dim>::setRotationPoint(double rotPoint) {
     if (rotPoint > 0 && 1 > rotPoint) {
         m_rotationPoint = rotPoint;
     } else {

@@ -31,12 +31,12 @@ namespace ippp {
 template <unsigned int dim>
 class PRMOptions : public PlannerOptions<dim> {
   public:
-    PRMOptions(const double rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    PRMOptions(double rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
-    void setRangeSize(const double rangeSize);
+    void setRangeSize(double rangeSize);
     double getRangeSize() const;
 
   private:
@@ -56,7 +56,7 @@ class PRMOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-PRMOptions<dim>::PRMOptions(const double rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+PRMOptions<dim>::PRMOptions(double rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
                             const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                             const std::shared_ptr<PathModifier<dim>> &pathModifier,
                             const std::shared_ptr<Sampling<dim>> &sampling,
@@ -72,7 +72,7 @@ PRMOptions<dim>::PRMOptions(const double rangeSize, const std::shared_ptr<Collis
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-void PRMOptions<dim>::setRangeSize(const double rangeSize) {
+void PRMOptions<dim>::setRangeSize(double rangeSize) {
     if (rangeSize <= 0) {
         Logging::warning("Step size was equal or smaller than 0 and is set up to 1", this);
         m_rangeSize = 1;

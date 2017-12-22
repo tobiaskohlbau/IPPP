@@ -30,7 +30,7 @@ void StatisticCollector::addContainer(const std::shared_ptr<StatisticContainer> 
     m_containers.push_back(container);
 }
 
-std::shared_ptr<StatisticContainer> StatisticCollector::getContainer(const size_t hash) {
+std::shared_ptr<StatisticContainer> StatisticCollector::getContainer(size_t hash) {
     for (auto &container : m_containers)
         if (hash == container->getHash())
             return container;

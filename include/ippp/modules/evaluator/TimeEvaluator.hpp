@@ -33,7 +33,7 @@ namespace ippp {
 template <unsigned int dim>
 class TimeEvaluator : public Evaluator<dim> {
   public:
-    TimeEvaluator(const size_t maxDuration = 30);
+    TimeEvaluator(size_t maxDuration = 30);
 
     bool evaluate();
 
@@ -50,8 +50,7 @@ class TimeEvaluator : public Evaluator<dim> {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-TimeEvaluator<dim>::TimeEvaluator(const size_t maxDuration)
-    : Evaluator<dim>("SingleIterationEvaluator"), m_maxDuration(maxDuration) {
+TimeEvaluator<dim>::TimeEvaluator(size_t maxDuration) : Evaluator<dim>("SingleIterationEvaluator"), m_maxDuration(maxDuration) {
 }
 
 /*!

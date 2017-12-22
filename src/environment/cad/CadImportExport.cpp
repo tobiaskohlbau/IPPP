@@ -34,7 +34,7 @@ namespace cad {
 *  \param[out] Mesh
 *  \date       2017-05-09
 */
-bool importMesh(const std::string &filePath, Mesh &mesh, const double scale, const bool calcNormals, const bool useTrafo) {
+bool importMesh(const std::string &filePath, Mesh &mesh, double scale, bool calcNormals, bool useTrafo) {
     std::size_t found = filePath.find_last_of('.');
     if (filePath.substr(found) == ".g")
         return importBYU(filePath, mesh);
@@ -56,8 +56,7 @@ bool importMesh(const std::string &filePath, Mesh &mesh, const double scale, con
 *  \param[out] Mesh
 *  \date       2017-05-09
 */
-bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, const double scale, const bool calcNormals,
-                  const bool useTrafo) {
+bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, double scale, bool calcNormals, bool useTrafo) {
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (scene == nullptr) {
@@ -115,7 +114,7 @@ Matrix4 importTransformation(const std::string &filePath) {
 *  \param[out] vector of meshes
 *  \date       2017-05-09
 */
-void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std::vector<Mesh> &meshes, const bool useTrafo) {
+void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std::vector<Mesh> &meshes, bool useTrafo) {
     aiMatrix4x4 prevTrafo;
 
     prevTrafo = *trafo;
@@ -132,7 +131,8 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std
         }
         for (size_t j = 0; j < aimesh->mNumFaces; ++j) {
             if (aimesh->mFaces[j].mNumIndices > 2) {
-                mesh.faces.emplace_back(aimesh->mFaces[j].mIndices[0], aimesh->mFaces[j].mIndices[1], aimesh->mFaces[j].mIndices[2]);
+                mesh.faces.emplace_back(aimesh->mFaces[j].mIndices[0], aimesh->mFaces[j].mIndices[1],
+                                        aimesh->mFaces[j].mIndices[2]);
             } else {
                 Logging::warning("Face array is to short", "CadProcessing");
             }
@@ -338,7 +338,8 @@ aiScene generateScene(const std::vector<Vector3> &vertices, const std::vector<Ve
     pMesh->mVertices = new aiVector3D[vertices.size()];
     pMesh->mNumVertices = static_cast<unsigned int>(vertices.size());
     for (size_t i = 0; i < vertices.size(); ++i)
-        pMesh->mVertices[i] = aiVector3D(static_cast<ai_real>(vertices[i].x()), static_cast<ai_real>(vertices[i].y()), static_cast<ai_real>(vertices[i].z()));
+        pMesh->mVertices[i] = aiVector3D(static_cast<ai_real>(vertices[i].x()), static_cast<ai_real>(vertices[i].y()),
+                                         static_cast<ai_real>(vertices[i].z()));
 
     pMesh->mFaces = new aiFace[faces.size()];
     pMesh->mNumFaces = static_cast<unsigned int>(faces.size());

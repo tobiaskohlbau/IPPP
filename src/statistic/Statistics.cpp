@@ -29,7 +29,7 @@ void Statistics::addCollector(const std::shared_ptr<StatisticCollector> &collect
     m_collectors.push_back(collector);
 }
 
-std::shared_ptr<StatisticCollector> Statistics::getCollector(const size_t hash) {
+std::shared_ptr<StatisticCollector> Statistics::getCollector(size_t hash) {
     for (auto &collector : m_collectors)
         if (hash == collector->getHash())
             return collector;

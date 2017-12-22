@@ -35,7 +35,7 @@ namespace util {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, const double res) {
+static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, double res) {
     std::vector<Vector<dim>> configs;
 
     Vector<dim> u(target - source);    // u = a - b
@@ -60,9 +60,8 @@ static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, 
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, const double posRes,
-                                                     const double oriRes, const Vector<dim> &posMask,
-                                                     const Vector<dim> &oriMask) {
+static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, double posRes,
+                                                     double oriRes, const Vector<dim> &posMask, const Vector<dim> &oriMask) {
     if (util::equal<dim>(source, target))
         return std::vector<Vector<dim>>();
 
@@ -89,7 +88,7 @@ static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, 
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, const double res) {
+static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, double res) {
     std::vector<Vector<dim>> configs;
 
     Vector<dim> u(target - source);
@@ -117,8 +116,8 @@ static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, c
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, const double posRes,
-                                                    const double oriRes, const Vector<dim> &posMask, const Vector<dim> &oriMask) {
+static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, double posRes,
+                                                    double oriRes, const Vector<dim> &posMask, const Vector<dim> &oriMask) {
     if ((source - target).isZero(EPSILON))
         return std::vector<Vector<dim>>();
 

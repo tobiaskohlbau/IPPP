@@ -24,7 +24,8 @@
 namespace ippp {
 
 /*!
-* \brief   Class LinearTrajectory plans a linear path between the passed nodes/configs. Start and end point aren't part of the path.
+* \brief   Class LinearTrajectory plans a linear path between the passed nodes/configs. Start and end point aren't part of the
+* path.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
@@ -32,7 +33,7 @@ template <unsigned int dim>
 class LinearTrajectory : public TrajectoryPlanner<dim> {
   public:
     LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Environment> &environment,
-                     const double posRes = 1, const double oriRes = 0.1);
+                     double posRes = 1, double oriRes = 0.1);
 
     std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
     std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
@@ -58,7 +59,7 @@ class LinearTrajectory : public TrajectoryPlanner<dim> {
 */
 template <unsigned int dim>
 LinearTrajectory<dim>::LinearTrajectory(const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                        const std::shared_ptr<Environment> &environment, const double posRes, const double oriRes)
+                                        const std::shared_ptr<Environment> &environment, double posRes, double oriRes)
     : TrajectoryPlanner<dim>("LinearTrajectory", collision, environment, posRes, oriRes) {
 }
 

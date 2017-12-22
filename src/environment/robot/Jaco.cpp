@@ -26,7 +26,7 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco(const unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
+Jaco::Jaco(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
            const std::vector<DofType> &dofTypes)
     : SerialRobot(dim, joints, dhParameters, dofTypes, "Jaco") {
     // m_alpha = util::Vecd(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());

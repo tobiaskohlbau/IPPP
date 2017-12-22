@@ -33,7 +33,7 @@ class GaussianSampling : public Sampling<dim> {
   public:
     GaussianSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
                      const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                     const size_t attempts = 10, const double distance = 15);
+                     size_t attempts = 10, double distance = 15);
 
     Vector<dim> getSample() override;
 
@@ -59,8 +59,7 @@ template <unsigned int dim>
 GaussianSampling<dim>::GaussianSampling(const std::shared_ptr<Environment> &environment,
                                         const std::shared_ptr<CollisionDetection<dim>> &collision,
                                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                        const std::shared_ptr<Sampler<dim>> &sampler, const size_t attempts,
-                                        const double distance)
+                                        const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double distance)
     : Sampling<dim>("GaussianSampling", environment, collision, trajectory, sampler, attempts), m_distance(distance) {
 }
 

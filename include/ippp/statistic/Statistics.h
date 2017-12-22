@@ -34,11 +34,11 @@ namespace ippp {
 */
 class Statistics {
   public:
-      static void addCollector(const std::shared_ptr<StatisticCollector> &collector);
-      static std::shared_ptr<StatisticCollector> getCollector(const size_t hash);
+    static void addCollector(const std::shared_ptr<StatisticCollector> &collector);
+    static std::shared_ptr<StatisticCollector> getCollector(size_t hash);
 
   private:
-      static std::vector<std::shared_ptr<StatisticCollector>> m_collectors;
+    static std::vector<std::shared_ptr<StatisticCollector>> m_collectors;
 };
 
 } /* namespace ippp */

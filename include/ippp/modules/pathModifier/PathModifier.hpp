@@ -42,9 +42,9 @@ class PathModifier : public Identifier {
     virtual std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const = 0;
 
   protected:
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-    std::shared_ptr<Environment> m_environment = nullptr;
-    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
+    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr; /*!< pointer to the collision detection module */
+    std::shared_ptr<Environment> m_environment = nullptr;           /*!< pointer to the Environment */
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr; /*!< pointer to the trajectory planning module */
 };
 
 /*!

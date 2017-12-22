@@ -34,14 +34,14 @@ namespace ippp {
 template <unsigned int dim>
 class GridSampler : public Sampler<dim> {
   public:
-    GridSampler(const std::shared_ptr<Environment> &environment, const double res = 1);
-    GridSampler(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const double res = 1);
-    void setResolution(const double res);
+    GridSampler(const std::shared_ptr<Environment> &environment, double res = 1);
+    GridSampler(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, double res = 1);
+    void setResolution(double res);
     Vector<dim> getSample();
 
   protected:
     void generateGridConfigs();
-    void fillConfig(Vector<dim> values, const unsigned int index);
+    void fillConfig(Vector<dim> values, unsigned int index);
 
     double m_res = 1;
     size_t m_curIndex = 0;
@@ -61,7 +61,7 @@ class GridSampler : public Sampler<dim> {
 *  \date       2017-11-13
 */
 template <unsigned int dim>
-GridSampler<dim>::GridSampler(const std::shared_ptr<Environment> &environment, const double res)
+GridSampler<dim>::GridSampler(const std::shared_ptr<Environment> &environment, double res)
     : Sampler<dim>("GridSampler", environment, std::string()) {
     setResolution(res);
     generateGridConfigs();
@@ -76,7 +76,7 @@ GridSampler<dim>::GridSampler(const std::shared_ptr<Environment> &environment, c
 *  \date       2017-11-13
 */
 template <unsigned int dim>
-GridSampler<dim>::GridSampler(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const double res)
+GridSampler<dim>::GridSampler(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, double res)
     : Sampler<dim>("RandomSampler", minBoundary, maxBoundary, std::string()) {
     setResolution(res);
     generateGridConfigs();
@@ -89,7 +89,7 @@ GridSampler<dim>::GridSampler(const Vector<dim> &minBoundary, const Vector<dim> 
 *  \date       2017-11-13
 */
 template <unsigned int dim>
-void GridSampler<dim>::setResolution(const double res) {
+void GridSampler<dim>::setResolution(double res) {
     if (res <= 0)
         Logging::error("Resolution has to be > 0!", this);
     else

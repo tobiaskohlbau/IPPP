@@ -47,15 +47,14 @@ class Planner : public Identifier {
             const std::shared_ptr<Graph<dim>> &graph);
 
   public:
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads) = 0;
-    virtual bool expand(const size_t numNode, const size_t numthreads) = 0;
+    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) = 0;
+    virtual bool expand(size_t numNode, size_t numthreads) = 0;
 
     std::shared_ptr<Graph<dim>> getGraph();
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
-    virtual std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1) = 0;
+    virtual std::vector<Vector<dim>> getPath(double posRes = 1, double oriRes = 0.1) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
-    std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, const double posRes,
-                                              const double oriRes);
+    std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, double posRes, double oriRes);
 
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
@@ -70,7 +69,7 @@ class Planner : public Identifier {
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
 
     const PlannerOptions<dim> m_options;
-    bool m_pathPlanned = false;
+    bool m_pathPlanned = false; /*!< true flag, if a plan could be computed */
 };
 
 /*!
@@ -143,8 +142,8 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, const double posRes,
-                                                        const double oriRes) {
+std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, double posRes,
+                                                        double oriRes) {
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes = m_pathModifier->smoothPath(nodes);
 
     Logging::info("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", this);

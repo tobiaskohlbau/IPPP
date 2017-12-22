@@ -52,7 +52,7 @@ const std::string& Identifier::getName() const {
 *  \param[out] hash of the name
 *  \date       2017-11-10
 */
-const size_t& Identifier::getHash() const {
+size_t Identifier::getHash() const {
     return m_hash;
 }
 

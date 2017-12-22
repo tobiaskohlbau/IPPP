@@ -85,7 +85,7 @@ RRT<dim>::RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRT<dim>::computeTree(const size_t nbOfNodes, const size_t nbOfThreads) {
+bool RRT<dim>::computeTree(size_t nbOfNodes, size_t nbOfThreads) {
     if (m_initNode == nullptr) {
         Logging::error("Init Node is not connected", this);
         return false;
@@ -115,7 +115,7 @@ bool RRT<dim>::computeTree(const size_t nbOfNodes, const size_t nbOfThreads) {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-void RRT<dim>::computeTreeThread(const size_t nbOfNodes) {
+void RRT<dim>::computeTreeThread(size_t nbOfNodes) {
     Vector<dim> sample;
     for (size_t i = 0; i < nbOfNodes; ++i) {
         sample = m_sampling->getSample();

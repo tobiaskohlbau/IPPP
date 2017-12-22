@@ -37,7 +37,7 @@ namespace util {
 *  \param[out] transformation matrix
 *  \date       2017-04-07
 */
-static Matrix4 readT(const std::string &path, const double scale = 1) {
+static Matrix4 readT(const std::string &path, double scale = 1) {
     Matrix4 T;
     if (path.substr(path.find_last_of(".")) != ".dat") {
         Logging::error("Wrong file type", "UtilIO");

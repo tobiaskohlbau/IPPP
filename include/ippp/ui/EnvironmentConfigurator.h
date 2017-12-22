@@ -49,7 +49,7 @@ class EnvironmentConfigurator : public Configurator {
     void setFactoryType(const FactoryType factoryType);
     void setRobotType(const RobotType robotType);
     void setRobotBaseModelFile(const std::string robotBaseModelFile);
-    void setRobotBaseProperties(const size_t robotDim, const std::vector<DofType> &dofTypes,
+    void setRobotBaseProperties(size_t robotDim, const std::vector<DofType> &dofTypes,
                                 const std::pair<VectorX, VectorX> &robotBoundaries);
     void setSerialRobotProperties(const std::vector<DhParameter> &dhParameters, const std::vector<std::string> &jointModelFiles,
                                   const Transform &baseOffset = Transform::Identity(),

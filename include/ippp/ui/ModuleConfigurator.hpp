@@ -71,26 +71,25 @@ class ModuleConfigurator : public Configurator {
     std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner();
 
     PlannerOptions<dim> getPlannerOptions();
-    PRMOptions<dim> getPRMOptions(const double rangeSize);
-    RRTOptions<dim> getRRTOptions(const double stepSize);
-    SRTOptions<dim> getSRTOptions(const unsigned int nbOfTrees);
+    PRMOptions<dim> getPRMOptions(double rangeSize);
+    RRTOptions<dim> getRRTOptions(double stepSize);
+    SRTOptions<dim> getSRTOptions(unsigned int nbOfTrees);
 
     void setEnvironment(const std::shared_ptr<Environment> &environment);
-    void setCollisionType(const CollisionType type);
-    void setMetricType(const MetricType type);
+    void setCollisionType(CollisionType type);
+    void setMetricType(MetricType type);
     void setMetricWeightVec(const Vector<dim> vector);
-    void setEvaluatorType(const EvaluatorType type);
-    void setEvaluatorProperties(const double queryEvaluatorDist, const size_t duration);
-    void setGraphSortCount(const size_t count);
-    void setNeighborFinderType(const NeighborType type);
-    void setPathModifierType(const PathModifierType type);
-    void setSamplerType(const SamplerType type);
-    void setSamplerProperties(const std::string &seed, const double gridResolution);
-    void setSamplingProperties(const size_t samplingAttempts = 10, const double samplingDist = 10,
-                               const size_t medialAxisDirs = 15);
-    void setSamplingType(const SamplingType type);
-    void setTrajectoryType(const TrajectoryType type);
-    void setTrajectoryProperties(const double posRes, const double oriRes);
+    void setEvaluatorType(EvaluatorType type);
+    void setEvaluatorProperties(double queryEvaluatorDist, size_t duration);
+    void setGraphSortCount(size_t count);
+    void setNeighborFinderType(NeighborType type);
+    void setPathModifierType(PathModifierType type);
+    void setSamplerType(SamplerType type);
+    void setSamplerProperties(const std::string &seed, double gridResolution);
+    void setSamplingProperties(size_t samplingAttempts = 10, double samplingDist = 10, size_t medialAxisDirs = 15);
+    void setSamplingType(SamplingType type);
+    void setTrajectoryType(TrajectoryType type);
+    void setTrajectoryProperties(double posRes, double oriRes);
 
   protected:
     void initializeModules();
@@ -400,7 +399,7 @@ void ModuleConfigurator<dim>::setEnvironment(const std::shared_ptr<Environment> 
 *  \date       2017-10-06
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setCollisionType(const CollisionType type) {
+void ModuleConfigurator<dim>::setCollisionType(CollisionType type) {
     m_collisionType = type;
     m_parameterModified = true;
 }
@@ -412,7 +411,7 @@ void ModuleConfigurator<dim>::setCollisionType(const CollisionType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setMetricType(const MetricType type) {
+void ModuleConfigurator<dim>::setMetricType(MetricType type) {
     m_metricType = type;
     m_parameterModified = true;
 }
@@ -436,7 +435,7 @@ void ModuleConfigurator<dim>::setMetricWeightVec(const Vector<dim> vector) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setEvaluatorType(const EvaluatorType type) {
+void ModuleConfigurator<dim>::setEvaluatorType(EvaluatorType type) {
     m_evaluatorType = type;
     m_parameterModified = true;
 }
@@ -449,7 +448,7 @@ void ModuleConfigurator<dim>::setEvaluatorType(const EvaluatorType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setEvaluatorProperties(const double queryEvaluatorDist, const size_t duration) {
+void ModuleConfigurator<dim>::setEvaluatorProperties(double queryEvaluatorDist, size_t duration) {
     m_queryEvaluatorDist = queryEvaluatorDist;
     m_evaluatorDuration = duration;
     m_parameterModified = true;
@@ -462,7 +461,7 @@ void ModuleConfigurator<dim>::setEvaluatorProperties(const double queryEvaluator
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setGraphSortCount(const size_t count) {
+void ModuleConfigurator<dim>::setGraphSortCount(size_t count) {
     m_graphSortCount = count;
     m_parameterModified = true;
 }
@@ -474,7 +473,7 @@ void ModuleConfigurator<dim>::setGraphSortCount(const size_t count) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setNeighborFinderType(const NeighborType type) {
+void ModuleConfigurator<dim>::setNeighborFinderType(NeighborType type) {
     m_neighborType = type;
     m_parameterModified = true;
 }
@@ -486,7 +485,7 @@ void ModuleConfigurator<dim>::setNeighborFinderType(const NeighborType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setPathModifierType(const PathModifierType type) {
+void ModuleConfigurator<dim>::setPathModifierType(PathModifierType type) {
     m_pathModifierType = type;
     m_parameterModified = true;
 }
@@ -498,13 +497,13 @@ void ModuleConfigurator<dim>::setPathModifierType(const PathModifierType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setSamplerType(const SamplerType type) {
+void ModuleConfigurator<dim>::setSamplerType(SamplerType type) {
     m_samplerType = type;
     m_parameterModified = true;
 }
 
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setSamplerProperties(const std::string &seed, const double gridResolution) {
+void ModuleConfigurator<dim>::setSamplerProperties(const std::string &seed, double gridResolution) {
     m_samplerSeed = seed;
     if (gridResolution > 0)
         m_samplerGridResolution = gridResolution;
@@ -519,7 +518,7 @@ void ModuleConfigurator<dim>::setSamplerProperties(const std::string &seed, cons
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setSamplingType(const SamplingType type) {
+void ModuleConfigurator<dim>::setSamplingType(SamplingType type) {
     m_samplingType = type;
     m_parameterModified = true;
 }
@@ -532,8 +531,7 @@ void ModuleConfigurator<dim>::setSamplingType(const SamplingType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setSamplingProperties(const size_t samplingAttempts, const double samplingDist,
-                                                    const size_t medialAxisDirs) {
+void ModuleConfigurator<dim>::setSamplingProperties(size_t samplingAttempts, double samplingDist, size_t medialAxisDirs) {
     m_samplingAttempts = samplingAttempts;
     m_samplingDist = samplingDist;
     m_medialAxisDirs = medialAxisDirs;
@@ -547,7 +545,7 @@ void ModuleConfigurator<dim>::setSamplingProperties(const size_t samplingAttempt
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setTrajectoryType(const TrajectoryType type) {
+void ModuleConfigurator<dim>::setTrajectoryType(TrajectoryType type) {
     m_trajectoryType = type;
     m_parameterModified = true;
 }
@@ -559,7 +557,7 @@ void ModuleConfigurator<dim>::setTrajectoryType(const TrajectoryType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setTrajectoryProperties(const double posRes, const double oriRes) {
+void ModuleConfigurator<dim>::setTrajectoryProperties(double posRes, double oriRes) {
     if (posRes <= 0) {
         m_posRes = 1;
         Logging::warning("Position resolution has to be larger than 0, it was set to 1!", this);
@@ -714,7 +712,7 @@ PlannerOptions<dim> ModuleConfigurator<dim>::getPlannerOptions() {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-PRMOptions<dim> ModuleConfigurator<dim>::getPRMOptions(const double rangeSize) {
+PRMOptions<dim> ModuleConfigurator<dim>::getPRMOptions(double rangeSize) {
     initializeModules();
     return PRMOptions<dim>(rangeSize, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
@@ -727,7 +725,7 @@ PRMOptions<dim> ModuleConfigurator<dim>::getPRMOptions(const double rangeSize) {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-RRTOptions<dim> ModuleConfigurator<dim>::getRRTOptions(const double stepSize) {
+RRTOptions<dim> ModuleConfigurator<dim>::getRRTOptions(double stepSize) {
     initializeModules();
     return RRTOptions<dim>(stepSize, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
@@ -740,7 +738,7 @@ RRTOptions<dim> ModuleConfigurator<dim>::getRRTOptions(const double stepSize) {
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-SRTOptions<dim> ModuleConfigurator<dim>::getSRTOptions(const unsigned int nbOfTrees) {
+SRTOptions<dim> ModuleConfigurator<dim>::getSRTOptions(unsigned int nbOfTrees) {
     initializeModules();
     return SRTOptions<dim>(nbOfTrees, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }

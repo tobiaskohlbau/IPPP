@@ -37,15 +37,15 @@ class TreePlanner : public Planner<dim> {
     TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
                 const std::shared_ptr<Graph<dim>> &graph);
 
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes, const size_t numThreads);
-    virtual bool expand(const size_t numNodes, const size_t numThreads);
+    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads);
+    virtual bool expand(size_t numNodes, size_t numThreads);
     virtual bool setInitNode(const Vector<dim> start);
 
     virtual bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1) = 0;
     virtual bool connectGoalNode(const Vector<dim> goal) = 0;
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
-    std::vector<Vector<dim>> getPath(const double posRes = 1, const double oriRes = 0.1);
+    std::vector<Vector<dim>> getPath(double posRes = 1, double oriRes = 0.1);
     std::shared_ptr<Node<dim>> getInitNode() const;
     std::shared_ptr<Node<dim>> getGoalNode() const;
 
@@ -88,8 +88,7 @@ TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Env
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, const size_t numNodes,
-                                   const size_t numThreads) {
+bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
     if (!setInitNode(start))
         return false;
 
@@ -122,7 +121,7 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-bool TreePlanner<dim>::expand(const size_t numNodes, const size_t numThreads) {
+bool TreePlanner<dim>::expand(size_t numNodes, size_t numThreads) {
     return computeTree(numNodes, numThreads);
 }
 
@@ -187,7 +186,7 @@ std::vector<std::shared_ptr<Node<dim>>> TreePlanner<dim>::getPathNodes() {
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> TreePlanner<dim>::getPath(const double posRes, const double oriRes) {
+std::vector<Vector<dim>> TreePlanner<dim>::getPath(double posRes, double oriRes) {
     std::vector<Vector<dim>> path;
     if (!m_pathPlanned) {
         Logging::warning("Path is not complete", this);

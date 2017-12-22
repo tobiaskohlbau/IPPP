@@ -62,7 +62,7 @@ class KDTree : public NeighborFinder<dim, T> {
     void quickSort(std::vector<T> &A, size_t left, size_t right, int dimension);
     size_t partition(std::vector<T> &A, size_t left, size_t right, int dimension);
 
-    std::shared_ptr<KDNode<dim, T>> m_root;
+    std::shared_ptr<KDNode<dim, T>> m_root; /*!< root KDNode of the search tree */
 };
 
 /*!

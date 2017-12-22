@@ -81,7 +81,7 @@ EST<dim>::EST(const std::shared_ptr<Environment> &environment, const PlannerOpti
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-bool EST<dim>::computeTree(const size_t nbOfNodes, const size_t nbOfThreads) {
+bool EST<dim>::computeTree(size_t nbOfNodes, size_t nbOfThreads) {
     if (m_initNode == nullptr) {
         Logging::error("Init Node is not connected", this);
         return false;
@@ -111,7 +111,7 @@ bool EST<dim>::computeTree(const size_t nbOfNodes, const size_t nbOfThreads) {
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-void EST<dim>::computeTreeThread(const size_t nbOfNodes) {
+void EST<dim>::computeTreeThread(size_t nbOfNodes) {
     Vector<dim> sample;
     for (size_t i = 0; i < nbOfNodes; ++i) {
         // choose random node of the graph

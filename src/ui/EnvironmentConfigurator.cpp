@@ -140,7 +140,7 @@ void EnvironmentConfigurator::setRobotType(const RobotType robotType) {
     m_robotType = robotType;
 }
 
-void EnvironmentConfigurator::setRobotBaseProperties(const size_t robotDim, const std::vector<DofType> &dofTypes,
+void EnvironmentConfigurator::setRobotBaseProperties(size_t robotDim, const std::vector<DofType> &dofTypes,
                                                      const std::pair<VectorX, VectorX> &robotBoundaries) {
     m_robotDim = robotDim;
     m_dofTypes = dofTypes;

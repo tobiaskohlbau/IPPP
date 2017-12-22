@@ -43,7 +43,7 @@ class RobotBase : public Identifier {
     virtual ~RobotBase();
 
   protected:
-    RobotBase(const std::string &name, const unsigned int dim, const RobotCategory robotType, std::vector<DofType> dofTypes);
+    RobotBase(const std::string &name, unsigned int dim, RobotCategory robotType, std::vector<DofType> dofTypes);
 
   public:
     void setPose(const Vector6 &pose);

@@ -33,7 +33,7 @@ class BridgeSampling : public Sampling<dim> {
   public:
     BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
                    const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                   const size_t attempts = 10, const double distance = 15);
+                   size_t attempts = 10, double distance = 15);
 
     Vector<dim> getSample() override;
 
@@ -60,7 +60,7 @@ template <unsigned int dim>
 BridgeSampling<dim>::BridgeSampling(const std::shared_ptr<Environment> &environment,
                                     const std::shared_ptr<CollisionDetection<dim>> &collision,
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                    const std::shared_ptr<Sampler<dim>> &sampler, const size_t attempts, const double distance)
+                                    const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double distance)
     : Sampling<dim>("BridgeSampling", environment, collision, trajectory, sampler, attempts), m_distance(distance) {
 }
 
