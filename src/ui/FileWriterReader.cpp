@@ -71,6 +71,30 @@ std::string load(const std::string &filePath) {
 
     return data;
 }
+/*!
+*  \brief      Loads the file from the speciefied file path
+*  \author     Sascha Kaden
+*  \param[in]  file path
+*  \param[out] nlohmann::json
+*  \date       2017-12-01
+*/
+nlohmann::json loadJson(const std::string &filePath) {
+    if (filePath.empty()) {
+        Logging::error("Empty file path!", "FileWriterReader");
+        return nlohmann::json();
+    }
+
+    std::ifstream file(filePath);
+    if (!file.is_open()) {
+        Logging::error("Could not open file!", "FileWriterReader");
+        return nlohmann::json();
+    }
+
+    nlohmann::json j;
+    file >> j;
+    file.close();
+    return j;
+}
 
 } /* namespace ui */
 } /* namespace ippp */
