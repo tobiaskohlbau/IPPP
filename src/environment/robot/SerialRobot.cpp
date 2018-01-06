@@ -200,14 +200,7 @@ Transform SerialRobot::getBaseOffset() const {
 *  \date       2017-11-17
 */
 void SerialRobot::setLinkOffsets(const std::vector<Vector6> &linkOffsets) {
-    if (linkOffsets.empty())
-        return;
-
-    std::vector<Transform> transforms;
-    transforms.reserve(linkOffsets.size());
-    for (const auto &offset : linkOffsets)
-        transforms.push_back(util::poseVecToTransform(offset));
-    setLinkOffsets(transforms);
+    setLinkOffsets(util::convertPosesToTransforms(linkOffsets));
 }
 
 /*!
