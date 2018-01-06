@@ -216,6 +216,14 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
     return m_environment;
 }
 
+std::string EnvironmentConfigurator::getRobotBaseModelFile() const {
+    return m_robotBaseModelFile;
+}
+
+std::vector<std::string> EnvironmentConfigurator::getJointModelFiles() const {
+    return m_jointModelFiles;
+}
+
 std::shared_ptr<RobotBase> EnvironmentConfigurator::createPointRobot() {
     Vector3 min = m_workspceBounding.min();
     Vector3 max = m_workspceBounding.max();

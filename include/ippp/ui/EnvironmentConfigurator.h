@@ -56,6 +56,8 @@ class EnvironmentConfigurator : public Configurator {
                                   const std::vector<Transform> &linkOffsets = std::vector<Transform>());
 
     std::shared_ptr<Environment> getEnvironment();
+    std::string getRobotBaseModelFile() const;
+    std::vector<std::string> getJointModelFiles() const;
 
   protected:
     std::shared_ptr<RobotBase> createPointRobot();
