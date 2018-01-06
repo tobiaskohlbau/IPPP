@@ -10,12 +10,11 @@ before_script:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update
   - sudo apt-get -qq update
-  - sudo apt-get install doxygen doxygen-doc graphviz
-  - sudo apt-get -y install gcc-4.9 g++-4.9
+  - sudo apt-get -y install gcc-4.9 g++-4.9 doxygen graphviz
   - pushd /home/travis/build/SaschaKaden && git clone https://github.com/SaschaKaden/IPPP_third_party.git && popd
   # cmake
   - mkdir /home/travis/build/SaschaKaden/IPPP/build && pushd /home/travis/build/SaschaKaden/IPPP/build
-  - cmake -DCMAKE_BUILD_TYPE=${CONFIGURATION} -DBUILD_DOC=ON -DCMAKE_C_COMPILER=gcc-4.9 -DCMAKE_CXX_COMPILER=g++-4.9 ..
+  - cmake -DCMAKE_BUILD_TYPE=${CONFIGURATION} -DBUILD_DOC=ON -DCMAKE_C_COMPILER=gcc-4.9 -DCMAKE_CXX_COMPILER=g++-4.9 -DCMAKE_PREFIX_PATH=/home/travis/build/SaschaKaden/IPPP_third_party ..
 
 script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
           make -j4 || travis_terminate 1;

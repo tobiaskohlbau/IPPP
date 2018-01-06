@@ -26,13 +26,9 @@ Currently available algorithms:
 
 
 ## Dependencies
-* [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) for matrix manipulation 
-* [PQP](http://gamma.cs.unc.edu/SSV/)(Proximity Query Package) for collision detection between 3d meshes
 * [FCL](https://github.com/flexible-collision-library/fcl)(Flexible Collision Library) for collision detection between 3d meshes
 * [Assimp](http://www.assimp.org)(Open Asset Import Library) for import and export of meshes (cad models)
-* [JSON](https://github.com/nlohmann/json)
-* [Googletest](https://github.com/google/googletest)
-* [gflags](https://github.com/gflags/gflags)
+
 
 #### Dependencies of the examples
 * [OpenCV](http://opencv.org/) for manipulation and illustration of 2D examples
@@ -42,13 +38,25 @@ Currently available algorithms:
 ## Getting Started
 Small step for step instructions for Ubuntu.
 
-* `sudo apt-get install cmake libeigen3-dev libboost-system-dev libboost-test-dev libboost-filesystem-dev`
-* `git clone https://github.com/SaschaKaden/RobotMotionPlanner.git`
-* `git clone https://github.com/SaschaKaden/RMPThirdParty.git`
-* `cd RobotMotionPlanner && mkdir build && cd build && cmake -DPQP_ROOT_DIR="../../RMPThirdParty/PQP_v1.3"`
+### Dependencies
+* `sudo apt-get install cmake libeigen3-dev libccd-dev liboctomap-dev libboost-all-dev curl tar`
+* `curl -L https://github.com/assimp/assimp/archive/v4.0.1.tar.gz | tar zx`
+* `cd assimp-4.0.1 && curl -L https://goo.gl/UMB94G | patch -p0 assimp-config.cmake.in`
+* `mkdir build && cd build`
+* `cmake .. -DASSIMP_BUILD_TESTS=OFF && cmake --build . -- -j`nproc` && cmake -DCMAKE_INSTALL_PREFIX=../../deps -P cmake_install.cmake`
+* `cd ../..`
+* `curl -L https://github.com/flexible-collision-library/fcl/archive/0.5.0.tar.gz | tar zx`
+* `mkdir -p fcl-0.5.0/build && cd fcl-0.5.0/build`
+* `cmake .. -DFCL_BUILD_TESTS=OFF && cmake --build . -- -j`nproc` && cmake -DCMAKE_INSTALL_PREFIX=../../deps -P cmake_install.cmake`
+* `cd ../..`
 
-In the examples directory is a small commented Getting Started project.
+### IPP
+* `git clone https://github.com/SaschaKaden/IPPP.git`
+* `cd IPPP && git submodule update --init --recursive`
+* `mkdir build && cd build`
+* `cmake .. -DBUILD_EXAMPLES=ON -DCMAKE_PREFIX_PATH=../deps && cmake --build . -- -j`nproc``
 
+In the examples directory are small commented Getting Started projects.
 
 ## License
 Copyright © 2017 Sascha Kaden
