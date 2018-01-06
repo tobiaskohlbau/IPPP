@@ -119,6 +119,15 @@ static Transform poseVecToTransform(const Vector6 &pose) {
     return T;
 }
 
+static std::vector<Transform> convertPosesToTransforms(const std::vector<Vector6> poses) {
+    std::vector<Transform> transforms;
+    transforms.reserve(poses.size());
+    for (const auto &pose : poses)
+        transforms.push_back(poseVecToTransform(pose));
+
+    return transforms;
+}
+
 /*!
 *  \brief      Convert pose config to transformation matrix
 *  \author     Sascha Kaden
