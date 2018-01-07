@@ -53,11 +53,9 @@ add_library(gsl::gsl INTERFACE IMPORTED)
 set_target_properties(gsl::gsl PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/third_party/GSL/include")
 
 add_subdirectory(third_party/PQP
-    ${CMAKE_BINARY_DIR}/third_party/PQP
     EXCLUDE_FROM_ALL)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/third_party/gflags
-    ${CMAKE_BINARY_DIR}/third_party/gflags
+add_subdirectory(third_party/gflags
     EXCLUDE_FROM_ALL)
 
 # copy assets
