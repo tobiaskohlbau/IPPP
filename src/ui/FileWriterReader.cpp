@@ -23,8 +23,8 @@
 namespace ippp {
 namespace ui {
 
-bool save(const std::string &filePath, const nlohmann::json &data) {
-    return save(filePath, data.dump(4));
+bool save(const std::string &filePath, const nlohmann::json &data, int indent) {
+    return save(filePath, data.dump(indent));
 }
 
 /*!
@@ -36,6 +36,10 @@ bool save(const std::string &filePath, const nlohmann::json &data) {
 *  \date       2017-12-01
 */
 bool save(const std::string &filePath, const std::string &data) {
+    if (data.empty()) {
+        Logging::warning("Empty output data", "FileWriterReader");
+        return false;
+    }
     std::ofstream file;
     file.open(filePath);
 
