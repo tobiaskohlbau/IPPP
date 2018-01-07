@@ -24,6 +24,12 @@ option(BUILD_TESTS "Build tests" ON)
 option(BUILD_BENCHMARK "Build optional benchmark classes" OFF)
 option(BUILD_DOC "Build documentation" OFF)
 
+# travis workaround for improvement of build times
+if(DEFINED ENV{TRAVIS})
+    list(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../IPPP_third_party)
+    link_directories(${PROJECT_SOURCE_DIR}/../IPPP_third_party/lib)
+endif()
+
 # external libraries
 find_package(assimp 4.0 REQUIRED)
 find_package(fcl REQUIRED)
