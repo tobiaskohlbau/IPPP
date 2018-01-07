@@ -23,6 +23,15 @@
 namespace ippp {
 namespace ui {
 
+/*!
+*  \brief      Saves the passed nlohmann::json to the specified file path
+*  \author     Sascha Kaden
+*  \param[in]  file path
+*  \param[in]  nlohmann::json
+*  \param[in]  indentation of the created std::string
+*  \param[out] validity of the saving
+*  \date       2017-12-01
+*/
 bool save(const std::string &filePath, const nlohmann::json &data, int indent) {
     return save(filePath, data.dump(indent));
 }

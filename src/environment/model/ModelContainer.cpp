@@ -31,6 +31,8 @@ ModelContainer::~ModelContainer() = default;
 /*!
 *  \brief      Standard constructor of ModelContainer
 *  \author     Sascha Kaden
+*  \param[in]  name
+*  \param[in]  AABB bounding box
 *  \date       2017-02-19
 */
 ModelContainer::ModelContainer(const std::string &name, const AABB &boundingBox) : Identifier(name) {

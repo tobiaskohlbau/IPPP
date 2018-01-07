@@ -39,7 +39,7 @@ RobotBase::~RobotBase() = default;
 *  \date       2016-06-30
 */
 RobotBase::RobotBase(const std::string &name, unsigned int dim, RobotCategory robotType, std::vector<DofType> dofTypes)
-    : Identifier(name),
+    : EnvObject(name, EnvObjectType::Robot),
       m_dim(dim),
       m_robotType(robotType),
       m_dofTypes(std::move(dofTypes)),

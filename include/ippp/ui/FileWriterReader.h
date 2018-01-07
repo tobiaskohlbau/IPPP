@@ -19,15 +19,15 @@
 #ifndef FILEWRITERREADER_H
 #define FILEWRITERREADER_H
 
-#include <string>
 #include <fstream>
+#include <string>
 
 #include <json.hpp>
 
 namespace ippp {
 namespace ui {
 
-bool save(const std::string &filePath, const nlohmann::json &data);
+bool save(const std::string &filePath, const nlohmann::json &data, int intend = 4);
 bool save(const std::string &filePath, const std::string &data);
 std::string load(const std::string &filePath);
 nlohmann::json loadJson(const std::string &filePath);

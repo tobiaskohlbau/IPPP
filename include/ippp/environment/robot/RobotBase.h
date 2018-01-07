@@ -27,6 +27,7 @@
 #include <ippp/types.h>
 #include <ippp/util/Logging.h>
 #include <ippp/util/Utility.h>
+#include <ippp/environment/EnvObject.h>
 
 namespace ippp {
 
@@ -38,7 +39,7 @@ enum DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint, positi
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
-class RobotBase : public Identifier {
+class RobotBase : public EnvObject {
   public:
     virtual ~RobotBase();
 

@@ -78,6 +78,8 @@ add_library(${PROJECT_NAME}
     src/environment/cad/CadImportExport.cpp
     src/environment/cad/CadProcessing.cpp
     src/environment/Environment.cpp
+    src/environment/EnvObject.cpp
+    src/environment/ObstacleObject.cpp
     src/environment/robot/Jaco.cpp
     src/environment/robot/Joint.cpp
     src/environment/robot/MobileRobot.cpp
