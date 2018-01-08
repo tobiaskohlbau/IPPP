@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/Environment/ObstacleObject.h>
+#include <ippp/environment/ObstacleObject.h>
 
 namespace ippp {
 

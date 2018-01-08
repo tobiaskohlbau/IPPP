@@ -23,11 +23,11 @@
 #include <vector>
 
 #include <ippp/Identifier.h>
+#include <ippp/environment/EnvObject.h>
 #include <ippp/environment/model/ModelContainer.h>
 #include <ippp/types.h>
 #include <ippp/util/Logging.h>
 #include <ippp/util/Utility.h>
-#include <ippp/environment/EnvObject.h>
 
 namespace ippp {
 
