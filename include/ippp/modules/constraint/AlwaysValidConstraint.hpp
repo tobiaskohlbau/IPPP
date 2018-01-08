@@ -45,7 +45,7 @@ class AlwaysValidConstraint : public Constraint<dim> {
 */
 template <unsigned int dim>
 AlwaysValidConstraint<dim>::AlwaysValidConstraint(const std::shared_ptr<Environment> &environment)
-    : Constraint("EuclideanConstriant", environment) {
+    : Constraint<dim>("EuclideanConstriant", environment) {
 }
 
 /*!
