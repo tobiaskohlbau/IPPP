@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/Environment/EnvObject.h>
+#include <ippp/environment/EnvObject.h>
 
 namespace ippp {
 
