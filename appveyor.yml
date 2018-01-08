@@ -33,9 +33,13 @@ matrix:
 
 install:
   - git submodule update --init --recursive
+  - cd c:\tools\vcpkg\
+  - git pull
+  - .\bootstrap-vcpkg.bat
   - vcpkg install eigen3:x64-windows
   - vcpkg install assimp:x64-windows
   - vcpkg install fcl:x64-windows
+  - cd c:\projects\IPPP
 
 cache: c:\tools\vcpkg\installed\ -> appveyor.yml
 
@@ -63,7 +67,7 @@ build:
 before_build:
   - echo Running cmake...
   - cd c:\projects\IPPP
-  - cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX=%P%
+  - cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
 
 #---------------------------------#
 #       tests configuration       #
