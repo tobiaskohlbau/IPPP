@@ -58,7 +58,7 @@ class EuclideanConstraint : public Constraint<dim> {
 template <unsigned int dim>
 EuclideanConstraint<dim>::EuclideanConstraint(const std::shared_ptr<Environment> &environment, const Vector6 &constraint,
                                               double epsilon)
-    : Constraint<dim>("EuclideanConstriant", environment), m_epsilon(epsilon) {
+    : Constraint<dim>("EuclideanConstraint", environment), m_epsilon(epsilon) {
     setConstraint(constraint);
     m_robot = environment->getRobot();
 }
