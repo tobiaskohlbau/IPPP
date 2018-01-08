@@ -23,6 +23,7 @@
 
 #include <ippp/Identifier.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
+#include <ippp/modules/constraint/Constraint.hpp>
 #include <ippp/modules/distanceMetrics/DistanceMetric.hpp>
 #include <ippp/modules/evaluator/Evaluator.hpp>
 #include <ippp/modules/pathModifier/PathModifier.hpp>
@@ -39,12 +40,16 @@ namespace ippp {
 template <unsigned int dim>
 class PlannerOptions : public Identifier {
   public:
-    PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<DistanceMetric<dim>> &metric,
-                   const std::shared_ptr<Evaluator<dim>> &evalutor, const std::shared_ptr<PathModifier<dim>> &pathModifier,
-                   const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Constraint<dim>> &constraint,
+                   const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evalutor,
+                   const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
+                   const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     void setCollisionDetection(const std::shared_ptr<CollisionDetection<dim>> &collision);
     std::shared_ptr<CollisionDetection<dim>> getCollisionDetection() const;
+
+    void setConstraint(const std::shared_ptr<Constraint<dim>> &constraint);
+    std::shared_ptr<Constraint<dim>> getConstraint() const;
 
     void setDistanceMetric(const std::shared_ptr<DistanceMetric<dim>> &metric);
     std::shared_ptr<DistanceMetric<dim>> getDistanceMetric() const;
@@ -63,6 +68,7 @@ class PlannerOptions : public Identifier {
 
   protected:
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
+    std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
     std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
     std::shared_ptr<PathModifier<dim>> m_pathModifier = nullptr;
@@ -83,6 +89,7 @@ class PlannerOptions : public Identifier {
 */
 template <unsigned int dim>
 PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                    const std::shared_ptr<Constraint<dim>> &constraint,
                                     const std::shared_ptr<DistanceMetric<dim>> &metric,
                                     const std::shared_ptr<Evaluator<dim>> &evaluator,
                                     const std::shared_ptr<PathModifier<dim>> &pathModifier,
@@ -90,6 +97,7 @@ PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
     : Identifier("PlannerOptions"),
       m_collision(collision),
+      m_constraint(constraint),
       m_metric(metric),
       m_evaluator(evaluator),
       m_pathModifier(pathModifier),
@@ -117,6 +125,28 @@ void PlannerOptions<dim>::setCollisionDetection(const std::shared_ptr<CollisionD
 template <unsigned int dim>
 std::shared_ptr<CollisionDetection<dim>> PlannerOptions<dim>::getCollisionDetection() const {
     return m_collision;
+}
+
+/*!
+*  \brief      Set the Constraint instance.
+*  \param[in]  Constraint
+*  \author     Sascha Kaden
+*  \date       2018-01-08
+*/
+template <unsigned int dim>
+void PlannerOptions<dim>::setConstraint(const std::shared_ptr<Constraint<dim>> &constraint) {
+    m_constraint = constraint;
+}
+
+/*!
+*  \brief      Returns the Constraint instance.
+*  \param[out] Constraint
+*  \author     Sascha Kaden
+*  \date       2018-01-08
+*/
+template <unsigned int dim>
+std::shared_ptr<Constraint<dim>> PlannerOptions<dim>::getConstraint() const {
+    return m_constraint;
 }
 
 /*!

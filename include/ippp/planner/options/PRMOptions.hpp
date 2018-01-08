@@ -32,9 +32,9 @@ template <unsigned int dim>
 class PRMOptions : public PlannerOptions<dim> {
   public:
     PRMOptions(double rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
-               const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
-               const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
-               const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+               const std::shared_ptr<Constraint<dim>> &constraint, const std::shared_ptr<DistanceMetric<dim>> &metric,
+               const std::shared_ptr<Evaluator<dim>> &evaluator, const std::shared_ptr<PathModifier<dim>> &pathModifier,
+               const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     void setRangeSize(double rangeSize);
     double getRangeSize() const;
@@ -57,11 +57,12 @@ class PRMOptions : public PlannerOptions<dim> {
 */
 template <unsigned int dim>
 PRMOptions<dim>::PRMOptions(double rangeSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
+                            const std::shared_ptr<Constraint<dim>> &constraint,
                             const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                             const std::shared_ptr<PathModifier<dim>> &pathModifier,
                             const std::shared_ptr<Sampling<dim>> &sampling,
                             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PlannerOptions<dim>(collision, metric, evaluator, pathModifier, sampling, trajectory) {
+    : PlannerOptions<dim>(collision, constraint, metric, evaluator, pathModifier, sampling, trajectory) {
     setRangeSize(rangeSize);
 }
 

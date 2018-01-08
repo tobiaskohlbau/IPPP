@@ -60,6 +60,7 @@ class Planner : public Identifier {
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
 
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
+    std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
     std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
@@ -94,6 +95,7 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
                       const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
     : Identifier(name),
       m_collision(options.getCollisionDetection()),
+      m_constraint(options.getConstraint()),
       m_environment(environment),
       m_evaluator(options.getEvaluator()),
       m_graph(graph),

@@ -31,6 +31,8 @@ namespace ippp {
 
 enum class CollisionType { Dim2, Dim2Triangle, AlwaysValid, PQP, FCL, AABB, Sphere };
 
+enum class ConstraintType { AlwaysValid, Euclidean };
+
 enum class MetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
 
 enum class EvaluatorType { SingleIteration, Query, Time, QueryOrTime };
@@ -61,6 +63,7 @@ class ModuleConfigurator : public Configurator {
 
     std::shared_ptr<Environment> getEnvironment();
     std::shared_ptr<CollisionDetection<dim>> getCollisionDetection();
+    std::shared_ptr<Constraint<dim>> getConstraint();
     std::shared_ptr<DistanceMetric<dim>> getDistanceMetric();
     std::shared_ptr<Evaluator<dim>> getEvaluator();
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
@@ -77,6 +80,8 @@ class ModuleConfigurator : public Configurator {
 
     void setEnvironment(const std::shared_ptr<Environment> &environment);
     void setCollisionType(CollisionType type);
+    void setConstraintType(ConstraintType type);
+    void setEuclideanConstraint(const Vector6 &constraint);
     void setMetricType(MetricType type);
     void setMetricWeightVec(const Vector<dim> vector);
     void setEvaluatorType(EvaluatorType type);
@@ -95,6 +100,7 @@ class ModuleConfigurator : public Configurator {
     void initializeModules();
 
     std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
+    std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
@@ -106,6 +112,8 @@ class ModuleConfigurator : public Configurator {
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
 
     CollisionType m_collisionType = CollisionType::PQP;
+    ConstraintType m_constraintType = ConstraintType::AlwaysValid;
+    Vector6 m_euclideanConstraint;
     MetricType m_metricType = MetricType::L2;
     Vector<dim> m_metricWeight;
     EvaluatorType m_evaluatorType = EvaluatorType::SingleIteration;
@@ -154,22 +162,22 @@ void ModuleConfigurator<dim>::initializeModules() {
     m_parameterModified = false;
 
     switch (m_collisionType) {
-        case ippp::CollisionType::Dim2:
+        case CollisionType::Dim2:
             m_collision = std::make_shared<CollisionDetection2D<dim>>(m_environment);
             break;
-        case ippp::CollisionType::Dim2Triangle:
+        case CollisionType::Dim2Triangle:
             m_collision = std::make_shared<CollisionDetectionTriangleRobot<dim>>(m_environment);
             break;
-        case ippp::CollisionType::AlwaysValid:
+        case CollisionType::AlwaysValid:
             m_collision = std::make_shared<CollisionDetectionAlwaysValid<dim>>(m_environment);
             break;
-        case ippp::CollisionType::FCL:
+        case CollisionType::FCL:
             m_collision = std::make_shared<CollisionDetectionFcl<dim>>(m_environment);
             break;
-        case ippp::CollisionType::AABB:
+        case CollisionType::AABB:
             m_collision = std::make_shared<CollisionDetectionAABB<dim>>(m_environment);
             break;
-        case ippp::CollisionType::Sphere:
+        case CollisionType::Sphere:
             m_collision = std::make_shared<CollisionDetectionSphere<dim>>(m_environment);
             break;
         default:
@@ -177,11 +185,23 @@ void ModuleConfigurator<dim>::initializeModules() {
             break;
     }
 
+    switch (m_constraintType) {
+        case ConstraintType::AlwaysValid:
+            m_constraint = std::make_shared<AlwaysValidConstraint<dim>>(m_environment);
+            break;
+        case ConstraintType::Euclidean:
+            m_constraint = std::make_shared<EuclideanConstraint<dim>>(m_environment, m_euclideanConstraint);
+            break;
+        default:
+            m_constraint = std::make_shared<AlwaysValidConstraint<dim>>(m_environment);
+            break;
+    }
+
     switch (m_trajectoryType) {
-        case ippp::TrajectoryType::Linear:
+        case TrajectoryType::Linear:
             m_trajectory = std::make_shared<LinearTrajectory<dim>>(m_collision, m_environment, m_posRes, m_oriRes);
             break;
-        case ippp::TrajectoryType::RotateAtS:
+        case TrajectoryType::RotateAtS:
             m_trajectory = std::make_shared<RotateAtS<dim>>(m_collision, m_environment, m_posRes, m_oriRes);
             break;
         default:
@@ -190,22 +210,22 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     switch (m_metricType) {
-        case ippp::MetricType::L1:
+        case MetricType::L1:
             m_metric = std::make_shared<L1Metric<dim>>();
             break;
-        case ippp::MetricType::L2:
+        case MetricType::L2:
             m_metric = std::make_shared<L2Metric<dim>>();
             break;
-        case ippp::MetricType::Inf:
+        case MetricType::Inf:
             m_metric = std::make_shared<InfMetric<dim>>();
             break;
-        case ippp::MetricType::L1Weighted:
+        case MetricType::L1Weighted:
             m_metric = std::make_shared<WeightedL1Metric<dim>>(m_metricWeight);
             break;
-        case ippp::MetricType::L2Weighted:
+        case MetricType::L2Weighted:
             m_metric = std::make_shared<WeightedL2Metric<dim>>(m_metricWeight);
             break;
-        case ippp::MetricType::InfWeighted:
+        case MetricType::InfWeighted:
             m_metric = std::make_shared<WeightedInfMetric<dim>>(m_metricWeight);
             break;
         default:
@@ -214,10 +234,10 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     switch (m_neighborType) {
-        case ippp::NeighborType::KDTree:
+        case NeighborType::KDTree:
             m_neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(m_metric);
             break;
-        case ippp::NeighborType::BruteForce:
+        case NeighborType::BruteForce:
             m_neighborFinder = std::make_shared<BruteForceNF<dim, std::shared_ptr<Node<dim>>>>(m_metric);
             break;
         default:
@@ -228,16 +248,16 @@ void ModuleConfigurator<dim>::initializeModules() {
     m_graph = std::make_shared<Graph<dim>>(m_graphSortCount, m_neighborFinder);
 
     switch (m_evaluatorType) {
-        case ippp::EvaluatorType::SingleIteration:
+        case EvaluatorType::SingleIteration:
             m_evaluator = std::make_shared<SingleIterationEvaluator<dim>>();
             break;
-        case ippp::EvaluatorType::Query:
+        case EvaluatorType::Query:
             m_evaluator = std::make_shared<QueryEvaluator<dim>>(m_metric, m_graph, m_queryEvaluatorDist);
             break;
-        case ippp::EvaluatorType::Time:
+        case EvaluatorType::Time:
             m_evaluator = std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration);
             break;
-        case ippp::EvaluatorType::QueryOrTime:
+        case EvaluatorType::QueryOrTime:
             std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
             evaluators.push_back(std::make_shared<QueryEvaluator<dim>>(m_metric, m_graph, m_queryEvaluatorDist));
             evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration));
@@ -246,10 +266,10 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     switch (m_pathModifierType) {
-        case ippp::PathModifierType::Dummy:
+        case PathModifierType::Dummy:
             m_pathModifier = std::make_shared<DummyPathModifier<dim>>(m_environment, m_collision, m_trajectory);
             break;
-        case ippp::PathModifierType::NodeCut:
+        case PathModifierType::NodeCut:
             m_pathModifier = std::make_shared<NodeCutPathModifier<dim>>(m_environment, m_collision, m_trajectory);
             break;
         default:
@@ -258,16 +278,16 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     switch (m_samplerType) {
-        case ippp::SamplerType::SamplerRandom:
+        case SamplerType::SamplerRandom:
             m_sampler = std::make_shared<SamplerRandom<dim>>(m_environment, m_samplerSeed);
             break;
-        case ippp::SamplerType::SamplerNormalDist:
+        case SamplerType::SamplerNormalDist:
             m_sampler = std::make_shared<SamplerNormalDist<dim>>(m_environment, m_samplerSeed);
             break;
-        case ippp::SamplerType::SamplerUniform:
+        case SamplerType::SamplerUniform:
             m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment, m_samplerSeed);
             break;
-        case ippp::SamplerType::GridSampler:
+        case SamplerType::GridSampler:
             m_sampler = std::make_shared<GridSampler<dim>>(m_environment, m_samplerGridResolution);
         default:
             m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment, m_samplerSeed);
@@ -275,26 +295,26 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     switch (m_samplingType) {
-        case ippp::SamplingType::Bridge:
+        case SamplingType::Bridge:
             m_sampling = std::make_shared<BridgeSampling<dim>>(m_environment, m_collision, m_trajectory, m_sampler,
                                                                m_samplingAttempts, m_samplingDist);
             break;
-        case ippp::SamplingType::Gaussian:
+        case SamplingType::Gaussian:
             m_sampling = std::make_shared<GaussianSampling<dim>>(m_environment, m_collision, m_trajectory, m_sampler,
                                                                  m_samplingAttempts, m_samplingDist);
             break;
-        case ippp::SamplingType::GaussianDist:
+        case SamplingType::GaussianDist:
             m_sampling = std::make_shared<GaussianDistSampling<dim>>(m_environment, m_collision, m_trajectory, m_sampler,
                                                                      m_samplingAttempts, m_samplingDist);
             break;
-        case ippp::SamplingType::Straight:
+        case SamplingType::Straight:
             m_sampling = std::make_shared<StraightSampling<dim>>(m_environment, m_collision, m_trajectory, m_sampler);
             break;
-        case ippp::SamplingType::MedialAxis:
+        case SamplingType::MedialAxis:
             m_sampling = std::make_shared<MedialAxisSampling<dim>>(m_environment, m_collision, m_trajectory, m_sampler,
                                                                    m_samplingAttempts, m_medialAxisDirs);
             break;
-        case ippp::SamplingType::NearObstacle:
+        case SamplingType::NearObstacle:
             m_sampling = std::make_shared<SamplingNearObstacle<dim>>(m_environment, m_collision, m_trajectory, m_sampler,
                                                                      m_samplingAttempts);
             break;
@@ -316,6 +336,7 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     // types
     nlohmann::json json;
     json["CollisionType"] = static_cast<int>(m_collisionType);
+    json["ConstraintType"] = static_cast<int>(m_constraintType);
     json["MetricType"] = static_cast<int>(m_metricType);
     json["MetricWeight"] = vectorToString<dim>(m_metricWeight);
     json["EvaluatorType"] = static_cast<int>(m_evaluatorType);
@@ -352,6 +373,7 @@ bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
         return false;
 
     m_collisionType = static_cast<CollisionType>(json["CollisionType"].get<int>());
+    m_constraintType = static_cast<ConstraintType>(json["ConstraintType"].get<int>());
     m_metricType = static_cast<MetricType>(json["MetricType"].get<int>());
     m_metricWeight = stringToVector<dim>(json["MetricWeight"].get<std::string>());
     m_evaluatorType = static_cast<EvaluatorType>(json["EvaluatorType"].get<int>());
@@ -402,6 +424,29 @@ template <unsigned int dim>
 void ModuleConfigurator<dim>::setCollisionType(CollisionType type) {
     m_collisionType = type;
     m_parameterModified = true;
+}
+
+/*!
+*  \brief      Sets the ConstraintType
+*  \author     Sascha Kaden
+*  \param[in]  ConstraintType
+*  \date       2018-01-08
+*/
+template <unsigned int dim>
+void ModuleConfigurator<dim>::setConstraintType(ConstraintType type) {
+    m_constraintType = type;
+    m_parameterModified = true;
+}
+
+/*!
+*  \brief      Sets the euclidean constraint
+*  \author     Sascha Kaden
+*  \param[in]  euclidean constraint vector
+*  \date       2018-01-08
+*/
+template <unsigned int dim>
+void ModuleConfigurator<dim>::setEuclideanConstraint(const Vector6 &constraint) {
+    m_euclideanConstraint = constraint;
 }
 
 /*!
@@ -701,7 +746,7 @@ std::shared_ptr<TrajectoryPlanner<dim>> ModuleConfigurator<dim>::getTrajectoryPl
 template <unsigned int dim>
 PlannerOptions<dim> ModuleConfigurator<dim>::getPlannerOptions() {
     initializeModules();
-    return PlannerOptions<dim>(m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
+    return PlannerOptions<dim>(m_collision, m_constraint, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!
@@ -714,7 +759,7 @@ PlannerOptions<dim> ModuleConfigurator<dim>::getPlannerOptions() {
 template <unsigned int dim>
 PRMOptions<dim> ModuleConfigurator<dim>::getPRMOptions(double rangeSize) {
     initializeModules();
-    return PRMOptions<dim>(rangeSize, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
+    return PRMOptions<dim>(rangeSize, m_collision, m_constraint, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!
@@ -727,7 +772,7 @@ PRMOptions<dim> ModuleConfigurator<dim>::getPRMOptions(double rangeSize) {
 template <unsigned int dim>
 RRTOptions<dim> ModuleConfigurator<dim>::getRRTOptions(double stepSize) {
     initializeModules();
-    return RRTOptions<dim>(stepSize, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
+    return RRTOptions<dim>(stepSize, m_collision, m_constraint, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!
@@ -740,7 +785,7 @@ RRTOptions<dim> ModuleConfigurator<dim>::getRRTOptions(double stepSize) {
 template <unsigned int dim>
 SRTOptions<dim> ModuleConfigurator<dim>::getSRTOptions(unsigned int nbOfTrees) {
     initializeModules();
-    return SRTOptions<dim>(nbOfTrees, m_collision, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
+    return SRTOptions<dim>(nbOfTrees, m_collision, m_constraint, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 } /* namespace ippp */

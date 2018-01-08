@@ -28,6 +28,10 @@
 #include <ippp/modules/collisionDetection/CollisionDetectionSphere.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 
+#include <ippp/modules/constraint/Constraint.hpp>
+#include <ippp/modules/constraint/EuclideanConstraint.hpp>
+#include <ippp/modules/constraint/AlwaysValidConstraint.hpp>
+
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/dataObj/Node.hpp>
 #include <ippp/dataObj/PointList.hpp>
