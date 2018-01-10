@@ -44,6 +44,7 @@ class Node {
     Node(const Vector<dim> &config);
 
     bool empty() const;
+    void clearPointer();
 
     void setCost(double cost);
     void addCost(double cost);
@@ -117,6 +118,19 @@ Node<dim>::Node(const Vector<dim> &config) {
 template <unsigned int dim>
 bool Node<dim>::empty() const {
     return std::isnan(m_config[0]);
+}
+
+/*!
+*  \brief      Clear all pointers to parents and children.
+*  \author     Sascha Kaden
+*  \date       2016-05-24
+*/
+template <unsigned int dim>
+void Node<dim>::clearPointer() {
+    clearParent();
+    clearQueryParent();
+    clearChildren();
+    clearInvalidChildren();
 }
 
 /*!
