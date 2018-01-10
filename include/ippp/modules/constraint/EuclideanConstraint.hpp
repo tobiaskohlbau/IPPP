@@ -35,6 +35,7 @@ class EuclideanConstraint : public Constraint<dim> {
     EuclideanConstraint(const std::shared_ptr<Environment> &environment, const Vector6 &constraint, double epsilon = EPSILON);
 
     bool checkConfig(const Vector<dim> &config);
+    double calcError(const Vector<dim> &config);
     Vector<dim> projectConfig(const Vector<dim> &config);
 
     void setConstraint(const Vector6 &constraint);
@@ -78,6 +79,20 @@ bool EuclideanConstraint<dim>::checkConfig(const Vector<dim> &config) {
         return true;
 
     return false;
+}
+
+/*!
+*  \brief      Dummy calculation of the configuration erroe, returns always 0.
+*  \param[in]  configuration
+*  \param[out] zero
+*  \author     Sascha Kaden
+*  \date       2018-01-08
+*/
+template <unsigned int dim>
+double EuclideanConstraint<dim>::calcError(const Vector<dim> &config) {
+    Vector6 tcpPose = util::transformToVec(m_robot->getTransformation(config));
+
+    return (tcpPose - m_constraint).norm();
 }
 
 /*!

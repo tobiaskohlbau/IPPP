@@ -35,6 +35,7 @@ class Constraint : public Identifier {
     Constraint(const std::string &name, const std::shared_ptr<Environment> &environment);
 
     virtual bool checkConfig(const Vector<dim> &config) = 0;
+    virtual double calcError(const Vector<dim> &config) = 0;
     virtual Vector<dim> projectConfig(const Vector<dim> &config) = 0;
 
   protected:

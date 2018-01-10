@@ -34,6 +34,7 @@ class AlwaysValidConstraint : public Constraint<dim> {
     AlwaysValidConstraint(const std::shared_ptr<Environment> &environment);
 
     bool checkConfig(const Vector<dim> &config);
+    double calcError(const Vector<dim> &config);
     Vector<dim> projectConfig(const Vector<dim> &config);
 };
 
@@ -58,6 +59,18 @@ AlwaysValidConstraint<dim>::AlwaysValidConstraint(const std::shared_ptr<Environm
 template <unsigned int dim>
 bool AlwaysValidConstraint<dim>::checkConfig(const Vector<dim> &config) {
     return true;
+}
+
+/*!
+*  \brief      Dummy calculation of the configuration error, returns always 0.
+*  \param[in]  configuration
+*  \param[out] zero
+*  \author     Sascha Kaden
+*  \date       2018-01-08
+*/
+template <unsigned int dim>
+double AlwaysValidConstraint<dim>::calcError(const Vector<dim> &config) {
+    return 0;
 }
 
 /*!
