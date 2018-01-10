@@ -61,7 +61,7 @@ SerialRobot::SerialRobot(unsigned int dim, const std::vector<Joint> &joints, con
 *  \date       2017-06-21
 */
 Transform SerialRobot::getTransformation(const VectorX &config) const {
-    return getTcp(this->getJointTrafos(config));
+    return getTcp(this->getJointTrafos(config)) * m_toolOffset;
 }
 
 /*!
@@ -81,9 +81,7 @@ std::vector<Transform> SerialRobot::getJointTrafos(const VectorX &angles) const 
 /*!
 *  \brief      Create transformation matrix from the passed D-H parameter and the joint angle
 *  \author     Sascha Kaden
-*  \param[in]  D-H alpha parameter
-*  \param[in]  D-H a parameter
-*  \param[in]  D-H d parameter
+*  \param[in]  D-H parameter
 *  \param[in]  joint angle
 *  \param[out] Transform
 *  \date       2016-07-07
@@ -191,6 +189,60 @@ void SerialRobot::setBaseOffset(const Transform &baseOffset) {
 */
 Transform SerialRobot::getBaseOffset() const {
     return m_baseOffset;
+}
+
+/*!
+*  \brief      Set the tool offset (rotation and translation) of the tool model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[in]  configuration of the tool offset
+*  \date       2018-01-08
+*/
+void SerialRobot::setToolOffset(const Vector6 &toolOffset) {
+    setToolOffset(util::poseVecToTransform(toolOffset));
+}
+
+/*!
+*  \brief      Set the tool offset (Transform) of the tool model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[in]  Transform of the tool offset
+*  \date       2018-01-08
+*/
+void SerialRobot::setToolOffset(const Transform &toolOffset) {
+    m_toolOffset = toolOffset;
+}
+
+/*!
+*  \brief      Return the tool offset (Transform) of the tool model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[out] Transform of the tool offset
+*  \date       2018-01-08
+*/
+Transform SerialRobot::getToolOffset() const {
+    return m_toolOffset;
+}
+
+/*!
+*  \brief      Set the tool model of the robot.
+*  \author     Sascha Kaden
+*  \param[in]  tool model
+*  \date       2018-01-08
+*/
+void SerialRobot::setToolModel(const std::shared_ptr<ModelContainer> &model) {
+    if (!model || model->empty()) {
+        Logging::error("Empty tool model", this);
+        return;
+    }
+    m_toolModel = model;
+}
+
+/*!
+*  \brief      Returns the tool model of the robot.
+*  \author     Sascha Kaden
+*  \param[out] tool model
+*  \date       2018-01-08
+*/
+std::shared_ptr<ModelContainer> SerialRobot::getToolModel() const {
+    return m_toolModel;
 }
 
 /*!

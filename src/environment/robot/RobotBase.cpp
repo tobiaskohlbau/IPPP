@@ -84,7 +84,7 @@ Transform RobotBase::getPose() const {
 }
 
 /*!
-*  \brief      Load cad models from passed vector of strings and save them intern
+*  \brief      Set the base model of the robot.
 *  \author     Sascha Kaden
 *  \param[in]  model
 *  \date       2016-06-30
