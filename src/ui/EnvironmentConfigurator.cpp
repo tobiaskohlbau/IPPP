@@ -186,8 +186,10 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
             break;
     }
 
-    for (auto &obstaclePath : m_obstaclePaths)
-        m_environment->addObstacle(factory->createModelFromFile(obstaclePath));
+    for (auto &obstaclePath : m_obstaclePaths) {
+        auto model = factory->createModelFromFile(obstaclePath);
+        m_environment->addEnvObject(std::make_shared<ObstacleObject>("obstacle", model));
+    }
 
     m_robot = nullptr;
     switch (m_robotType) {
@@ -211,7 +213,7 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
     }
 
     if (m_robot)
-        m_environment->addRobot(m_robot);
+        m_environment->addEnvObject(m_robot);
 
     return m_environment;
 }

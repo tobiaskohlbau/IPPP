@@ -47,9 +47,7 @@ class RobotBase : public EnvObject {
     RobotBase(const std::string &name, unsigned int dim, RobotCategory robotType, std::vector<DofType> dofTypes);
 
   public:
-    void setPose(const Vector6 &pose);
-    void setPose(const Transform &pose);
-    Transform getPose() const;
+    bool isStatic() const;
     virtual Transform getTransformation(const VectorX &config) const = 0;
 
     void setBaseModel(const std::shared_ptr<ModelContainer> &model);
@@ -68,7 +66,6 @@ class RobotBase : public EnvObject {
 
     const unsigned int m_dim;              /*!< dimension of the robot */
     const std::vector<DofType> m_dofTypes; /*!< list of the types of every dimension  */
-    Transform m_pose;                      /*!< pose of the robot inside of the world coordinate system */
 
     std::shared_ptr<ModelContainer>
         m_baseModel; /*!< Basis model of the robot. For the mobile robot it is the model of the complete robot. */

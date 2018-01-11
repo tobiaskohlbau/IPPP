@@ -62,11 +62,11 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
     m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
     m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
 
-    if (m_environment->getObstacleNum() == 0) {
+    if (m_environment->numObstacles() == 0) {
         Logging::warning("Empty workspace", this);
     } else {
         for (auto obstacle : m_environment->getObstacles())
-            m_obstacles.push_back(obstacle->m_mesh);
+            m_obstacles.push_back(obstacle->model->m_mesh);
     }
 
     // update obstacle models for the 2D collision check, extends the AABB of the obstacle in z direction

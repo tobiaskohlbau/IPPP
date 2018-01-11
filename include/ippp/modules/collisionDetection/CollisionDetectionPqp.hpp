@@ -80,9 +80,10 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
         return;
     }
 
-    if (!environment->getObstacles().empty()) {
+    if (environment->numObstacles() > 0) {
         for (auto &obstacle : environment->getObstacles()) {
-            m_obstacles.push_back(&std::static_pointer_cast<ModelPqp>(obstacle)->m_pqpModel);
+            auto model = obstacle->model;
+            m_obstacles.push_back(&std::static_pointer_cast<ModelPqp>(model)->m_pqpModel);
             m_workspaceAvaible = true;
         }
     } else {

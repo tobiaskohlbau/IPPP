@@ -20,6 +20,7 @@
 #define ENVOBJECT_H
 
 #include <ippp/Identifier.h>
+#include <ippp/types.h>
 
 namespace ippp {
 
@@ -34,6 +35,14 @@ class EnvObject : public Identifier {
 
   public:
     const EnvObjectType m_type;
+    virtual bool isStatic() const = 0;
+
+    void setPose(const Vector6 &pose);
+    void setPose(const Transform &pose);
+    Transform getPose() const;
+
+  protected:
+    Transform m_pose; /*!< pose of the EnvObject inside of the world coordinate system */
 };
 
 } /* namespace ippp */

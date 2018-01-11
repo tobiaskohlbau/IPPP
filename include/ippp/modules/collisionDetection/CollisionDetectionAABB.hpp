@@ -64,11 +64,11 @@ CollisionDetectionAABB<dim>::CollisionDetectionAABB(const std::shared_ptr<Enviro
 
     m_robots = m_environment->getRobots();
 
-    for (auto robot : environment->getRobots())
+    for (auto &robot : environment->getRobots())
         m_robotAABBs.push_back(robot->getBaseModel()->getAABB());
 
-    for (auto obstacle : environment->getObstacles())
-        m_obstacleAABBs.push_back(obstacle->getAABB());
+    for (auto &obstacle : environment->getObstacles())
+        m_obstacleAABBs.push_back(obstacle->model->getAABB());
 }
 
 /*!

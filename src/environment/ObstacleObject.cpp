@@ -29,4 +29,14 @@ ObstacleObject::ObstacleObject(const std::string &name, std::shared_ptr<ModelCon
     : EnvObject(name, EnvObjectType::Obstacle), model(modelContainer) {
 }
 
+/*!
+*  \brief      Return the static flag of the EnvObject
+*  \author     Sascha Kaden
+*  \param[out] true
+*  \date       2018-01-10
+*/
+bool ObstacleObject::isStatic() const {
+    return true;
+}
+
 } /* namespace ippp */

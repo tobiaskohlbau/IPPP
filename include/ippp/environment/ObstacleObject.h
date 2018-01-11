@@ -27,8 +27,12 @@ namespace ippp {
 class ObstacleObject : public EnvObject {
   public:
     ObstacleObject(const std::string &name, std::shared_ptr<ModelContainer> &model);
+    bool isStatic() const;
 
     std::shared_ptr<ModelContainer> model = nullptr;
+    
+protected:
+
 };
 
 } /* namespace ippp */

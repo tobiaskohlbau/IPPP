@@ -82,10 +82,11 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<Environm
         Logging::warning("Empty base model", this);
     }
 
-    if (!environment->getObstacles().empty()) {
+    if (environment->numObstacles() > 0) {
         for (auto &obstacle : environment->getObstacles()) {
+            auto model = obstacle->model;
             m_obstacles.push_back(
-                std::shared_ptr<FCLModel>(new FCLModel(std::static_pointer_cast<ModelFcl>(obstacle)->m_fclModel)));
+                std::shared_ptr<FCLModel>(new FCLModel(std::static_pointer_cast<ModelFcl>(model)->m_fclModel)));
             m_workspaceAvaible = true;
         }
     } else {
