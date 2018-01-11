@@ -22,7 +22,7 @@
 #include <ippp/environment/model/ModelPqp.h>
 #include <ippp/environment/robot/SerialRobot.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
-#include <ippp/util/UtilCollision.hpp>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 

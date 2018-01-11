@@ -36,15 +36,13 @@ class RotateAtS : public TrajectoryPlanner<dim> {
     RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Environment> &environment,
               double posRes = 1, double oriRes = 0.1, double rotPoint = 0.5);
 
-    std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target);
-    std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target);
+    std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) const;
+    std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) const;
 
     void setRotationPoint(double rotPoint);
-    double getRotationPoint();
+    double getRotationPoint() const;
 
   private:
-    void initMasks();
-
     double m_rotationPoint = 0.5;
 
     using TrajectoryPlanner<dim>::m_collision;
@@ -84,7 +82,7 @@ RotateAtS<dim>::RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collis
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) {
+std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) const {
     // Todo: implementation of binary rotate at s trajectory
     return calcTrajectoryCont(source, target);
 }
@@ -99,7 +97,7 @@ std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryBin(const Vector<dim> &so
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) {
+std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) const {
     std::vector<Vector<dim>> configs;
 
     Vector<dim> posSource = util::multiplyElementWise<dim>(source, m_posMask);
@@ -145,7 +143,7 @@ void RotateAtS<dim>::setRotationPoint(double rotPoint) {
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-double RotateAtS<dim>::getRotationPoint() {
+double RotateAtS<dim>::getRotationPoint() const {
     return m_rotationPoint;
 }
 

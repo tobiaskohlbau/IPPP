@@ -27,6 +27,9 @@
 namespace ippp {
 namespace util {
 
+bool contains(const std::string &string, const std::string &subject);
+void trimWhitespaces(std::string &str);
+
 /*!
 *  \brief      Removes Node by reference object
 *  \author     Sascha Kaden
@@ -74,30 +77,8 @@ template <unsigned int dim>
 bool contains(const std::vector<std::shared_ptr<Node<dim>>> &list, const std::shared_ptr<Node<dim>> &node) {
     if (std::find(list.begin(), list.end(), node) != list.end())
         return true;
-    else
-        return false;
-}
 
-static bool contains(const std::string &string, const std::string &subject) {
-    if (string.find(subject) != std::string::npos)
-        return true;
-    else
-        return false;
-}
-
-/*!
-*  \brief         Remove whitespaces from string
-*  \author        Sascha Kaden
-*  \param[in,out] string
-*  \date          2016-12-19
-*/
-static void trimWhitespaces(std::string &str) {
-    size_t first = str.find_first_not_of(' ');
-    if (str.npos == first)
-        return;
-
-    size_t last = str.find_last_not_of(' ');
-    str = str.substr(first, (last - first + 1));
+    return false;
 }
 
 } /* namespace util */

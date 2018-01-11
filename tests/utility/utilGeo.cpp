@@ -21,6 +21,7 @@
 #include <gtest/gtest.h>
 
 #include <ippp/util/UtilGeo.hpp>
+#include <ippp/util/UtilVec.hpp>
 
 using namespace ippp;
 using namespace Eigen;

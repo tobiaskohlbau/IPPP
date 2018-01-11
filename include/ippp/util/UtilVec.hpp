@@ -28,23 +28,11 @@
 namespace ippp {
 namespace util {
 
-/*!
-*  \brief      Check whether the vector is empty (contains a NaN value)
-*  \author     Sascha Kaden
-*  \param[in]  Vector
-*  \param[out] result, true if vector is empty
-*  \date       2017-04-04
-*/
-static bool empty(const Vector3 &vec) {
-    bool status = false;
-    for (unsigned int i = 0; i < 3; ++i) {
-        if (std::isnan(vec[i])) {
-            status = true;
-            break;
-        }
-    }
-    return status;
-}
+bool empty(const Vector3 &vec);
+Vector5 Vecd(double x, double y, double z, double rx, double ry);
+Vector6 Vecd(double x, double y, double z, double rx, double ry, double rz);
+Vector7 Vecd(double a1, double a2, double a3, double a4, double a5, double a6, double a7);
+VectorX Vecd(unsigned int dim, double data[]);
 
 /*!
 *  \brief      Check whether the vector is empty (contains a NaN value)
@@ -143,59 +131,6 @@ std::vector<VectorX> splitVec(const Vector<dim> vec, const std::vector<unsigned 
 }
 
 /*!
-*  \brief      Creates a 5 dimensional Vector with passed values
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \param[in]  rx
-*  \param[in]  ry
-*  \param[out] result Vector
-*  \date       2016-12-23
-*/
-static Vector5 Vecd(double x, double y, double z, double rx, double ry) {
-    Vector5 vec;
-    vec << x, y, z, rx, ry;
-    return vec;
-}
-
-/*!
-*  \brief      Creates a 6 dimensional Vector with passed values
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \param[in]  rx
-*  \param[in]  ry
-*  \param[in]  rz
-*  \param[out] result Vector
-*  \date       2016-12-23
-*/
-static Vector6 Vecd(double x, double y, double z, double rx, double ry, double rz) {
-    Vector6 vec;
-    vec << x, y, z, rx, ry, rz;
-    return vec;
-}
-
-/*!
-*  \brief      Creates a 6 dimensional Vector with passed values
-*  \author     Sascha Kaden
-*  \param[in]  x
-*  \param[in]  y
-*  \param[in]  z
-*  \param[in]  rx
-*  \param[in]  ry
-*  \param[in]  rz
-*  \param[out] result Vector
-*  \date       2016-12-23
-*/
-static Vector7 Vecd(double a1, double a2, double a3, double a4, double a5, double a6, double a7) {
-    Vector7 vec;
-    vec << a1, a2, a3, a4, a5, a6, a7;
-    return vec;
-}
-
-/*!
 *  \brief      Creates a Vector with template dimension and all elements are set to the passed value
 *  \author     Sascha Kaden
 *  \param[in]  value
@@ -221,22 +156,6 @@ Vector<dim> Vecd(double data) {
 template <unsigned int dim>
 Vector<dim> Vecd(double data[]) {
     Vector<dim> vec;
-    for (unsigned int i = 0; i < dim; ++i) {
-        vec[i] = data[i];
-    }
-    return vec;
-}
-
-/*!
-*  \brief      Creates a Vector with passed dimension and array
-*  \author     Sascha Kaden
-*  \param[in]  dim
-*  \param[in]  array
-*  \param[out] result Vector
-*  \date       2016-12-23
-*/
-static VectorX Vecd(unsigned int dim, double data[]) {
-    VectorX vec(dim);
     for (unsigned int i = 0; i < dim; ++i) {
         vec[i] = data[i];
     }

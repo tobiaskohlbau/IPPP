@@ -27,6 +27,7 @@
 #include <ippp/Identifier.h>
 #include <ippp/environment/Environment.h>
 #include <ippp/types.h>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 

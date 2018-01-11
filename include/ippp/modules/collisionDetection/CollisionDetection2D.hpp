@@ -22,6 +22,7 @@
 #include <ippp/environment/model/ModelTriangle2D.h>
 #include <ippp/environment/robot/PointRobot.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 

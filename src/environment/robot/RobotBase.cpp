@@ -20,6 +20,8 @@
 
 #include <utility>
 
+#include <ippp/util/UtilGeo.hpp>
+
 namespace ippp {
 
 /*!

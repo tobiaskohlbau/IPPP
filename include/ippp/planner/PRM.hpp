@@ -244,7 +244,7 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
     }
 
     m_graph->clearQueryParents();
-    bool pathPlanned = util::aStar<dim>(sourceNode, goalNode, m_metric);
+    bool pathPlanned = util::aStar<dim>(sourceNode, goalNode, *m_metric);
 
     if (pathPlanned) {
         Logging::info("Path could be planned", this);

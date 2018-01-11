@@ -18,6 +18,8 @@
 
 #include <gtest/gtest.h>
 
+#include <ippp/environment/robot/MobileRobot.h>
+#include <ippp/modules/collisionDetection/CollisionDetectionFcl.hpp>
 #include <ippp/modules/sampler/GridSampler.hpp>
 #include <ippp/modules/sampler/SamplerNormalDist.hpp>
 #include <ippp/modules/sampler/SamplerRandom.hpp>
@@ -28,11 +30,8 @@
 #include <ippp/modules/sampling/MedialAxisSampling.hpp>
 #include <ippp/modules/sampling/SamplingNearObstacle.hpp>
 #include <ippp/modules/sampling/StraightSampling.hpp>
-
-#include <ippp/environment/robot/MobileRobot.h>
-#include <ippp/modules/collisionDetection/CollisionDetectionFcl.hpp>
 #include <ippp/modules/trajectoryPlanner/LinearTrajectory.hpp>
-#include <ippp/util/Utility.h>
+#include <ippp/util/UtilVec.hpp>
 
 double min = -5;
 double max = 5;

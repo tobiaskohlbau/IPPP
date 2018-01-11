@@ -23,6 +23,7 @@
 #include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/environment/robot/TriangleRobot2D.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 

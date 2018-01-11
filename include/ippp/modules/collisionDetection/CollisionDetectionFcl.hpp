@@ -25,7 +25,7 @@
 #include <ippp/environment/model/ModelFcl.h>
 #include <ippp/environment/robot/SerialRobot.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
-#include <ippp/util/UtilCollision.hpp>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 
@@ -46,7 +46,7 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
     bool checkMobileRobot(const Vector<dim> &config, const CollisionRequest &request);
     bool checkFCL(const std::shared_ptr<FCLModel> &model1, const std::shared_ptr<FCLModel> &model2, const Transform &T1,
                   const Transform &T2);
-    
+
     Transform m_identity;
     AABB m_workspaceBounding;
     std::vector<std::shared_ptr<FCLModel>> m_obstacles;
@@ -85,8 +85,7 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<Environm
     if (environment->numObstacles() > 0) {
         for (auto &obstacle : environment->getObstacles()) {
             auto model = obstacle->model;
-            m_obstacles.push_back(
-                std::shared_ptr<FCLModel>(new FCLModel(std::static_pointer_cast<ModelFcl>(model)->m_fclModel)));
+            m_obstacles.push_back(std::shared_ptr<FCLModel>(new FCLModel(std::static_pointer_cast<ModelFcl>(model)->m_fclModel)));
             m_workspaceAvaible = true;
         }
     } else {

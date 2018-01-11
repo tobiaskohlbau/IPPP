@@ -18,6 +18,8 @@
 
 #include <ippp/environment/robot/Jaco.h>
 
+#include <ippp/util/UtilGeo.hpp>
+
 namespace ippp {
 
 /*!

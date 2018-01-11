@@ -27,7 +27,6 @@
 #include <ippp/environment/model/ModelContainer.h>
 #include <ippp/types.h>
 #include <ippp/util/Logging.h>
-#include <ippp/util/Utility.h>
 
 namespace ippp {
 

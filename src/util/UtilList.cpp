@@ -16,12 +16,32 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef UTILITY_H
-#define UTILITY_H
-
-#include <ippp/util/UtilGeo.hpp>
-#include <ippp/util/UtilIO.hpp>
 #include <ippp/util/UtilList.hpp>
-#include <ippp/util/UtilVec.hpp>
 
-#endif    // UTILITY_H
+namespace ippp {
+namespace util {
+
+bool contains(const std::string &string, const std::string &subject) {
+    if (string.find(subject) != std::string::npos)
+        return true;
+    else
+        return false;
+}
+
+/*!
+*  \brief         Remove whitespaces from string
+*  \author        Sascha Kaden
+*  \param[in,out] string
+*  \date          2016-12-19
+*/
+void trimWhitespaces(std::string &str) {
+    size_t first = str.find_first_not_of(' ');
+    if (str.npos == first)
+        return;
+
+    size_t last = str.find_last_not_of(' ');
+    str = str.substr(first, (last - first + 1));
+}
+
+} /* namespace util */
+} /* namespace ippp */

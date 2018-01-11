@@ -21,6 +21,7 @@
 #include <ippp/environment/cad/CadImportExport.h>
 #include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/util/Logging.h>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 
