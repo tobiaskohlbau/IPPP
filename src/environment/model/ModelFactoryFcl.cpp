@@ -41,6 +41,7 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModelFromFile(const std::
     }
 
     std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
+    fclModel->m_filePath = filePath;
     if (!cad::importMesh(filePath, fclModel->m_mesh)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
@@ -76,6 +77,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModelsFromFi
 
     for (auto &mesh : meshes) {
         std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
+        fclModel->m_filePath = filePath;
         fclModel->m_mesh = mesh;
         fclModel->m_mesh.aabb = cad::computeAABB(fclModel->m_mesh);
 
