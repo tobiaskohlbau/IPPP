@@ -32,8 +32,8 @@ namespace ippp {
 */
 class SerialRobot : public RobotBase {
   public:
-    SerialRobot(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
-                const std::vector<DofType> &dofTypes, const std::string &name = "SerialRobot");
+    SerialRobot(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DofType> &dofTypes,
+                const std::string &name = "SerialRobot");
 
     virtual Transform getTransformation(const VectorX &config) const;
     virtual std::vector<Transform> getJointTrafos(const VectorX &angles) const;
@@ -51,24 +51,23 @@ class SerialRobot : public RobotBase {
     void setToolModel(const std::shared_ptr<ModelContainer> &tool);
     std::shared_ptr<ModelContainer> getToolModel() const;
 
-    void setLinkOffsets(const std::vector<Vector6> &offsets);
-    void setLinkOffsets(const std::vector<Transform> &offsets);
-    std::vector<Transform> getLinkOffsets() const;
-
     size_t getNbJoints() const;
-    std::shared_ptr<ModelContainer> getModelFromJoint(size_t jointIndex) const;
-    std::vector<std::shared_ptr<ModelContainer>> getJointModels() const;
+    std::shared_ptr<ModelContainer> getLinkModel(size_t index) const;
+    std::vector<std::shared_ptr<ModelContainer>> getLinkModels() const;
+    std::vector<Transform> getLinkOffsets() const;
 
     void saveMeshConfig(const VectorX &angles);
 
   protected:
+    void updateJointParams();
+
     std::vector<Joint> m_joints;             /*!< joints of the serial robot */
     std::vector<DhParameter> m_dhParameters; /*!< dh parameter to the joints */
+    std::vector<Transform> m_linkOffsets;    /*!< extra offset transforms of the links */
+    std::vector<std::shared_ptr<ModelContainer>> m_linkModels;
 
-    Transform m_baseOffset = Transform::Identity(); /*!< transformation offset of the base model, if used. */
-    Transform m_toolOffset = Transform::Identity(); /*!< transformation offset of the tool model, if used. */
-    std::vector<Transform> m_linkOffsets;           /*!< extra offset transforms of the links */
-
+    Transform m_baseOffset = Transform::Identity();        /*!< transformation offset of the base model, if used. */
+    Transform m_toolOffset = Transform::Identity();        /*!< transformation offset of the tool model, if used. */
     std::shared_ptr<ModelContainer> m_toolModel = nullptr; /*!< tool model at the last link */
 };
 

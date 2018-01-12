@@ -41,7 +41,7 @@ class ModelFcl : public ModelContainer {
     void transformModel(const Transform &T);
     void transformModel(const Vector6 &config);
 
-    FCLModel m_fclModel; /*!< fcl model for the collision check with the fcl library */
+    std::shared_ptr<FCLModel> m_fclModel; /*!< fcl model for the collision check with the fcl library */
 
   private:
     void updateFclModel();

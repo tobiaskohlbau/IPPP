@@ -51,7 +51,7 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
 
     PQP_Model *m_baseModel = nullptr;
     bool m_baseMeshAvaible = false;
-    std::vector<PQP_Model *> m_jointModels;
+    std::vector<PQP_Model *> m_linkModels;
 
     using CollisionDetection<dim>::m_environment;
 };
@@ -92,23 +92,15 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
 
     if (robot->getRobotCategory() == RobotCategory::serial) {
         std::shared_ptr<SerialRobot> serialRobot(std::static_pointer_cast<SerialRobot>(robot));
-        std::vector<std::shared_ptr<ModelContainer>> jointModels = serialRobot->getJointModels();
-        if (!jointModels.empty()) {
-            bool emptyJoint = false;
-            for (auto model : jointModels) {
-                if (!model || model->empty()) {
-                    emptyJoint = true;
-                }
-            }
-            if (!emptyJoint) {
-                for (unsigned int i = 0; i < dim; ++i) {
-                    m_jointModels.push_back(&std::static_pointer_cast<ModelPqp>(serialRobot->getModelFromJoint(i))->m_pqpModel);
-                }
-            } else {
+        std::vector<std::shared_ptr<ModelContainer>> linkModels = serialRobot->getLinkModels();
+        if (linkModels.empty())
+            Logging::error("No link models applied", this);
+
+        for (auto &model : linkModels) {
+            if (!model || model->empty())
                 Logging::error("Emtpy joint model", this);
-            }
-        } else {
-            Logging::error("No joint models applied", this);
+            else
+                m_linkModels.push_back(&std::static_pointer_cast<ModelPqp>(model)->m_pqpModel);
         }
     }
 }
@@ -169,20 +161,20 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) {
     auto pose = robot->getPose();
 
     // check models against workspace boundaries
-    auto jointModels = robot->getJointModels();
+    auto linkModels = robot->getLinkModels();
     for (unsigned int i = 0; i < dim; ++i)
-        if (!m_workspaceBounding.contains(util::transformAABB(jointModels[i]->m_mesh.aabb, linkTrafos[i])))
+        if (!m_workspaceBounding.contains(util::transformAABB(linkModels[i]->m_mesh.aabb, linkTrafos[i])))
             return true;
 
     // control collision of the robot joints with themselves
     if (m_baseMeshAvaible)
         for (unsigned int i = 1; i < dim; ++i)
-            if (checkPQP(m_baseModel, m_jointModels[i], pose, linkTrafos[i]))
+            if (checkPQP(m_baseModel, m_linkModels[i], pose, linkTrafos[i]))
                 return true;
 
     for (unsigned int i = 0; i < dim; ++i)
         for (unsigned int j = i + 2; j < dim; ++j)
-            if (checkPQP(m_jointModels[i], m_jointModels[j], linkTrafos[i], linkTrafos[j]))
+            if (checkPQP(m_linkModels[i], m_linkModels[j], linkTrafos[i], linkTrafos[j]))
                 return true;
 
     // control collision with workspace
@@ -193,7 +185,7 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) {
 
         for (unsigned int i = 0; i < dim; ++i)
             for (auto &obstacle : m_obstacles)
-                if (checkPQP(obstacle, m_jointModels[i], m_identity, linkTrafos[i]))
+                if (checkPQP(obstacle, m_linkModels[i], m_identity, linkTrafos[i]))
                     return true;
     }
     return false;

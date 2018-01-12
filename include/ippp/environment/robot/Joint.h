@@ -22,6 +22,7 @@
 #include <memory>
 
 #include <ippp/environment/model/ModelContainer.h>
+#include <ippp/dataObj/DhParameter.h>
 
 namespace ippp {
 
@@ -33,19 +34,27 @@ namespace ippp {
 class Joint {
   public:
     Joint();
-    Joint(double minBound, double maxBound);
-    Joint(double minBound, double maxBound, std::shared_ptr<ModelContainer> model);
+    Joint(double minBound, double maxBound, const DhParameter &params, std::shared_ptr<ModelContainer> &linkModel, const Transform &linkOffset);
 
-    void setModel(std::shared_ptr<ModelContainer> &model);
-    std::shared_ptr<ModelContainer> getModel() const;
+    void setLinkModel(std::shared_ptr<ModelContainer> &model);
+    std::shared_ptr<ModelContainer> getLinkModel() const;
+
+    void setLinkOffset(const Vector6 &offset);
+    void setLinkOffset(const Transform &offset);
+    Transform getLinkOffset() const;
+
+    void setDhParameter(const DhParameter &params);
+    DhParameter getDhParameter() const;
 
     void setBoundaries(double minBound, double maxBound);
     std::pair<double, double> getBoundaries() const;
 
   private:
+    DhParameter m_dhParameter;
     double m_minBound = 0;                             /*!< minimal joint boundary */
     double m_maxBound = 0;                             /*!< maximal joint boundary */
-    std::shared_ptr<ModelContainer> m_model = nullptr; /*!< model container of the link related to the joint */
+    std::shared_ptr<ModelContainer> m_linkModel = nullptr; /*!< model container of the link related to the joint */
+    Transform m_linkOffset = Transform::Identity();
 };
 
 } /* namespace ippp */

@@ -51,13 +51,13 @@ class EnvironmentConfigurator : public Configurator {
     void setRobotBaseModelFile(const std::string robotBaseModelFile);
     void setRobotBaseProperties(size_t robotDim, const std::vector<DofType> &dofTypes,
                                 const std::pair<VectorX, VectorX> &robotBoundaries);
-    void setSerialRobotProperties(const std::vector<DhParameter> &dhParameters, const std::vector<std::string> &jointModelFiles,
+    void setSerialRobotProperties(const std::vector<DhParameter> &dhParameters, const std::vector<std::string> &linkModelFiles,
                                   const Transform &baseOffset = Transform::Identity(),
                                   const std::vector<Transform> &linkOffsets = std::vector<Transform>());
 
     std::shared_ptr<Environment> getEnvironment();
     std::string getRobotBaseModelFile() const;
-    std::vector<std::string> getJointModelFiles() const;
+    std::vector<std::string> getLinkModelFiles() const;
 
   protected:
     std::shared_ptr<RobotBase> createPointRobot();
@@ -82,9 +82,12 @@ class EnvironmentConfigurator : public Configurator {
 
     // serial robot properties
     std::vector<DhParameter> m_dhParameters;
-    std::vector<std::string> m_jointModelFiles;
+    std::vector<std::string> m_linkModelFiles;
     Transform m_baseOffset;
     std::vector<Transform> m_linkOffsets;
+
+    // obstacles
+    std::vector<std::pair<std::string, Transform>> m_obstacleFilePaths;
 };
 
 } /* namespace ippp */

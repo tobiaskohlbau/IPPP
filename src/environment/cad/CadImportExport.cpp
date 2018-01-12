@@ -60,7 +60,8 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, double
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (scene == nullptr) {
-        Logging::error("Could not load cad", "CadProcessing");
+        Logging::error("Could not load cad: "
+    + filePath, "CadProcessing");
         Logging::error("Assimp message: " + std::string(importer.GetErrorString()), "CadProcessing");
         return false;
     }
@@ -301,6 +302,8 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
 
     const aiExportFormatDesc *formatDesc = exporter.GetExportFormatDescription(formatCount);
     exporter.Export(&scene, formatDesc->id, filePath + "." + formatDesc->fileExtension, aiProcess_Triangulate);
+
+    Logging::info("Exported: " + filePath, "CadProcessing");
     return true;
 }
 

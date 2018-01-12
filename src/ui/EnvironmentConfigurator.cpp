@@ -49,7 +49,7 @@ bool EnvironmentConfigurator::saveConfig(const std::string &filePath) {
     json["MaxRobotBound"] = jsonSerializer::serialize(m_robotBoundaries.second);
     json["RobotBaseModelFile"] = m_robotBaseModelFile;
     json["DhParams"] = jsonSerializer::serialize(m_dhParameters);
-    json["JointModelFiles"] = m_jointModelFiles;
+    json["linkModelFiles"] = m_linkModelFiles;
     json["BaseOffset"] = jsonSerializer::serialize(m_baseOffset);
     json["LinkOffsets"] = jsonSerializer::serialize(m_linkOffsets);
 
@@ -79,7 +79,7 @@ bool EnvironmentConfigurator::loadConfig(const std::string &filePath) {
                                        jsonSerializer::deserializeVector(json["MaxRobotBound"]));
     m_robotBaseModelFile = json["RobotBaseModelFile"].get<std::string>();
     m_dhParameters = jsonSerializer::deserializeDhParameters(json["DhParams"]);
-    m_jointModelFiles = json["JointModelFiles"].get<std::vector<std::string>>();
+    m_linkModelFiles = json["linkModelFiles"].get<std::vector<std::string>>();
     m_baseOffset = jsonSerializer::deserializeTransform(json["BaseOffset"]);
     m_linkOffsets = jsonSerializer::deserializeTransforms(json["LinkOffsets"]);
 
@@ -153,10 +153,10 @@ void EnvironmentConfigurator::setRobotBaseModelFile(const std::string robotBaseM
 }
 
 void EnvironmentConfigurator::setSerialRobotProperties(const std::vector<DhParameter> &dhParameters,
-                                                       const std::vector<std::string> &jointModelFiles,
+                                                       const std::vector<std::string> &linkModelFiles,
                                                        const Transform &baseOffset, const std::vector<Transform> &linkOffsets) {
     m_dhParameters = dhParameters;
-    m_jointModelFiles = jointModelFiles;
+    m_linkModelFiles = linkModelFiles;
     m_baseOffset = baseOffset;
     m_linkOffsets = linkOffsets;
 }
@@ -222,8 +222,8 @@ std::string EnvironmentConfigurator::getRobotBaseModelFile() const {
     return m_robotBaseModelFile;
 }
 
-std::vector<std::string> EnvironmentConfigurator::getJointModelFiles() const {
-    return m_jointModelFiles;
+std::vector<std::string> EnvironmentConfigurator::getLinkModelFiles() const {
+    return m_linkModelFiles;
 }
 
 std::shared_ptr<RobotBase> EnvironmentConfigurator::createPointRobot() {
@@ -271,19 +271,18 @@ std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(const std:
                                                                       RobotType type) {
     std::vector<Joint> joints;
     for (size_t i = 0; i < m_robotDim; ++i) {
-        auto model = factory->createModelFromFile(m_jointModelFiles[i]);
-        joints.push_back(Joint(m_robotBoundaries.first[i], m_robotBoundaries.second[i], model));
+        auto model = factory->createModelFromFile(m_linkModelFiles[i]);
+        joints.push_back(Joint(m_robotBoundaries.first[i], m_robotBoundaries.second[i], m_dhParameters[i], model, m_linkOffsets[i]));
     }
 
     auto robotModel = factory->createModelFromFile(m_robotBaseModelFile);
 
-    auto robot = std::make_shared<SerialRobot>(m_robotDim, joints, m_dhParameters, m_dofTypes);
+    auto robot = std::make_shared<SerialRobot>(m_robotDim, joints, m_dofTypes);
     if (type == RobotType::Jaco)
-        auto robot = std::make_shared<Jaco>(m_robotDim, joints, m_dhParameters, m_dofTypes);
+        auto robot = std::make_shared<Jaco>(m_robotDim, joints, m_dofTypes);
 
     robot->setBaseModel(robotModel);
     robot->setBaseOffset(m_baseOffset);
-    robot->setLinkOffsets(m_linkOffsets);
     return robot;
 }
 
