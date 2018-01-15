@@ -30,7 +30,7 @@ namespace ippp {
 
 enum class FactoryType { ModelFCL, ModelPQP, ModelTriangle2D };
 
-enum class RobotType { Jaco, Kuka, Point, Triangle2D, Serial, Serial2D, Mobile };
+enum class RobotType { Jaco, Point, Triangle2D, Serial, Serial2D, Mobile };
 
 /*!
 * \brief   Class EnvironmentConfigurator constructs the environment of the planner
@@ -44,8 +44,7 @@ class EnvironmentConfigurator : public Configurator {
     bool loadConfig(const std::string &filePath);
 
     void setWorkspaceProperties(const AABB &workspaceBounding);
-    void setObstaclePaths(const std::vector<std::string> &obstaclePaths);
-    void addObstaclePath(const std::string &obstaclePath);
+    void addObstacle(const std::string &obstaclePath, const Vector6 &pose = Vector6::Zero());
     void setFactoryType(const FactoryType factoryType);
     void setRobotType(const RobotType robotType);
     void setRobotBaseModelFile(const std::string robotBaseModelFile);
@@ -58,6 +57,8 @@ class EnvironmentConfigurator : public Configurator {
     std::shared_ptr<Environment> getEnvironment();
     std::string getRobotBaseModelFile() const;
     std::vector<std::string> getLinkModelFiles() const;
+    std::vector<std::string> getObstaclePaths() const;
+    std::vector<Transform> getObstaclePoses() const;
 
   protected:
     std::shared_ptr<RobotBase> createPointRobot();
@@ -69,6 +70,7 @@ class EnvironmentConfigurator : public Configurator {
     std::shared_ptr<RobotBase> m_robot = nullptr;
 
     std::vector<std::string> m_obstaclePaths;
+    std::vector<Transform> m_obstacleTransforms;
     AABB m_workspceBounding;
 
     FactoryType m_factoryType = FactoryType::ModelTriangle2D;
@@ -85,9 +87,6 @@ class EnvironmentConfigurator : public Configurator {
     std::vector<std::string> m_linkModelFiles;
     Transform m_baseOffset;
     std::vector<Transform> m_linkOffsets;
-
-    // obstacles
-    std::vector<std::pair<std::string, Transform>> m_obstacleFilePaths;
 };
 
 } /* namespace ippp */

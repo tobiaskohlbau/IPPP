@@ -39,7 +39,8 @@ EnvironmentConfigurator::EnvironmentConfigurator() : Configurator("EnvironmentCo
 bool EnvironmentConfigurator::saveConfig(const std::string &filePath) {
     nlohmann::json json;
 
-    json["ObstaclePath"] = m_obstaclePaths;
+    json["ObstaclePaths"] = m_obstaclePaths;
+    json["ObstacleTransforms"] = jsonSerializer::serialize(m_obstacleTransforms);
     json["WorkspaceBound"] = jsonSerializer::serialize(m_workspceBounding);
     json["FactoryType"] = static_cast<int>(m_factoryType);
     json["RobotType"] = static_cast<int>(m_robotType);
@@ -68,8 +69,8 @@ bool EnvironmentConfigurator::loadConfig(const std::string &filePath) {
     if (json.empty())
         return false;
 
-    m_obstaclePaths.clear();
-    m_obstaclePaths = json["ObstaclePath"].get<std::vector<std::string>>();
+    m_obstaclePaths = json["ObstaclePaths"].get<std::vector<std::string>>();
+    m_obstacleTransforms = jsonSerializer::deserializeTransforms(json["ObstacleTransforms"]);
     m_workspceBounding = jsonSerializer::deserializeAABB(json["WorkspaceBound"]);
     m_factoryType = static_cast<FactoryType>(json["FactoryType"].get<int>());
     m_robotType = static_cast<RobotType>(json["RobotType"].get<int>());
@@ -98,25 +99,19 @@ void EnvironmentConfigurator::setWorkspaceProperties(const AABB &workspaceBoundi
 }
 
 /*!
-*  \brief      Set the paths to the mesh files of the obstacles.
-*  \author     Sascha Kaden
-*  \param[in]  obstacle file paths
-*  \date       2017-10-18
-*/
-void EnvironmentConfigurator::setObstaclePaths(const std::vector<std::string> &obstaclePaths) {
-    if (!obstaclePaths.empty())
-        m_obstaclePaths = obstaclePaths;
-}
-
-/*!
 *  \brief      Adds a path of one obstacle mesh file.
 *  \author     Sascha Kaden
 *  \param[in]  obstacle file paths
 *  \date       2017-10-18
 */
-void EnvironmentConfigurator::addObstaclePath(const std::string &obstaclePath) {
-    if (!obstaclePath.empty())
-        m_obstaclePaths.push_back(obstaclePath);
+void EnvironmentConfigurator::addObstacle(const std::string &obstaclePath, const Vector6 &pose) {
+    if (obstaclePath.empty()) {
+        Logging::error("Empty obstacle Path", this);
+        return;
+    }
+
+    m_obstaclePaths.push_back(obstaclePath);
+    m_obstacleTransforms.push_back(util::poseVecToTransform(pose));
 }
 
 /*!
@@ -186,9 +181,11 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
             break;
     }
 
-    for (auto &obstaclePath : m_obstaclePaths) {
-        auto model = factory->createModelFromFile(obstaclePath);
-        m_environment->addEnvObject(std::make_shared<ObstacleObject>("obstacle", model));
+    for (size_t i = 0; i < m_obstaclePaths.size(); ++i) {
+        auto model = factory->createModelFromFile(m_obstaclePaths[i]);
+        auto obstacle = std::make_shared<ObstacleObject>("obstacle", model);
+        obstacle->setPose(m_obstacleTransforms[i]);
+        m_environment->addEnvObject(obstacle);
     }
 
     m_robot = nullptr;
@@ -224,6 +221,14 @@ std::string EnvironmentConfigurator::getRobotBaseModelFile() const {
 
 std::vector<std::string> EnvironmentConfigurator::getLinkModelFiles() const {
     return m_linkModelFiles;
+}
+
+std::vector<std::string> EnvironmentConfigurator::getObstaclePaths() const {
+    return m_obstaclePaths;
+}
+
+std::vector<Transform> EnvironmentConfigurator::getObstaclePoses() const {
+    return m_obstacleTransforms;
 }
 
 std::shared_ptr<RobotBase> EnvironmentConfigurator::createPointRobot() {
@@ -272,7 +277,8 @@ std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(const std:
     std::vector<Joint> joints;
     for (size_t i = 0; i < m_robotDim; ++i) {
         auto model = factory->createModelFromFile(m_linkModelFiles[i]);
-        joints.push_back(Joint(m_robotBoundaries.first[i], m_robotBoundaries.second[i], m_dhParameters[i], model, m_linkOffsets[i]));
+        joints.push_back(
+            Joint(m_robotBoundaries.first[i], m_robotBoundaries.second[i], m_dhParameters[i], model, m_linkOffsets[i]));
     }
 
     auto robotModel = factory->createModelFromFile(m_robotBaseModelFile);
