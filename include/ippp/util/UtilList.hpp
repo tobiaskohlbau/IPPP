@@ -29,6 +29,7 @@ namespace util {
 
 bool contains(const std::string &string, const std::string &subject);
 void trimWhitespaces(std::string &str);
+std::string getFileName(const std::string &filePath);
 
 /*!
 *  \brief      Removes Node by reference object

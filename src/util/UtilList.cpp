@@ -43,5 +43,9 @@ void trimWhitespaces(std::string &str) {
     str = str.substr(first, (last - first + 1));
 }
 
+std::string getFileName(const std::string &filePath) {
+    return filePath.substr(filePath.find_last_of("/\\") + 1);
+}
+
 } /* namespace util */
 } /* namespace ippp */
