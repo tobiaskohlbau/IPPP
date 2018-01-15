@@ -20,6 +20,10 @@ void simpleRRT() {
     const unsigned int dim = 7;
     EnvironmentConfigurator envConfigurator;
 
+    envConfigurator.setWorkspaceProperties(AABB(Vector3(-10000, -10000, -10000), Vector3(10000, 10000, 10000)));
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(-420, -400, 100, 0, 0, util::toRad(90)));
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(420, -400, 100, 0, 0, util::toRad(90)));
+
     Vector7 minRobotBound = util::Vecd(-170, -120, -170, -120, -170, -120, -175);
     Vector7 maxRobotBound = util::Vecd(170, 120, 170, 120, 170, 120, 175);
     minRobotBound = util::degToRad<7>(minRobotBound);
@@ -49,15 +53,15 @@ void simpleRRT() {
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::convertPosesToTransforms(linkOffsets);
     envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles, Transform::Identity(), linkTransforms);
-    envConfigurator.setWorkspaceProperties(AABB(Vector3(-10000, -10000, -10000), Vector3(10000, 10000, 10000)));
+    
     envConfigurator.saveConfig("KukaEnvConfig.json");
     auto environment = envConfigurator.getEnvironment();
 
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
 
-    //serialRobot->saveMeshConfig(util::Vecd(0, 0, 0, 0, 0, 0, 0));
-    //serialRobot->saveMeshConfig(util::Vecd(0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7));
-    //std::cout << "saved model" << std::endl;
+    //Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
+    //testConfig = util::degToRad<dim>(testConfig);
+    //serialRobot->saveMeshConfig(testConfig);
 
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
@@ -65,7 +69,7 @@ void simpleRRT() {
 
     RRT<dim> planner(environment, creator.getRRTOptions(30), creator.getGraph());
     Vector<dim> start = util::Vecd(0, 0, 0, 0, 0, 0, 0);
-    Vector<dim> goal = util::Vecd(90, 90, 90, 90, 90, 90,90);
+    Vector<dim> goal = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
     start = util::degToRad<dim>(start);
     goal = util::degToRad<dim>(goal);
 

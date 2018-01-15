@@ -32,7 +32,7 @@ bool testTriangleRobot() {
     envConfigurator.setRobotType(RobotType::Triangle2D);
     envConfigurator.setRobotBaseModelFile(FLAGS_assetsDir + "/robotModels/simpleTriangleRobot.obj");
     generateMap();
-    envConfigurator.addObstaclePath("obstacle.obj");
+    envConfigurator.addObstacle("obstacle.obj");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
 
     ModuleConfigurator<dim> creator;
@@ -157,7 +157,7 @@ void testPointRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.addObstaclePath(FLAGS_assetsDir + "/spaces/random2D.obj");
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point);
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
 
