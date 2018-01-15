@@ -110,10 +110,7 @@ Graph<dim>::~Graph() {
     if (!m_preserveNodePtr) {
         for (auto &&node : m_nodes) {
             if (node) {
-                node->clearParent();
-                node->clearQueryParent();
-                node->clearChildren();
-                node->clearInvalidChildren();
+                node->clearPointer();
                 node = nullptr;
             }
         }

@@ -42,6 +42,7 @@ std::shared_ptr<ModelContainer> ModelFactoryTriangle2D::createModelFromFile(cons
     }
 
     std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
+    triangleModel->m_filePath = filePath;
     if (!cad::importMesh(filePath, triangleModel->m_mesh)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
@@ -76,6 +77,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryTriangle2D::createModel
 
     for (const auto& mesh : meshes) {
         std::shared_ptr<ModelTriangle2D> triangleModel(new ModelTriangle2D());
+        triangleModel->m_filePath = filePath;
         triangleModel->m_mesh = mesh;
         for (auto vertex : triangleModel->m_mesh.vertices)
             vertex[2] = 0;

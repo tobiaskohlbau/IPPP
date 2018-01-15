@@ -21,36 +21,30 @@
 #include <ippp/environment/cad/CadImportExport.h>
 #include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/util/Logging.h>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 
 /*!
-*  \brief      Constructor of the class RobotBase
+*  \brief      Constructor of the class SerialRobot
 *  \author     Sascha Kaden
+*  \param[in]  dimension (number of joints)
+*  \param[in]  joint containers
+*  \param[in]  DofTypes of the joints
 *  \param[in]  name of the robot
-*  \param[in]  minimum boundary
-*  \param[in]  maximum boundary
-*  \date       2016-07-19
+*  \date       2018-01-10
 */
-SerialRobot::SerialRobot(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
-                         const std::vector<DofType> &dofTypes, const std::string &name)
+SerialRobot::SerialRobot(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DofType> &dofTypes,
+                         const std::string &name)
     : RobotBase(name, dim, RobotCategory::serial, dofTypes),
       m_baseOffset(Transform::Identity()),
-      m_joints(joints),
-      m_dhParameters(dhParameters),
-      m_linkOffsets(dim, Transform::Identity()) {
-    if (joints.size() != dim || dhParameters.size() != dim || dofTypes.size() != dim) {
+      m_toolOffset(Transform::Identity()),
+      m_joints(joints) {
+    if (joints.size() != dim || dofTypes.size() != dim) {
         Logging::error("Dimension to parameter sizes is unequal", this);
         return;
     }
-
-    m_minBoundary = VectorX::Zero(dim);
-    m_maxBoundary = VectorX::Zero(dim);
-    for (size_t i = 0; i < dim; ++i) {
-        auto boundaries = joints[i].getBoundaries();
-        m_minBoundary[i] = boundaries.first;
-        m_maxBoundary[i] = boundaries.second;
-    }
+    updateJointParams();
 }
 
 /*!
@@ -131,34 +125,6 @@ Transform SerialRobot::getTcp(const std::vector<Transform> &trafos) const {
         robotToTcp = robotToTcp * trafo;
 
     return robotToTcp;
-}
-
-/*!
-*  \brief      Return MeshContainer from joint by index
-*  \author     Sascha Kaden
-*  \param[in]  joint index
-*  \param[out] shared_ptr of the ModelContainer
-*  \date       2016-08-25
-*/
-std::shared_ptr<ModelContainer> SerialRobot::getModelFromJoint(size_t jointIndex) const {
-    if (jointIndex < m_joints.size()) {
-        return m_joints[jointIndex].getModel();
-    }
-    Logging::error("Joint index larger than joint size", this);
-    return nullptr;
-}
-
-/*!
-*  \brief      Return MeshContainer vector from joints
-*  \author     Sascha Kaden
-*  \param[out] vector of ModelContainer
-*  \date       2016-08-25
-*/
-std::vector<std::shared_ptr<ModelContainer>> SerialRobot::getJointModels() const {
-    std::vector<std::shared_ptr<ModelContainer>> models;
-    for (const auto &joint : m_joints)
-        models.push_back(joint.getModel());
-    return models;
 }
 
 /*!
@@ -246,39 +212,6 @@ std::shared_ptr<ModelContainer> SerialRobot::getToolModel() const {
 }
 
 /*!
-*  \brief      Set the base offset (rotation and translation) of the base model of the serial robot.
-*  \author     Sascha Kaden
-*  \param[in]  configuration of the base offset
-*  \date       2017-11-17
-*/
-void SerialRobot::setLinkOffsets(const std::vector<Vector6> &linkOffsets) {
-    setLinkOffsets(util::convertPosesToTransforms(linkOffsets));
-}
-
-/*!
-*  \brief      Set the link offsets (Transform) from the dh parameter joint position to the link position.
-*  \author     Sascha Kaden
-*  \param[in]  Transforms of the link offsets
-*  \date       2017-11-17
-*/
-void SerialRobot::setLinkOffsets(const std::vector<Transform> &linkOffsets) {
-    if (linkOffsets.empty())
-        return;
-
-    m_linkOffsets = linkOffsets;
-}
-
-/*!
-*  \brief      Return the link offsets (Transform) from the dh parameter joint position to the link position.
-*  \author     Sascha Kaden
-*  \param[out] Transform of the link offsets
-*  \date       2017-11-17
-*/
-std::vector<Transform> SerialRobot::getLinkOffsets() const {
-    return m_linkOffsets;
-}
-
-/*!
 *  \brief      Return number of the joints from the robot
 *  \author     Sascha Kaden
 *  \param[out] number of joints
@@ -289,10 +222,45 @@ size_t SerialRobot::getNbJoints() const {
 }
 
 /*!
+*  \brief      Return ModelContainer from link by index
+*  \author     Sascha Kaden
+*  \param[in]  link index
+*  \param[out] shared_ptr of the ModelContainer
+*  \date       2018-01-10
+*/
+std::shared_ptr<ModelContainer> SerialRobot::getLinkModel(size_t index) const {
+    if (index >= m_linkModels.size()) {
+        Logging::error("Joint index larger than joint size", this);
+        return nullptr;
+    }
+    return m_linkModels[index];
+}
+
+/*!
+*  \brief      Return ModelContainer vector from all links
+*  \author     Sascha Kaden
+*  \param[out] vector of ModelContainer ptr
+*  \date       2018-01-10
+*/
+std::vector<std::shared_ptr<ModelContainer>> SerialRobot::getLinkModels() const {
+    return m_linkModels;
+}
+
+/*!
+*  \brief      Return the link offsets (Transform) from the dh parameter joint position to the link position.
+*  \author     Sascha Kaden
+*  \param[out] Transform of the link offsets
+*  \date       2018-01-10
+*/
+std::vector<Transform> SerialRobot::getLinkOffsets() const {
+    return m_linkOffsets;
+}
+
+/*!
 *  \brief      Saves the configuration of the robot by obj files in the working directory
 *  \author     Sascha Kaden
 *  \param[in]  joint angles
-*  \date       2016-10-22
+*  \date       2018-01-10
 */
 void SerialRobot::saveMeshConfig(const VectorX &angles) {
     if (this->m_baseModel != nullptr) {
@@ -303,10 +271,37 @@ void SerialRobot::saveMeshConfig(const VectorX &angles) {
 
     auto linkTrafos = getLinkTrafos(angles);
     for (size_t i = 0; i < m_joints.size(); ++i) {
-        Mesh mesh = getModelFromJoint(i)->m_mesh;
-        std::vector<Vector3> vertices = mesh.vertices;
+        std::vector<Vector3> vertices = m_linkModels[i]->m_mesh.vertices;
         cad::transformVertices(linkTrafos[i], vertices);
-        cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), vertices, mesh.faces);
+        cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), vertices, m_linkModels[i]->m_mesh.faces);
+    }
+}
+
+/*!
+*  \brief      Update all parameter of the joints into container of the SerialRobot class for a better performance.
+*  \author     Sascha Kaden
+*  \date       2018-01-10
+*/
+void SerialRobot::updateJointParams() {
+    m_linkOffsets.clear();
+    m_dhParameters.clear();
+    m_linkModels.clear();
+    m_linkOffsets.reserve(m_joints.size());
+    m_dhParameters.reserve(m_joints.size());
+    m_linkModels.reserve(m_joints.size());
+
+    for (auto &joint : m_joints) {
+        m_linkOffsets.push_back(joint.getLinkOffset());
+        m_dhParameters.push_back(joint.getDhParameter());
+        m_linkModels.push_back(joint.getLinkModel());
+    }
+
+    m_minBoundary = VectorX::Zero(m_dim);
+    m_maxBoundary = VectorX::Zero(m_dim);
+    for (size_t i = 0; i < m_dim; ++i) {
+        auto boundaries = m_joints[i].getBoundaries();
+        m_minBoundary[i] = boundaries.first;
+        m_maxBoundary[i] = boundaries.second;
     }
 }
 

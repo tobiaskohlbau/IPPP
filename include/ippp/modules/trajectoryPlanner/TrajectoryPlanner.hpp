@@ -38,16 +38,16 @@ class TrajectoryPlanner : public Identifier {
     TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
                       const std::shared_ptr<Environment> &environment, double posRes = 1, double oriRes = 0.1);
 
-    bool checkTrajectory(const Node<dim> &source, const Node<dim> &target);
-    bool checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
-    bool checkTrajectory(const Vector<dim> &source, const Vector<dim> &target);
+    bool checkTrajectory(const Node<dim> &source, const Node<dim> &target) const;
+    bool checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
+    bool checkTrajectory(const Vector<dim> &source, const Vector<dim> &target) const;
 
-    Vector<dim> checkTrajCont(const Node<dim> &source, const Node<dim> &target);
-    Vector<dim> checkTrajCont(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target);
-    Vector<dim> checkTrajCont(const Vector<dim> &source, const Vector<dim> &target);
+    Vector<dim> checkTrajCont(const Node<dim> &source, const Node<dim> &target) const;
+    Vector<dim> checkTrajCont(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
+    Vector<dim> checkTrajCont(const Vector<dim> &source, const Vector<dim> &target) const;
 
-    virtual std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) = 0;
-    virtual std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) = 0;
+    virtual std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) const = 0;
+    virtual std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) const = 0;
 
     void setResolutions(double posRes, double oriRes = 0.1);
     double getPosRes() const;
@@ -98,7 +98,7 @@ TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::sh
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::checkTrajectory(const Node<dim> &source, const Node<dim> &target) {
+bool TrajectoryPlanner<dim>::checkTrajectory(const Node<dim> &source, const Node<dim> &target) const {
     return checkTrajectory(source.getValues(), target.getValues());
 }
 
@@ -111,7 +111,8 @@ bool TrajectoryPlanner<dim>::checkTrajectory(const Node<dim> &source, const Node
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) {
+bool TrajectoryPlanner<dim>::checkTrajectory(const std::shared_ptr<Node<dim>> &source,
+                                             const std::shared_ptr<Node<dim>> &target) const {
     return checkTrajectory(source->getValues(), target->getValues());
 }
 
@@ -124,7 +125,7 @@ bool TrajectoryPlanner<dim>::checkTrajectory(const std::shared_ptr<Node<dim>> &s
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::checkTrajectory(const Vector<dim> &source, const Vector<dim> &target) {
+bool TrajectoryPlanner<dim>::checkTrajectory(const Vector<dim> &source, const Vector<dim> &target) const {
     auto path = calcTrajectoryBin(source, target);
     if (m_collision->checkTrajectory(path))
         return false;
@@ -141,7 +142,7 @@ bool TrajectoryPlanner<dim>::checkTrajectory(const Vector<dim> &source, const Ve
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Node<dim> &source, const Node<dim> &target) {
+Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Node<dim> &source, const Node<dim> &target) const {
     return checkTrajCont(source.getValues(), target.getValues());
 }
 
@@ -155,7 +156,7 @@ Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Node<dim> &source, const
 */
 template <unsigned int dim>
 Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const std::shared_ptr<Node<dim>> &source,
-                                                  const std::shared_ptr<Node<dim>> &target) {
+                                                  const std::shared_ptr<Node<dim>> &target) const {
     return checkTrajCont(source->getValues(), target->getValues());
 }
 
@@ -168,7 +169,7 @@ Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const std::shared_ptr<Node<dim
 *  \date       2016-05-31
 */
 template <unsigned int dim>
-Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, const Vector<dim> &target) {
+Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, const Vector<dim> &target) const {
     auto path = calcTrajectoryCont(source, target);
     path.push_back(target);
     unsigned int count = -1;

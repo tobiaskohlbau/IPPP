@@ -17,22 +17,61 @@
 //-------------------------------------------------------------------------//
 
 #include <ippp/environment/EnvObject.h>
+#include <ippp/util/Logging.h>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 
 /*!
 *  \brief      Standard destructor of the EnvObject
 *  \author     Sascha Kaden
-*  \date       2017-02-19
+*  \date       2018-01-10
 */
 EnvObject::~EnvObject() = default;
 
 /*!
 *  \brief      Standard constructor of EnvObject
 *  \author     Sascha Kaden
-*  \date       2017-02-19
+*  \date       2018-01-10
 */
-EnvObject::EnvObject(const std::string &name, EnvObjectType type) : Identifier(name), m_type(type) {
+EnvObject::EnvObject(const std::string &name, EnvObjectType type)
+    : Identifier(name), m_type(type), m_pose(Transform::Identity()) {
+}
+
+/*!
+*  \brief      Set pose of EnvObject
+*  \author     Sascha Kaden
+*  \param[in]  Transform pose
+*  \date       2017-11-01
+*/
+void EnvObject::setPose(const Vector6 &pose) {
+    if (util::empty<6>(pose)) {
+        Logging::warning("Set empty pose", this);
+        m_pose = Transform::Identity();
+        return;
+    }
+
+    m_pose = util::poseVecToTransform(pose);
+}
+
+/*!
+*  \brief      Set pose of EnvObject
+*  \author     Sascha Kaden
+*  \param[in]  Transform pose
+*  \date       2017-11-01
+*/
+void EnvObject::setPose(const Transform &pose) {
+    m_pose = pose;
+}
+
+/*!
+*  \brief      Get pose of EnvObject
+*  \author     Sascha Kaden
+*  \param[out] Transform pose
+*  \date       2017-11-01
+*/
+Transform EnvObject::getPose() const {
+    return m_pose;
 }
 
 } /* namespace ippp */

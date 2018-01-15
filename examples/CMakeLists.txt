@@ -36,7 +36,7 @@ endmacro()
 add_subdirectory(ui)
 
 add_ippp_example(GettingStarted GettingStarted.cpp gflags)
-add_ippp_example(JacoRRT JacoRRT.cpp gflags)
+add_ippp_example(Kuka Kuka.cpp gflags)
 if(OpenCV_FOUND)
 	add_ippp_example(Planner2D Planner2D.cpp ${OpenCV_LIBS} ui gflags)
     if(MSVC)

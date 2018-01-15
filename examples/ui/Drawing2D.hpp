@@ -119,9 +119,9 @@ static void drawSerialRobot2D(const Vector<dim> config, const std::shared_ptr<Se
         }
     }
     
-    auto jointModels = robot->getJointModels();
+    auto linkModel = robot->getLinkModels();
     std::vector<Mesh> jointMeshes;
-    for (auto &model : jointModels)
+    for (auto &model : linkModel)
         jointMeshes.push_back(model->m_mesh);
 
     auto AsLinks = robot->getLinkTrafos(config);

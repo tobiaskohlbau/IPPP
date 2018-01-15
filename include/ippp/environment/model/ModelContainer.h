@@ -45,6 +45,7 @@ class ModelContainer : public Identifier {
     virtual void transformModel(const Vector6 &config) = 0;
 
     Mesh m_mesh;
+    std::string m_filePath;
 };
 
 } /* namespace ippp */

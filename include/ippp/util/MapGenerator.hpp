@@ -24,6 +24,7 @@
 #include <ippp/modules/sampler/Sampler.hpp>
 
 namespace ippp {
+    namespace util {
 
 /*!
 * \brief   MapGenerator creates 2D and 3D maps with random rectangles or cubes.
@@ -142,6 +143,7 @@ bool MapGenerator<dim>::checkBounding(const Vector<dim> &sample, const Vector<di
     return true;
 }
 
+} /* namespace util */
 } /* namespace ippp */
 
 #endif    // MAPGENERATOR_HPP

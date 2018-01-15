@@ -18,10 +18,10 @@
 
 #include <gtest/gtest.h>
 
+#include <ippp/environment/robot/MobileRobot.h>
 #include <ippp/modules/collisionDetection/CollisionDetectionPqp.hpp>
 #include <ippp/modules/trajectoryPlanner/LinearTrajectory.hpp>
-#include <ippp/util/Utility.h>
-#include <ippp/environment/robot/MobileRobot.h>
+#include <ippp/util/UtilVec.hpp>
 
 using namespace ippp;
 

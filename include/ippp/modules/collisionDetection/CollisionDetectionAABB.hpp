@@ -21,8 +21,9 @@
 
 #include <Eigen/Geometry>
 
-#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/environment/cad/CadProcessing.h>
+#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 
@@ -57,18 +58,19 @@ class CollisionDetectionAABB : public CollisionDetection<dim> {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-CollisionDetectionAABB<dim>::CollisionDetectionAABB(const std::shared_ptr<Environment> &environment, const CollisionRequest &request)
+CollisionDetectionAABB<dim>::CollisionDetectionAABB(const std::shared_ptr<Environment> &environment,
+                                                    const CollisionRequest &request)
     : CollisionDetection<dim>("CollisionDetectionAABB", environment, request) {
     if (environment->numRobots() > 1)
         m_multiRobot = true;
 
     m_robots = m_environment->getRobots();
 
-    for (auto robot : environment->getRobots())
+    for (auto &robot : environment->getRobots())
         m_robotAABBs.push_back(robot->getBaseModel()->getAABB());
 
-    for (auto obstacle : environment->getObstacles())
-        m_obstacleAABBs.push_back(obstacle->getAABB());
+    for (auto &obstacle : environment->getObstacles())
+        m_obstacleAABBs.push_back(obstacle->model->getAABB());
 }
 
 /*!
@@ -98,7 +100,7 @@ bool CollisionDetectionAABB<dim>::checkConfig(const Vector<dim> &config, Collisi
         for (auto &robotAABB : robotAABBs)
             if (checkObstacles(robotAABB, result))
                 return true;
-    } 
+    }
     if (collisionRequest.checkObstacle) {
         auto trafo = m_robots[0]->getTransformation(config);
         AABB robotAABB = util::transformAABB(m_robotAABBs[0], trafo);
@@ -129,7 +131,7 @@ bool CollisionDetectionAABB<dim>::checkTrajectory(std::vector<Vector<dim>> &conf
 
 template <unsigned int dim>
 bool CollisionDetectionAABB<dim>::checkRobots(const std::vector<AABB> &robots, CollisionResult *result) {
-    if (result){
+    if (result) {
         double dist;
         for (auto a = robots.begin(); a != robots.end() - 1; ++a) {
             for (auto b = robots.begin() + 1; b != robots.end(); ++b) {

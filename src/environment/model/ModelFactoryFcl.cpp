@@ -41,6 +41,7 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModelFromFile(const std::
     }
 
     std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
+    fclModel->m_filePath = filePath;
     if (!cad::importMesh(filePath, fclModel->m_mesh)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
@@ -53,9 +54,9 @@ std::shared_ptr<ModelContainer> ModelFactoryFcl::createModelFromFile(const std::
         vertices.emplace_back(vertex[0], vertex[1], vertex[2]);
     for (auto face : fclModel->m_mesh.faces)
         triangles.emplace_back(face[0], face[1], face[2]);
-    fclModel->m_fclModel.beginModel();
-    fclModel->m_fclModel.addSubModel(vertices, triangles);
-    fclModel->m_fclModel.endModel();
+    fclModel->m_fclModel->beginModel();
+    fclModel->m_fclModel->addSubModel(vertices, triangles);
+    fclModel->m_fclModel->endModel();
 
     return fclModel;
 }
@@ -76,6 +77,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModelsFromFi
 
     for (auto &mesh : meshes) {
         std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
+        fclModel->m_filePath = filePath;
         fclModel->m_mesh = mesh;
         fclModel->m_mesh.aabb = cad::computeAABB(fclModel->m_mesh);
 
@@ -85,9 +87,9 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModelsFromFi
             vertices.emplace_back(vertex[0], vertex[1], vertex[2]);
         for (auto face : fclModel->m_mesh.faces)
             triangles.emplace_back(face[0], face[1], face[2]);
-        fclModel->m_fclModel.beginModel();
-        fclModel->m_fclModel.addSubModel(vertices, triangles);
-        fclModel->m_fclModel.endModel();
+        fclModel->m_fclModel->beginModel();
+        fclModel->m_fclModel->addSubModel(vertices, triangles);
+        fclModel->m_fclModel->endModel();
         models.push_back(fclModel);
     }
     return models;

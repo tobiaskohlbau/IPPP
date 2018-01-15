@@ -45,6 +45,7 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModelFromFile(const std::
 
     // create model container properties
     std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
+    pqpModel->m_filePath = filePath;
     if (!cad::importMesh(filePath, pqpModel->m_mesh)) {
         Logging::error("Could not load mesh", this);
         return nullptr;
@@ -90,6 +91,7 @@ std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModelsFromFi
 
     for (const auto &mesh : meshes) {
         std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
+        pqpModel->m_filePath = filePath;
         pqpModel->m_mesh = mesh;
         pqpModel->m_mesh.aabb = cad::computeAABB(pqpModel->m_mesh);
 

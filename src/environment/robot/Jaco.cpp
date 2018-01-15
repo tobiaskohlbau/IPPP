@@ -18,6 +18,8 @@
 
 #include <ippp/environment/robot/Jaco.h>
 
+#include <ippp/util/UtilGeo.hpp>
+
 namespace ippp {
 
 /*!
@@ -26,9 +28,8 @@ namespace ippp {
 *  \author     Sascha Kaden
 *  \date       2016-06-30
 */
-Jaco::Jaco(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
-           const std::vector<DofType> &dofTypes)
-    : SerialRobot(dim, joints, dhParameters, dofTypes, "Jaco") {
+Jaco::Jaco(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DofType> &dofTypes)
+    : SerialRobot(dim, joints, dofTypes, "Jaco") {
     // m_alpha = util::Vecd(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());
     // m_a = util::Vecd(0, 410, 0, 0, 0, 0);
     // m_d = util::Vecd(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);

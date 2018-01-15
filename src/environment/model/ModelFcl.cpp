@@ -22,7 +22,7 @@
 
 namespace ippp {
 
-ModelFcl::ModelFcl() : ModelContainer("ModelFcl") {
+ModelFcl::ModelFcl() : ModelContainer("ModelFcl"), m_fclModel(std::make_shared<FCLModel>()){
 }
 
 /*!
@@ -32,7 +32,7 @@ ModelFcl::ModelFcl() : ModelContainer("ModelFcl") {
 *  \date       2017-02-19
 */
 bool ModelFcl::empty() const {
-    return m_fclModel.num_vertices == 0;
+    return (m_fclModel == nullptr || m_fclModel->num_vertices == 0);
 }
 
 /*!
@@ -78,10 +78,10 @@ void ModelFcl::updateFclModel() {
     for (auto face : m_mesh.faces)
         triangles.emplace_back(face[0], face[1], face[2]);
 
-    m_fclModel = FCLModel();
-    m_fclModel.beginModel();
-    m_fclModel.addSubModel(vertices, triangles);
-    m_fclModel.endModel();
+    m_fclModel = std::make_shared<FCLModel>();
+    m_fclModel->beginModel();
+    m_fclModel->addSubModel(vertices, triangles);
+    m_fclModel->endModel();
 }
 
 } /* namespace ippp */

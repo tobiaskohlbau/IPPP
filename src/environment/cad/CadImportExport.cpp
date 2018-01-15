@@ -23,6 +23,7 @@
 
 #include <ippp/util/Logging.h>
 #include <ippp/util/UtilGeo.hpp>
+#include <ippp/util/UtilList.hpp>
 
 namespace ippp {
 namespace cad {
@@ -60,7 +61,7 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, double
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filePath, aiProcess_CalcTangentSpace);
     if (scene == nullptr) {
-        Logging::error("Could not load cad", "CadProcessing");
+        Logging::error("Could not load cad: " + filePath, "CadProcessing");
         Logging::error("Assimp message: " + std::string(importer.GetErrorString()), "CadProcessing");
         return false;
     }
@@ -69,7 +70,8 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, double
         Logging::error("Scene contains no meshes", "CadProcessing");
         return false;
     }
-    Logging::info("File has: " + std::to_string(scene->mNumMeshes) + " mesh(es)", "CadProcessing");
+    Logging::info("File " + util::getFileName(filePath) + "has: " + std::to_string(scene->mNumMeshes) + " mesh(es)",
+                  "CadProcessing");
     meshes.clear();
 
     aiMatrix4x4 trafo;
@@ -301,6 +303,8 @@ bool exportCad(ExportFormat format, const std::string &filePath, const std::vect
 
     const aiExportFormatDesc *formatDesc = exporter.GetExportFormatDescription(formatCount);
     exporter.Export(&scene, formatDesc->id, filePath + "." + formatDesc->fileExtension, aiProcess_Triangulate);
+
+    Logging::info("Exported: " + util::getFileName(filePath), "CadProcessing");
     return true;
 }
 

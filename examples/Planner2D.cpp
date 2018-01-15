@@ -17,7 +17,7 @@ Mesh generateMap() {
     Vector2 max(1000, 1000);
     std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(min, max));
 
-    MapGenerator<dim> mapGenerator(min, max, sampler);
+    util::MapGenerator<dim> mapGenerator(min, max, sampler);
     auto meshes = mapGenerator.generateMap(80, Vector2(80, 80), Vector2(10, 10));
     auto mesh = cad::mergeMeshes(meshes);
     cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
@@ -32,7 +32,7 @@ bool testTriangleRobot() {
     envConfigurator.setRobotType(RobotType::Triangle2D);
     envConfigurator.setRobotBaseModelFile(FLAGS_assetsDir + "/robotModels/simpleTriangleRobot.obj");
     generateMap();
-    envConfigurator.addObstaclePath("obstacle.obj");
+    envConfigurator.addObstacle("obstacle.obj");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
 
     ModuleConfigurator<dim> creator;
@@ -59,7 +59,7 @@ bool testTriangleRobot() {
     Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (const auto& obstacle : environment->getObstacles())
-        meshes.push_back(obstacle->m_mesh);
+        meshes.push_back(obstacle->model->m_mesh);
     cad::drawTriangles(workspace2D, meshes, 50);
     cv::Mat image = drawing::eigenToCV(workspace2D);
     cv::cvtColor(image, image, CV_GRAY2BGR);
@@ -121,7 +121,7 @@ bool test2DSerialRobot() {
     Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (const auto& obstacle : environment->getObstacles())
-        meshes.push_back(obstacle->m_mesh);
+        meshes.push_back(obstacle->model->m_mesh);
     cad::drawTriangles(workspace2D, meshes, 50);
     cv::Mat image = drawing::eigenToCV(workspace2D);
     cv::cvtColor(image, image, CV_GRAY2BGR);
@@ -157,7 +157,7 @@ void testPointRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.addObstaclePath(FLAGS_assetsDir + "/spaces/random2D.obj");
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point);
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
 
@@ -186,7 +186,7 @@ void testPointRobot() {
     Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (const auto& obstacle : environment->getObstacles())
-        meshes.push_back(obstacle->m_mesh);
+        meshes.push_back(obstacle->model->m_mesh);
     cad::drawTriangles(workspace2D, meshes, 50);
     cv::Mat image = drawing::eigenToCV(workspace2D);
     cv::cvtColor(image, image, CV_GRAY2BGR);
@@ -215,6 +215,6 @@ int main(int argc, char** argv) {
 
      //while (!testTriangleRobot());
     // testTriangleRobot();
-    test2DSerialRobot();
-    // testPointRobot();
+    //test2DSerialRobot();
+     testPointRobot();
 }

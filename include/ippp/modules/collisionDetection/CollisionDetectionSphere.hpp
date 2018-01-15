@@ -23,6 +23,7 @@
 
 #include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 
@@ -67,11 +68,11 @@ CollisionDetectionSphere<dim>::CollisionDetectionSphere(const std::shared_ptr<En
 
     m_robots = m_environment->getRobots();
 
-    for (auto robot : environment->getRobots())
+    for (auto &robot : environment->getRobots())
         m_robotAABBs.push_back(robot->getBaseModel()->getAABB());
 
-    for (auto obstacle : environment->getObstacles())
-        m_obstacleAABBs.push_back(obstacle->getAABB());
+    for (auto &obstacle : environment->getObstacles())
+        m_obstacleAABBs.push_back(obstacle->model->getAABB());
 }
 
 /*!
@@ -103,7 +104,7 @@ bool CollisionDetectionSphere<dim>::checkConfig(const Vector<dim> &config, Colli
         for (auto &robotAABB : robotAABBs)
             if (checkObstacles(robotAABB, result))
                 return true;
-    } 
+    }
     if (collisionRequest.checkObstacle) {
         auto trafo = m_robots[0]->getTransformation(config);
         AABB robotAABB = util::translateAABB(m_robotAABBs[0], trafo);

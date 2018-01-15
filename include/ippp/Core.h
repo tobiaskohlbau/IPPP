@@ -83,6 +83,5 @@
 
 #include <ippp/util/Logging.h>
 #include <ippp/util/UtilGeo.hpp>
-#include <ippp/util/UtilIO.hpp>
 #include <ippp/util/UtilList.hpp>
 #include <ippp/util/UtilVec.hpp>

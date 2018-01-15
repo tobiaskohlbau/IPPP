@@ -18,13 +18,13 @@
 
 #include <gtest/gtest.h>
 
+#include <ippp/environment/robot/MobileRobot.h>
 #include <ippp/modules/sampler/GridSampler.hpp>
 #include <ippp/modules/sampler/SamplerNormalDist.hpp>
 #include <ippp/modules/sampler/SamplerRandom.hpp>
 #include <ippp/modules/sampler/SamplerUniform.hpp>
-
-#include <ippp/environment/robot/MobileRobot.h>
-#include <ippp/util/Utility.h>
+#include <ippp/util/UtilGeo.hpp>
+#include <ippp/util/UtilVec.hpp>
 
 double min = -5;
 double max = 5;

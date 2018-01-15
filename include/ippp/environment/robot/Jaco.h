@@ -30,8 +30,7 @@ namespace ippp {
 */
 class Jaco : public SerialRobot {
   public:
-    Jaco(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DhParameter> &dhParameters,
-         const std::vector<DofType> &dofTypes);
+    Jaco(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DofType> &dofTypes);
     std::vector<Transform> getJointTrafos(const VectorX &angles) const override;
 
   private:

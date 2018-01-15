@@ -23,6 +23,7 @@
 #include <ippp/environment/cad/CadProcessing.h>
 #include <ippp/environment/robot/TriangleRobot2D.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 
@@ -71,11 +72,11 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
     m_workspaceBounding = m_environment->getSpaceBoundary();
     this->setRobotBoundings(m_environment->getRobotBoundaries());
 
-    if (m_environment->getObstacleNum() == 0) {
+    if (m_environment->numObstacles() == 0) {
         Logging::warning("Empty workspace", this);
     } else {
         for (auto obstacle : m_environment->getObstacles())
-            m_obstacles.push_back(obstacle->m_mesh);
+            m_obstacles.push_back(obstacle->model->m_mesh);
     }
 
     // update obstacle models for the 2D collision check, extends the AABB of the obstacle

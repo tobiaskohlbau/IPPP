@@ -172,7 +172,7 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
         return false;
     }
 
-    auto nearestNode = util::getNearestValidNode<dim>(goal, m_graph, m_trajectory, m_metric, m_stepSize * 3);
+    auto nearestNode = util::getNearestValidNode<dim>(goal, *m_graph, *m_trajectory, *m_metric, m_stepSize * 3);
 
     if (nearestNode) {
         std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));

@@ -20,6 +20,8 @@
 
 #include <utility>
 
+#include <ippp/util/UtilGeo.hpp>
+
 namespace ippp {
 
 /*!
@@ -43,44 +45,20 @@ RobotBase::RobotBase(const std::string &name, unsigned int dim, RobotCategory ro
       m_dim(dim),
       m_robotType(robotType),
       m_dofTypes(std::move(dofTypes)),
-      m_baseModel(nullptr),
-      m_pose(Transform::Identity()) {
+      m_baseModel(nullptr) {
     if (dim != m_dofTypes.size())
         Logging::error("DoF Types have not the size of the robot dimension", this);
     assert(dim == m_dofTypes.size());
 }
 
 /*!
-*  \brief      Set pose of robot
+*  \brief      Return the static flag of the EnvObject
 *  \author     Sascha Kaden
-*  \param[in]  Transform pose
-*  \date       2017-11-01
+*  \param[out] false
+*  \date       2018-01-10
 */
-void RobotBase::setPose(const Vector6 &pose) {
-    if (util::empty<6>(pose))
-        Logging::warning("Set empty pose", this);
-
-    m_pose = util::poseVecToTransform(pose);
-}
-
-/*!
-*  \brief      Set pose of robot
-*  \author     Sascha Kaden
-*  \param[in]  Transform pose
-*  \date       2017-11-01
-*/
-void RobotBase::setPose(const Transform &pose) {
-    m_pose = pose;
-}
-
-/*!
-*  \brief      Get pose of robot
-*  \author     Sascha Kaden
-*  \param[out] Transform pose
-*  \date       2017-11-01
-*/
-Transform RobotBase::getPose() const {
-    return m_pose;
+bool RobotBase::isStatic() const {
+    return false;
 }
 
 /*!
