@@ -39,14 +39,14 @@ double max = 5;
 using namespace ippp;
 
 template <unsigned int dim>
-void testSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
+void testSampling(Sampling<dim> &sampling) {
     for (size_t i = 0; i < 10; ++i) {
-        double number = sampling->getRandomNumber();
+        double number = sampling.getRandomNumber();
         EXPECT_TRUE(number >= 0);
         EXPECT_TRUE(number <= 1);
 
         size_t sampleAmount = 10;
-        auto samples = sampling->getSamples(sampleAmount);
+        auto samples = sampling.getSamples(sampleAmount);
         for (auto sample : samples) {
             if (util::empty<dim>(sample))
                 continue;
@@ -56,7 +56,7 @@ void testSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
             }
         }
 
-        auto config = sampling->getSample();
+        auto config = sampling.getSample();
         if (util::empty<dim>(config))
             continue;
         for (unsigned int index = 0; index < dim; ++index) {
@@ -100,7 +100,7 @@ void createSampling() {
     }
 
     for (auto &sampling : samplings)
-        testSampling(sampling);
+        testSampling(*sampling);
 }
 
 TEST(SAMPLING, standardSampling) {

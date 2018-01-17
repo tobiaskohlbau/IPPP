@@ -61,7 +61,7 @@ static std::shared_ptr<Node<dim>> getNearestValidNode(const Vector<dim> &config,
 *  \date          2016-08-09
 */
 template <unsigned int dim>
-static void expandNode(const std::shared_ptr<Node<dim>> currentNode, std::vector<std::shared_ptr<Node<dim>>> &openList,
+static void expandNode(const std::shared_ptr<Node<dim>> &currentNode, std::vector<std::shared_ptr<Node<dim>>> &openList,
                        std::vector<std::shared_ptr<Node<dim>>> &closedList, const DistanceMetric<dim> &metric) {
     double dist, edgeCost;
     auto successors = currentNode->getChildNodes();
@@ -72,7 +72,7 @@ static void expandNode(const std::shared_ptr<Node<dim>> currentNode, std::vector
         if (util::contains(closedList, successor))
             continue;
 
-        edgeCost = metric.calcDist(*currentNode, *successor);
+        edgeCost = metric.calcDist(currentNode, successor);
         dist = currentNode->getCost() + edgeCost;
 
         if (util::contains(openList, successor) && dist >= successor->getCost())
@@ -96,7 +96,7 @@ static void expandNode(const std::shared_ptr<Node<dim>> currentNode, std::vector
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-static bool aStar(const std::shared_ptr<Node<dim>> sourceNode, const std::shared_ptr<Node<dim>> targetNode,
+static bool aStar(const std::shared_ptr<Node<dim>> &sourceNode, const std::shared_ptr<Node<dim>> &targetNode,
                   const DistanceMetric<dim> &metric) {
     std::vector<std::shared_ptr<Node<dim>>> openList, closedList;
 
