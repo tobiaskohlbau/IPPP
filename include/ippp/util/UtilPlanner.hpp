@@ -72,7 +72,7 @@ static void expandNode(const std::shared_ptr<Node<dim>> &currentNode, std::vecto
         if (util::contains(closedList, successor))
             continue;
 
-        edgeCost = metric.calcDist(currentNode, successor);
+        edgeCost = metric.calcDist(*currentNode, *successor);
         dist = currentNode->getCost() + edgeCost;
 
         if (util::contains(openList, successor) && dist >= successor->getCost())

@@ -80,9 +80,9 @@ Vector<dim> GaussianSampling<dim>::getSample() {
         sample2 = sample1 + ray;
 
         if (!m_validityChecker->checkConfig(sample1) && m_validityChecker->checkConfig(sample2))
-            return sample1;
-        else if (m_validityChecker->checkConfig(sample1) && !m_validityChecker->checkConfig(sample2))
             return sample2;
+        else if (m_validityChecker->checkConfig(sample1) && !m_validityChecker->checkConfig(sample2))
+            return sample1;
     }
     return util::NaNVector<dim>();
 }
