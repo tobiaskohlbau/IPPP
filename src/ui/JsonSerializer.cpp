@@ -71,7 +71,7 @@ nlohmann::json serialize(const std::vector<Transform> &transforms) {
         return std::string();
 
     nlohmann::json json;
-    json["NumberTransformations"] = transforms.size();
+    json["NumberOfTransforms"] = transforms.size();
 
     std::vector<std::vector<double>> data;
     for (const auto &transform : transforms) {
@@ -91,11 +91,11 @@ nlohmann::json serialize(const std::vector<Transform> &transforms) {
 */
 std::vector<Transform> deserializeTransforms(const nlohmann::json &data) {
     std::vector<Transform> transforms;
-    if (data.empty())
+    if (data.empty() || data.dump().size() == 0)
         return transforms;
 
     std::vector<std::vector<double>> stdVectors = data["Transforms"].get<std::vector<std::vector<double>>>();
-    size_t size = data["NumberTransformations"].get<size_t>();
+    size_t size = data["NumberOfTransforms"].get<size_t>();
     if (stdVectors.size() != size) {
         Logging::error("Wrong transforms size of file", "JsonSerializer");
         return transforms;

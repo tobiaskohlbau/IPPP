@@ -40,16 +40,13 @@ namespace ippp {
 template <unsigned int dim>
 class PlannerOptions : public Identifier {
   public:
-    PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Constraint<dim>> &constraint,
+    PlannerOptions(const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                    const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evalutor,
                    const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
                    const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
-    void setCollisionDetection(const std::shared_ptr<CollisionDetection<dim>> &collision);
-    std::shared_ptr<CollisionDetection<dim>> getCollisionDetection() const;
-
-    void setConstraint(const std::shared_ptr<Constraint<dim>> &constraint);
-    std::shared_ptr<Constraint<dim>> getConstraint() const;
+    void setValidityChecker(const std::shared_ptr<ValidityChecker<dim>> &collision);
+    std::shared_ptr<ValidityChecker<dim>> getValidityChecker() const;
 
     void setDistanceMetric(const std::shared_ptr<DistanceMetric<dim>> &metric);
     std::shared_ptr<DistanceMetric<dim>> getDistanceMetric() const;
@@ -67,8 +64,7 @@ class PlannerOptions : public Identifier {
     std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner() const;
 
   protected:
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-    std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
+    std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
     std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
     std::shared_ptr<PathModifier<dim>> m_pathModifier = nullptr;
@@ -88,16 +84,14 @@ class PlannerOptions : public Identifier {
 *  \date       2017-05-26
 */
 template <unsigned int dim>
-PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                    const std::shared_ptr<Constraint<dim>> &constraint,
+PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                                     const std::shared_ptr<DistanceMetric<dim>> &metric,
                                     const std::shared_ptr<Evaluator<dim>> &evaluator,
                                     const std::shared_ptr<PathModifier<dim>> &pathModifier,
                                     const std::shared_ptr<Sampling<dim>> &sampling,
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
     : Identifier("PlannerOptions"),
-      m_collision(collision),
-      m_constraint(constraint),
+      m_validityChecker(validityChecker),
       m_metric(metric),
       m_evaluator(evaluator),
       m_pathModifier(pathModifier),
@@ -112,8 +106,8 @@ PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<CollisionDetection<dim
 *  \date       2016-01-29
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setCollisionDetection(const std::shared_ptr<CollisionDetection<dim>> &collision) {
-    m_collision = collision;
+void PlannerOptions<dim>::setValidityChecker(const std::shared_ptr<ValidityChecker<dim>> &validityChecker) {
+    m_validityChecker = validityChecker;
 }
 
 /*!
@@ -123,30 +117,8 @@ void PlannerOptions<dim>::setCollisionDetection(const std::shared_ptr<CollisionD
 *  \date       2016-01-29
 */
 template <unsigned int dim>
-std::shared_ptr<CollisionDetection<dim>> PlannerOptions<dim>::getCollisionDetection() const {
-    return m_collision;
-}
-
-/*!
-*  \brief      Set the Constraint instance.
-*  \param[in]  Constraint
-*  \author     Sascha Kaden
-*  \date       2018-01-08
-*/
-template <unsigned int dim>
-void PlannerOptions<dim>::setConstraint(const std::shared_ptr<Constraint<dim>> &constraint) {
-    m_constraint = constraint;
-}
-
-/*!
-*  \brief      Returns the Constraint instance.
-*  \param[out] Constraint
-*  \author     Sascha Kaden
-*  \date       2018-01-08
-*/
-template <unsigned int dim>
-std::shared_ptr<Constraint<dim>> PlannerOptions<dim>::getConstraint() const {
-    return m_constraint;
+std::shared_ptr<ValidityChecker<dim>> PlannerOptions<dim>::getValidityChecker() const {
+    return m_validityChecker;
 }
 
 /*!

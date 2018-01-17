@@ -76,11 +76,11 @@ void createSampling() {
         maxBound[i] = max;
     }
 
-    std::shared_ptr<MobileRobot> robot(new MobileRobot(dim, std::make_pair(minBound, maxBound), dofTypes));
-    robot->setBaseModel(nullptr);
-    std::shared_ptr<Environment> environment(new Environment(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionFcl<dim>(environment));
-    std::shared_ptr<TrajectoryPlanner<dim>> trajectory(new LinearTrajectory<dim>(collision, environment, 0.1));
+    auto robot = std::make_shared<MobileRobot>(dim, std::make_pair(minBound, maxBound), dofTypes);
+    auto environment = std::make_shared<Environment>(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot);
+    auto collision = std::make_shared<CollisionDetectionFcl<dim>>(environment);
+    auto validityChecker = std::make_shared<ValidityChecker<dim>>(environment, collision);
+    auto trajectory = std::make_shared<LinearTrajectory<dim>>(environment, 0.1);
 
     std::vector<std::shared_ptr<Sampler<dim>>> samplers;
     samplers.push_back(std::make_shared<SamplerRandom<dim>>(environment));
@@ -91,12 +91,12 @@ void createSampling() {
 
     std::vector<std::shared_ptr<Sampling<dim>>> samplings;
     for (auto sampler : samplers) {
-        samplings.push_back(std::make_shared<BridgeSampling<dim>>(environment, collision, trajectory, sampler, 1));
-        samplings.push_back(std::make_shared<GaussianDistSampling<dim>>(environment, collision, trajectory, sampler, 1));
-        samplings.push_back(std::make_shared<GaussianSampling<dim>>(environment, collision, trajectory, sampler, 1));
-        // samplings.push_back(std::make_shared<MedialAxisSampling<dim>>(environment, collision, trajectory, sampler, 1));
-        samplings.push_back(std::make_shared<SamplingNearObstacle<dim>>(environment, collision, trajectory, sampler, 1));
-        samplings.push_back(std::make_shared<StraightSampling<dim>>(environment, collision, trajectory, sampler, 1));
+        samplings.push_back(std::make_shared<BridgeSampling<dim>>(environment, validityChecker, trajectory, sampler, 1));
+        samplings.push_back(std::make_shared<GaussianDistSampling<dim>>(environment, validityChecker, trajectory, sampler, 1));
+        samplings.push_back(std::make_shared<GaussianSampling<dim>>(environment, validityChecker, trajectory, sampler, 1));
+        // samplings.push_back(std::make_shared<MedialAxisSampling<dim>>(environment, validityChecker, trajectory, sampler, 1));
+        samplings.push_back(std::make_shared<SamplingNearObstacle<dim>>(environment, validityChecker, trajectory, sampler, 1));
+        samplings.push_back(std::make_shared<StraightSampling<dim>>(environment, validityChecker, trajectory, sampler, 1));
     }
 
     for (auto &sampling : samplings)

@@ -54,7 +54,7 @@ class PRM : public Planner<dim> {
     double m_rangeSize;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
 
-    using Planner<dim>::m_collision;
+    using Planner<dim>::m_validityChecker;
     using Planner<dim>::m_environment;
     using Planner<dim>::m_evaluator;
     using Planner<dim>::m_graph;
@@ -161,7 +161,7 @@ void PRM<dim>::samplingPhase(size_t nbOfNodes) {
         if (util::empty<dim>(sample))
             continue;
 
-        if (!m_collision->checkConfig(sample))
+        if (m_validityChecker->checkConfig(sample))
             m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
     }
 }
@@ -212,13 +212,13 @@ void PRM<dim>::plannerPhase(size_t startNodeIndex, size_t endNodeIndex) {
     }
 
     for (auto node = nodes.begin() + startNodeIndex; node != nodes.begin() + endNodeIndex; ++node) {
-        std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(*node, m_rangeSize);
+        auto nearNodes = m_graph->getNearNodes(**node, m_rangeSize);
         for (auto &nearNode : nearNodes) {
             if ((*node)->isChild(nearNode) || (*node)->isInvalidChild(nearNode))
                 continue;
 
-            if (m_trajectory->checkTrajectory((*node)->getValues(), nearNode->getValues()))
-                (*node)->addChild(nearNode, m_metric->calcDist(nearNode, (*node)));
+            if (m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(**node, *nearNode)))
+                (*node)->addChild(nearNode, m_metric->calcDist(*nearNode, **node));
             else
                 (*node)->addInvalidChild(nearNode);
         }
@@ -280,11 +280,11 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &config) {
 
     // if not, create a new node and connect near nodes
     auto newNode = std::make_shared<Node<dim>>(config);
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(newNode, m_rangeSize);
+    auto nearNodes = m_graph->getNearNodes(config, m_rangeSize);
     for (auto &nearNode : nearNodes) {
-        if (m_trajectory->checkTrajectory(newNode, nearNode)) {
-            newNode->addChild(nearNode, m_metric->calcDist(newNode, nearNode));
-            nearNode->addChild(newNode, m_metric->calcDist(nearNode, newNode));
+        if (m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(*newNode, *nearNode))) {
+            newNode->addChild(nearNode, m_metric->calcDist(*newNode, *nearNode));
+            nearNode->addChild(newNode, m_metric->calcDist(*nearNode, *newNode));
         } else {
             newNode->addInvalidChild(nearNode);
         }

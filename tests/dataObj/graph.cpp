@@ -75,7 +75,6 @@ void NNS() {
         nodes.push_back(node);
         graph1.addNode(node);
     }
-    EXPECT_EQ(nodes[1], graph1.getNearestNode(nodes[0]));
     EXPECT_EQ(nodes[1], graph1.getNearestNode(*(nodes[0])));
     EXPECT_EQ(nodes[1], graph1.getNearestNode(vecs[0]));
 
@@ -83,7 +82,6 @@ void NNS() {
     Graph<dim> graph2(0, neighborFinder2);
     for (int i = 1; i < 10; ++i)
         graph2.addNode(nodes[i]);
-    EXPECT_EQ(nodes[1], graph2.getNearestNode(nodes[0]));
     EXPECT_EQ(nodes[1], graph2.getNearestNode(*(nodes[0])));
     EXPECT_EQ(nodes[1], graph2.getNearestNode(vecs[0]));
 }
@@ -129,9 +127,7 @@ void RS() {
         nodes.push_back(node);
         graph1.addNode(node);
     }
-    auto result = graph1.getNearNodes(nodes[4], 21);
-    contains(result, nodes);
-    result = graph1.getNearNodes(*(nodes[4]), 21);
+    auto result = graph1.getNearNodes(*(nodes[4]), 21);
     contains(result, nodes);
     result = graph1.getNearNodes(nodes[4]->getValues(), 21);
     contains(result, nodes);

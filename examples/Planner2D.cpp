@@ -215,6 +215,6 @@ int main(int argc, char** argv) {
 
      //while (!testTriangleRobot());
     // testTriangleRobot();
-    //test2DSerialRobot();
+   test2DSerialRobot();
      testPointRobot();
 }

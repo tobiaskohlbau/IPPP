@@ -31,7 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class GaussianSampling : public Sampling<dim> {
   public:
-    GaussianSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    GaussianSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                      const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                      size_t attempts = 10, double distance = 15);
 
@@ -41,7 +41,7 @@ class GaussianSampling : public Sampling<dim> {
     double m_distance;
 
     using Sampling<dim>::m_attempts;
-    using Sampling<dim>::m_collision;
+    using Sampling<dim>::m_validityChecker;
     using Sampling<dim>::m_sampler;
 };
 
@@ -57,10 +57,10 @@ class GaussianSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 GaussianSampling<dim>::GaussianSampling(const std::shared_ptr<Environment> &environment,
-                                        const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double distance)
-    : Sampling<dim>("GaussianSampling", environment, collision, trajectory, sampler, attempts), m_distance(distance) {
+    : Sampling<dim>("GaussianSampling", environment, validityChecker, trajectory, sampler, attempts), m_distance(distance) {
 }
 
 /*!
@@ -79,9 +79,9 @@ Vector<dim> GaussianSampling<dim>::getSample() {
         ray *= m_distance * m_sampler->getRandomNumber();
         sample2 = sample1 + ray;
 
-        if (!m_collision->checkConfig(sample1) && m_collision->checkConfig(sample2))
+        if (!m_validityChecker->checkConfig(sample1) && m_validityChecker->checkConfig(sample2))
             return sample1;
-        else if (m_collision->checkConfig(sample1) && !m_collision->checkConfig(sample2))
+        else if (m_validityChecker->checkConfig(sample1) && !m_validityChecker->checkConfig(sample2))
             return sample2;
     }
     return util::NaNVector<dim>();

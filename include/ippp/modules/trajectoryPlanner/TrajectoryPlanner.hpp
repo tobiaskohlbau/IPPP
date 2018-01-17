@@ -35,19 +35,13 @@ namespace ippp {
 template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
-    TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                      const std::shared_ptr<Environment> &environment, double posRes = 1, double oriRes = 0.1);
+    TrajectoryPlanner(const std::string &name, const std::shared_ptr<Environment> &environment, double posRes = 1,
+                      double oriRes = 0.1);
 
-    bool checkTrajectory(const Node<dim> &source, const Node<dim> &target) const;
-    bool checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
-    bool checkTrajectory(const Vector<dim> &source, const Vector<dim> &target) const;
-
-    Vector<dim> checkTrajCont(const Node<dim> &source, const Node<dim> &target) const;
-    Vector<dim> checkTrajCont(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
-    Vector<dim> checkTrajCont(const Vector<dim> &source, const Vector<dim> &target) const;
-
-    virtual std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) const = 0;
-    virtual std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) const = 0;
+    std::vector<Vector<dim>> calcTrajCont(const Node<dim> &source, const Node<dim> &target) const;
+    std::vector<Vector<dim>> calcTrajBin(const Node<dim> &source, const Node<dim> &target) const;
+    virtual std::vector<Vector<dim>> calcTrajCont(const Vector<dim> &source, const Vector<dim> &target) const = 0;
+    virtual std::vector<Vector<dim>> calcTrajBin(const Vector<dim> &source, const Vector<dim> &target) const = 0;
 
     void setResolutions(double posRes, double oriRes = 0.1);
     double getPosRes() const;
@@ -55,13 +49,12 @@ class TrajectoryPlanner : public Identifier {
     std::pair<double, double> getResolutions() const;
 
   protected:
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
 
     double m_posRes = 1;
     double m_oriRes = 0.1;
     double m_sqPosRes = 1;
-    double m_sqOriRes = 1;
+    double m_sqOriRes = 0.01;
 
     Vector<dim> m_posMask;
     Vector<dim> m_oriMask;
@@ -78,9 +71,9 @@ class TrajectoryPlanner : public Identifier {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                          const std::shared_ptr<Environment> &environment, double posRes, double oriRes)
-    : Identifier(name), m_collision(collision), m_environment(environment) {
+TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<Environment> &environment, double posRes,
+                                          double oriRes)
+    : Identifier(name), m_environment(environment) {
     Logging::debug("Initialize", this);
 
     setResolutions(posRes, oriRes);
@@ -89,100 +82,13 @@ TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::sh
     m_oriMask = masks.second;
 }
 
-/*!
-*  \brief      Control the trajectory and return if possible or not
-*  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] possibility of trajectory, true if possible
-*  \date       2016-05-31
-*/
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::checkTrajectory(const Node<dim> &source, const Node<dim> &target) const {
-    return checkTrajectory(source.getValues(), target.getValues());
+std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajCont(const Node<dim> &source, const Node<dim> &target) const {
+    return calcTrajCont(source.getValues(), target.getValues());
 }
-
-/*!
-*  \brief      Control the trajectory and return if possible or not
-*  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] possibility of trajectory, true if possible
-*  \date       2016-05-31
-*/
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::checkTrajectory(const std::shared_ptr<Node<dim>> &source,
-                                             const std::shared_ptr<Node<dim>> &target) const {
-    return checkTrajectory(source->getValues(), target->getValues());
-}
-
-/*!
-*  \brief      Control the trajectory and return if possible or not
-*  \author     Sascha Kaden
-*  \param[in]  source Vector
-*  \param[in]  target Vector
-*  \param[out] possibility of trajectory, true if possible
-*  \date       2016-05-31
-*/
-template <unsigned int dim>
-bool TrajectoryPlanner<dim>::checkTrajectory(const Vector<dim> &source, const Vector<dim> &target) const {
-    auto path = calcTrajectoryBin(source, target);
-    if (m_collision->checkTrajectory(path))
-        return false;
-
-    return true;
-}
-
-/*!
-*  \brief      Control the linear trajectory and return the last collision valid point.
-*  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] last collision valid point (NaN Vector, if no point is valid)
-*  \date       2016-05-31
-*/
-template <unsigned int dim>
-Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Node<dim> &source, const Node<dim> &target) const {
-    return checkTrajCont(source.getValues(), target.getValues());
-}
-
-/*!
-*  \brief      Control the linear trajectory and return the last collision valid point.
-*  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] last collision valid point (NaN Vector, if no point is valid)
-*  \date       2016-05-31
-*/
-template <unsigned int dim>
-Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const std::shared_ptr<Node<dim>> &source,
-                                                  const std::shared_ptr<Node<dim>> &target) const {
-    return checkTrajCont(source->getValues(), target->getValues());
-}
-
-/*!
-*  \brief      Control the linear trajectory and return the last collision valid point.
-*  \author     Sascha Kaden
-*  \param[in]  source Vector
-*  \param[in]  target Vector
-*  \param[out] last collision valid point (NaN Vector, if no point is valid)
-*  \date       2016-05-31
-*/
-template <unsigned int dim>
-Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, const Vector<dim> &target) const {
-    auto path = calcTrajectoryCont(source, target);
-    path.push_back(target);
-    unsigned int count = -1;
-    for (auto point : path)
-        if (m_collision->checkConfig(point))
-            break;
-        else
-            ++count;
-
-    if (count == -1)
-        return util::NaNVector<dim>();
-    else
-        return path[count];
+std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajBin(const Node<dim> &source, const Node<dim> &target) const {
+    return calcTrajBin(source.getValues(), target.getValues());
 }
 
 /*!

@@ -36,7 +36,7 @@ class CollisionDetectionPqpBenchmark : public CollisionDetectionPqp<dim> {
   public:
     CollisionDetectionPqpBenchmark(const std::shared_ptr<Environment> &environment);
     bool checkConfig(const Vector<dim> &config, data::Collision *data = nullptr) override;
-    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
+    bool checkTrajectory(const std::vector<Vector<dim>> &configs) override;
 
     int getCount() const;
     void resetCount();
@@ -90,7 +90,7 @@ bool CollisionDetectionPqpBenchmark<dim>::checkConfig(const Vector<dim> &config,
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqpBenchmark<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+bool CollisionDetectionPqpBenchmark<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
     if (configs.empty())
         return false;
 

@@ -47,7 +47,13 @@ class Planner : public Identifier {
             const std::shared_ptr<Graph<dim>> &graph);
 
   public:
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) = 0;
+    virtual bool computePath(const Vector<dim> startConfig, const Vector<dim> goalConfig, size_t numNodes, size_t numThreads) = 0;
+    // virtual bool computePath(const Vector<dim> startConfig, const std::vector<Vector<dim>> pathConfigs, size_t numNodes, size_t
+    // numThreads) = 0;
+    // virtual bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, size_t numNodes, size_t numThreads) =
+    // 0;
+    // virtual bool computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses, size_t numNodes, size_t
+    // numThreads) = 0;
     virtual bool expand(size_t numNode, size_t numthreads) = 0;
 
     std::shared_ptr<Graph<dim>> getGraph();
@@ -59,8 +65,7 @@ class Planner : public Identifier {
   protected:
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
 
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-    std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
+    std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
     std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
@@ -94,8 +99,7 @@ template <unsigned int dim>
 Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment> &environment,
                       const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
     : Identifier(name),
-      m_collision(options.getCollisionDetection()),
-      m_constraint(options.getConstraint()),
+      m_validityChecker(options.getValidityChecker()),
       m_environment(environment),
       m_evaluator(options.getEvaluator()),
       m_graph(graph),
@@ -156,7 +160,7 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     std::vector<Vector<dim>> path;
     for (size_t i = 0; i < smoothedNodes.size() - 1; ++i) {
         path.push_back(smoothedNodes[i]->getValues());
-        for (auto config : m_trajectory->calcTrajectoryCont(smoothedNodes[i]->getValues(), smoothedNodes[i + 1]->getValues()))
+        for (auto &config : m_trajectory->calcTrajCont(*(smoothedNodes[i]), *(smoothedNodes[i + 1])))
             path.push_back(config);
     }
     path.push_back(smoothedNodes.back()->getValues());

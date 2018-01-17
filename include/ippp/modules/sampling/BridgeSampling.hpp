@@ -31,7 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class BridgeSampling : public Sampling<dim> {
   public:
-    BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                    const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                    size_t attempts = 10, double distance = 15);
 
@@ -41,7 +41,7 @@ class BridgeSampling : public Sampling<dim> {
     double m_distance;
 
     using Sampling<dim>::m_attempts;
-    using Sampling<dim>::m_collision;
+    using Sampling<dim>::m_validityChecker;
     using Sampling<dim>::m_sampler;
 };
 
@@ -58,10 +58,10 @@ class BridgeSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 BridgeSampling<dim>::BridgeSampling(const std::shared_ptr<Environment> &environment,
-                                    const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                    const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                     const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double distance)
-    : Sampling<dim>("BridgeSampling", environment, collision, trajectory, sampler, attempts), m_distance(distance) {
+    : Sampling<dim>("BridgeSampling", environment, validityChecker, trajectory, sampler, attempts), m_distance(distance) {
 }
 
 /*!
@@ -82,7 +82,7 @@ Vector<dim> BridgeSampling<dim>::getSample() {
 
         sample1 = m_sampler->getSample();
         ++count;
-    } while (!m_collision->checkConfig(sample1));
+    } while (m_validityChecker->checkConfig(sample1));
 
     do {
         if (count > m_attempts)
@@ -93,7 +93,7 @@ Vector<dim> BridgeSampling<dim>::getSample() {
         ray = m_sampler->getRandomRay();
         ray *= m_distance * m_sampler->getRandomNumber();
         sample2 = sample1 + ray;
-    } while (!m_collision->checkConfig(sample2) && m_collision->checkConfig(sample1 + (ray / 2)));
+    } while (m_validityChecker->checkConfig(sample2) && !m_validityChecker->checkConfig(sample1 + (ray / 2)));
 
     return sample1 + (ray / 2);
 }

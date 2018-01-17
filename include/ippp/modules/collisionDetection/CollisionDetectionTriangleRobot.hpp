@@ -38,7 +38,7 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<dim> {
     CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment,
                                     const CollisionRequest &request = CollisionRequest());
     bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
+    bool checkTrajectory(const std::vector<Vector<dim>> &configs) override;
 
   private:
     bool checkTriangles(const Transform &T, const std::vector<Triangle2D> &triangles);
@@ -70,8 +70,6 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
 
     // set boundaries
     m_workspaceBounding = m_environment->getSpaceBoundary();
-    this->setRobotBoundings(m_environment->getRobotBoundaries());
-
     if (m_environment->numObstacles() == 0) {
         Logging::warning("Empty workspace", this);
     } else {
@@ -108,9 +106,6 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
 template <unsigned int dim>
 bool CollisionDetectionTriangleRobot<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request,
                                                        CollisionResult *result) {
-    if (this->checkRobotBounding(config))
-        return true;
-
     if (m_obstacles.empty())
         return false;
 
@@ -138,7 +133,7 @@ bool CollisionDetectionTriangleRobot<dim>::checkConfig(const Vector<dim> &config
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+bool CollisionDetectionTriangleRobot<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
     for (auto &config : configs)
         if (checkConfig(config))
             return true;

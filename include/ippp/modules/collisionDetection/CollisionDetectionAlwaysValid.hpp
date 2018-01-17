@@ -33,7 +33,7 @@ class CollisionDetectionAlwaysValid : public CollisionDetection<dim> {
   public:
     CollisionDetectionAlwaysValid(const std::shared_ptr<Environment> &environmen, const CollisionRequest &request = CollisionRequest());
     bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(std::vector<Vector<dim>> &config);
+    bool checkTrajectory(const std::vector<Vector<dim>> &config);
 };
 
 /*!
@@ -68,7 +68,7 @@ bool CollisionDetectionAlwaysValid<dim>::checkConfig(const Vector<dim> &config, 
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionAlwaysValid<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+bool CollisionDetectionAlwaysValid<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
     return false;
 }
 

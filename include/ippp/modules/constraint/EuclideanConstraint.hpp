@@ -35,6 +35,7 @@ class EuclideanConstraint : public Constraint<dim> {
     EuclideanConstraint(const std::shared_ptr<Environment> &environment, const Vector6 &constraint, double epsilon = EPSILON);
 
     bool checkConfig(const Vector<dim> &config);
+    bool checkTrajectory(const std::vector<Vector<dim>> &config);
     double calcError(const Vector<dim> &config);
     Vector<dim> projectConfig(const Vector<dim> &config);
 
@@ -75,10 +76,28 @@ template <unsigned int dim>
 bool EuclideanConstraint<dim>::checkConfig(const Vector<dim> &config) {
     Vector6 tcpPose = util::transformToVec(m_robot->getTransformation(config));
 
-    if (tcpPose.isApprox(m_constraint, m_epsilon))
-        return true;
+    for (unsigned int i = 0; i < 6; ++i) {
+        if (m_checkConstraint[i])
+            if (std::abs(tcpPose[i] - m_constraint[i]) > m_epsilon)
+                return false;
+    }
+    return true;
+}
 
-    return false;
+/*!
+*  \brief      Check the euclidean constraint of the vector of configurations and return true if valid.
+*  \param[in]  vector of configurations
+*  \param[out] result, true if valid
+*  \author     Sascha Kaden
+*  \date       2018-01-08
+*/
+template <unsigned int dim>
+bool EuclideanConstraint<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
+    for (auto &config : configs)
+        if (!checkConfig(config))
+            return false;
+
+    return true;
 }
 
 /*!
@@ -119,9 +138,9 @@ void EuclideanConstraint<dim>::setConstraint(const Vector6 &constraint) {
     // init flag vector for faster check
     for (size_t i = 0; i < 6; ++i) {
         if (std::isnan(constraint[i]))
-            m_checkConstraint[i] = true;
-        else
             m_checkConstraint[i] = false;
+        else
+            m_checkConstraint[i] = true;
     }
 }
 

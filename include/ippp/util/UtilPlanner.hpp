@@ -35,13 +35,14 @@ namespace util {
 */
 template <unsigned int dim>
 static std::shared_ptr<Node<dim>> getNearestValidNode(const Vector<dim> &config, const Graph<dim> &graph,
-                                                      const TrajectoryPlanner<dim> &trajectory,
-                                                      const DistanceMetric<dim> &metric, double range) {
+                                                      const ValidityChecker<dim> &validityChecker,
+                                                      const TrajectoryPlanner<dim> &trajectory, const DistanceMetric<dim> &metric,
+                                                      double range) {
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph.getNearNodes(config, range);
     double dist = std::numeric_limits<double>::max();
     for (auto &nearNode : nearNodes) {
-        if (trajectory.checkTrajectory(config, nearNode->getValues()) &&
+        if (validityChecker.checkTrajectory(trajectory.calcTrajBin(config, nearNode->getValues())) &&
             metric.calcDist(config, nearNode->getValues()) < dist) {
             dist = metric.calcDist(config, nearNode->getValues());
             nearestNode = nearNode;
@@ -71,7 +72,7 @@ static void expandNode(const std::shared_ptr<Node<dim>> currentNode, std::vector
         if (util::contains(closedList, successor))
             continue;
 
-        edgeCost = metric.calcDist(currentNode, successor);
+        edgeCost = metric.calcDist(*currentNode, *successor);
         dist = currentNode->getCost() + edgeCost;
 
         if (util::contains(openList, successor) && dist >= successor->getCost())
@@ -105,7 +106,7 @@ static bool aStar(const std::shared_ptr<Node<dim>> sourceNode, const std::shared
 
     for (size_t i = 0; i < edges.size(); ++i) {
         edges[i].first->setCost(edges[i].second);
-        edges[i].first->setQueryParent(sourceNode, metric.calcDist(edges[i].first, sourceNode));
+        edges[i].first->setQueryParent(sourceNode, metric.calcDist(*(edges[i].first), *sourceNode));
         openList.push_back(edges[i].first);
     }
     closedList.push_back(sourceNode);

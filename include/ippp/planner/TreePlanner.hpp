@@ -53,7 +53,7 @@ class TreePlanner : public Planner<dim> {
     std::shared_ptr<Node<dim>> m_initNode = nullptr;
     std::shared_ptr<Node<dim>> m_goalNode = nullptr;
 
-    using Planner<dim>::m_collision;
+    using Planner<dim>::m_validityChecker;
     using Planner<dim>::m_environment;
     using Planner<dim>::m_evaluator;
     using Planner<dim>::m_graph;
@@ -92,7 +92,7 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
     if (!setInitNode(start))
         return false;
 
-    if (m_collision->checkConfig(goal)) {
+    if (!m_validityChecker->checkConfig(goal)) {
         Logging::error("Goal Node in collision", this);
         return false;
     }
@@ -145,7 +145,7 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
         }
     }
 
-    if (m_collision->checkConfig(start)) {
+    if (!m_validityChecker->checkConfig(start)) {
         Logging::warning("Init Node could not be connected", this);
         return false;
     }

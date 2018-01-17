@@ -21,8 +21,8 @@
 
 #include <ippp/Identifier.h>
 #include <ippp/environment/Environment.h>
-#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <ippp/modules/validityChecker/ValidityChecker.hpp>
 #include <ippp/types.h>
 
 namespace ippp {
@@ -36,15 +36,15 @@ template <unsigned int dim>
 class PathModifier : public Identifier {
   public:
     PathModifier(const std::string &name, const std::shared_ptr<Environment> &environment,
-                 const std::shared_ptr<CollisionDetection<dim>> &collision,
+                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                  const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     virtual std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const = 0;
 
   protected:
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr; /*!< pointer to the collision detection module */
-    std::shared_ptr<Environment> m_environment = nullptr;           /*!< pointer to the Environment */
-    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr; /*!< pointer to the trajectory planning module */
+    std::shared_ptr<Environment> m_environment = nullptr;              /*!< pointer to the Environment */
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;    /*!< pointer to the trajectory planning module */
+    std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr; /*!< pointer to the ValidityChecker module */
 };
 
 /*!
@@ -58,9 +58,9 @@ class PathModifier : public Identifier {
 */
 template <unsigned int dim>
 PathModifier<dim>::PathModifier(const std::string &name, const std::shared_ptr<Environment> &environment,
-                                const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : Identifier(name), m_collision(collision), m_environment(environment), m_trajectory(trajectory) {
+    : Identifier(name), m_environment(environment), m_validityChecker(validityChecker), m_trajectory(trajectory) {
     Logging::debug("Initialize", this);
 }
 

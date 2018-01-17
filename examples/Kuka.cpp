@@ -21,8 +21,10 @@ void simpleRRT() {
     EnvironmentConfigurator envConfigurator;
 
     envConfigurator.setWorkspaceProperties(AABB(Vector3(-10000, -10000, -10000), Vector3(10000, 10000, 10000)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(-420, -400, 100, 0, 0, util::toRad(90)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(420, -400, 100, 0, 0, util::toRad(90)));
+    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(-420, -400, 100, 0, 0,
+    // util::toRad(90)));
+    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(420, -400, 100, 0, 0,
+    // util::toRad(90)));
 
     Vector7 minRobotBound = util::Vecd(-170, -120, -170, -120, -170, -120, -175);
     Vector7 maxRobotBound = util::Vecd(170, 120, 170, 120, 170, 120, 175);
@@ -53,29 +55,39 @@ void simpleRRT() {
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::convertPosesToTransforms(linkOffsets);
     envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles, Transform::Identity(), linkTransforms);
-    
+
     envConfigurator.saveConfig("KukaEnvConfig.json");
     auto environment = envConfigurator.getEnvironment();
 
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
 
-    //Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
-    //testConfig = util::degToRad<dim>(testConfig);
-    //serialRobot->saveMeshConfig(testConfig);
+    // Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
+    // testConfig = util::degToRad<dim>(testConfig);
+    // serialRobot->saveMeshConfig(testConfig);
 
     ModuleConfigurator<dim> creator;
+    creator.setEvaluatorType(EvaluatorType::Query);
+    creator.setEvaluatorProperties(0.3, 60);
+    creator.setGraphSortCount(2000);
     creator.setEnvironment(environment);
     creator.setCollisionType(CollisionType::FCL);
+    //creator.setConstraintType(ConstraintType::Euclidean);
+    //Vector6 constraint = util::NaNVector<6>();
+    //constraint[3] = 0;
+    //constraint[4] = 0;
+    //creator.setEuclideanConstraint(constraint, util::toRad(90));
+    //creator.setSamplingType(SamplingType::RGD);
 
     RRT<dim> planner(environment, creator.getRRTOptions(30), creator.getGraph());
     Vector<dim> start = util::Vecd(0, 0, 0, 0, 0, 0, 0);
-    Vector<dim> goal = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
+    Vector<dim> goal = util::Vecd(-90, 90, 170, 30, 10, 120, 0);
+    // Vector<dim> goal = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
     start = util::degToRad<dim>(start);
     goal = util::degToRad<dim>(goal);
 
     // compute the tree
     clock_t begin = std::clock();
-    bool connected = planner.computePath(start, goal, 200, 3);
+    bool connected = planner.computePath(start, goal, 1000, 3);
     clock_t end = std::clock();
     printTime(begin, end);
 

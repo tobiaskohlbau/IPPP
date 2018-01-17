@@ -70,7 +70,8 @@ bool EnvironmentConfigurator::loadConfig(const std::string &filePath) {
         return false;
 
     m_obstaclePaths = json["ObstaclePaths"].get<std::vector<std::string>>();
-    m_obstacleTransforms = jsonSerializer::deserializeTransforms(json["ObstacleTransforms"]);
+    if (!m_obstaclePaths.empty())
+        m_obstacleTransforms = jsonSerializer::deserializeTransforms(json["ObstacleTransforms"]);
     m_workspceBounding = jsonSerializer::deserializeAABB(json["WorkspaceBound"]);
     m_factoryType = static_cast<FactoryType>(json["FactoryType"].get<int>());
     m_robotType = static_cast<RobotType>(json["RobotType"].get<int>());
@@ -153,7 +154,10 @@ void EnvironmentConfigurator::setSerialRobotProperties(const std::vector<DhParam
     m_dhParameters = dhParameters;
     m_linkModelFiles = linkModelFiles;
     m_baseOffset = baseOffset;
-    m_linkOffsets = linkOffsets;
+    if (linkOffsets.empty())
+        m_linkOffsets = std::vector<Transform>(m_dhParameters.size(), Transform::Identity());
+    else
+        m_linkOffsets = linkOffsets;
 }
 
 /*!

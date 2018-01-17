@@ -31,7 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class MedialAxisSampling : public Sampling<dim> {
   public:
-    MedialAxisSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    MedialAxisSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                        size_t attempts = 10, size_t numDirs = 50);
 
@@ -42,7 +42,7 @@ class MedialAxisSampling : public Sampling<dim> {
     std::vector<Vector<dim>> m_directions;
 
     using Sampling<dim>::m_attempts;
-    using Sampling<dim>::m_collision;
+    using Sampling<dim>::m_validityChecker;
     using Sampling<dim>::m_sampler;
 };
 
@@ -59,10 +59,10 @@ class MedialAxisSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 MedialAxisSampling<dim>::MedialAxisSampling(const std::shared_ptr<Environment> &environment,
-                                            const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                            const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                                             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                             const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, size_t numberDirs)
-    : Sampling<dim>("MedialAxisSampling", environment, collision, trajectory, sampler, attempts), m_numberDirections(numberDirs) {
+    : Sampling<dim>("MedialAxisSampling", environment, validityChecker, trajectory, sampler, attempts), m_numberDirections(numberDirs) {
     m_directions.reserve(m_numberDirections);
     for (unsigned int i = 0; i < numberDirs; ++i)
         m_directions.push_back(m_sampler->getRandomRay());
@@ -77,7 +77,7 @@ MedialAxisSampling<dim>::MedialAxisSampling(const std::shared_ptr<Environment> &
 template <unsigned int dim>
 Vector<dim> MedialAxisSampling<dim>::getSample() {
     auto sample = m_sampler->getSample();
-    bool sampleCollision = m_collision->checkConfig(sample);
+    bool sampleCollision = !m_validityChecker->checkConfig(sample);
 
     std::vector<Vector<dim>> tempConfigs(m_numberDirections, sample);
     Vector<dim> first, direction;
@@ -88,7 +88,7 @@ Vector<dim> MedialAxisSampling<dim>::getSample() {
         auto temp = tempConfigs.begin();
         for (auto dir = m_directions.begin(); dir < m_directions.end(); ++dir, ++temp) {
             *temp += *dir;
-            if (m_collision->checkConfig(*temp) != sampleCollision) {
+            if (!m_validityChecker->checkConfig(*temp) != sampleCollision) {
                 // set the first collision vector and the direction and break the while loop
                 first = *temp;
                 direction = *dir;
@@ -109,7 +109,7 @@ Vector<dim> MedialAxisSampling<dim>::getSample() {
         else
             second += direction;
 
-        collision = m_collision->checkConfig(second);
+        collision = !m_validityChecker->checkConfig(second);
     }
     // return the middle point of these two collisions
     return second - ((second - first) / 2);

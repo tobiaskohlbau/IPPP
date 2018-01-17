@@ -16,9 +16,11 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef SAMPLINGNEAROBSTACLE_HPP
-#define SAMPLINGNEAROBSTACLE_HPP
+#ifndef RGDSAMPLING_HPP
+#define RGDSAMPLING_HPP
 
+#include <ippp/modules/constraint/Constraint.hpp>
+#include <ippp/modules/sampler/SamplerNormalDist.hpp>
 #include <ippp/modules/sampling/Sampling.hpp>
 
 namespace ippp {
@@ -30,16 +32,18 @@ namespace ippp {
 * \date    2016-12-20
 */
 template <unsigned int dim>
-class SamplingNearObstacle : public Sampling<dim> {
+class RGDSampling : public Sampling<dim> {
   public:
-    SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
-                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                         size_t attempts = 10);
+    RGDSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
+                size_t attempts = 10);
 
     Vector<dim> getSample() override;
+    Vector<dim> getSample(const Vector<dim> &prevSample) override;
 
   private:
+    std::shared_ptr<SamplerNormalDist<dim>> m_normalSampler = nullptr;
+
     using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
     using Sampling<dim>::m_validityChecker;
@@ -57,11 +61,12 @@ class SamplingNearObstacle : public Sampling<dim> {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
-                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
-    : Sampling<dim>("SamplingNearObstacle", environment, validityChecker, trajectory, sampler, attempts) {
+RGDSampling<dim>::RGDSampling(const std::shared_ptr<Environment> &environment,
+                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+                              const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                              const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
+    : Sampling<dim>("RGDSampling", environment, validityChecker, trajectory, sampler, attempts) {
+    m_normalSampler = std::make_shared<SamplerNormalDist<dim>>(environment);
 }
 
 /*!
@@ -73,27 +78,22 @@ SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environmen
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Vector<dim> SamplingNearObstacle<dim>::getSample() {
-    Vector<dim> sample1 = m_sampler->getSample();
-    if (m_validityChecker->checkConfig(sample1)) {
-        return sample1;
-    } else {
-        Vector<dim> sample2;
-        do {
-            sample2 = m_sampler->getSample();
-        } while (!m_validityChecker->checkConfig(sample2));
-        std::vector<Vector<dim>> path = m_trajectory->calcTrajCont(sample2, sample1);
-        sample1 = path[0];
-        for (auto &point : path) {
-            if (m_validityChecker->checkConfig(point))
-                sample1 = point;
-            else
-                break;
-        }
-        return sample1;
+Vector<dim> RGDSampling<dim>::getSample() {
+    return m_sampler->getSample();
+}
+
+template <unsigned int dim>
+Vector<dim> RGDSampling<dim>::getSample(const Vector<dim> &prevSample) {
+    m_normalSampler->setOrigin(prevSample);
+    Vector<dim> sample;
+    for (size_t i = 0; i < m_attempts; ++i) {
+        sample = m_normalSampler->getSample();
+        if (!m_validityChecker->checkConfig(sample))
+            return sample;
     }
+    return util::NaNVector<dim>();
 }
 
 } /* namespace ippp */
 
-#endif /* SAMPLINGNEAROBSTACLE_HPP */
+#endif /* RGDSAMPLING_HPP */

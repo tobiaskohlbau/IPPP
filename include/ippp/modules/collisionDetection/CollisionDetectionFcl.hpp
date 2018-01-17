@@ -39,7 +39,7 @@ class CollisionDetectionFcl : public CollisionDetection<dim> {
   public:
     CollisionDetectionFcl(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
     bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
+    bool checkTrajectory(const std::vector<Vector<dim>> &configs) override;
 
   private:
     bool checkSerialRobot(const Vector<dim> &config, const CollisionRequest &request);
@@ -71,7 +71,6 @@ CollisionDetectionFcl<dim>::CollisionDetectionFcl(const std::shared_ptr<Environm
     : CollisionDetection<dim>("FCL", environment, request) {
     m_identity = Transform::Identity();
     auto robot = m_environment->getRobot();
-    this->setRobotBoundings(m_environment->getRobotBoundaries());
     m_workspaceBounding = environment->getSpaceBoundary();
 
     if (robot->getBaseModel() != nullptr && !robot->getBaseModel()->empty()) {
@@ -133,7 +132,7 @@ bool CollisionDetectionFcl<dim>::checkConfig(const Vector<dim> &config, Collisio
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionFcl<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+bool CollisionDetectionFcl<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
     if (configs.empty())
         return false;
 
@@ -159,9 +158,6 @@ bool CollisionDetectionFcl<dim>::checkTrajectory(std::vector<Vector<dim>> &confi
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &config, const CollisionRequest &request) {
-    if (this->checkRobotBounding(config))
-        return true;
-
     auto robot = std::dynamic_pointer_cast<SerialRobot>(this->m_environment->getRobot());
     auto linkTrafos = robot->getLinkTrafos(config);
     auto pose = robot->getPose();
@@ -170,7 +166,7 @@ bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &config, con
     auto linkModels = robot->getLinkModels();
     for (unsigned int i = 0; i < dim; ++i)
         if (!m_workspaceBounding.contains(util::transformAABB(linkModels[i]->m_mesh.aabb, linkTrafos[i]))) {
-            Logging::trace("Robot out of workspace boundaries", this);
+            // Logging::trace("Robot out of workspace boundaries", this);
             return true;
         }
 
@@ -180,14 +176,14 @@ bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &config, con
             if (checkFCL(m_baseModel, m_linkModels[i], pose, linkTrafos[i])) {
                 // std::cout << pose.matrix() << std::endl;
                 // std::cout << linkTrafos[i].matrix() << std::endl;
-                Logging::trace("Collision between link" + std::to_string(i) + " and base", this);
+                // Logging::trace("Collision between link" + std::to_string(i) + " and base", this);
                 return true;
             }
 
     for (unsigned int i = 0; i < dim; ++i)
         for (unsigned int j = i + 2; j < dim; ++j)
             if (checkFCL(m_linkModels[i], m_linkModels[j], linkTrafos[i], linkTrafos[j])) {
-                Logging::trace("Collision between link" + std::to_string(i) + " and link" + std::to_string(j), this);
+                // Logging::trace("Collision between link" + std::to_string(i) + " and link" + std::to_string(j), this);
                 // std::cout << linkTrafos[i].matrix() << std::endl;
                 // std::cout << linkTrafos[j].matrix() << std::endl;
                 return true;
@@ -197,14 +193,14 @@ bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &config, con
     if (m_workspaceAvaible) {
         for (auto &obstacle : m_obstacles)
             if (checkFCL(obstacle.first, m_baseModel, obstacle.second, pose)) {
-                Logging::trace("Collision between workspace and base", this);
+                // Logging::trace("Collision between workspace and base", this);
                 return true;
             }
 
         for (unsigned int i = 0; i < dim; ++i)
             for (auto &obstacle : m_obstacles)
                 if (checkFCL(obstacle.first, m_linkModels[i], obstacle.second, linkTrafos[i])) {
-                    Logging::trace("Collision between workspace and link" + std::to_string(i), this);
+                    // Logging::trace("Collision between workspace and link" + std::to_string(i), this);
                     return true;
                 }
     }
@@ -220,9 +216,6 @@ bool CollisionDetectionFcl<dim>::checkSerialRobot(const Vector<dim> &config, con
 */
 template <unsigned int dim>
 bool CollisionDetectionFcl<dim>::checkMobileRobot(const Vector<dim> &config, const CollisionRequest &request) {
-    if (this->checkRobotBounding(config))
-        return true;
-
     Transform T = m_environment->getRobot()->getTransformation(config);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {

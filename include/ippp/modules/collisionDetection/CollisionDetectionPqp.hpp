@@ -36,7 +36,7 @@ class CollisionDetectionPqp : public CollisionDetection<dim> {
   public:
     CollisionDetectionPqp(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
     bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
+    bool checkTrajectory(const std::vector<Vector<dim>> &configs) override;
 
   protected:
     bool checkSerialRobot(const Vector<dim> &config);
@@ -69,7 +69,6 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
     : CollisionDetection<dim>("CollisionDetectionPQP", environment, request) {
     m_identity = Transform::Identity();
     auto robot = m_environment->getRobot();
-    this->setRobotBoundings(m_environment->getRobotBoundaries());
     m_workspaceBounding = environment->getSpaceBoundary();
 
     if (robot->getBaseModel() != nullptr && !robot->getBaseModel()->empty()) {
@@ -128,7 +127,7 @@ bool CollisionDetectionPqp<dim>::checkConfig(const Vector<dim> &config, Collisio
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+bool CollisionDetectionPqp<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
     if (configs.empty())
         return false;
 
@@ -153,9 +152,6 @@ bool CollisionDetectionPqp<dim>::checkTrajectory(std::vector<Vector<dim>> &confi
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) {
-    if (this->checkRobotBounding(config))
-        return true;
-
     auto robot = std::dynamic_pointer_cast<SerialRobot>(this->m_environment->getRobot());
     auto linkTrafos = robot->getLinkTrafos(config);
     auto pose = robot->getPose();
@@ -200,9 +196,6 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) {
 */
 template <unsigned int dim>
 bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &config) {
-    if (this->checkRobotBounding(config))
-        return true;
-
     auto T = m_environment->getRobot()->getTransformation(config);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {

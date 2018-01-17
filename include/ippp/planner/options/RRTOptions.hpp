@@ -31,10 +31,10 @@ namespace ippp {
 template <unsigned int dim>
 class RRTOptions : public PlannerOptions<dim> {
   public:
-    RRTOptions(double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
-               const std::shared_ptr<Constraint<dim>> &constraint, const std::shared_ptr<DistanceMetric<dim>> &metric,
-               const std::shared_ptr<Evaluator<dim>> &evaluator, const std::shared_ptr<PathModifier<dim>> &pathModifier,
-               const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    RRTOptions(double stepSize, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+               const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
+               const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
+               const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     void setStepSize(double stepSize);
     double getStepSize() const;
@@ -56,13 +56,12 @@ class RRTOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-RRTOptions<dim>::RRTOptions(double stepSize, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                            const std::shared_ptr<Constraint<dim>> &constraint,
+RRTOptions<dim>::RRTOptions(double stepSize, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                             const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                             const std::shared_ptr<PathModifier<dim>> &pathModifier,
                             const std::shared_ptr<Sampling<dim>> &sampling,
                             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PlannerOptions<dim>(collision, constraint, metric, evaluator, pathModifier, sampling, trajectory) {
+    : PlannerOptions<dim>(validityChecker, metric, evaluator, pathModifier, sampling, trajectory) {
     setStepSize(stepSize);
 }
 

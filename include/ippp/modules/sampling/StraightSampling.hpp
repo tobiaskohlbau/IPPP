@@ -31,7 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class StraightSampling : public Sampling<dim> {
   public:
-    StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
+    StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                      const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                      size_t attempts = 10);
 
@@ -53,10 +53,10 @@ class StraightSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 StraightSampling<dim>::StraightSampling(const std::shared_ptr<Environment> &environment,
-                                        const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
-    : Sampling<dim>("StraightSampling", environment, collision, trajectory, sampler, attempts) {
+    : Sampling<dim>("StraightSampling", environment, validityChecker, trajectory, sampler, attempts) {
 }
 
 /*!

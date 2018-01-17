@@ -40,8 +40,8 @@ template <unsigned int dim>
 class DistanceMetric : public Identifier {
   public:
     DistanceMetric(const std::string &name);
-    double calcDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
-    double calcSimpleDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
+    double calcDist(const Node<dim> &source, const Node<dim> &target) const;
+    double calcSimpleDist(const Node<dim> &source, const Node<dim> &target) const;
     virtual double calcDist(const Vector<dim> &source, const Vector<dim> &target) const = 0;
     virtual double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const = 0;
     virtual void simplifyDist(double &dist) const = 0;
@@ -67,8 +67,8 @@ DistanceMetric<dim>::DistanceMetric(const std::string &name) : Identifier(name) 
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-double DistanceMetric<dim>::calcDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const {
-    return calcDist(source->getValues(), target->getValues());
+double DistanceMetric<dim>::calcDist(const Node<dim> &source, const Node<dim> &target) const {
+    return calcDist(source.getValues(), target.getValues());
 }
 
 /*!
@@ -80,9 +80,9 @@ double DistanceMetric<dim>::calcDist(const std::shared_ptr<Node<dim>> &source, c
 *  \date       2017-10-08
 */
 template <unsigned int dim>
-double DistanceMetric<dim>::calcSimpleDist(const std::shared_ptr<Node<dim>> &source,
-                                           const std::shared_ptr<Node<dim>> &target) const {
-    return calcSimpleDist(source->getValues(), target->getValues());
+double DistanceMetric<dim>::calcSimpleDist(const Node<dim> &source,
+                                           const Node<dim> &target) const {
+    return calcSimpleDist(source.getValues(), target.getValues());
 }
 
 } /* namespace ippp */

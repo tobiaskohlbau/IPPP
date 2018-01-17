@@ -31,10 +31,10 @@ namespace ippp {
 template <unsigned int dim>
 class SRTOptions : public PlannerOptions<dim> {
   public:
-    SRTOptions(unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
-               const std::shared_ptr<Constraint<dim>> &constraint, const std::shared_ptr<DistanceMetric<dim>> &metric,
-               const std::shared_ptr<Evaluator<dim>> &evaluator, const std::shared_ptr<PathModifier<dim>> &pathModifier,
-               const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    SRTOptions(unsigned int nbOfTrees, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+               const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
+               const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
+               const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     void setNbOfTrees(unsigned int nbOfTrees);
     unsigned int getNbOfTrees() const;
@@ -56,13 +56,13 @@ class SRTOptions : public PlannerOptions<dim> {
 *  \date       2017-04-02
 */
 template <unsigned int dim>
-SRTOptions<dim>::SRTOptions(unsigned int nbOfTrees, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                            const std::shared_ptr<Constraint<dim>> &constraint,
+SRTOptions<dim>::SRTOptions(unsigned int nbOfTrees, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+
                             const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                             const std::shared_ptr<PathModifier<dim>> &pathModifier,
                             const std::shared_ptr<Sampling<dim>> &sampling,
                             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PlannerOptions<dim>(collision, constraint, metric, evaluator, pathModifier, sampling, trajectory) {
+    : PlannerOptions<dim>(validityChecker, metric, evaluator, pathModifier, sampling, trajectory) {
     setNbOfTrees(nbOfTrees);
 }
 

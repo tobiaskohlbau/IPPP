@@ -35,6 +35,7 @@ class Constraint : public Identifier {
     Constraint(const std::string &name, const std::shared_ptr<Environment> &environment);
 
     virtual bool checkConfig(const Vector<dim> &config) = 0;
+    virtual bool checkTrajectory(const std::vector<Vector<dim>> &configs) = 0;
     virtual double calcError(const Vector<dim> &config) = 0;
     virtual Vector<dim> projectConfig(const Vector<dim> &config) = 0;
 
@@ -52,6 +53,7 @@ class Constraint : public Identifier {
 template <unsigned int dim>
 Constraint<dim>::Constraint(const std::string &name, const std::shared_ptr<Environment> &environment)
     : Identifier(name), m_environment(environment) {
+    Logging::debug("Initialize", this);
 }
 
 } /* namespace ippp */

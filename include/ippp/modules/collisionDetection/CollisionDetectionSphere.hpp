@@ -38,7 +38,7 @@ class CollisionDetectionSphere : public CollisionDetection<dim> {
     CollisionDetectionSphere(const std::shared_ptr<Environment> &environment,
                              const CollisionRequest &request = CollisionRequest());
     bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
+    bool checkTrajectory(const std::vector<Vector<dim>> &configs) override;
 
   private:
     bool checkObstacles(const AABB &robotAABB, CollisionResult *result);
@@ -122,7 +122,7 @@ bool CollisionDetectionSphere<dim>::checkConfig(const Vector<dim> &config, Colli
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-bool CollisionDetectionSphere<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+bool CollisionDetectionSphere<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
     if (configs.empty())
         return false;
 

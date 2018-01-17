@@ -32,7 +32,7 @@ template <unsigned int dim>
 class AlwaysValidConstraint : public Constraint<dim> {
   public:
     AlwaysValidConstraint(const std::shared_ptr<Environment> &environment);
-
+    bool checkTrajectory(const std::vector<Vector<dim>> &config);
     bool checkConfig(const Vector<dim> &config);
     double calcError(const Vector<dim> &config);
     Vector<dim> projectConfig(const Vector<dim> &config);
@@ -58,6 +58,18 @@ AlwaysValidConstraint<dim>::AlwaysValidConstraint(const std::shared_ptr<Environm
 */
 template <unsigned int dim>
 bool AlwaysValidConstraint<dim>::checkConfig(const Vector<dim> &config) {
+    return true;
+}
+
+/*!
+*  \brief      Check the euclidean constraint of the vector of configurations and return always true.
+*  \param[in]  vector of configurations
+*  \param[out] true
+*  \author     Sascha Kaden
+*  \date       2018-01-08
+*/
+template <unsigned int dim>
+bool AlwaysValidConstraint<dim>::checkTrajectory(const std::vector<Vector<dim>> &config) {
     return true;
 }
 

@@ -47,10 +47,8 @@ class Graph : public Identifier {
 
     std::shared_ptr<Node<dim>> getNearestNode(const Vector<dim> &config) const;
     std::shared_ptr<Node<dim>> getNearestNode(const Node<dim> &node) const;
-    std::shared_ptr<Node<dim>> getNearestNode(const std::shared_ptr<Node<dim>> &node) const;
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Vector<dim> &config, double range) const;
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, double range) const;
-    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, double range) const;
 
     void sortTree();
     bool eraseNode(const std::shared_ptr<Node<dim>> &node);
@@ -229,18 +227,6 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> &node) con
 }
 
 /*!
-* \brief      Search for nearest neighbor
-* \author     Sascha Kaden
-* \param[in]  Node from where the search starts
-* \param[out] nearest neighbor Node
-* \date       2016-05-25
-*/
-template <unsigned int dim>
-std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const std::shared_ptr<Node<dim>> &node) const {
-    return m_neighborFinder->searchNearestNeighbor(node->getValues());
-}
-
-/*!
 * \brief      Search range
 * \author     Sascha Kaden
 * \param[in]  Vector for the search
@@ -264,19 +250,6 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Vector<di
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Node<dim> &node, double range) const {
     return m_neighborFinder->searchRange(node.getValues(), range);
-}
-
-/*!
-* \brief      Search range
-* \author     Sascha Kaden
-* \param[in]  Node for the search
-* \param[in]  range around the passed Node
-* \param[out] list of nodes inside the range
-* \date       2016-05-25
-*/
-template <unsigned int dim>
-std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shared_ptr<Node<dim>> node, double range) const {
-    return m_neighborFinder->searchRange(node->getValues(), range);
 }
 
 /*!

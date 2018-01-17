@@ -45,7 +45,7 @@ class RRTStar : public RRT<dim> {
     void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
                 std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
-    using Planner<dim>::m_collision;
+    using Planner<dim>::m_validityChecker;
     using Planner<dim>::m_environment;
     using Planner<dim>::m_graph;
     using Planner<dim>::m_metric;
@@ -85,17 +85,17 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randC
     std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randConfig);
     // set Node<dim> new fix fixed step size of 10
     Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
-    if (m_collision->checkConfig(newConfig))
+    if (!m_validityChecker->checkConfig(newConfig))
         return nullptr;
-    
+
     std::vector<std::shared_ptr<Node<dim>>> nearNodes;
     chooseParent(randConfig, nearestNode, nearNodes);
 
-    if (!m_trajectory->checkTrajectory(newConfig, nearestNode->getValues()))
+    if (!m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(newConfig, nearestNode->getValues())))
         return nullptr;
 
     std::shared_ptr<Node<dim>> newNode = std::make_shared<Node<dim>>(newConfig);
-    double edgeCost = m_metric->calcDist(newNode, nearestNode);
+    double edgeCost = m_metric->calcDist(*newNode, *nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);
     m_mutex.lock();
@@ -123,7 +123,7 @@ void RRTStar<dim>::chooseParent(const Vector<dim> &newConfig, std::shared_ptr<No
     double nearestNodeCost = nearestNode->getCost();
     for (auto nearNode : nearNodes) {
         if (nearNode->getCost() < nearestNodeCost) {
-            if (m_trajectory->checkTrajectory(newConfig, nearNode->getValues())) {
+            if (m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(newConfig, nearNode->getValues()))) {
                 nearestNodeCost = nearNode->getCost();
                 nearestNode = nearNode;
             }
@@ -145,10 +145,10 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
     double oldDist, newDist, edgeCost;
     for (auto nearNode : nearNodes) {
         if (nearNode != parentNode) {
-            edgeCost = m_metric->calcDist(nearNode, newNode);
+            edgeCost = m_metric->calcDist(*nearNode, *newNode);
             oldDist = nearNode->getCost();
             newDist = edgeCost + newNode->getCost();
-            if (newDist < oldDist && m_trajectory->checkTrajectory(nearNode, newNode)) {
+            if (newDist < oldDist && m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(*nearNode, *newNode))) {
                 m_mutex.lock();
                 nearNode->setCost(newDist);
                 nearNode->setParent(newNode, edgeCost);
@@ -167,18 +167,18 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
 */
 template <unsigned int dim>
 bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
-    if (m_collision->checkConfig(goal)) {
+    if (!m_validityChecker->checkConfig(goal)) {
         Logging::warning("Goal Node in collision", this);
         return false;
     }
 
-    auto nearestNode = util::getNearestValidNode<dim>(goal, *m_graph, *m_trajectory, *m_metric, m_stepSize * 3);
+    auto nearestNode = util::getNearestValidNode<dim>(goal, *m_graph, *m_validityChecker, *m_trajectory, *m_metric, m_stepSize * 3);
 
     if (nearestNode) {
         std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
-        goalNode->setParent(nearestNode, m_metric->calcDist(goalNode, nearestNode));
+        goalNode->setParent(nearestNode, m_metric->calcDist(*goalNode, *nearestNode));
         goalNode->setCost(goalNode->getParentEdge().second + nearestNode->getCost());
-        nearestNode->addChild(goalNode, m_metric->calcDist(goalNode, nearestNode));
+        nearestNode->addChild(goalNode, m_metric->calcDist(*goalNode, *nearestNode));
 
         m_goalNode = goalNode;
         m_pathPlanned = true;

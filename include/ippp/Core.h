@@ -28,9 +28,9 @@
 #include <ippp/modules/collisionDetection/CollisionDetectionSphere.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 
+#include <ippp/modules/constraint/AlwaysValidConstraint.hpp>
 #include <ippp/modules/constraint/Constraint.hpp>
 #include <ippp/modules/constraint/EuclideanConstraint.hpp>
-#include <ippp/modules/constraint/AlwaysValidConstraint.hpp>
 
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/dataObj/Node.hpp>
@@ -68,12 +68,16 @@
 #include <ippp/modules/sampling/GaussianDistSampling.hpp>
 #include <ippp/modules/sampling/GaussianSampling.hpp>
 #include <ippp/modules/sampling/MedialAxisSampling.hpp>
+#include <ippp/modules/sampling/RGDSampling.hpp>
 #include <ippp/modules/sampling/Sampling.hpp>
 #include <ippp/modules/sampling/SamplingNearObstacle.hpp>
 #include <ippp/modules/sampling/StraightSampling.hpp>
 
 #include <ippp/modules/trajectoryPlanner/LinearTrajectory.hpp>
 #include <ippp/modules/trajectoryPlanner/RotateAtS.hpp>
+#include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
+
+#include <ippp/modules/validityChecker/ValidityChecker.hpp>
 
 #include <ippp/statistic/StatisticCollector.h>
 #include <ippp/statistic/StatisticContainer.h>

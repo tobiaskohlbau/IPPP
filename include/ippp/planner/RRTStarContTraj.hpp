@@ -40,7 +40,7 @@ class RRTStarContTraj : public RRTStar<dim> {
     void chooseParent(const Vector<dim> &newVec, std::shared_ptr<Node<dim>> &nearestNode,
                       std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
-    using Planner<dim>::m_collision;
+    using Planner<dim>::m_validityChecker;
     using Planner<dim>::m_graph;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;

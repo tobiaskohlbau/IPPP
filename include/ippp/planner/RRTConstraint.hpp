@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef RRT_HPP
-#define RRT_HPP
+#ifndef RRTCONSTRAINT_HPP
+#define RRTCONSTRAINT_HPP
 
 #include <mutex>
 
@@ -32,10 +32,10 @@ namespace ippp {
 *  \date   2017-06-20
 */
 template <unsigned int dim>
-class RRT : public TreePlanner<dim> {
+class RRTConstraint : public TreePlanner<dim> {
   public:
-    RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph,
-        const std::string &name = "RRT");
+    RRTConstraint(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
+                  const std::shared_ptr<Graph<dim>> &graph, const std::string &name = "RRTConstraint");
 
     virtual bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1);
     virtual bool connectGoalNode(const Vector<dim> goal);
@@ -70,8 +70,8 @@ class RRT : public TreePlanner<dim> {
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-RRT<dim>::RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
-              const std::shared_ptr<Graph<dim>> &graph, const std::string &name)
+RRTConstraint<dim>::RRTConstraint(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
+                                  const std::shared_ptr<Graph<dim>> &graph, const std::string &name)
     : TreePlanner<dim>(name, environment, options, graph) {
     m_stepSize = options.getStepSize();
 }
@@ -85,7 +85,7 @@ RRT<dim>::RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRT<dim>::computeTree(size_t nbOfNodes, size_t nbOfThreads) {
+bool RRTConstraint<dim>::computeTree(size_t nbOfNodes, size_t nbOfThreads) {
     if (m_initNode == nullptr) {
         Logging::error("Init Node is not connected", this);
         return false;
@@ -99,7 +99,7 @@ bool RRT<dim>::computeTree(size_t nbOfNodes, size_t nbOfThreads) {
         std::vector<std::thread> threads;
 
         for (size_t i = 0; i < nbOfThreads; ++i)
-            threads.push_back(std::thread(&RRT::computeTreeThread, this, countNodes));
+            threads.push_back(std::thread(&RRTConstraint::computeTreeThread, this, countNodes));
 
         for (size_t i = 0; i < nbOfThreads; ++i)
             threads[i].join();
@@ -115,7 +115,7 @@ bool RRT<dim>::computeTree(size_t nbOfNodes, size_t nbOfThreads) {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-void RRT<dim>::computeTreeThread(size_t nbOfNodes) {
+void RRTConstraint<dim>::computeTreeThread(size_t nbOfNodes) {
     Vector<dim> sample;
     for (size_t i = 0; i < nbOfNodes; ++i) {
         sample = m_sampling->getSample();
@@ -138,7 +138,7 @@ void RRT<dim>::computeTreeThread(size_t nbOfNodes) {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
+bool RRTConstraint<dim>::connectGoalNode(Vector<dim> goal) {
     if (!m_validityChecker->checkConfig(goal)) {
         Logging::warning("Goal Node in collision", this);
         return false;
@@ -148,7 +148,7 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
     auto nearNodes = m_graph->getNearNodes(*goalNode, m_stepSize * 3);
 
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
-    for (auto node : nearNodes) {
+    for (auto &node : nearNodes) {
         if (m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(goal, node->getValues()))) {
             nearestNode = node;
             break;
@@ -156,7 +156,7 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
     }
 
     if (nearestNode != nullptr) {
-        goalNode->setParent(nearestNode, this->m_metric->calcDist(*nearestNode, *goalNode));
+        goalNode->setParent(nearestNode, this->m_metric->calcDist(nearestNode, goalNode));
         m_goalNode = goalNode;
         m_graph->addNode(goalNode);
         m_pathPlanned = true;
@@ -177,19 +177,25 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randConfig) {
+std::shared_ptr<Node<dim>> RRTConstraint<dim>::computeRRTNode(const Vector<dim> &randConfig) {
     // get nearest neighbor
     std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randConfig);
 
     // compute Node<dim> new with fixed step size
     Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
-    std::shared_ptr<Node<dim>> newNode = std::make_shared<Node<dim>>(newConfig);
-
-    if (!m_validityChecker->checkConfig(newNode->getValues()) ||
-        !m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(*newNode, *nearestNode)))
+    // check the constraint of the new config
+    newConfig = m_sampling->getSample(newConfig);
+    if (util::empty<dim>(newConfig))
         return nullptr;
 
-    double edgeCost = this->m_metric->calcDist(*nearestNode, *newNode);
+    std::shared_ptr<Node<dim>> newNode = std::make_shared<Node<dim>>(newConfig);
+
+    if (!m_validityChecker->checkConfig(newNode->getValues()))
+        return nullptr;
+    if (!m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(*newNode, *nearestNode)))
+        return nullptr;
+
+    double edgeCost = this->m_metric->calcDist(nearestNode, newNode);
     newNode->setParent(nearestNode, edgeCost);
 
     m_mutex.lock();
@@ -207,7 +213,7 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randConfi
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-Vector<dim> RRT<dim>::computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode) {
+Vector<dim> RRTConstraint<dim>::computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode) {
     if ((randNode - nearestNode).norm() < m_stepSize)
         return randNode;
 
@@ -222,4 +228,4 @@ Vector<dim> RRT<dim>::computeNodeNew(const Vector<dim> &randNode, const Vector<d
 
 } /* namespace ippp */
 
-#endif /* RRT_HPP */
+#endif /* RRTCONSTRAINT_HPP */

@@ -25,7 +25,7 @@
 
 #include <ippp/Identifier.h>
 #include <ippp/environment/Environment.h>
-#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
+#include <ippp/modules/validityChecker/ValidityChecker.hpp>
 #include <ippp/modules/sampler/Sampler.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
 
@@ -40,8 +40,9 @@ template <unsigned int dim>
 class Sampling : public Identifier {
   public:
     Sampling(const std::string &name, const std::shared_ptr<Environment> &environment,
-             const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-             const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts = 10);
+             const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
+             size_t attempts = 10);
 
     virtual Vector<dim> getSample() = 0;
     virtual Vector<dim> getSample(const Vector<dim> &prevSample);
@@ -58,7 +59,7 @@ class Sampling : public Identifier {
     const size_t m_attempts;                             /*!< number of attempts for each sampling generation */
     std::pair<Vector<dim>, Vector<dim>> m_robotBounding; /*!< min, max robot boundaries */
 
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
+    std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
@@ -77,12 +78,12 @@ class Sampling : public Identifier {
 */
 template <unsigned int dim>
 Sampling<dim>::Sampling(const std::string &name, const std::shared_ptr<Environment> &environment,
-                        const std::shared_ptr<CollisionDetection<dim>> &collision,
+                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
                         size_t attempts)
     : Identifier(name),
       m_environment(environment),
-      m_collision(collision),
+      m_validityChecker(validityChecker),
       m_trajectory(trajectory),
       m_sampler(sampler),
       m_attempts(attempts) {

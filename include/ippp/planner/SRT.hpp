@@ -59,7 +59,7 @@ class SRT : public Planner<dim> {
 
     std::mutex m_mutex;
 
-    using Planner<dim>::m_collision;
+    using Planner<dim>::m_validityChecker;
     using Planner<dim>::m_environment;
     using Planner<dim>::m_evaluator;
     using Planner<dim>::m_graph;
@@ -96,11 +96,11 @@ SRT<dim>::SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<
 */
 template <unsigned int dim>
 bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
-    if (m_collision->checkConfig(start)) {
+    if (!m_validityChecker->checkConfig(start)) {
         Logging::error("Start Node in collision", this);
         return false;
     }
-    if (m_collision->checkConfig(goal)) {
+    if (!m_validityChecker->checkConfig(goal)) {
         Logging::error("Goal Node in collision", this);
         return false;
     }
@@ -166,7 +166,7 @@ void SRT<dim>::samplingPhase(size_t nbOfNodes, size_t nbOfTrees) {
     for (size_t i = 0; i < nbOfTrees; ++i) {
         do {
             sample = m_sampling->getSample();
-        } while (util::empty<dim>(sample) || m_collision->checkConfig(sample));
+        } while (util::empty<dim>(sample) || !m_validityChecker->checkConfig(sample));
 
         std::shared_ptr<Graph<dim>> graph = computeTree(nbOfNodes, sample);
         m_mutex.lock();
@@ -184,7 +184,7 @@ void SRT<dim>::samplingPhase(size_t nbOfNodes, size_t nbOfTrees) {
 */
 template <unsigned int dim>
 std::shared_ptr<Graph<dim>> SRT<dim>::computeTree(size_t nbOfNodes, const Vector<dim> &origin) {
-    RRTOptions<dim> rrtOptions(30, m_collision, m_metric, m_evaluator, this->m_pathModifier, m_sampling, m_trajectory);
+    RRTOptions<dim> rrtOptions(30, !m_validityChecker, m_metric, m_evaluator, this->m_pathModifier, m_sampling, m_trajectory);
     RRT<dim> rrt(m_environment, rrtOptions);
     rrt.setInitNode(origin);
     rrt.expand(nbOfNodes, 1);

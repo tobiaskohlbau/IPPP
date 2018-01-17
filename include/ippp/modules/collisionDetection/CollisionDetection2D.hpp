@@ -36,7 +36,7 @@ class CollisionDetection2D : public CollisionDetection<dim> {
   public:
     CollisionDetection2D(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
     bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(std::vector<Vector<dim>> &configs);
+    bool checkTrajectory(const std::vector<Vector<dim>> &configs);
 
   private:
     bool checkPoint2D(double x, double y);
@@ -100,7 +100,7 @@ bool CollisionDetection2D<dim>::checkConfig(const Vector<dim> &config, Collision
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-bool CollisionDetection2D<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+bool CollisionDetection2D<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
     if (configs.empty())
         return false;
 
