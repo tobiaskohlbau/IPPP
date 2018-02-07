@@ -145,7 +145,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
     if (request.checkInterRobot) {
         if (m_baseMeshAvaible) {
             for (unsigned int i = 1; i < dim; ++i) {
-                if (checkFCL(m_baseModel, m_linkModels[i], pose, linkTrafos[i])) {
+                if (this->checkFCL(m_baseModel, m_linkModels[i], pose, linkTrafos[i])) {
                     // std::cout << pose.matrix() << std::endl;
                     // std::cout << linkTrafos[i].matrix() << std::endl;
                     // Logging::trace("Collision between link" + std::to_string(i) + " and base", this);
@@ -156,7 +156,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
 
         for (unsigned int i = 0; i < dim; ++i) {
             for (unsigned int j = i + 2; j < dim; ++j) {
-                if (checkFCL(m_linkModels[i], m_linkModels[j], linkTrafos[i], linkTrafos[j])) {
+                if (this->checkFCL(m_linkModels[i], m_linkModels[j], linkTrafos[i], linkTrafos[j])) {
                     // Logging::trace("Collision between link" + std::to_string(i) + " and link" + std::to_string(j), this);
                     // std::cout << linkTrafos[i].matrix() << std::endl;
                     // std::cout << linkTrafos[j].matrix() << std::endl;
@@ -169,7 +169,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
     // control collision with workspace
     if (m_workspaceAvaible && request.checkObstacle) {
         for (auto &obstacle : m_obstacles) {
-            if (checkFCL(obstacle.first, m_baseModel, obstacle.second, pose)) {
+            if (this->checkFCL(obstacle.first, m_baseModel, obstacle.second, pose)) {
                 // Logging::trace("Collision between workspace and base", this);
                 return true;
             }
@@ -177,7 +177,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
 
         for (unsigned int i = 0; i < dim; ++i) {
             for (auto &obstacle : m_obstacles) {
-                if (checkFCL(obstacle.first, m_linkModels[i], obstacle.second, linkTrafos[i])) {
+                if (this->checkFCL(obstacle.first, m_linkModels[i], obstacle.second, linkTrafos[i])) {
                     // Logging::trace("Collision between workspace and link" + std::to_string(i), this);
                     return true;
                 }
