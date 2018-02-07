@@ -19,7 +19,7 @@
 #include <gtest/gtest.h>
 
 #include <ippp/environment/robot/MobileRobot.h>
-#include <ippp/modules/collisionDetection/CollisionDetectionFcl.hpp>
+#include <ippp/modules/collisionDetection/CollisionFclMobile.hpp>
 #include <ippp/modules/sampler/GridSampler.hpp>
 #include <ippp/modules/sampler/SamplerNormalDist.hpp>
 #include <ippp/modules/sampler/SamplerRandom.hpp>
@@ -78,7 +78,7 @@ void createSampling() {
 
     auto robot = std::make_shared<MobileRobot>(dim, std::make_pair(minBound, maxBound), dofTypes);
     auto environment = std::make_shared<Environment>(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot);
-    auto collision = std::make_shared<CollisionDetectionFcl<dim>>(environment);
+    auto collision = std::make_shared<CollisionFclMobile<dim>>(environment);
     auto validityChecker = std::make_shared<ValidityChecker<dim>>(environment, collision);
     auto trajectory = std::make_shared<LinearTrajectory<dim>>(environment, 0.1);
 

@@ -31,6 +31,7 @@ namespace ippp {
 struct CollisionRequest {
     bool checkInterRobot = true;          /*!< check inner collision of the robot */
     bool checkObstacle = true;            /*!< check collision to the obstacles */
+    bool completeCheck = false;
     bool computeDistance = false;         /*!< compute the distance to obstacles and inner robot collisions */
     bool computePenetrationDepth = false; /*!< compute depth of collisions */
 };

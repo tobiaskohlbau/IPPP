@@ -29,7 +29,7 @@
 
 namespace ippp {
 
-enum class CollisionType { Dim2, Dim2Triangle, AlwaysValid, PQP, FCL, AABB, Sphere };
+enum class CollisionType { Dim2, Dim2Triangle, AlwaysValid, PQP, FclMobile, FclSerial, AABB, Sphere };
 
 enum class ConstraintType { AlwaysValid, Euclidean };
 
@@ -178,8 +178,11 @@ void ModuleConfigurator<dim>::initializeModules() {
         case CollisionType::AlwaysValid:
             m_collision = std::make_shared<CollisionDetectionAlwaysValid<dim>>(m_environment);
             break;
-        case CollisionType::FCL:
-            m_collision = std::make_shared<CollisionDetectionFcl<dim>>(m_environment);
+        case CollisionType::FclMobile:
+            m_collision = std::make_shared<CollisionFclMobile<dim>>(m_environment);
+            break;
+        case CollisionType::FclSerial:
+            m_collision = std::make_shared<CollisionFclSerial<dim>>(m_environment);
             break;
         case CollisionType::AABB:
             m_collision = std::make_shared<CollisionDetectionAABB<dim>>(m_environment);

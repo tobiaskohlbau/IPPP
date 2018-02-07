@@ -66,11 +66,11 @@ void simpleRRT() {
     // serialRobot->saveMeshConfig(testConfig);
 
     ModuleConfigurator<dim> creator;
-    creator.setEvaluatorType(EvaluatorType::Query);
-    creator.setEvaluatorProperties(0.3, 60);
+    creator.setEvaluatorType(EvaluatorType::QueryOrTime);
+    creator.setEvaluatorProperties(0.5, 60);
     creator.setGraphSortCount(2000);
     creator.setEnvironment(environment);
-    creator.setCollisionType(CollisionType::FCL);
+    creator.setCollisionType(CollisionType::FclSerial);
     //creator.setConstraintType(ConstraintType::Euclidean);
     //Vector6 constraint = util::NaNVector<6>();
     //constraint[3] = 0;

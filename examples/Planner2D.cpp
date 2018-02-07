@@ -101,7 +101,7 @@ bool test2DSerialRobot() {
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setGraphSortCount(3000);
-    creator.setCollisionType(CollisionType::FCL);
+    creator.setCollisionType(CollisionType::FclSerial);
     creator.setTrajectoryProperties(10, 0.01);
     creator.setEvaluatorType(EvaluatorType::QueryOrTime);
     creator.setEvaluatorProperties(2, 60);

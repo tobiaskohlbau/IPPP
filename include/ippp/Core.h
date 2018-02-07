@@ -23,10 +23,11 @@
 #include <ippp/modules/collisionDetection/CollisionDetection2D.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionAABB.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionAlwaysValid.hpp>
-#include <ippp/modules/collisionDetection/CollisionDetectionFcl.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionPqp.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionSphere.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionTriangleRobot.hpp>
+#include <ippp/modules/collisionDetection/CollisionFclMobile.hpp>
+#include <ippp/modules/collisionDetection/CollisionFclSerial.hpp>
 
 #include <ippp/modules/constraint/AlwaysValidConstraint.hpp>
 #include <ippp/modules/constraint/Constraint.hpp>
