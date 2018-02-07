@@ -34,7 +34,7 @@ std::vector<Triangle2D> generateTriangles(const Mesh &mesh);
 Mesh generateMesh(const std::vector<Triangle2D> &triangles);
 Mesh mergeMeshes(const std::vector<Mesh> &meshes);
 
-Vector3 getCenterOfMesh(const Mesh &mesh);
+Vector3 calcCenterOfMesh(const Mesh &mesh);
 void centerMeshes(std::vector<Mesh> &meshes);
 void centerMesh(Mesh &mesh);
 
