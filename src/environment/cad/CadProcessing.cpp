@@ -99,7 +99,7 @@ Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
 *  \param[out] center point
 *  \date       2017-10-07
 */
-Vector3 getCenterOfMesh(const Mesh &mesh) {
+Vector3 calcCenterOfMesh(const Mesh &mesh) {
     Vector3 zero(0, 0, 0);
     return std::accumulate(mesh.vertices.begin(), mesh.vertices.end(), zero) / mesh.vertices.size();
 }
@@ -122,7 +122,7 @@ void centerMeshes(std::vector<Mesh> &meshes) {
 *  \date           2017-10-07
 */
 void centerMesh(Mesh &mesh) {
-    Vector3 centerPoint = getCenterOfMesh(mesh);
+    Vector3 centerPoint = calcCenterOfMesh(mesh);
 
     // set the vertices to the new center point
     for (auto &vertex : mesh.vertices)
