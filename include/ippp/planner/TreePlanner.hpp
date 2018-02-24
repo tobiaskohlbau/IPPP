@@ -92,7 +92,7 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
     if (!setInitNode(start))
         return false;
 
-    if (!m_validityChecker->checkConfig(goal)) {
+    if (!m_validityChecker->check(goal)) {
         Logging::error("Goal Node in collision", this);
         return false;
     }
@@ -102,12 +102,12 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
-        Logging::debug("Iteration: " + std::to_string(loopCount++), this);
+        Logging::info("Iteration: " + std::to_string(loopCount++), this);
         computeTree(numNodes, numThreads);
     }
 
-    Logging::debug("Planner has: " + std::to_string(m_graph->nodeSize()) + " nodes", this);
-    Logging::debug("Planner has: " + std::to_string(m_graph->edgeSize()) + " edges", this);
+    Logging::info("Planner has: " + std::to_string(m_graph->numNodes()) + " nodes", this);
+    Logging::info("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
 
     return connectGoalNode(goal);
 }
@@ -145,7 +145,7 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
         }
     }
 
-    if (!m_validityChecker->checkConfig(start)) {
+    if (!m_validityChecker->check(start)) {
         Logging::warning("Init Node could not be connected", this);
         return false;
     }

@@ -20,6 +20,20 @@
 namespace ippp {
 namespace drawing {
 
+static void drawTriangle(cv::Mat &image, cv::Point2i pt1, cv::Point2i pt2, cv::Point2i pt3, const Vector2i &offset,
+                         Eigen::Vector3i colorPoint, int thickness) {
+    pt1.x += static_cast<int>(offset[0]);
+    pt2.x += static_cast<int>(offset[0]);
+    pt3.x += static_cast<int>(offset[0]);
+    pt1.y += static_cast<int>(offset[1]);
+    pt2.y += static_cast<int>(offset[1]);
+    pt3.y += static_cast<int>(offset[1]);
+
+    cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+    cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+    cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+}
+
 /*!
 *  \brief         Draw nodes and there edge to the parent Node
 *  \author        Sascha Kaden
@@ -100,31 +114,32 @@ static void drawPath2D(const std::vector<Vector2> configs, cv::Mat &image, Eigen
 *  \date          2016-05-25
 */
 template <unsigned int dim>
-static void drawSerialRobot2D(const Vector<dim> config, const std::shared_ptr<SerialRobot> &robot, cv::Mat &image,
+static void drawSerialRobot2D(const Vector<dim> &config, const SerialRobot &robot, cv::Mat &image, const Vector2i &offset,
                               Eigen::Vector3i colorPoint, int thickness) {
-    Logging::info("start drawing of SerialRobot2D", "Drawing2D");
+    Logging::trace("start drawing of SerialRobot2D", "Drawing2D");
 
     // base model
-    if (robot->getBaseModel()) {
-        auto baseMesh = robot->getBaseModel()->m_mesh;
-        cad::transformVertices(robot->getPose(), baseMesh.vertices);
+    if (robot.getBaseModel()) {
+        auto baseMesh = robot.getBaseModel()->m_mesh;
+        cad::transformVertices(robot.getPose(), baseMesh.vertices);
 
         for (auto &face : baseMesh.faces) {
-            auto pt1 = cv::Point2i(static_cast<int>(baseMesh.vertices[face[0]][0]), static_cast<int>(baseMesh.vertices[face[0]][1]));
-            auto pt2 = cv::Point2i(static_cast<int>(baseMesh.vertices[face[1]][0]), static_cast<int>(baseMesh.vertices[face[1]][1]));
-            auto pt3 = cv::Point2i(static_cast<int>(baseMesh.vertices[face[2]][0]), static_cast<int>(baseMesh.vertices[face[2]][1]));
-            cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
-            cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
-            cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+            auto pt1 =
+                cv::Point2i(static_cast<int>(baseMesh.vertices[face[0]][0]), static_cast<int>(baseMesh.vertices[face[0]][1]));
+            auto pt2 =
+                cv::Point2i(static_cast<int>(baseMesh.vertices[face[1]][0]), static_cast<int>(baseMesh.vertices[face[1]][1]));
+            auto pt3 =
+                cv::Point2i(static_cast<int>(baseMesh.vertices[face[2]][0]), static_cast<int>(baseMesh.vertices[face[2]][1]));
+            drawTriangle(image, pt1, pt2, pt3, offset, colorPoint, thickness);
         }
     }
-    
-    auto linkModel = robot->getLinkModels();
+
+    auto linkModel = robot.getLinkModels();
     std::vector<Mesh> jointMeshes;
     for (auto &model : linkModel)
         jointMeshes.push_back(model->m_mesh);
 
-    auto AsLinks = robot->getLinkTrafos(config);
+    auto AsLinks = robot.getLinkTrafos(config);
     for (size_t i = 0; i < AsLinks.size(); ++i)
         cad::transformVertices(AsLinks[i], jointMeshes[i].vertices);
 
@@ -133,9 +148,7 @@ static void drawSerialRobot2D(const Vector<dim> config, const std::shared_ptr<Se
             auto pt1 = cv::Point2i(static_cast<int>(mesh.vertices[face[0]][0]), static_cast<int>(mesh.vertices[face[0]][1]));
             auto pt2 = cv::Point2i(static_cast<int>(mesh.vertices[face[1]][0]), static_cast<int>(mesh.vertices[face[1]][1]));
             auto pt3 = cv::Point2i(static_cast<int>(mesh.vertices[face[2]][0]), static_cast<int>(mesh.vertices[face[2]][1]));
-            cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
-            cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
-            cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+            drawTriangle(image, pt1, pt2, pt3, offset, colorPoint, thickness);
         }
     }
 }
@@ -150,12 +163,12 @@ static void drawSerialRobot2D(const Vector<dim> config, const std::shared_ptr<Se
 *  \param[in]     thickness of the lines
 *  \date          2016-05-25
 */
-static void drawTrianglePath(const std::vector<Vector3> configs, const Mesh mesh, cv::Mat &image, Eigen::Vector3i colorPoint,
-                             int thickness) {
+static void drawTrianglePath(const std::vector<Vector3> configs, const Mesh mesh, cv::Mat &image, const Vector2i &offset,
+                             Eigen::Vector3i colorPoint, int thickness) {
     if (configs.empty())
         return;
 
-    Logging::info("start drawing of triangles", "Drawing2D");
+    Logging::trace("start drawing of triangles", "Drawing2D");
 
     for (auto &config : configs) {
         auto tempMesh = mesh;
@@ -169,9 +182,7 @@ static void drawTrianglePath(const std::vector<Vector3> configs, const Mesh mesh
                 cv::Point2i(static_cast<int>(tempMesh.vertices[face[1]][0]), static_cast<int>(tempMesh.vertices[face[1]][1]));
             auto pt3 =
                 cv::Point2i(static_cast<int>(tempMesh.vertices[face[2]][0]), static_cast<int>(tempMesh.vertices[face[2]][1]));
-            cv::line(image, pt1, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
-            cv::line(image, pt1, pt3, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
-            cv::line(image, pt3, pt2, cv::Scalar(colorPoint[0], colorPoint[1], colorPoint[2]), thickness);
+            drawTriangle(image, pt1, pt2, pt3, offset, colorPoint, thickness);
         }
     }
 }

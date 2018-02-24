@@ -32,8 +32,9 @@ template <unsigned int dim>
 class NodeCutPathModifier : public PathModifier<dim> {
   public:
     NodeCutPathModifier(const std::shared_ptr<Environment> &environment,
-                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+
+                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker);
 
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
 
@@ -53,9 +54,9 @@ class NodeCutPathModifier : public PathModifier<dim> {
 */
 template <unsigned int dim>
 NodeCutPathModifier<dim>::NodeCutPathModifier(const std::shared_ptr<Environment> &environment,
-                                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                              const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PathModifier<dim>("NodeCut", environment, validityChecker, trajectory) {
+                                              const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker)
+    : PathModifier<dim>("NodeCut", environment, trajectory, validityChecker) {
 }
 
 /*!
@@ -74,7 +75,7 @@ std::vector<std::shared_ptr<Node<dim>>> NodeCutPathModifier<dim>::smoothPath(
     while (i != std::end(smoothedNodes) - 2) {
         auto j = i + 2;
         while (j != std::end(smoothedNodes) - 1) {
-            if (m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(**i, **j))) {
+            if (m_validityChecker->check(m_trajectory->calcTrajBin(**i, **j))) {
                 j = smoothedNodes.erase(j - 1);
                 ++j;
             } else {
@@ -83,6 +84,12 @@ std::vector<std::shared_ptr<Node<dim>>> NodeCutPathModifier<dim>::smoothPath(
         }
         ++i;
     }
+    // try to short cut the foreleast node
+    if (smoothedNodes.size() > 2 &&
+        m_validityChecker->check(m_trajectory->calcTrajBin(smoothedNodes[smoothedNodes.size() - 3]->getValues(),
+                                                           smoothedNodes[smoothedNodes.size() - 1]->getValues())))
+        smoothedNodes.erase(std::end(smoothedNodes) - 2);
+
     return smoothedNodes;
 }
 

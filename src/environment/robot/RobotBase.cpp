@@ -86,23 +86,13 @@ std::shared_ptr<ModelContainer> RobotBase::getBaseModel() const {
 }
 
 /*!
-*  \brief      Get minimum boundary of the robot
+*  \brief      Get boundary of the robot (pair with min and max boundary).
 *  \author     Sascha Kaden
-*  \param[out] minimum Boundaries
-*  \date       2016-07-15
+*  \param[out] boundaries
+*  \date       2018-02-15
 */
-VectorX RobotBase::getMinBoundary() const {
-    return m_minBoundary;
-}
-
-/*!
-*  \brief      Get maximum boundary of the robot
-*  \author     Sascha Kaden
-*  \param[out] maximum Boundaries
-*  \date       2016-07-15
-*/
-VectorX RobotBase::getMaxBoundary() const {
-    return m_maxBoundary;
+std::pair<VectorX, VectorX> RobotBase::getBoundary() const {
+    return m_boundary;
 }
 
 /*!

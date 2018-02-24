@@ -49,10 +49,12 @@ class EnvironmentConfigurator : public Configurator {
     void setRobotType(const RobotType robotType);
     void setRobotBaseModelFile(const std::string robotBaseModelFile);
     void setRobotBaseProperties(size_t robotDim, const std::vector<DofType> &dofTypes,
-                                const std::pair<VectorX, VectorX> &robotBoundaries);
+                                const std::pair<VectorX, VectorX> &robotBoundaries,
+                                const Transform &pose = Transform::Identity());
     void setSerialRobotProperties(const std::vector<DhParameter> &dhParameters, const std::vector<std::string> &linkModelFiles,
+                                  const std::vector<Transform> &linkOffsets = std::vector<Transform>(),
                                   const Transform &baseOffset = Transform::Identity(),
-                                  const std::vector<Transform> &linkOffsets = std::vector<Transform>());
+                                  const Transform &toolOffset = Transform::Identity(), std::string toolModelFile = "");
 
     std::shared_ptr<Environment> getEnvironment();
     std::string getRobotBaseModelFile() const;
@@ -62,9 +64,9 @@ class EnvironmentConfigurator : public Configurator {
 
   protected:
     std::shared_ptr<RobotBase> createPointRobot();
-    std::shared_ptr<RobotBase> createTriangleRobot(const std::shared_ptr<ModelFactory> factory);
-    std::shared_ptr<RobotBase> createMobileRobot(const std::shared_ptr<ModelFactory> factory);
-    std::shared_ptr<RobotBase> createSerialRobot(const std::shared_ptr<ModelFactory> factory, RobotType type = RobotType::Serial);
+    std::shared_ptr<RobotBase> createTriangleRobot(ModelFactory &factory);
+    std::shared_ptr<RobotBase> createMobileRobot(ModelFactory &factory);
+    std::shared_ptr<RobotBase> createSerialRobot(ModelFactory &factory, RobotType type = RobotType::Serial);
 
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<RobotBase> m_robot = nullptr;
@@ -81,12 +83,15 @@ class EnvironmentConfigurator : public Configurator {
     std::vector<DofType> m_dofTypes;
     std::pair<VectorX, VectorX> m_robotBoundaries;
     std::string m_robotBaseModelFile;
+    Transform m_robotPose = Transform::Identity();
 
     // serial robot properties
     std::vector<DhParameter> m_dhParameters;
     std::vector<std::string> m_linkModelFiles;
-    Transform m_baseOffset;
     std::vector<Transform> m_linkOffsets;
+    Transform m_baseOffset = Transform::Identity();
+    Transform m_toolOffset = Transform::Identity();
+    std::string m_toolModelFile;
 };
 
 } /* namespace ippp */

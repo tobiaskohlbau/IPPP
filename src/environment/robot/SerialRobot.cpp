@@ -48,14 +48,14 @@ SerialRobot::SerialRobot(unsigned int dim, const std::vector<Joint> &joints, con
 }
 
 /*!
-*  \brief      Compute the transformation of the robot from the configuration
+*  \brief      Calculate the Transform of the TCP of the robot.
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] Transform
+*  \param[out] TCP transformation
 *  \date       2017-06-21
 */
 Transform SerialRobot::getTransformation(const VectorX &config) const {
-    return getTcp(this->getJointTrafos(config)) * m_toolOffset;
+    return getTcp(this->getJointTrafos(config));
 }
 
 /*!
@@ -117,14 +117,50 @@ std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
 *  \param[out] TCP pose as Transform
 *  \date       2016-07-07
 */
-Transform SerialRobot::getTcp(const std::vector<Transform> &trafos) const {
+Transform SerialRobot::getTcp(const std::vector<Transform> &jointTrafos) const {
     // multiply these matrizes together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
-    Transform robotToTcp = this->m_pose;
-    for (const auto &trafo : trafos)
+    Transform robotToTcp = m_pose * m_baseOffset;
+    for (const auto &trafo : jointTrafos)
         robotToTcp = robotToTcp * trafo;
 
-    return robotToTcp;
+    return robotToTcp * m_toolOffset;
+}
+
+/*!
+*  \brief      Calculate the jacobian matrix to the passed configuration.
+*  \detail     Calculation of the jacobian with the vector cross product method. The method was taken from Robotics - control,
+* sensing, vision and intelligence from Fu, Gonzalez and Lee.
+*  \author     Sascha Kaden
+*  \param[in]  configuration of the base offset
+*  \date       2017-11-17
+*/
+MatrixX SerialRobot::calcJacobian(const VectorX &config) const {
+    MatrixX jacobi(6, m_dim);
+#if 1
+    std::vector<Transform> jointTrafos = getJointTrafos(config);
+    Transform tcp = getTcp(jointTrafos);
+
+    Transform frame = m_pose * m_baseOffset;
+    for (size_t i = 0; i < m_dim; ++i) {
+        if (i > 0)
+            frame = frame * jointTrafos[i - 1];
+
+        jacobi.block<3, 1>(0, i) = m_zUnitVectors[i].cross(tcp.translation() - frame.translation());
+        jacobi.block<3, 1>(3, i) = m_zUnitVectors[i];
+    }
+#else
+    Vector6 tcp = util::transformToVec(getTcp(getJointTrafos(config)));
+
+    const double diff = 0.0001;
+    for (size_t i = 0; i < m_dim; ++i) {
+        auto tmpConfig = config;
+        tmpConfig[i] += diff;
+        Vector6 tmpTcp = util::transformToVec(getTcp(getJointTrafos(tmpConfig)));
+        jacobi.block<6, 1>(0, i) = (tmpTcp - tcp) / diff;
+    }
+#endif
+    return jacobi;
 }
 
 /*!
@@ -217,7 +253,7 @@ std::shared_ptr<ModelContainer> SerialRobot::getToolModel() const {
 *  \param[out] number of joints
 *  \date       2016-06-30
 */
-size_t SerialRobot::getNbJoints() const {
+size_t SerialRobot::numJoints() const {
     return m_joints.size();
 }
 
@@ -296,13 +332,21 @@ void SerialRobot::updateJointParams() {
         m_linkModels.push_back(joint.getLinkModel());
     }
 
-    m_minBoundary = VectorX::Zero(m_dim);
-    m_maxBoundary = VectorX::Zero(m_dim);
+    m_boundary.first = VectorX(m_dim);
+    m_boundary.second = VectorX(m_dim);
     for (size_t i = 0; i < m_dim; ++i) {
         auto boundaries = m_joints[i].getBoundaries();
-        m_minBoundary[i] = boundaries.first;
-        m_maxBoundary[i] = boundaries.second;
+        m_boundary.first[i] = boundaries.first;
+        m_boundary.second[i] = boundaries.second;
     }
+
+    Vector3 zUnit(0, 0, 1);
+    zUnit = m_baseOffset.rotation() * m_pose.rotation() * zUnit;
+    m_zUnitVectors.clear();
+    m_zUnitVectors.push_back(zUnit);
+    for (size_t i = 1; i < m_dim; ++i)
+        m_zUnitVectors.push_back(Eigen::AngleAxisd(m_dhParameters[i - 1].alpha, Eigen::Vector3d::UnitX()) *
+                                 m_zUnitVectors[i - 1]);
 }
 
 } /* namespace ippp */

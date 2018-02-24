@@ -22,16 +22,14 @@
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetection2D.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionAABB.hpp>
-#include <ippp/modules/collisionDetection/CollisionDetectionAlwaysValid.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionPqp.hpp>
-#include <ippp/modules/collisionDetection/CollisionDetectionSphere.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 #include <ippp/modules/collisionDetection/CollisionFclMobile.hpp>
 #include <ippp/modules/collisionDetection/CollisionFclSerial.hpp>
 
-#include <ippp/modules/constraint/AlwaysValidConstraint.hpp>
+#include <ippp/modules/constraint/BerensonConstraint.hpp>
 #include <ippp/modules/constraint/Constraint.hpp>
-#include <ippp/modules/constraint/EuclideanConstraint.hpp>
+#include <ippp/modules/constraint/StilmanConstraint.hpp>
 
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/dataObj/Node.hpp>
@@ -47,9 +45,9 @@
 
 #include <ippp/modules/evaluator/ComposeEvaluator.hpp>
 #include <ippp/modules/evaluator/Evaluator.hpp>
-#include <ippp/modules/evaluator/QueryEvaluator.hpp>
 #include <ippp/modules/evaluator/SingleIterationEvaluator.hpp>
 #include <ippp/modules/evaluator/TimeEvaluator.hpp>
+#include <ippp/modules/evaluator/TreeQueryEvaluator.hpp>
 
 #include <ippp/modules/neighborFinders/BruteForceNF.hpp>
 #include <ippp/modules/neighborFinders/KDTree.hpp>
@@ -65,7 +63,9 @@
 #include <ippp/modules/sampler/SamplerRandom.hpp>
 #include <ippp/modules/sampler/SamplerUniform.hpp>
 
+#include <ippp/modules/sampling/BerensonSampling.hpp>
 #include <ippp/modules/sampling/BridgeSampling.hpp>
+#include <ippp/modules/sampling/FirstOrderRetractionSampling.hpp>
 #include <ippp/modules/sampling/GaussianDistSampling.hpp>
 #include <ippp/modules/sampling/GaussianSampling.hpp>
 #include <ippp/modules/sampling/MedialAxisSampling.hpp>
@@ -73,11 +73,14 @@
 #include <ippp/modules/sampling/Sampling.hpp>
 #include <ippp/modules/sampling/SamplingNearObstacle.hpp>
 #include <ippp/modules/sampling/StraightSampling.hpp>
+#include <ippp/modules/sampling/TangentSpaceSampling.hpp>
 
 #include <ippp/modules/trajectoryPlanner/LinearTrajectory.hpp>
 #include <ippp/modules/trajectoryPlanner/RotateAtS.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
 
+#include <ippp/modules/validityChecker/AlwaysTrueValidity.hpp>
+#include <ippp/modules/validityChecker/ComposeValidity.hpp>
 #include <ippp/modules/validityChecker/ValidityChecker.hpp>
 
 #include <ippp/statistic/StatisticCollector.h>

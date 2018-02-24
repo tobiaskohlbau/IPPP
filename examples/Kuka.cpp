@@ -28,8 +28,8 @@ void simpleRRT() {
 
     Vector7 minRobotBound = util::Vecd(-170, -120, -170, -120, -170, -120, -175);
     Vector7 maxRobotBound = util::Vecd(170, 120, 170, 120, 170, 120, 175);
-    minRobotBound = util::degToRad<7>(minRobotBound);
-    maxRobotBound = util::degToRad<7>(maxRobotBound);
+    minRobotBound = util::toRad<7>(minRobotBound);
+    maxRobotBound = util::toRad<7>(maxRobotBound);
     std::vector<DhParameter> dhParameters({DhParameter(util::toRad(-90), 0, 340), DhParameter(util::toRad(90), 0, 0),
                                            DhParameter(util::toRad(90), 0, 400), DhParameter(util::toRad(-90), 0, 0),
                                            DhParameter(util::toRad(-90), 0, 400), DhParameter(util::toRad(90), 0, 0),
@@ -54,14 +54,17 @@ void simpleRRT() {
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::convertPosesToTransforms(linkOffsets);
-    envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles, Transform::Identity(), linkTransforms);
+    envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles, linkTransforms);
 
     envConfigurator.saveConfig("KukaEnvConfig.json");
     auto environment = envConfigurator.getEnvironment();
 
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
 
-    // Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
+//    Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
+    Vector<dim> testConfig = util::Vecd(0, 0, 0, 0, 0, 0, 0);
+    auto jacobi = serialRobot->calcJacobian(testConfig);
+    std::cout << "Jacobian:" << std::endl << jacobi << std::endl;
     // testConfig = util::degToRad<dim>(testConfig);
     // serialRobot->saveMeshConfig(testConfig);
 
@@ -70,7 +73,7 @@ void simpleRRT() {
     creator.setEvaluatorProperties(0.5, 60);
     creator.setGraphSortCount(2000);
     creator.setEnvironment(environment);
-    creator.setCollisionType(CollisionType::FclSerial);
+    creator.setVadilityCheckerType(ValidityCheckerType::FclSerial);
     //creator.setConstraintType(ConstraintType::Euclidean);
     //Vector6 constraint = util::NaNVector<6>();
     //constraint[3] = 0;
@@ -82,8 +85,8 @@ void simpleRRT() {
     Vector<dim> start = util::Vecd(0, 0, 0, 0, 0, 0, 0);
     Vector<dim> goal = util::Vecd(-90, 90, 170, 30, 10, 120, 0);
     // Vector<dim> goal = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
-    start = util::degToRad<dim>(start);
-    goal = util::degToRad<dim>(goal);
+    start = util::toRad<dim>(start);
+    goal = util::toRad<dim>(goal);
 
     // compute the tree
     clock_t begin = std::clock();

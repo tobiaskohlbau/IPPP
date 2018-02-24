@@ -16,11 +16,11 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef RGDSAMPLING_HPP
-#define RGDSAMPLING_HPP
+#ifndef BERENSONSAMPLING_HPP
+#define BERENSONSAMPLING_HPP
 
+#include <ippp/environment/robot/SerialRobot.h>
 #include <ippp/modules/constraint/Constraint.hpp>
-#include <ippp/modules/sampler/SamplerNormalDist.hpp>
 #include <ippp/modules/sampling/Sampling.hpp>
 
 namespace ippp {
@@ -32,17 +32,18 @@ namespace ippp {
 * \date    2016-12-20
 */
 template <unsigned int dim>
-class RGDSampling : public Sampling<dim> {
+class BerensonSampling : public Sampling<dim> {
   public:
-    RGDSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, const std::shared_ptr<Graph<dim>> &graph);
+      BerensonSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Constraint<dim>> &constraint,
+                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts);
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
 
   private:
-    double m_epsilon;
-    std::shared_ptr<Graph<dim>> m_graph = nullptr;
+    std::shared_ptr<SerialRobot> m_serialRobot = nullptr;
+    std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
+    std::pair<Vector<dim>, Vector<dim>> m_C;
 
     using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
@@ -60,13 +61,12 @@ class RGDSampling : public Sampling<dim> {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-RGDSampling<dim>::RGDSampling(const std::shared_ptr<Environment> &environment,
-                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                              const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
-                              const std::shared_ptr<Graph<dim>> &graph)
-    : Sampling<dim>("RGDSampling", environment, validityChecker, sampler, attempts),
-      m_graph(graph),
-      m_epsilon(validityChecker->getEpsilon()) {
+BerensonSampling<dim>::BerensonSampling(const std::shared_ptr<Environment> &environment,
+                                                const std::shared_ptr<Constraint<dim>> &constraint,
+                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
+    : Sampling<dim>("BerensonSampling", environment, constraint, sampler, attempts),
+      m_constraint(constraint),
+      m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(m_environment->getRobot())) {
 }
 
 /*!
@@ -78,39 +78,31 @@ RGDSampling<dim>::RGDSampling(const std::shared_ptr<Environment> &environment,
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-Vector<dim> RGDSampling<dim>::getSample() {
-    return getSample(m_graph->getNode(getRandomNumber() * m_graph->numNodes())->getValues());
-}
-
-template <unsigned int dim>
-Vector<dim> RGDSampling<dim>::getSample(const Vector<dim> &prevSample) {
-    double prevError = m_validityChecker->calc(prevSample);
-
-    if (prevError <= 0)
-        return prevSample;
-
-    SamplerNormalDist<dim> normalSampler(this->m_environment);
-    normalSampler.setOrigin(prevSample);
-    Vector<dim> sample;
-    double error;
+Vector<dim> BerensonSampling<dim>::getSample() {
+    Vector<dim> config = m_sampler->getSample();
+    Vector<dim> old(config);
+    if (m_constraint->check(config))
+        return config;
 
     for (size_t i = 0; i < m_attempts; ++i) {
-        sample = normalSampler.getSample();
-        if (util::empty<dim>(sample))
-            continue;
+        Vector6 eucErr = m_constraint->calcEuclideanError(config);
+        auto J = m_serialRobot->calcJacobian(config);
+        MatrixX invJ = J.completeOrthogonalDecomposition().pseudoInverse();
+        config -= invJ * eucErr;    // qs = qs - qerr
+        if (!m_constraint->checkRobotBound(config))
+            return util::NaNVector<dim>();
 
-        error = m_validityChecker->calc(sample);
-        if (error <= 0)
-            return sample;
-
-        if (error < prevError) {
-            prevError = error;
-            normalSampler.setOrigin(sample);
-        }
+        if (m_constraint->check(config))
+            return config;
     }
     return util::NaNVector<dim>();
 }
 
+template <unsigned int dim>
+Vector<dim> BerensonSampling<dim>::getSample(const Vector<dim> &prevSample) {
+    return getSample();
+}
+
 } /* namespace ippp */
 
-#endif /* RGDSAMPLING_HPP */
+#endif /* BERENSONSAMPLING_HPP */

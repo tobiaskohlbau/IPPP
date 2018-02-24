@@ -31,8 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class DummyPathModifier : public PathModifier<dim> {
   public:
-    DummyPathModifier(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                      const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    DummyPathModifier();
 
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
 
@@ -48,10 +47,7 @@ class DummyPathModifier : public PathModifier<dim> {
 *  \date       2017-05-23
 */
 template <unsigned int dim>
-DummyPathModifier<dim>::DummyPathModifier(const std::shared_ptr<Environment> &environment,
-                                          const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                          const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PathModifier<dim>("Dummy PathModifier", environment, validityChecker, trajectory) {
+DummyPathModifier<dim>::DummyPathModifier() : PathModifier<dim>("Dummy PathModifier", nullptr, nullptr, nullptr) {
 }
 
 /*!

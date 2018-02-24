@@ -19,6 +19,5 @@
 #include <ippp/planner/EST.hpp>
 #include <ippp/planner/PRM.hpp>
 #include <ippp/planner/RRT.hpp>
-#include <ippp/planner/RRTConstraint.hpp>
 #include <ippp/planner/RRTStar.hpp>
 #include <ippp/planner/SRT.hpp>

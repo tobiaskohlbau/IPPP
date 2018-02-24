@@ -27,14 +27,14 @@
 namespace ippp {
 namespace cad {
 
-Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue);
-void drawTriangles(Eigen::MatrixXi &space, const Mesh &mesh, const int fillValue);
-void drawTriangles(Eigen::MatrixXi &space, std::vector<Mesh> &meshes, const int fillValue);
-void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue);
+std::pair<MatrixXi, Vector2i> create2dspace(const AABB &boundary, const int fillValue);
+void drawTriangles(std::pair<MatrixXi, Vector2i> &space, const Mesh &mesh, const int fillValue);
+void drawTriangles(std::pair<MatrixXi, Vector2i> &space, std::vector<Mesh> &meshes, const int fillValue);
+void drawTriangles(std::pair<MatrixXi, Vector2i> &space, const std::vector<Triangle2D> &triangles, const int fillValue);
 
-void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
-void fillTopFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
-void drawLine(Eigen::MatrixXi &space, int x1, int x2, int y, int value);
+void fillBottomFlatTriangle(std::pair<MatrixXi, Vector2i> &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
+void fillTopFlatTriangle(std::pair<MatrixXi, Vector2i> &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
+void drawLine(std::pair<MatrixXi, Vector2i> &space, int x1, int x2, int y, int value);
 
 } /* namespace cad */
 

@@ -19,6 +19,8 @@
 #ifndef OBSTACLEOBJECT_H
 #define OBSTACLEOBJECT_H
 
+#include <memory>
+
 #include <ippp/environment/EnvObject.h>
 #include <ippp/environment/model/ModelContainer.h>
 

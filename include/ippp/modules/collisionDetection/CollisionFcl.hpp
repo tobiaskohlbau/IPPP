@@ -37,11 +37,12 @@ namespace ippp {
 template <unsigned int dim>
 class CollisionFcl : public CollisionDetection<dim> {
   public:
-    CollisionFcl(const std::string &name, const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
+    CollisionFcl(const std::string &name, const std::shared_ptr<Environment> &environment,
+                 const CollisionRequest &request = CollisionRequest());
 
   protected:
     bool checkFCL(const std::shared_ptr<FCLModel> &model1, const std::shared_ptr<FCLModel> &model2, const Transform &T1,
-                  const Transform &T2);
+                  const Transform &T2) const;
 
     Transform m_identity;
     AABB m_workspaceBounding;
@@ -59,7 +60,7 @@ class CollisionFcl : public CollisionDetection<dim> {
 */
 template <unsigned int dim>
 CollisionFcl<dim>::CollisionFcl(const std::string &name, const std::shared_ptr<Environment> &environment,
-                                                  const CollisionRequest &request)
+                                const CollisionRequest &request)
     : CollisionDetection<dim>(name, environment, request) {
     m_identity = Transform::Identity();
     auto robot = m_environment->getRobot();
@@ -90,7 +91,7 @@ CollisionFcl<dim>::CollisionFcl(const std::string &name, const std::shared_ptr<E
 */
 template <unsigned int dim>
 bool CollisionFcl<dim>::checkFCL(const std::shared_ptr<FCLModel> &model1, const std::shared_ptr<FCLModel> &model2,
-                                          const Transform &T1, const Transform &T2) {
+                                 const Transform &T1, const Transform &T2) const {
     const Eigen::Matrix3f R1 = T1.rotation().cast<float>();
     const Eigen::Vector3f t1 = T1.translation().cast<float>();
     fcl::Matrix3f fclR1(R1(0, 0), R1(0, 1), R1(0, 2), R1(1, 0), R1(1, 1), R1(1, 2), R1(2, 0), R1(2, 1), R1(2, 2));

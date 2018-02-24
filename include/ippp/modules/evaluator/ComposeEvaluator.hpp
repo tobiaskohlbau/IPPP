@@ -23,8 +23,6 @@
 
 namespace ippp {
 
-enum class ComposeType { AND, OR };
-
 /*!
 * \brief   ComposeEvaluator which runs only one Iteration.
 * \author  Sascha Kaden
@@ -33,14 +31,14 @@ enum class ComposeType { AND, OR };
 template <unsigned int dim>
 class ComposeEvaluator : public Evaluator<dim> {
   public:
-    ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, const ComposeType type);
+    ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type);
 
     bool evaluate();
     void setQuery(const std::vector<Vector<dim>> &targets) override;
 
   protected:
     std::vector<std::shared_ptr<Evaluator<dim>>> m_evaluators;
-    ComposeType m_type = ComposeType::AND;
+    const ComposeType m_type = ComposeType::AND;
 };
 
 /*!
@@ -50,7 +48,7 @@ class ComposeEvaluator : public Evaluator<dim> {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-ComposeEvaluator<dim>::ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, const ComposeType type)
+ComposeEvaluator<dim>::ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type)
     : Evaluator<dim>("ComposeEvaluator"), m_evaluators(evaluators), m_type(type) {
 }
 
@@ -66,13 +64,13 @@ bool ComposeEvaluator<dim>::evaluate() {
         for (auto &evaluator : m_evaluators)
             if (!evaluator->evaluate())
                 return false;
-        
+
         return true;
     } else {    // OR
         for (auto &evaluator : m_evaluators)
             if (evaluator->evaluate())
                 return true;
-        
+
         return false;
     }
 }

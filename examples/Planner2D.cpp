@@ -15,9 +15,9 @@ Mesh generateMap() {
     const unsigned int dim = 2;
     Vector2 min(0, 0);
     Vector2 max(1000, 1000);
-    std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(min, max));
+    auto sampler = std::make_shared<SamplerRandom<dim>>(std::make_pair(min, max));
 
-    util::MapGenerator<dim> mapGenerator(min, max, sampler);
+    util::MapGenerator<dim> mapGenerator(std::make_pair(min, max), sampler);
     auto meshes = mapGenerator.generateMap(80, Vector2(80, 80), Vector2(10, 10));
     auto mesh = cad::mergeMeshes(meshes);
     cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
@@ -38,7 +38,7 @@ bool testTriangleRobot() {
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setGraphSortCount(3000);
-    creator.setCollisionType(CollisionType::Dim2Triangle);
+    creator.setVadilityCheckerType(ValidityCheckerType::Dim2Triangle);
     creator.setEvaluatorType(EvaluatorType::QueryOrTime);
     creator.setEvaluatorProperties(50, 60);
     creator.setSamplingType(SamplingType::Straight);
@@ -56,19 +56,19 @@ bool testTriangleRobot() {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
-    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
+    auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (const auto& obstacle : environment->getObstacles())
         meshes.push_back(obstacle->model->m_mesh);
     cad::drawTriangles(workspace2D, meshes, 50);
-    cv::Mat image = drawing::eigenToCV(workspace2D);
+    cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
         std::vector<Vector3> path = planner->getPath(80, 5);
-        drawing::drawTrianglePath(path, environment->getRobot()->getBaseModel()->m_mesh, image, Eigen::Vector3i(0, 0, 255), 2);
+        drawing::drawTrianglePath(path, environment->getRobot()->getBaseModel()->m_mesh, image, workspace2D.second, Eigen::Vector3i(0, 0, 255), 2);
 
         cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
         cv::imshow("pathPlanner", image);
@@ -101,7 +101,7 @@ bool test2DSerialRobot() {
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setGraphSortCount(3000);
-    creator.setCollisionType(CollisionType::FclSerial);
+    creator.setVadilityCheckerType(ValidityCheckerType::FclSerial);
     creator.setTrajectoryProperties(10, 0.01);
     creator.setEvaluatorType(EvaluatorType::QueryOrTime);
     creator.setEvaluatorProperties(2, 60);
@@ -118,16 +118,17 @@ bool test2DSerialRobot() {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
 
-    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
+    auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (const auto& obstacle : environment->getObstacles())
         meshes.push_back(obstacle->model->m_mesh);
     cad::drawTriangles(workspace2D, meshes, 50);
-    cv::Mat image = drawing::eigenToCV(workspace2D);
+    cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
     cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
     cv::resizeWindow("pathPlanner", 600, 600);
 
+    auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
         std::vector<Vector<dim>> path = planner->getPath(10, 0.1);
@@ -136,14 +137,12 @@ bool test2DSerialRobot() {
 
         for (const auto& config : path) {
             cv::Mat imageCopy = image.clone();
-            drawing::drawSerialRobot2D<dim>(config, std::dynamic_pointer_cast<SerialRobot>(environment->getRobot()), imageCopy,
-                                            Eigen::Vector3i(0, 0, 255), 2);
+            drawing::drawSerialRobot2D<dim>(config, *serialRobot, imageCopy, workspace2D.second, Eigen::Vector3i(0, 0, 255), 2);
             cv::imshow("pathPlanner", imageCopy);
             cv::waitKey(0);
         }
     } else {
-        drawing::drawSerialRobot2D<dim>(goal, std::dynamic_pointer_cast<SerialRobot>(environment->getRobot()), image,
-                                        Eigen::Vector3i(0, 0, 255), 2);
+        drawing::drawSerialRobot2D<dim>(goal, *serialRobot, image, workspace2D.second, Eigen::Vector3i(0, 0, 255), 2);
     }
 
     cv::imshow("pathPlanner", image);
@@ -163,13 +162,13 @@ void testPointRobot() {
 
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
-    creator.setCollisionType(CollisionType::Dim2);
+    creator.setVadilityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(3000);
-    creator.setEvaluatorType(EvaluatorType::Query);
+    creator.setEvaluatorType(EvaluatorType::TreeQuery);
     creator.setEvaluatorProperties(50, 10);
     creator.setSamplerType(SamplerType::SamplerRandom);
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
-    creator.setSamplingType(SamplingType::NearObstacle);
+    //creator.setSamplingType(SamplingType::NearObstacle);
     creator.setSamplingProperties(10, 80);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
@@ -183,12 +182,12 @@ void testPointRobot() {
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
 
-    Eigen::MatrixXi workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
+    auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (const auto& obstacle : environment->getObstacles())
         meshes.push_back(obstacle->model->m_mesh);
     cad::drawTriangles(workspace2D, meshes, 50);
-    cv::Mat image = drawing::eigenToCV(workspace2D);
+    cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
 
     drawing::drawGraph2D(nodes, image, Eigen::Vector3i(125, 125, 200), Eigen::Vector3i(125, 125, 200), 1);
@@ -204,7 +203,6 @@ void testPointRobot() {
 
     cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
     cv::imshow("pathPlanner", image);
-    cv::imwrite("result.png", image);
     cv::waitKey(0);
 }
 
@@ -213,8 +211,8 @@ int main(int argc, char** argv) {
 
     Logging::setLogLevel(LogLevel::trace);
 
-     //while (!testTriangleRobot());
+    // while (!testTriangleRobot());
     // testTriangleRobot();
-   test2DSerialRobot();
-     testPointRobot();
+    //test2DSerialRobot();
+    testPointRobot();
 }

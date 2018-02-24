@@ -37,12 +37,13 @@ class CollisionDetectionTriangleRobot : public CollisionDetection<dim> {
   public:
     CollisionDetectionTriangleRobot(const std::shared_ptr<Environment> &environment,
                                     const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(const std::vector<Vector<dim>> &configs) override;
+    bool check(const Vector<dim> &config) const;
+    bool check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const;
+    bool check(const std::vector<Vector<dim>> &configs) const;
 
   private:
-    bool checkTriangles(const Transform &T, const std::vector<Triangle2D> &triangles);
-    bool lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b, const Vector3 c);
+    bool checkTriangles(const Transform &T, const std::vector<Triangle2D> &triangles) const;
+    bool lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b, const Vector3 c) const;
 
     std::shared_ptr<ModelContainer> m_robotModel;
     std::vector<Triangle2D> m_baseTriangles;
@@ -100,14 +101,13 @@ CollisionDetectionTriangleRobot<dim>::CollisionDetectionTriangleRobot(const std:
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request,
-                                                       CollisionResult *result) {
+bool CollisionDetectionTriangleRobot<dim>::check(const Vector<dim> &config) const {
     if (m_obstacles.empty())
-        return false;
+        return true;
 
     auto trafo = m_environment->getRobot()->getTransformation(config);
     // bounding box check
@@ -120,29 +120,44 @@ bool CollisionDetectionTriangleRobot<dim>::checkConfig(const Vector<dim> &config
         }
     }
     if (!intersection)
-        return false;
+        return true;
 
     return checkTriangles(trafo, m_baseTriangles);
 }
 
 /*!
-*  \brief      Check collision of a trajectory of points
+*  \brief      Check for collision
 *  \author     Sascha Kaden
-*  \param[in]  configurations
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
+*  \param[in]  configuration
+*  \param[in]  CollisionRequest
+*  \param[out] CollisionResult
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
-    for (auto &config : configs)
-        if (checkConfig(config))
-            return true;
+bool CollisionDetectionTriangleRobot<dim>::check(const Vector<dim> &config, const CollisionRequest &request,
+                                                 CollisionResult &result) const {
+    return check(config);
+}
 
-    return false;
+/*!
+*  \brief      Check collision of a trajectory of configurations
+*  \author     Sascha Kaden
+*  \param[in]  vector of configurations
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
+*/
+template <unsigned int dim>
+bool CollisionDetectionTriangleRobot<dim>::check(const std::vector<Vector<dim>> &configs) const {
+    for (auto &config : configs)
+        if (check(config))
+            return false;
+
+    return true;
 }
 
 template <unsigned int dim>
-bool CollisionDetectionTriangleRobot<dim>::checkTriangles(const Transform &T, const std::vector<Triangle2D> &triangles) {
+bool CollisionDetectionTriangleRobot<dim>::checkTriangles(const Transform &T, const std::vector<Triangle2D> &triangles) const {
     std::vector<Triangle2D> tempTriangles = triangles;
     Matrix2 R2D = T.rotation().block<2, 2>(0, 0);
     Vector2 t2D = T.translation().block<2, 1>(0, 0);
@@ -169,7 +184,7 @@ bool CollisionDetectionTriangleRobot<dim>::checkTriangles(const Transform &T, co
 
 template <unsigned int dim>
 bool CollisionDetectionTriangleRobot<dim>::lineTriangle(const Vector3 p, const Vector3 q, const Vector3 a, const Vector3 b,
-                                                        const Vector3 c) {
+                                                        const Vector3 c) const {
     Vector3 pq = q - p;
     Vector3 pa = a - p;
     Vector3 pb = b - p;

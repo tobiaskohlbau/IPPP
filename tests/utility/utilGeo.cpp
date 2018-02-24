@@ -39,7 +39,7 @@ TEST(GEO, poseVecToMat) {
 
     Vector6 poseVec = util::transformToVec(pose);
     for (int i = 0; i < 6; ++i)
-        if (poseVec[i] < ippp::EPSILON && poseVec[i] > -ippp::EPSILON)
+        if (poseVec[i] < IPPP_EPSILON && poseVec[i] > -IPPP_EPSILON)
             poseVec[i] = 0;
     for (int i = 0; i < 6; ++i)
         EXPECT_EQ(poseZero[i], poseVec[i]);
@@ -55,8 +55,8 @@ TEST(GEO, poseVecToMat) {
                 pose = util::poseVecToTransform(poseTwo);
                 poseVec = util::transformToVec(pose);
                 for (int i = 0; i < 6; ++i) {
-                    EXPECT_TRUE(poseTwo[i] <= poseVec[i] + ippp::EPSILON);
-                    EXPECT_TRUE(poseTwo[i] >= poseVec[i] - ippp::EPSILON);
+                    EXPECT_TRUE(poseTwo[i] <= poseVec[i] + IPPP_EPSILON);
+                    EXPECT_TRUE(poseTwo[i] >= poseVec[i] - IPPP_EPSILON);
                 }
             }
         }
@@ -69,15 +69,15 @@ TEST(GEO, degToRad) {
     double a2[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
     VectorX deg = util::Vecd(11, a1);
     VectorX rad = util::Vecd(11, a2);
-    VectorX temp1 = util::degToRad<11>(deg);
+    VectorX temp1 = util::toRad<11>(deg);
     Vector<11> temp2;
     for (int i = 0; i < 11; ++i)
         temp2[i] = deg[i] * util::toRad();
     for (int i = 0; i < deg.rows(); ++i) {
-        EXPECT_TRUE(rad[i] <= temp1[i] + ippp::EPSILON);
-        EXPECT_TRUE(rad[i] >= temp1[i] - ippp::EPSILON);
-        EXPECT_TRUE(rad[i] <= temp2[i] + ippp::EPSILON);
-        EXPECT_TRUE(rad[i] >= temp2[i] - ippp::EPSILON);
+        EXPECT_TRUE(rad[i] <= temp1[i] + IPPP_EPSILON);
+        EXPECT_TRUE(rad[i] >= temp1[i] - IPPP_EPSILON);
+        EXPECT_TRUE(rad[i] <= temp2[i] + IPPP_EPSILON);
+        EXPECT_TRUE(rad[i] >= temp2[i] - IPPP_EPSILON);
     }
 }
 
@@ -87,14 +87,14 @@ TEST(GEO, radToDeg) {
     double a2[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
     VectorX rad = util::Vecd(11, a1);
     VectorX deg = util::Vecd(11, a2);
-    VectorX temp1 = util::radToDeg<11>(rad);
+    VectorX temp1 = util::toDeg<11>(rad);
     Vector<11> temp2;
     for (int i = 0; i < 11; ++i)
         temp2[i] = rad[i] * util::toDeg();
     for (int i = 0; i < deg.rows(); ++i) {
-        EXPECT_TRUE(deg[i] <= temp1[i] + ippp::EPSILON);
-        EXPECT_TRUE(deg[i] >= temp1[i] - ippp::EPSILON);
-        EXPECT_TRUE(deg[i] <= temp2[i] + ippp::EPSILON);
-        EXPECT_TRUE(deg[i] >= temp2[i] - ippp::EPSILON);
+        EXPECT_TRUE(deg[i] <= temp1[i] + IPPP_EPSILON);
+        EXPECT_TRUE(deg[i] >= temp1[i] - IPPP_EPSILON);
+        EXPECT_TRUE(deg[i] <= temp2[i] + IPPP_EPSILON);
+        EXPECT_TRUE(deg[i] >= temp2[i] - IPPP_EPSILON);
     }
 }

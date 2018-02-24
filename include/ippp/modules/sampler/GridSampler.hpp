@@ -35,7 +35,7 @@ template <unsigned int dim>
 class GridSampler : public Sampler<dim> {
   public:
     GridSampler(const std::shared_ptr<Environment> &environment, double res = 1);
-    GridSampler(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, double res = 1);
+    GridSampler(const std::pair<VectorX, VectorX> &boundary, double res = 1);
     void setResolution(double res);
     Vector<dim> getSample();
 
@@ -48,8 +48,7 @@ class GridSampler : public Sampler<dim> {
     std::vector<Vector<dim>> m_gridConfigs;
     std::mutex m_mutex;
 
-    using Sampler<dim>::m_minBoundary;
-    using Sampler<dim>::m_maxBoundary;
+    using Sampler<dim>::m_robotBoundary;
     using Sampler<dim>::m_generator;
 };
 
@@ -76,8 +75,8 @@ GridSampler<dim>::GridSampler(const std::shared_ptr<Environment> &environment, d
 *  \date       2017-11-13
 */
 template <unsigned int dim>
-GridSampler<dim>::GridSampler(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, double res)
-    : Sampler<dim>("RandomSampler", minBoundary, maxBoundary, std::string()) {
+GridSampler<dim>::GridSampler(const std::pair<VectorX, VectorX> &boundary, double res)
+    : Sampler<dim>("RandomSampler", boundary, std::string()) {
     setResolution(res);
     generateGridConfigs();
 }
@@ -139,13 +138,13 @@ void GridSampler<dim>::generateGridConfigs() {
 template <unsigned int dim>
 void GridSampler<dim>::fillConfig(Vector<dim> values, unsigned int index) {
     if (index == dim - 1) {
-        for (double value = m_minBoundary[index]; value <= m_maxBoundary[index]; value += m_res) {
+        for (double value = m_robotBoundary.first[index]; value <= m_robotBoundary.second[index]; value += m_res) {
             Vector<dim> config = values;
             config[index] = value;
             m_gridConfigs.push_back(config);
         }
     } else {
-        for (double value = m_minBoundary[index]; value <= m_maxBoundary[index]; value += m_res) {
+        for (double value = m_robotBoundary.first[index]; value <= m_robotBoundary.second[index]; value += m_res) {
             values[index] = value;
             fillConfig(values, index + 1);
         }

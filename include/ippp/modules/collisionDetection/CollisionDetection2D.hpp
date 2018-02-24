@@ -35,17 +35,19 @@ template <unsigned int dim>
 class CollisionDetection2D : public CollisionDetection<dim> {
   public:
     CollisionDetection2D(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(const std::vector<Vector<dim>> &configs);
+
+    bool check(const Vector<dim> &config) const;
+    bool check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const;
+    bool check(const std::vector<Vector<dim>> &configs) const;
 
   private:
-    bool checkPoint2D(double x, double y);
+    bool checkPoint2D(double x, double y) const;
 
     Vector2 m_minBoundary;
     Vector2 m_maxBoundary;
     std::vector<Mesh> m_obstacles;
 
-    using CollisionDetection<dim>::m_environment;
+    using ValidityChecker<dim>::m_environment;
 };
 
 /*!
@@ -84,31 +86,45 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision or vec is empty)
-*  \date       2016-05-25
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetection2D<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
+bool CollisionDetection2D<dim>::check(const Vector<dim> &config) const {
     return checkPoint2D(config[0], config[1]);
 }
 
 /*!
-*  \brief      Check collision of a trajectory of points
+*  \brief      Check for collision
 *  \author     Sascha Kaden
-*  \param[in]  vector of configurations
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2016-05-25
+*  \param[in]  configuration
+*  \param[in]  CollisionRequest
+*  \param[out] CollisionResult
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetection2D<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
+bool CollisionDetection2D<dim>::check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const {
+    return checkPoint2D(config[0], config[1]);
+}
+
+/*!
+*  \brief      Check collision of a trajectory of configurations
+*  \author     Sascha Kaden
+*  \param[in]  vector of configurations
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
+*/
+template <unsigned int dim>
+bool CollisionDetection2D<dim>::check(const std::vector<Vector<dim>> &configs) const {
     if (configs.empty())
         return false;
 
     for (auto &config : configs)
-        if (checkPoint2D(config[0], config[1]))
-            return true;
+        if (!checkPoint2D(config[0], config[1]))
+            return false;
 
-    return false;
+    return true;
 }
 
 /*!
@@ -116,14 +132,14 @@ bool CollisionDetection2D<dim>::checkTrajectory(const std::vector<Vector<dim>> &
 *  \author     Sascha Kaden
 *  \param[in]  x
 *  \param[in]  y
-*  \param[out] binary result of collision (true if in collision)
+*  \param[out] binary result of collision (true if valid)
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) {
+bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) const {
     if (m_minBoundary[0] >= x || x >= m_maxBoundary[0] || m_minBoundary[1] >= y || y >= m_maxBoundary[1]) {
         Logging::trace("Config out of bound", this);
-        return true;
+        return false;
     }
 
     double alpha, beta, gamma;
@@ -145,10 +161,10 @@ bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) {
             gamma = 1.0f - alpha - beta;
 
             if (alpha > 0 && beta > 0 && gamma > 0)
-                return true;
+                return false;
         }
     }
-    return false;
+    return true;
 }
 
 } /* namespace ippp */

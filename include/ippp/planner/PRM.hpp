@@ -101,8 +101,8 @@ bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size
         expand(numNodes, numThreads);
     }
 
-    Logging::debug("Planner has: " + std::to_string(m_graph->nodeSize()) + " nodes", this);
-    Logging::debug("Planner has: " + std::to_string(m_graph->edgeSize()) + " edges", this);
+    Logging::debug("Planner has: " + std::to_string(m_graph->numNodes()) + " nodes", this);
+    Logging::debug("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
 
     return queryPath(start, goal);
 }
@@ -161,7 +161,7 @@ void PRM<dim>::samplingPhase(size_t nbOfNodes) {
         if (util::empty<dim>(sample))
             continue;
 
-        if (m_validityChecker->checkConfig(sample))
+        if (m_validityChecker->check(sample))
             m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
     }
 }
@@ -175,7 +175,7 @@ void PRM<dim>::samplingPhase(size_t nbOfNodes) {
 */
 template <unsigned int dim>
 void PRM<dim>::startPlannerPhase(size_t nbOfThreads) {
-    size_t nodeCount = m_graph->nodeSize();
+    size_t nodeCount = m_graph->numNodes();
     if (nbOfThreads == 1) {
         plannerPhase(0, nodeCount);
     } else {
@@ -217,7 +217,7 @@ void PRM<dim>::plannerPhase(size_t startNodeIndex, size_t endNodeIndex) {
             if ((*node)->isChild(nearNode) || (*node)->isInvalidChild(nearNode))
                 continue;
 
-            if (m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(**node, *nearNode)))
+            if (m_validityChecker->check(m_trajectory->calcTrajBin(**node, *nearNode)))
                 (*node)->addChild(nearNode, m_metric->calcDist(*nearNode, **node));
             else
                 (*node)->addInvalidChild(nearNode);
@@ -282,7 +282,7 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &config) {
     auto newNode = std::make_shared<Node<dim>>(config);
     auto nearNodes = m_graph->getNearNodes(config, m_rangeSize);
     for (auto &nearNode : nearNodes) {
-        if (m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(*newNode, *nearNode))) {
+        if (m_validityChecker->check(m_trajectory->calcTrajBin(*newNode, *nearNode))) {
             newNode->addChild(nearNode, m_metric->calcDist(*newNode, *nearNode));
             nearNode->addChild(newNode, m_metric->calcDist(*nearNode, *newNode));
         } else {

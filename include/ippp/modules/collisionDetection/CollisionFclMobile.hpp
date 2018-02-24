@@ -32,14 +32,18 @@ template <unsigned int dim>
 class CollisionFclMobile : public CollisionFcl<dim> {
   public:
     CollisionFclMobile(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(const std::vector<Vector<dim>> &configs);
+
+    bool check(const Vector<dim> &config) const;
+    bool check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const;
+    bool check(const std::vector<Vector<dim>> &configs) const;
 
   private:
-    bool check(const Vector<dim> &config, const CollisionRequest &request);
+    bool check(const Vector<dim> &config, const CollisionRequest &request) const;
 
     std::vector<std::shared_ptr<FCLModel>> m_robotModels;
+    std::vector<std::shared_ptr<MobileRobot>> m_robots;
 
+    using CollisionDetection<dim>::m_request;
     using CollisionFcl<dim>::m_environment;
     using CollisionFcl<dim>::m_identity;
     using CollisionFcl<dim>::m_workspaceBounding;
@@ -61,6 +65,7 @@ CollisionFclMobile<dim>::CollisionFclMobile(const std::shared_ptr<Environment> &
 
     for (auto &robot : robots) {
         if (robot->getBaseModel() != nullptr && !robot->getBaseModel()->empty()) {
+            m_robots.push_back(std::dynamic_pointer_cast<MobileRobot>(robot));
             m_robotModels.push_back(std::static_pointer_cast<ModelFcl>(robot->getBaseModel())->m_fclModel);
         } else {
             Logging::warning("Empty base model", this);
@@ -72,58 +77,69 @@ CollisionFclMobile<dim>::CollisionFclMobile(const std::shared_ptr<Environment> &
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionFclMobile<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
-    CollisionRequest collisionRequest = this->m_request;
-    if (request)
-        collisionRequest = *request;
-
-    return check(config, collisionRequest);
-}
-
-/*!
-*  \brief      Check collision of a trajectory of points
-*  \author     Sascha Kaden
-*  \param[in]  vector of configurations
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
-*/
-template <unsigned int dim>
-bool CollisionFclMobile<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
-    if (configs.empty())
-        return false;
-
-    CollisionResult result;
-    for (auto &config : configs)
-        if (check(config, m_request))
-            return true;
-
-    return false;
+bool CollisionFclMobile<dim>::check(const Vector<dim> &config) const {
+    return check(config, m_request);
 }
 
 /*!
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision)
+*  \param[in]  CollisionRequest
+*  \param[out] CollisionResult
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
+*/
+template <unsigned int dim>
+bool CollisionFclMobile<dim>::check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const {
+    return check(config, request);
+}
+
+/*!
+*  \brief      Check collision of a trajectory of configurations
+*  \author     Sascha Kaden
+*  \param[in]  vector of configurations
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
+*/
+template <unsigned int dim>
+bool CollisionFclMobile<dim>::check(const std::vector<Vector<dim>> &configs) const {
+    if (configs.empty())
+        return false;
+
+    CollisionResult result;
+    for (auto &config : configs)
+        if (!check(config, m_request))
+            return false;
+
+    return true;
+}
+
+/*!
+*  \brief      Check for collision
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[out] binary result of collision (true if valid)
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionFclMobile<dim>::check(const Vector<dim> &config, const CollisionRequest &request) {
+bool CollisionFclMobile<dim>::check(const Vector<dim> &config, const CollisionRequest &request) const {
     auto configVecs = util::splitVec<dim>(config, m_environment->getRobotDimSizes());
 
     if (request.checkInterRobot) {    // inter robot collisions
         for (size_t i = 0; i < m_robotModels.size() - 1; ++i) {
             for (size_t j = i + 1; j < m_robotModels.size(); ++j) {
-                Transform T1 = m_environment->getRobot()->getTransformation(configVecs[i]);
-                Transform T2 = m_environment->getRobot()->getTransformation(configVecs[j]);
+                Transform T1 = m_robots[i]->getTransformation(configVecs[i]);
+                Transform T2 = m_robots[j]->getTransformation(configVecs[j]);
                 if (this->checkFCL(m_robotModels[i], m_robotModels[j], T1, T2)) {
-                    Logging::trace("Collision between robot " + m_environment->getRobots()[i]->getName() + " and robot " + m_environment->getRobots()[j]->getName(), this);
+                    Logging::trace("Collision between robot " + m_robots[i]->getName() + " and robot " + m_robots[j]->getName(),
+                                   this);
                     if (!request.completeCheck)
-                        return true;
+                        return false;
                 }
             }
         }
@@ -131,17 +147,17 @@ bool CollisionFclMobile<dim>::check(const Vector<dim> &config, const CollisionRe
 
     if (request.checkObstacle && m_workspaceAvaible) {    // collisions between robots and obstacles
         for (size_t i = 0; i < m_robotModels.size(); ++i) {
-            Transform T = m_environment->getRobot()->getTransformation(configVecs[i]);
+            Transform T = m_robots[i]->getTransformation(configVecs[i]);
             for (auto &obstacle : m_obstacles) {
                 if (this->checkFCL(m_robotModels[i], obstacle.first, T, obstacle.second)) {
                     Logging::trace("Collision between robot " + std::to_string(i) + " and obstacle", this);
                     if (!request.completeCheck)
-                        return true;
+                        return false;
                 }
             }
         }
     }
-    return false;
+    return true;
 }
 
 } /* namespace ippp */

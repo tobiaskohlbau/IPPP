@@ -19,7 +19,7 @@
 #ifndef RRTSTAR_HPP
 #define RRTSTAR_HPP
 
-#include <mutex>
+#include <limits>
 
 #include <ippp/planner/RRT.hpp>
 
@@ -40,10 +40,10 @@ class RRTStar : public RRT<dim> {
 
   protected:
     std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec);
-    virtual void chooseParent(const Vector<dim> &newVec, std::shared_ptr<Node<dim>> &nearestNode,
-                              std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
+    virtual std::shared_ptr<Node<dim>> chooseParent(const Vector<dim> &newVec,
+                                                    const std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
     void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
-                std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
+                const std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
     using Planner<dim>::m_validityChecker;
     using Planner<dim>::m_environment;
@@ -81,20 +81,20 @@ RRTStar<dim>::RRTStar(const std::shared_ptr<Environment> &environment, const RRT
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randConfig) {
-    // get nearest neighbor
     std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randConfig);
-    // set Node<dim> new fix fixed step size of 10
+
     Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
-    if (!m_validityChecker->checkConfig(newConfig))
+    if (!m_validityChecker->check(newConfig))
         return nullptr;
 
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes;
-    chooseParent(randConfig, nearestNode, nearNodes);
+    auto nearNodes = m_graph->getNearNodes(newConfig, m_stepSize);
+    nearNodes.push_back(nearestNode);
+    nearestNode = chooseParent(randConfig, nearNodes);
 
-    if (!m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(newConfig, nearestNode->getValues())))
+    if (!nearestNode)
         return nullptr;
 
-    std::shared_ptr<Node<dim>> newNode = std::make_shared<Node<dim>>(newConfig);
+    auto newNode = std::make_shared<Node<dim>>(newConfig);
     double edgeCost = m_metric->calcDist(*newNode, *nearestNode);
     newNode->setCost(edgeCost + nearestNode->getCost());
     newNode->setParent(nearestNode, edgeCost);
@@ -111,24 +111,22 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randC
 *  \author        Sascha Kaden
 *  \param[in]     new Node
 *  \param[in,out] nearest Node
-*  \param[out]    vector of nearest nodes
+*  \param[in]     vector of nearest nodes
 *  \date          2017-04-16
 */
 template <unsigned int dim>
-void RRTStar<dim>::chooseParent(const Vector<dim> &newConfig, std::shared_ptr<Node<dim>> &nearestNode,
-                                std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
-    // get near nodes to the new node
-    nearNodes = m_graph->getNearNodes(newConfig, m_stepSize);
-
-    double nearestNodeCost = nearestNode->getCost();
-    for (auto nearNode : nearNodes) {
-        if (nearNode->getCost() < nearestNodeCost) {
-            if (m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(newConfig, nearNode->getValues()))) {
-                nearestNodeCost = nearNode->getCost();
-                nearestNode = nearNode;
-            }
+std::shared_ptr<Node<dim>> RRTStar<dim>::chooseParent(const Vector<dim> &newConfig,
+                                                      const std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
+    std::shared_ptr<Node<dim>> nearestNode = nullptr;
+    double nearestNodeCost = std::numeric_limits<double>::max();
+    for (auto &nearNode : nearNodes) {
+        if (nearNode->getCost() < nearestNodeCost &&
+            m_validityChecker->check(m_trajectory->calcTrajBin(newConfig, nearNode->getValues()))) {
+            nearestNodeCost = nearNode->getCost();
+            nearestNode = nearNode;
         }
     }
+    return nearestNode;
 }
 
 /*!
@@ -141,14 +139,14 @@ void RRTStar<dim>::chooseParent(const Vector<dim> &newConfig, std::shared_ptr<No
 */
 template <unsigned int dim>
 void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &parentNode,
-                          std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
+                          const std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     double oldDist, newDist, edgeCost;
-    for (auto nearNode : nearNodes) {
+    for (auto &nearNode : nearNodes) {
         if (nearNode != parentNode) {
             edgeCost = m_metric->calcDist(*nearNode, *newNode);
             oldDist = nearNode->getCost();
             newDist = edgeCost + newNode->getCost();
-            if (newDist < oldDist && m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(*nearNode, *newNode))) {
+            if (newDist < oldDist && m_validityChecker->check(m_trajectory->calcTrajBin(*nearNode, *newNode))) {
                 m_mutex.lock();
                 nearNode->setCost(newDist);
                 nearNode->setParent(newNode, edgeCost);
@@ -167,12 +165,13 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
 */
 template <unsigned int dim>
 bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
-    if (!m_validityChecker->checkConfig(goal)) {
+    if (!m_validityChecker->check(goal)) {
         Logging::warning("Goal Node in collision", this);
         return false;
     }
 
-    auto nearestNode = util::getNearestValidNode<dim>(goal, *m_graph, *m_validityChecker, *m_trajectory, *m_metric, m_stepSize * 3);
+    auto nearestNode =
+        util::getNearestValidNode<dim>(goal, *m_graph, *m_validityChecker, *m_trajectory, *m_metric, m_stepSize * 2);
 
     if (nearestNode) {
         std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));

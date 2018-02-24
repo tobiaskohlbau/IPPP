@@ -36,8 +36,8 @@ template <unsigned int dim>
 class PathModifier : public Identifier {
   public:
     PathModifier(const std::string &name, const std::shared_ptr<Environment> &environment,
-                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker);
 
     virtual std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const = 0;
 
@@ -52,14 +52,15 @@ class PathModifier : public Identifier {
 *  \author     Sascha Kaden
 *  \param[in]  name
 *  \param[in]  Environment
-*  \param[in]  CollisionDetection
 *  \param[in]  TrajectoryPlanner
+*  \param[in]  ValidityChecker
 *  \date       2017-05-23
 */
 template <unsigned int dim>
 PathModifier<dim>::PathModifier(const std::string &name, const std::shared_ptr<Environment> &environment,
-                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
+
+                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker)
     : Identifier(name), m_environment(environment), m_validityChecker(validityChecker), m_trajectory(trajectory) {
     Logging::debug("Initialize", this);
 }

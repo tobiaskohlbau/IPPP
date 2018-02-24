@@ -32,11 +32,13 @@ template <unsigned int dim>
 class CollisionFclSerial : public CollisionFcl<dim> {
   public:
     CollisionFclSerial(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(const std::vector<Vector<dim>> &configs);
+
+    bool check(const Vector<dim> &config) const;
+    bool check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const;
+    bool check(const std::vector<Vector<dim>> &configs) const;
 
   private:
-    bool check(const Vector<dim> &config, const CollisionRequest &request);
+    bool check(const Vector<dim> &config, const CollisionRequest &request) const;
 
     std::shared_ptr<FCLModel> m_baseModel;
     bool m_baseMeshAvaible = false;
@@ -88,46 +90,56 @@ CollisionFclSerial<dim>::CollisionFclSerial(const std::shared_ptr<Environment> &
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionFclSerial<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
-    CollisionRequest collisionRequest = this->m_request;
-    if (request)
-        collisionRequest = *request;
-
-    return check(config, collisionRequest);
-}
-
-/*!
-*  \brief      Check collision of a trajectory of points
-*  \author     Sascha Kaden
-*  \param[in]  vector of configurations
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
-*/
-template <unsigned int dim>
-bool CollisionFclSerial<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
-    if (configs.empty())
-        return false;
-
-    for (int i = 0; i < configs.size(); ++i)
-        if (check(configs[i], m_request))
-            return true;
-
-    return false;
+bool CollisionFclSerial<dim>::check(const Vector<dim> &config) const {
+    return check(config, m_request);
 }
 
 /*!
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision)
+*  \param[in]  CollisionRequest
+*  \param[out] CollisionResult
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
+*/
+template <unsigned int dim>
+bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const {
+    return check(config, request);
+}
+
+/*!
+*  \brief      Check collision of a trajectory of configurations
+*  \author     Sascha Kaden
+*  \param[in]  vector of configurations
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
+*/
+template <unsigned int dim>
+bool CollisionFclSerial<dim>::check(const std::vector<Vector<dim>> &configs) const {
+    if (configs.empty())
+        return false;
+
+    for (int i = 0; i < configs.size(); ++i)
+        if (!check(configs[i], m_request))
+            return false;
+
+    return true;
+}
+
+/*!
+*  \brief      Check for collision
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[out] binary result of collision (true if valid)
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRequest &request) {
+bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRequest &request) const {
     auto robot = std::dynamic_pointer_cast<SerialRobot>(this->m_environment->getRobot());
     auto linkTrafos = robot->getLinkTrafos(config);
     auto pose = robot->getPose();
@@ -137,7 +149,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
     for (unsigned int i = 0; i < dim; ++i) {
         if (!m_workspaceBounding.contains(util::transformAABB(linkModels[i]->m_mesh.aabb, linkTrafos[i]))) {
             // Logging::trace("Robot out of workspace boundaries", this);
-            return true;
+            return false;
         }
     }
 
@@ -149,7 +161,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
                     // std::cout << pose.matrix() << std::endl;
                     // std::cout << linkTrafos[i].matrix() << std::endl;
                     // Logging::trace("Collision between link" + std::to_string(i) + " and base", this);
-                    return true;
+                    return false;
                 }
             }
         }
@@ -160,7 +172,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
                     // Logging::trace("Collision between link" + std::to_string(i) + " and link" + std::to_string(j), this);
                     // std::cout << linkTrafos[i].matrix() << std::endl;
                     // std::cout << linkTrafos[j].matrix() << std::endl;
-                    return true;
+                    return false;
                 }
             }
         }
@@ -171,7 +183,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
         for (auto &obstacle : m_obstacles) {
             if (this->checkFCL(obstacle.first, m_baseModel, obstacle.second, pose)) {
                 // Logging::trace("Collision between workspace and base", this);
-                return true;
+                return false;
             }
         }
 
@@ -179,12 +191,12 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
             for (auto &obstacle : m_obstacles) {
                 if (this->checkFCL(obstacle.first, m_linkModels[i], obstacle.second, linkTrafos[i])) {
                     // Logging::trace("Collision between workspace and link" + std::to_string(i), this);
-                    return true;
+                    return false;
                 }
             }
         }
     }
-    return false;
+    return true;
 }
 
 } /* namespace ippp */

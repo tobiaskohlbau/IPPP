@@ -17,6 +17,7 @@
 //-------------------------------------------------------------------------//
 
 #include <ippp/util/UtilGeo.hpp>
+#include <iostream>
 
 namespace ippp {
 namespace util {
@@ -129,7 +130,8 @@ Transform poseVecToTransformFromDeg(const Vector6 &pose) {
 */
 Vector6 transformToVec(const Transform &T) {
     Vector3 vec(T.translation());
-    Vector3 euler(T.rotation().eulerAngles(0, 1, 2));
+    Vector3 euler(T.rotation().eulerAngles(0,1,2));
+    Quaternion q(T.rotation());
     return util::append<3, 3>(vec, euler);
 }
 
@@ -196,6 +198,28 @@ AABB translateAABB(const AABB &a, const Transform &T) {
     return result;
 }
 
+MatrixX transformToTaskFrameJ(const MatrixX &jacobian, const Transform taskFrame) {
+    Matrix6 toTaskFrame = Matrix6::Zero();
+    Matrix3 R = taskFrame.rotation();
+    toTaskFrame.block<3, 3>(0, 0) = R.inverse();
+    toTaskFrame.block<3, 3>(3, 3) = R.inverse();
+
+    Matrix6 E = Matrix6::Identity();
+    //double psi = std::atan2(R(2, 1), R(2, 2));
+    double theta = std::asin(R(2, 0));
+    double phi = std::atan2(R(1, 0), R(0, 0));
+    E(3, 3) = std::cos(phi) / std::cos(theta);
+    E(3, 4) = std::sin(phi) / std::cos(theta);
+    E(4, 3) = -std::sin(phi);
+    E(4, 4) = std::cos(phi);
+    E(5, 3) = (std::cos(phi) * std::sin(theta)) / std::cos(theta);
+    E(5, 4) = (std::sin(phi) * std::sin(theta)) / std::cos(theta);
+
+    MatrixX J = toTaskFrame * jacobian;
+    return E * J;
+}
+
+
 /*!
 *  \brief      Remove duplicate vectors from the passed reference list.
 *  \author     Sascha Kaden
@@ -223,22 +247,23 @@ void removeDuplicates(std::vector<Vector3> &vectors) {
     }
 }
 
+/*!
+*  \brief      Convert radian to degree value.
+*  \author     Sascha Kaden
+*  \param[in]  radian
+*  \date       2017-04-07
+*/
 double toDeg(double rad) {
     return rad * toDeg();
 }
 
-double toRad(double deg) {
-    return deg * toRad();
-}
-
 /*!
-*  \brief      Convert degree to radian
+*  \brief      Convert degree to radian value.
 *  \author     Sascha Kaden
-*  \param[in]  deg
-*  \param[out] rad
-*  \date       2016-11-16
+*  \param[in]  degree
+*  \date       2017-04-07
 */
-double degToRad(double deg) {
+double toRad(double deg) {
     return deg * toRad();
 }
 

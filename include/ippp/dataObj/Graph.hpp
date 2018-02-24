@@ -51,18 +51,14 @@ class Graph : public Identifier {
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, double range) const;
 
     void sortTree();
-    bool eraseNode(const std::shared_ptr<Node<dim>> &node);
+    void clearQueryParents();
 
     bool empty() const;
-    size_t nodeSize() const;
-    size_t edgeSize() const;
+    size_t numNodes() const;
+    size_t numEdges() const;
     size_t getSortCount() const;
     bool autoSort() const;
     void preserveNodePtr();
-
-    void clearParents();
-    void clearQueryParents();
-    void clearChildes();
 
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
 
@@ -74,6 +70,8 @@ class Graph : public Identifier {
     }
 
   private:
+    void clearPointer();
+
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;                                             /*!< vector of all graph nodes */
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr; /*!< search module */
     std::mutex m_mutex; /*!< mutex for adding and changing of the vector of nodes */
@@ -186,7 +184,7 @@ template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const {
     // todo: at the time brute force search over all nodes, add a more clever search
     for (const auto &node : m_nodes)
-        if (node->getValues().isApprox(config, EPSILON))
+        if (node->getValues().isApprox(config, IPPP_EPSILON))
             return node;
     return nullptr;
 }
@@ -265,22 +263,14 @@ void Graph<dim>::sortTree() {
 }
 
 /*!
-* \brief      Remove Node from Graph, erasing from the vector of Nodes
-* \details    KDTree has to be sorted after erasing of the Nodes.
+* \brief      Clear all query parents of the nodes.
 * \author     Sascha Kaden
-* \param[in]  Node pointer
-* \param[out] true, if node was found and erased
-* \date       2017-04-18
+* \date       2017-01-09
 */
 template <unsigned int dim>
-bool Graph<dim>::eraseNode(const std::shared_ptr<Node<dim>> &node) {
-    for (auto &&graphNode : m_nodes) {
-        if (graphNode == node) {
-            m_nodes.erase(graphNode);
-            return true;
-        }
-    }
-    return false;
+void Graph<dim>::clearQueryParents() {
+    for (auto &&node : m_nodes)
+        node->clearQueryParent();
 }
 
 /*!
@@ -303,7 +293,7 @@ bool Graph<dim>::empty() const {
 * \date       2016-08-09
 */
 template <unsigned int dim>
-size_t Graph<dim>::nodeSize() const {
+size_t Graph<dim>::numNodes() const {
     return m_nodes.size();
 }
 
@@ -314,7 +304,7 @@ size_t Graph<dim>::nodeSize() const {
 * \date       2016-08-09
 */
 template <unsigned int dim>
-size_t Graph<dim>::edgeSize() const {
+size_t Graph<dim>::numEdges() const {
     size_t edgeSize = 0;
     for (auto &node : m_nodes) {
         edgeSize += node->getChildSize();
@@ -352,31 +342,9 @@ bool Graph<dim>::autoSort() const {
 * \date       2017-04-03
 */
 template <unsigned int dim>
-void Graph<dim>::clearParents() {
+void Graph<dim>::clearPointer() {
     for (auto &&node : m_nodes)
-        node->clearParent();
-}
-
-/*!
-* \brief      Clear all query parent pointer from the nodes
-* \author     Sascha Kaden
-* \date       2017-04-03
-*/
-template <unsigned int dim>
-void Graph<dim>::clearQueryParents() {
-    for (auto &&node : m_nodes)
-        node->clearQueryParent();
-}
-
-/*!
-* \brief      Clear all child pointer from the nodes
-* \author     Sascha Kaden
-* \date       2017-04-03
-*/
-template <unsigned int dim>
-void Graph<dim>::clearChildes() {
-    for (auto &&node : m_nodes)
-        node->clearChildes();
+        node->clearPointer();
 }
 
 /*!

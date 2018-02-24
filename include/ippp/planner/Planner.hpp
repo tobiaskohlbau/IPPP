@@ -63,7 +63,6 @@ class Planner : public Identifier {
     std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, double posRes, double oriRes);
 
   protected:
-    std::vector<std::shared_ptr<Node<dim>>> smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes);
 
     std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
@@ -111,9 +110,8 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
     Logging::debug("Initialize", this);
 
     // check dimensions of the robot to the dimension of the planner
-    if (!util::checkDimensions<dim>(environment)) {
+    if (!util::checkDimensions<dim>(environment))
         Logging::error("Robot dimensions are unequal to planner dimension", this);
-    }
     assert(util::checkDimensions<dim>(environment));
 }
 
@@ -166,31 +164,9 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     path.push_back(smoothedNodes.back()->getValues());
 
     // set the resolution again to the planner resolution
-    m_trajectory->setResolutions(plannerRes.first, plannerRes.second);
+    m_trajectory->setResolutions(plannerRes);
 
     return path;
-}
-
-/*!
-*  \brief      Return shortened path nodes
-*  \details    If trajectory from node to grandparent node is valid, parent node will be erased.
-*  \author     Sascha Kaden
-*  \param[in]  path nodes
-*  \param[out] shorted path nodes
-*  \date       2016-05-27
-*/
-template <unsigned int dim>
-std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::smoothPath(std::vector<std::shared_ptr<Node<dim>>> nodes) {
-    size_t i = 0;
-    auto countNodes = nodes.size() - 2;
-    while (i < countNodes) {
-        while (i < countNodes && m_trajectory->checkTrajectory(nodes[i]->getValues(), nodes[i + 2]->getValues())) {
-            nodes.erase(nodes.begin() + i + 1);
-            --countNodes;
-        }
-        ++i;
-    }
-    return nodes;
 }
 
 } /* namespace ippp */

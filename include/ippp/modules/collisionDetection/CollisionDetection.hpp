@@ -19,12 +19,9 @@
 #ifndef COLLISIONDETECTION_HPP
 #define COLLISIONDETECTION_HPP
 
-#include <Eigen/Core>
-
-#include <ippp/dataObj/Node.hpp>
-#include <ippp/environment/Environment.h>
 #include <ippp/modules/collisionDetection/CollisionRequest.h>
 #include <ippp/modules/collisionDetection/CollisionResult.h>
+#include <ippp/modules/validityChecker/ValidityChecker.hpp>
 
 namespace ippp {
 
@@ -34,17 +31,17 @@ namespace ippp {
 * \date    2017-02-19
 */
 template <unsigned int dim>
-class CollisionDetection : public Identifier {
+class CollisionDetection : public ValidityChecker<dim> {
   public:
     CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment,
                        const CollisionRequest &request = CollisionRequest());
-    virtual bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr,
-                             CollisionResult *result = nullptr) = 0;
-    virtual bool checkTrajectory(const std::vector<Vector<dim>> &config) = 0;
-    
+
+    virtual bool check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const = 0;
+
   protected:
-    const std::shared_ptr<Environment> m_environment;    /*!< Pointer to the Environment */
-    const CollisionRequest m_request;                    /*!< Default request for single collision tests (not trajectories) */
+    const CollisionRequest m_request; /*!< Default request for single collision tests (not trajectories) */
+
+    using ValidityChecker<dim>::m_environment;
 };
 
 /*!
@@ -57,8 +54,7 @@ class CollisionDetection : public Identifier {
 template <unsigned int dim>
 CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment,
                                             const CollisionRequest &request)
-    : Identifier(name), m_environment(environment), m_request(request) {
-    Logging::debug("Initialize", this);
+    : ValidityChecker<dim>(name, environment), m_request(request) {
 }
 
 } /* namespace ippp */

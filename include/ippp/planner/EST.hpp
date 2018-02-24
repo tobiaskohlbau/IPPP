@@ -115,12 +115,12 @@ void EST<dim>::computeTreeThread(size_t nbOfNodes) {
     Vector<dim> sample;
     for (size_t i = 0; i < nbOfNodes; ++i) {
         // choose random node of the graph
-        auto randNode = m_graph->getNode(m_sampling->getRandomNumber() * m_graph->size());
+        auto randNode = m_graph->getNode(m_sampling->getRandomNumber() * m_graph->numNodes());
         sample = m_sampling->getSample(randNode->getValues());
-        if (util::empty<dim>(sample) || !m_validityChecker->checkConfig(sample))
+        if (util::empty<dim>(sample) || !m_validityChecker->check(sample))
             continue;
 
-        if (!m_trajectory->checkTrajectory(randNode->getValues(), sample))
+        if (!m_validityChecker->check(m_trajectory->calcTrajBin(randNode->getValues(), sample)))
             continue;
 
         std::shared_ptr<Node<dim>> newNode(new Node<dim>(sample));
@@ -142,25 +142,25 @@ void EST<dim>::computeTreeThread(size_t nbOfNodes) {
 */
 template <unsigned int dim>
 bool EST<dim>::connectGoalNode(Vector<dim> goal) {
-    if (!m_validityChecker->checkConfig(goal)) {
+    if (!m_validityChecker->check(goal)) {
         Logging::warning("Goal Node in collision", this);
         return false;
     }
 
     std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
     // Todo: add option for the connection distance of the goal node
-    std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(goalNode, 100);
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = m_graph->getNearNodes(*goalNode, 1);
 
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (auto node : nearNodes) {
-        if (m_trajectory->checkTrajectory(goal, node->getValues())) {
+        if (m_validityChecker->check(m_trajectory->calcTrajBin(goal, node->getValues()))) {
             nearestNode = node;
             break;
         }
     }
 
     if (nearestNode != nullptr) {
-        goalNode->setParent(nearestNode, this->m_metric->calcDist(nearestNode, goalNode));
+        goalNode->setParent(nearestNode, this->m_metric->calcDist(*nearestNode, *goalNode));
         m_goalNode = goalNode;
         m_graph->addNode(goalNode);
         // Logging::info("Goal Node<dim> is connected", this);

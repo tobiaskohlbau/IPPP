@@ -42,7 +42,7 @@ static std::shared_ptr<Node<dim>> getNearestValidNode(const Vector<dim> &config,
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph.getNearNodes(config, range);
     double dist = std::numeric_limits<double>::max();
     for (auto &nearNode : nearNodes) {
-        if (validityChecker.checkTrajectory(trajectory.calcTrajBin(config, nearNode->getValues())) &&
+        if (validityChecker.check(trajectory.calcTrajBin(config, nearNode->getValues())) &&
             metric.calcDist(config, nearNode->getValues()) < dist) {
             dist = metric.calcDist(config, nearNode->getValues());
             nearestNode = nearNode;

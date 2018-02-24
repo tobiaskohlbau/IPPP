@@ -177,9 +177,18 @@ Vector<dim> NaNVector() {
     return vec;
 }
 
+/*!
+*  \brief      Checks the equality of two n-dimensional Vector.
+*  \detail     Using of Epsilon parameter from types.h for checking.
+*  \author     Sascha Kaden
+*  \param[in]  first n-dimensional vector
+*  \param[in]  second n-dimensional vector
+*  \param[out] true if equal
+*  \date       2017-04-04
+*/
 template <unsigned int N>
 static bool equal(const Vector<N> &vec1, const Vector<N> &vec2) {
-    return (vec1 - vec2).isZero(EPSILON);
+    return (vec1 - vec2).isZero(IPPP_EPSILON);
 }
 
 } /* namespace util */

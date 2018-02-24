@@ -64,11 +64,13 @@ Vector6 transformToVec(const Transform &T);
 Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3);
 AABB transformAABB(const AABB &aabb, const Transform &T);
 AABB translateAABB(const AABB &a, const Transform &T);
+
+MatrixX transformToTaskFrameJ(const MatrixX &jacobian, const Transform taskFrame);
+
 void removeDuplicates(std::vector<Vector3> &vectors);
 
 double toDeg(double rad);
 double toRad(double deg);
-double degToRad(double deg);
 
 /*!
 *  \brief      Convert Vec of deg angles to Vec of rad
@@ -78,7 +80,7 @@ double degToRad(double deg);
 *  \date       2016-07-07
 */
 template <unsigned int dim>
-Vector<dim> degToRad(Vector<dim> deg) {
+Vector<dim> toRad(Vector<dim> deg) {
     for (unsigned int i = 0; i < dim; ++i)
         deg[i] *= toRad();
     return deg;
@@ -92,12 +94,11 @@ Vector<dim> degToRad(Vector<dim> deg) {
 *  \date       2016-07-07
 */
 template <unsigned int dim>
-Vector<dim> radToDeg(Vector<dim> rad) {
+Vector<dim> toDeg(Vector<dim> rad) {
     for (unsigned int i = 0; i < dim; ++i)
         rad[i] *= toDeg();
     return rad;
 }
-
 
 } /* namespace util */
 } /* namespace ippp */

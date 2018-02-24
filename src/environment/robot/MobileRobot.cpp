@@ -33,8 +33,7 @@ namespace ippp {
 MobileRobot::MobileRobot(unsigned int dim, const std::pair<VectorX, VectorX> &boundary, const std::vector<DofType> &dofTypes,
                          const std::string &name)
     : RobotBase(name, dim, RobotCategory::mobile, dofTypes) {
-    m_minBoundary = boundary.first;
-    m_maxBoundary = boundary.second;
+    m_boundary = boundary;
 }
 
 /*!

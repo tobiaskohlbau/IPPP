@@ -52,16 +52,14 @@ class RobotBase : public EnvObject {
     void setBaseModel(const std::shared_ptr<ModelContainer> &model);
     std::shared_ptr<ModelContainer> getBaseModel() const;
 
-    VectorX getMinBoundary() const;
-    VectorX getMaxBoundary() const;
+    std::pair<VectorX, VectorX> getBoundary() const;
     unsigned int getDim() const;
     RobotCategory getRobotCategory() const;
     std::vector<DofType> getDofTypes() const;
 
   protected:
-    const RobotCategory m_robotType; /*!< category of the robot (serial or mobile) */
-    VectorX m_minBoundary;           /*!< minimal boundaries of the robot */
-    VectorX m_maxBoundary;           /*!< maximal boundaries of the robot */
+    const RobotCategory m_robotType;        /*!< category of the robot (serial or mobile) */
+    std::pair<VectorX, VectorX> m_boundary; /*!< robot boundary (first min, second max) */
 
     const unsigned int m_dim;              /*!< dimension of the robot */
     const std::vector<DofType> m_dofTypes; /*!< list of the types of every dimension  */

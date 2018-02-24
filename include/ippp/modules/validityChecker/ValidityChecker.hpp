@@ -22,8 +22,7 @@
 #include <vector>
 
 #include <ippp/Identifier.h>
-#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
-#include <ippp/modules/constraint/Constraint.hpp>
+#include <ippp/environment/Environment.h>
 #include <ippp/types.h>
 
 namespace ippp {
@@ -35,87 +34,93 @@ namespace ippp {
 */
 template <unsigned int dim>
 class ValidityChecker : public Identifier {
-  public:
-    ValidityChecker(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                    const std::shared_ptr<Constraint<dim>> &constraint = nullptr, const std::string &name = "ValidityChecker");
-
-    virtual bool checkConfig(const Vector<dim> &config) const;
-    virtual bool checkTrajectory(const std::vector<Vector<dim>> &config) const;
-
   protected:
+    ValidityChecker(const std::string &name, const std::shared_ptr<Environment> &environment, double epsilon = IPPP_EPSILON);
+
+  public:
+    virtual ~ValidityChecker();
+
+    virtual bool check(const Vector<dim> &config) const = 0;
+    virtual bool check(const std::vector<Vector<dim>> &configs) const = 0;
+    virtual double calc(const Vector<dim> &config) const;
+    virtual double calc(const std::vector<Vector<dim>> &config) const;
+
     bool checkRobotBound(const Vector<dim> &config) const;
     bool checkRobotBound(const std::vector<Vector<dim>> &config) const;
+    void setEpsilon(double epsilon);
+    double getEpsilon() const;
 
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-    std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
+  protected:
+    double m_epsilon = 0.1;
     std::shared_ptr<Environment> m_environment;
-
     std::pair<Vector<dim>, Vector<dim>> m_robotBounding; /*!< Boundaries of the robot, fetched from the Environment */
 };
 
 /*!
 *  \brief      Constructor of the class ValidityChecker
-*  \param[in]  Environment
-*  \param[in]  CollisionDetection
-*  \param[in]  Constraint
 *  \param[in]  name
+*  \param[in]  Environment
 *  \author     Sascha Kaden
 *  \date       2018-01-17
 */
 template <unsigned int dim>
-ValidityChecker<dim>::ValidityChecker(const std::shared_ptr<Environment> &environment,
-                                      const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                      const std::shared_ptr<Constraint<dim>> &constraint, const std::string &name)
-    : Identifier(name),
-      m_collision(collision),
-      m_constraint(constraint),
-      m_environment(environment),
-      m_robotBounding(environment->getRobotBoundaries()) {
+ValidityChecker<dim>::ValidityChecker(const std::string &name, const std::shared_ptr<Environment> &environment, double epsilon)
+    : Identifier(name), m_environment(environment), m_robotBounding(environment->getRobotBoundaries()) {
     Logging::debug("Initialize", this);
+    setEpsilon(epsilon);
 }
 
+template <unsigned int dim>
+ValidityChecker<dim>::~ValidityChecker() = default;
+
 /*!
-*  \brief      Checks the validity of the passed configuration, return true if valid.
+*  \brief      Calculates the validity of the passed configuration, return double validity value.
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] validity, true if valid
+*  \param[out] validity
 *  \date       2018-01-17
 */
 template <unsigned int dim>
-bool ValidityChecker<dim>::checkConfig(const Vector<dim> &config) const {
-    if (!checkRobotBound(config))
-        return false;
-
-    if (m_constraint) {
-        if (!m_collision->checkConfig(config) && m_constraint->checkConfig(config))
-            return true;
-
-        return false;
-    }
-
-    return !m_collision->checkConfig(config);
+double ValidityChecker<dim>::calc(const Vector<dim> &config) const {
+    return static_cast<double>(check(config));
 }
 
 /*!
-*  \brief      Checks the validity of the passed configurations, return true if valid.
+*  \brief      Calculates the validity of the passed configurations, return double validity value.
 *  \author     Sascha Kaden
-*  \param[in]  vector of configurations
-*  \param[out] validity, true if valid
+*  \param[in]  configuration
+*  \param[out] validity
 *  \date       2018-01-17
 */
 template <unsigned int dim>
-bool ValidityChecker<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) const {
-    if (!checkRobotBound(configs))
-        return false;
+double ValidityChecker<dim>::calc(const std::vector<Vector<dim>> &configs) const {
+    return static_cast<double>(check(configs));
+}
 
-    if (m_constraint) {
-        if (!m_collision->checkTrajectory(configs) && m_constraint->checkTrajectory(configs))
-            return true;
-
-        return false;
+/*!
+*  \brief      Set the epsilon value for checking of the configurations.
+*  \author     Sascha Kaden
+*  \param[in]  epsilon value
+*  \date       2018-02-14
+*/
+template <unsigned int dim>
+void ValidityChecker<dim>::setEpsilon(double epsilon) {
+    if (epsilon < 0) {
+        Logging::warning("Epsilon has to be larger than 0", this);
+        return;
     }
+    m_epsilon = epsilon;
+}
 
-    return !m_collision->checkTrajectory(configs);
+/*!
+*  \brief      Return the epsilon value for checking of the configurations.
+*  \author     Sascha Kaden
+*  \param[out] epsilon value
+*  \date       2018-03-14
+*/
+template <unsigned int dim>
+double ValidityChecker<dim>::getEpsilon() const {
+    return m_epsilon;
 }
 
 /*!
@@ -155,4 +160,4 @@ bool ValidityChecker<dim>::checkRobotBound(const std::vector<Vector<dim>> &confi
 
 } /* namespace ippp */
 
-#endif /* CONSTRAINT_HPP */
+#endif /* VALIDITYCHECKER_HPP */

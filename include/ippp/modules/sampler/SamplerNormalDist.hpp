@@ -36,7 +36,12 @@ class SamplerNormalDist : public Sampler<dim> {
     void setOrigin(const Vector<dim> &origin) override;
 
   private:
+    double calcValue(unsigned int dim);
+
     std::vector<std::normal_distribution<double>> m_distNormal;
+
+    using Sampler<dim>::m_robotBoundary;
+    using Sampler<dim>::m_generator;
 };
 
 /*!
@@ -49,11 +54,7 @@ class SamplerNormalDist : public Sampler<dim> {
 template <unsigned int dim>
 SamplerNormalDist<dim>::SamplerNormalDist(const std::shared_ptr<Environment> &environment, const std::string &seed)
     : Sampler<dim>("SamplerNormalDist", environment, seed) {
-    m_distNormal.clear();
-    for (unsigned int i = 0; i < dim; ++i) {
-        std::normal_distribution<double> distribution(this->m_origin[i], this->m_maxBoundary[i] - this->m_minBoundary[i]);
-        m_distNormal.push_back(distribution);
-    }
+    setOrigin(m_origin);
 }
 
 /*!
@@ -65,13 +66,8 @@ SamplerNormalDist<dim>::SamplerNormalDist(const std::shared_ptr<Environment> &en
 template <unsigned int dim>
 Vector<dim> SamplerNormalDist<dim>::getSample() {
     Vector<dim> config;
-    double number;
-    for (unsigned int i = 0; i < dim; ++i) {
-        do {
-            number = m_distNormal[i](this->m_generator);
-        } while ((number <= this->m_minBoundary[i]) || (number >= this->m_maxBoundary[i]));
-        config[i] = number;
-    }
+    for (unsigned int i = 0; i < dim; ++i)
+        config[i] = calcValue(i);
     return config;
 }
 
@@ -85,9 +81,20 @@ template <unsigned int dim>
 void SamplerNormalDist<dim>::setOrigin(const Vector<dim> &origin) {
     m_distNormal.clear();
     for (unsigned int i = 0; i < dim; ++i) {
-        std::normal_distribution<double> distribution(origin[i], this->m_maxBoundary[i] - this->m_minBoundary[i]);
+        std::normal_distribution<double> distribution(origin[i], (m_robotBoundary.second[i] - m_robotBoundary.first[i]) / 2);
         m_distNormal.push_back(distribution);
     }
+}
+
+template <unsigned int dim>
+double SamplerNormalDist<dim>::calcValue(unsigned int index) {
+    double value;
+    for (size_t i = 0; i < 20; ++i) {
+        value = m_distNormal[index](m_generator);
+        if (value >= m_robotBoundary.first[index] && value <= m_robotBoundary.second[index])
+            return value;
+    }
+    return std::nanf("1");
 }
 
 } /* namespace ippp */

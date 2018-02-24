@@ -20,8 +20,8 @@
 #define TRAJECTORYPLANNER_HPP
 
 #include <ippp/Identifier.h>
+#include <ippp/dataObj/Node.hpp>
 #include <ippp/environment/Environment.h>
-#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/types.h>
 #include <ippp/util/UtilTrajectory.hpp>
 
@@ -44,8 +44,7 @@ class TrajectoryPlanner : public Identifier {
     virtual std::vector<Vector<dim>> calcTrajBin(const Vector<dim> &source, const Vector<dim> &target) const = 0;
 
     void setResolutions(double posRes, double oriRes = 0.1);
-    double getPosRes() const;
-    double getOriRes() const;
+    void setResolutions(std::pair<double, double> resolutions);
     std::pair<double, double> getResolutions() const;
 
   protected:
@@ -119,32 +118,22 @@ void TrajectoryPlanner<dim>::setResolutions(double posRes, double oriRes) {
 }
 
 /*!
-*  \brief      Return position resolution
+*  \brief      Set position and orientation resolutions.
+*  \details    If values are smaller or equal to zero, standard parameter will be set.
 *  \author     Sascha Kaden
-*  \param[out] position resolution
-*  \date       2017-10-07
+*  \param[in]  position and orientation resolution
+*  \date       2018-02-20
 */
 template <unsigned int dim>
-double TrajectoryPlanner<dim>::getPosRes() const {
-    return m_posRes;
+void TrajectoryPlanner<dim>::setResolutions(std::pair<double, double> resolutions) {
+    setResolutions(resolutions.first, resolutions.second);
 }
 
 /*!
-*  \brief      Return orientation resolution
+*  \brief      Return the resolutions, pair of position and orientation resolution
 *  \author     Sascha Kaden
-*  \param[out] orientation resolution
-*  \date       2017-10-07
-*/
-template <unsigned int dim>
-double TrajectoryPlanner<dim>::getOriRes() const {
-    return m_oriRes;
-}
-
-/*!
-*  \brief      Return orientation resolution
-*  \author     Sascha Kaden
-*  \param[out] orientation resolution
-*  \date       2017-10-07
+*  \param[out] position and orientation resolution
+*  \date       2018-02-20
 */
 template <unsigned int dim>
 std::pair<double, double> TrajectoryPlanner<dim>::getResolutions() const {

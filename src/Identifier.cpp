@@ -20,11 +20,6 @@
 
 namespace ippp {
 
-/*!
-*  \brief      Standard destructor of the Identifier
-*  \author     Sascha Kaden
-*  \date       2016-05-30
-*/
 Identifier::~Identifier() = default;
 
 /*!

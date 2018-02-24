@@ -37,15 +37,15 @@ bool computePath(const std::string& benchmarkDir, const std::string& queryPath, 
     robot->setBaseModel(robotModel);
 
     std::shared_ptr<Environment> environment(new Environment(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
-    environment->addEnvObject(std::make_shared<ObstacleObject>("obstacle", obstacleModel));
+    environment->addObstacle(std::make_shared<ObstacleObject>("obstacle", obstacleModel));
 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(environment));
 
     ModuleConfigurator<dim> creator;
-    creator.setCollisionType(CollisionType::PQP);
+    creator.setVadilityCheckerType(ValidityCheckerType::PQP);
     creator.setEnvironment(environment);
     ModuleConfigurator<dim> creatorBenchmark;
-    creatorBenchmark.setCollisionType(CollisionType::PQP);
+    creatorBenchmark.setVadilityCheckerType(ValidityCheckerType::PQP);
     creatorBenchmark.setEnvironment(environment);
 
     for (int i = 3; i < 6; ++i) {
@@ -122,9 +122,9 @@ void generateMap() {
     const unsigned int dim = 2;
     Vector2 min(0, 0);
     Vector2 max(1000, 1000);
-    std::shared_ptr<Sampler<dim>> sampler(new SamplerRandom<dim>(min, max));
+    auto sampler = std::make_shared<SamplerRandom<dim>>(std::make_pair(min, max));
 
-    util::MapGenerator<dim> mapGenerator(min, max, sampler);
+    util::MapGenerator<dim> mapGenerator(std::make_pair(min, max), sampler);
     auto meshes = mapGenerator.generateMap(400, Vector2(50, 50), Vector2(10, 10));
     auto mesh = cad::mergeMeshes(meshes);
     cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);

@@ -47,15 +47,17 @@ class RRT : public TreePlanner<dim> {
 
     // variables
     double m_stepSize = 1;
+    double m_simplifiedStepSize = 1;
     std::mutex m_mutex;
 
-    using Planner<dim>::m_validityChecker;
+    using Planner<dim>::m_environment;
     using Planner<dim>::m_graph;
+    using Planner<dim>::m_metric;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_environment;
     using Planner<dim>::m_sampling;
+    using Planner<dim>::m_validityChecker;
     using TreePlanner<dim>::m_initNode;
     using TreePlanner<dim>::m_goalNode;
 };
@@ -72,8 +74,10 @@ class RRT : public TreePlanner<dim> {
 template <unsigned int dim>
 RRT<dim>::RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
               const std::shared_ptr<Graph<dim>> &graph, const std::string &name)
-    : TreePlanner<dim>(name, environment, options, graph) {
-    m_stepSize = options.getStepSize();
+    : TreePlanner<dim>(name, environment, options, graph),
+      m_stepSize(options.getStepSize()),
+      m_simplifiedStepSize(options.getStepSize()) {
+    m_metric->simplifyDist(m_simplifiedStepSize);
 }
 
 /*!
@@ -139,7 +143,7 @@ void RRT<dim>::computeTreeThread(size_t nbOfNodes) {
 */
 template <unsigned int dim>
 bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
-    if (!m_validityChecker->checkConfig(goal)) {
+    if (!m_validityChecker->check(goal)) {
         Logging::warning("Goal Node in collision", this);
         return false;
     }
@@ -149,7 +153,7 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
 
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     for (auto node : nearNodes) {
-        if (m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(goal, node->getValues()))) {
+        if (m_validityChecker->check(m_trajectory->calcTrajBin(goal, node->getValues()))) {
             nearestNode = node;
             break;
         }
@@ -178,18 +182,16 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randConfig) {
-    // get nearest neighbor
-    std::shared_ptr<Node<dim>> nearestNode = m_graph->getNearestNode(randConfig);
+    auto nearestNode = m_graph->getNearestNode(randConfig);
 
-    // compute Node<dim> new with fixed step size
-    Vector<dim> newConfig = this->computeNodeNew(randConfig, nearestNode->getValues());
-    std::shared_ptr<Node<dim>> newNode = std::make_shared<Node<dim>>(newConfig);
+    Vector<dim> newConfig = computeNodeNew(randConfig, nearestNode->getValues());
+    auto newNode = std::make_shared<Node<dim>>(newConfig);
 
-    if (!m_validityChecker->checkConfig(newNode->getValues()) ||
-        !m_validityChecker->checkTrajectory(m_trajectory->calcTrajBin(*newNode, *nearestNode)))
+    if (!m_validityChecker->check(newNode->getValues()) ||
+        !m_validityChecker->check(m_trajectory->calcTrajBin(*newNode, *nearestNode)))
         return nullptr;
 
-    double edgeCost = this->m_metric->calcDist(*nearestNode, *newNode);
+    double edgeCost = m_metric->calcDist(*nearestNode, *newNode);
     newNode->setParent(nearestNode, edgeCost);
 
     m_mutex.lock();
@@ -207,16 +209,16 @@ std::shared_ptr<Node<dim>> RRT<dim>::computeRRTNode(const Vector<dim> &randConfi
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-Vector<dim> RRT<dim>::computeNodeNew(const Vector<dim> &randNode, const Vector<dim> &nearestNode) {
-    if ((randNode - nearestNode).norm() < m_stepSize)
-        return randNode;
+Vector<dim> RRT<dim>::computeNodeNew(const Vector<dim> &randConfig, const Vector<dim> &nearestConfig) {
+    if (m_metric->calcSimpleDist(randConfig, nearestConfig) < m_simplifiedStepSize)
+        return randConfig;
 
     // p = a + k * (b-a)
     // ||u|| = ||b - a||
     // k = stepSize / ||u||
-    Vector<dim> u = randNode - nearestNode;
+    Vector<dim> u(randConfig - nearestConfig);
     u *= m_stepSize / u.norm();
-    u += nearestNode;
+    u += nearestConfig;
     return u;
 }
 

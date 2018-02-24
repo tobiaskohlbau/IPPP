@@ -118,7 +118,7 @@ static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, c
 template <unsigned int dim>
 static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, double posRes,
                                                     double oriRes, const Vector<dim> &posMask, const Vector<dim> &oriMask) {
-    if ((source - target).isZero(EPSILON))
+    if ((source - target).isZero(IPPP_EPSILON))
         return std::vector<Vector<dim>>();
 
     double uNormPos = (util::multiplyElementWise<dim>((target - source), posMask)).squaredNorm();

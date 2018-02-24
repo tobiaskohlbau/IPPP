@@ -33,8 +33,7 @@ class GaussianDistSampling : public Sampling<dim> {
   public:
     GaussianDistSampling(const std::shared_ptr<Environment> &environment,
                          const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                         size_t attempts = 10, double maxDist = 15);
+                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts = 10, double maxDist = 15);
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
@@ -61,9 +60,8 @@ class GaussianDistSampling : public Sampling<dim> {
 template <unsigned int dim>
 GaussianDistSampling<dim>::GaussianDistSampling(const std::shared_ptr<Environment> &environment,
                                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                                 const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double maxDist)
-    : Sampling<dim>("GaussianDistSampling", environment, validityChecker, trajectory, sampler, attempts), m_maxDist(maxDist) {
+    : Sampling<dim>("GaussianDistSampling", environment, validityChecker, sampler, attempts), m_maxDist(maxDist) {
 }
 
 /*!
@@ -92,7 +90,7 @@ Vector<dim> GaussianDistSampling<dim>::getSample(const Vector<dim> &prevSample) 
         ray = m_sampler->getRandomRay();
         ray *= m_maxDist * m_sampler->getRandomNumber();
         sample = prevSample + ray;
-        if (this->checkRobotBounding(sample) && m_validityChecker->checkConfig(sample))
+        if (this->checkRobotBounding(sample) && m_validityChecker->check(sample))
             return sample;
     }
     return util::NaNVector<dim>();

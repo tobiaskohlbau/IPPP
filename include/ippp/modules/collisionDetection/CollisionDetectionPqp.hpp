@@ -35,14 +35,15 @@ template <unsigned int dim>
 class CollisionDetectionPqp : public CollisionDetection<dim> {
   public:
     CollisionDetectionPqp(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(const std::vector<Vector<dim>> &configs) override;
+
+    bool check(const Vector<dim> &config) const;
+    bool check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const;
+    bool check(const std::vector<Vector<dim>> &configs) const;
 
   protected:
-    bool checkSerialRobot(const Vector<dim> &config);
-    bool checkMobileRobot(const Vector<dim> &config);
-
-    bool checkPQP(PQP_Model *model1, PQP_Model *model2, const Transform &T1, const Transform &T2);
+    bool checkSerialRobot(const Vector<dim> &config) const;
+    bool checkMobileRobot(const Vector<dim> &config) const;
+    bool checkPQP(PQP_Model *model1, PQP_Model *model2, const Transform &T1, const Transform &T2) const;
 
     Transform m_identity;
     AABB m_workspaceBounding;
@@ -108,39 +109,54 @@ CollisionDetectionPqp<dim>::CollisionDetectionPqp(const std::shared_ptr<Environm
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
+bool CollisionDetectionPqp<dim>::check(const Vector<dim> &config) const {
     if (m_environment->getRobot()->getRobotCategory() == RobotCategory::mobile)
-        return checkMobileRobot(config);
+        return !checkMobileRobot(config);
     else
-        return checkSerialRobot(config);
+        return !checkSerialRobot(config);
 }
 
 /*!
-*  \brief      Check collision of a trajectory of points
+*  \brief      Check for collision
 *  \author     Sascha Kaden
-*  \param[in]  vector of configurations
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2017-02-19
+*  \param[in]  configuration
+*  \param[in]  CollisionRequest
+*  \param[out] CollisionResult
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkTrajectory(const std::vector<Vector<dim>> &configs) {
+bool CollisionDetectionPqp<dim>::check(const Vector<dim> &config, const CollisionRequest &request,
+                                       CollisionResult &result) const {
+    return check(config);
+}
+
+/*!
+*  \brief      Check collision of a trajectory of configurations
+*  \author     Sascha Kaden
+*  \param[in]  vector of configurations
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
+*/
+template <unsigned int dim>
+bool CollisionDetectionPqp<dim>::check(const std::vector<Vector<dim>> &configs) const {
     if (configs.empty())
         return false;
 
     if (m_environment->getRobot()->getRobotCategory() == RobotCategory::mobile) {
         for (size_t i = 0; i < configs.size(); ++i)
-            if (checkMobileRobot(configs[i]))
-                return true;
+            if (!checkMobileRobot(configs[i]))
+                return false;
     } else {
         for (size_t i = 0; i < configs.size(); ++i)
-            if (checkSerialRobot(configs[i]))
-                return true;
+            if (!checkSerialRobot(configs[i]))
+                return false;
     }
-    return false;
+    return true;
 }
 
 /*!
@@ -151,7 +167,7 @@ bool CollisionDetectionPqp<dim>::checkTrajectory(const std::vector<Vector<dim>> 
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) {
+bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) const {
     auto robot = std::dynamic_pointer_cast<SerialRobot>(this->m_environment->getRobot());
     auto linkTrafos = robot->getLinkTrafos(config);
     auto pose = robot->getPose();
@@ -195,7 +211,7 @@ bool CollisionDetectionPqp<dim>::checkSerialRobot(const Vector<dim> &config) {
 *  \date       2017-02-19
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &config) {
+bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &config) const {
     auto T = m_environment->getRobot()->getTransformation(config);
 
     if (m_baseMeshAvaible && m_workspaceAvaible) {
@@ -221,7 +237,7 @@ bool CollisionDetectionPqp<dim>::checkMobileRobot(const Vector<dim> &config) {
 *  \date       2016-07-14
 */
 template <unsigned int dim>
-bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model *model1, PQP_Model *model2, const Transform &T1, const Transform &T2) {
+bool CollisionDetectionPqp<dim>::checkPQP(PQP_Model *model1, PQP_Model *model2, const Transform &T1, const Transform &T2) const {
     PQP_REAL pqpR1[3][3], pqpR2[3][3], pqpT1[3], pqpT2[3];
 
     for (size_t i = 0; i < 3; ++i) {

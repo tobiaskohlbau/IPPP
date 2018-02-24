@@ -65,7 +65,7 @@ void testDeserialization() {
     for (auto &vec : vectors) {
         double value = -1.23456789;
         for (unsigned int j = 0; j < dim; ++j, ++value)
-            EXPECT_NEAR(vec[j], value, EPSILON);
+            EXPECT_NEAR(vec[j], value, IPPP_EPSILON);
     }
 }
 

@@ -29,13 +29,9 @@
 
 namespace ippp {
 
-enum class CollisionType { Dim2, Dim2Triangle, AlwaysValid, PQP, FclMobile, FclSerial, AABB, Sphere };
-
-enum class ConstraintType { AlwaysValid, Euclidean };
-
 enum class MetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
 
-enum class EvaluatorType { SingleIteration, Query, Time, QueryOrTime };
+enum class EvaluatorType { SingleIteration, TreeQuery, Time, QueryOrTime };
 
 enum class NeighborType { KDTree, BruteForce };
 
@@ -43,11 +39,11 @@ enum class PathModifierType { Dummy, NodeCut };
 
 enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, GridSampler };
 
-enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle, RGD };
+enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle, RGD, TangentSpace };
 
 enum class TrajectoryType { Linear, RotateAtS };
 
-enum class ValidityCheckerType { Normal };
+enum class ValidityCheckerType { AlwaysValid, Dim2, Dim2Triangle, PQP, FclMobile, FclSerial, AABB };
 
 /*!
 * \brief   Class ModuleConfigurator generates all defined modules for the path planner and creates the graph for the planner too.
@@ -82,9 +78,6 @@ class ModuleConfigurator : public Configurator {
     SRTOptions<dim> getSRTOptions(unsigned int nbOfTrees);
 
     void setEnvironment(const std::shared_ptr<Environment> &environment);
-    void setCollisionType(CollisionType type);
-    void setConstraintType(ConstraintType type);
-    void setEuclideanConstraint(const Vector6 &constraint, const double epsilon = EPSILON);
     void setMetricType(MetricType type);
     void setMetricWeightVec(const Vector<dim> vector);
     void setEvaluatorType(EvaluatorType type);
@@ -99,12 +92,11 @@ class ModuleConfigurator : public Configurator {
     void setTrajectoryType(TrajectoryType type);
     void setTrajectoryProperties(double posRes, double oriRes);
     void setVadilityCheckerType(ValidityCheckerType type);
+    void setEuclideanConstraint(const Vector6 &constraint, const double epsilon = IPPP_EPSILON);
 
   protected:
     void initializeModules();
 
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
-    std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
@@ -116,8 +108,6 @@ class ModuleConfigurator : public Configurator {
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
     std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
 
-    CollisionType m_collisionType = CollisionType::PQP;
-    ConstraintType m_constraintType = ConstraintType::AlwaysValid;
     Vector6 m_euclideanConstraint;
     double m_euclideanEpsilon;
     MetricType m_metricType = MetricType::L2;
@@ -138,7 +128,7 @@ class ModuleConfigurator : public Configurator {
     TrajectoryType m_trajectoryType = TrajectoryType::Linear;
     double m_posRes = 1;
     double m_oriRes = 0.1;
-    ValidityCheckerType m_validityType = ValidityCheckerType::Normal;
+    ValidityCheckerType m_validityType = ValidityCheckerType::FclSerial;
 
     bool m_parameterModified = false;
 };
@@ -168,51 +158,27 @@ void ModuleConfigurator<dim>::initializeModules() {
         return;
     m_parameterModified = false;
 
-    switch (m_collisionType) {
-        case CollisionType::Dim2:
-            m_collision = std::make_shared<CollisionDetection2D<dim>>(m_environment);
-            break;
-        case CollisionType::Dim2Triangle:
-            m_collision = std::make_shared<CollisionDetectionTriangleRobot<dim>>(m_environment);
-            break;
-        case CollisionType::AlwaysValid:
-            m_collision = std::make_shared<CollisionDetectionAlwaysValid<dim>>(m_environment);
-            break;
-        case CollisionType::FclMobile:
-            m_collision = std::make_shared<CollisionFclMobile<dim>>(m_environment);
-            break;
-        case CollisionType::FclSerial:
-            m_collision = std::make_shared<CollisionFclSerial<dim>>(m_environment);
-            break;
-        case CollisionType::AABB:
-            m_collision = std::make_shared<CollisionDetectionAABB<dim>>(m_environment);
-            break;
-        case CollisionType::Sphere:
-            m_collision = std::make_shared<CollisionDetectionSphere<dim>>(m_environment);
-            break;
-        default:
-            m_collision = std::make_shared<CollisionDetectionPqp<dim>>(m_environment);
-            break;
-    }
-
-    switch (m_constraintType) {
-        case ConstraintType::AlwaysValid:
-            m_constraint = std::make_shared<AlwaysValidConstraint<dim>>(m_environment);
-            break;
-        case ConstraintType::Euclidean:
-            m_constraint = std::make_shared<EuclideanConstraint<dim>>(m_environment, m_euclideanConstraint, m_euclideanEpsilon);
-            break;
-        default:
-            m_constraint = std::make_shared<AlwaysValidConstraint<dim>>(m_environment);
-            break;
-    }
-
     switch (m_validityType) {
-        case ValidityCheckerType::Normal:
-            m_validityChecker = std::make_shared<ValidityChecker<dim>>(m_environment, m_collision, m_constraint);
+        case ValidityCheckerType::Dim2:
+            m_validityChecker = std::make_shared<CollisionDetection2D<dim>>(m_environment);
+            break;
+        case ValidityCheckerType::Dim2Triangle:
+            m_validityChecker = std::make_shared<CollisionDetectionTriangleRobot<dim>>(m_environment);
+            break;
+        case ValidityCheckerType::FclMobile:
+            m_validityChecker = std::make_shared<CollisionFclMobile<dim>>(m_environment);
+            break;
+        case ValidityCheckerType::FclSerial:
+            m_validityChecker = std::make_shared<CollisionFclSerial<dim>>(m_environment);
+            break;
+        case ValidityCheckerType::AABB:
+            m_validityChecker = std::make_shared<CollisionDetectionAABB<dim>>(m_environment);
+            break;
+        case ValidityCheckerType::AlwaysValid:
+            m_validityChecker = std::make_shared<AlwaysTrueValidity<dim>>(m_environment);
             break;
         default:
-            m_validityChecker = std::make_shared<ValidityChecker<dim>>(m_environment, m_collision, m_constraint);
+            m_validityChecker = std::make_shared<CollisionDetectionPqp<dim>>(m_environment);
             break;
     }
 
@@ -270,15 +236,17 @@ void ModuleConfigurator<dim>::initializeModules() {
         case EvaluatorType::SingleIteration:
             m_evaluator = std::make_shared<SingleIterationEvaluator<dim>>();
             break;
-        case EvaluatorType::Query:
-            m_evaluator = std::make_shared<QueryEvaluator<dim>>(m_metric, m_graph, m_queryEvaluatorDist);
+        case EvaluatorType::TreeQuery:
+            m_evaluator = std::make_shared<TreeQueryEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
+                                                                    m_queryEvaluatorDist);
             break;
         case EvaluatorType::Time:
             m_evaluator = std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration);
             break;
         case EvaluatorType::QueryOrTime:
             std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-            evaluators.push_back(std::make_shared<QueryEvaluator<dim>>(m_metric, m_graph, m_queryEvaluatorDist));
+            evaluators.push_back(std::make_shared<TreeQueryEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
+                                                                           m_queryEvaluatorDist));
             evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration));
             m_evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
             break;
@@ -286,13 +254,13 @@ void ModuleConfigurator<dim>::initializeModules() {
 
     switch (m_pathModifierType) {
         case PathModifierType::Dummy:
-            m_pathModifier = std::make_shared<DummyPathModifier<dim>>(m_environment, m_validityChecker, m_trajectory);
+            m_pathModifier = std::make_shared<DummyPathModifier<dim>>();
             break;
         case PathModifierType::NodeCut:
-            m_pathModifier = std::make_shared<NodeCutPathModifier<dim>>(m_environment, m_validityChecker, m_trajectory);
+            m_pathModifier = std::make_shared<NodeCutPathModifier<dim>>(m_environment, m_trajectory, m_validityChecker);
             break;
         default:
-            m_pathModifier = std::make_shared<NodeCutPathModifier<dim>>(m_environment, m_validityChecker, m_trajectory);
+            m_pathModifier = std::make_shared<NodeCutPathModifier<dim>>(m_environment, m_trajectory, m_validityChecker);
             break;
     }
 
@@ -315,34 +283,30 @@ void ModuleConfigurator<dim>::initializeModules() {
 
     switch (m_samplingType) {
         case SamplingType::Bridge:
-            m_sampling = std::make_shared<BridgeSampling<dim>>(m_environment, m_validityChecker, m_trajectory, m_sampler,
-                                                               m_samplingAttempts, m_samplingDist);
+            m_sampling = std::make_shared<BridgeSampling<dim>>(m_environment, m_validityChecker, m_sampler, m_samplingAttempts,
+                                                               m_samplingDist);
             break;
         case SamplingType::Gaussian:
-            m_sampling = std::make_shared<GaussianSampling<dim>>(m_environment, m_validityChecker, m_trajectory, m_sampler,
-                                                                 m_samplingAttempts, m_samplingDist);
+            m_sampling = std::make_shared<GaussianSampling<dim>>(m_environment, m_validityChecker, m_sampler, m_samplingAttempts,
+                                                                 m_samplingDist);
             break;
         case SamplingType::GaussianDist:
-            m_sampling = std::make_shared<GaussianDistSampling<dim>>(m_environment, m_validityChecker, m_trajectory, m_sampler,
+            m_sampling = std::make_shared<GaussianDistSampling<dim>>(m_environment, m_validityChecker, m_sampler,
                                                                      m_samplingAttempts, m_samplingDist);
             break;
         case SamplingType::Straight:
-            m_sampling = std::make_shared<StraightSampling<dim>>(m_environment, m_validityChecker, m_trajectory, m_sampler);
+            m_sampling = std::make_shared<StraightSampling<dim>>(m_environment, m_validityChecker, m_sampler);
             break;
         case SamplingType::MedialAxis:
-            m_sampling = std::make_shared<MedialAxisSampling<dim>>(m_environment, m_validityChecker, m_trajectory, m_sampler,
+            m_sampling = std::make_shared<MedialAxisSampling<dim>>(m_environment, m_validityChecker, m_sampler,
                                                                    m_samplingAttempts, m_medialAxisDirs);
             break;
         case SamplingType::NearObstacle:
-            m_sampling = std::make_shared<SamplingNearObstacle<dim>>(m_environment, m_validityChecker, m_trajectory, m_sampler,
-                                                                     m_samplingAttempts);
-            break;
-        case SamplingType::RGD:
-            m_sampling =
-                std::make_shared<RGDSampling<dim>>(m_environment, m_validityChecker, m_trajectory, m_sampler, m_samplingAttempts);
+            m_sampling = std::make_shared<SamplingNearObstacle<dim>>(m_environment, m_validityChecker, m_sampler,
+                                                                     m_samplingAttempts, m_trajectory);
             break;
         default:
-            m_sampling = std::make_shared<StraightSampling<dim>>(m_environment, m_validityChecker, m_trajectory, m_sampler);
+            m_sampling = std::make_shared<StraightSampling<dim>>(m_environment, m_validityChecker, m_sampler);
             break;
     }
 }
@@ -436,30 +400,6 @@ void ModuleConfigurator<dim>::resetModules() {
 template <unsigned int dim>
 void ModuleConfigurator<dim>::setEnvironment(const std::shared_ptr<Environment> &environment) {
     m_environment = environment;
-    m_parameterModified = true;
-}
-
-/*!
-*  \brief      Sets the CollisionType
-*  \author     Sascha Kaden
-*  \param[in]  CollisionType
-*  \date       2017-10-06
-*/
-template <unsigned int dim>
-void ModuleConfigurator<dim>::setCollisionType(CollisionType type) {
-    m_collisionType = type;
-    m_parameterModified = true;
-}
-
-/*!
-*  \brief      Sets the ConstraintType
-*  \author     Sascha Kaden
-*  \param[in]  ConstraintType
-*  \date       2018-01-08
-*/
-template <unsigned int dim>
-void ModuleConfigurator<dim>::setConstraintType(ConstraintType type) {
-    m_constraintType = type;
     m_parameterModified = true;
 }
 

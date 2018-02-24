@@ -19,15 +19,16 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <memory>
-
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
+// global definitions
+constexpr double IPPP_EPSILON = 0.00001;
+constexpr double IPPP_MAX = std::numeric_limits<double>::max();
+
 namespace ippp {
 
-// global definitions
-constexpr double EPSILON = 0.00001;
+enum class ComposeType { AND, OR };
 
 // Eigen Vectors
 template <unsigned int dim>
@@ -41,21 +42,27 @@ using Vector7 = Eigen::Matrix<double, 7, 1>;
 using Vector8 = Eigen::Matrix<double, 8, 1>;
 using Vector9 = Eigen::Matrix<double, 9, 1>;
 using VectorX = Eigen::Matrix<double, Eigen::Dynamic, 1>;
+
+using Vector2i = Eigen::Matrix<size_t, 2, 1>;
 using Vector3i = Eigen::Matrix<size_t, 3, 1>;
 
 // Eigen Matrices
 template <unsigned int dim>
 using Matrix = Eigen::Matrix<double, dim, dim>;
-using Matrix2 = Eigen::Matrix2d;
-using Matrix3 = Eigen::Matrix3d;
-using Matrix4 = Eigen::Matrix4d;
+using Matrix2 = Eigen::Matrix<double, 2, 2>;
+using Matrix3 = Eigen::Matrix<double, 3, 3>;
+using Matrix4 = Eigen::Matrix<double, 4, 4>;
+using Matrix5 = Eigen::Matrix<double, 5, 5>;
+using Matrix6 = Eigen::Matrix<double, 6, 6>;
 using MatrixX = Eigen::MatrixXd;
+using MatrixXi = Eigen::MatrixXi;
 
 // Eigen Geometry
 using AABB = Eigen::AlignedBox<double, 3>;
+using Quaternion = Eigen::Quaterniond;
+using Rotation2D = Eigen::Rotation2D<double>;
 using Transform = Eigen::Transform<double, 3, Eigen::AffineCompact>;
 using Translation = Eigen::Translation<double, 3>;
-using Rotation2D = Eigen::Rotation2D<double>;
 
 } /* namespace ippp */
 

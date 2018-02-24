@@ -31,8 +31,8 @@ namespace ippp {
 template <unsigned int dim>
 class GaussianSampling : public Sampling<dim> {
   public:
-    GaussianSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
+    GaussianSampling(const std::shared_ptr<Environment> &environment,
+                     const std::shared_ptr<ValidityChecker<dim>> &validityChecker, const std::shared_ptr<Sampler<dim>> &sampler,
                      size_t attempts = 10, double distance = 15);
 
     Vector<dim> getSample() override;
@@ -58,9 +58,8 @@ class GaussianSampling : public Sampling<dim> {
 template <unsigned int dim>
 GaussianSampling<dim>::GaussianSampling(const std::shared_ptr<Environment> &environment,
                                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double distance)
-    : Sampling<dim>("GaussianSampling", environment, validityChecker, trajectory, sampler, attempts), m_distance(distance) {
+    : Sampling<dim>("GaussianSampling", environment, validityChecker, sampler, attempts), m_distance(distance) {
 }
 
 /*!
@@ -79,9 +78,9 @@ Vector<dim> GaussianSampling<dim>::getSample() {
         ray *= m_distance * m_sampler->getRandomNumber();
         sample2 = sample1 + ray;
 
-        if (!m_validityChecker->checkConfig(sample1) && m_validityChecker->checkConfig(sample2))
+        if (!m_validityChecker->check(sample1) && m_validityChecker->check(sample2))
             return sample2;
-        else if (m_validityChecker->checkConfig(sample1) && !m_validityChecker->checkConfig(sample2))
+        else if (m_validityChecker->check(sample1) && !m_validityChecker->check(sample2))
             return sample1;
     }
     return util::NaNVector<dim>();

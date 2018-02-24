@@ -42,8 +42,7 @@ template <unsigned int dim>
 class Sampler : public Identifier {
   public:
     Sampler(const std::string &name, const std::shared_ptr<Environment> &environment, const std::string &seed = "");
-    Sampler(const std::string &name, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary,
-            const std::string &seed = "");
+    Sampler(const std::string &name, const std::pair<Vector<dim>, Vector<dim>> &boundary, const std::string &seed = "");
     virtual Vector<dim> getSample() = 0;
     double getRandomAngle();
     double getRandomNumber();
@@ -53,9 +52,8 @@ class Sampler : public Identifier {
     Vector<dim> getOrigin() const;
 
   protected:
-    Vector<dim> m_minBoundary; /*!< minimum boundary of the robot */
-    Vector<dim> m_maxBoundary; /*!< maximum boundary of the robot */
-    Vector<dim> m_origin;      /*!< origin of the sampler (used for normal distribution) */
+    std::pair<Vector<dim>, Vector<dim>> m_robotBoundary; /*!< boundary of the robot (pair with min and max) */
+    Vector<dim> m_origin;                                /*!< origin of the sampler (used for normal distribution) */
 
     std::random_device rd;                               /*!< random device, will be used, if no seed is passed */
     std::minstd_rand0 m_generator;                       /*!< generator for the different distributions */
@@ -73,16 +71,12 @@ class Sampler : public Identifier {
 */
 template <unsigned int dim>
 Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment> &environment, const std::string &seed)
-    : Identifier(name) {
-    Logging::debug("Initialize", this);
+    : Identifier(name), m_origin(Vector<dim>::Zero()) {
+    // Logging::debug("Initialize", this);
 
-    auto boundaries = environment->getRobotBoundaries();
-    m_minBoundary = boundaries.first;
-    m_maxBoundary = boundaries.second;
+    m_robotBoundary = environment->getRobotBoundaries();
     for (unsigned int i = 0; i < dim; ++i)
-        assert(m_minBoundary[i] != m_maxBoundary[i]);
-
-    m_origin = Vector<dim>::Zero();
+        assert(m_robotBoundary.first[i] != m_robotBoundary.second[i]);
 
     if (seed.empty()) {
         m_generator = std::minstd_rand0(rd());
@@ -99,21 +93,18 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
 *  \brief      Constructor of the base Sampler class
 *  \author     Sascha Kaden
 *  \param[in]  name
-*  \param[in]  minimum boundary
-*  \param[in]  maximum boundary
+*  \param[in]  robot boundary
 *  \param[in]  seed
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-Sampler<dim>::Sampler(const std::string &name, const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary,
-                      const std::string &seed)
-    : Identifier(name) {
-    Logging::debug("Initialize", this);
+Sampler<dim>::Sampler(const std::string &name, const std::pair<Vector<dim>, Vector<dim>> &boundary, const std::string &seed)
+    : Identifier(name), m_origin(Vector<dim>::Zero()) {
+    // Logging::debug("Initialize", this);
 
-    m_minBoundary = minBoundary;
-    m_maxBoundary = maxBoundary;
+    m_robotBoundary = boundary;
     for (unsigned int i = 0; i < dim; ++i)
-        assert(m_minBoundary[i] != m_maxBoundary[i]);
+        assert(m_robotBoundary.first[i] != m_robotBoundary.second[i]);
 
     if (seed.empty()) {
         m_generator = std::minstd_rand0(rd());

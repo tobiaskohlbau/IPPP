@@ -34,16 +34,17 @@ class SamplingNearObstacle : public Sampling<dim> {
   public:
     SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
                          const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                         size_t attempts = 10);
+                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
+                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     Vector<dim> getSample() override;
 
   private:
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
+
     using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
     using Sampling<dim>::m_validityChecker;
-    using Sampling<dim>::m_trajectory;
 };
 
 /*!
@@ -59,9 +60,10 @@ class SamplingNearObstacle : public Sampling<dim> {
 template <unsigned int dim>
 SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
                                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
-    : Sampling<dim>("SamplingNearObstacle", environment, validityChecker, trajectory, sampler, attempts) {
+                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
+                                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
+    : Sampling<dim>("SamplingNearObstacle", environment, validityChecker, sampler, attempts),
+      m_trajectory(trajectory) {
 }
 
 /*!
@@ -75,17 +77,17 @@ SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environmen
 template <unsigned int dim>
 Vector<dim> SamplingNearObstacle<dim>::getSample() {
     Vector<dim> sample1 = m_sampler->getSample();
-    if (m_validityChecker->checkConfig(sample1)) {
+    if (m_validityChecker->check(sample1)) {
         return sample1;
     } else {
         Vector<dim> sample2;
         do {
             sample2 = m_sampler->getSample();
-        } while (!m_validityChecker->checkConfig(sample2));
+        } while (!m_validityChecker->check(sample2));
         std::vector<Vector<dim>> path = m_trajectory->calcTrajCont(sample2, sample1);
         sample1 = path[0];
         for (auto &point : path) {
-            if (m_validityChecker->checkConfig(point))
+            if (m_validityChecker->check(point))
                 sample1 = point;
             else
                 break;

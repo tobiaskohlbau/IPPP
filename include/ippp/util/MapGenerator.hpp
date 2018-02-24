@@ -24,7 +24,7 @@
 #include <ippp/modules/sampler/Sampler.hpp>
 
 namespace ippp {
-    namespace util {
+namespace util {
 
 /*!
 * \brief   MapGenerator creates 2D and 3D maps with random rectangles or cubes.
@@ -36,7 +36,7 @@ namespace ippp {
 template <unsigned int dim>
 class MapGenerator : public Identifier {
   public:
-    MapGenerator(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::shared_ptr<Sampler<dim>> &sampler);
+    MapGenerator(const std::pair<Vector<dim>, Vector<dim>> boundary, const std::shared_ptr<Sampler<dim>> &sampler);
     std::vector<Mesh> generateMap(size_t numObstacles, const Vector<dim> &minExtensions, const Vector<dim> &maxExtensions);
 
   protected:
@@ -56,9 +56,8 @@ class MapGenerator : public Identifier {
 *  \date       2017-06-99
 */
 template <unsigned int dim>
-MapGenerator<dim>::MapGenerator(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary,
-                                const std::shared_ptr<Sampler<dim>> &sampler)
-    : Identifier("MapGenerator"), m_minBoundary(minBoundary), m_maxBoundary(maxBoundary), m_sampler(sampler) {
+MapGenerator<dim>::MapGenerator(const std::pair<Vector<dim>, Vector<dim>> boundary, const std::shared_ptr<Sampler<dim>> &sampler)
+    : Identifier("MapGenerator"), m_minBoundary(boundary.first), m_maxBoundary(boundary.second), m_sampler(sampler) {
 }
 
 /*!
