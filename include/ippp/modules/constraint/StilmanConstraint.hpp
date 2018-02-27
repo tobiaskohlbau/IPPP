@@ -137,9 +137,17 @@ double StilmanConstraint<dim>::calc(const std::vector<Vector<dim>> &configs) con
 
 template <unsigned int dim>
 Vector6 StilmanConstraint<dim>::calcEuclideanError(const Vector<dim> &config) const {
-    // Transform tcp = m_serialRobot->getTcp(m_serialRobot->getJointTrafos(config));
+    auto T = m_taskFrameInv * m_serialRobot->getTransformation(config);
+    Eigen::AngleAxisd angleAxis(T.rotation());
+    //std::cout << "axis angle:" << std::endl;
+    //std::cout << angleAxis.axis() << std::endl;
+    //std::cout << "angle: " << angleAxis.angle() << std::endl;
+    //Vector3 vec(T.translation());
+    //Vector3 euler(T.rotation().eulerAngles(0, 1, 2));
+    return m_matC * util::append<3, 3>(T.translation(), angleAxis.axis() * angleAxis.angle());
+
     // err x = C * delta x
-    return m_matC * util::transformToVec(m_taskFrameInv * m_serialRobot->getTransformation(config));
+    //return m_matC * util::transformToVec(m_taskFrameInv * m_serialRobot->getTransformation(config));
 }
 
 } /* namespace ippp */

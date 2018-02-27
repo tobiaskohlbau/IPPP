@@ -20,11 +20,14 @@ void simpleRRT() {
     const unsigned int dim = 7;
     EnvironmentConfigurator envConfigurator;
 
-    envConfigurator.setWorkspaceProperties(AABB(Vector3(-10000, -10000, -10000), Vector3(10000, 10000, 10000)));
-    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(-420, -400, 100, 0, 0,
-    // util::toRad(90)));
-    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(420, -400, 100, 0, 0,
-    // util::toRad(90)));
+    envConfigurator.setWorkspaceProperties(AABB(Vector3(-1000, -1000, -5), Vector3(1000, 1000, 1500)));
+    //for (double deg = -157.5; deg < 180; deg += 45) {
+    //    double angle = util::toRad(deg);
+    //    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/plane.obj",
+    //                                util::Vecd(std::cos(angle) * 550, std::sin(angle) * 550, 320, 0, 0, angle));
+    //}
+    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj",
+    //                            util::Vecd(420, -400, 100, 0, 0, util::toRad(90)));
 
     Vector7 minRobotBound = util::Vecd(-170, -120, -170, -120, -170, -120, -175);
     Vector7 maxRobotBound = util::Vecd(170, 120, 170, 120, 170, 120, 175);
@@ -34,7 +37,7 @@ void simpleRRT() {
                                            DhParameter(util::toRad(90), 0, 400), DhParameter(util::toRad(-90), 0, 0),
                                            DhParameter(util::toRad(-90), 0, 400), DhParameter(util::toRad(90), 0, 0),
                                            DhParameter(0, 0, 126)});
-    std::vector<std::string> jointModelFiles = {
+    std::vector<std::string> linkModelFiles = {
         FLAGS_assetsDir + "/robotModels/iiwa/link1.obj", FLAGS_assetsDir + "/robotModels/iiwa/link2.obj",
         FLAGS_assetsDir + "/robotModels/iiwa/link3.obj", FLAGS_assetsDir + "/robotModels/iiwa/link4.obj",
         FLAGS_assetsDir + "/robotModels/iiwa/link5.obj", FLAGS_assetsDir + "/robotModels/iiwa/link6.obj",
@@ -43,8 +46,7 @@ void simpleRRT() {
     envConfigurator.setRobotType(RobotType::Serial);
 
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
-    std::vector<DofType> dofTypes = {DofType::joint, DofType::joint, DofType::joint, DofType::joint,
-                                     DofType::joint, DofType::joint, DofType::joint};
+    std::vector<DofType> dofTypes(7, DofType::joint);
     envConfigurator.setRobotBaseProperties(dim, dofTypes, std::make_pair(minRobotBound, maxRobotBound));
     std::vector<Vector6> linkOffsets(7, util::Vecd(0, 0, 0, 0, 0, 0));
     linkOffsets[0] = util::Vecd(0, 0, 150, 0, 0, 0);
@@ -54,49 +56,37 @@ void simpleRRT() {
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::convertPosesToTransforms(linkOffsets);
-    envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles, linkTransforms);
-
+    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms);
     envConfigurator.saveConfig("KukaEnvConfig.json");
-    auto environment = envConfigurator.getEnvironment();
 
+    auto environment = envConfigurator.getEnvironment();
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
 
-//    Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
-    Vector<dim> testConfig = util::Vecd(0, 0, 0, 0, 0, 0, 0);
-    auto jacobi = serialRobot->calcJacobian(testConfig);
-    std::cout << "Jacobian:" << std::endl << jacobi << std::endl;
-    // testConfig = util::degToRad<dim>(testConfig);
+    // Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
+    // Vector<dim> testConfig = util::Vecd(45, 90, 170, 30, 10, 120, 0);
+    // testConfig = util::toRad<dim>(testConfig);
     // serialRobot->saveMeshConfig(testConfig);
 
+    double stepSize = 2;
     ModuleConfigurator<dim> creator;
     creator.setEvaluatorType(EvaluatorType::QueryOrTime);
-    creator.setEvaluatorProperties(0.5, 60);
+    creator.setEvaluatorProperties(stepSize, 60);
     creator.setGraphSortCount(2000);
     creator.setEnvironment(environment);
     creator.setVadilityCheckerType(ValidityCheckerType::FclSerial);
-    //creator.setConstraintType(ConstraintType::Euclidean);
-    //Vector6 constraint = util::NaNVector<6>();
-    //constraint[3] = 0;
-    //constraint[4] = 0;
-    //creator.setEuclideanConstraint(constraint, util::toRad(90));
-    //creator.setSamplingType(SamplingType::RGD);
+    creator.setSamplingType(SamplingType::NearObstacle);
 
-    RRT<dim> planner(environment, creator.getRRTOptions(30), creator.getGraph());
+    RRTStar<dim> planner(environment, creator.getRRTOptions(stepSize), creator.getGraph());
     Vector<dim> start = util::Vecd(0, 0, 0, 0, 0, 0, 0);
-    Vector<dim> goal = util::Vecd(-90, 90, 170, 30, 10, 120, 0);
-    // Vector<dim> goal = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
+    Vector<dim> goal = util::Vecd(-90, 90, 169, 30, 10, 119, 0);
     start = util::toRad<dim>(start);
     goal = util::toRad<dim>(goal);
 
     // compute the tree
     clock_t begin = std::clock();
-    bool connected = planner.computePath(start, goal, 1000, 3);
+    bool connected = planner.computePath(start, goal, 500, 3);
     clock_t end = std::clock();
     printTime(begin, end);
-
-    std::vector<std::shared_ptr<Node<dim>>> nodes = planner.getGraphNodes();
-    std::vector<Transform> graphPoints;
-    std::cout << "Init Graph has: " << nodes.size() << "nodes" << std::endl;
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;

@@ -103,7 +103,7 @@ TangentSpaceSampling<dim>::TangentSpaceSampling(const std::shared_ptr<Environmen
 */
 template <unsigned int dim>
 Vector<dim> TangentSpaceSampling<dim>::getSample() {
-    return getSample(m_graph->getNode(getRandomNumber() * m_graph->numNodes())->getValues());
+    return getSample(m_graph->getNode(static_cast<size_t(getRandomNumber() * m_graph->numNodes())->getValues()));
 }
 
 template <unsigned int dim>

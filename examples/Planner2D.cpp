@@ -168,7 +168,7 @@ void testPointRobot() {
     creator.setEvaluatorProperties(50, 10);
     creator.setSamplerType(SamplerType::SamplerRandom);
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
-    //creator.setSamplingType(SamplingType::NearObstacle);
+    creator.setSamplingType(SamplingType::NearObstacle);
     creator.setSamplingProperties(10, 80);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
@@ -177,7 +177,7 @@ void testPointRobot() {
     auto startTime = std::chrono::system_clock::now();
     Vector2 start(10.0, 10.0);
     Vector2 goal(990.0, 990.0);
-    bool connected = planner->computePath(start, goal, 1000, 3);
+    bool connected = planner->computePath(start, goal, 2000, 3);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
     std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();

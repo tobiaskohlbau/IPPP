@@ -131,7 +131,6 @@ Transform poseVecToTransformFromDeg(const Vector6 &pose) {
 Vector6 transformToVec(const Transform &T) {
     Vector3 vec(T.translation());
     Vector3 euler(T.rotation().eulerAngles(0,1,2));
-    Quaternion q(T.rotation());
     return util::append<3, 3>(vec, euler);
 }
 

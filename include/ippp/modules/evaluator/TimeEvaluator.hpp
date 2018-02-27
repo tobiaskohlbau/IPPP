@@ -50,7 +50,7 @@ class TimeEvaluator : public Evaluator<dim> {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-TimeEvaluator<dim>::TimeEvaluator(size_t maxDuration) : Evaluator<dim>("SingleIterationEvaluator"), m_maxDuration(maxDuration) {
+TimeEvaluator<dim>::TimeEvaluator(size_t maxDuration) : Evaluator<dim>("TimeEvaluator"), m_maxDuration(maxDuration) {
 }
 
 /*!

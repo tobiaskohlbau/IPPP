@@ -59,6 +59,7 @@ using MatrixXi = Eigen::MatrixXi;
 
 // Eigen Geometry
 using AABB = Eigen::AlignedBox<double, 3>;
+using AngleAxis = Eigen::AngleAxisd;
 using Quaternion = Eigen::Quaterniond;
 using Rotation2D = Eigen::Rotation2D<double>;
 using Transform = Eigen::Transform<double, 3, Eigen::AffineCompact>;

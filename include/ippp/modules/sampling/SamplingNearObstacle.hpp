@@ -62,8 +62,7 @@ SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environmen
                                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                                                 const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
                                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : Sampling<dim>("SamplingNearObstacle", environment, validityChecker, sampler, attempts),
-      m_trajectory(trajectory) {
+    : Sampling<dim>("SamplingNearObstacle", environment, validityChecker, sampler, attempts), m_trajectory(trajectory) {
 }
 
 /*!
@@ -81,19 +80,18 @@ Vector<dim> SamplingNearObstacle<dim>::getSample() {
         return sample1;
     } else {
         Vector<dim> sample2;
-        do {
+        for (size_t count = 0; count < m_attempts; ++count) {
             sample2 = m_sampler->getSample();
-        } while (!m_validityChecker->check(sample2));
-        std::vector<Vector<dim>> path = m_trajectory->calcTrajCont(sample2, sample1);
-        sample1 = path[0];
-        for (auto &point : path) {
-            if (m_validityChecker->check(point))
-                sample1 = point;
-            else
-                break;
+            if (!m_validityChecker->check(sample2)) {
+                std::vector<Vector<dim>> path = m_trajectory->calcTrajCont(sample1, sample2);
+                for (auto &point : path)
+                    if (m_validityChecker->check(point))
+                        return point;
+                return sample2;
+            }
         }
-        return sample1;
     }
+    return util::NaNVector<dim>();
 }
 
 } /* namespace ippp */
