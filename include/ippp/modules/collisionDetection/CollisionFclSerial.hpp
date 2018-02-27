@@ -121,11 +121,8 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
 */
 template <unsigned int dim>
 bool CollisionFclSerial<dim>::check(const std::vector<Vector<dim>> &configs) const {
-    if (configs.empty())
-        return false;
-
-    for (int i = 0; i < configs.size(); ++i)
-        if (!check(configs[i], m_request))
+    for (auto &config : configs)
+        if (!check(config, m_request))
             return false;
 
     return true;

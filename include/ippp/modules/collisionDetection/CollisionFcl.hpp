@@ -92,13 +92,13 @@ CollisionFcl<dim>::CollisionFcl(const std::string &name, const std::shared_ptr<E
 template <unsigned int dim>
 bool CollisionFcl<dim>::checkFCL(const std::shared_ptr<FCLModel> &model1, const std::shared_ptr<FCLModel> &model2,
                                  const Transform &T1, const Transform &T2) const {
-    const Eigen::Matrix3f R1 = T1.rotation().cast<float>();
-    const Eigen::Vector3f t1 = T1.translation().cast<float>();
+    auto &R1 = T1.rotation();
+    auto &t1 = T1.translation();
     fcl::Matrix3f fclR1(R1(0, 0), R1(0, 1), R1(0, 2), R1(1, 0), R1(1, 1), R1(1, 2), R1(2, 0), R1(2, 1), R1(2, 2));
     fcl::Vec3f fclT1(t1(0), t1(1), t1(2));
 
-    const Eigen::Matrix3f R2 = T2.rotation().cast<float>();
-    const Eigen::Vector3f t2 = T2.translation().cast<float>();
+    auto &R2 = T2.rotation();
+    auto &t2 = T2.translation();
     fcl::Matrix3f fclR2(R2(0, 0), R2(0, 1), R2(0, 2), R2(1, 0), R2(1, 1), R2(1, 2), R2(2, 0), R2(2, 1), R2(2, 2));
     fcl::Vec3f fclT2(t2(0), t2(1), t2(2));
 
