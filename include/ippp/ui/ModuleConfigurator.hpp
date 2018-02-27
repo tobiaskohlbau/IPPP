@@ -118,7 +118,7 @@ class ModuleConfigurator : public Configurator {
     size_t m_graphSortCount = 2000;
     NeighborType m_neighborType = NeighborType::KDTree;
     PathModifierType m_pathModifierType = PathModifierType::NodeCut;
-    SamplerType m_samplerType = SamplerType::SamplerRandom;
+    SamplerType m_samplerType = SamplerType::SamplerUniform;
     std::string m_samplerSeed = "";
     double m_samplerGridResolution = 1;
     SamplingType m_samplingType = SamplingType::Straight;
