@@ -66,7 +66,7 @@ BerensonSampling<dim>::BerensonSampling(const std::shared_ptr<Environment> &envi
                                                 const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
     : Sampling<dim>("BerensonSampling", environment, constraint, sampler, attempts),
       m_constraint(constraint),
-      m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(m_environment->getRobot())) {
+      m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(environment->getRobot())) {
 }
 
 /*!

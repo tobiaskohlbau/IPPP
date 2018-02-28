@@ -36,12 +36,13 @@ class SamplerNormalDist : public Sampler<dim> {
     void setOrigin(const Vector<dim> &origin) override;
 
   private:
-    double calcValue(unsigned int dim);
+    double calcValue(unsigned int index);
 
     std::vector<std::normal_distribution<double>> m_distNormal;
 
-    using Sampler<dim>::m_robotBoundary;
     using Sampler<dim>::m_generator;
+    using Sampler<dim>::m_origin;
+    using Sampler<dim>::m_robotBoundary;
 };
 
 /*!

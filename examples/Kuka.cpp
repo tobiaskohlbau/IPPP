@@ -21,11 +21,11 @@ void simpleRRT() {
     EnvironmentConfigurator envConfigurator;
 
     envConfigurator.setWorkspaceProperties(AABB(Vector3(-1000, -1000, -5), Vector3(1000, 1000, 1500)));
-    //for (double deg = -157.5; deg < 180; deg += 45) {
-    //    double angle = util::toRad(deg);
-    //    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/plane.obj",
-    //                                util::Vecd(std::cos(angle) * 550, std::sin(angle) * 550, 320, 0, 0, angle));
-    //}
+    for (double deg = -157.5; deg < 180; deg += 45) {
+        double angle = util::toRad(deg);
+        envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/plane.obj",
+                                    util::Vecd(std::cos(angle) * 550, std::sin(angle) * 550, 320, 0, 0, angle));
+    }
     // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj",
     //                            util::Vecd(420, -400, 100, 0, 0, util::toRad(90)));
 
@@ -70,7 +70,7 @@ void simpleRRT() {
     double stepSize = 2;
     ModuleConfigurator<dim> creator;
     creator.setEvaluatorType(EvaluatorType::QueryOrTime);
-    creator.setEvaluatorProperties(stepSize, 60);
+    creator.setEvaluatorProperties(stepSize, 20000);
     creator.setGraphSortCount(2000);
     creator.setEnvironment(environment);
     creator.setVadilityCheckerType(ValidityCheckerType::FclSerial);

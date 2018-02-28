@@ -51,6 +51,7 @@ class CollisionDetectionAABB : public CollisionDetection<dim> {
     std::vector<std::shared_ptr<RobotBase>> m_robots;
 
     using CollisionDetection<dim>::m_environment;
+    using CollisionDetection<dim>::m_request;
 };
 
 /*!

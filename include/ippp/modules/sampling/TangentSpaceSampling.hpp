@@ -39,8 +39,7 @@ class TangentSpaceSampling : public Sampling<dim> {
     TangentSpaceSampling(const std::shared_ptr<Environment> &environment,
                          const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                          const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, const std::shared_ptr<Graph<dim>> &graph,
-                         double maxDisplacement, const std::pair<Vector6, Vector6> &C,
-                         const Transform &taskFrame);
+                         double maxDisplacement, const std::pair<Vector6, Vector6> &C, const Transform &taskFrame);
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
@@ -75,12 +74,12 @@ TangentSpaceSampling<dim>::TangentSpaceSampling(const std::shared_ptr<Environmen
                                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                                                 const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
                                                 const std::shared_ptr<Graph<dim>> &graph, double maxDisplacement,
-    const std::pair<Vector6, Vector6> &C, const Transform &taskFrame)
+                                                const std::pair<Vector6, Vector6> &C, const Transform &taskFrame)
     : Sampling<dim>("TangentSpaceSampling", environment, validityChecker, sampler, attempts),
       m_maxDisplacement(maxDisplacement),
       m_rgdSampling(std::make_unique<RGDSampling<dim>>(environment, validityChecker, sampler, attempts, graph)),
       m_graph(graph),
-      m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(m_environment->getRobot())),
+      m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(environment->getRobot())),
       m_I(Matrix<dim>::Identity()),
       m_C(C),
       m_taskFrame(taskFrame) {
@@ -103,7 +102,7 @@ TangentSpaceSampling<dim>::TangentSpaceSampling(const std::shared_ptr<Environmen
 */
 template <unsigned int dim>
 Vector<dim> TangentSpaceSampling<dim>::getSample() {
-    return getSample(m_graph->getNode(static_cast<size_t(getRandomNumber() * m_graph->numNodes())->getValues()));
+    return getSample(m_graph->getNode(static_cast<size_t>(this->getRandomNumber() * m_graph->numNodes()))->getValues());
 }
 
 template <unsigned int dim>

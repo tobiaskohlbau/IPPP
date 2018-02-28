@@ -107,7 +107,7 @@ bool TreeQueryEvaluator<dim>::evaluate() {
         }
     }
 
-    for (auto &validTarget : m_validTargets)
+    for (auto validTarget : m_validTargets)
         if (!validTarget)
             return false;
 

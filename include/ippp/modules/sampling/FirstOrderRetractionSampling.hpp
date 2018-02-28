@@ -78,7 +78,7 @@ FirstOrderRetractionSampling<dim>::FirstOrderRetractionSampling(const std::share
                                                                 const Transform &taskFrame)
     : Sampling<dim>("FirstOrderRetractionSampling", environment, constraint, sampler, attempts),
       m_constraint(constraint),
-      m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(m_environment->getRobot())),
+      m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(environment->getRobot())),
       m_graph(graph),
       m_taskFrame(taskFrame),
       m_epsilon(constraint->getEpsilon()) {

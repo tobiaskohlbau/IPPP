@@ -19,6 +19,7 @@
 #ifndef ROBOTBASE_H
 #define ROBOTBASE_H
 
+#include <memory>
 #include <string>
 #include <vector>
 

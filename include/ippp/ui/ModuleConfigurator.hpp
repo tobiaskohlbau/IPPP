@@ -60,8 +60,6 @@ class ModuleConfigurator : public Configurator {
     void resetModules();
 
     std::shared_ptr<Environment> getEnvironment();
-    std::shared_ptr<CollisionDetection<dim>> getCollisionDetection();
-    std::shared_ptr<Constraint<dim>> getConstraint();
     std::shared_ptr<DistanceMetric<dim>> getDistanceMetric();
     std::shared_ptr<Evaluator<dim>> getEvaluator();
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
@@ -322,8 +320,6 @@ template <unsigned int dim>
 bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     // types
     nlohmann::json json;
-    json["CollisionType"] = static_cast<int>(m_collisionType);
-    json["ConstraintType"] = static_cast<int>(m_constraintType);
     json["MetricType"] = static_cast<int>(m_metricType);
     json["MetricWeight"] = vectorToString<dim>(m_metricWeight);
     json["EvaluatorType"] = static_cast<int>(m_evaluatorType);
@@ -360,8 +356,6 @@ bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
     if (json.empty())
         return false;
 
-    m_collisionType = static_cast<CollisionType>(json["CollisionType"].get<int>());
-    m_constraintType = static_cast<ConstraintType>(json["ConstraintType"].get<int>());
     m_metricType = static_cast<MetricType>(json["MetricType"].get<int>());
     m_metricWeight = stringToVector<dim>(json["MetricWeight"].get<std::string>());
     m_evaluatorType = static_cast<EvaluatorType>(json["EvaluatorType"].get<int>());
@@ -605,30 +599,6 @@ void ModuleConfigurator<dim>::setVadilityCheckerType(ValidityCheckerType type) {
 template <unsigned int dim>
 std::shared_ptr<Environment> ModuleConfigurator<dim>::getEnvironment() {
     return m_environment;
-}
-
-/*!
-*  \brief      Return the pointer to the CollisionDetection instance.
-*  \author     Sascha Kaden
-*  \param[out] CollisionDetection
-*  \date       2017-05-22
-*/
-template <unsigned int dim>
-std::shared_ptr<CollisionDetection<dim>> ModuleConfigurator<dim>::getCollisionDetection() {
-    initializeModules();
-    return m_collision;
-}
-
-/*!
-*  \brief      Return the pointer to the Constraint instance.
-*  \author     Sascha Kaden
-*  \param[out] Constraint
-*  \date       2017-05-22
-*/
-template <unsigned int dim>
-std::shared_ptr<Constraint<dim>> ModuleConfigurator<dim>::getConstraint() {
-    initializeModules();
-    return m_constraint;
 }
 
 /*!

@@ -79,7 +79,7 @@ RGDSampling<dim>::RGDSampling(const std::shared_ptr<Environment> &environment,
 */
 template <unsigned int dim>
 Vector<dim> RGDSampling<dim>::getSample() {
-    return getSample(m_graph->getNode(static_cast<size_t(getRandomNumber() * m_graph->numNodes())->getValues()));
+    return getSample(m_graph->getNode(static_cast<size_t>(this->getRandomNumber() * m_graph->numNodes()))->getValues());
 }
 
 template <unsigned int dim>
