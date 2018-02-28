@@ -78,7 +78,7 @@ void simpleRRT() {
 
     RRTStar<dim> planner(environment, creator.getRRTOptions(stepSize), creator.getGraph());
     Vector<dim> start = util::Vecd(0, 0, 0, 0, 0, 0, 0);
-    Vector<dim> goal = util::Vecd(-90, 90, 169, 30, 10, 119, 0);
+    Vector<dim> goal = util::Vecd(-90, 90, 150, 30, 35, 114, 0);
     start = util::toRad<dim>(start);
     goal = util::toRad<dim>(goal);
 

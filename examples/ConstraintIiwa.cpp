@@ -55,7 +55,7 @@ std::shared_ptr<Environment> generateEnvironment() {
     auto linkTransforms = util::convertPosesToTransforms(linkOffsets);
     envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles, linkTransforms);
 
-    // envConfigurator.saveConfig("KukaEnvConfig.json");
+    envConfigurator.saveConfig("KukaEnvConfig.json");
     return envConfigurator.getEnvironment();
 }
 
@@ -68,6 +68,7 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
 
     // standard modules
     auto alwaysValid = std::make_shared<AlwaysTrueValidity<dim>>(env);
+    auto collision = std::make_shared<CollisionFclSerial<dim>>(env);
     auto trajectory = std::make_shared<LinearTrajectory<dim>>(env, 1, 0.01);
     auto metric = std::make_shared<L2Metric<dim>>();
     auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
@@ -77,6 +78,8 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     // constraint
     auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
     auto berensonConstraint = std::make_shared<BerensonConstraint<dim>>(env, taskFrame, C);
+    std::vector<std::shared_ptr<ValidityChecker<dim>>> checkers = { collision, berensonConstraint };
+    auto validityChecker = std::make_shared<ComposeValidity<dim>>(env, checkers, ComposeType::AND);
 
     // sampler
     auto TS =
@@ -92,7 +95,7 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(50));
     auto evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
 
-    RRTOptions<dim> options(stepSize, stilmanConstraint, metric, evaluator, nodeCut, BS, trajectory);
+    RRTOptions<dim> options(stepSize, validityChecker, metric, evaluator, dummyModifier, BS, trajectory);
 
     return std::make_shared<RRTStar<dim>>(env, options, graph);
 }
@@ -133,8 +136,8 @@ bool test2DSerialRobot() {
     // std::cout << "test:" << constraint->calc(test) << std::endl;
     // std::cout << "test2:" << constraint->calc(test2) << std::endl;
 
-    Vector<dim> start = util::toRad<dim>(util::Vecd(0, 0, 0, 0, 0, 0, 0));
-    Vector<dim> goal = util::toRad<dim>(util::Vecd(-90, 110, -30, 30, 30, -85, 0));
+    Vector<dim> start = util::toRad<dim>(util::Vecd(90, 90, 150, 30, 35, 114, 0));
+    Vector<dim> goal = util::toRad<dim>(util::Vecd(-90, 90, 150, 30, 35, 114, 0));
     Vector6 Cmin, Cmax;
     std::pair<Vector6, Vector6> C;
     Transform taskFrame;

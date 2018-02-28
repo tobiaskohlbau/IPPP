@@ -31,7 +31,7 @@ namespace ippp {
 template <unsigned int dim>
 class ComposeValidity : public ValidityChecker<dim> {
   public:
-    ComposeValidity(const std::shared_ptr<Environment> &environment, const std::vector<ValidityChecker<dim>> &checker, ComposeType type);
+    ComposeValidity(const std::shared_ptr<Environment> &environment, const std::vector<std::shared_ptr<ValidityChecker<dim>>> &checker, ComposeType type);
 
     bool check(const Vector<dim> &config) const;
     bool check(const std::vector<Vector<dim>> &configs) const;
@@ -49,7 +49,7 @@ class ComposeValidity : public ValidityChecker<dim> {
 *  \date       2018-01-17
 */
 template <unsigned int dim>
-ComposeValidity<dim>::ComposeValidity(const std::shared_ptr<Environment> &environment, const std::vector<ValidityChecker<dim>> &checker, ComposeType type)
+ComposeValidity<dim>::ComposeValidity(const std::shared_ptr<Environment> &environment, const std::vector<std::shared_ptr<ValidityChecker<dim>>> &checker, ComposeType type)
     : ValidityChecker<dim>("ComposeValidity", environment), m_checkers(checker), m_type(type) {
 }
 
@@ -64,14 +64,14 @@ template <unsigned int dim>
 bool ComposeValidity<dim>::check(const Vector<dim> &config) const {
     if (m_type == ComposeType::AND) {
         for (auto &checker : m_checkers)
-            if (!checker->check())
+            if (!checker->check(config))
                 return false;
 
         return true;
     }
     else {    // OR
         for (auto &checker : m_checkers)
-            if (checker->check())
+            if (checker->check(config))
                 return true;
 
         return false;
