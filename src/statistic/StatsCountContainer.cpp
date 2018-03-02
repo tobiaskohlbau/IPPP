@@ -16,16 +16,26 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/statistic/StatisticSizeTContainer.h>
+#include <ippp/statistic/StatsCountContainer.h>
 
 namespace ippp {
 
-    StatisticSizeTContainer::StatisticSizeTContainer(const std::string &name) : StatisticContainer(name) {
+StatsCountContainer::StatsCountContainer(const std::string &name) : StatsContainer(name) {
+    initialize();
 }
 
-    void StatisticSizeTContainer::initialize() {
-        m_count = 0;
-        m_counts.clear();
-    }
+void StatsCountContainer::initialize() {
+    m_count = 0;
+    m_counts.clear();
+}
+
+void StatsCountContainer::writeData(std::ostream &stream) {
+    stream << m_count;
+}
+
+void StatsCountContainer::add(size_t num) {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_count += num;
+}
 
 } /* namespace ippp */

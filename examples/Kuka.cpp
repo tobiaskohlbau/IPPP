@@ -11,11 +11,6 @@ using namespace ippp;
 
 DEFINE_string(assetsDir, "../assets", "assets directory");
 
-void printTime(clock_t begin, clock_t end) {
-    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-    std::cout << "Computation time: " << elapsed_secs << std::endl;
-}
-
 void simpleRRT() {
     const unsigned int dim = 7;
     EnvironmentConfigurator envConfigurator;
@@ -83,10 +78,11 @@ void simpleRRT() {
     goal = util::toRad<dim>(goal);
 
     // compute the tree
-    clock_t begin = std::clock();
+    auto timer = std::make_shared<StatsTimeCollector>("Planning Time");
+    Stats::addCollector(timer);
+    timer->start();
     bool connected = planner.computePath(start, goal, 500, 3);
-    clock_t end = std::clock();
-    printTime(begin, end);
+    timer->stop();
 
     if (connected) {
         std::cout << "Init and goal could be connected!" << std::endl;
@@ -102,6 +98,7 @@ int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::trace);
 
     simpleRRT();
+    Stats::writeData(std::cout);
     std::string string;
     std::cin >> string;
 

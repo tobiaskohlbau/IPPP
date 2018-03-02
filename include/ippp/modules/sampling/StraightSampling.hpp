@@ -38,7 +38,9 @@ class StraightSampling : public Sampling<dim> {
     virtual Vector<dim> getSample();
 
   protected:
+      using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
+    using Sampling<dim>::m_validityChecker;
 };
 
 /*!
@@ -66,7 +68,13 @@ StraightSampling<dim>::StraightSampling(const std::shared_ptr<Environment> &envi
 */
 template <unsigned int dim>
 Vector<dim> StraightSampling<dim>::getSample() {
-    return m_sampler->getSample();
+    Vector<dim> sample;
+    for (size_t i = 0; i < m_attempts; ++i) {
+        sample = m_sampler->getSample();
+        if (m_validityChecker->check(sample))
+            return sample;
+    }
+    return util::NaNVector<dim>();
 }
 
 } /* namespace ippp */

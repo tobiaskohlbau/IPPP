@@ -16,31 +16,39 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/statistic/StatisticCollector.h>
+#include <ippp/statistic/Stats.h>
 
 namespace ippp {
 
-StatisticCollector::StatisticCollector(const std::string &name) : Identifier(name) {
-}
+std::vector<std::shared_ptr<StatsCollector>> Stats::m_collectors;
 
-void StatisticCollector::addContainer(const std::shared_ptr<StatisticContainer> &container) {
-    if (!container)
+void Stats::addCollector(const std::shared_ptr<StatsCollector> &collector) {
+    if (!collector)
         return;
 
-    m_containers.push_back(container);
+    m_collectors.push_back(collector);
 }
 
-std::shared_ptr<StatisticContainer> StatisticCollector::getContainer(size_t hash) {
-    for (auto &container : m_containers)
-        if (hash == container->getHash())
-            return container;
+std::shared_ptr<StatsCollector> Stats::getCollector(size_t hash) {
+    for (auto &collector : m_collectors)
+        if (hash == collector->getHash())
+            return collector;
 
     return nullptr;
 }
 
-void StatisticCollector::initialize() {
-    for (auto &container : m_containers)
-        container->initialize();
+std::vector<std::shared_ptr<StatsCollector>> Stats::getCollectors() {
+    return m_collectors;
+}
+
+void Stats::initializeCollectors() {
+    for (auto &collector : m_collectors)
+        collector->initialize();
+}
+
+void Stats::writeData(std::ostream &stream) {
+    for (auto &collector : m_collectors)
+        collector->writeData(stream);
 }
 
 } /* namespace ippp */

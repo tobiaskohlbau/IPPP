@@ -16,11 +16,30 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/statistic/StatisticContainer.h>
+#ifndef STATSCOLLISIONCOLLECTOR_H
+#define STATSCOLLISIONCOLLECTOR_H
+
+#include <ippp/statistic/StatsCollector.h>
+#include <ippp/statistic/StatsCountContainer.h>
 
 namespace ippp {
 
-StatisticContainer::StatisticContainer(const std::string &name) : Identifier(name) {
-}
+/*!
+* \brief   Statistics class to collect stats and write them
+* \author  Sascha Kaden
+* \date    2017-10-20
+*/
+class StatsCollisionCollector : public StatsCollector {
+  public:
+    StatsCollisionCollector(const std::string &name);
+    void add(size_t num);
+
+    void writeData(std::ostream &stream);
+
+  private:
+    std::shared_ptr<StatsCountContainer> m_count = nullptr;
+};
 
 } /* namespace ippp */
+
+#endif    // STATSCOLLISIONCOLLECTOR_H

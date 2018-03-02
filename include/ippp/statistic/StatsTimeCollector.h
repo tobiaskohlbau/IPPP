@@ -16,13 +16,11 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef STATISTICCONTAINER_H
-#define STATISTICCONTAINER_H
+#ifndef STATSTIMECOLLECTOR_H
+#define STATSTIMECOLLECTOR_H
 
-#include <mutex>
-#include <string>
-
-#include <ippp/Identifier.h>
+#include <ippp/statistic/StatsCollector.h>
+#include <ippp/statistic/StatsTimeContainer.h>
 
 namespace ippp {
 
@@ -31,14 +29,18 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2017-10-20
 */
-class StatisticContainer : public Identifier {
+class StatsTimeCollector : public StatsCollector {
   public:
-    StatisticContainer(const std::string &name);
-    virtual void initialize() = 0;
+    StatsTimeCollector(const std::string &name);
+    void start();
+    void stop();
+
+    void writeData(std::ostream &stream);
 
   private:
+    std::shared_ptr<StatsTimeContainer> m_timer;
 };
 
 } /* namespace ippp */
 
-#endif    // STATISTICCONTAINER_H
+#endif    // STATSCOLLISIONCOLLECTOR_H

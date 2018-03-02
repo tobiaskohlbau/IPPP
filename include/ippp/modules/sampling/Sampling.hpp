@@ -33,6 +33,7 @@ namespace ippp {
 
 /*!
 * \brief   Class Sampling creates sample Vectors with the passed strategy, for creating single Vectors the Sampler is used.
+* \details Samples are always valid, otherwise they are empty NAN Vectors.
 * \author  Sascha Kaden
 * \date    2016-12-20
 */

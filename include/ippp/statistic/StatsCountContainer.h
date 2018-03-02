@@ -16,25 +16,35 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/statistic/Statistics.h>
+#ifndef STATSCOUNTCONTAINER_H
+#define STATSCOUNTCONTAINER_H
+
+#include <mutex>
+#include <vector>
+
+#include <ippp/statistic/StatsContainer.h>
 
 namespace ippp {
 
-std::vector<std::shared_ptr<StatisticCollector>> Statistics::m_collectors;
+/*!
+* \brief   Statistics class to collect stats and write them
+* \author  Sascha Kaden
+* \date    2017-10-20
+*/
+class StatsCountContainer : public StatsContainer {
+  public:
+    StatsCountContainer(const std::string &name);
+    virtual void initialize();
+    virtual void writeData(std::ostream &stream);
 
-void Statistics::addCollector(const std::shared_ptr<StatisticCollector> &collector) {
-    if (!collector)
-        return;
+    void add(size_t num);
 
-    m_collectors.push_back(collector);
-}
-
-std::shared_ptr<StatisticCollector> Statistics::getCollector(size_t hash) {
-    for (auto &collector : m_collectors)
-        if (hash == collector->getHash())
-            return collector;
-
-    return nullptr;
-}
+  private:
+    size_t m_count = 0;
+    std::vector<size_t> m_counts;
+    std::mutex m_mutex;
+};
 
 } /* namespace ippp */
+
+#endif    // STATSCOUNTCONTAINER_H

@@ -16,17 +16,14 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef STATISTICCOLLECTOR_H
-#define STATISTICCOLLECTOR_H
+#ifndef STATSTIMECONTAINER_H
+#define STATSTIMECONTAINER_H
 
-#include <functional>
-#include <iostream>
-#include <memory>
+#include <chrono>
 #include <mutex>
 #include <vector>
 
-#include <ippp/Identifier.h>
-#include <ippp/statistic/StatisticContainer.h>
+#include <ippp/statistic/StatsContainer.h>
 
 namespace ippp {
 
@@ -35,20 +32,24 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2017-10-20
 */
-class StatisticCollector : public Identifier {
+class StatsTimeContainer : public StatsContainer {
   public:
-    StatisticCollector(const std::string &name);
+    StatsTimeContainer(const std::string &name);
+    virtual void initialize();
+    virtual void writeData(std::ostream &stream);
 
-    void addContainer(const std::shared_ptr<StatisticContainer> &container);
-    std::shared_ptr<StatisticContainer> getContainer(size_t hash);
-    void initialize();
-
-    virtual void writeData(std::ostream &stream) = 0;
+    void start();
+    void stop();
+    std::chrono::system_clock::time_point getStart();
+    std::chrono::system_clock::time_point getStop();
+    std::chrono::duration<double> getDuration();
 
   private:
-    std::vector<std::shared_ptr<StatisticContainer>> m_containers;
+    std::chrono::system_clock::time_point m_start;
+    std::chrono::system_clock::time_point m_stop;
+    std::mutex m_mutex;
 };
 
 } /* namespace ippp */
 
-#endif    // STATISTICCOLLECTOR_H
+#endif    // STATSTIMECONTAINER_H

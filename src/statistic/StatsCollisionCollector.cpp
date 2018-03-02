@@ -16,30 +16,23 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef STATISTICSIZETCONTAINER_H
-#define STATISTICSIZETCONTAINER_H
-
-#include <vector>
-
-#include <ippp/statistic/StatisticContainer.h>
+#include <ippp/statistic/StatsCollisionCollector.h>
 
 namespace ippp {
 
-/*!
-* \brief   Statistics class to collect stats and write them
-* \author  Sascha Kaden
-* \date    2017-10-20
-*/
-class StatisticSizeTContainer : public StatisticContainer {
-  public:
-    StatisticSizeTContainer(const std::string &name);
-    virtual void initialize();
+StatsCollisionCollector::StatsCollisionCollector(const std::string &name) : StatsCollector(name) {
+    m_count = std::make_shared<StatsCountContainer>("CollisionCount");
+    m_containers.push_back(m_count);
+}
 
-  private:
-    size_t m_count = 0;
-    std::vector<size_t> m_counts;
-};
+void StatsCollisionCollector::writeData(std::ostream &stream) {
+    stream << getName() << ": ";
+    m_count->writeData(stream);
+    stream << std::endl;
+}
+
+void StatsCollisionCollector::add(size_t num) {
+    m_count->add(num);
+}
 
 } /* namespace ippp */
-
-#endif    // STATISTICSIZETCONTAINER_H

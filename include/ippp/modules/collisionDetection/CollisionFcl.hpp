@@ -25,6 +25,8 @@
 #include <ippp/environment/model/ModelFcl.h>
 #include <ippp/environment/robot/SerialRobot.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
+#include <ippp/statistic/Stats.h>
+#include <ippp/statistic/StatsCollisionCollector.h>
 #include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
@@ -48,6 +50,7 @@ class CollisionFcl : public CollisionDetection<dim> {
     AABB m_workspaceBounding;
     std::vector<std::pair<std::shared_ptr<FCLModel>, Transform>> m_obstacles;
     bool m_workspaceAvaible = false;
+    std::shared_ptr<StatsCollisionCollector> m_collisionCollector = nullptr;
 
     using CollisionDetection<dim>::m_environment;
 };
@@ -61,11 +64,13 @@ class CollisionFcl : public CollisionDetection<dim> {
 template <unsigned int dim>
 CollisionFcl<dim>::CollisionFcl(const std::string &name, const std::shared_ptr<Environment> &environment,
                                 const CollisionRequest &request)
-    : CollisionDetection<dim>(name, environment, request) {
-    m_identity = Transform::Identity();
-    auto robot = m_environment->getRobot();
-    m_workspaceBounding = environment->getSpaceBoundary();
+    : CollisionDetection<dim>(name, environment, request),
+      m_identity(Transform::Identity()),
+      m_workspaceBounding(environment->getSpaceBoundary()),
+      m_collisionCollector(std::make_shared<StatsCollisionCollector>("CollisionCount")) {
+    Stats::addCollector(m_collisionCollector);
 
+    auto robot = m_environment->getRobot();
     if (environment->numObstacles() > 0) {
         for (auto &obstacle : environment->getObstacles()) {
             m_obstacles.push_back(
@@ -92,6 +97,8 @@ CollisionFcl<dim>::CollisionFcl(const std::string &name, const std::shared_ptr<E
 template <unsigned int dim>
 bool CollisionFcl<dim>::checkFCL(const std::shared_ptr<FCLModel> &model1, const std::shared_ptr<FCLModel> &model2,
                                  const Transform &T1, const Transform &T2) const {
+    m_collisionCollector->add(1);
+
     auto &R1 = T1.rotation();
     auto &t1 = T1.translation();
     fcl::Matrix3f fclR1(R1(0, 0), R1(0, 1), R1(0, 2), R1(1, 0), R1(1, 1), R1(1, 2), R1(2, 0), R1(2, 1), R1(2, 2));
@@ -104,7 +111,7 @@ bool CollisionFcl<dim>::checkFCL(const std::shared_ptr<FCLModel> &model1, const 
 
     fcl::CollisionObject o1(model1, fclR1, fclT1);
     fcl::CollisionObject o2(model2, fclR2, fclT2);
-    fcl::CollisionRequest request(1000, true);    // default setting
+    fcl::CollisionRequest request;// (1000, true);    // default setting
     fcl::CollisionResult result;
     fcl::collide(&o1, &o2, request, result);
 

@@ -72,11 +72,14 @@ add_library(${PROJECT_NAME}
     src/util/UtilGeo.cpp
     src/util/UtilList.cpp
     src/util/UtilVec.cpp
-    src/statistic/Statistics.cpp
-    src/statistic/StatisticCollector.cpp
-    src/statistic/StatisticCountCollector.cpp
-    src/statistic/StatisticContainer.cpp
-    src/statistic/StatisticSizeTContainer.cpp
+
+    src/statistic/Stats.cpp
+    src/statistic/StatsCollector.cpp
+    src/statistic/StatsCollisionCollector.cpp
+    src/statistic/StatsContainer.cpp
+    src/statistic/StatsCountContainer.cpp
+    src/statistic/StatsTimeCollector.cpp
+    src/statistic/StatsTimeContainer.cpp
 
     src/environment/cad/CadDrawing.cpp
     src/environment/cad/CadImportExport.cpp

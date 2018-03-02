@@ -117,7 +117,7 @@ void EST<dim>::computeTreeThread(size_t nbOfNodes) {
         // choose random node of the graph
         auto randNode = m_graph->getNode(m_sampling->getRandomNumber() * m_graph->numNodes());
         sample = m_sampling->getSample(randNode->getValues());
-        if (util::empty<dim>(sample) || !m_validityChecker->check(sample))
+        if (util::empty<dim>(sample))
             continue;
 
         if (!m_validityChecker->check(m_trajectory->calcTrajBin(randNode->getValues(), sample)))

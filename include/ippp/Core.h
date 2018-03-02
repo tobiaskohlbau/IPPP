@@ -83,11 +83,13 @@
 #include <ippp/modules/validityChecker/ComposeValidity.hpp>
 #include <ippp/modules/validityChecker/ValidityChecker.hpp>
 
-#include <ippp/statistic/StatisticCollector.h>
-#include <ippp/statistic/StatisticContainer.h>
-#include <ippp/statistic/StatisticCountCollector.h>
-#include <ippp/statistic/StatisticSizeTContainer.h>
-#include <ippp/statistic/Statistics.h>
+#include <ippp/statistic/Stats.h>
+#include <ippp/statistic/StatsCollector.h>
+#include <ippp/statistic/StatsCollisionCollector.h>
+#include <ippp/statistic/StatsContainer.h>
+#include <ippp/statistic/StatsCountContainer.h>
+#include <ippp/statistic/StatsTimeCollector.h>
+#include <ippp/statistic/StatsTimeContainer.h>
 
 #include <ippp/util/Logging.h>
 #include <ippp/util/UtilGeo.hpp>

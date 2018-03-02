@@ -1,4 +1,3 @@
-#include <chrono>
 #include <iomanip>
 #include <thread>
 
@@ -78,7 +77,7 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     // constraint
     auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
     auto berensonConstraint = std::make_shared<BerensonConstraint<dim>>(env, taskFrame, C);
-    std::vector<std::shared_ptr<ValidityChecker<dim>>> checkers = { collision, berensonConstraint };
+    std::vector<std::shared_ptr<ValidityChecker<dim>>> checkers = {collision, berensonConstraint};
     auto validityChecker = std::make_shared<ComposeValidity<dim>>(env, checkers, ComposeType::AND);
 
     // sampler
@@ -104,10 +103,12 @@ bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planne
          const Vector<dim>& goal) {
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(env->getRobot());
 
-    auto startTime = std::chrono::system_clock::now();
-    bool connected = planner->computePath(start, goal, 8000, 3);
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
-    std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
+    auto timer = std::make_shared<StatsTimeCollector>("Planning Time");
+    Stats::addCollector(timer);
+    timer->start();
+    bool connected = planner->computePath(start, goal, 4000, 3);
+    timer->stop();
+
     if (connected) {
         Logging::info("Init and goal could be connected! \n", "Example");
         auto path = planner->getPath(0.001, 0.001);
@@ -145,8 +146,8 @@ bool test2DSerialRobot() {
     bool connected = false;
 
     // case 1: fixed x
-    Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -0.1, -0.1, -IPPP_MAX);
-    Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, IPPP_MAX, 0.1, 0.1, IPPP_MAX);
+    Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -0.2, -0.2, -IPPP_MAX);
+    Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, IPPP_MAX, 0.2, 0.2, IPPP_MAX);
     C = std::make_pair(Cmin, Cmax);
     taskFrame = util::poseVecToTransform(util::Vecd(0, 0, 0, 0, 0, 0));
 
@@ -162,6 +163,9 @@ int main(int argc, char** argv) {
     // Logging::setLogLevel(LogLevel::debug);
 
     test2DSerialRobot();
+
+    Stats::writeData(std::cout);
+
     std::string str;
     std::cin >> str;
 }

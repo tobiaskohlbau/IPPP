@@ -49,12 +49,14 @@ bool testTriangleRobot() {
     // planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
     // planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
-    auto startTime = std::chrono::system_clock::now();
     Vector3 start(50, 50, 0);
     Vector3 goal(900, 900, 50 * util::toRad());
+
+    auto timer = std::make_shared<StatsTimeCollector>("Triangle2D Planning Time");
+    Stats::addCollector(timer);
+    timer->start();
     bool connected = planner->computePath(start, goal, 5000, 3);
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
-    std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
+    timer->stop();
 
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
@@ -68,7 +70,8 @@ bool testTriangleRobot() {
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
         std::vector<Vector3> path = planner->getPath(80, 5);
-        drawing::drawTrianglePath(path, environment->getRobot()->getBaseModel()->m_mesh, image, workspace2D.second, Eigen::Vector3i(0, 0, 255), 2);
+        drawing::drawTrianglePath(path, environment->getRobot()->getBaseModel()->m_mesh, image, workspace2D.second,
+                                  Eigen::Vector3i(0, 0, 255), 2);
 
         cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
         cv::imshow("pathPlanner", image);
@@ -111,12 +114,14 @@ bool test2DSerialRobot() {
     std::shared_ptr<ippp::Planner<dim>> planner;
     planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(5), creator.getGraph());
 
-    auto startTime = std::chrono::system_clock::now();
     Vector3 start(-55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad());
     Vector3 goal(55 * util::toRad(), 55 * util::toRad(), 55 * util::toRad());
+
+    auto timer = std::make_shared<StatsTimeCollector>("Serial2D Planning Time");
+    Stats::addCollector(timer);
+    timer->start();
     bool connected = planner->computePath(start, goal, 100, 3);
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
-    std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
+    timer->stop();
 
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
@@ -174,14 +179,16 @@ void testPointRobot() {
     std::shared_ptr<ippp::Planner<dim>> planner;
     planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(35), creator.getGraph());
 
-    auto startTime = std::chrono::system_clock::now();
     Vector2 start(10.0, 10.0);
     Vector2 goal(990.0, 990.0);
-    bool connected = planner->computePath(start, goal, 2000, 3);
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
-    std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
-    std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
 
+    auto timer = std::make_shared<StatsTimeCollector>("Point2D Planning Time");
+    Stats::addCollector(timer);
+    timer->start();
+    bool connected = planner->computePath(start, goal, 2000, 3);
+    timer->stop();
+    
+    std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
     for (const auto& obstacle : environment->getObstacles())
@@ -213,6 +220,10 @@ int main(int argc, char** argv) {
 
     // while (!testTriangleRobot());
     // testTriangleRobot();
-    //test2DSerialRobot();
+    test2DSerialRobot();
     testPointRobot();
+
+    Stats::writeData(std::cout);
+    std::string str;
+    std::cin >> str;
 }

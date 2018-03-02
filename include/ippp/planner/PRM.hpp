@@ -160,9 +160,7 @@ void PRM<dim>::samplingPhase(size_t nbOfNodes) {
         sample = m_sampling->getSample();
         if (util::empty<dim>(sample))
             continue;
-
-        if (m_validityChecker->check(sample))
-            m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
+        m_graph->addNode(std::shared_ptr<Node<dim>>(new Node<dim>(sample)));
     }
 }
 
