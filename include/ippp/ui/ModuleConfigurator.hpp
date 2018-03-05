@@ -37,7 +37,7 @@ enum class NeighborType { KDTree, BruteForce };
 
 enum class PathModifierType { Dummy, NodeCut };
 
-enum class SamplerType { SamplerRandom, SamplerNormalDist, SamplerUniform, GridSampler };
+enum class SamplerType { Random, NormalDist, Uniform, Grid, UniformBiased };
 
 enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle, RGD, TangentSpace };
 
@@ -116,7 +116,7 @@ class ModuleConfigurator : public Configurator {
     size_t m_graphSortCount = 2000;
     NeighborType m_neighborType = NeighborType::KDTree;
     PathModifierType m_pathModifierType = PathModifierType::NodeCut;
-    SamplerType m_samplerType = SamplerType::SamplerUniform;
+    SamplerType m_samplerType = SamplerType::Uniform;
     std::string m_samplerSeed = "";
     double m_samplerGridResolution = 1;
     SamplingType m_samplingType = SamplingType::Straight;
@@ -263,17 +263,21 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     switch (m_samplerType) {
-        case SamplerType::SamplerRandom:
+        case SamplerType::Random:
             m_sampler = std::make_shared<SamplerRandom<dim>>(m_environment, m_samplerSeed);
             break;
-        case SamplerType::SamplerNormalDist:
+        case SamplerType::NormalDist:
             m_sampler = std::make_shared<SamplerNormalDist<dim>>(m_environment, m_samplerSeed);
             break;
-        case SamplerType::SamplerUniform:
+        case SamplerType::Uniform:
             m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment, m_samplerSeed);
             break;
-        case SamplerType::GridSampler:
+        case SamplerType::Grid:
             m_sampler = std::make_shared<GridSampler<dim>>(m_environment, m_samplerGridResolution);
+            break;
+        case SamplerType::UniformBiased:
+            m_sampler = std::make_shared<SamplerUniformBiased<dim>>(m_environment, m_graph, m_samplerSeed);
+            break;
         default:
             m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment, m_samplerSeed);
             break;

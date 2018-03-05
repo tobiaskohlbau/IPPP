@@ -89,6 +89,7 @@ TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Env
 */
 template <unsigned int dim>
 bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
+    this->setSamplingParams(start, goal);
     if (!setInitNode(start))
         return false;
 
@@ -150,7 +151,6 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
         return false;
     }
 
-    this->m_sampling->setOrigin(start);
     m_initNode = std::make_shared<Node<dim>>(start);
     m_graph->addNode(m_initNode);
     return true;

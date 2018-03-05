@@ -68,8 +68,9 @@ TEST(MAIN, clearWorkspace2D) {
     modifierTypes.push_back(PathModifierType::Dummy);
     modifierTypes.push_back(PathModifierType::NodeCut);
 
-    samplerTypes.push_back(SamplerType::SamplerRandom);
-    samplerTypes.push_back(SamplerType::SamplerUniform);
+    samplerTypes.push_back(SamplerType::Random);
+    samplerTypes.push_back(SamplerType::Uniform);
+    samplerTypes.push_back(SamplerType::UniformBiased);
     //samplerTypes.push_back(SamplerType::SamplerNormalDist);
 
     samplingTypes.push_back(SamplingType::Straight);

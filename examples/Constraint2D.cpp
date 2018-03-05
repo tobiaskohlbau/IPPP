@@ -1,6 +1,6 @@
 #include <chrono>
-#include <thread>
 #include <iomanip>
+#include <thread>
 
 #include <Drawing2D.hpp>
 #include <gflags/gflags.h>
@@ -50,7 +50,7 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     auto metric = std::make_shared<L2Metric<dim>>();
     auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
     auto graph = std::make_shared<Graph<dim>>(graphSortCount, neighborFinder);
-    auto sampler = std::make_shared<SamplerUniform<dim>>(env, "sadfsdafasdf4332154sdaf");
+    auto sampler = std::make_shared<SamplerUniformBiased<dim>>(env, graph, "sadfsdafasdf4332154sdaf");
 
     // constraint
     auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
@@ -192,7 +192,7 @@ int main(int argc, char** argv) {
     test2DSerialRobot<6>();
     test2DSerialRobot<7>();
     test2DSerialRobot<8>();
-    //test2DSerialRobot<9>();
+    // test2DSerialRobot<9>();
     std::string str;
     std::cin >> str;
 }

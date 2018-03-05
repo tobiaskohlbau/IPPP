@@ -49,11 +49,13 @@ class Sampler : public Identifier {
     Vector<dim> getRandomRay();
 
     virtual void setOrigin(const Vector<dim> &mean);
+    virtual void setOptimalPathCost(double cost);
     Vector<dim> getOrigin() const;
 
   protected:
     std::pair<Vector<dim>, Vector<dim>> m_robotBoundary; /*!< boundary of the robot (pair with min and max) */
     Vector<dim> m_origin;                                /*!< origin of the sampler (used for normal distribution) */
+    double m_optimalPathCost = 1;
 
     std::random_device rd;                               /*!< random device, will be used, if no seed is passed */
     std::minstd_rand0 m_generator;                       /*!< generator for the different distributions */
@@ -71,7 +73,7 @@ class Sampler : public Identifier {
 */
 template <unsigned int dim>
 Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment> &environment, const std::string &seed)
-    : Identifier(name), m_origin(Vector<dim>::Zero()) {
+    : Identifier(name), m_origin(Vector<dim>::Zero()), m_optimalPathCost(1) {
     // Logging::debug("Initialize", this);
 
     m_robotBoundary = environment->getRobotBoundaries();
@@ -99,7 +101,7 @@ Sampler<dim>::Sampler(const std::string &name, const std::shared_ptr<Environment
 */
 template <unsigned int dim>
 Sampler<dim>::Sampler(const std::string &name, const std::pair<Vector<dim>, Vector<dim>> &boundary, const std::string &seed)
-    : Identifier(name), m_origin(Vector<dim>::Zero()) {
+    : Identifier(name), m_origin(Vector<dim>::Zero()), m_optimalPathCost(1) {
     // Logging::debug("Initialize", this);
 
     m_robotBoundary = boundary;
@@ -162,6 +164,21 @@ Vector<dim> Sampler<dim>::getRandomRay() {
 template <unsigned int dim>
 void Sampler<dim>::setOrigin(const Vector<dim> &origin) {
     m_origin = origin;
+}
+
+/*!
+*  \brief      Set optimal cost of path
+*  \author     Sascha Kaden
+*  \param[in]  optimal path cost
+*  \date       2019-03-04
+*/
+template <unsigned int dim>
+void Sampler<dim>::setOptimalPathCost(double cost) {
+    if (cost <= 0) {
+        Logging::error("Optimal cost has to be larger than 0", this);
+        return;
+    }
+    m_optimalPathCost = cost;
 }
 
 /*!

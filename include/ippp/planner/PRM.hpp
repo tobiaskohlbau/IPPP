@@ -92,6 +92,8 @@ PRM<dim>::PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<
 */
 template <unsigned int dim>
 bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
+    this->setSamplingParams(start, goal);
+
     std::vector<Vector<dim>> query = {start, goal};
     m_evaluator->setQuery(query);
 

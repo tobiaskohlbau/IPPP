@@ -60,11 +60,6 @@ template <unsigned int dim>
 CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environment> &environment, const CollisionRequest &request)
     : CollisionDetection<dim>("CollisionDetection2D", environment, request) {
     assert(dim % 2 == 0);
-    // set boundaries
-    auto bound = m_environment->getSpaceBoundary();
-    m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
-    m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
-
     if (m_environment->numObstacles() == 0) {
         Logging::warning("Empty workspace", this);
     } else {
@@ -91,6 +86,8 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
 */
 template <unsigned int dim>
 bool CollisionDetection2D<dim>::check(const Vector<dim> &config) const {
+    if (!checkRobotBound(config))
+        return false;
     return checkPoint2D(config[0], config[1]);
 }
 
@@ -105,6 +102,8 @@ bool CollisionDetection2D<dim>::check(const Vector<dim> &config) const {
 */
 template <unsigned int dim>
 bool CollisionDetection2D<dim>::check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const {
+    if (!checkRobotBound(config))
+        return false;
     return checkPoint2D(config[0], config[1]);
 }
 
@@ -117,7 +116,7 @@ bool CollisionDetection2D<dim>::check(const Vector<dim> &config, const Collision
 */
 template <unsigned int dim>
 bool CollisionDetection2D<dim>::check(const std::vector<Vector<dim>> &configs) const {
-    if (configs.empty())
+    if (configs.empty() || !checkRobotBound(configs))
         return false;
 
     for (auto &config : configs)
@@ -137,11 +136,6 @@ bool CollisionDetection2D<dim>::check(const std::vector<Vector<dim>> &configs) c
 */
 template <unsigned int dim>
 bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) const {
-    if (m_minBoundary[0] >= x || x >= m_maxBoundary[0] || m_minBoundary[1] >= y || y >= m_maxBoundary[1]) {
-        Logging::trace("Config out of bound", this);
-        return false;
-    }
-
     double alpha, beta, gamma;
     Vector3 p1, p2, p3;
     for (auto &obstacle : m_obstacles) {

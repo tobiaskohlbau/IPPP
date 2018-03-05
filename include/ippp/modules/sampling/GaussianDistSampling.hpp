@@ -42,8 +42,8 @@ class GaussianDistSampling : public Sampling<dim> {
     double m_maxDist;
 
     using Sampling<dim>::m_attempts;
-    using Sampling<dim>::m_validityChecker;
     using Sampling<dim>::m_sampler;
+    using Sampling<dim>::m_validityChecker;
 };
 
 /*!
@@ -90,7 +90,7 @@ Vector<dim> GaussianDistSampling<dim>::getSample(const Vector<dim> &prevSample) 
         ray = m_sampler->getRandomRay();
         ray *= m_maxDist * m_sampler->getRandomNumber();
         sample = prevSample + ray;
-        if (this->checkRobotBounding(sample) && m_validityChecker->check(sample))
+        if (m_validityChecker->checkRobotBound(sample) && m_validityChecker->check(sample))
             return sample;
     }
     return util::NaNVector<dim>();

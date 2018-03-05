@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
     creator.setVadilityCheckerType(ValidityCheckerType::PQP);
     creator.setMetricType(MetricType::L2);
     creator.setPathModifierType(PathModifierType::NodeCut);
-    creator.setSamplerType(SamplerType::SamplerUniform);
+    creator.setSamplerType(SamplerType::Uniform);
     creator.setSamplingType(SamplingType::Straight);
     creator.setSamplingProperties(5, 10);
     creator.setTrajectoryType(TrajectoryType::Linear);

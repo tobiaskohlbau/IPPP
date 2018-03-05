@@ -63,6 +63,7 @@ class Planner : public Identifier {
     std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, double posRes, double oriRes);
 
   protected:
+      void setSamplingParams(const Vector<dim> &start, const Vector<dim> &goal);
 
     std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
@@ -167,6 +168,20 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     m_trajectory->setResolutions(plannerRes);
 
     return path;
+}
+
+/*!
+*  \brief      Set the Sampling and Sampler params to the used modules
+*  \author     Sascha Kaden
+*  \param[in]  origin
+*  \param[in]  optimal path cost
+*  \date       2018-03-04
+*/
+template <unsigned int dim>
+void Planner<dim>::setSamplingParams(const Vector<dim> &start, const Vector<dim> &goal) {
+    auto sampler = m_sampling->getSampler();
+    sampler->setOrigin(start);
+    sampler->setOptimalPathCost(m_metric->calcDist(start, goal));
 }
 
 } /* namespace ippp */

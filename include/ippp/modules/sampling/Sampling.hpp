@@ -48,12 +48,8 @@ class Sampling : public Identifier {
     virtual Vector<dim> getSample(const Vector<dim> &prevSample);
     virtual std::vector<Vector<dim>> getSamples(size_t amount);
 
-    std::shared_ptr<Sampler<dim>> getSampler() const;
+    std::shared_ptr<Sampler<dim>> getSampler();
     double getRandomNumber() const;
-    void setOrigin(const Vector<dim> &origin);
-
-    void setRobotBoundings(const std::pair<Vector<dim>, Vector<dim>> &robotBoundings);
-    bool checkRobotBounding(const Vector<dim> &config) const;
 
   protected:
     const size_t m_attempts;                             /*!< number of attempts for each sampling generation */
@@ -79,8 +75,12 @@ template <unsigned int dim>
 Sampling<dim>::Sampling(const std::string &name, const std::shared_ptr<Environment> &environment,
                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
-    : Identifier(name), m_environment(environment), m_validityChecker(validityChecker), m_sampler(sampler), m_attempts(attempts) {
-    setRobotBoundings(m_environment->getRobotBoundaries());
+    : Identifier(name),
+      m_environment(environment),
+      m_validityChecker(validityChecker),
+      m_sampler(sampler),
+      m_attempts(attempts),
+      m_robotBounding(environment->getRobotBoundaries()) {
     Logging::debug("Initialize", this);
 }
 
@@ -120,7 +120,7 @@ std::vector<Vector<dim>> Sampling<dim>::getSamples(size_t amount) {
 *  \date       2017-11-14
 */
 template <unsigned int dim>
-std::shared_ptr<Sampler<dim>> Sampling<dim>::getSampler() const {
+std::shared_ptr<Sampler<dim>> Sampling<dim>::getSampler() {
     return m_sampler;
 }
 
@@ -133,46 +133,6 @@ std::shared_ptr<Sampler<dim>> Sampling<dim>::getSampler() const {
 template <unsigned int dim>
 double Sampling<dim>::getRandomNumber() const {
     return m_sampler->getRandomNumber();
-}
-
-/*!
-*  \brief      Set the origin of the Sampler
-*  \author     Sascha Kaden
-*  \param[in]  origin
-*  \date       2016-12-20
-*/
-template <unsigned int dim>
-void Sampling<dim>::setOrigin(const Vector<dim> &origin) {
-    m_sampler->setOrigin(origin);
-}
-
-/*!
-*  \brief      Sets the robot boundings of all robots, dimension should be the same.
-*  \author     Sascha Kaden
-*  \param[in]  pair of min and max boundary Vector
-*  \date       2017-11-14
-*/
-template <unsigned int dim>
-void Sampling<dim>::setRobotBoundings(const std::pair<Vector<dim>, Vector<dim>> &robotBoundings) {
-    m_robotBounding = robotBoundings;
-}
-
-/*!
-*  \brief      Checks the boundaries of the robot to the passed configuration, return true if valid.
-*  \author     Sascha Kaden
-*  \param[in]  configuration
-*  \param[out] validity of boundary check.
-*  \date       2017-11-14
-*/
-template <unsigned int dim>
-bool Sampling<dim>::checkRobotBounding(const Vector<dim> &config) const {
-    for (unsigned int i = 0; i < dim; ++i) {
-        if (config[i] <= m_robotBounding.first[i] || m_robotBounding.second[i] <= config[i]) {
-            Logging::trace("Robot out of robot boundary", this);
-            return true;
-        }
-    }
-    return false;
 }
 
 } /* namespace ippp */

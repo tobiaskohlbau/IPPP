@@ -62,6 +62,7 @@
 #include <ippp/modules/sampler/SamplerNormalDist.hpp>
 #include <ippp/modules/sampler/SamplerRandom.hpp>
 #include <ippp/modules/sampler/SamplerUniform.hpp>
+#include <ippp/modules/sampler/SamplerUniformBiased.hpp>
 
 #include <ippp/modules/sampling/BerensonSampling.hpp>
 #include <ippp/modules/sampling/BridgeSampling.hpp>

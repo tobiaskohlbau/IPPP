@@ -40,6 +40,7 @@ class Graph : public Identifier {
     bool addNode(const std::shared_ptr<Node<dim>> &node);
     void addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &nodes);
     bool containNode(const std::shared_ptr<Node<dim>> &node);
+    double getMaxNodeCost() const;
 
     std::shared_ptr<Node<dim>> getNode(size_t index) const;
     std::shared_ptr<Node<dim>> getNode(const Vector<dim> &config) const;
@@ -79,6 +80,7 @@ class Graph : public Identifier {
     const size_t m_sortCount = 0;   /*!< divider, when the NeighborFinder has to be sorted */
     bool m_autoSort = false;        /*!< Flag to set the auto sorting */
     bool m_preserveNodePtr = false; /*!< Flag to save all pointers inside of the nodes */
+    double m_maxNodeCost = 0;
 };
 
 /*!
@@ -93,7 +95,7 @@ Graph<dim>::Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::sha
     : Identifier("Graph"), m_sortCount(sortCount), m_neighborFinder(neighborFinder) {
     m_autoSort = (sortCount != 0);
     // reserve memory for the node vector to reduce computation time at new memory allocation
-    m_nodes.reserve(10000);
+    m_nodes.reserve(1000);
 }
 
 /*!
@@ -124,6 +126,8 @@ template <unsigned int dim>
 bool Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_mutex.lock();
     m_neighborFinder->addNode(node->getValues(), node);
+    if (node->getCost() > m_maxNodeCost)
+        m_maxNodeCost = node->getCost();
     m_nodes.push_back(node);
     m_mutex.unlock();
     if (m_autoSort && (m_nodes.size() % m_sortCount) == 0)
@@ -157,6 +161,17 @@ bool Graph<dim>::containNode(const std::shared_ptr<Node<dim>> &node) {
         if (node == graphNode)
             return true;
     return false;
+}
+
+/*!
+* \brief      Returns the maximum node cost of all nodes
+* \author     Sascha Kaden
+* \param[out] maximum node cost
+* \date       2017-10-01
+*/
+template <unsigned int dim>
+double Graph<dim>::getMaxNodeCost() const {
+    return m_maxNodeCost;
 }
 
 /*!

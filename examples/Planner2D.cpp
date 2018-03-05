@@ -107,8 +107,8 @@ bool test2DSerialRobot() {
     creator.setVadilityCheckerType(ValidityCheckerType::FclSerial);
     creator.setTrajectoryProperties(10, 0.01);
     creator.setEvaluatorType(EvaluatorType::QueryOrTime);
-    creator.setEvaluatorProperties(2, 60);
-    creator.setSamplerType(SamplerType::SamplerUniform);
+    creator.setEvaluatorProperties(1, 60);
+    creator.setSamplerType(SamplerType::Uniform);
     creator.setSamplingType(SamplingType::Straight);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
@@ -165,19 +165,20 @@ void testPointRobot() {
     envConfigurator.setRobotType(RobotType::Point);
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
 
+    double stepSize = 40;
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setVadilityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(3000);
     creator.setEvaluatorType(EvaluatorType::TreeQuery);
-    creator.setEvaluatorProperties(50, 10);
-    creator.setSamplerType(SamplerType::SamplerRandom);
+    creator.setEvaluatorProperties(stepSize, 10);
+    creator.setSamplerType(SamplerType::UniformBiased);
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
     creator.setSamplingType(SamplingType::NearObstacle);
     creator.setSamplingProperties(10, 80);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
-    planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(35), creator.getGraph());
+    planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(stepSize), creator.getGraph());
 
     Vector2 start(10.0, 10.0);
     Vector2 goal(990.0, 990.0);
@@ -187,7 +188,7 @@ void testPointRobot() {
     timer->start();
     bool connected = planner->computePath(start, goal, 2000, 3);
     timer->stop();
-    
+
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     std::vector<Mesh> meshes;
@@ -220,7 +221,7 @@ int main(int argc, char** argv) {
 
     // while (!testTriangleRobot());
     // testTriangleRobot();
-    test2DSerialRobot();
+    // test2DSerialRobot();
     testPointRobot();
 
     Stats::writeData(std::cout);
