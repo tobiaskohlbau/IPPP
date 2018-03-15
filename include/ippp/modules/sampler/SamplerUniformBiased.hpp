@@ -95,7 +95,7 @@ Vector<dim> SamplerUniformBiased<dim>::getSample() {
             config[i] = m_distUniform[i](m_generator);
 
         auto nearest = m_graph->getNearestNode(config);
-        if (getRandomNumber() > 1 - (nearest->getCost() - m_optimalPathCost) / (maxCost - m_optimalPathCost))
+        if (!nearest || getRandomNumber() > 1 - (nearest->getCost() - m_optimalPathCost) / (maxCost - m_optimalPathCost))
             return config;
     }
     return config;

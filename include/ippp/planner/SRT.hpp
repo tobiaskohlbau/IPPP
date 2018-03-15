@@ -106,7 +106,7 @@ bool SRT<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size
     }
 
     std::vector<Vector<dim>> query = {start, goal};
-    m_evaluator->setQuery(query);
+    m_evaluator->setConfigs(query);
 
     while (!m_evaluator->evaluate())
         expand(numNodes, numThreads);

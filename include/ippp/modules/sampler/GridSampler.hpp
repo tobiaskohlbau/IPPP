@@ -36,8 +36,12 @@ class GridSampler : public Sampler<dim> {
   public:
     GridSampler(const std::shared_ptr<Environment> &environment, double res = 1);
     GridSampler(const std::pair<VectorX, VectorX> &boundary, double res = 1);
-    void setResolution(double res);
+
     Vector<dim> getSample();
+
+    void setResolution(double res);
+    double getResolution() const;
+    size_t numSamples() const;
 
   protected:
     void generateGridConfigs();
@@ -63,7 +67,6 @@ template <unsigned int dim>
 GridSampler<dim>::GridSampler(const std::shared_ptr<Environment> &environment, double res)
     : Sampler<dim>("GridSampler", environment, std::string()) {
     setResolution(res);
-    generateGridConfigs();
 }
 
 /*!
@@ -78,7 +81,6 @@ template <unsigned int dim>
 GridSampler<dim>::GridSampler(const std::pair<VectorX, VectorX> &boundary, double res)
     : Sampler<dim>("RandomSampler", boundary, std::string()) {
     setResolution(res);
-    generateGridConfigs();
 }
 
 /*!
@@ -93,6 +95,18 @@ void GridSampler<dim>::setResolution(double res) {
         Logging::error("Resolution has to be > 0!", this);
     else
         m_res = res;
+
+    generateGridConfigs();
+}
+
+template <unsigned int dim>
+double GridSampler<dim>::getResolution() const {
+    return m_res;
+}
+
+template <unsigned int dim>
+size_t GridSampler<dim>::numSamples() const {
+    return m_gridConfigs.size();
 }
 
 /*!
@@ -123,6 +137,7 @@ Vector<dim> GridSampler<dim>::getSample() {
 */
 template <unsigned int dim>
 void GridSampler<dim>::generateGridConfigs() {
+    std::lock_guard<std::mutex> lock(m_mutex);
     m_gridConfigs.clear();
 
     fillConfig(Vector<dim>(), 0);

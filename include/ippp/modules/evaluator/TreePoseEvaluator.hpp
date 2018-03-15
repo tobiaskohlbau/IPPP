@@ -16,10 +16,11 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef TREEQUERYEVALUATOR_HPP
-#define TREEQUERYEVALUATOR_HPP
+#ifndef TREEPOSEEVALUATOR_HPP
+#define TREEPOSEEVALUATOR_HPP
 
 #include <ippp/dataObj/Graph.hpp>
+#include <ippp/environment/Environment.h>
 #include <ippp/modules/distanceMetrics/DistanceMetric.hpp>
 #include <ippp/modules/evaluator/Evaluator.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
@@ -34,27 +35,25 @@ namespace ippp {
 * \date    2017-09-30
 */
 template <unsigned int dim>
-class TreeQueryEvaluator : public Evaluator<dim> {
+class TreePoseEvaluator : public Evaluator<dim> {
   public:
-    TreeQueryEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
-                       const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                       const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double dist = 10);
+    TreePoseEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
+                      const std::shared_ptr<Environment> &env, double dist = 10);
 
     bool evaluate();
-    void setQuery(const std::vector<Vector<dim>> &targets) override;
+    void setPoses(const std::vector<Vector6> &targets) override;
 
   protected:
     std::shared_ptr<Graph<dim>> m_graph = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
-    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
-    std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
+    std::shared_ptr<Environment> m_environment = nullptr;
 
     double m_dist = 1;
     double m_simplifiedDist;
     size_t m_lastNodeIndex = 0;
     std::vector<bool> m_validTargets;
 
-    using Evaluator<dim>::m_targets;
+    using Evaluator<dim>::m_targetPoses;
 };
 
 /*!
@@ -67,15 +66,13 @@ class TreeQueryEvaluator : public Evaluator<dim> {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-TreeQueryEvaluator<dim>::TreeQueryEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric,
-                                            const std::shared_ptr<Graph<dim>> &graph,
-                                            const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                            const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double dist)
-    : Evaluator<dim>("TreeQueryEvaluator"),
+TreePoseEvaluator<dim>::TreePoseEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric,
+                                          const std::shared_ptr<Graph<dim>> &graph, const std::shared_ptr<Environment> &env,
+                                          double dist)
+    : Evaluator<dim>("TreePoseEvaluator"),
       m_graph(graph),
       m_metric(metric),
-      m_trajectory(trajectory),
-      m_validityChecker(validityChecker),
+      m_environment(env),
       m_dist(dist),
       m_simplifiedDist(dist) {
     m_metric->simplifyDist(m_simplifiedDist);
@@ -88,12 +85,12 @@ TreeQueryEvaluator<dim>::TreeQueryEvaluator(const std::shared_ptr<DistanceMetric
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-bool TreeQueryEvaluator<dim>::evaluate() {
-    for (size_t targetIndex = 0; targetIndex < m_targets.size(); ++targetIndex) {
+bool TreePoseEvaluator<dim>::evaluate() {
+    for (size_t targetIndex = 0; targetIndex < m_targetConfigs.size(); ++targetIndex) {
         if (m_validTargets[targetIndex])
             continue;
 
-        const Vector<dim> &target = m_targets[targetIndex];
+        const Vector<dim> &target = m_targetConfigs[targetIndex];
         bool found = false;
         for (size_t index = m_lastNodeIndex; index < m_graph->numNodes(); ++index) {
             const Vector<dim> &nodeConfig = m_graph->getNode(index)->getValues();
@@ -122,18 +119,23 @@ bool TreeQueryEvaluator<dim>::evaluate() {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-void TreeQueryEvaluator<dim>::setQuery(const std::vector<Vector<dim>> &targets) {
-    if (targets.empty())
+void TreePoseEvaluator<dim>::setPoses(const std::vector<Vector6> &targets) {
+    if (targets.empty()) {
+        Logging::error("Empty target pose list", this);
         return;
+    }
 
-    for (auto &target : targets)
-        if (util::empty<dim>(target))
+    for (auto &target : targets) {
+        if (util::empty<6>(target)) {
+            Logging::error("Empty target pose", this);
             return;
+        }
+    }
 
     m_validTargets = std::vector<bool>(targets.size(), false);
-    m_targets = targets;
+    m_targetPoses = targets;
 }
 
 } /* namespace ippp */
 
-#endif /* TREEQUERYEVALUATOR_HPP */
+#endif /* TREEPOSEEVALUATOR_HPP */

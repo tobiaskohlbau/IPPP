@@ -43,8 +43,6 @@ class CollisionDetection2D : public CollisionDetection<dim> {
   private:
     bool checkPoint2D(double x, double y) const;
 
-    Vector2 m_minBoundary;
-    Vector2 m_maxBoundary;
     std::vector<Mesh> m_obstacles;
 
     using ValidityChecker<dim>::m_environment;
@@ -65,15 +63,14 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
     } else {
         for (auto obstacle : m_environment->getObstacles())
             m_obstacles.push_back(obstacle->model->m_mesh);
-    }
-
-    // update obstacle models for the 2D collision check, extends the AABB of the obstacle in z direction
-    for (auto &obstacle : m_obstacles) {
-        Vector3 bottomLeft = obstacle.aabb.corner(AABB::CornerType::BottomLeft);
-        Vector3 topRight = obstacle.aabb.corner(AABB::CornerType::TopRight);
-        bottomLeft[2] = -1;
-        topRight[2] = 1;
-        obstacle.aabb = AABB(bottomLeft, topRight);
+        // update obstacle models for the 2D collision check, extends the AABB of the obstacle in z direction
+        for (auto &obstacle : m_obstacles) {
+            Vector3 bottomLeft = obstacle.aabb.min();
+            Vector3 topRight = obstacle.aabb.max();
+            bottomLeft[2] = -1;
+            topRight[2] = 1;
+            obstacle.aabb = AABB(bottomLeft, topRight);
+        }
     }
 }
 

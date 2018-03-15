@@ -16,7 +16,7 @@
 #
 #-------------------------------------------------------------------------//
 
-add_library(ui STATIC BenchmarkReader.cpp)
+add_library(ui STATIC BenchmarkReader.cpp Drawing2D.cpp)
 target_link_libraries(ui
     PRIVATE
         IPPP)

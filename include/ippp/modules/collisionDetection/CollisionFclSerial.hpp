@@ -177,13 +177,14 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
 
     // control collision with workspace
     if (m_workspaceAvaible && request.checkObstacle) {
-        for (auto &obstacle : m_obstacles) {
-            if (this->checkFCL(obstacle.first, m_baseModel, obstacle.second, pose)) {
-                // Logging::trace("Collision between workspace and base", this);
-                return false;
+        if (m_baseMeshAvaible) {
+            for (auto &obstacle : m_obstacles) {
+                if (this->checkFCL(obstacle.first, m_baseModel, obstacle.second, pose)) {
+                    // Logging::trace("Collision between workspace and base", this);
+                    return false;
+                }
             }
         }
-
         for (unsigned int i = 0; i < dim; ++i) {
             for (auto &obstacle : m_obstacles) {
                 if (this->checkFCL(obstacle.first, m_linkModels[i], obstacle.second, linkTrafos[i])) {

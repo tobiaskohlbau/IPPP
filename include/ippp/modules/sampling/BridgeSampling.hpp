@@ -91,7 +91,8 @@ Vector<dim> BridgeSampling<dim>::getSample() {
         ray = m_sampler->getRandomRay();
         ray *= m_distance * m_sampler->getRandomNumber();
         sample2 = sample1 + ray;
-    } while (!m_validityChecker->check(sample2) && m_validityChecker->check(sample1 + (ray / 2)));
+    } while (!m_validityChecker->checkRobotBound(sample2) || m_validityChecker->check(sample2) ||
+             !m_validityChecker->check(sample1 + (ray / 2)));
 
     return sample1 + (ray / 2);
 }

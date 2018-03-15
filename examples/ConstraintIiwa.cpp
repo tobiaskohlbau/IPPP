@@ -90,7 +90,7 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     auto dummyModifier = std::make_shared<DummyPathModifier<dim>>();
     // evaluator
     std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-    evaluators.push_back(std::make_shared<TreeQueryEvaluator<dim>>(metric, graph, trajectory, stilmanConstraint, stepSize));
+    evaluators.push_back(std::make_shared<TreeConfigEvaluator<dim>>(metric, graph, trajectory, stilmanConstraint, stepSize));
     evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(50));
     auto evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
 

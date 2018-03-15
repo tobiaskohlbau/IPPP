@@ -43,8 +43,8 @@ using Vector8 = Eigen::Matrix<double, 8, 1>;
 using Vector9 = Eigen::Matrix<double, 9, 1>;
 using VectorX = Eigen::Matrix<double, Eigen::Dynamic, 1>;
 
-using Vector2i = Eigen::Matrix<size_t, 2, 1>;
-using Vector3i = Eigen::Matrix<size_t, 3, 1>;
+using Vector2i = Eigen::Matrix<int, 2, 1>;
+using Vector3i = Eigen::Matrix<int, 3, 1>;
 
 // Eigen Matrices
 template <unsigned int dim>

@@ -95,7 +95,7 @@ bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size
     this->setSamplingParams(start, goal);
 
     std::vector<Vector<dim>> query = {start, goal};
-    m_evaluator->setQuery(query);
+    m_evaluator->setConfigs(query);
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {

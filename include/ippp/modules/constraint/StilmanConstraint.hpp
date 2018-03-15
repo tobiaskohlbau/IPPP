@@ -138,12 +138,7 @@ double StilmanConstraint<dim>::calc(const std::vector<Vector<dim>> &configs) con
 template <unsigned int dim>
 Vector6 StilmanConstraint<dim>::calcEuclideanError(const Vector<dim> &config) const {
     auto T = m_taskFrameInv * m_serialRobot->getTransformation(config);
-    Eigen::AngleAxisd angleAxis(T.rotation());
-    //std::cout << "axis angle:" << std::endl;
-    //std::cout << angleAxis.axis() << std::endl;
-    //std::cout << "angle: " << angleAxis.angle() << std::endl;
-    //Vector3 vec(T.translation());
-    //Vector3 euler(T.rotation().eulerAngles(0, 1, 2));
+    AngleAxis angleAxis(T.rotation());
     return m_matC * util::append<3, 3>(T.translation(), angleAxis.axis() * angleAxis.angle());
 
     // err x = C * delta x

@@ -66,7 +66,7 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     auto dummyModifier = std::make_shared<DummyPathModifier<dim>>();
     // evaluator
     std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-    evaluators.push_back(std::make_shared<TreeQueryEvaluator<dim>>(metric, graph, trajectory, stilmanConstraint, stepSize));
+    evaluators.push_back(std::make_shared<TreeConfigEvaluator<dim>>(metric, graph, trajectory, stilmanConstraint, stepSize));
     evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(50));
     auto evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
 
@@ -76,8 +76,8 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
 }
 
 template <unsigned int dim>
-void displayConfig(const VectorX config, SerialRobot& serialRobot, cv::Mat image, const Vector2i& offset) {
-    drawing::drawSerialRobot2D<dim>(config, serialRobot, image, offset, Eigen::Vector3i(0, 0, 255), 2);
+void displayConfig(const Vector<dim> config, SerialRobot& serialRobot, cv::Mat image, const Vector2i& offset) {
+    drawing::drawSerialRobot2D<dim>(config, serialRobot, image, offset, Vector3i(0, 0, 255));
     cv::imshow("pathPlanner", image);
 
     std::stringstream ss;

@@ -47,7 +47,7 @@ void testSampling(Sampling<dim> &sampling) {
 
         size_t sampleAmount = 10;
         auto samples = sampling.getSamples(sampleAmount);
-        for (auto sample : samples) {
+        for (auto &sample : samples) {
             if (util::empty<dim>(sample))
                 continue;
             for (unsigned int index = 0; index < dim; ++index) {
@@ -89,7 +89,7 @@ void createSampling() {
         samplers.push_back(std::make_shared<GridSampler<dim>>(environment));
 
     std::vector<std::shared_ptr<Sampling<dim>>> samplings;
-    for (auto sampler : samplers) {
+    for (auto &sampler : samplers) {
         samplings.push_back(std::make_shared<BridgeSampling<dim>>(environment, validityChecker, sampler, 1));
         samplings.push_back(std::make_shared<GaussianDistSampling<dim>>(environment, validityChecker, sampler, 1));
         samplings.push_back(std::make_shared<GaussianSampling<dim>>(environment, validityChecker, sampler, 1));
@@ -103,8 +103,6 @@ void createSampling() {
 }
 
 TEST(SAMPLING, standardSampling) {
-    Logging::setLogLevel(LogLevel::debug);
-
     createSampling<2>();
     createSampling<3>();
     createSampling<4>();

@@ -37,10 +37,12 @@ class Evaluator : public Identifier {
     Evaluator(const std::string &name);
 
     virtual bool evaluate() = 0;
-    virtual void setQuery(const std::vector<Vector<dim>> &targets);
+    virtual void setConfigs(const std::vector<Vector<dim>> &targets);
+    virtual void setPoses(const std::vector<Vector6> &targets);
 
   protected:
-    std::vector<Vector<dim>> m_targets;
+    std::vector<Vector<dim>> m_targetConfigs;
+    std::vector<Vector6> m_targetPoses;
 };
 
 /*!
@@ -62,15 +64,43 @@ Evaluator<dim>::Evaluator(const std::string &name) : Identifier(name) {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-void Evaluator<dim>::setQuery(const std::vector<Vector<dim>> &targets) {
-    if (targets.empty())
+void Evaluator<dim>::setConfigs(const std::vector<Vector<dim>> &targets) {
+    if (targets.empty()) {
+        Logging::error("Empty target config list", this);
         return;
+    }
 
-    for (auto &target : targets)
-        if (util::empty<dim>(target))
+    for (auto &target : targets) {
+        if (util::empty<dim>(target)) {
+            Logging::error("Empty target config", this);
             return;
+        }
+    }
 
-    m_targets = targets;
+    m_targetConfigs = targets;
+}
+
+/*!
+*  \brief      Set target nodes for evaluation.
+*  \author     Sascha Kaden
+*  \param[in]  target Nodes
+*  \date       2017-09-30
+*/
+template <unsigned int dim>
+void Evaluator<dim>::setPoses(const std::vector<Vector6> &targets) {
+    if (targets.empty()) {
+        Logging::error("Empty target pose list", this);
+        return;
+    }
+
+    for (auto &target : targets) {
+        if (util::empty<6>(target)) {
+            Logging::error("Empty target pose", this);
+            return;
+        }
+    }
+
+    m_targetPoses = targets;
 }
 
 } /* namespace ippp */

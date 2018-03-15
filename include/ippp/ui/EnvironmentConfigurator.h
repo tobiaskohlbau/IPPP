@@ -75,7 +75,7 @@ class EnvironmentConfigurator : public Configurator {
     std::vector<Transform> m_obstacleTransforms;
     AABB m_workspceBounding;
 
-    FactoryType m_factoryType = FactoryType::ModelTriangle2D;
+    FactoryType m_factoryType = FactoryType::ModelFCL;
     RobotType m_robotType = RobotType::Point;
 
     // robot base properties

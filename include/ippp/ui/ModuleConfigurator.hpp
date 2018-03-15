@@ -109,14 +109,14 @@ class ModuleConfigurator : public Configurator {
     Vector6 m_euclideanConstraint;
     double m_euclideanEpsilon;
     MetricType m_metricType = MetricType::L2;
-    Vector<dim> m_metricWeight;
+    Vector<dim> m_metricWeight = Vector<dim>::Zero();
     EvaluatorType m_evaluatorType = EvaluatorType::SingleIteration;
     double m_queryEvaluatorDist = 10;
     size_t m_evaluatorDuration = 10;
-    size_t m_graphSortCount = 2000;
+    size_t m_graphSortCount = 3000;
     NeighborType m_neighborType = NeighborType::KDTree;
     PathModifierType m_pathModifierType = PathModifierType::NodeCut;
-    SamplerType m_samplerType = SamplerType::Uniform;
+    SamplerType m_samplerType = SamplerType::UniformBiased;
     std::string m_samplerSeed = "";
     double m_samplerGridResolution = 1;
     SamplingType m_samplingType = SamplingType::Straight;
@@ -235,16 +235,16 @@ void ModuleConfigurator<dim>::initializeModules() {
             m_evaluator = std::make_shared<SingleIterationEvaluator<dim>>();
             break;
         case EvaluatorType::TreeQuery:
-            m_evaluator = std::make_shared<TreeQueryEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
-                                                                    m_queryEvaluatorDist);
+            m_evaluator = std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
+                                                                     m_queryEvaluatorDist);
             break;
         case EvaluatorType::Time:
             m_evaluator = std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration);
             break;
         case EvaluatorType::QueryOrTime:
             std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-            evaluators.push_back(std::make_shared<TreeQueryEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
-                                                                           m_queryEvaluatorDist));
+            evaluators.push_back(std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
+                                                                            m_queryEvaluatorDist));
             evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration));
             m_evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
             break;

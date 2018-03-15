@@ -27,7 +27,8 @@ std::pair<MatrixXi, Vector2i> create2dspace(const AABB &boundary, const int fill
     Vector3 dia = boundary.diagonal();
     Vector3 min = boundary.min();
     // pair with Eigen::Matrix as space and the offset of the AABB to the origin
-    return std::make_pair(MatrixXi::Constant(static_cast<int>(dia[0]), static_cast<int>(dia[1]), fillValue), Vector2i(-min[0], -min[1]));
+    return std::make_pair(MatrixXi::Constant(static_cast<int>(dia[0]), static_cast<int>(dia[1]), fillValue),
+                          Vector2i(-min[0], -min[1]));
 }
 
 void drawTriangles(std::pair<MatrixXi, Vector2i> &space, const Mesh &mesh, const int fillValue) {
@@ -49,7 +50,7 @@ void drawTriangles(std::pair<MatrixXi, Vector2i> &space, const std::vector<Trian
         std::vector<Vector2> points;
         for (size_t i = 1; i < 4; ++i)
             points.push_back(triangle.getP(static_cast<unsigned int>(i)));
-        
+
         struct Vector2Sorter {
             bool operator()(const Vector2 &lhs, const Vector2 &rhs) const {
                 return lhs[1] < rhs[1];
@@ -60,7 +61,7 @@ void drawTriangles(std::pair<MatrixXi, Vector2i> &space, const std::vector<Trian
         Vector2 v2 = points[1];
         Vector2 v3 = points[2];
 
-        if (v2[1] == v3[1]) 
+        if (v2[1] == v3[1])
             fillBottomFlatTriangle(space, v1, v2, v3, fillValue);
         /* check for trivial case of top-flat triangle */
         else if (v1[1] == v2[1]) {
@@ -105,7 +106,7 @@ void fillTopFlatTriangle(std::pair<MatrixXi, Vector2i> &space, Vector2 v1, Vecto
 void drawLine(std::pair<MatrixXi, Vector2i> &space, int x1, int x2, int y, int value) {
     if (x1 > x2)
         std::swap(x1, x2);
-    
+
     for (int x = x1; x <= x2; ++x) {
         if (0 > y || y > space.first.rows() || 0 > x || x > space.first.cols()) {
             Logging::debug("Triangle out of space", "CadProcessing");

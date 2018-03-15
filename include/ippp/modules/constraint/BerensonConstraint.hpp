@@ -110,7 +110,7 @@ double BerensonConstraint<dim>::calc(const std::vector<Vector<dim>> &configs) co
 template <unsigned int dim>
 Vector6 BerensonConstraint<dim>::calcEuclideanError(const Vector<dim> &config) const {
     auto T = m_taskFrameInv * m_serialRobot->getTransformation(config);
-    Eigen::AngleAxisd angleAxis(T.rotation());
+    AngleAxis angleAxis(T.rotation());
     Vector6 eucError = util::append<3, 3>(T.translation(), angleAxis.axis() * angleAxis.angle());
     for (size_t i = 0; i < 6; ++i) {
         if (eucError[i] > m_C.second[i])

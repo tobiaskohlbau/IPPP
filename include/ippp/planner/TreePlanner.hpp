@@ -38,6 +38,7 @@ class TreePlanner : public Planner<dim> {
                 const std::shared_ptr<Graph<dim>> &graph);
 
     virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads);
+    virtual bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, size_t numNodes, size_t numThreads);
     virtual bool expand(size_t numNodes, size_t numThreads);
     virtual bool setInitNode(const Vector<dim> start);
 
@@ -99,7 +100,7 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
     }
 
     std::vector<Vector<dim>> query = {goal};
-    m_evaluator->setQuery(query);
+    m_evaluator->setConfigs(query);
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
@@ -111,6 +112,38 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
     Logging::info("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
 
     return connectGoalNode(goal);
+}
+
+/*!
+*  \brief      Compute path from start Node<dim> to goal Node<dim> with passed number of samples and threads
+*  \author     Sascha Kaden
+*  \param[in]  start Node
+*  \param[in]  goal Node
+*  \param[in]  number of samples
+*  \param[in]  number of threads
+*  \param[out] true, if path was found
+*  \date       2017-06-20
+*/
+template <unsigned int dim>
+bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, size_t numNodes, size_t numThreads) {
+    //this->setSamplingParams(start, goal);
+    if (!setInitNode(startConfig))
+        return false;
+
+    //std::vector<Vector<dim>> query = { goal };
+    //m_evaluator->setConfigs(query);
+
+    size_t loopCount = 1;
+    while (!m_evaluator->evaluate()) {
+        Logging::info("Iteration: " + std::to_string(loopCount++), this);
+        computeTree(numNodes, numThreads);
+    }
+
+    Logging::info("Planner has: " + std::to_string(m_graph->numNodes()) + " nodes", this);
+    Logging::info("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
+
+    return true;
+    //return connectGoalNode(goal);
 }
 
 /*!

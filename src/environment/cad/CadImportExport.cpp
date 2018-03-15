@@ -71,7 +71,7 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, double
         return false;
     }
     Logging::debug("File " + util::getFileName(filePath) + " has: " + std::to_string(scene->mNumMeshes) + " mesh(es)",
-                  "CadProcessing");
+                   "CadProcessing");
     meshes.clear();
 
     aiMatrix4x4 trafo;
@@ -142,9 +142,8 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std
         meshes.push_back(mesh);
     }
 
-    for (size_t i = 0; i < node->mNumChildren; ++i) {
+    for (size_t i = 0; i < node->mNumChildren; ++i)
         getMeshes(scene, node->mChildren[i], trafo, meshes);
-    }
     *trafo = prevTrafo;
 }
 

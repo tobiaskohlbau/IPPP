@@ -56,7 +56,7 @@ L1Metric<dim>::L1Metric() : DistanceMetric<dim>("L1 Metric") {
 */
 template <unsigned int dim>
 double L1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
-    return (source - target).sum();
+    return std::abs((source - target).sum());
 }
 
 /*!
@@ -69,7 +69,7 @@ double L1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &tar
 */
 template <unsigned int dim>
 double L1Metric<dim>::calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const {
-    return (source - target).sum();
+    return std::abs((source - target).sum());
 }
 
 /*!

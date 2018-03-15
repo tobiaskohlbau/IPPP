@@ -1,0 +1,9 @@
+# 4 vertex positions
+v  0 0 0
+v  50 0 0
+v  50 50 0
+v  0 50 0
+
+# Mesh '' with 2 faces
+f  1 2 3
+f  1 4 3
