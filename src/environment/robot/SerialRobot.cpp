@@ -170,7 +170,7 @@ MatrixX SerialRobot::calcJacobian(const VectorX &config) const {
 *  \date       2017-11-17
 */
 void SerialRobot::setBaseOffset(const Vector6 &baseOffset) {
-    setBaseOffset(util::poseVecToTransform(baseOffset));
+    setBaseOffset(util::toTransform(baseOffset));
 }
 
 /*!
@@ -200,7 +200,7 @@ Transform SerialRobot::getBaseOffset() const {
 *  \date       2018-01-08
 */
 void SerialRobot::setToolOffset(const Vector6 &toolOffset) {
-    setToolOffset(util::poseVecToTransform(toolOffset));
+    setToolOffset(util::toTransform(toolOffset));
 }
 
 /*!

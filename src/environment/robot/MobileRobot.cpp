@@ -47,7 +47,7 @@ Transform MobileRobot::getTransformation(const VectorX &config) const {
     if (m_dim != 6)
         return Transform::Identity();
 
-    return util::poseVecToTransform(config);
+    return util::toTransform(config);
 }
 
 } /* namespace ippp */

@@ -19,6 +19,7 @@
 #include <ippp/environment/EnvObject.h>
 #include <ippp/util/Logging.h>
 #include <ippp/util/UtilGeo.hpp>
+#include <ippp/util/UtilVec.hpp>
 
 namespace ippp {
 
@@ -51,7 +52,7 @@ void EnvObject::setPose(const Vector6 &pose) {
         return;
     }
 
-    m_pose = util::poseVecToTransform(pose);
+    m_pose = util::toTransform(pose);
 }
 
 /*!

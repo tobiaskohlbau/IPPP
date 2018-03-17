@@ -139,7 +139,7 @@ void centerMesh(Mesh &mesh) {
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices) {
     if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0)
         return;
-    auto T = util::poseVecToTransform(config);
+    auto T = util::toTransform(config);
     transformVertices(T, vertices);
 }
 

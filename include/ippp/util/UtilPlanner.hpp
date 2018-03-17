@@ -26,6 +26,17 @@
 namespace ippp {
 namespace util {
 
+template <unsigned int dim>
+static bool checkConfigToPose(const Vector<dim> &config, const Vector6 &pose, RobotBase &robot,
+                              const std::pair<Vector6, Vector6> &C) {
+    Vector6 poseDisplacement = pose - util::toPoseVec(robot.getTransformation(config));
+    for (size_t i = 0; i < 6; ++i)
+        if (poseDisplacement[i] < C.first[i] || C.second[i] < poseDisplacement[i])
+            return false;
+
+    return true;
+}
+
 /*!
 *  \brief      Try to find nearest Node of the graph with a valid connection to the passed config
 *  \author     Sascha Kaden

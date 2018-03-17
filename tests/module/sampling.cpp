@@ -33,6 +33,8 @@
 #include <ippp/modules/validityChecker/AlwaysTrueValidity.hpp>
 #include <ippp/util/UtilVec.hpp>
 
+#include <ippp/modules/evaluator/TreePoseEvaluator.hpp>
+
 double min = -5;
 double max = 5;
 

@@ -17,7 +17,8 @@
 //-------------------------------------------------------------------------//
 
 #include <ippp/util/UtilGeo.hpp>
-#include <iostream>
+
+#include <ippp/util/UtilVec.hpp>
 
 namespace ippp {
 namespace util {
@@ -84,7 +85,7 @@ void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Transform poseVecToTransform(const Vector6 &pose) {
+Transform toTransform(const Vector6 &pose) {
     Transform T;
     T = Translation(Vector3(pose[0], pose[1], pose[2])) * Eigen::AngleAxisd(pose[3], Eigen::Vector3d::UnitX()) *
         Eigen::AngleAxisd(pose[4], Eigen::Vector3d::UnitY()) * Eigen::AngleAxisd(pose[5], Eigen::Vector3d::UnitZ());
@@ -98,11 +99,11 @@ Transform poseVecToTransform(const Vector6 &pose) {
 *  \param[out] transformation matrizes
 *  \date       2016-07-07
 */
-std::vector<Transform> convertPosesToTransforms(const std::vector<Vector6> poses) {
+std::vector<Transform> toTransform(const std::vector<Vector6> poses) {
     std::vector<Transform> transforms;
     transforms.reserve(poses.size());
     for (const auto &pose : poses)
-        transforms.push_back(poseVecToTransform(pose));
+        transforms.push_back(toTransform(pose));
 
     return transforms;
 }
@@ -118,7 +119,7 @@ Transform poseVecToTransformFromDeg(const Vector6 &pose) {
     auto poseVec = pose;
     for (size_t i = 3; i < 6; ++i)
         poseVec[i] *= toRad();
-    return poseVecToTransform(poseVec);
+    return toTransform(poseVec);
 }
 
 /*!
@@ -128,7 +129,7 @@ Transform poseVecToTransformFromDeg(const Vector6 &pose) {
 *  \param[out] pose Vector (angles)
 *  \date       2016-07-07
 */
-Vector6 transformToVec(const Transform &T) {
+Vector6 toPoseVec(const Transform &T) {
     Vector3 vec(T.translation());
     Vector3 euler(T.rotation().eulerAngles(0,1,2));
     return util::append<3, 3>(vec, euler);

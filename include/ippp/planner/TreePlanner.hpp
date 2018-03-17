@@ -38,7 +38,8 @@ class TreePlanner : public Planner<dim> {
                 const std::shared_ptr<Graph<dim>> &graph);
 
     virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads);
-    virtual bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, size_t numNodes, size_t numThreads);
+    virtual bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
+                                   size_t numNodes, size_t numThreads) override;
     virtual bool expand(size_t numNodes, size_t numThreads);
     virtual bool setInitNode(const Vector<dim> start);
 
@@ -125,13 +126,14 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, size_t numNodes, size_t numThreads) {
-    //this->setSamplingParams(start, goal);
+bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose,
+                                         const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads) {
+    // this->setSamplingParams(start, goal);
     if (!setInitNode(startConfig))
         return false;
 
-    //std::vector<Vector<dim>> query = { goal };
-    //m_evaluator->setConfigs(query);
+    std::vector<Vector6> query = {goalPose};
+    m_evaluator->setPoses(query);
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
@@ -139,11 +141,19 @@ bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Ve
         computeTree(numNodes, numThreads);
     }
 
+    // set goal node
+    auto robot = m_environment->getRobot();
+    for (auto &node : m_graph->getNodes()) {
+        if (util::checkConfigToPose<dim>(node->getValues(), goalPose, *robot, C)) {
+            m_goalNode = node;
+            m_pathPlanned = true;
+        }
+    }
+
     Logging::info("Planner has: " + std::to_string(m_graph->numNodes()) + " nodes", this);
     Logging::info("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
 
-    return true;
-    //return connectGoalNode(goal);
+    return m_pathPlanned;
 }
 
 /*!

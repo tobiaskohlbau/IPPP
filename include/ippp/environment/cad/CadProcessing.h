@@ -23,9 +23,9 @@
 #include <vector>
 
 #include <ippp/dataObj/PointList.hpp>
+#include <ippp/environment/model/Mesh.h>
 #include <ippp/types.h>
 #include <ippp/util/UtilList.hpp>
-#include <ippp/environment/model/Mesh.h>
 
 namespace ippp {
 namespace cad {

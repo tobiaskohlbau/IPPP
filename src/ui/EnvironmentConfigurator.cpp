@@ -124,7 +124,7 @@ void EnvironmentConfigurator::addObstacle(const std::string &obstaclePath, const
     }
 
     m_obstaclePaths.push_back(obstaclePath);
-    m_obstacleTransforms.push_back(util::poseVecToTransform(pose));
+    m_obstacleTransforms.push_back(util::toTransform(pose));
 }
 
 /*!

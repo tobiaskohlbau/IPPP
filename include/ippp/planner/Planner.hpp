@@ -50,7 +50,8 @@ class Planner : public Identifier {
     virtual bool computePath(const Vector<dim> startConfig, const Vector<dim> goalConfig, size_t numNodes, size_t numThreads) = 0;
     // virtual bool computePath(const Vector<dim> startConfig, const std::vector<Vector<dim>> pathConfigs, size_t numNodes, size_t
     // numThreads) = 0;
-    virtual bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, size_t numNodes, size_t numThreads);
+    virtual bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
+                                   size_t numNodes, size_t numThreads);
     // virtual bool computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses, size_t numNodes,
     // size_t
     // numThreads) = 0;
@@ -117,7 +118,8 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
 }
 
 template <unsigned int dim>
-bool Planner<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, size_t numNodes, size_t numThreads) {
+bool Planner<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
+                                     size_t numNodes, size_t numThreads) {
     return true;
 }
 
@@ -162,10 +164,10 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     auto plannerRes = m_trajectory->getResolutions();
     m_trajectory->setResolutions(posRes, oriRes);
     std::vector<Vector<dim>> path;
-    for (size_t i = 0; i < smoothedNodes.size() - 1; ++i) {
-        path.push_back(smoothedNodes[i]->getValues());
-        for (auto &config : m_trajectory->calcTrajCont(*(smoothedNodes[i]), *(smoothedNodes[i + 1])))
-            path.push_back(config);
+    for (auto node = smoothedNodes.begin(); node < smoothedNodes.end() - 1; ++node) {
+        path.push_back((*node)->getValues());
+        auto tmp = m_trajectory->calcTrajCont((**node), **(node + 1));
+        path.insert(path.end(), tmp.begin(), tmp.end());
     }
     path.push_back(smoothedNodes.back()->getValues());
 

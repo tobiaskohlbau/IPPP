@@ -19,8 +19,10 @@
 #ifndef ENVIRONMENTCONFIGURATOR_H
 #define ENVIRONMENTCONFIGURATOR_H
 
+#include <string>
 #include <type_traits>
 #include <vector>
+#include <memory>
 
 #include <ippp/Environment.h>
 #include <ippp/types.h>

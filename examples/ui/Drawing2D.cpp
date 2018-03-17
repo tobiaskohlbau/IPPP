@@ -52,8 +52,7 @@ void drawTrianglePath(cv::Mat &image, const std::vector<Vector3> configs, const 
     Logging::trace("start drawing of triangles", "Drawing2D");
 
     for (auto &config : configs) {
-        Vector6 tmpConfig = util::Vecd(config[0], config[1], 0, 0, 0, config[2]);
-        auto T = util::poseVecToTransform(tmpConfig);
+        auto T = util::toTransform(util::Vecd(config[0], config[1], 0, 0, 0, config[2]));
         drawPolygons(image, mesh, T, offset, colorPoint, lineType);
     }
 }

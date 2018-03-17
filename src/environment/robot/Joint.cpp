@@ -97,7 +97,7 @@ std::shared_ptr<ModelContainer> Joint::getLinkModel() const {
 *  \date       2018-10-11
 */
 void Joint::setLinkOffset(const Vector6 &offset) {
-    setLinkOffset(util::poseVecToTransform(offset));
+    setLinkOffset(util::toTransform(offset));
 }
 
 /*!

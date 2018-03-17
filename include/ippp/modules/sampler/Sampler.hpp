@@ -19,10 +19,8 @@
 #ifndef SAMPLER_HPP
 #define SAMPLER_HPP
 
-#include <math.h>
 #include <random>
-#include <stdlib.h>
-#include <time.h>
+#include <string>
 
 #include <ippp/Identifier.h>
 #include <ippp/environment/Environment.h>

@@ -35,3 +35,5 @@
 #include <ippp/environment/robot/RobotBase.h>
 #include <ippp/environment/robot/SerialRobot.h>
 #include <ippp/environment/robot/TriangleRobot2D.h>
+
+#include <ippp/dataObj/DhParameter.h>

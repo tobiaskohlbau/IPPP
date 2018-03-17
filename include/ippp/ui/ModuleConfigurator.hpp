@@ -19,11 +19,12 @@
 #ifndef MODULECONFIGURATOR_HPP
 #define MODULECONFIGURATOR_HPP
 
-#include <fstream>
+#include <string>
 #include <type_traits>
 #include <vector>
 
 #include <ippp/Core.h>
+#include <ippp/Environment.h>
 #include <ippp/Planner.h>
 #include <ippp/ui/Configurator.h>
 
@@ -31,7 +32,7 @@ namespace ippp {
 
 enum class MetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
 
-enum class EvaluatorType { SingleIteration, TreeQuery, Time, QueryOrTime };
+enum class EvaluatorType { SingleIteration, TreeConfig, Time, QueryOrTime, TreePose };
 
 enum class NeighborType { KDTree, BruteForce };
 
@@ -91,6 +92,7 @@ class ModuleConfigurator : public Configurator {
     void setTrajectoryProperties(double posRes, double oriRes);
     void setVadilityCheckerType(ValidityCheckerType type);
     void setEuclideanConstraint(const Vector6 &constraint, const double epsilon = IPPP_EPSILON);
+    void setC(const std::pair<Vector6, Vector6> &C);
 
   protected:
     void initializeModules();
@@ -115,7 +117,7 @@ class ModuleConfigurator : public Configurator {
     size_t m_evaluatorDuration = 10;
     size_t m_graphSortCount = 3000;
     NeighborType m_neighborType = NeighborType::KDTree;
-    PathModifierType m_pathModifierType = PathModifierType::NodeCut;
+    PathModifierType m_pathModifierType = PathModifierType::Dummy;
     SamplerType m_samplerType = SamplerType::UniformBiased;
     std::string m_samplerSeed = "";
     double m_samplerGridResolution = 1;
@@ -127,6 +129,7 @@ class ModuleConfigurator : public Configurator {
     double m_posRes = 1;
     double m_oriRes = 0.1;
     ValidityCheckerType m_validityType = ValidityCheckerType::FclSerial;
+    std::pair<Vector6, Vector6> m_C;
 
     bool m_parameterModified = false;
 };
@@ -234,9 +237,12 @@ void ModuleConfigurator<dim>::initializeModules() {
         case EvaluatorType::SingleIteration:
             m_evaluator = std::make_shared<SingleIterationEvaluator<dim>>();
             break;
-        case EvaluatorType::TreeQuery:
+        case EvaluatorType::TreeConfig:
             m_evaluator = std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
                                                                      m_queryEvaluatorDist);
+            break;
+        case EvaluatorType::TreePose:
+            m_evaluator = std::make_shared<TreePoseEvaluator<dim>>(m_graph, m_environment, m_C);
             break;
         case EvaluatorType::Time:
             m_evaluator = std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration);
@@ -592,6 +598,17 @@ template <unsigned int dim>
 void ModuleConfigurator<dim>::setVadilityCheckerType(ValidityCheckerType type) {
     m_validityType = type;
     m_parameterModified = true;
+}
+
+/*!
+*  \brief      Sets the TrajectoryType
+*  \author     Sascha Kaden
+*  \param[in]  TrajectoryType
+*  \date       2017-10-03
+*/
+template <unsigned int dim>
+void ModuleConfigurator<dim>::setC(const std::pair<Vector6, Vector6> &C) {
+    m_C = C;
 }
 
 /*!

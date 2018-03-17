@@ -146,7 +146,7 @@ bool test2DSerialRobot() {
     Cmin = util::Vecd(-eps, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX);
     Cmax = util::Vecd(eps, IPPP_MAX, IPPP_MAX, IPPP_MAX, IPPP_MAX, IPPP_MAX);
     C = std::make_pair(Cmin, Cmax);
-    taskFrame = util::poseVecToTransform(util::Vecd(maxLength * std::cos(q1Angle), 0, 0, 0, 0, 0));
+    taskFrame = util::toTransform(util::Vecd(maxLength * std::cos(q1Angle), 0, 0, 0, 0, 0));
 
     start[0] = -q1Angle;
     goal[0] = q1Angle;
@@ -158,7 +158,7 @@ bool test2DSerialRobot() {
     Cmin = util::Vecd(-IPPP_MAX, -eps, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX);
     Cmax = util::Vecd(IPPP_MAX, eps, IPPP_MAX, IPPP_MAX, IPPP_MAX, IPPP_MAX);
     C = std::make_pair(Cmin, Cmax);
-    taskFrame = util::poseVecToTransform(util::Vecd(0, maxLength * std::cos(q1Angle), 0, 0, 0, 0));
+    taskFrame = util::toTransform(util::Vecd(0, maxLength * std::cos(q1Angle), 0, 0, 0, 0));
 
     start[0] = q1Angle + util::toRad(90);
     goal[0] = -q1Angle + util::toRad(90);
@@ -170,7 +170,7 @@ bool test2DSerialRobot() {
     Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -0.1);
     Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, IPPP_MAX, IPPP_MAX, IPPP_MAX, 0.1);
     C = std::make_pair(Cmin, Cmax);
-    taskFrame = util::poseVecToTransform(util::Vecd(0, 0, 0, 0, 0, 0));
+    taskFrame = util::toTransform(util::Vecd(0, 0, 0, 0, 0, 0));
 
     start[0] = -q1Angle;
     goal[0] = q1Angle;

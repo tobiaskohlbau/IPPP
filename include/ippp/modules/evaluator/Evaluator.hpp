@@ -23,6 +23,7 @@
 #include <ippp/types.h>
 #include <ippp/util/UtilVec.hpp>
 #include <ippp/environment/Environment.h>
+#include <ippp/util/Logging.h>
 
 namespace ippp {
 

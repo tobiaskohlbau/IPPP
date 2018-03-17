@@ -20,6 +20,7 @@
 #define CONFIGURATOR_H
 
 #include <string>
+#include <vector>
 
 #include <json.hpp>
 

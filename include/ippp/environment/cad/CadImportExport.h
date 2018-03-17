@@ -19,6 +19,9 @@
 #ifndef CADIMPORTEXPORT_H
 #define CADIMPORTEXPORT_H
 
+#include <string>
+#include <vector>
+
 #include <assimp/Exporter.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/cimport.h>

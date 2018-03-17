@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef TREECONFIGEVALUATOR_HPP
-#define TREECONFIGEVALUATOR_HPP
+#ifndef PRMCONFIGEVALUATOR_HPP
+#define PRMCONFIGEVALUATOR_HPP
 
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/environment/Environment.h>
@@ -35,9 +35,9 @@ namespace ippp {
 * \date    2017-09-30
 */
 template <unsigned int dim>
-class TreeConfigEvaluator : public Evaluator<dim> {
+class PRMConfigEvaluator : public Evaluator<dim> {
   public:
-    TreeConfigEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
+      PRMConfigEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double dist = 10);
 
@@ -68,7 +68,7 @@ class TreeConfigEvaluator : public Evaluator<dim> {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-TreeConfigEvaluator<dim>::TreeConfigEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric,
+PRMConfigEvaluator<dim>::PRMConfigEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric,
                                               const std::shared_ptr<Graph<dim>> &graph,
                                               const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                               const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double dist)
@@ -89,7 +89,7 @@ TreeConfigEvaluator<dim>::TreeConfigEvaluator(const std::shared_ptr<DistanceMetr
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-bool TreeConfigEvaluator<dim>::evaluate() {
+bool PRMConfigEvaluator<dim>::evaluate() {
     for (size_t targetIndex = 0; targetIndex < m_targetConfigs.size(); ++targetIndex) {
         if (m_validTargets[targetIndex])
             continue;
@@ -121,7 +121,7 @@ bool TreeConfigEvaluator<dim>::evaluate() {
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-void TreeConfigEvaluator<dim>::setConfigs(const std::vector<Vector<dim>> &targets) {
+void PRMConfigEvaluator<dim>::setConfigs(const std::vector<Vector<dim>> &targets) {
     if (targets.empty()) {
         Logging::error("Empty target config list", this);
         return;
@@ -140,4 +140,4 @@ void TreeConfigEvaluator<dim>::setConfigs(const std::vector<Vector<dim>> &target
 
 } /* namespace ippp */
 
-#endif /* TREECONFIGEVALUATOR_HPP */
+#endif /* PRMCONFIGEVALUATOR_HPP */

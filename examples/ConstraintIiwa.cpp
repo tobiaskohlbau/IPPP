@@ -51,7 +51,7 @@ std::shared_ptr<Environment> generateEnvironment() {
     linkOffsets[3] = util::Vecd(0, 0, 0, -util::halfPi(), 0, 0);
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
-    auto linkTransforms = util::convertPosesToTransforms(linkOffsets);
+    auto linkTransforms = util::toTransform(linkOffsets);
     envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles, linkTransforms);
 
     envConfigurator.saveConfig("KukaEnvConfig.json");
@@ -149,7 +149,7 @@ bool test2DSerialRobot() {
     Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -0.2, -0.2, -IPPP_MAX);
     Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, IPPP_MAX, 0.2, 0.2, IPPP_MAX);
     C = std::make_pair(Cmin, Cmax);
-    taskFrame = util::poseVecToTransform(util::Vecd(0, 0, 0, 0, 0, 0));
+    taskFrame = util::toTransform(util::Vecd(0, 0, 0, 0, 0, 0));
 
     planner = generatePlanner(environment, C, taskFrame);
     connected = run(environment, planner, start, goal);

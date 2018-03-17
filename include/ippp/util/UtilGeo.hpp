@@ -20,12 +20,13 @@
 #define UTILGEO_HPP
 
 #include <cmath>
+#include <vector>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
 #include <ippp/types.h>
-#include <ippp/util/UtilVec.hpp>
+
 
 namespace ippp {
 namespace util {
@@ -56,10 +57,10 @@ Matrix3 getRotMat3D(double radX, double radY, double radZ);
 Transform createTransform(const Matrix3 &R, const Vector3 &t);
 void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t);
 
-Transform poseVecToTransform(const Vector6 &pose);
-std::vector<Transform> convertPosesToTransforms(const std::vector<Vector6> poses);
+Transform toTransform(const Vector6 &pose);
+std::vector<Transform> toTransform(const std::vector<Vector6> poses);
 Transform poseVecToTransformFromDeg(const Vector6 &pose);
-Vector6 transformToVec(const Transform &T);
+Vector6 toPoseVec(const Transform &T);
 
 Vector3 computeNormal(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3);
 AABB transformAABB(const AABB &aabb, const Transform &T);

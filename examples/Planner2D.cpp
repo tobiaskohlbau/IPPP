@@ -26,6 +26,8 @@ Mesh generateMap() {
 
 bool testTriangleRobot() {
     const unsigned int dim = 3;
+    Vector6 min = util::Vecd(-30, -30, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX);
+    auto C = std::make_pair(min, -min);
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1)));
@@ -39,9 +41,9 @@ bool testTriangleRobot() {
     creator.setEnvironment(environment);
     creator.setGraphSortCount(3000);
     creator.setVadilityCheckerType(ValidityCheckerType::FclMobile);
-    creator.setEvaluatorType(EvaluatorType::QueryOrTime);
+    creator.setEvaluatorType(EvaluatorType::TreePose);
     creator.setEvaluatorProperties(40, 60);
-    creator.setSamplingType(SamplingType::Straight);
+    creator.setC(C);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
@@ -51,11 +53,13 @@ bool testTriangleRobot() {
 
     Vector3 start(50, 50, 0);
     Vector3 goal(900, 900, 50 * util::toRad());
+    Vector6 goalPose = util::Vecd(200, 200, 0, 0, 0, 0);
 
     auto timer = std::make_shared<StatsTimeCollector>("Triangle2D Planning Time");
     Stats::addCollector(timer);
     timer->start();
-    bool connected = planner->computePath(start, goal, 5000, 3);
+    bool connected = planner->computePathToPose(start, goalPose, C, 1000, 3);
+    //bool connected = planner->computePath(start, goal, 5000, 3);
     timer->stop();
 
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
@@ -69,7 +73,7 @@ bool testTriangleRobot() {
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
     if (connected) {
         Logging::info("Init and goal could be connected!", "Example");
-        std::vector<Vector3> path = planner->getPath(80, 5);
+        auto path = planner->getPath(80, util::toRad(90));
         drawing::drawTrianglePath(image, path, environment->getRobot()->getBaseModel()->m_mesh, workspace2D.second,
                                   Vector3i(0, 0, 255));
 
@@ -167,7 +171,7 @@ void testPointRobot() {
     creator.setEnvironment(environment);
     creator.setVadilityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(3000);
-    creator.setEvaluatorType(EvaluatorType::TreeQuery);
+    creator.setEvaluatorType(EvaluatorType::TreeConfig);
     creator.setEvaluatorProperties(stepSize, 30);
     creator.setSamplerType(SamplerType::UniformBiased);
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
@@ -208,7 +212,7 @@ int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::trace);
 
     // while (!testTriangleRobot());
-    // testTriangleRobot();
+    testTriangleRobot();
     // test2DSerialRobot();
     // testPointRobot();
 

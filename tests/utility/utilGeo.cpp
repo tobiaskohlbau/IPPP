@@ -33,11 +33,11 @@ TEST(GEO, pi) {
 
 TEST(GEO, poseVecToMat) {
     Vector6 poseZero = util::Vecd(0, 0, 0, 0, 0, 0);
-    ippp::Transform pose = util::poseVecToTransform(poseZero);
+    ippp::Transform pose = util::toTransform(poseZero);
     for (size_t i = 0; i < 3; ++i)
         EXPECT_EQ(pose.translation()(i), 0);
 
-    Vector6 poseVec = util::transformToVec(pose);
+    Vector6 poseVec = util::toPoseVec(pose);
     for (int i = 0; i < 6; ++i)
         if (poseVec[i] < IPPP_EPSILON && poseVec[i] > -IPPP_EPSILON)
             poseVec[i] = 0;
@@ -45,15 +45,15 @@ TEST(GEO, poseVecToMat) {
         EXPECT_EQ(poseZero[i], poseVec[i]);
 
     Vector6 poseTwo = util::Vecd(1, 1, 1, 0, 0, 0);
-    pose = util::poseVecToTransform(poseTwo);
+    pose = util::toTransform(poseTwo);
     for (size_t i = 0; i < 3; ++i)
         EXPECT_EQ(pose.translation()(i), 1);
 
     for (double x = 0; x < 359; x += 5) {
         for (double y = 0; y < 359; y += 5) {
             for (double z = 0; z < 359; z += 5) {
-                pose = util::poseVecToTransform(poseTwo);
-                poseVec = util::transformToVec(pose);
+                pose = util::toTransform(poseTwo);
+                poseVec = util::toPoseVec(pose);
                 for (int i = 0; i < 6; ++i) {
                     EXPECT_TRUE(poseTwo[i] <= poseVec[i] + IPPP_EPSILON);
                     EXPECT_TRUE(poseTwo[i] >= poseVec[i] - IPPP_EPSILON);

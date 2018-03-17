@@ -21,8 +21,7 @@
 #include <ippp/Core.h>
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
-#include <ippp/ui/ModuleConfigurator.hpp>
-#include <ippp/ui/EnvironmentConfigurator.h>
+#include <ippp/UI.h>
 
 using namespace ippp;
 

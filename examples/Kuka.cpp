@@ -50,7 +50,7 @@ void simpleRRT() {
     linkOffsets[3] = util::Vecd(0, 0, 0, -util::halfPi(), 0, 0);
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
-    auto linkTransforms = util::convertPosesToTransforms(linkOffsets);
+    auto linkTransforms = util::toTransform(linkOffsets);
     envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms);
     envConfigurator.saveConfig("KukaEnvConfig.json");
 
