@@ -53,13 +53,13 @@ bool testTriangleRobot() {
 
     Vector3 start(50, 50, 0);
     Vector3 goal(900, 900, 50 * util::toRad());
-    Vector6 goalPose = util::Vecd(200, 200, 0, 0, 0, 0);
+    Vector6 goalPose = util::Vecd(900, 900, 0, 0, 0, 0);
 
     auto timer = std::make_shared<StatsTimeCollector>("Triangle2D Planning Time");
     Stats::addCollector(timer);
     timer->start();
     bool connected = planner->computePathToPose(start, goalPose, C, 1000, 3);
-    //bool connected = planner->computePath(start, goal, 5000, 3);
+    // bool connected = planner->computePath(start, goal, 5000, 3);
     timer->stop();
 
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
@@ -159,6 +159,8 @@ bool test2DSerialRobot() {
 
 void testPointRobot() {
     const unsigned int dim = 2;
+    Vector6 min = util::Vecd(-30, -30, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX);
+    auto C = std::make_pair(min, -min);
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
@@ -169,23 +171,30 @@ void testPointRobot() {
     double stepSize = 40;
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
+    creator.setC(C);
+    //creator.setPathModifierType(PathModifierType::NodeCut);
     creator.setVadilityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(3000);
-    creator.setEvaluatorType(EvaluatorType::TreeConfig);
+    // creator.setEvaluatorType(EvaluatorType::TreeConfig);
+    creator.setEvaluatorType(EvaluatorType::PRMPose);
     creator.setEvaluatorProperties(stepSize, 30);
-    creator.setSamplerType(SamplerType::UniformBiased);
+    creator.setSamplerType(SamplerType::Uniform);
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
-    creator.setSamplingType(SamplingType::NearObstacle);
     creator.setSamplingProperties(10, 80);
 
-    auto planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(stepSize), creator.getGraph());
-    Vector2 start(10.0, 10.0);
-    Vector2 goal(990.0, 990.0);
+    // auto planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(stepSize), creator.getGraph());
+    auto planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(stepSize), creator.getGraph());
+    Vector2 start(10, 10);
+    Vector2 goal(990, 990);
+    std::vector<Vector2> goals = {Vector2(800, 30), Vector2(990, 990)};
+    Vector6 goalPose = util::Vecd(800, 30, 0, 0, 0, 0);
+    std::vector<Vector6> goalPoses = { util::Vecd(30, 800, 0, 0, 0, 0) , util::Vecd(990, 990, 0, 0, 0, 0) };
 
     auto timer = std::make_shared<StatsTimeCollector>("Point2D Planning Time");
     Stats::addCollector(timer);
     timer->start();
-    bool connected = planner->computePath(start, goal, 2000, 3);
+    bool connected = planner->computePathToPose(start, goalPoses, C, 1000, 3);
+    //bool connected = planner->computePath(start, goals, 2000, 3);
     timer->stop();
 
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
@@ -212,9 +221,9 @@ int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::trace);
 
     // while (!testTriangleRobot());
-    testTriangleRobot();
+    // testTriangleRobot();
     // test2DSerialRobot();
-    // testPointRobot();
+    testPointRobot();
 
     Stats::writeData(std::cout);
     std::string str;

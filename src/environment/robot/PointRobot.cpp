@@ -47,7 +47,7 @@ PointRobot::PointRobot(const std::pair<Vector2, Vector2> &boundary)
 Transform PointRobot::getTransformation(const VectorX &config) const {
     Transform T;
     T = Translation(Vector3(config[0], config[1], 0));
-    return T;
+    return Transform(Translation(Vector3(config[0], config[1], 0)));
 }
 
 } /* namespace ippp */

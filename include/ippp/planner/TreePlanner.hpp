@@ -37,13 +37,15 @@ class TreePlanner : public Planner<dim> {
     TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
                 const std::shared_ptr<Graph<dim>> &graph);
 
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads);
+    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads = 1);
+    virtual bool computePath(const Vector<dim> start, const std::vector<Vector<dim>> goals, size_t numNodes,
+                             size_t numThreads = 1);
     virtual bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
-                                   size_t numNodes, size_t numThreads) override;
-    virtual bool expand(size_t numNodes, size_t numThreads);
-    virtual bool setInitNode(const Vector<dim> start);
+                                   size_t numNodes, size_t numThreads = 1);
+    virtual bool computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses,
+                                   const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads = 1);
 
-    virtual bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1) = 0;
+    virtual bool setInitNode(const Vector<dim> start);
     virtual bool connectGoalNode(const Vector<dim> goal) = 0;
 
     std::vector<std::shared_ptr<Node<dim>>> getPathNodes();
@@ -82,8 +84,8 @@ TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Env
 /*!
 *  \brief      Compute path from start Node<dim> to goal Node<dim> with passed number of samples and threads
 *  \author     Sascha Kaden
-*  \param[in]  start Node
-*  \param[in]  goal Node
+*  \param[in]  start configuartion
+*  \param[in]  goal configuartion
 *  \param[in]  number of samples
 *  \param[in]  number of threads
 *  \param[out] true, if path was found
@@ -96,23 +98,27 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
         return false;
 
     if (!m_validityChecker->check(goal)) {
-        Logging::error("Goal Node in collision", this);
+        Logging::error("Goal configuration is not valid", this);
         return false;
     }
 
-    std::vector<Vector<dim>> query = {goal};
-    m_evaluator->setConfigs(query);
+    m_evaluator->setConfigs(std::vector<Vector<dim>>{goal});
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
         Logging::info("Iteration: " + std::to_string(loopCount++), this);
-        computeTree(numNodes, numThreads);
+        expand(numNodes, numThreads);
     }
 
-    Logging::info("Planner has: " + std::to_string(m_graph->numNodes()) + " nodes", this);
-    Logging::info("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
-
+    this->showPlannerStats();
     return connectGoalNode(goal);
+}
+
+template <unsigned int dim>
+bool TreePlanner<dim>::computePath(const Vector<dim> start, const std::vector<Vector<dim>> goals, size_t numNodes,
+                                   size_t numThreads) {
+    Logging::warning("Path computation with multiple configuration goals is not implemented at the time", this);
+    return false;
 }
 
 /*!
@@ -132,13 +138,12 @@ bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Ve
     if (!setInitNode(startConfig))
         return false;
 
-    std::vector<Vector6> query = {goalPose};
-    m_evaluator->setPoses(query);
+    m_evaluator->setPoses(std::vector<Vector6>{goalPose});
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
         Logging::info("Iteration: " + std::to_string(loopCount++), this);
-        computeTree(numNodes, numThreads);
+        expand(numNodes, numThreads);
     }
 
     // set goal node
@@ -150,23 +155,15 @@ bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Ve
         }
     }
 
-    Logging::info("Planner has: " + std::to_string(m_graph->numNodes()) + " nodes", this);
-    Logging::info("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
-
+    this->showPlannerStats();
     return m_pathPlanned;
 }
 
-/*!
-*  \brief      Expands tree, if init Node is set.
-*  \author     Sascha Kaden
-*  \param[in]  number of samples
-*  \param[in]  number of threads
-*  \param[out] true, if valid
-*  \date       2017-06-20
-*/
 template <unsigned int dim>
-bool TreePlanner<dim>::expand(size_t numNodes, size_t numThreads) {
-    return computeTree(numNodes, numThreads);
+bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses,
+                                         const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads) {
+    Logging::warning("Path computation with multiple pose goals is not implemented at the time", this);
+    return false;
 }
 
 /*!

@@ -35,7 +35,12 @@ class PRM : public Planner<dim> {
     PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
 
-    bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads);
+    bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads = 1);
+    bool computePath(const Vector<dim> start, const std::vector<Vector<dim>> goals, size_t numNodes, size_t numThreads = 1);
+    bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
+                           size_t numNodes, size_t numThreads);
+    bool computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses,
+                           const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads = 1);
     bool expand(size_t numNodes, size_t numThreads);
 
     void startSamplingPhase(size_t nbOfNodes, size_t nbOfThreads = 1);
@@ -83,8 +88,8 @@ PRM<dim>::PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<
 /*!
 *  \brief      Compute path from start Node to goal Node with passed number of samples and threads
 *  \author     Sascha Kaden
-*  \param[in]  start Node
-*  \param[in]  goal Node
+*  \param[in]  start configuration
+*  \param[in]  goal configuration
 *  \param[in]  number of samples
 *  \param[in]  number of threads
 *  \param[out] true, if path was found
@@ -92,10 +97,13 @@ PRM<dim>::PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<
 */
 template <unsigned int dim>
 bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
-    this->setSamplingParams(start, goal);
-
     std::vector<Vector<dim>> query = {start, goal};
+    if (!m_validityChecker->check(query)) {
+        Logging::error("Configurations are not valid!", this);
+        return false;
+    }
     m_evaluator->setConfigs(query);
+    this->setSamplingParams(start, goal);
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
@@ -103,10 +111,119 @@ bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size
         expand(numNodes, numThreads);
     }
 
-    Logging::debug("Planner has: " + std::to_string(m_graph->numNodes()) + " nodes", this);
-    Logging::debug("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
-
+    this->showPlannerStats();
     return queryPath(start, goal);
+}
+
+template <unsigned int dim>
+bool PRM<dim>::computePath(const Vector<dim> start, const std::vector<Vector<dim>> goals, size_t numNodes, size_t numThreads) {
+    std::vector<Vector<dim>> query = goals;
+    query.insert(query.begin(), start);
+    if (!m_validityChecker->check(query)) {
+        Logging::error("Configurations are not valid!", this);
+        return false;
+    }
+    m_evaluator->setConfigs(query);
+    this->setSamplingParams(start, goals[0]);
+
+    size_t loopCount = 1;
+    while (!m_evaluator->evaluate()) {
+        Logging::debug("Iteration: " + std::to_string(loopCount++), this);
+        expand(numNodes, numThreads);
+    }
+    this->showPlannerStats();
+
+    std::vector<std::shared_ptr<Node<dim>>> nodePath;
+    for (auto config = query.begin(); config < query.end() - 1; ++config) {
+        if (!queryPath(*config, *(config + 1)))
+            return false;
+        nodePath.insert(nodePath.end(), m_nodePath.begin(), m_nodePath.end());
+    }
+    m_nodePath = nodePath;
+
+    return true;
+}
+
+template <unsigned int dim>
+bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
+                                 size_t numNodes, size_t numThreads) {
+    // this->setSamplingParams(start, goal);
+    if (!m_validityChecker->check(startConfig)) {
+        Logging::error("start configurations is not valid!", this);
+        return false;
+    }
+
+    m_evaluator->setConfigs(std::vector<Vector<dim>>({startConfig}));
+    m_evaluator->setPoses(std::vector<Vector6>({goalPose}));
+
+    size_t loopCount = 1;
+    while (!m_evaluator->evaluate()) {
+        Logging::info("Iteration: " + std::to_string(loopCount++), this);
+        expand(numNodes, numThreads);
+    }
+
+    // set goal node
+    Vector<dim> goalConfig = util::NaNVector<dim>();
+    auto robot = m_environment->getRobot();
+    for (auto &node : m_graph->getNodes()) {
+        if (util::checkConfigToPose<dim>(node->getValues(), goalPose, *robot, C)) {
+            goalConfig = node->getValues();
+            break;
+        }
+    }
+    if (util::empty<dim>(goalConfig)) {
+        Logging::warning("No goal config to goal pose found!", this);
+        return false;
+    }
+
+    this->showPlannerStats();
+    return queryPath(startConfig, goalConfig);
+}
+
+template <unsigned int dim>
+bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses,
+                                 const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads) {
+    if (!m_validityChecker->check(startConfig)) {
+        Logging::error("start configurations is not valid!", this);
+        return false;
+    }
+
+    m_evaluator->setConfigs(std::vector<Vector<dim>>({startConfig}));
+    m_evaluator->setPoses(pathPoses);
+
+    size_t loopCount = 1;
+    while (!m_evaluator->evaluate()) {
+        Logging::info("Iteration: " + std::to_string(loopCount++), this);
+        expand(numNodes, numThreads);
+    }
+
+    // set the goal configurations
+    std::vector<Vector<dim>> configs(pathPoses.size(), util::NaNVector<dim>());    // = { startConfig };
+    auto robot = m_environment->getRobot();
+    for (auto &node : m_graph->getNodes()) {
+        for (size_t i = 0; i < pathPoses.size(); ++i) {
+            if (util::checkConfigToPose<dim>(node->getValues(), pathPoses[i], *robot, C)) {
+                configs[i] = node->getValues();
+                break;
+            }
+        }
+    }
+    for (auto &config : configs) {
+        if (util::empty<dim>(config)) {
+            Logging::warning("No goal config to goal pose found!", this);
+            return false;
+        }
+    }
+    configs.insert(configs.begin(), startConfig);
+    std::vector<std::shared_ptr<Node<dim>>> nodePath;
+    for (auto config = configs.begin(); config < configs.end() - 1; ++config) {
+        if (!queryPath(*config, *(config + 1)))
+            return false;
+        nodePath.insert(nodePath.end(), m_nodePath.begin(), m_nodePath.end());
+    }
+    m_nodePath = nodePath;
+
+    return true;
 }
 
 /*!
@@ -244,19 +361,17 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
     }
 
     m_graph->clearQueryParents();
-    bool pathPlanned = util::aStar<dim>(sourceNode, goalNode, *m_metric);
-
-    if (pathPlanned) {
+    m_nodePath.clear();
+    if (util::aStar<dim>(sourceNode, goalNode, *m_metric)) {
         Logging::info("Path could be planned", this);
-        m_nodePath.push_back(std::shared_ptr<Node<dim>>(new Node<dim>(goal)));
-        std::shared_ptr<Node<dim>> temp = goalNode;
-        int count = 0;
-        while (temp != nullptr) {
-            ++count;
-            m_nodePath.push_back(temp);
-            temp = temp->getQueryParentNode();
+        
+        auto tmpNode = goalNode;
+        while (tmpNode != nullptr) {
+            m_nodePath.push_back(tmpNode);
+            tmpNode = tmpNode->getQueryParentNode();
         }
-        m_nodePath.push_back(std::shared_ptr<Node<dim>>(new Node<dim>(start)));
+
+        std::reverse(m_nodePath.begin(), m_nodePath.end());
         return true;
     } else {
         Logging::info("Path could NOT be planned", this);
@@ -291,17 +406,6 @@ std::shared_ptr<Node<dim>> PRM<dim>::connectNode(const Vector<dim> &config) {
     }
     m_graph->addNode(newNode);
     return newNode;
-
-    // nearestNode = util::getNearestValidNode<dim>(config, m_graph, m_trajectory, m_metric, m_rangeSize);
-    //// create new Node with connection to the nearest Node, if a valid path exists
-    // if (nearestNode) {
-    //    std::shared_ptr<Node<dim>> node(new Node<dim>(config));
-    //    node->setParent(nearestNode, m_metric->calcDist(nearestNode, node));
-    //    nearestNode->addChild(node, m_metric->calcDist(nearestNode, node));
-    //    return node;
-    //} else {
-    //    return nullptr;
-    //}
 }
 
 /*!

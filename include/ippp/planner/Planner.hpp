@@ -47,15 +47,15 @@ class Planner : public Identifier {
             const std::shared_ptr<Graph<dim>> &graph);
 
   public:
-    virtual bool computePath(const Vector<dim> startConfig, const Vector<dim> goalConfig, size_t numNodes, size_t numThreads) = 0;
-    // virtual bool computePath(const Vector<dim> startConfig, const std::vector<Vector<dim>> pathConfigs, size_t numNodes, size_t
-    // numThreads) = 0;
+    virtual bool computePath(const Vector<dim> startConfig, const Vector<dim> goalConfig, size_t numNodes,
+                             size_t numThreads = 1) = 0;
+    virtual bool computePath(const Vector<dim> startConfig, const std::vector<Vector<dim>> pathConfigs, size_t numNodes,
+                             size_t numThreads = 1) = 0;
     virtual bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
-                                   size_t numNodes, size_t numThreads);
-    // virtual bool computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses, size_t numNodes,
-    // size_t
-    // numThreads) = 0;
-    virtual bool expand(size_t numNode, size_t numthreads) = 0;
+                                   size_t numNodes, size_t numThreads = 1);
+    virtual bool computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses,
+                                   const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads = 1) = 0;
+    virtual bool expand(size_t numNode, size_t numthreads = 1) = 0;
 
     std::shared_ptr<Graph<dim>> getGraph();
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
@@ -65,6 +65,7 @@ class Planner : public Identifier {
 
   protected:
     void setSamplingParams(const Vector<dim> &start, const Vector<dim> &goal);
+    void showPlannerStats();
 
     std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
@@ -189,6 +190,12 @@ void Planner<dim>::setSamplingParams(const Vector<dim> &start, const Vector<dim>
     auto sampler = m_sampling->getSampler();
     sampler->setOrigin(start);
     sampler->setOptimalPathCost(m_metric->calcDist(start, goal));
+}
+
+template <unsigned int dim>
+void Planner<dim>::showPlannerStats() {
+    Logging::info("Planner has: " + std::to_string(m_graph->numNodes()) + " nodes", this);
+    Logging::info("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
 }
 
 } /* namespace ippp */

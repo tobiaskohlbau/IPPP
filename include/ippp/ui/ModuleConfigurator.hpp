@@ -32,7 +32,7 @@ namespace ippp {
 
 enum class MetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
 
-enum class EvaluatorType { SingleIteration, TreeConfig, Time, QueryOrTime, TreePose };
+enum class EvaluatorType { SingleIteration, Time, TreeConfig, TreePose, PRMConfig, PRMPose, QueryOrTime };
 
 enum class NeighborType { KDTree, BruteForce };
 
@@ -237,6 +237,9 @@ void ModuleConfigurator<dim>::initializeModules() {
         case EvaluatorType::SingleIteration:
             m_evaluator = std::make_shared<SingleIterationEvaluator<dim>>();
             break;
+        case EvaluatorType::Time:
+            m_evaluator = std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration);
+            break;
         case EvaluatorType::TreeConfig:
             m_evaluator = std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
                                                                      m_queryEvaluatorDist);
@@ -244,8 +247,13 @@ void ModuleConfigurator<dim>::initializeModules() {
         case EvaluatorType::TreePose:
             m_evaluator = std::make_shared<TreePoseEvaluator<dim>>(m_graph, m_environment, m_C);
             break;
-        case EvaluatorType::Time:
-            m_evaluator = std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration);
+        case EvaluatorType::PRMConfig:
+            m_evaluator =
+                std::make_shared<PRMConfigEvaluator<dim>>(m_graph, m_trajectory, m_validityChecker, m_queryEvaluatorDist);
+            break;
+        case EvaluatorType::PRMPose:
+            m_evaluator = std::make_shared<PRMPoseEvaluator<dim>>(m_environment, m_graph, m_trajectory, m_validityChecker, m_C,
+                                                                  m_queryEvaluatorDist);
             break;
         case EvaluatorType::QueryOrTime:
             std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;

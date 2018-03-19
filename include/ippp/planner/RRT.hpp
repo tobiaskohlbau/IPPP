@@ -37,7 +37,7 @@ class RRT : public TreePlanner<dim> {
     RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph,
         const std::string &name = "RRT");
 
-    virtual bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1);
+    virtual bool expand(size_t nbOfNodes, size_t nbOfThreads = 1);
     virtual bool connectGoalNode(const Vector<dim> goal);
 
   protected:
@@ -89,7 +89,7 @@ RRT<dim>::RRT(const std::shared_ptr<Environment> &environment, const RRTOptions<
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-bool RRT<dim>::computeTree(size_t nbOfNodes, size_t nbOfThreads) {
+bool RRT<dim>::expand(size_t nbOfNodes, size_t nbOfThreads) {
     if (m_initNode == nullptr) {
         Logging::error("Init Node is not connected", this);
         return false;

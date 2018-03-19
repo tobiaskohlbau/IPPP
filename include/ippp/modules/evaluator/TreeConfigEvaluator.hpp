@@ -95,8 +95,8 @@ bool TreeConfigEvaluator<dim>::evaluate() {
             continue;
 
         const Vector<dim> &target = m_targetConfigs[targetIndex];
-        for (size_t index = m_lastNodeIndex; index < m_graph->numNodes(); ++index) {
-            const Vector<dim> &nodeConfig = m_graph->getNode(index)->getValues();
+        for (auto &node : m_graph->getNodes(m_lastNodeIndex)) {
+            const Vector<dim> &nodeConfig = node->getValues();
             if (m_metric->calcSimpleDist(target, nodeConfig) < m_simplifiedDist &&
                 m_validityChecker->check(m_trajectory->calcTrajBin(target, nodeConfig))) {
                 m_validTargets[targetIndex] = true;
@@ -105,6 +105,7 @@ bool TreeConfigEvaluator<dim>::evaluate() {
             }
         }
     }
+    m_lastNodeIndex = m_graph->numNodes() - 1;
 
     for (auto validTarget : m_validTargets)
         if (!validTarget)

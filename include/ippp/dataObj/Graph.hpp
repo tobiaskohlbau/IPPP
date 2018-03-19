@@ -45,6 +45,7 @@ class Graph : public Identifier {
     std::shared_ptr<Node<dim>> getNode(size_t index) const;
     std::shared_ptr<Node<dim>> getNode(const Vector<dim> &config) const;
     std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
+    std::vector<std::shared_ptr<Node<dim>>> getNodes(size_t startIndex, size_t endIndex = 0) const;
 
     std::shared_ptr<Node<dim>> getNearestNode(const Vector<dim> &config) const;
     std::shared_ptr<Node<dim>> getNearestNode(const Node<dim> &node) const;
@@ -213,6 +214,25 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const 
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() const {
     return m_nodes;
+}
+
+/*!
+* \brief      Returns the list of all nodes from the Graph
+* \author     Sascha Kaden
+* \param[out] vector of nodes
+* \date       2016-05-25
+*/
+template <unsigned int dim>
+std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes(size_t startIndex, size_t endIndex) const {
+    if (startIndex >= m_nodes.size())
+        return std::vector<std::shared_ptr<Node<dim>>>();
+
+    if (endIndex == 0)
+        return std::vector<std::shared_ptr<Node<dim>>>(m_nodes.begin() + startIndex, m_nodes.end());
+    else if (startIndex < m_nodes.size())
+        return std::vector<std::shared_ptr<Node<dim>>>(m_nodes.begin() + startIndex, m_nodes.begin() + endIndex);
+
+    return std::vector<std::shared_ptr<Node<dim>>>();
 }
 
 /*!

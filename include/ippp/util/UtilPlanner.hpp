@@ -38,10 +38,36 @@ static bool checkConfigToPose(const Vector<dim> &config, const Vector6 &pose, Ro
 }
 
 /*!
+*  \brief      Check if a valid connection to a near Node of the graph is possible.
+*  \param[in]  configuration
+*  \param[in]  Graph
+*  \param[in]  ValidityChecker
+*  \param[in]  TrajectoryPlanner
+*  \param[in]  search range
+*  \param[out] near valid node, nullptr if no node was found
+*  \date       2018-03-17
+*/
+template <unsigned int dim>
+static std::shared_ptr<Node<dim>> findNearValidNode(const Vector<dim> &config, const Graph<dim> &graph,
+                                                    const TrajectoryPlanner<dim> &trajectory,
+                                                    const ValidityChecker<dim> &validityChecker, double range) {
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph.getNearNodes(config, range);
+    for (auto &nearNode : nearNodes)
+        if (validityChecker.check(trajectory.calcTrajBin(config, nearNode->getValues())))
+            return nearNode;
+
+    return nullptr;
+}
+
+/*!
 *  \brief      Try to find nearest Node of the graph with a valid connection to the passed config
 *  \author     Sascha Kaden
-*  \param[in]  Node
-*  \param[in]  nearest Node
+*  \param[in]  configuration
+*  \param[in]  Graph
+*  \param[in]  ValidityChecker
+*  \param[in]  TrajectoryPlanner
+*  \param[in]  DistanceMetric
+*  \param[in]  search range
 *  \date       2016-08-09
 */
 template <unsigned int dim>

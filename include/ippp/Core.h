@@ -45,11 +45,12 @@
 
 #include <ippp/modules/evaluator/ComposeEvaluator.hpp>
 #include <ippp/modules/evaluator/Evaluator.hpp>
+#include <ippp/modules/evaluator/PRMConfigEvaluator.hpp>
+#include <ippp/modules/evaluator/PRMPoseEvaluator.hpp>
 #include <ippp/modules/evaluator/SingleIterationEvaluator.hpp>
 #include <ippp/modules/evaluator/TimeEvaluator.hpp>
 #include <ippp/modules/evaluator/TreeConfigEvaluator.hpp>
 #include <ippp/modules/evaluator/TreePoseEvaluator.hpp>
-#include <ippp/modules/evaluator/PRMConfigEvaluator.hpp>
 
 #include <ippp/modules/neighborFinders/BruteForceNF.hpp>
 #include <ippp/modules/neighborFinders/KDTree.hpp>

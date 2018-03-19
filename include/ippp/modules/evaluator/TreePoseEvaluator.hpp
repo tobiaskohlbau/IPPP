@@ -33,7 +33,7 @@ namespace ippp {
 
 /*!
 * \brief   TreePoseEvaluator transforms the node configurations from the graph to the pose of the robot and checks there distance
-* to the passed target poses.
+* to the passed target poses. Return true at the evaluation step, if all targets are inside the distance of C.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
@@ -47,11 +47,9 @@ class TreePoseEvaluator : public Evaluator<dim> {
     void setPoses(const std::vector<Vector6> &targets) override;
 
   protected:
-    bool checkPose(const Vector<dim> &config, const Vector6 &targetPose);
-
     std::shared_ptr<Graph<dim>> m_graph = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
-    std::shared_ptr<RobotBase> m_robot;
+    std::shared_ptr<RobotBase> m_robot = nullptr;
 
     size_t m_lastNodeIndex = 0;
     std::vector<bool> m_validTargets;
@@ -61,12 +59,12 @@ class TreePoseEvaluator : public Evaluator<dim> {
 };
 
 /*!
-*  \brief      Constructor of the class EnvironmentConfigurator
+*  \brief      Constructor of the class TreePoseEvaluator
 *  \author     Sascha Kaden
 *  \param[in]  DistanceMetric
 *  \param[in]  Graph
 *  \param[in]  Environment
-*  \param[in]  min max distance
+*  \param[in]  min max distance of the pose
 *  \date       2017-10-16
 */
 template <unsigned int dim>
@@ -76,7 +74,8 @@ TreePoseEvaluator<dim>::TreePoseEvaluator(const std::shared_ptr<Graph<dim>> &gra
 }
 
 /*!
-*  \brief      Evaluation of the new nodes inside of the graph and checking of the distance to target poses.
+*  \brief      Evaluation of the new nodes inside of the graph by checking of the distance of the configruration to the target
+* poses.
 *  \author     Sascha Kaden
 *  \param[out] Evaluation result, true if all targets are close to graph nodes
 *  \date       2017-09-30
@@ -88,15 +87,15 @@ bool TreePoseEvaluator<dim>::evaluate() {
             continue;
 
         const Vector6 &target = m_targetPoses[targetIndex];
-        for (size_t index = m_lastNodeIndex; index < m_graph->numNodes(); ++index) {
-            const Vector<dim> &nodeConfig = m_graph->getNode(index)->getValues();
-            if (checkPose(nodeConfig, target)) {
+        for (auto &node : m_graph->getNodes(m_lastNodeIndex)) {
+            if (util::checkConfigToPose<dim>(node->getValues(), target, *m_robot, m_C)) {
                 m_validTargets[targetIndex] = true;
                 Logging::debug("Target: " + std::to_string(targetIndex) + " is solved.", this);
                 break;
             }
         }
     }
+    m_lastNodeIndex = m_graph->numNodes() - 1;
 
     for (auto validTarget : m_validTargets)
         if (!validTarget)
@@ -128,17 +127,6 @@ void TreePoseEvaluator<dim>::setPoses(const std::vector<Vector6> &targets) {
 
     m_validTargets = std::vector<bool>(targets.size(), false);
     m_targetPoses = targets;
-}
-
-/*!
-*  \brief      Check distance between targetPose and configuration.
-*  \author     Sascha Kaden
-*  \param[in]  validity, true if distance is smaller than max dist
-*  \date       2017-09-30
-*/
-template <unsigned int dim>
-bool TreePoseEvaluator<dim>::checkPose(const Vector<dim> &config, const Vector6 &targetPose) {
-    return util::checkConfigToPose<dim>(config, targetPose, *m_robot, m_C);
 }
 
 } /* namespace ippp */

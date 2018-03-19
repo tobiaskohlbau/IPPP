@@ -36,7 +36,7 @@ class EST : public TreePlanner<dim> {
     EST(const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
 
-    bool computeTree(size_t nbOfNodes, size_t nbOfThreads = 1);
+    bool expand(size_t nbOfNodes, size_t nbOfThreads = 1);
     bool connectGoalNode(const Vector<dim> goal);
 
   protected:
@@ -81,7 +81,7 @@ EST<dim>::EST(const std::shared_ptr<Environment> &environment, const PlannerOpti
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-bool EST<dim>::computeTree(size_t nbOfNodes, size_t nbOfThreads) {
+bool EST<dim>::expand(size_t nbOfNodes, size_t nbOfThreads) {
     if (m_initNode == nullptr) {
         Logging::error("Init Node is not connected", this);
         return false;
