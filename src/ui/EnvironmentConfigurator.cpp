@@ -204,6 +204,8 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
 
     for (size_t i = 0; i < m_obstaclePaths.size(); ++i) {
         auto model = factory->createModelFromFile(m_obstaclePaths[i]);
+        if (!model)
+            continue;
         auto obstacle = std::make_shared<ObstacleObject>("obstacle", model);
         obstacle->setPose(m_obstacleTransforms[i]);
         m_environment->addObstacle(obstacle);

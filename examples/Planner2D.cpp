@@ -17,7 +17,7 @@ Mesh generateMap() {
     Vector2 max(1000, 1000);
     auto sampler = std::make_shared<SamplerRandom<dim>>(std::make_pair(min, max));
 
-    util::MapGenerator<dim> mapGenerator(std::make_pair(min, max), sampler);
+    cad::MapGenerator<dim> mapGenerator(std::make_pair(min, max), sampler);
     auto meshes = mapGenerator.generateMap(80, Vector2(80, 80), Vector2(10, 10));
     auto mesh = cad::mergeMeshes(meshes);
     cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);

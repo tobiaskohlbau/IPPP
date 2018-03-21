@@ -152,7 +152,7 @@ bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
     auto nearNodes = m_graph->getNearNodes(*goalNode, m_stepSize * 3);
 
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
-    for (auto node : nearNodes) {
+    for (auto &node : nearNodes) {
         if (m_validityChecker->check(m_trajectory->calcTrajBin(goal, node->getValues()))) {
             nearestNode = node;
             break;
