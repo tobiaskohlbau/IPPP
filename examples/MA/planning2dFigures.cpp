@@ -39,7 +39,7 @@ ModuleConfigurator<dim> getCreator() {
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setPathModifierType(PathModifierType::NodeCut);
-    creator.setVadilityCheckerType(ValidityCheckerType::Dim2);
+    creator.setValidityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(3000);
     // creator.setEvaluatorType(EvaluatorType::TreeConfig);
     creator.setEvaluatorType(EvaluatorType::PRMPose);

@@ -18,7 +18,7 @@ Mesh generateMap() {
     auto sampler = std::make_shared<SamplerRandom<dim>>(std::make_pair(min, max));
 
     cad::MapGenerator<dim> mapGenerator(std::make_pair(min, max), sampler);
-    auto meshes = mapGenerator.generateMap(80, Vector2(80, 80), Vector2(10, 10));
+    auto meshes = mapGenerator.generateMap(80, Vector2(10, 10), Vector2(80, 80));
     auto mesh = cad::mergeMeshes(meshes);
     cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
     return mesh;
@@ -40,7 +40,7 @@ bool testTriangleRobot() {
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setGraphSortCount(3000);
-    creator.setVadilityCheckerType(ValidityCheckerType::FclMobile);
+    creator.setValidityCheckerType(ValidityCheckerType::FclMobile);
     creator.setEvaluatorType(EvaluatorType::TreePose);
     creator.setEvaluatorProperties(40, 60);
     creator.setC(C);
@@ -106,7 +106,7 @@ bool test2DSerialRobot() {
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setGraphSortCount(3000);
-    creator.setVadilityCheckerType(ValidityCheckerType::FclSerial);
+    creator.setValidityCheckerType(ValidityCheckerType::FclSerial);
     creator.setTrajectoryProperties(10, 0.01);
     creator.setEvaluatorType(EvaluatorType::QueryOrTime);
     creator.setEvaluatorProperties(1, 60);
@@ -166,42 +166,38 @@ void testPointRobot() {
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
     envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point);
-    auto environment = envConfigurator.getEnvironment();
+    auto env = envConfigurator.getEnvironment();
 
     double stepSize = 40;
     ModuleConfigurator<dim> creator;
-    creator.setEnvironment(environment);
+    creator.setEnvironment(env);
     creator.setC(C);
-    //creator.setPathModifierType(PathModifierType::NodeCut);
-    creator.setVadilityCheckerType(ValidityCheckerType::Dim2);
+    creator.setPathModifierType(PathModifierType::NodeCut);
+    creator.setValidityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(3000);
-    // creator.setEvaluatorType(EvaluatorType::TreeConfig);
-    creator.setEvaluatorType(EvaluatorType::PRMPose);
+    creator.setEvaluatorType(EvaluatorType::TreeConfig);
     creator.setEvaluatorProperties(stepSize, 30);
     creator.setSamplerType(SamplerType::Uniform);
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
     creator.setSamplingProperties(10, 80);
 
-    // auto planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(stepSize), creator.getGraph());
-    auto planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(stepSize), creator.getGraph());
-    Vector2 start(10, 10);
-    Vector2 goal(990, 990);
-    std::vector<Vector2> goals = {Vector2(800, 30), Vector2(990, 990)};
-    Vector6 goalPose = util::Vecd(800, 30, 0, 0, 0, 0);
-    std::vector<Vector6> goalPoses = { util::Vecd(30, 800, 0, 0, 0, 0) , util::Vecd(990, 990, 0, 0, 0, 0) };
+
+    auto planner = std::make_shared<RRTStarInformed<dim>>(env, creator.getRRTOptions(stepSize), creator.getGraph());
+    Vector2 start(150, 200);
+    Vector2 goal(730, 350);
 
     auto timer = std::make_shared<StatsTimeCollector>("Point2D Planning Time");
     Stats::addCollector(timer);
     timer->start();
-    bool connected = planner->computePathToPose(start, goalPoses, C, 1000, 3);
-    //bool connected = planner->computePath(start, goals, 2000, 3);
+    bool connected = planner->computePath(start, goal, 100, 3);
+    planner->optimize(1500, 1);
     timer->stop();
 
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
-    auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
+    auto workspace2D = cad::create2dspace(env->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
-    for (const auto& obstacle : environment->getObstacles())
+    for (const auto& obstacle : env->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
 
     drawing::drawGraph2D(image, nodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
@@ -218,7 +214,7 @@ void testPointRobot() {
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    Logging::setLogLevel(LogLevel::trace);
+    Logging::setLogLevel(LogLevel::debug);
 
     // while (!testTriangleRobot());
     // testTriangleRobot();

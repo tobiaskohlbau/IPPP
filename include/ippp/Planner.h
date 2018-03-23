@@ -20,4 +20,5 @@
 #include <ippp/planner/PRM.hpp>
 #include <ippp/planner/RRT.hpp>
 #include <ippp/planner/RRTStar.hpp>
+#include <ippp/planner/RRTStarInformed.hpp>
 #include <ippp/planner/SRT.hpp>

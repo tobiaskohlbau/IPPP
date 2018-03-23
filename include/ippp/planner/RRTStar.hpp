@@ -34,7 +34,7 @@ template <unsigned int dim>
 class RRTStar : public RRT<dim> {
   public:
     RRTStar(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
-            const std::shared_ptr<Graph<dim>> &graph);
+            const std::shared_ptr<Graph<dim>> &graph, const std::string &name = "RRT*");
 
     bool connectGoalNode(const Vector<dim> goal) override;
 
@@ -68,8 +68,8 @@ class RRTStar : public RRT<dim> {
 */
 template <unsigned int dim>
 RRTStar<dim>::RRTStar(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
-                      const std::shared_ptr<Graph<dim>> &graph)
-    : RRT<dim>(environment, options, graph, "RRT*") {
+                      const std::shared_ptr<Graph<dim>> &graph, const std::string &name)
+    : RRT<dim>(environment, options, graph, name) {
 }
 
 /*!

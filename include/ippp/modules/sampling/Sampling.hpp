@@ -48,6 +48,7 @@ class Sampling : public Identifier {
     virtual Vector<dim> getSample(const Vector<dim> &prevSample);
     virtual std::vector<Vector<dim>> getSamples(size_t amount);
 
+    void setSampler(const std::shared_ptr<Sampler<dim>> &sampler);
     std::shared_ptr<Sampler<dim>> getSampler();
     double getRandomNumber() const;
 
@@ -114,7 +115,22 @@ std::vector<Vector<dim>> Sampling<dim>::getSamples(size_t amount) {
 }
 
 /*!
-*  \brief      Return the Sampler of the Sampling strategy.
+*  \brief      Sets the Sampler of the Sampling strategy.
+*  \author     Sascha Kaden
+*  \param[in]  Sampler instance
+*  \date       2018-03-23
+*/
+template <unsigned int dim>
+void Sampling<dim>::setSampler(const std::shared_ptr<Sampler<dim>> &sampler) {
+    if (!sampler) {
+        Logging::error("Empty sampler passed!", this);
+        return;
+    }
+    m_sampler = sampler;
+}
+
+/*!
+*  \brief      Returns the Sampler of the Sampling strategy.
 *  \author     Sascha Kaden
 *  \param[out] Sampler instance
 *  \date       2017-11-14

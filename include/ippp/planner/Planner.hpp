@@ -52,10 +52,11 @@ class Planner : public Identifier {
     virtual bool computePath(const Vector<dim> startConfig, const std::vector<Vector<dim>> pathConfigs, size_t numNodes,
                              size_t numThreads = 1) = 0;
     virtual bool computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
-                                   size_t numNodes, size_t numThreads = 1);
+                                   size_t numNodes, size_t numThreads = 1) = 0;
     virtual bool computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses,
                                    const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads = 1) = 0;
-    virtual bool expand(size_t numNode, size_t numthreads = 1) = 0;
+    virtual bool expand(size_t numNode, size_t numThreads = 1) = 0;
+    virtual bool optimize(size_t numNode, size_t numThreads = 1);
 
     std::shared_ptr<Graph<dim>> getGraph();
     std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
@@ -119,8 +120,8 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
 }
 
 template <unsigned int dim>
-bool Planner<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
-                                     size_t numNodes, size_t numThreads) {
+bool Planner<dim>::optimize(size_t numNodes, size_t numThreads) {
+    Logging::warning("No optimization implemented!", this);
     return true;
 }
 

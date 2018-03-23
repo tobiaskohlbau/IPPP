@@ -69,7 +69,7 @@ class ModuleConfigurator : public Configurator {
     std::shared_ptr<Sampler<dim>> getSampler();
     std::shared_ptr<Sampling<dim>> getSampling();
     std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner();
-    std::shared_ptr<ValidityChecker<dim>> getVadilityChecker();
+    std::shared_ptr<ValidityChecker<dim>> getValidityChecker();
 
     PlannerOptions<dim> getPlannerOptions();
     PRMOptions<dim> getPRMOptions(double rangeSize);
@@ -90,7 +90,7 @@ class ModuleConfigurator : public Configurator {
     void setSamplingType(SamplingType type);
     void setTrajectoryType(TrajectoryType type);
     void setTrajectoryProperties(double posRes, double oriRes);
-    void setVadilityCheckerType(ValidityCheckerType type);
+    void setValidityCheckerType(ValidityCheckerType type);
     void setEuclideanConstraint(const Vector6 &constraint, const double epsilon = IPPP_EPSILON);
     void setC(const std::pair<Vector6, Vector6> &C);
 
@@ -356,7 +356,7 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     json["TrajectoryType"] = static_cast<int>(m_trajectoryType);
     json["PosRes"] = m_posRes;
     json["OriRes"] = m_oriRes;
-    json["VadilityType"] = static_cast<int>(m_validityType);
+    json["ValidityType"] = static_cast<int>(m_validityType);
 
     return saveJson(filePath, json);
 }
@@ -392,7 +392,7 @@ bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
     m_trajectoryType = static_cast<TrajectoryType>(json["TrajectoryType"].get<int>());
     m_posRes = json["PosRes"].get<double>();
     m_posRes = json["OriRes"].get<double>();
-    m_validityType = static_cast<ValidityCheckerType>(json["VadilityType"].get<int>());
+    m_validityType = static_cast<ValidityCheckerType>(json["ValidityType"].get<int>());
     initializeModules();
 
     return true;
@@ -603,7 +603,7 @@ void ModuleConfigurator<dim>::setTrajectoryProperties(double posRes, double oriR
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setVadilityCheckerType(ValidityCheckerType type) {
+void ModuleConfigurator<dim>::setValidityCheckerType(ValidityCheckerType type) {
     m_validityType = type;
     m_parameterModified = true;
 }
@@ -733,7 +733,7 @@ std::shared_ptr<TrajectoryPlanner<dim>> ModuleConfigurator<dim>::getTrajectoryPl
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-std::shared_ptr<ValidityChecker<dim>> ModuleConfigurator<dim>::getVadilityChecker() {
+std::shared_ptr<ValidityChecker<dim>> ModuleConfigurator<dim>::getValidityChecker() {
     initializeModules();
     return m_validityChecker;
 }

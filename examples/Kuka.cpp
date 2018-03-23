@@ -68,7 +68,7 @@ void simpleRRT() {
     creator.setEvaluatorProperties(stepSize, 20000);
     creator.setGraphSortCount(2000);
     creator.setEnvironment(environment);
-    creator.setVadilityCheckerType(ValidityCheckerType::FclSerial);
+    creator.setValidityCheckerType(ValidityCheckerType::FclSerial);
     creator.setSamplingType(SamplingType::NearObstacle);
 
     RRTStar<dim> planner(environment, creator.getRRTOptions(stepSize), creator.getGraph());

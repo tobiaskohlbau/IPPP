@@ -42,10 +42,10 @@ bool computePath(const std::string& benchmarkDir, const std::string& queryPath, 
     std::shared_ptr<CollisionDetection<6>> collision(new CollisionDetectionPqp<6>(environment));
 
     ModuleConfigurator<dim> creator;
-    creator.setVadilityCheckerType(ValidityCheckerType::PQP);
+    creator.setValidityCheckerType(ValidityCheckerType::PQP);
     creator.setEnvironment(environment);
     ModuleConfigurator<dim> creatorBenchmark;
-    creatorBenchmark.setVadilityCheckerType(ValidityCheckerType::PQP);
+    creatorBenchmark.setValidityCheckerType(ValidityCheckerType::PQP);
     creatorBenchmark.setEnvironment(environment);
 
     for (int i = 3; i < 6; ++i) {

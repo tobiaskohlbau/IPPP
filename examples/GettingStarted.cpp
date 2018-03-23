@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     // create all required core modules with the ModuleConfigurator
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
-    creator.setVadilityCheckerType(ValidityCheckerType::PQP);
+    creator.setValidityCheckerType(ValidityCheckerType::PQP);
     creator.setMetricType(MetricType::L2);
     creator.setPathModifierType(PathModifierType::NodeCut);
     creator.setSamplerType(SamplerType::Uniform);
