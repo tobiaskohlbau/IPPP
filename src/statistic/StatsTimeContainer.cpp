@@ -29,7 +29,7 @@ void StatsTimeContainer::initialize() {
 }
 
 void StatsTimeContainer::writeData(std::ostream &stream) {
-    stream << getDuration().count();
+    stream << std::to_string(getDuration().count());
 }
 
 void StatsTimeContainer::start() {

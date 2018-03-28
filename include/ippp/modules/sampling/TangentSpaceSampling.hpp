@@ -46,7 +46,7 @@ class TangentSpaceSampling : public Sampling<dim> {
 
   private:
     std::shared_ptr<SerialRobot> m_serialRobot = nullptr;
-    std::unique_ptr<RGDSampling<dim>> m_rgdSampling = nullptr;
+    std::shared_ptr<RGDSampling<dim>> m_rgdSampling = nullptr;
     std::shared_ptr<Graph<dim>> m_graph = nullptr;
     double m_maxDisplacement = 10;
     Matrix<dim> m_I;
@@ -77,7 +77,7 @@ TangentSpaceSampling<dim>::TangentSpaceSampling(const std::shared_ptr<Environmen
                                                 const std::pair<Vector6, Vector6> &C, const Transform &taskFrame)
     : Sampling<dim>("TangentSpaceSampling", environment, validityChecker, sampler, attempts),
       m_maxDisplacement(maxDisplacement),
-      m_rgdSampling(std::make_unique<RGDSampling<dim>>(environment, validityChecker, sampler, attempts, graph)),
+      m_rgdSampling(std::make_shared<RGDSampling<dim>>(environment, validityChecker, sampler, attempts, graph)),
       m_graph(graph),
       m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(environment->getRobot())),
       m_I(Matrix<dim>::Identity()),

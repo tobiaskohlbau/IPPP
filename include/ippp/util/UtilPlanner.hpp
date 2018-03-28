@@ -22,6 +22,7 @@
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/modules/distanceMetrics/DistanceMetric.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <ippp/util/UtilList.hpp>
 
 namespace ippp {
 namespace util {

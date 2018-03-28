@@ -46,6 +46,7 @@ class CollisionDetection2D : public CollisionDetection<dim> {
     std::vector<Mesh> m_obstacles;
 
     using ValidityChecker<dim>::m_environment;
+    using ValidityChecker<dim>::checkRobotBound;
 };
 
 /*!

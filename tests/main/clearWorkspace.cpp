@@ -37,7 +37,7 @@ TEST(MAIN, clearWorkspace2D) {
 
     ModuleConfigurator<dim> modulConfig;
     modulConfig.setEnvironment(environment);
-    modulConfig.setVadilityCheckerType(ValidityCheckerType::AlwaysValid);
+    modulConfig.setValidityCheckerType(ValidityCheckerType::AlwaysValid);
     modulConfig.setSamplerProperties("asldkf2o345;lfdnsa;f", 1);
 
     std::vector<MetricType> metricTypes;

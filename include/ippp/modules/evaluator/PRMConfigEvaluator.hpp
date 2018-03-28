@@ -96,7 +96,7 @@ bool PRMConfigEvaluator<dim>::evaluate() {
     }
 
     // check that all configuration are connectable to a node
-    for (auto &validTarget : m_validTargets)
+    for (auto validTarget : m_validTargets)
         if (!validTarget)
             return false;
 

@@ -42,6 +42,7 @@ class GridSampler : public Sampler<dim> {
     void setResolution(double res);
     double getResolution() const;
     size_t numSamples() const;
+    std::vector<Vector<dim>> getGridSamples();
 
   protected:
     void generateGridConfigs();
@@ -128,6 +129,17 @@ Vector<dim> GridSampler<dim>::getSample() {
     }
     m_curIndex = 1;
     return m_gridConfigs.front();
+}
+
+/*!
+*  \brief      Return all grid samples
+*  \author     Sascha Kaden
+*  \param[out] samples
+*  \date       2018-03-28
+*/
+template <unsigned int dim>
+std::vector<Vector<dim>> GridSampler<dim>::getGridSamples() {
+    return m_gridConfigs;
 }
 
 /*!

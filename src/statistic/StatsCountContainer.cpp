@@ -30,7 +30,7 @@ void StatsCountContainer::initialize() {
 }
 
 void StatsCountContainer::writeData(std::ostream &stream) {
-    stream << m_count;
+    stream << std::to_string(m_count);
 }
 
 void StatsCountContainer::add(size_t num) {

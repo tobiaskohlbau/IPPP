@@ -84,8 +84,8 @@ TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Env
 /*!
 *  \brief      Compute path from start Node<dim> to goal Node<dim> with passed number of samples and threads
 *  \author     Sascha Kaden
-*  \param[in]  start configuartion
-*  \param[in]  goal configuartion
+*  \param[in]  start configuration
+*  \param[in]  goal configuration
 *  \param[in]  number of samples
 *  \param[in]  number of threads
 *  \param[out] true, if path was found
@@ -107,7 +107,7 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
         Logging::info("Iteration: " + std::to_string(loopCount++), this);
-        expand(numNodes, numThreads);
+        this->expand(numNodes, numThreads);
     }
 
     this->showPlannerStats();
@@ -143,7 +143,7 @@ bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Ve
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
         Logging::info("Iteration: " + std::to_string(loopCount++), this);
-        expand(numNodes, numThreads);
+        this->expand(numNodes, numThreads);
     }
 
     // set goal node

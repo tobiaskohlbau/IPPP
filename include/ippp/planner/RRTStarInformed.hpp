@@ -42,6 +42,8 @@ class RRTStarInformed : public RRTStar<dim> {
     using Planner<dim>::m_environment;
     using Planner<dim>::m_evaluator;
     using Planner<dim>::m_pathPlanned;
+    using TreePlanner<dim>::m_initNode;
+    using TreePlanner<dim>::m_goalNode;
 };
 
 /*!
@@ -80,7 +82,7 @@ bool RRTStarInformed<dim>::optimize(size_t numNodes, size_t numThreads) {
     this->m_sampling->setSampler(ellipsoidSampler);
 
     ellipsoidSampler->setParams(m_initNode->getValues(), m_goalNode->getValues(), m_goalNode->getCost());
-    expand(numNodes, numThreads);
+    this->expand(numNodes, numThreads);
 
     this->m_sampling->setSampler(oldSampler);
 
