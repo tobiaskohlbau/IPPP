@@ -38,6 +38,7 @@ class StatsCountContainer : public StatsContainer {
     virtual void writeData(std::ostream &stream);
 
     void add(size_t num);
+    void set(size_t count);
 
   private:
     size_t m_count = 0;

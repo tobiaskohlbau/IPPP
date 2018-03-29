@@ -21,18 +21,26 @@
 namespace ippp {
 
 StatsCollisionCollector::StatsCollisionCollector(const std::string &name) : StatsCollector(name) {
-    m_count = std::make_shared<StatsCountContainer>("CollisionCount");
-    m_containers.push_back(m_count);
+    initialize();
+}
+
+void StatsCollisionCollector::add(size_t num) {
+    m_count += num;
+}
+
+void StatsCollisionCollector::initialize() {
+    m_count = 0;
+}
+
+nlohmann::json StatsCollisionCollector::serialize() {
+    nlohmann::json json;
+    json["CollisionCount"] = m_count;
+    return json;
 }
 
 void StatsCollisionCollector::writeData(std::ostream &stream) {
     stream << getName() << ": ";
-    m_count->writeData(stream);
-    stream << std::endl;
-}
-
-void StatsCollisionCollector::add(size_t num) {
-    m_count->add(num);
+    stream << "CollisionCount: " << m_count << std::endl;
 }
 
 } /* namespace ippp */

@@ -38,9 +38,4 @@ std::shared_ptr<StatsContainer> StatsCollector::getContainer(size_t hash) {
     return nullptr;
 }
 
-void StatsCollector::initialize() {
-    for (auto &container : m_containers)
-        container->initialize();
-}
-
 } /* namespace ippp */

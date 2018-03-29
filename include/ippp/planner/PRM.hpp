@@ -66,8 +66,10 @@ class PRM : public Planner<dim> {
     using Planner<dim>::m_metric;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
+    using Planner<dim>::m_plannerCollector;
     using Planner<dim>::m_trajectory;
     using Planner<dim>::m_sampling;
+    using Planner<dim>::updateStats;
 };
 
 /*!
@@ -97,6 +99,7 @@ PRM<dim>::PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<
 */
 template <unsigned int dim>
 bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
+    m_plannerCollector->startPlannerTimer();
     std::vector<Vector<dim>> query = {start, goal};
     if (!m_validityChecker->check(query)) {
         Logging::error("Configurations are not valid!", this);
@@ -111,12 +114,15 @@ bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size
         expand(numNodes, numThreads);
     }
 
-    this->showPlannerStats();
+    m_plannerCollector->stopPlannerTimer();
+    updateStats();
     return queryPath(start, goal);
 }
 
 template <unsigned int dim>
 bool PRM<dim>::computePath(const Vector<dim> start, const std::vector<Vector<dim>> goals, size_t numNodes, size_t numThreads) {
+    m_plannerCollector->startPlannerTimer();
+
     std::vector<Vector<dim>> query = goals;
     query.insert(query.begin(), start);
     if (!m_validityChecker->check(query)) {
@@ -131,7 +137,7 @@ bool PRM<dim>::computePath(const Vector<dim> start, const std::vector<Vector<dim
         Logging::debug("Iteration: " + std::to_string(loopCount++), this);
         expand(numNodes, numThreads);
     }
-    this->showPlannerStats();
+    updateStats();
 
     std::vector<std::shared_ptr<Node<dim>>> nodePath;
     for (auto config = query.begin(); config < query.end() - 1; ++config) {
@@ -141,12 +147,14 @@ bool PRM<dim>::computePath(const Vector<dim> start, const std::vector<Vector<dim
     }
     m_nodePath = nodePath;
 
+    m_plannerCollector->stopPlannerTimer();
     return true;
 }
 
 template <unsigned int dim>
 bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose, const std::pair<Vector6, Vector6> &C,
                                  size_t numNodes, size_t numThreads) {
+    m_plannerCollector->startPlannerTimer();
     // this->setSamplingParams(start, goal);
     if (!m_validityChecker->check(startConfig)) {
         Logging::error("start configurations is not valid!", this);
@@ -176,13 +184,15 @@ bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 go
         return false;
     }
 
-    this->showPlannerStats();
+    m_plannerCollector->stopPlannerTimer();
+    updateStats();
     return queryPath(startConfig, goalConfig);
 }
 
 template <unsigned int dim>
 bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses,
                                  const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads) {
+    m_plannerCollector->startPlannerTimer();
     if (!m_validityChecker->check(startConfig)) {
         Logging::error("start configurations is not valid!", this);
         return false;
@@ -197,6 +207,7 @@ bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const std::vecto
         expand(numNodes, numThreads);
     }
 
+    updateStats();
     // set the goal configurations
     std::vector<Vector<dim>> configs(pathPoses.size(), util::NaNVector<dim>());    // = { startConfig };
     auto robot = m_environment->getRobot();
@@ -214,6 +225,7 @@ bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const std::vecto
             return false;
         }
     }
+
     configs.insert(configs.begin(), startConfig);
     std::vector<std::shared_ptr<Node<dim>>> nodePath;
     for (auto config = configs.begin(); config < configs.end() - 1; ++config) {
@@ -223,6 +235,7 @@ bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const std::vecto
     }
     m_nodePath = nodePath;
 
+    m_plannerCollector->stopPlannerTimer();
     return true;
 }
 
@@ -364,7 +377,7 @@ bool PRM<dim>::queryPath(const Vector<dim> start, const Vector<dim> goal) {
     m_nodePath.clear();
     if (util::aStar<dim>(sourceNode, goalNode, *m_metric)) {
         Logging::info("Path could be planned", this);
-        
+
         auto tmpNode = goalNode;
         while (tmpNode != nullptr) {
             m_nodePath.push_back(tmpNode);

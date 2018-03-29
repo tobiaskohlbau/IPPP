@@ -64,6 +64,8 @@ class TreePlanner : public Planner<dim> {
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
+    using Planner<dim>::updateStats;
+    using Planner<dim>::m_plannerCollector;
 };
 
 /*!
@@ -93,6 +95,7 @@ TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Env
 */
 template <unsigned int dim>
 bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
+    m_plannerCollector->startPlannerTimer();
     this->setSamplingParams(start, goal);
     if (!setInitNode(start))
         return false;
@@ -110,7 +113,8 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
         this->expand(numNodes, numThreads);
     }
 
-    this->showPlannerStats();
+    updateStats();
+    m_plannerCollector->stopPlannerTimer();
     return connectGoalNode(goal);
 }
 
@@ -155,7 +159,8 @@ bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Ve
         }
     }
 
-    this->showPlannerStats();
+    m_plannerCollector->stopPlannerTimer();
+    updateStats();
     return m_pathPlanned;
 }
 

@@ -23,6 +23,8 @@
 #include <mutex>
 #include <vector>
 
+#include <json.hpp>
+
 #include <ippp/statistic/StatsCollector.h>
 
 namespace ippp {
@@ -39,6 +41,8 @@ class Stats {
     static std::vector<std::shared_ptr<StatsCollector>> getCollectors();
 
     static void initializeCollectors();
+    static void clearCollectors();
+    static nlohmann::json serialize();
     static void writeData(std::ostream &stream);
 
   private:

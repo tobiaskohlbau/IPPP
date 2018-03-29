@@ -19,6 +19,8 @@
 #ifndef STATSTIMECOLLECTOR_H
 #define STATSTIMECOLLECTOR_H
 
+#include <mutex>
+
 #include <ippp/statistic/StatsCollector.h>
 #include <ippp/statistic/StatsTimeContainer.h>
 
@@ -35,10 +37,14 @@ class StatsTimeCollector : public StatsCollector {
     void start();
     void stop();
 
+    virtual void initialize();
+    virtual nlohmann::json serialize();
     void writeData(std::ostream &stream);
 
   private:
-    std::shared_ptr<StatsTimeContainer> m_timer;
+    std::chrono::system_clock::time_point m_start;
+    std::chrono::system_clock::time_point m_stop;
+    std::mutex m_mutex;
 };
 
 } /* namespace ippp */

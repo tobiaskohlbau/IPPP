@@ -26,6 +26,9 @@
 #include <ippp/Identifier.h>
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/planner/options/PlannerOptions.hpp>
+#include <ippp/statistic/Stats.h>
+#include <ippp/statistic/StatsPathCollector.h>
+#include <ippp/statistic/StatsPlannerCollector.h>
 #include <ippp/types.h>
 #include <ippp/util/UtilEnvironment.hpp>
 #include <ippp/util/UtilPlanner.hpp>
@@ -58,24 +61,27 @@ class Planner : public Identifier {
     virtual bool expand(size_t numNode, size_t numThreads = 1) = 0;
     virtual bool optimize(size_t numNode, size_t numThreads = 1);
 
-    std::shared_ptr<Graph<dim>> getGraph();
-    std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
     virtual std::vector<Vector<dim>> getPath(double posRes = 1, double oriRes = 0.1) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
     std::vector<Vector<dim>> getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, double posRes, double oriRes);
 
+    std::shared_ptr<Graph<dim>> getGraph();
+    std::vector<std::shared_ptr<Node<dim>>> getGraphNodes();
+    void updateStats() const;
+
   protected:
     void setSamplingParams(const Vector<dim> &start, const Vector<dim> &goal);
-    void showPlannerStats();
 
-    std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
-    std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
+    std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
-    std::shared_ptr<PathModifier<dim>> m_pathModifier = nullptr;
     std::shared_ptr<Graph<dim>> m_graph = nullptr;
+    std::shared_ptr<PathModifier<dim>> m_pathModifier = nullptr;
+    std::shared_ptr<StatsPathCollector> m_pathCollector = nullptr;
+    std::shared_ptr<StatsPlannerCollector> m_plannerCollector = nullptr;
     std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
+    std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
 
     const PlannerOptions<dim> m_options;
     bool m_pathPlanned = false; /*!< true flag, if a plan could be computed */
@@ -102,6 +108,8 @@ template <unsigned int dim>
 Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment> &environment,
                       const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
     : Identifier(name),
+      m_pathCollector(std::make_shared<StatsPathCollector>(name + "Path")),
+      m_plannerCollector(std::make_shared<StatsPlannerCollector>(name + "Planner")),
       m_validityChecker(options.getValidityChecker()),
       m_environment(environment),
       m_evaluator(options.getEvaluator()),
@@ -112,6 +120,8 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
       m_trajectory(options.getTrajectoryPlanner()),
       m_sampling(options.getSampling()) {
     Logging::debug("Initialize", this);
+    Stats::addCollector(m_pathCollector);
+    Stats::addCollector(m_plannerCollector);
 
     // check dimensions of the robot to the dimension of the planner
     if (!util::checkDimensions<dim>(environment))
@@ -158,25 +168,26 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 template <unsigned int dim>
 std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, double posRes,
                                                         double oriRes) {
+    m_pathCollector->startModificationTimer();
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes = m_pathModifier->smoothPath(nodes);
+    m_pathCollector->stopModificationTimer();
+    m_pathCollector->setNodeCounts(nodes.size(), smoothedNodes.size());
+    m_pathCollector->setRes(std::make_pair(posRes, oriRes));
 
     Logging::info("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", this);
 
     // save the planner resolution and set passed resolutions
     auto plannerRes = m_trajectory->getResolutions();
     m_trajectory->setResolutions(posRes, oriRes);
-    std::vector<Vector<dim>> path;
-    for (auto node = smoothedNodes.begin(); node < smoothedNodes.end() - 1; ++node) {
-        path.push_back((*node)->getValues());
-        auto tmp = m_trajectory->calcTrajCont((**node), **(node + 1));
-        path.insert(path.end(), tmp.begin(), tmp.end());
-    }
-    path.push_back(smoothedNodes.back()->getValues());
+
+    auto path = util::calcConfigPath(nodes, *m_trajectory);
+    auto smoothedPath = util::calcConfigPath(smoothedNodes, *m_trajectory);
+    m_pathCollector->setConfigCounts(path.size(), smoothedPath.size());
 
     // set the resolution again to the planner resolution
     m_trajectory->setResolutions(plannerRes);
 
-    return path;
+    return smoothedPath;
 }
 
 /*!
@@ -193,10 +204,14 @@ void Planner<dim>::setSamplingParams(const Vector<dim> &start, const Vector<dim>
     sampler->setOptimalPathCost(m_metric->calcDist(start, goal));
 }
 
+/*!
+*  \brief      Update all statistics of the planner and his modules.
+*  \author     Sascha Kaden
+*  \date       2018-03-29
+*/
 template <unsigned int dim>
-void Planner<dim>::showPlannerStats() {
-    Logging::info("Planner has: " + std::to_string(m_graph->numNodes()) + " nodes", this);
-    Logging::info("Planner has: " + std::to_string(m_graph->numEdges()) + " edges", this);
+void Planner<dim>::updateStats() const {
+    m_graph->updateStats();
 }
 
 } /* namespace ippp */

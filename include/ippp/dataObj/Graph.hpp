@@ -22,6 +22,8 @@
 #include <ippp/Identifier.h>
 #include <ippp/dataObj/Node.hpp>
 #include <ippp/modules/neighborFinders/KDTree.hpp>
+#include <ippp/statistic/Stats.h>
+#include <ippp/statistic/StatsGraphCollector.h>
 #include <ippp/util/Logging.h>
 
 namespace ippp {
@@ -61,6 +63,7 @@ class Graph : public Identifier {
     size_t getSortCount() const;
     bool autoSort() const;
     void preserveNodePtr();
+    void updateStats() const;
 
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
 
@@ -76,6 +79,7 @@ class Graph : public Identifier {
 
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;                                             /*!< vector of all graph nodes */
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr; /*!< search module */
+    std::shared_ptr<StatsGraphCollector> m_collector = nullptr;
     std::mutex m_mutex; /*!< mutex for adding and changing of the vector of nodes */
 
     const size_t m_sortCount = 0;   /*!< divider, when the NeighborFinder has to be sorted */
@@ -93,7 +97,13 @@ class Graph : public Identifier {
 */
 template <unsigned int dim>
 Graph<dim>::Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder)
-    : Identifier("Graph"), m_sortCount(sortCount), m_neighborFinder(neighborFinder) {
+    : Identifier("Graph"),
+      m_sortCount(sortCount),
+      m_neighborFinder(neighborFinder),
+      m_collector(std::make_shared<StatsGraphCollector>("Graph")) {
+    Logging::debug("Initialize", this);
+    Stats::addCollector(m_collector);
+
     m_autoSort = (sortCount != 0);
     // reserve memory for the node vector to reduce computation time at new memory allocation
     m_nodes.reserve(1000);
@@ -390,6 +400,12 @@ void Graph<dim>::clearPointer() {
 template <unsigned int dim>
 void Graph<dim>::preserveNodePtr() {
     m_preserveNodePtr = true;
+}
+
+template <unsigned int dim>
+void Graph<dim>::updateStats() const {
+    m_collector->setNodeCount(m_nodes.size());
+    m_collector->setEdgeCount(numEdges());
 }
 
 /*!

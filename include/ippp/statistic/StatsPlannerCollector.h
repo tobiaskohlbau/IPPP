@@ -16,18 +16,14 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef STATSCOLLECTOR_H
-#define STATSCOLLECTOR_H
+#ifndef STATSPLANNERCOLLECTOR_H
+#define STATSPLANNERCOLLECTOR_H
 
-#include <iostream>
-#include <memory>
+#include <chrono>
 #include <mutex>
-#include <vector>
+#include <utility>
 
-#include <json.hpp>
-
-#include <ippp/Identifier.h>
-#include <ippp/statistic/StatsContainer.h>
+#include <ippp/statistic/StatsCollector.h>
 
 namespace ippp {
 
@@ -36,21 +32,27 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2017-10-20
 */
-class StatsCollector : public Identifier {
+class StatsPlannerCollector : public StatsCollector {
   public:
-    StatsCollector(const std::string &name);
+    StatsPlannerCollector(const std::string &name);
 
-    void addContainer(const std::shared_ptr<StatsContainer> &container);
-    std::shared_ptr<StatsContainer> getContainer(size_t hash);
-    virtual void initialize() = 0;
+    void startPlannerTimer();
+    void stopPlannerTimer();
+    void startOptimizationTimer();
+    void stopOptimizationTimer();
 
-    virtual nlohmann::json serialize() = 0;
-    virtual void writeData(std::ostream &stream) = 0;
+    virtual void initialize();
+    virtual nlohmann::json serialize();
+    void writeData(std::ostream &stream);
 
-  protected:
-    std::vector<std::shared_ptr<StatsContainer>> m_containers;
+  private:
+    std::chrono::system_clock::time_point m_startPlanning;
+    std::chrono::system_clock::time_point m_stopPlanning;
+    std::chrono::system_clock::time_point m_startOptimization;
+    std::chrono::system_clock::time_point m_stopOptimization;
+    std::mutex m_mutex;
 };
 
 } /* namespace ippp */
 
-#endif    // STATSCOLLECTOR_H
+#endif    // STATSPLANNERCOLLECTOR_H

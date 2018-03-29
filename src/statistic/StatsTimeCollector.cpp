@@ -22,22 +22,35 @@
 namespace ippp {
 
 StatsTimeCollector::StatsTimeCollector(const std::string &name) : StatsCollector(name) {
-    m_timer = std::make_shared<StatsTimeContainer>(name);
-    m_containers.push_back(m_timer);
+    initialize();
+}
+
+void StatsTimeCollector::start() {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_start = std::chrono::system_clock::now();
+}
+
+void StatsTimeCollector::stop() {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_stop = std::chrono::system_clock::now();
+}
+
+void StatsTimeCollector::initialize() {
+    m_start = std::chrono::system_clock::now();
+    m_start = std::chrono::system_clock::now();
+}
+
+nlohmann::json StatsTimeCollector::serialize() {
+    nlohmann::json json;
+    std::chrono::duration<double> duration = m_stop - m_start;
+    json[getName()] = duration.count();
+    return json;
 }
 
 void StatsTimeCollector::writeData(std::ostream &stream) {
     stream << getName() << ": ";
-    m_timer->writeData(stream);
-    stream << std::endl;
-}
-
-void StatsTimeCollector::start() {
-    m_timer->start();
-}
-
-void StatsTimeCollector::stop() {
-    m_timer->stop();
+    std::chrono::duration<double> duration = m_stop - m_start;
+    stream << duration.count() << std::endl;
 }
 
 } /* namespace ippp */

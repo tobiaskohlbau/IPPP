@@ -42,6 +42,7 @@ class RRTStarInformed : public RRTStar<dim> {
     using Planner<dim>::m_environment;
     using Planner<dim>::m_evaluator;
     using Planner<dim>::m_pathPlanned;
+    using Planner<dim>::m_plannerCollector;
     using TreePlanner<dim>::m_initNode;
     using TreePlanner<dim>::m_goalNode;
 };
@@ -71,6 +72,7 @@ RRTStarInformed<dim>::RRTStarInformed(const std::shared_ptr<Environment> &enviro
 */
 template <unsigned int dim>
 bool RRTStarInformed<dim>::optimize(size_t numNodes, size_t numThreads) {
+    m_plannerCollector->startOptimizationTimer();
     if (!m_pathPlanned) {
         Logging::warning("No optimization, because no plan is planned", this);
         return false;
@@ -86,7 +88,8 @@ bool RRTStarInformed<dim>::optimize(size_t numNodes, size_t numThreads) {
 
     this->m_sampling->setSampler(oldSampler);
 
-    this->showPlannerStats();
+    m_plannerCollector->stopOptimizationTimer();
+    this->updateStats();
     return true;
 }
 

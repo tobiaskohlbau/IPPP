@@ -38,4 +38,9 @@ void StatsCountContainer::add(size_t num) {
     m_count += num;
 }
 
+void StatsCountContainer::set(size_t count) {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_count = count;
+}
+
 } /* namespace ippp */

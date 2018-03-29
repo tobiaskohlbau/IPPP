@@ -78,6 +78,9 @@ add_library(${PROJECT_NAME}
     src/statistic/StatsCollisionCollector.cpp
     src/statistic/StatsContainer.cpp
     src/statistic/StatsCountContainer.cpp
+    src/statistic/StatsGraphCollector.cpp
+    src/statistic/StatsPathCollector.cpp
+    src/statistic/StatsPlannerCollector.cpp
     src/statistic/StatsTimeCollector.cpp
     src/statistic/StatsTimeContainer.cpp
 

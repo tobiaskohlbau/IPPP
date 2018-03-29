@@ -16,41 +16,38 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/statistic/StatsTimeContainer.h>
+#include <ippp/statistic/StatsGraphCollector.h>
 
 namespace ippp {
 
-StatsTimeContainer::StatsTimeContainer(const std::string &name) : StatsContainer(name) {
+StatsGraphCollector::StatsGraphCollector(const std::string &name) : StatsCollector(name) {
     initialize();
 }
 
-void StatsTimeContainer::initialize() {
+void StatsGraphCollector::setNodeCount(size_t count) {
+    m_nodeCount = count;
 }
 
-void StatsTimeContainer::writeData(std::ostream &stream) {
-    stream << std::to_string(getDuration().count());
+void StatsGraphCollector::setEdgeCount(size_t count) {
+    m_edgeCount = count;
 }
 
-void StatsTimeContainer::start() {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    m_start = std::chrono::system_clock::now();
+void StatsGraphCollector::initialize() {
+    m_nodeCount = 0;
+    m_edgeCount = 0;
 }
 
-void StatsTimeContainer::stop() {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    m_stop = std::chrono::system_clock::now();
+nlohmann::json StatsGraphCollector::serialize() {
+    nlohmann::json json;
+    json["NodeCount"] = m_nodeCount;
+    json["EdgeCount"] = m_edgeCount;
+    return json;
 }
 
-std::chrono::system_clock::time_point StatsTimeContainer::getStart() {
-    return m_start;
-}
-
-std::chrono::system_clock::time_point StatsTimeContainer::getStop() {
-    return m_stop;
-}
-
-std::chrono::duration<double> StatsTimeContainer::getDuration() {
-    return m_stop - m_start;
+void StatsGraphCollector::writeData(std::ostream &stream) {
+    stream << getName() << ": " << std::endl;
+    stream << "NodeCount: " << m_nodeCount << std::endl;
+    stream << "EdgeCount: " << m_edgeCount << std::endl;
 }
 
 } /* namespace ippp */

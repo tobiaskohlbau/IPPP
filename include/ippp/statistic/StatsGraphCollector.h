@@ -16,18 +16,11 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef STATSCOLLECTOR_H
-#define STATSCOLLECTOR_H
+#ifndef STATSGRAPHCOLLECTOR_H
+#define STATSGRAPHCOLLECTOR_H
 
-#include <iostream>
-#include <memory>
-#include <mutex>
-#include <vector>
-
-#include <json.hpp>
-
-#include <ippp/Identifier.h>
-#include <ippp/statistic/StatsContainer.h>
+#include <ippp/statistic/StatsCollector.h>
+#include <ippp/statistic/StatsCountContainer.h>
 
 namespace ippp {
 
@@ -36,21 +29,22 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2017-10-20
 */
-class StatsCollector : public Identifier {
+class StatsGraphCollector : public StatsCollector {
   public:
-    StatsCollector(const std::string &name);
+    StatsGraphCollector(const std::string &name);
 
-    void addContainer(const std::shared_ptr<StatsContainer> &container);
-    std::shared_ptr<StatsContainer> getContainer(size_t hash);
-    virtual void initialize() = 0;
+    void setNodeCount(size_t count);
+    void setEdgeCount(size_t count);
 
-    virtual nlohmann::json serialize() = 0;
-    virtual void writeData(std::ostream &stream) = 0;
+    virtual void initialize();
+    virtual nlohmann::json serialize();
+    void writeData(std::ostream &stream);
 
-  protected:
-    std::vector<std::shared_ptr<StatsContainer>> m_containers;
+  private:
+    size_t m_nodeCount = 0;
+    size_t m_edgeCount = 0;
 };
 
 } /* namespace ippp */
 
-#endif    // STATSCOLLECTOR_H
+#endif    // StatsGraphCollector

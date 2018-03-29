@@ -165,6 +165,22 @@ static bool aStar(const std::shared_ptr<Node<dim>> &sourceNode, const std::share
     return false;
 }
 
+template <unsigned int dim>
+static std::vector<Vector<dim>> calcConfigPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes, const TrajectoryPlanner<dim> &trajectory) {
+    std::vector<Vector<dim>> path;
+    if (nodes.empty())
+        return path;
+    
+    for (auto node = nodes.begin(); node < nodes.end() - 1; ++node) {
+        path.push_back((*node)->getValues());
+        auto tmp = trajectory.calcTrajCont((**node), **(node + 1));
+        path.insert(path.end(), tmp.begin(), tmp.end());
+    }
+    path.push_back(nodes.back()->getValues());
+    return path;
+
+}
+
 } /* namespace util */
 } /* namespace ippp */
 

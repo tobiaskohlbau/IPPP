@@ -16,11 +16,14 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef STATSCOLLISIONCOLLECTOR_H
-#define STATSCOLLISIONCOLLECTOR_H
+#ifndef STATSPATHCOLLECTOR_H
+#define STATSPATHCOLLECTOR_H
+
+#include <chrono>
+#include <mutex>
+#include <utility>
 
 #include <ippp/statistic/StatsCollector.h>
-#include <ippp/statistic/StatsCountContainer.h>
 
 namespace ippp {
 
@@ -29,19 +32,31 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2017-10-20
 */
-class StatsCollisionCollector : public StatsCollector {
+class StatsPathCollector : public StatsCollector {
   public:
-    StatsCollisionCollector(const std::string &name);
-    void add(size_t num);
+    StatsPathCollector(const std::string &name);
+
+    void setNodeCounts(size_t nodeCount, size_t smoothedNodeCount);
+    void setConfigCounts(size_t configCount, size_t smoothedConfigCount);
+    void setRes(std::pair<double, double> resolution);
+    void startModificationTimer();
+    void stopModificationTimer();
 
     virtual void initialize();
     virtual nlohmann::json serialize();
     void writeData(std::ostream &stream);
 
   private:
-    size_t m_count = 0;
+    size_t m_nodeCount = 0;
+    size_t m_smoothedNodeCount = 0;
+    size_t m_configCount = 0;
+    size_t m_smoothedConfigCount = 0;
+    std::pair<double, double> m_pathRes;
+    std::chrono::system_clock::time_point m_startModification;
+    std::chrono::system_clock::time_point m_stopModification;
+    std::mutex m_mutex;
 };
 
 } /* namespace ippp */
 
-#endif    // STATSCOLLISIONCOLLECTOR_H
+#endif    // STATSPATHCOLLECTOR_H

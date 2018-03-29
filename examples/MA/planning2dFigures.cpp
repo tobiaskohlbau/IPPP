@@ -11,7 +11,7 @@ using namespace ippp;
 
 DEFINE_string(assetsDir, "../assets", "assets directory");
 const unsigned int dim = 2;
-const double stepSize = 40;
+const double stepSize = 40;//40
 
 Mesh generateMap(const std::string& seed) {
     const unsigned int dim = 2;
@@ -31,14 +31,15 @@ ModuleConfigurator<dim> getCreator() {
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(500, 500, 1)));
     // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/random2D.obj");
-    generateMap("sfdwefno23423");
+    //generateMap("sfdwefno23423");
+    generateMap("43708jionskldfsdfsafdsafdsafdq1235");
     envConfigurator.addObstacle("obstacle.obj");
     envConfigurator.setRobotType(RobotType::Point);
     auto environment = envConfigurator.getEnvironment();
 
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
-    creator.setPathModifierType(PathModifierType::NodeCut);
+    //creator.setPathModifierType(PathModifierType::NodeCut);
     creator.setValidityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(3000);
     // creator.setEvaluatorType(EvaluatorType::TreeConfig);
@@ -66,9 +67,9 @@ int main(int argc, char** argv) {
     Vector2 start(10, 10);
     Vector2 goal(490, 490);
 
-    bool PRMconnected = prm->computePath(start, goal, 1000, 1);
-    bool RRTconnected = rrt->computePath(start, goal, 1000, 1);
-    bool RRTSTARconnected = rrtStar->computePath(start, goal, 1000, 1);
+    bool PRMconnected = prm->computePath(start, goal, 200, 1);
+    bool RRTconnected = rrt->computePath(start, goal, 200, 1);
+    bool RRTSTARconnected = rrtStar->computePath(start, goal, 200, 1);
 
     auto workspace2D = cad::create2dspace(RRTcreator.getEnvironment()->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
@@ -99,7 +100,7 @@ int main(int argc, char** argv) {
     if (RRTconnected)
         drawing::drawPath2D(RRTimage, rrt->getPath(), Vector3i(255, 0, 0), 2);
     if (RRTSTARconnected)
-        drawing::drawPath2D(RRTSTARimage, rrt->getPath(), Vector3i(255, 0, 0), 2);
+        drawing::drawPath2D(RRTSTARimage, rrtStar->getPath(), Vector3i(255, 0, 0), 2);
 
     cv::imshow("PRM", PRMimage);
     cv::imshow("RRT", RRTimage);
@@ -109,5 +110,6 @@ int main(int argc, char** argv) {
     cv::imwrite("RRTSTAR.png", RRTSTARimage);
 
     Stats::writeData(std::cout);
+    ui::save("Stats.json", Stats::serialize(), 0);
     cv::waitKey(0);
 }

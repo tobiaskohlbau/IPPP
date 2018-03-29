@@ -46,9 +46,22 @@ void Stats::initializeCollectors() {
         collector->initialize();
 }
 
-void Stats::writeData(std::ostream &stream) {
+void Stats::clearCollectors() {
+    m_collectors.clear();
+}
+
+nlohmann::json Stats::serialize() {
+    nlohmann::json json;
     for (auto &collector : m_collectors)
+        json[collector->getName()] = collector->serialize();
+    return json;
+}
+
+void Stats::writeData(std::ostream &stream) {
+    for (auto &collector : m_collectors) {
         collector->writeData(stream);
+        stream << std::endl;
+    }
 }
 
 } /* namespace ippp */

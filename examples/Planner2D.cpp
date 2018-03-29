@@ -189,7 +189,7 @@ void testPointRobot() {
     auto timer = std::make_shared<StatsTimeCollector>("Point2D Planning Time");
     Stats::addCollector(timer);
     timer->start();
-    bool connected = planner->computePath(start, goal, 100, 3);
+    bool connected = planner->computePath(start, goal, 500, 3);
     planner->optimize(1500, 1);
     timer->stop();
 
@@ -208,7 +208,6 @@ void testPointRobot() {
 
     cv::namedWindow("Point2D", CV_WINDOW_AUTOSIZE);
     cv::imshow("Point2D", image);
-    cv::waitKey(0);
 }
 
 int main(int argc, char** argv) {
@@ -221,7 +220,9 @@ int main(int argc, char** argv) {
     // test2DSerialRobot();
     testPointRobot();
 
+    ui::save("Stats.json", Stats::serialize());
     Stats::writeData(std::cout);
+    cv::waitKey(0);
     std::string str;
     std::cin >> str;
 }
