@@ -16,6 +16,10 @@ DEFINE_string(assetsDir, "../assets", "assets directory");
 
 const unsigned int dim = 2;
 AABB workspace(Vector3(0, 0, 0), Vector3(2000, 2000, 2000));
+Vector2 start(300, 300);
+Vector2 goal(1500, 1000);
+
+std::vector<ParamsMA> m_paramsMA;
 
 void drawImage(std::shared_ptr<Planner<2>> planner, std::shared_ptr<Environment> env, size_t index) {
     auto workspace2D = cad::create2dspace(workspace, 255);
@@ -71,28 +75,36 @@ ModuleConfigurator<2> getCreator(std::shared_ptr<Environment> env, ParamsMA para
     return creator;
 }
 
-void testMobile() {
-    Vector2 start(300, 300);
-    Vector2 goal(1500, 1000);
+void planningThread(size_t startIndex, size_t endIndex) {
+    for (auto params = m_paramsMA.begin() + startIndex; params < m_paramsMA.begin() + endIndex; ++params) {
+        auto env = createEnvironment(*params);
+        auto creator = getCreator(env, *params);
 
-    ConfigurationMA config(true, false, true);
-    std::cout << config.numParams() << std::endl;
-
-    auto startTime = std::chrono::system_clock::now();
-    for (size_t i = 0; i < config.numParams(); ++i) {
-        auto params = config.getParams();
-        auto env = createEnvironment(params);
-        auto creator = getCreator(env, params);
-
-        auto planner = std::make_shared<RRTStarInformed<2>>(creator.getEnvironment(), creator.getRRTOptions(params.stepSize),
+        auto planner = std::make_shared<RRTStarInformed<2>>(creator.getEnvironment(), creator.getRRTOptions(params->stepSize),
                                                             creator.getGraph());
 
         planner->computePath(start, goal, 3000, 1);
-        if (params.optimize)
+        if (params->optimize)
             planner->optimize(1000, 1);
 
-        drawImage(planner, env, i);
+        drawImage(planner, env, params - m_paramsMA.begin());
     }
+}
+
+void testMobile() {
+    ConfigurationMA config(true, false, true);
+    std::cout << config.numParams() << std::endl;
+    m_paramsMA = config.getParamsList();
+    std::vector<std::thread> threads;
+
+    size_t nbOfThreads = 12;
+    size_t threadAmount = config.numParams() / nbOfThreads;
+
+    auto startTime = std::chrono::system_clock::now();
+    for (size_t i = 0; i < nbOfThreads; ++i)
+        threads.push_back(std::thread(&planningThread, i * threadAmount, (i + 1) * threadAmount));
+    for (size_t i = 0; i < nbOfThreads; ++i)
+        threads[i].join();
     std::chrono::duration<double> duration = std::chrono::system_clock::now() - startTime;
     std::cout << std::endl << "Evaluation time: " << duration.count() << std::endl;
 }

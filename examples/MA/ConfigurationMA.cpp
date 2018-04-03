@@ -78,6 +78,10 @@ ParamsMA ConfigurationMA::getParams() {
     return m_paramsMA[m_index++];
 }
 
+std::vector<ParamsMA> ConfigurationMA::getParamsList() {
+    return m_paramsMA;
+}
+
 size_t ConfigurationMA::numParams() {
     return m_paramsMA.size();
 }

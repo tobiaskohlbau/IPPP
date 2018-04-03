@@ -43,6 +43,7 @@ class ConfigurationMA {
       ConfigurationMA(bool useObstacle, bool useConstraint, bool isMobile);
 
       ParamsMA getParams();
+      std::vector<ParamsMA> getParamsList();
       size_t numParams();
 
     static std::vector<std::string> getSeeds();

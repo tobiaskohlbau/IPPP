@@ -60,7 +60,7 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
     : CollisionDetection<dim>("CollisionDetection2D", environment, request) {
     assert(dim % 2 == 0);
     if (m_environment->numObstacles() == 0) {
-        Logging::warning("Empty workspace", this);
+        Logging::info("Empty workspace", this);
     } else {
         for (auto obstacle : m_environment->getObstacles())
             m_obstacles.push_back(obstacle->model->m_mesh);
