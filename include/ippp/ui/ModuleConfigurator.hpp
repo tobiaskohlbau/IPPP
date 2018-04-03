@@ -32,7 +32,7 @@ namespace ippp {
 
 enum class MetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
 
-enum class EvaluatorType { SingleIteration, Time, TreeConfig, TreePose, PRMConfig, PRMPose, QueryOrTime };
+enum class EvaluatorType { SingleIteration, Time, TreeConfig, TreePose, PRMConfig, PRMPose, TreeConfigOrTime };
 
 enum class NeighborType { KDTree, BruteForce };
 
@@ -40,7 +40,7 @@ enum class PathModifierType { Dummy, NodeCut };
 
 enum class SamplerType { Random, NormalDist, Uniform, Grid, UniformBiased };
 
-enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle, RGD, TangentSpace };
+enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle, RGD, TS, FOR, Berenson };
 
 enum class TrajectoryType { Linear, RotateAtS };
 
@@ -255,7 +255,7 @@ void ModuleConfigurator<dim>::initializeModules() {
             m_evaluator = std::make_shared<PRMPoseEvaluator<dim>>(m_environment, m_graph, m_trajectory, m_validityChecker, m_C,
                                                                   m_queryEvaluatorDist);
             break;
-        case EvaluatorType::QueryOrTime:
+        case EvaluatorType::TreeConfigOrTime:
             std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
             evaluators.push_back(std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
                                                                             m_queryEvaluatorDist));

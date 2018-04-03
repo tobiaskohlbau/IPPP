@@ -267,5 +267,29 @@ double toRad(double deg) {
     return deg * toRad();
 }
 
+/*!
+*  \brief      Convert radian to degree value.
+*  \author     Sascha Kaden
+*  \param[in]  radian
+*  \date       2017-04-07
+*/
+std::vector<double> toDeg(std::vector<double> rads) {
+    for (auto &rad : rads)
+        rad * toDeg();
+    return rads;
+}
+
+/*!
+*  \brief      Convert degree to radian value.
+*  \author     Sascha Kaden
+*  \param[in]  degree
+*  \date       2017-04-07
+*/
+std::vector<double> toRad(std::vector<double> degs) {
+    for (auto &deg : degs)
+        deg * toRad();
+    return degs;
+}
+
 } /* namespace util */
 } /* namespace ippp */

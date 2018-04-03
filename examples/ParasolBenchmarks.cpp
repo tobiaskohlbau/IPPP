@@ -118,16 +118,15 @@ void benchmarkHedgehog() {
     std::cout << std::endl;
 }
 
-void generateMap() {
+void generateMap(AABB workspace) {
     const unsigned int dim = 2;
-    Vector2 min(0, 0);
-    Vector2 max(1000, 1000);
+    Vector2 min = Vector2(workspace.min()[0], workspace.min()[1]);
+    Vector2 max = Vector2(workspace.max()[0], workspace.max()[1]);
     auto sampler = std::make_shared<SamplerRandom<dim>>(std::make_pair(min, max));
 
-    cad::MapGenerator<dim> mapGenerator(std::make_pair(min, max), sampler);
+    cad::MapGenerator<dim> mapGenerator(workspace, sampler);
     auto meshes = mapGenerator.generateMap(400, Vector2(50, 50), Vector2(10, 10));
-    auto mesh = cad::mergeMeshes(meshes);
-    cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
+    cad::exportCad(cad::ExportFormat::OBJ, "obstacle", cad::mergeMeshes(meshes));
 
     for (size_t i = 0; i < meshes.size(); ++i)
         cad::exportCad(cad::ExportFormat::OBJ, "obstacle" + std::to_string(i), meshes[i]);

@@ -36,12 +36,13 @@ namespace cad {
 template <unsigned int dim>
 class MapGenerator : public Identifier {
   public:
-    MapGenerator(const std::pair<Vector<dim>, Vector<dim>> boundary, const std::shared_ptr<Sampler<dim>> &sampler);
+    MapGenerator(const AABB boundary, const std::shared_ptr<Sampler<dim>> &sampler);
     std::vector<Mesh> generateMap(size_t numObstacles, const Vector<dim> &minExtensions, const Vector<dim> &maxExtensions);
 
   protected:
     bool checkBounding(const Vector<dim> &sample, const Vector<dim> &extension);
 
+    AABB m_workspace;
     Vector<dim> m_minBoundary;
     Vector<dim> m_maxBoundary;
 
@@ -56,8 +57,19 @@ class MapGenerator : public Identifier {
 *  \date       2017-06-99
 */
 template <unsigned int dim>
-MapGenerator<dim>::MapGenerator(const std::pair<Vector<dim>, Vector<dim>> boundary, const std::shared_ptr<Sampler<dim>> &sampler)
-    : Identifier("MapGenerator"), m_minBoundary(boundary.first), m_maxBoundary(boundary.second), m_sampler(sampler) {
+MapGenerator<dim>::MapGenerator(const AABB boundary, const std::shared_ptr<Sampler<dim>> &sampler)
+    : Identifier("MapGenerator"), m_workspace(boundary), m_sampler(sampler) {
+    Vector3 min = boundary.min();
+    Vector3 max = boundary.max();
+    m_minBoundary[0] = min[0];
+    m_minBoundary[1] = min[1];
+    m_maxBoundary[0] = max[0];
+    m_maxBoundary[1] = max[1];
+
+    if (dim == 3) {
+        m_minBoundary[2] = min[2];
+        m_maxBoundary[2] = max[2];
+    }
 }
 
 /*!

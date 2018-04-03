@@ -16,9 +16,14 @@
 #
 #-------------------------------------------------------------------------//
 
-add_library(ui STATIC BenchmarkReader.cpp Drawing2D.cpp)
-target_link_libraries(ui
+add_library(ConfigurationMA STATIC ConfigurationMA.cpp)
+target_link_libraries(ConfigurationMA
     PRIVATE
         IPPP)
-set_target_properties(ui PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}")
+set_target_properties(ConfigurationMA PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}")
 
+if(OpenCV_FOUND)
+    add_ippp_example(ConfigSpace configSpace.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(Planning2dFigures planning2dFigures.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(evaluationMobile evaluationMobile.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+endif()

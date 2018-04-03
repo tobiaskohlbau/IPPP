@@ -72,6 +72,8 @@ void removeDuplicates(std::vector<Vector3> &vectors);
 
 double toDeg(double rad);
 double toRad(double deg);
+std::vector<double> toDeg(std::vector<double> rads);
+std::vector<double> toRad(std::vector<double> degs);
 
 /*!
 *  \brief      Convert Vec of deg angles to Vec of rad

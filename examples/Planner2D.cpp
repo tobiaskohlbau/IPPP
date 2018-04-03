@@ -11,16 +11,14 @@ using namespace ippp;
 
 DEFINE_string(assetsDir, "../assets", "assets directory");
 
-Mesh generateMap() {
-    const unsigned int dim = 2;
-    Vector2 min(0, 0);
-    Vector2 max(1000, 1000);
+Mesh generateMap(AABB workspace) {
+    Vector2 min = Vector2(workspace.min()[0], workspace.min()[1]);
+    Vector2 max = Vector2(workspace.max()[0], workspace.max()[1]);
     auto sampler = std::make_shared<SamplerRandom<dim>>(std::make_pair(min, max));
 
-    cad::MapGenerator<dim> mapGenerator(std::make_pair(min, max), sampler);
+    cad::MapGenerator<2> mapGenerator(workspace, sampler);
     auto meshes = mapGenerator.generateMap(80, Vector2(10, 10), Vector2(80, 80));
-    auto mesh = cad::mergeMeshes(meshes);
-    cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
+    cad::exportCad(cad::ExportFormat::OBJ, "obstacle", cad::mergeMeshes(meshes));
     return mesh;
 }
 
@@ -30,10 +28,11 @@ bool testTriangleRobot() {
     auto C = std::make_pair(min, -min);
 
     EnvironmentConfigurator envConfigurator;
-    envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1)));
+    AABB workspaceBound(Vector3(0, 0, 0), Vector3(1000, 1000, 1));
+    envConfigurator.setWorkspaceProperties(workspaceBound);
     envConfigurator.setRobotType(RobotType::Triangle2D);
     envConfigurator.setRobotBaseModelFile(FLAGS_assetsDir + "/robotModels/simpleTriangleRobot.obj");
-    //    generateMap();
+    //    generateMap(workspaceBound);
     //  envConfigurator.addObstacle("obstacle.obj");
     std::shared_ptr<Environment> environment = envConfigurator.getEnvironment();
 
@@ -180,7 +179,6 @@ void testPointRobot() {
     creator.setSamplerType(SamplerType::Uniform);
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
     creator.setSamplingProperties(10, 80);
-
 
     auto planner = std::make_shared<RRTStarInformed<dim>>(env, creator.getRRTOptions(stepSize), creator.getGraph());
     Vector2 start(150, 200);

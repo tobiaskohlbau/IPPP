@@ -13,26 +13,26 @@ DEFINE_string(assetsDir, "../assets", "assets directory");
 const unsigned int dim = 2;
 const double stepSize = 40;//40
 
-Mesh generateMap(const std::string& seed) {
+Mesh generateMap(const AABB workspace, const std::string& seed) {
     const unsigned int dim = 2;
-    Vector2 min(0, 0);
-    Vector2 max(500, 500);
+    Vector2 min = Vector2(workspace.min()[0], workspace.min()[1]);
+    Vector2 max = Vector2(workspace.max()[0], workspace.max()[1]);
     auto sampler = std::make_shared<SamplerRandom<dim>>(std::make_pair(min, max), seed);
 
-    cad::MapGenerator<dim> mapGenerator(std::make_pair(min, max), sampler);
+    cad::MapGenerator<dim> mapGenerator(workspace, sampler);
     auto meshes = mapGenerator.generateMap(150, Vector2(10, 10), Vector2(20, 20));
-    auto mesh = cad::mergeMeshes(meshes);
-    cad::exportCad(cad::ExportFormat::OBJ, "obstacle", mesh);
+    cad::exportCad(cad::ExportFormat::OBJ, "obstacle", cad::mergeMeshes(meshes));
     return mesh;
 }
 
 template <unsigned int dim>
 ModuleConfigurator<dim> getCreator() {
     EnvironmentConfigurator envConfigurator;
-    envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(500, 500, 1)));
+    AABB workspaceBound(Vector3(0, 0, 0), Vector3(500, 500, 1));
+    envConfigurator.setWorkspaceProperties(wordspaceBound);
     // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/random2D.obj");
     //generateMap("sfdwefno23423");
-    generateMap("43708jionskldfsdfsafdsafdsafdq1235");
+    generateMap(wordspaceBound, "43708jionskldfsdfsafdsafdsafdq1235");
     envConfigurator.addObstacle("obstacle.obj");
     envConfigurator.setRobotType(RobotType::Point);
     auto environment = envConfigurator.getEnvironment();
