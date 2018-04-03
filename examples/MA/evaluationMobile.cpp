@@ -30,10 +30,10 @@ void drawImage(std::shared_ptr<Planner<2>> planner, std::shared_ptr<Environment>
     auto path = planner->getPath();
     if (!path.empty())
         drawing::drawPath2D(image, path, Vector3i(255, 0, 0), 2);
-    
-    //cv::namedWindow("Planner", CV_WINDOW_AUTOSIZE);
-    //cv::imshow("Planner", image);
-    //cv::waitKey(0);
+
+    // cv::namedWindow("Planner", CV_WINDOW_AUTOSIZE);
+    // cv::imshow("Planner", image);
+    // cv::waitKey(0);
 
     cv::imwrite("Plan" + std::to_string(index) + ".png", image);
 }
@@ -78,13 +78,14 @@ void testMobile() {
     ConfigurationMA config(true, false, true);
     std::cout << config.numParams() << std::endl;
 
+    auto startTime = std::chrono::system_clock::now();
     for (size_t i = 0; i < config.numParams(); ++i) {
         auto params = config.getParams();
         auto env = createEnvironment(params);
         auto creator = getCreator(env, params);
 
-        auto planner =
-            std::make_shared<RRTStarInformed<2>>(creator.getEnvironment(), creator.getRRTOptions(params.stepSize), creator.getGraph());
+        auto planner = std::make_shared<RRTStarInformed<2>>(creator.getEnvironment(), creator.getRRTOptions(params.stepSize),
+                                                            creator.getGraph());
 
         planner->computePath(start, goal, 3000, 1);
         if (params.optimize)
@@ -92,12 +93,14 @@ void testMobile() {
 
         drawImage(planner, env, i);
     }
+    std::chrono::duration<double> duration = std::chrono::system_clock::now() - startTime;
+    std::cout << std::endl << "Evaluation time: " << duration.count() << std::endl;
 }
 
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    Logging::setLogLevel(LogLevel::debug);
+    Logging::setLogLevel(LogLevel::info);
 
     testMobile();
     // test2DSerialRobot<9>();

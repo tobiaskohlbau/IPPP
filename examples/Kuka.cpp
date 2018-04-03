@@ -64,7 +64,7 @@ void simpleRRT() {
 
     double stepSize = 2;
     ModuleConfigurator<dim> creator;
-    creator.setEvaluatorType(EvaluatorType::QueryOrTime);
+    creator.setEvaluatorType(EvaluatorType::TreeConfigOrTime);
     creator.setEvaluatorProperties(stepSize, 20000);
     creator.setGraphSortCount(2000);
     creator.setEnvironment(environment);

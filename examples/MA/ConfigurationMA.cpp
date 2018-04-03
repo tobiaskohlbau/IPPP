@@ -43,8 +43,8 @@ ConfigurationMA::ConfigurationMA(bool useObstacle, bool useConstraint, bool isMo
     std::vector<RRTType> rrtTypes = {RRTType::star, RRTType::Adapted, RRTType::CiBRRT};
 
     for (auto &stepSize : stepSizes) {
-        for (auto &optimize : optimizes) {
-            for (auto &obstacle : useObstacles) {
+        for (auto optimize : optimizes) {
+            for (auto obstacle : useObstacles) {
                 for (auto &sampler : samplers) {
                     for (auto &sampling : samplings) {
                         for (auto &modifierType : modifierTypes) {
