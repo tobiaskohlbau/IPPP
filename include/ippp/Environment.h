@@ -24,7 +24,6 @@
 
 #include <ippp/environment/model/ModelFactoryFcl.h>
 #include <ippp/environment/model/ModelFactoryPqp.h>
-#include <ippp/environment/model/ModelFactoryTriangle2D.h>
 #include <ippp/environment/model/ModelPqp.h>
 #include <ippp/environment/model/ModelTriangle2D.h>
 

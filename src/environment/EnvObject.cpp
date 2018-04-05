@@ -30,13 +30,12 @@ namespace ippp {
 */
 EnvObject::~EnvObject() = default;
 
-/*!
-*  \brief      Standard constructor of EnvObject
-*  \author     Sascha Kaden
-*  \date       2018-01-10
-*/
 EnvObject::EnvObject(const std::string &name, EnvObjectType type)
     : Identifier(name), m_type(type), m_pose(Transform::Identity()) {
+}
+
+EnvObject::EnvObject(const std::string &name, EnvObjectType type, const Transform &pose)
+    : Identifier(name), m_type(type), m_pose(pose) {
 }
 
 /*!

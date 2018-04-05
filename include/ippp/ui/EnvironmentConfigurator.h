@@ -30,10 +30,6 @@
 
 namespace ippp {
 
-enum class FactoryType { ModelFCL, ModelPQP, ModelTriangle2D };
-
-enum class RobotType { Jaco, Point, Triangle2D, Serial, Serial2D, Mobile };
-
 /*!
 * \brief   Class EnvironmentConfigurator constructs the environment of the planner
 * \author  Sascha Kaden
@@ -47,6 +43,7 @@ class EnvironmentConfigurator : public Configurator {
 
     void setWorkspaceProperties(const AABB &workspaceBounding);
     void addObstacle(const std::string &obstaclePath, const Vector6 &pose = Vector6::Zero());
+    void addObstacle(const Mesh &obstacle, const Vector6 &pose = Vector6::Zero());
     void setFactoryType(const FactoryType factoryType);
     void setRobotType(const RobotType robotType);
     void setRobotBaseModelFile(const std::string robotBaseModelFile);
@@ -68,17 +65,18 @@ class EnvironmentConfigurator : public Configurator {
     std::shared_ptr<RobotBase> createPointRobot();
     std::shared_ptr<RobotBase> createTriangleRobot(ModelFactory &factory);
     std::shared_ptr<RobotBase> createMobileRobot(ModelFactory &factory);
-    std::shared_ptr<RobotBase> createSerialRobot(ModelFactory &factory, RobotType type = RobotType::Serial);
+    std::shared_ptr<RobotBase> createSerialRobot(ModelFactory &factory, RobotType type = RobotType::Point2D);
 
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<RobotBase> m_robot = nullptr;
 
     std::vector<std::string> m_obstaclePaths;
+    std::vector<Mesh> m_obstacleMeshes;
     std::vector<Transform> m_obstacleTransforms;
-    AABB m_workspceBounding;
+    AABB m_workspaceBounding;
 
     FactoryType m_factoryType = FactoryType::ModelFCL;
-    RobotType m_robotType = RobotType::Point;
+    RobotType m_robotType = RobotType::Point2D;
 
     // robot base properties
     size_t m_robotDim;

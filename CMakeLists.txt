@@ -81,6 +81,7 @@ add_library(${PROJECT_NAME}
     src/statistic/StatsGraphCollector.cpp
     src/statistic/StatsPathCollector.cpp
     src/statistic/StatsPlannerCollector.cpp
+    src/statistic/StatsPropertyCollector.cpp
     src/statistic/StatsTimeCollector.cpp
     src/statistic/StatsTimeContainer.cpp
 
@@ -99,7 +100,6 @@ add_library(${PROJECT_NAME}
     src/environment/robot/TriangleRobot2D.cpp
     src/environment/model/ModelContainer.cpp
     src/environment/model/ModelFactoryPqp.cpp
-    src/environment/model/ModelFactoryTriangle2D.cpp
     src/environment/model/ModelFactoryFcl.cpp
     src/environment/model/ModelFcl.cpp
     src/environment/model/ModelPqp.cpp

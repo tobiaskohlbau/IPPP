@@ -16,16 +16,13 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef STATS_H
-#define STATS_H
+#ifndef STATSPROPERTYCOLLECTOR_H
+#define STATSPROPERTYCOLLECTOR_H
 
-#include <memory>
 #include <mutex>
-#include <vector>
-
-#include <json.hpp>
 
 #include <ippp/statistic/StatsCollector.h>
+#include <ippp/types.h>
 
 namespace ippp {
 
@@ -34,22 +31,31 @@ namespace ippp {
 * \author  Sascha Kaden
 * \date    2017-10-20
 */
-class Stats {
+class StatsPropertyCollector : public StatsCollector {
   public:
-    static void addCollector(const std::shared_ptr<StatsCollector> &collector);
-    static std::shared_ptr<StatsCollector> getCollector(size_t hash);
-    static std::vector<std::shared_ptr<StatsCollector>> getCollectors();
+    StatsPropertyCollector(const std::string &name);
 
-    static void initializeCollectors();
-    static void clearCollectors();
-    static nlohmann::json serialize();
-    static void writeData(std::ostream &stream);
+    void setProperties(RobotType robotType, bool useObstacle, bool useConstraint, bool optimized, double stepSize, SamplerType samplerType,
+                       SamplingType samplingType, PlannerType plannerType, PathModifierType pathModifierType);
+
+    void initialize();
+    nlohmann::json serialize();
+    void writeData(std::ostream &stream);
 
   private:
-    static std::vector<std::shared_ptr<StatsCollector>> m_collectors;
-    static std::mutex m_mutex;
+    bool m_useObstacle;
+    bool m_useConstraint;
+    bool m_optimized;
+    double m_stepSize;
+    SamplerType m_samplerType;
+    SamplingType m_samplingType;
+    PlannerType m_plannerType;
+    PathModifierType m_pathModifierType;
+    RobotType m_robotType;
+
+    std::mutex m_mutex;
 };
 
 } /* namespace ippp */
 
-#endif    // STATS_H
+#endif    // STATSPROPERTYCOLLECTOR_H

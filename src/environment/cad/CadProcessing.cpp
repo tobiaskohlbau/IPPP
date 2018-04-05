@@ -18,15 +18,21 @@
 
 #include <ippp/environment/cad/CadProcessing.h>
 
-#include <numeric>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 
 #include <ippp/util/Logging.h>
 #include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 namespace cad {
+
+bool checkMesh(const Mesh &mesh) {
+    if (mesh.vertices.empty() || mesh.faces.empty())
+        return false;
+    return true;
+}
 
 /*!
 *  \brief      Generate a Triangle2D from the passed Mesh.
@@ -85,7 +91,7 @@ Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
         vertexCount = mesh.vertices.size();
         for (auto &vertex : tmpMesh.vertices)
             mesh.vertices.push_back(vertex);
-        
+
         for (auto &face : tmpMesh.faces)
             mesh.faces.emplace_back(face[0] + vertexCount, face[1] + vertexCount, face[2] + vertexCount);
     }

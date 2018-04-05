@@ -30,6 +30,8 @@
 namespace ippp {
 namespace cad {
 
+bool checkMesh(const Mesh &mesh);
+
 std::vector<Triangle2D> generateTriangles(const Mesh &mesh);
 Mesh generateMesh(const std::vector<Triangle2D> &triangles);
 Mesh mergeMeshes(const std::vector<Mesh> &meshes);

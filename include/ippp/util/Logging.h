@@ -26,7 +26,7 @@
 namespace ippp {
 
 enum LogLevel { off, fatal, error, warn, info, debug, trace, all };
-enum class LogOutput { terminal, file, terminlAndFile };
+enum class LogOutput { terminal, file, terminalAndFile };
 
 /*!
 * \brief   Logging class for the complete framework

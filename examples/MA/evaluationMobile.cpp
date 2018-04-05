@@ -19,7 +19,9 @@ AABB workspace(Vector3(0, 0, 0), Vector3(2000, 2000, 2000));
 Vector2 start(300, 300);
 Vector2 goal(1500, 1000);
 
+ConfigurationMA m_configurationMA(RobotType::Point2D, true, false, true);
 std::vector<ParamsMA> m_paramsMA;
+
 
 void drawImage(std::shared_ptr<Planner<2>> planner, std::shared_ptr<Environment> env, size_t index) {
     auto workspace2D = cad::create2dspace(workspace, 255);
@@ -39,13 +41,13 @@ void drawImage(std::shared_ptr<Planner<2>> planner, std::shared_ptr<Environment>
     // cv::imshow("Planner", image);
     // cv::waitKey(0);
 
-    cv::imwrite("Plan" + std::to_string(index) + ".png", image);
+    cv::imwrite("images/Plan" + std::to_string(index) + ".png", image);
 }
 
 std::shared_ptr<Environment> createEnvironment(ParamsMA params) {
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(workspace);
-    envConfigurator.setRobotType(RobotType::Point);
+    envConfigurator.setRobotType(RobotType::Point2D);
 
     if (params.useObstacle) {
         Vector2 min = Vector2(workspace.min()[0], workspace.min()[1]);
@@ -53,8 +55,8 @@ std::shared_ptr<Environment> createEnvironment(ParamsMA params) {
 
         cad::MapGenerator<dim> mapGenerator(workspace, std::make_shared<SamplerRandom<2>>(std::make_pair(min, max), params.seed));
         auto meshes = mapGenerator.generateMap(200, Vector2(10, 10), Vector2(80, 80));
-        cad::exportCad(cad::ExportFormat::OBJ, "obstacle2D", cad::mergeMeshes(meshes));
-        envConfigurator.addObstacle("obstacle2D.obj");
+        for (auto &mesh : meshes)
+            envConfigurator.addObstacle(mesh);
     }
 
     return envConfigurator.getEnvironment();
@@ -77,6 +79,8 @@ ModuleConfigurator<2> getCreator(std::shared_ptr<Environment> env, ParamsMA para
 
 void planningThread(size_t startIndex, size_t endIndex) {
     for (auto params = m_paramsMA.begin() + startIndex; params < m_paramsMA.begin() + endIndex; ++params) {
+        Stats::initializeCollectors();
+        m_configurationMA.updatePropertyStats(params - m_paramsMA.begin());
         auto env = createEnvironment(*params);
         auto creator = getCreator(env, *params);
 
@@ -88,21 +92,23 @@ void planningThread(size_t startIndex, size_t endIndex) {
             planner->optimize(1000, 1);
 
         drawImage(planner, env, params - m_paramsMA.begin());
+        ui::save(std::to_string(params - m_paramsMA.begin()) + ".json", Stats::serialize());
     }
 }
 
 void testMobile() {
-    ConfigurationMA config(true, false, true);
-    std::cout << config.numParams() << std::endl;
-    m_paramsMA = config.getParamsList();
+    m_configurationMA = ConfigurationMA(RobotType::Point2D, true, false, true);
+    std::cout << m_configurationMA.numParams() << std::endl;
+    m_paramsMA = m_configurationMA.getParamsList();
     std::vector<std::thread> threads;
 
-    size_t nbOfThreads = 12;
-    size_t threadAmount = config.numParams() / nbOfThreads;
+    size_t nbOfThreads = 1;
+    size_t threadAmount = m_configurationMA.numParams() / nbOfThreads;
 
     auto startTime = std::chrono::system_clock::now();
     for (size_t i = 0; i < nbOfThreads; ++i)
         threads.push_back(std::thread(&planningThread, i * threadAmount, (i + 1) * threadAmount));
+
     for (size_t i = 0; i < nbOfThreads; ++i)
         threads[i].join();
     std::chrono::duration<double> duration = std::chrono::system_clock::now() - startTime;
@@ -112,10 +118,9 @@ void testMobile() {
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    Logging::setLogLevel(LogLevel::info);
+    Logging::setLogLevel(LogLevel::warn);
 
     testMobile();
-    // test2DSerialRobot<9>();
     std::string str;
     std::cin >> str;
 }

@@ -18,8 +18,8 @@
 
 #include <ippp/environment/model/ModelFactoryFcl.h>
 
-#include <ippp/util/Logging.h>
 #include <ippp/environment/cad/CadImportExport.h>
+#include <ippp/util/Logging.h>
 
 namespace ippp {
 
@@ -34,31 +34,49 @@ ModelFactoryFcl::ModelFactoryFcl() : ModelFactory("ModelFactory") {
 *  \param[out] smart pointer to ModelFcl
 *  \date       2017-02-19
 */
-std::shared_ptr<ModelContainer> ModelFactoryFcl::createModelFromFile(const std::string &filePath) {
-    if (filePath.empty()) {
-        Logging::error("Empty file path", this);
+std::shared_ptr<ModelContainer> ModelFactoryFcl::createModel(const Mesh &mesh) {
+    if (!cad::checkMesh(mesh)) {
+        Logging::error("Mesh is not correct", this);
         return nullptr;
     }
 
     std::shared_ptr<ModelFcl> fclModel(new ModelFcl());
-    fclModel->m_filePath = filePath;
-    if (!cad::importMesh(filePath, fclModel->m_mesh)) {
-        Logging::error("Could not load mesh", this);
-        return nullptr;
-    }
-    fclModel->m_mesh.aabb = cad::computeAABB(fclModel->m_mesh);
+    fclModel->m_mesh = mesh;
 
     std::vector<fcl::Vec3f> vertices;
     std::vector<fcl::Triangle> triangles;
-    for (auto vertex : fclModel->m_mesh.vertices)
+    for (auto &vertex : fclModel->m_mesh.vertices)
         vertices.emplace_back(vertex[0], vertex[1], vertex[2]);
-    for (auto face : fclModel->m_mesh.faces)
+    for (auto &face : fclModel->m_mesh.faces)
         triangles.emplace_back(face[0], face[1], face[2]);
     fclModel->m_fclModel->beginModel();
     fclModel->m_fclModel->addSubModel(vertices, triangles);
     fclModel->m_fclModel->endModel();
 
     return fclModel;
+}
+
+/*!
+*  \brief      Creates an ModelFcl from the passed source cad file.
+*  \details    The model contains the vertices and faces of the loaded cad model.
+*  \author     Sascha Kaden
+*  \param[in]  Mesh
+*  \param[out] smart pointer to ModelFcl
+*  \date       2017-02-19
+*/
+std::shared_ptr<ModelContainer> ModelFactoryFcl::createModelFromFile(const std::string &filePath) {
+    if (filePath.empty()) {
+        Logging::error("Empty file path", this);
+        return nullptr;
+    }
+
+    Mesh mesh;
+    if (!cad::importMesh(filePath, mesh)) {
+        Logging::error("Could not load mesh", this);
+        return nullptr;
+    }
+    mesh.aabb = cad::computeAABB(mesh);
+    return createModel(mesh);
 }
 
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryFcl::createModelsFromFile(const std::string &filePath) {

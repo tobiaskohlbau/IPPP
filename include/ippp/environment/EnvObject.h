@@ -24,14 +24,13 @@
 
 namespace ippp {
 
-enum class EnvObjectType { Robot, Obstacle };
-
 class EnvObject : public Identifier {
   public:
     virtual ~EnvObject();
 
   protected:
     EnvObject(const std::string &name, EnvObjectType type);
+    EnvObject(const std::string &name, EnvObjectType type, const Transform &pose);
 
   public:
     const EnvObjectType m_type;

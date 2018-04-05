@@ -30,32 +30,22 @@ namespace ippp {
 ModelFactoryPqp::ModelFactoryPqp() : ModelFactory("ModelFactoryPqp"){};
 
 /*!
-*  \brief      Creates an ModelPqp from the passed source cad file.
+*  \brief      Creates an ModelFcl from the passed source cad file.
 *  \details    The model contains the vertices and faces of the loaded cad model.
 *  \author     Sascha Kaden
 *  \param[in]  filePath
-*  \param[out] smart pointer to ModelPqp
+*  \param[out] smart pointer to ModelFcl
 *  \date       2017-02-19
 */
-std::shared_ptr<ModelContainer> ModelFactoryPqp::createModelFromFile(const std::string &filePath) {
-    if (filePath.empty()) {
-        Logging::error("Empty file path", this);
+std::shared_ptr<ModelContainer> ModelFactoryPqp::createModel(const Mesh &mesh) {
+    if (!cad::checkMesh(mesh)) {
+        Logging::error("Mesh is not correct", this);
         return nullptr;
     }
 
-    // create model container properties
     std::shared_ptr<ModelPqp> pqpModel(new ModelPqp());
-    pqpModel->m_filePath = filePath;
-    if (!cad::importMesh(filePath, pqpModel->m_mesh)) {
-        Logging::error("Could not load mesh", this);
-        return nullptr;
-    }
-    pqpModel->m_mesh.aabb = cad::computeAABB(pqpModel->m_mesh);
+    pqpModel->m_mesh = mesh;
 
-    // create PQP model
-    pqpModel->m_pqpModel.BeginModel();
-    // create pqp triangles
-    
     for (size_t i = 0; i < pqpModel->m_mesh.faces.size(); ++i) {
         PQP_REAL p[3][3];
         // go through faces
@@ -73,6 +63,29 @@ std::shared_ptr<ModelContainer> ModelFactoryPqp::createModelFromFile(const std::
     if (Logging::getLogLevel() == LogLevel::trace)
         pqpModel->m_pqpModel.MemUsage(1);
     return pqpModel;
+}
+
+/*!
+*  \brief      Creates an ModelPqp from the passed source cad file.
+*  \details    The model contains the vertices and faces of the loaded cad model.
+*  \author     Sascha Kaden
+*  \param[in]  filePath
+*  \param[out] smart pointer to ModelPqp
+*  \date       2017-02-19
+*/
+std::shared_ptr<ModelContainer> ModelFactoryPqp::createModelFromFile(const std::string &filePath) {
+    if (filePath.empty()) {
+        Logging::error("Empty file path", this);
+        return nullptr;
+    }
+
+    Mesh mesh;
+    if (!cad::importMesh(filePath, mesh)) {
+        Logging::error("Could not load mesh", this);
+        return nullptr;
+    }
+    mesh.aabb = cad::computeAABB(mesh);
+    return createModel(mesh);
 }
 
 std::vector<std::shared_ptr<ModelContainer>> ModelFactoryPqp::createModelsFromFile(const std::string &filePath) {

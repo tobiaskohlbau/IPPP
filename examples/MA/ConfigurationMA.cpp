@@ -18,11 +18,14 @@
 
 #include "ConfigurationMA.h"
 
+#include <ippp/statistic/Stats.h>
 #include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 
-ConfigurationMA::ConfigurationMA(bool useObstacle, bool useConstraint, bool isMobile) {
+ConfigurationMA::ConfigurationMA(RobotType robotType, bool useObstacle, bool useConstraint, bool isMobile)
+    : m_propertyCollector(std::make_shared<StatsPropertyCollector>("Properties")) {
+    Stats::addCollector(m_propertyCollector);
     auto seeds = getSeeds();
     std::vector<double> stepSizes = getSerialStepSizes();
     if (isMobile)
@@ -40,7 +43,7 @@ ConfigurationMA::ConfigurationMA(bool useObstacle, bool useConstraint, bool isMo
         samplings.push_back(SamplingType::Berenson);
     }
     std::vector<PathModifierType> modifierTypes = {PathModifierType::Dummy, PathModifierType::NodeCut};
-    std::vector<RRTType> rrtTypes = {RRTType::star, RRTType::Adapted, RRTType::CiBRRT};
+    std::vector<PlannerType> rrtTypes = {PlannerType::RRTStar, PlannerType::AdaptedRRT, PlannerType::CiBRRT};
 
     for (auto &stepSize : stepSizes) {
         for (auto optimize : optimizes) {
@@ -51,6 +54,7 @@ ConfigurationMA::ConfigurationMA(bool useObstacle, bool useConstraint, bool isMo
                             for (auto &rrtType : rrtTypes) {
                                 for (auto &seed : seeds) {
                                     ParamsMA param;
+                                    param.robotType = robotType;
                                     param.optimize = optimize;
                                     param.pathModifier = modifierType;
                                     param.samplerType = sampler;
@@ -71,10 +75,10 @@ ConfigurationMA::ConfigurationMA(bool useObstacle, bool useConstraint, bool isMo
 }
 
 ParamsMA ConfigurationMA::getParams() {
-    if (m_index >= m_paramsMA.size()) {
+    if (m_index >= m_paramsMA.size())
         return ParamsMA();
-    }
 
+    updatePropertyStats(m_index);
     return m_paramsMA[m_index++];
 }
 
@@ -84,6 +88,12 @@ std::vector<ParamsMA> ConfigurationMA::getParamsList() {
 
 size_t ConfigurationMA::numParams() {
     return m_paramsMA.size();
+}
+
+void ConfigurationMA::updatePropertyStats(size_t index) {
+    const auto params = m_paramsMA[index];
+    m_propertyCollector->setProperties(params.robotType, params.useObstacle, params.useConstraint, params.optimize, params.stepSize,
+                                       params.samplerType, params.samplingType, params.plannerType, params.pathModifier);
 }
 
 std::vector<std::string> ConfigurationMA::getSeeds() {

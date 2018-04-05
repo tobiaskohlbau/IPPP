@@ -29,7 +29,7 @@ bool testTriangleRobot() {
     EnvironmentConfigurator envConfigurator;
     AABB workspaceBound(Vector3(0, 0, 0), Vector3(1000, 1000, 1));
     envConfigurator.setWorkspaceProperties(workspaceBound);
-    envConfigurator.setRobotType(RobotType::Triangle2D);
+    envConfigurator.setRobotType(RobotType::Mobile2D);
     envConfigurator.setRobotBaseModelFile(FLAGS_assetsDir + "/robotModels/simpleTriangleRobot.obj");
     //    generateMap(workspaceBound);
     //  envConfigurator.addObstacle("obstacle.obj");
@@ -89,7 +89,7 @@ bool test2DSerialRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, -1), Vector3(1000, 1000, 1000)));
-    envConfigurator.setRobotType(RobotType::Serial);
+    envConfigurator.setRobotType(RobotType::Serial3D);
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     Vector3 min(-util::pi(), -util::pi(), -util::pi());
     Vector3 max(util::pi(), util::pi(), util::pi());
@@ -163,7 +163,7 @@ void testPointRobot() {
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
     envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/random2D.obj");
-    envConfigurator.setRobotType(RobotType::Point);
+    envConfigurator.setRobotType(RobotType::Point2D);
     auto env = envConfigurator.getEnvironment();
 
     double stepSize = 40;

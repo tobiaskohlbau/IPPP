@@ -21,6 +21,7 @@
 namespace ippp {
 
 std::vector<std::shared_ptr<StatsCollector>> Stats::m_collectors;
+std::mutex Stats::m_mutex;
 
 void Stats::addCollector(const std::shared_ptr<StatsCollector> &collector) {
     if (!collector)
@@ -42,11 +43,13 @@ std::vector<std::shared_ptr<StatsCollector>> Stats::getCollectors() {
 }
 
 void Stats::initializeCollectors() {
+    std::lock_guard<std::mutex> lock(m_mutex);
     for (auto &collector : m_collectors)
         collector->initialize();
 }
 
 void Stats::clearCollectors() {
+    std::lock_guard<std::mutex> lock(m_mutex);
     m_collectors.clear();
 }
 

@@ -32,7 +32,7 @@ ModuleConfigurator<dim> getCreator() {
     //generateMap("sfdwefno23423");
     generateMap(workspaceBound, "43708jionskldfsdfsafdsafdsafdq1235");
     envConfigurator.addObstacle("obstacle.obj");
-    envConfigurator.setRobotType(RobotType::Point);
+    envConfigurator.setRobotType(RobotType::Point2D);
     auto environment = envConfigurator.getEnvironment();
 
     ModuleConfigurator<dim> creator;

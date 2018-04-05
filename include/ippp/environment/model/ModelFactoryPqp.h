@@ -33,6 +33,7 @@ class ModelFactoryPqp : public ModelFactory {
   public:
     ModelFactoryPqp();
 
+    std::shared_ptr<ModelContainer> createModel(const Mesh &mesh);
     std::shared_ptr<ModelContainer> createModelFromFile(const std::string &filePath);
     std::vector<std::shared_ptr<ModelContainer>> createModelsFromFile(const std::string &filePath);
     std::vector<std::shared_ptr<ModelContainer>> createModelsFromFiles(const std::vector<std::string> &filePaths);

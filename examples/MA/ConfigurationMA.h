@@ -19,11 +19,11 @@
 #include <string>
 #include <vector>
 
-#include <ippp/ui/ModuleConfigurator.hpp>
+
+#include <ippp/statistic/StatsPropertyCollector.h>
+#include <ippp/types.h>
 
 namespace ippp {
-
-enum class RRTType { normal, star, starConnect, Adapted, AdaptedConnect, CiBRRT };
 
 struct ParamsMA {
     bool useObstacle = false;
@@ -34,25 +34,28 @@ struct ParamsMA {
     double stepSize = 1;
     SamplerType samplerType = SamplerType::Uniform;
     SamplingType samplingType = SamplingType::Straight;
-    RRTType rrtType = RRTType::normal;
+    PlannerType plannerType = PlannerType::RRT;
     PathModifierType pathModifier = PathModifierType::Dummy;
+    RobotType robotType = RobotType::Point2D;
 };
 
 class ConfigurationMA {
   public:
-      ConfigurationMA(bool useObstacle, bool useConstraint, bool isMobile);
+    ConfigurationMA(RobotType robotType, bool useObstacle, bool useConstraint, bool isMobile);
 
-      ParamsMA getParams();
-      std::vector<ParamsMA> getParamsList();
-      size_t numParams();
+    ParamsMA getParams();
+    std::vector<ParamsMA> getParamsList();
+    size_t numParams();
+    void updatePropertyStats(size_t index);
 
     static std::vector<std::string> getSeeds();
     static std::vector<double> getMobileStepSizes();
     static std::vector<double> getSerialStepSizes();
 
-private:
+  private:
     std::vector<ParamsMA> m_paramsMA;
     size_t m_index = 0;
+    std::shared_ptr<StatsPropertyCollector> m_propertyCollector = nullptr;
 };
 
 } /* namespace ippp */

@@ -39,6 +39,7 @@ class ModelFactory : public Identifier {
   public:
     ModelFactory(const std::string &name) : Identifier(name){};
 
+    virtual std::shared_ptr<ModelContainer> createModel(const Mesh &mesh) = 0;
     virtual std::shared_ptr<ModelContainer> createModelFromFile(const std::string &filePath) = 0;
     virtual std::vector<std::shared_ptr<ModelContainer>> createModelsFromFile(const std::string &filePath) = 0;
     virtual std::vector<std::shared_ptr<ModelContainer>> createModelsFromFiles(const std::vector<std::string> &filePaths) = 0;

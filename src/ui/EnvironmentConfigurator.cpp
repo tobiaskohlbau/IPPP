@@ -42,7 +42,7 @@ bool EnvironmentConfigurator::saveConfig(const std::string &filePath) {
     // workspace
     json["ObstaclePaths"] = m_obstaclePaths;
     json["ObstacleTransforms"] = jsonSerializer::serialize(m_obstacleTransforms);
-    json["WorkspaceBound"] = jsonSerializer::serialize(m_workspceBounding);
+    json["WorkspaceBound"] = jsonSerializer::serialize(m_workspaceBounding);
     json["FactoryType"] = static_cast<int>(m_factoryType);
     // base robot
     json["RobotType"] = static_cast<int>(m_robotType);
@@ -79,7 +79,7 @@ bool EnvironmentConfigurator::loadConfig(const std::string &filePath) {
     m_obstaclePaths = json["ObstaclePaths"].get<std::vector<std::string>>();
     if (!m_obstaclePaths.empty())
         m_obstacleTransforms = jsonSerializer::deserializeTransforms(json["ObstacleTransforms"]);
-    m_workspceBounding = jsonSerializer::deserializeAABB(json["WorkspaceBound"]);
+    m_workspaceBounding = jsonSerializer::deserializeAABB(json["WorkspaceBound"]);
     m_factoryType = static_cast<FactoryType>(json["FactoryType"].get<int>());
     // base robot
     m_robotType = static_cast<RobotType>(json["RobotType"].get<int>());
@@ -108,7 +108,7 @@ bool EnvironmentConfigurator::loadConfig(const std::string &filePath) {
 *  \date       2017-10-18
 */
 void EnvironmentConfigurator::setWorkspaceProperties(const AABB &workspaceBounding) {
-    m_workspceBounding = workspaceBounding;
+    m_workspaceBounding = workspaceBounding;
 }
 
 /*!
@@ -124,6 +124,11 @@ void EnvironmentConfigurator::addObstacle(const std::string &obstaclePath, const
     }
 
     m_obstaclePaths.push_back(obstaclePath);
+    m_obstacleTransforms.push_back(util::toTransform(pose));
+}
+
+void EnvironmentConfigurator::addObstacle(const Mesh &obstacle, const Vector6 &pose) {
+    m_obstacleMeshes.push_back(obstacle);
     m_obstacleTransforms.push_back(util::toTransform(pose));
 }
 
@@ -184,7 +189,7 @@ void EnvironmentConfigurator::setSerialRobotProperties(const std::vector<DhParam
 *  \date       2017-10-18
 */
 std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
-    m_environment = std::make_shared<Environment>(m_workspceBounding);
+    m_environment = std::make_shared<Environment>(m_workspaceBounding);
 
     std::shared_ptr<ModelFactory> factory;
     switch (m_factoryType) {
@@ -193,9 +198,6 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
             break;
         case FactoryType::ModelPQP:
             factory = std::make_shared<ModelFactoryPqp>();
-            break;
-        case FactoryType::ModelTriangle2D:
-            factory = std::make_shared<ModelFactoryTriangle2D>();
             break;
         default:
             factory = std::make_shared<ModelFactoryFcl>();
@@ -206,6 +208,12 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
         auto model = factory->createModelFromFile(m_obstaclePaths[i]);
         if (!model)
             continue;
+        m_environment->addObstacle(std::make_shared<ObstacleObject>("obstacle", model, m_obstacleTransforms[i]));
+    }
+    for (size_t i = 0; i < m_obstacleMeshes.size(); ++i) {
+        auto model = factory->createModel(m_obstacleMeshes[i]);
+        if (!model)
+            continue;
         auto obstacle = std::make_shared<ObstacleObject>("obstacle", model);
         obstacle->setPose(m_obstacleTransforms[i]);
         m_environment->addObstacle(obstacle);
@@ -213,16 +221,16 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
 
     m_robot = nullptr;
     switch (m_robotType) {
-        case RobotType::Point:
+        case RobotType::Point2D:
             m_robot = createPointRobot();
             break;
-        case RobotType::Mobile:
+        case RobotType::Mobile3D:
             m_robot = createMobileRobot(*factory);
             break;
-        case RobotType::Triangle2D:
+        case RobotType::Mobile2D:
             m_robot = createTriangleRobot(*factory);
             break;
-        case RobotType::Serial:
+        case RobotType::Serial3D:
             m_robot = createSerialRobot(*factory);
             break;
         case RobotType::Jaco:
@@ -256,8 +264,8 @@ std::vector<Transform> EnvironmentConfigurator::getObstaclePoses() const {
 }
 
 std::shared_ptr<RobotBase> EnvironmentConfigurator::createPointRobot() {
-    Vector3 min = m_workspceBounding.min();
-    Vector3 max = m_workspceBounding.max();
+    Vector3 min = m_workspaceBounding.min();
+    Vector3 max = m_workspaceBounding.max();
 
     Vector2 tempMin, tempMax;
     for (size_t i = 0; i < 2; ++i) {
@@ -268,8 +276,8 @@ std::shared_ptr<RobotBase> EnvironmentConfigurator::createPointRobot() {
 }
 
 std::shared_ptr<RobotBase> EnvironmentConfigurator::createTriangleRobot(ModelFactory &factory) {
-    Vector3 min = m_workspceBounding.min();
-    Vector3 max = m_workspceBounding.max();
+    Vector3 min = m_workspaceBounding.min();
+    Vector3 max = m_workspaceBounding.max();
 
     Vector3 tempMin, tempMax;
     for (size_t i = 0; i < 2; ++i) {
@@ -283,20 +291,20 @@ std::shared_ptr<RobotBase> EnvironmentConfigurator::createTriangleRobot(ModelFac
 }
 
 std::shared_ptr<RobotBase> EnvironmentConfigurator::createMobileRobot(ModelFactory &factory) {
-    Vector3 min = m_workspceBounding.min();
-    Vector3 max = m_workspceBounding.max();
+    Vector3 min = m_workspaceBounding.min();
+    Vector3 max = m_workspaceBounding.max();
     Vector6 min6 = util::Vecd(min[0], min[1], min[2], 0, 0, 0);
     Vector6 max6 = util::Vecd(max[0], max[1], max[2], util::twoPi(), util::twoPi(), util::twoPi());
 
-    std::vector<DofType> types = {volumetricPos, volumetricPos, volumetricPos, volumetricRot, volumetricRot, volumetricRot};
+    std::vector<DofType> types = {DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos,
+                                  DofType::volumetricRot, DofType::volumetricRot, DofType::volumetricRot};
     auto robotModel = factory.createModelFromFile(m_robotBaseModelFile);
     auto robot = std::make_shared<MobileRobot>(6, std::make_pair(min6, max6), types);
     robot->setBaseModel(robotModel);
     return robot;
 }
 
-std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(ModelFactory &factory,
-                                                                      RobotType type) {
+std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(ModelFactory &factory, RobotType type) {
     std::vector<Joint> joints;
     for (size_t i = 0; i < m_robotDim; ++i) {
         auto model = factory.createModelFromFile(m_linkModelFiles[i]);
@@ -313,7 +321,7 @@ std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(ModelFacto
         robot->setBaseModel(robotModel);
         robot->setBaseOffset(m_baseOffset);
     }
-    
+
     if (!m_toolModelFile.empty()) {
         robot->setToolOffset(m_toolOffset);
         robot->setToolModel(factory.createModelFromFile(m_toolModelFile));

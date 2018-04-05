@@ -134,6 +134,11 @@ std::vector<Mesh> MapGenerator<dim>::generateMap(size_t numObstacles, const Vect
         }
         meshes.push_back(mesh);
     }
+
+    // update AABB of the meshes
+    for (auto &mesh : meshes)
+        mesh.aabb = cad::computeAABB(mesh);
+
     return meshes;
 }
 

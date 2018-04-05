@@ -42,12 +42,12 @@ int main(int argc, char** argv) {
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
     creator.setValidityCheckerType(ValidityCheckerType::PQP);
-    creator.setMetricType(MetricType::L2);
+    creator.setMetricType(DistanceMetricType::L2);
     creator.setPathModifierType(PathModifierType::NodeCut);
     creator.setSamplerType(SamplerType::Uniform);
     creator.setSamplingType(SamplingType::Straight);
     creator.setSamplingProperties(5, 10);
-    creator.setTrajectoryType(TrajectoryType::Linear);
+    creator.setTrajectoryType(TrajectoryPlannerType::Linear);
 
     // define the options of the path planner
     double rrtStepSize = 30;

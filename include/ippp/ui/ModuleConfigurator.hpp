@@ -30,22 +30,6 @@
 
 namespace ippp {
 
-enum class MetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
-
-enum class EvaluatorType { SingleIteration, Time, TreeConfig, TreePose, PRMConfig, PRMPose, TreeConfigOrTime };
-
-enum class NeighborType { KDTree, BruteForce };
-
-enum class PathModifierType { Dummy, NodeCut };
-
-enum class SamplerType { Random, NormalDist, Uniform, Grid, UniformBiased };
-
-enum class SamplingType { Bridge, Gaussian, GaussianDist, Straight, MedialAxis, NearObstacle, RGD, TS, FOR, Berenson };
-
-enum class TrajectoryType { Linear, RotateAtS };
-
-enum class ValidityCheckerType { AlwaysValid, Dim2, Dim2Triangle, PQP, FclMobile, FclSerial, AABB };
-
 /*!
 * \brief   Class ModuleConfigurator generates all defined modules for the path planner and creates the graph for the planner too.
 * By a method it returns the options for the planner.
@@ -77,18 +61,18 @@ class ModuleConfigurator : public Configurator {
     SRTOptions<dim> getSRTOptions(unsigned int nbOfTrees);
 
     void setEnvironment(const std::shared_ptr<Environment> &environment);
-    void setMetricType(MetricType type);
+    void setMetricType(DistanceMetricType type);
     void setMetricWeightVec(const Vector<dim> vector);
     void setEvaluatorType(EvaluatorType type);
     void setEvaluatorProperties(double queryEvaluatorDist, size_t duration);
     void setGraphSortCount(size_t count);
-    void setNeighborFinderType(NeighborType type);
+    void setNeighborFinderType(NeighborFinderType type);
     void setPathModifierType(PathModifierType type);
     void setSamplerType(SamplerType type);
     void setSamplerProperties(const std::string &seed, double gridResolution);
     void setSamplingProperties(size_t samplingAttempts = 10, double samplingDist = 10, size_t medialAxisDirs = 15);
     void setSamplingType(SamplingType type);
-    void setTrajectoryType(TrajectoryType type);
+    void setTrajectoryType(TrajectoryPlannerType type);
     void setTrajectoryProperties(double posRes, double oriRes);
     void setValidityCheckerType(ValidityCheckerType type);
     void setEuclideanConstraint(const Vector6 &constraint, const double epsilon = IPPP_EPSILON);
@@ -110,13 +94,13 @@ class ModuleConfigurator : public Configurator {
 
     Vector6 m_euclideanConstraint;
     double m_euclideanEpsilon;
-    MetricType m_metricType = MetricType::L2;
+    DistanceMetricType m_metricType = DistanceMetricType::L2;
     Vector<dim> m_metricWeight = Vector<dim>::Zero();
     EvaluatorType m_evaluatorType = EvaluatorType::SingleIteration;
     double m_queryEvaluatorDist = 10;
     size_t m_evaluatorDuration = 10;
     size_t m_graphSortCount = 3000;
-    NeighborType m_neighborType = NeighborType::KDTree;
+    NeighborFinderType m_neighborType = NeighborFinderType::KDTree;
     PathModifierType m_pathModifierType = PathModifierType::Dummy;
     SamplerType m_samplerType = SamplerType::UniformBiased;
     std::string m_samplerSeed = "";
@@ -125,7 +109,7 @@ class ModuleConfigurator : public Configurator {
     size_t m_samplingAttempts = 10;
     double m_samplingDist = 10;
     size_t m_medialAxisDirs = 15;
-    TrajectoryType m_trajectoryType = TrajectoryType::Linear;
+    TrajectoryPlannerType m_trajectoryType = TrajectoryPlannerType::Linear;
     double m_posRes = 1;
     double m_oriRes = 0.1;
     ValidityCheckerType m_validityType = ValidityCheckerType::FclSerial;
@@ -163,9 +147,6 @@ void ModuleConfigurator<dim>::initializeModules() {
         case ValidityCheckerType::Dim2:
             m_validityChecker = std::make_shared<CollisionDetection2D<dim>>(m_environment);
             break;
-        case ValidityCheckerType::Dim2Triangle:
-            m_validityChecker = std::make_shared<CollisionDetectionTriangleRobot<dim>>(m_environment);
-            break;
         case ValidityCheckerType::FclMobile:
             m_validityChecker = std::make_shared<CollisionFclMobile<dim>>(m_environment);
             break;
@@ -184,10 +165,10 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     switch (m_trajectoryType) {
-        case TrajectoryType::Linear:
+        case TrajectoryPlannerType::Linear:
             m_trajectory = std::make_shared<LinearTrajectory<dim>>(m_environment, m_posRes, m_oriRes);
             break;
-        case TrajectoryType::RotateAtS:
+        case TrajectoryPlannerType::RotateAtS:
             m_trajectory = std::make_shared<RotateAtS<dim>>(m_environment, m_posRes, m_oriRes);
             break;
         default:
@@ -196,22 +177,22 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     switch (m_metricType) {
-        case MetricType::L1:
+        case DistanceMetricType::L1:
             m_metric = std::make_shared<L1Metric<dim>>();
             break;
-        case MetricType::L2:
+        case DistanceMetricType::L2:
             m_metric = std::make_shared<L2Metric<dim>>();
             break;
-        case MetricType::Inf:
+        case DistanceMetricType::Inf:
             m_metric = std::make_shared<InfMetric<dim>>();
             break;
-        case MetricType::L1Weighted:
+        case DistanceMetricType::L1Weighted:
             m_metric = std::make_shared<WeightedL1Metric<dim>>(m_metricWeight);
             break;
-        case MetricType::L2Weighted:
+        case DistanceMetricType::L2Weighted:
             m_metric = std::make_shared<WeightedL2Metric<dim>>(m_metricWeight);
             break;
-        case MetricType::InfWeighted:
+        case DistanceMetricType::InfWeighted:
             m_metric = std::make_shared<WeightedInfMetric<dim>>(m_metricWeight);
             break;
         default:
@@ -220,10 +201,10 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     switch (m_neighborType) {
-        case NeighborType::KDTree:
+        case NeighborFinderType::KDTree:
             m_neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(m_metric);
             break;
-        case NeighborType::BruteForce:
+        case NeighborFinderType::BruteForce:
             m_neighborFinder = std::make_shared<BruteForceNF<dim, std::shared_ptr<Node<dim>>>>(m_metric);
             break;
         default:
@@ -338,13 +319,13 @@ template <unsigned int dim>
 bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     // types
     nlohmann::json json;
-    json["MetricType"] = static_cast<int>(m_metricType);
+    json["DistanceMetricType"] = static_cast<int>(m_metricType);
     json["MetricWeight"] = vectorToString<dim>(m_metricWeight);
     json["EvaluatorType"] = static_cast<int>(m_evaluatorType);
     json["QueryEvaluatorDist"] = m_queryEvaluatorDist;
     json["EvaluatorDuration"] = m_evaluatorDuration;
     json["GraphSortCount"] = m_graphSortCount;
-    json["NeighborType"] = static_cast<int>(m_neighborType);
+    json["NeighborFinderType"] = static_cast<int>(m_neighborType);
     json["PathModifierType"] = static_cast<int>(m_pathModifierType);
     json["SamplerType"] = static_cast<int>(m_samplerType);
     json["SamplerSeed"] = m_samplerSeed;
@@ -353,7 +334,7 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     json["SamplingAttempts"] = m_samplingAttempts;
     json["SamplingDist"] = m_samplingDist;
     json["MedialAxisDirs"] = m_medialAxisDirs;
-    json["TrajectoryType"] = static_cast<int>(m_trajectoryType);
+    json["TrajectoryPlannerType"] = static_cast<int>(m_trajectoryType);
     json["PosRes"] = m_posRes;
     json["OriRes"] = m_oriRes;
     json["ValidityType"] = static_cast<int>(m_validityType);
@@ -374,13 +355,13 @@ bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
     if (json.empty())
         return false;
 
-    m_metricType = static_cast<MetricType>(json["MetricType"].get<int>());
+    m_metricType = static_cast<DistanceMetricType>(json["DistanceMetricType"].get<int>());
     m_metricWeight = stringToVector<dim>(json["MetricWeight"].get<std::string>());
     m_evaluatorType = static_cast<EvaluatorType>(json["EvaluatorType"].get<int>());
     m_queryEvaluatorDist = json["QueryEvaluatorDist"].get<double>();
     m_evaluatorDuration = json["EvaluatorDuration"].get<size_t>();
     m_graphSortCount = json["GraphSortCount"].get<size_t>();
-    m_neighborType = static_cast<NeighborType>(json["NeighborType"].get<int>());
+    m_neighborType = static_cast<NeighborFinderType>(json["NeighborFinderType"].get<int>());
     m_pathModifierType = static_cast<PathModifierType>(json["PathModifierType"].get<int>());
     m_samplerType = static_cast<SamplerType>(json["SamplerType"].get<int>());
     m_samplerSeed = json["SamplerSeed"].get<std::string>();
@@ -389,7 +370,7 @@ bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
     m_samplingAttempts = json["SamplingAttempts"].get<size_t>();
     m_samplingDist = json["SamplingDist"].get<double>();
     m_medialAxisDirs = json["MedialAxisDirs"].get<size_t>();
-    m_trajectoryType = static_cast<TrajectoryType>(json["TrajectoryType"].get<int>());
+    m_trajectoryType = static_cast<TrajectoryPlannerType>(json["TrajectoryPlannerType"].get<int>());
     m_posRes = json["PosRes"].get<double>();
     m_posRes = json["OriRes"].get<double>();
     m_validityType = static_cast<ValidityCheckerType>(json["ValidityType"].get<int>());
@@ -428,13 +409,13 @@ void ModuleConfigurator<dim>::setEuclideanConstraint(const Vector6 &constraint, 
 }
 
 /*!
-*  \brief      Sets the MetricType
+*  \brief      Sets the DistanceMetricType
 *  \author     Sascha Kaden
-*  \param[in]  MetricType
+*  \param[in]  DistanceMetricType
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setMetricType(MetricType type) {
+void ModuleConfigurator<dim>::setMetricType(DistanceMetricType type) {
     m_metricType = type;
     m_parameterModified = true;
 }
@@ -490,13 +471,13 @@ void ModuleConfigurator<dim>::setGraphSortCount(size_t count) {
 }
 
 /*!
-*  \brief      Sets the NeighborType
+*  \brief      Sets the NeighborFinderType
 *  \author     Sascha Kaden
-*  \param[in]  NeighborType
+*  \param[in]  NeighborFinderType
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setNeighborFinderType(NeighborType type) {
+void ModuleConfigurator<dim>::setNeighborFinderType(NeighborFinderType type) {
     m_neighborType = type;
     m_parameterModified = true;
 }
@@ -562,13 +543,13 @@ void ModuleConfigurator<dim>::setSamplingProperties(size_t samplingAttempts, dou
 }
 
 /*!
-*  \brief      Sets the TrajectoryType
+*  \brief      Sets the TrajectoryPlannerType
 *  \author     Sascha Kaden
-*  \param[in]  TrajectoryType
+*  \param[in]  TrajectoryPlannerType
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setTrajectoryType(TrajectoryType type) {
+void ModuleConfigurator<dim>::setTrajectoryType(TrajectoryPlannerType type) {
     m_trajectoryType = type;
     m_parameterModified = true;
 }
@@ -597,9 +578,9 @@ void ModuleConfigurator<dim>::setTrajectoryProperties(double posRes, double oriR
 }
 
 /*!
-*  \brief      Sets the TrajectoryType
+*  \brief      Sets the ValidityCheckerType
 *  \author     Sascha Kaden
-*  \param[in]  TrajectoryType
+*  \param[in]  ValidityCheckerTypeC
 *  \date       2017-10-03
 */
 template <unsigned int dim>
@@ -609,9 +590,9 @@ void ModuleConfigurator<dim>::setValidityCheckerType(ValidityCheckerType type) {
 }
 
 /*!
-*  \brief      Sets the TrajectoryType
+*  \brief      Sets the C
 *  \author     Sascha Kaden
-*  \param[in]  TrajectoryType
+*  \param[in]  C
 *  \date       2017-10-03
 */
 template <unsigned int dim>

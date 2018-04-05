@@ -29,6 +29,10 @@ ObstacleObject::ObstacleObject(const std::string &name, std::shared_ptr<ModelCon
     : EnvObject(name, EnvObjectType::Obstacle), model(modelContainer) {
 }
 
+ObstacleObject::ObstacleObject(const std::string &name, std::shared_ptr<ModelContainer> &modelContainer, const Transform &pose)
+    : EnvObject(name, EnvObjectType::Obstacle, pose), model(modelContainer) {
+}
+
 /*!
 *  \brief      Return the static flag of the EnvObject
 *  \author     Sascha Kaden
