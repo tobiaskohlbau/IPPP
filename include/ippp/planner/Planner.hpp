@@ -108,8 +108,8 @@ template <unsigned int dim>
 Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment> &environment,
                       const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
     : Identifier(name),
-      m_pathCollector(std::make_shared<StatsPathCollector>(name + "Path")),
-      m_plannerCollector(std::make_shared<StatsPlannerCollector>(name + "Planner")),
+      m_pathCollector(std::make_shared<StatsPathCollector>("PathStats")),
+      m_plannerCollector(std::make_shared<StatsPlannerCollector>("PlannerStats")),
       m_validityChecker(options.getValidityChecker()),
       m_environment(environment),
       m_evaluator(options.getEvaluator()),
