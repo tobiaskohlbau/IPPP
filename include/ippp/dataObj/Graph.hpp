@@ -100,7 +100,7 @@ Graph<dim>::Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::sha
     : Identifier("Graph"),
       m_sortCount(sortCount),
       m_neighborFinder(neighborFinder),
-      m_collector(std::make_shared<StatsGraphCollector>("Graph")) {
+      m_collector(std::make_shared<StatsGraphCollector>("GraphStats")) {
     Logging::debug("Initialize", this);
     Stats::addCollector(m_collector);
 

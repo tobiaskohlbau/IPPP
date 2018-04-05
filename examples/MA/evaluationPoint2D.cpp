@@ -41,7 +41,7 @@ void drawImage(std::shared_ptr<Planner<2>> planner, std::shared_ptr<Environment>
     // cv::imshow("Planner", image);
     // cv::waitKey(0);
 
-    cv::imwrite("images/Plan" + std::to_string(index) + ".png", image);
+    cv::imwrite("images/" + std::to_string(index) + ".png", image);
 }
 
 std::shared_ptr<Environment> createEnvironment(ParamsMA params) {
@@ -92,7 +92,7 @@ void planningThread(size_t startIndex, size_t endIndex) {
             planner->optimize(1000, 1);
 
         drawImage(planner, env, params - m_paramsMA.begin());
-        ui::save(std::to_string(params - m_paramsMA.begin()) + ".json", Stats::serialize());
+        ui::save("data/"+std::to_string(params - m_paramsMA.begin()) + ".json", Stats::serialize());
     }
 }
 
@@ -121,6 +121,4 @@ int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::warn);
 
     testMobile();
-    std::string str;
-    std::cin >> str;
 }

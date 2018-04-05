@@ -57,7 +57,7 @@ class RRTStarInformed : public RRTStar<dim> {
 template <unsigned int dim>
 RRTStarInformed<dim>::RRTStarInformed(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
                                       const std::shared_ptr<Graph<dim>> &graph)
-    : RRTStar<dim>(environment, options, graph, "RRT* Informed") {
+    : RRTStar<dim>(environment, options, graph, "RRTStarInformed") {
 }
 
 /*!
