@@ -39,7 +39,7 @@ void serial2Joints() {
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, -1), Vector3(450, 450, 1)));
     envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle100x100.obj", util::Vecd(175, 30, 0, 0, 0, 0));
-    envConfigurator.setRobotType(RobotType::Serial3D);
+    envConfigurator.setRobotType(RobotType::Serial);
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     Vector2 min(-util::pi(), -util::pi());
     Vector2 max(util::pi(), util::pi());
@@ -111,7 +111,7 @@ void serial3Joints() {
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, -1), Vector3(450, 450, 1)));
     envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle100x100.obj", util::Vecd(175, 30, 0, 0, 0, 0));
-    envConfigurator.setRobotType(RobotType::Serial3D);
+    envConfigurator.setRobotType(RobotType::Serial);
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     Vector3 min(-util::pi(), -util::pi(), -util::pi());
     Vector3 max(util::pi(), util::pi(), util::pi());

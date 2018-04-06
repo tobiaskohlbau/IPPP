@@ -20,7 +20,7 @@
 #include <gtest/gtest.h>
 
 #include <ippp/ui/FileWriterReader.h>
-#include <ippp/ui/JsonSerializer.h>
+#include <ippp/ui/JsonSerializer.hpp>
 
 using namespace ippp;
 

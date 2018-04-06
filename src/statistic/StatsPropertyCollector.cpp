@@ -17,6 +17,7 @@
 //-------------------------------------------------------------------------//
 
 #include <ippp/statistic/StatsPropertyCollector.h>
+#include <ippp/ui/JsonSerializer.hpp>
 
 namespace ippp {
 
@@ -24,9 +25,9 @@ StatsPropertyCollector::StatsPropertyCollector(const std::string &name) : StatsC
     initialize();
 }
 
-void StatsPropertyCollector::setProperties(RobotType robotType, bool useObstacle, bool useConstraint, bool optimized, double stepSize,
-                                           SamplerType samplerType, SamplingType samplingType, PlannerType plannerType,
-                                           PathModifierType pathModifierType) {
+void StatsPropertyCollector::setProperties(RobotType robotType, unsigned int dim, bool useObstacle, bool useConstraint,
+                                           bool optimized, double stepSize, SamplerType samplerType, SamplingType samplingType,
+                                           PlannerType plannerType, PathModifierType pathModifierType, std::pair<Vector6,Vector6> C) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_useObstacle = useObstacle;
     m_useConstraint = useConstraint;
@@ -37,6 +38,8 @@ void StatsPropertyCollector::setProperties(RobotType robotType, bool useObstacle
     m_plannerType = plannerType;
     m_pathModifierType = pathModifierType;
     m_robotType = robotType;
+    m_dim = dim;
+    m_C = C;
 }
 
 void StatsPropertyCollector::initialize() {
@@ -49,6 +52,8 @@ void StatsPropertyCollector::initialize() {
     m_plannerType = PlannerType::RRT;
     m_pathModifierType = PathModifierType::NodeCut;
     m_robotType = RobotType::Point2D;
+    m_dim = 2;
+    m_C = std::make_pair(Vector6(),Vector6());
 }
 
 nlohmann::json StatsPropertyCollector::serialize() {
@@ -62,20 +67,24 @@ nlohmann::json StatsPropertyCollector::serialize() {
     json["PlannerType"] = static_cast<int>(m_plannerType);
     json["PathModifierType"] = static_cast<int>(m_pathModifierType);
     json["RobotType"] = static_cast<int>(m_robotType);
+    json["Dim"] = m_dim;
+    json["C"] = jsonSerializer::serialize(m_C);
     return json;
 }
 
 void StatsPropertyCollector::writeData(std::ostream &stream) {
     stream << getName() << ": " << std::endl;
-    stream << "UseObstacle: " << m_useObstacle;
-    stream << "UseConstraint: " << m_useConstraint;
-    stream << "Optimized: " << m_optimized;
-    stream << "StepSize: " << m_stepSize;
-    stream << "SamplerType: " << static_cast<int>(m_samplerType);
-    stream << "SamplingType: " << static_cast<int>(m_samplingType);
-    stream << "PlannerType: " << static_cast<int>(m_plannerType);
-    stream << "PathModifierType: " << static_cast<int>(m_pathModifierType);
-    stream << "RobotType: " << static_cast<int>(m_robotType);
+    stream << "UseObstacle: " << m_useObstacle << std::endl;
+    stream << "UseConstraint: " << m_useConstraint << std::endl;
+    stream << "Optimized: " << m_optimized << std::endl;
+    stream << "StepSize: " << m_stepSize << std::endl;
+    stream << "SamplerType: " << static_cast<int>(m_samplerType) << std::endl;
+    stream << "SamplingType: " << static_cast<int>(m_samplingType) << std::endl;
+    stream << "PlannerType: " << static_cast<int>(m_plannerType) << std::endl;
+    stream << "PathModifierType: " << static_cast<int>(m_pathModifierType) << std::endl;
+    stream << "RobotType: " << static_cast<int>(m_robotType) << std::endl;
+    stream << "Dim: " << m_dim << std::endl;
+    stream << "Cmin: " << m_C.first << " | Cmax: " << m_C.second << std::endl;
 }
 
 } /* namespace ippp */

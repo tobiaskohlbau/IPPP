@@ -23,12 +23,13 @@
 
 namespace ippp {
 
-ConfigurationMA::ConfigurationMA(RobotType robotType, bool useObstacle, bool useConstraint, bool isMobile)
+ConfigurationMA::ConfigurationMA(RobotType robotType, unsigned int dim, bool useObstacle, bool useConstraint,
+                                 std::pair<Vector6, Vector6> C)
     : m_propertyCollector(std::make_shared<StatsPropertyCollector>("Properties")) {
     Stats::addCollector(m_propertyCollector);
     auto seeds = getSeeds();
     std::vector<double> stepSizes = getSerialStepSizes();
-    if (isMobile)
+    if (robotType != RobotType::Serial)
         stepSizes = getMobileStepSizes();
     std::vector<bool> optimizes = {false, true};
     std::vector<bool> useObstacles = {false};
@@ -42,29 +43,28 @@ ConfigurationMA::ConfigurationMA(RobotType robotType, bool useObstacle, bool use
         samplings.push_back(SamplingType::FOR);
         samplings.push_back(SamplingType::Berenson);
     }
-    std::vector<PathModifierType> modifierTypes = {PathModifierType::Dummy, PathModifierType::NodeCut};
-    std::vector<PlannerType> rrtTypes = {PlannerType::RRTStar, PlannerType::AdaptedRRT, PlannerType::CiBRRT};
+    std::vector<PlannerType> rrtTypes = {PlannerType::RRTStar};//, PlannerType::AdaptedRRT, PlannerType::CiBRRT};
 
     for (auto &stepSize : stepSizes) {
         for (auto optimize : optimizes) {
             for (auto obstacle : useObstacles) {
                 for (auto &sampler : samplers) {
                     for (auto &sampling : samplings) {
-                        for (auto &modifierType : modifierTypes) {
-                            for (auto &rrtType : rrtTypes) {
-                                for (auto &seed : seeds) {
-                                    ParamsMA param;
-                                    param.robotType = robotType;
-                                    param.optimize = optimize;
-                                    param.pathModifier = modifierType;
-                                    param.samplerType = sampler;
-                                    param.samplingType = sampling;
-                                    param.seed = seed;
-                                    param.stepSize = stepSize;
-                                    param.useConstraint = useConstraint;
-                                    param.useObstacle = obstacle;
-                                    m_paramsMA.push_back(param);
-                                }
+                        for (auto &rrtType : rrtTypes) {
+                            for (auto &seed : seeds) {
+                                ParamsMA param;
+                                param.C = C;
+                                param.dim = dim;
+                                param.robotType = robotType;
+                                param.optimize = optimize;
+                                param.pathModifier = PathModifierType::NodeCut;
+                                param.samplerType = sampler;
+                                param.samplingType = sampling;
+                                param.seed = seed;
+                                param.stepSize = stepSize;
+                                param.useConstraint = useConstraint;
+                                param.useObstacle = obstacle;
+                                m_paramsMA.push_back(param);
                             }
                         }
                     }
@@ -92,8 +92,9 @@ size_t ConfigurationMA::numParams() {
 
 void ConfigurationMA::updatePropertyStats(size_t index) {
     const auto params = m_paramsMA[index];
-    m_propertyCollector->setProperties(params.robotType, params.useObstacle, params.useConstraint, params.optimize, params.stepSize,
-                                       params.samplerType, params.samplingType, params.plannerType, params.pathModifier);
+    m_propertyCollector->setProperties(params.robotType, params.dim, params.useObstacle, params.useConstraint, params.optimize,
+                                       params.stepSize, params.samplerType, params.samplingType, params.plannerType,
+                                       params.pathModifier, params.C);
 }
 
 std::vector<std::string> ConfigurationMA::getSeeds() {

@@ -52,6 +52,9 @@ AABB deserializeAABB(const nlohmann::json &data);
 nlohmann::json serialize(const std::vector<DofType> &dofTypes);
 std::vector<DofType> deserializeDofTypes(const nlohmann::json &data);
 
+nlohmann::json serialize(const std::pair<Vector6, Vector6> &C);
+std::pair<Vector6, Vector6> deserializeC(const nlohmann::json &data);
+
 /*!
     *  \brief      Serialize vectors to a nlohmann::json
     *  \param[in]  vector of configurations

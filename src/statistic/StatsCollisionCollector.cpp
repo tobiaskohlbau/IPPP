@@ -34,7 +34,7 @@ void StatsCollisionCollector::initialize() {
 
 nlohmann::json StatsCollisionCollector::serialize() {
     nlohmann::json json;
-    json["CollisionCount"] = m_count;
+    json["CollisionCount"] = static_cast<size_t>(m_count);
     return json;
 }
 

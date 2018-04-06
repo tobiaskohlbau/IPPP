@@ -26,7 +26,7 @@ std::mutex Stats::m_mutex;
 void Stats::addCollector(const std::shared_ptr<StatsCollector> &collector) {
     if (!collector)
         return;
-
+    std::lock_guard<std::mutex> lock(m_mutex);
     m_collectors.push_back(collector);
 }
 
@@ -54,6 +54,7 @@ void Stats::clearCollectors() {
 }
 
 nlohmann::json Stats::serialize() {
+    std::lock_guard<std::mutex> lock(m_mutex);
     nlohmann::json json;
     for (auto &collector : m_collectors)
         json[collector->getName()] = collector->serialize();
@@ -61,6 +62,7 @@ nlohmann::json Stats::serialize() {
 }
 
 void Stats::writeData(std::ostream &stream) {
+    std::lock_guard<std::mutex> lock(m_mutex);
     for (auto &collector : m_collectors) {
         collector->writeData(stream);
         stream << std::endl;

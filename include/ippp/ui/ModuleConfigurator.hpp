@@ -75,14 +75,14 @@ class ModuleConfigurator : public Configurator {
     void setTrajectoryType(TrajectoryPlannerType type);
     void setTrajectoryProperties(double posRes, double oriRes);
     void setValidityCheckerType(ValidityCheckerType type);
-    void setEuclideanConstraint(const Vector6 &constraint, const double epsilon = IPPP_EPSILON);
-    void setC(const std::pair<Vector6, Vector6> &C);
+    void setConstraintProperties(const std::pair<Vector6, Vector6> &C, const Transform &taskFrame,
+                                 const double epsilon = IPPP_EPSILON);
 
   protected:
     void initializeModules();
 
     std::shared_ptr<DistanceMetric<dim>> m_metric = nullptr;
-    std::shared_ptr<Environment> m_environment = nullptr;
+    std::shared_ptr<Environment> m_env = nullptr;
     std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
     std::shared_ptr<Graph<dim>> m_graph = nullptr;
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr;
@@ -92,8 +92,6 @@ class ModuleConfigurator : public Configurator {
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
     std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
 
-    Vector6 m_euclideanConstraint;
-    double m_euclideanEpsilon;
     DistanceMetricType m_metricType = DistanceMetricType::L2;
     Vector<dim> m_metricWeight = Vector<dim>::Zero();
     EvaluatorType m_evaluatorType = EvaluatorType::SingleIteration;
@@ -113,7 +111,11 @@ class ModuleConfigurator : public Configurator {
     double m_posRes = 1;
     double m_oriRes = 0.1;
     ValidityCheckerType m_validityType = ValidityCheckerType::FclSerial;
+    // constraint
+    double m_constraintEpsilon;
     std::pair<Vector6, Vector6> m_C;
+    Transform m_taskFrame;
+
 
     bool m_parameterModified = false;
 };
@@ -134,7 +136,7 @@ ModuleConfigurator<dim>::ModuleConfigurator() : Configurator("ModuleConfigurator
 */
 template <unsigned int dim>
 void ModuleConfigurator<dim>::initializeModules() {
-    if (!m_environment) {
+    if (!m_env) {
         Logging::error("Environment not set!", this);
         return;
     }
@@ -145,34 +147,37 @@ void ModuleConfigurator<dim>::initializeModules() {
 
     switch (m_validityType) {
         case ValidityCheckerType::Dim2:
-            m_validityChecker = std::make_shared<CollisionDetection2D<dim>>(m_environment);
+            m_validityChecker = std::make_shared<CollisionDetection2D<dim>>(m_env);
             break;
         case ValidityCheckerType::FclMobile:
-            m_validityChecker = std::make_shared<CollisionFclMobile<dim>>(m_environment);
+            m_validityChecker = std::make_shared<CollisionFclMobile<dim>>(m_env);
             break;
         case ValidityCheckerType::FclSerial:
-            m_validityChecker = std::make_shared<CollisionFclSerial<dim>>(m_environment);
+            m_validityChecker = std::make_shared<CollisionFclSerial<dim>>(m_env);
             break;
         case ValidityCheckerType::AABB:
-            m_validityChecker = std::make_shared<CollisionDetectionAABB<dim>>(m_environment);
+            m_validityChecker = std::make_shared<CollisionDetectionAABB<dim>>(m_env);
             break;
         case ValidityCheckerType::AlwaysValid:
-            m_validityChecker = std::make_shared<AlwaysTrueValidity<dim>>(m_environment);
+            m_validityChecker = std::make_shared<AlwaysTrueValidity<dim>>(m_env);
+            break;
+        case ValidityCheckerType ::BerensonConstraint:
+            m_validityChecker = std::make_shared<BerensonConstraint<dim>>(m_env, m_taskFrame, m_C);
             break;
         default:
-            m_validityChecker = std::make_shared<CollisionDetectionPqp<dim>>(m_environment);
+            m_validityChecker = std::make_shared<CollisionDetectionPqp<dim>>(m_env);
             break;
     }
 
     switch (m_trajectoryType) {
         case TrajectoryPlannerType::Linear:
-            m_trajectory = std::make_shared<LinearTrajectory<dim>>(m_environment, m_posRes, m_oriRes);
+            m_trajectory = std::make_shared<LinearTrajectory<dim>>(m_env, m_posRes, m_oriRes);
             break;
         case TrajectoryPlannerType::RotateAtS:
-            m_trajectory = std::make_shared<RotateAtS<dim>>(m_environment, m_posRes, m_oriRes);
+            m_trajectory = std::make_shared<RotateAtS<dim>>(m_env, m_posRes, m_oriRes);
             break;
         default:
-            m_trajectory = std::make_shared<LinearTrajectory<dim>>(m_environment, m_posRes, m_oriRes);
+            m_trajectory = std::make_shared<LinearTrajectory<dim>>(m_env, m_posRes, m_oriRes);
             break;
     }
 
@@ -226,14 +231,14 @@ void ModuleConfigurator<dim>::initializeModules() {
                                                                      m_queryEvaluatorDist);
             break;
         case EvaluatorType::TreePose:
-            m_evaluator = std::make_shared<TreePoseEvaluator<dim>>(m_graph, m_environment, m_C);
+            m_evaluator = std::make_shared<TreePoseEvaluator<dim>>(m_graph, m_env, m_C);
             break;
         case EvaluatorType::PRMConfig:
             m_evaluator =
                 std::make_shared<PRMConfigEvaluator<dim>>(m_graph, m_trajectory, m_validityChecker, m_queryEvaluatorDist);
             break;
         case EvaluatorType::PRMPose:
-            m_evaluator = std::make_shared<PRMPoseEvaluator<dim>>(m_environment, m_graph, m_trajectory, m_validityChecker, m_C,
+            m_evaluator = std::make_shared<PRMPoseEvaluator<dim>>(m_env, m_graph, m_trajectory, m_validityChecker, m_C,
                                                                   m_queryEvaluatorDist);
             break;
         case EvaluatorType::TreeConfigOrTime:
@@ -250,60 +255,76 @@ void ModuleConfigurator<dim>::initializeModules() {
             m_pathModifier = std::make_shared<DummyPathModifier<dim>>();
             break;
         case PathModifierType::NodeCut:
-            m_pathModifier = std::make_shared<NodeCutPathModifier<dim>>(m_environment, m_trajectory, m_validityChecker);
+            m_pathModifier = std::make_shared<NodeCutPathModifier<dim>>(m_env, m_trajectory, m_validityChecker);
             break;
         default:
-            m_pathModifier = std::make_shared<NodeCutPathModifier<dim>>(m_environment, m_trajectory, m_validityChecker);
+            m_pathModifier = std::make_shared<NodeCutPathModifier<dim>>(m_env, m_trajectory, m_validityChecker);
             break;
     }
 
     switch (m_samplerType) {
         case SamplerType::Random:
-            m_sampler = std::make_shared<SamplerRandom<dim>>(m_environment, m_samplerSeed);
+            m_sampler = std::make_shared<SamplerRandom<dim>>(m_env, m_samplerSeed);
             break;
         case SamplerType::NormalDist:
-            m_sampler = std::make_shared<SamplerNormalDist<dim>>(m_environment, m_samplerSeed);
+            m_sampler = std::make_shared<SamplerNormalDist<dim>>(m_env, m_samplerSeed);
             break;
         case SamplerType::Uniform:
-            m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment, m_samplerSeed);
+            m_sampler = std::make_shared<SamplerUniform<dim>>(m_env, m_samplerSeed);
             break;
         case SamplerType::Grid:
-            m_sampler = std::make_shared<GridSampler<dim>>(m_environment, m_samplerGridResolution);
+            m_sampler = std::make_shared<GridSampler<dim>>(m_env, m_samplerGridResolution);
             break;
         case SamplerType::UniformBiased:
-            m_sampler = std::make_shared<SamplerUniformBiased<dim>>(m_environment, m_graph, m_samplerSeed);
+            m_sampler = std::make_shared<SamplerUniformBiased<dim>>(m_env, m_graph, m_samplerSeed);
             break;
         default:
-            m_sampler = std::make_shared<SamplerUniform<dim>>(m_environment, m_samplerSeed);
+            m_sampler = std::make_shared<SamplerUniform<dim>>(m_env, m_samplerSeed);
             break;
     }
 
     switch (m_samplingType) {
         case SamplingType::Bridge:
-            m_sampling = std::make_shared<BridgeSampling<dim>>(m_environment, m_validityChecker, m_sampler, m_samplingAttempts,
-                                                               m_samplingDist);
+            m_sampling =
+                std::make_shared<BridgeSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts, m_samplingDist);
             break;
         case SamplingType::Gaussian:
-            m_sampling = std::make_shared<GaussianSampling<dim>>(m_environment, m_validityChecker, m_sampler, m_samplingAttempts,
-                                                                 m_samplingDist);
+            m_sampling =
+                std::make_shared<GaussianSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts, m_samplingDist);
             break;
         case SamplingType::GaussianDist:
-            m_sampling = std::make_shared<GaussianDistSampling<dim>>(m_environment, m_validityChecker, m_sampler,
-                                                                     m_samplingAttempts, m_samplingDist);
+            m_sampling = std::make_shared<GaussianDistSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts,
+                                                                     m_samplingDist);
             break;
         case SamplingType::Straight:
-            m_sampling = std::make_shared<StraightSampling<dim>>(m_environment, m_validityChecker, m_sampler);
+            m_sampling = std::make_shared<StraightSampling<dim>>(m_env, m_validityChecker, m_sampler);
             break;
         case SamplingType::MedialAxis:
-            m_sampling = std::make_shared<MedialAxisSampling<dim>>(m_environment, m_validityChecker, m_sampler,
-                                                                   m_samplingAttempts, m_medialAxisDirs);
+            m_sampling = std::make_shared<MedialAxisSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts,
+                                                                   m_medialAxisDirs);
             break;
         case SamplingType::NearObstacle:
-            m_sampling = std::make_shared<SamplingNearObstacle<dim>>(m_environment, m_validityChecker, m_sampler,
-                                                                     m_samplingAttempts, m_trajectory);
+            m_sampling = std::make_shared<SamplingNearObstacle<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts,
+                                                                     m_trajectory);
+            break;
+        case SamplingType::TS:
+            m_sampling = std::make_shared<TangentSpaceSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts,
+                                                                     m_graph, m_samplingDist, m_C, m_taskFrame);
+            break;
+        case SamplingType::FOR:
+            m_sampling = std::make_shared<FirstOrderRetractionSampling<dim>>(
+                m_env, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_sampler, m_samplingAttempts, m_graph,
+                m_taskFrame);
+            break;
+        case SamplingType::RGD:
+            m_sampling = std::make_shared<RGDSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts, m_graph);
+            break;
+        case SamplingType::Berenson:
+            m_sampling = std::make_shared<BerensonSampling<dim>>(
+                m_env, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_sampler, m_samplingAttempts);
             break;
         default:
-            m_sampling = std::make_shared<StraightSampling<dim>>(m_environment, m_validityChecker, m_sampler);
+            m_sampling = std::make_shared<StraightSampling<dim>>(m_env, m_validityChecker, m_sampler);
             break;
     }
 }
@@ -392,20 +413,22 @@ void ModuleConfigurator<dim>::resetModules() {
 */
 template <unsigned int dim>
 void ModuleConfigurator<dim>::setEnvironment(const std::shared_ptr<Environment> &environment) {
-    m_environment = environment;
+    m_env = environment;
     m_parameterModified = true;
 }
 
 /*!
-*  \brief      Sets the euclidean constraint
+*  \brief      Sets the constraint properties
 *  \author     Sascha Kaden
 *  \param[in]  euclidean constraint vector
 *  \date       2018-01-08
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setEuclideanConstraint(const Vector6 &constraint, const double epsilon) {
-    m_euclideanConstraint = constraint;
-    m_euclideanEpsilon = epsilon;
+void ModuleConfigurator<dim>::setConstraintProperties(const std::pair<Vector6, Vector6> &C, const Transform &taskFrame,
+                                                      const double epsilon) {
+    m_C = C;
+    m_constraintEpsilon = epsilon;
+    m_taskFrame = taskFrame;
 }
 
 /*!
@@ -590,17 +613,6 @@ void ModuleConfigurator<dim>::setValidityCheckerType(ValidityCheckerType type) {
 }
 
 /*!
-*  \brief      Sets the C
-*  \author     Sascha Kaden
-*  \param[in]  C
-*  \date       2017-10-03
-*/
-template <unsigned int dim>
-void ModuleConfigurator<dim>::setC(const std::pair<Vector6, Vector6> &C) {
-    m_C = C;
-}
-
-/*!
 *  \brief      Return the pointer to the Environment instance.
 *  \author     Sascha Kaden
 *  \param[out] Evaluator
@@ -608,7 +620,7 @@ void ModuleConfigurator<dim>::setC(const std::pair<Vector6, Vector6> &C) {
 */
 template <unsigned int dim>
 std::shared_ptr<Environment> ModuleConfigurator<dim>::getEnvironment() {
-    return m_environment;
+    return m_env;
 }
 
 /*!

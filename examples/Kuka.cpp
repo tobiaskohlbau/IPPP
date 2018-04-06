@@ -38,7 +38,7 @@ void simpleRRT() {
         FLAGS_assetsDir + "/robotModels/iiwa/link5.obj", FLAGS_assetsDir + "/robotModels/iiwa/link6.obj",
         FLAGS_assetsDir + "/robotModels/iiwa/link7.obj"};    // 7
     envConfigurator.setRobotBaseModelFile(FLAGS_assetsDir + "/robotModels/iiwa/link0.obj");
-    envConfigurator.setRobotType(RobotType::Serial3D);
+    envConfigurator.setRobotType(RobotType::Serial);
 
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     std::vector<DofType> dofTypes(7, DofType::joint);

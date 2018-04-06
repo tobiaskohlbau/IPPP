@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/ui/JsonSerializer.h>
+#include <ippp/ui/JsonSerializer.hpp>
 
 namespace ippp {
 namespace jsonSerializer {
@@ -281,6 +281,25 @@ std::vector<DofType> deserializeDofTypes(const nlohmann::json &data) {
         dofTypes.push_back(static_cast<DofType>(vector[i]));
 
     return dofTypes;
+}
+
+nlohmann::json serialize(const std::pair<Vector6, Vector6> &C) {
+    nlohmann::json json;
+
+    json["MinBound"] = serialize(static_cast<VectorX>(C.first));
+    json["MaxBound"] = serialize(static_cast<VectorX>(C.second));
+
+    return json;
+}
+
+std::pair<Vector6, Vector6> deserializeC(const nlohmann::json &data) {
+    if (data.empty())
+        return std::make_pair(Vector6(), Vector6());
+
+    Vector6 min = jsonSerializer::deserializeVector(data["MinBound"]);
+    Vector6 max = jsonSerializer::deserializeVector(data["MaxBound"]);
+
+    return std::make_pair(min, max);
 }
 
 } /* namespace jsonSerializer */

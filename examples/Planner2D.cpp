@@ -23,8 +23,6 @@ void generateMap(AABB workspace) {
 
 bool testTriangleRobot() {
     const unsigned int dim = 3;
-    Vector6 min = util::Vecd(-30, -30, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX);
-    auto C = std::make_pair(min, -min);
 
     EnvironmentConfigurator envConfigurator;
     AABB workspaceBound(Vector3(0, 0, 0), Vector3(1000, 1000, 1));
@@ -41,7 +39,6 @@ bool testTriangleRobot() {
     creator.setValidityCheckerType(ValidityCheckerType::FclMobile);
     creator.setEvaluatorType(EvaluatorType::TreePose);
     creator.setEvaluatorProperties(40, 60);
-    creator.setC(C);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
@@ -51,13 +48,11 @@ bool testTriangleRobot() {
 
     Vector3 start(50, 50, 0);
     Vector3 goal(900, 900, 50 * util::toRad());
-    Vector6 goalPose = util::Vecd(900, 900, 0, 0, 0, 0);
 
     auto timer = std::make_shared<StatsTimeCollector>("Triangle2D Planning Time");
     Stats::addCollector(timer);
     timer->start();
-    bool connected = planner->computePathToPose(start, goalPose, C, 1000, 3);
-    // bool connected = planner->computePath(start, goal, 5000, 3);
+    bool connected = planner->computePath(start, goal, 5000, 3);
     timer->stop();
 
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
@@ -89,7 +84,7 @@ bool test2DSerialRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, -1), Vector3(1000, 1000, 1000)));
-    envConfigurator.setRobotType(RobotType::Serial3D);
+    envConfigurator.setRobotType(RobotType::Serial);
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     Vector3 min(-util::pi(), -util::pi(), -util::pi());
     Vector3 max(util::pi(), util::pi(), util::pi());
@@ -169,7 +164,6 @@ void testPointRobot() {
     double stepSize = 40;
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(env);
-    creator.setC(C);
     creator.setPathModifierType(PathModifierType::NodeCut);
     creator.setValidityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(3000);
@@ -179,7 +173,7 @@ void testPointRobot() {
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
     creator.setSamplingProperties(10, 80);
 
-    auto planner = std::make_shared<RRTStarInformed<dim>>(env, creator.getRRTOptions(stepSize), creator.getGraph());
+    auto planner = std::make_shared<RRTStar<dim>>(env, creator.getRRTOptions(stepSize), creator.getGraph());
     Vector2 start(150, 200);
     Vector2 goal(730, 350);
 

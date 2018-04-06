@@ -26,17 +26,13 @@
 
 namespace ippp {
 
-/*!
-* \brief   Statistics class to collect stats and write them
-* \author  Sascha Kaden
-* \date    2017-10-20
-*/
 class StatsPropertyCollector : public StatsCollector {
   public:
     StatsPropertyCollector(const std::string &name);
 
-    void setProperties(RobotType robotType, bool useObstacle, bool useConstraint, bool optimized, double stepSize, SamplerType samplerType,
-                       SamplingType samplingType, PlannerType plannerType, PathModifierType pathModifierType);
+    void setProperties(RobotType robotType, unsigned int dim, bool useObstacle, bool useConstraint, bool optimized, double stepSize,
+                       SamplerType samplerType, SamplingType samplingType, PlannerType plannerType,
+                       PathModifierType pathModifierType, std::pair<Vector6,Vector6> C);
 
     void initialize();
     nlohmann::json serialize();
@@ -52,6 +48,8 @@ class StatsPropertyCollector : public StatsCollector {
     PlannerType m_plannerType;
     PathModifierType m_pathModifierType;
     RobotType m_robotType;
+    unsigned int m_dim;
+    std::pair<Vector6,Vector6> m_C;
 
     std::mutex m_mutex;
 };

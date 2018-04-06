@@ -18,7 +18,7 @@ size_t imageCount = 0;
 
 template <unsigned int dim>
 std::shared_ptr<Environment> generateEnvironment() {
-    AABB workspceBounding(Vector3(-500, -500, -1), Vector3(500, 500, 1));
+    AABB workspaceBounding(Vector3(-500, -500, -1), Vector3(500, 500, 1));
     Vector<dim> min = Vector<dim>::Constant(dim, 1, -util::pi());
     Vector<dim> max = -min;
     ModelFactoryFcl factory;
@@ -32,7 +32,7 @@ std::shared_ptr<Environment> generateEnvironment() {
     std::vector<DofType> dofs(dim, DofType::joint);
     auto robot = std::make_shared<SerialRobot>(dim, joints, dofs);
 
-    auto environment = std::make_shared<Environment>(workspceBounding, robot);
+    auto environment = std::make_shared<Environment>(workspaceBounding, robot);
     return environment;
 }
 

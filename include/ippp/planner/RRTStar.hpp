@@ -21,6 +21,7 @@
 
 #include <limits>
 
+#include <ippp/modules/sampler/EllipsoidSampler.hpp>
 #include <ippp/planner/RRT.hpp>
 
 namespace ippp {
@@ -36,6 +37,7 @@ class RRTStar : public RRT<dim> {
     RRTStar(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
             const std::shared_ptr<Graph<dim>> &graph, const std::string &name = "RRTStar");
 
+    bool optimize(size_t numNodes, size_t numThreads = 1) override;
     bool connectGoalNode(const Vector<dim> goal) override;
 
   protected:
@@ -70,6 +72,29 @@ template <unsigned int dim>
 RRTStar<dim>::RRTStar(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
                       const std::shared_ptr<Graph<dim>> &graph, const std::string &name)
     : RRT<dim>(environment, options, graph, name) {
+}
+
+template <unsigned int dim>
+bool RRTStar<dim>::optimize(size_t numNodes, size_t numThreads) {
+    this->m_plannerCollector->startOptimizationTimer();
+    if (!m_pathPlanned) {
+        Logging::warning("No optimization, because no plan is planned", this);
+        return false;
+    }
+    Logging::debug("Optimization", this);
+
+    auto oldSampler = this->m_sampling->getSampler();
+    auto ellipsoidSampler = std::make_shared<EllipsoidSampler<dim>>(m_environment);
+    this->m_sampling->setSampler(ellipsoidSampler);
+
+    ellipsoidSampler->setParams(m_initNode->getValues(), m_goalNode->getValues(), m_goalNode->getCost());
+    this->expand(numNodes, numThreads);
+
+    this->m_sampling->setSampler(oldSampler);
+
+    this->m_plannerCollector->stopOptimizationTimer();
+    this->updateStats();
+    return true;
 }
 
 /*!

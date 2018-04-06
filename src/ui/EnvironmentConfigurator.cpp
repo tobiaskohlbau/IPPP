@@ -17,7 +17,7 @@
 //-------------------------------------------------------------------------//
 
 #include <ippp/ui/EnvironmentConfigurator.h>
-#include <ippp/ui/JsonSerializer.h>
+#include <ippp/ui/JsonSerializer.hpp>
 
 namespace ippp {
 
@@ -230,7 +230,7 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
         case RobotType::Mobile2D:
             m_robot = createTriangleRobot(*factory);
             break;
-        case RobotType::Serial3D:
+        case RobotType::Serial:
             m_robot = createSerialRobot(*factory);
             break;
         case RobotType::Jaco:

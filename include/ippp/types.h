@@ -73,14 +73,14 @@ enum class PathModifierType { Dummy, NodeCut };
 enum class SamplerType { Grid, NormalDist, Random, Uniform, UniformBiased };
 enum class SamplingType { Berenson, Bridge, FOR, Gaussian, GaussianDist, MedialAxis, NearObstacle, RGD, Straight, TS };
 enum class TrajectoryPlannerType { Linear, RotateAtS };
-enum class ValidityCheckerType { AABB, AlwaysValid, Dim2, FclMobile, FclSerial, PQP };
+enum class ValidityCheckerType { AABB, AlwaysValid, Dim2, FclMobile, FclSerial, PQP, BerensonConstraint };
 
 enum class PlannerType { AdaptedRRT, CiBRRT, EST, RRT, RRTStar, PRM, SRT };
 
 // robot enums
 enum class RobotCategory { serial, mobile };
 enum class DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint, position, rotation };
-enum class RobotType { Point2D, Mobile2D, Mobile3D, Serial2D, Serial3D, Jaco};
+enum class RobotType { Point2D, Mobile2D, Mobile3D, Serial, Jaco};
 
 enum class FactoryType { ModelFCL, ModelPQP };
 enum class EnvObjectType { Robot, Obstacle };

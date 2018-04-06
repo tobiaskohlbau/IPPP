@@ -17,8 +17,8 @@
 //-------------------------------------------------------------------------//
 
 #include <string>
+#include <utility>
 #include <vector>
-
 
 #include <ippp/statistic/StatsPropertyCollector.h>
 #include <ippp/types.h>
@@ -34,14 +34,17 @@ struct ParamsMA {
     double stepSize = 1;
     SamplerType samplerType = SamplerType::Uniform;
     SamplingType samplingType = SamplingType::Straight;
-    PlannerType plannerType = PlannerType::RRT;
+    PlannerType plannerType = PlannerType::RRTStar;
     PathModifierType pathModifier = PathModifierType::Dummy;
     RobotType robotType = RobotType::Point2D;
+    unsigned int dim = 2;
+    std::pair<Vector6, Vector6> C;
 };
 
 class ConfigurationMA {
   public:
-    ConfigurationMA(RobotType robotType, bool useObstacle, bool useConstraint, bool isMobile);
+    ConfigurationMA(RobotType robotType, unsigned int dim, bool useObstacle, bool useConstraint,
+                    std::pair<Vector6, Vector6> C = std::make_pair(Vector6(), Vector6()));
 
     ParamsMA getParams();
     std::vector<ParamsMA> getParamsList();

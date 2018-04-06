@@ -1,5 +1,3 @@
-#include <chrono>
-#include <iomanip>
 #include <thread>
 
 #include <ConfigurationMA.h>
@@ -19,9 +17,8 @@ AABB workspace(Vector3(0, 0, 0), Vector3(2000, 2000, 2000));
 Vector2 start(300, 300);
 Vector2 goal(1500, 1000);
 
-ConfigurationMA m_configurationMA(RobotType::Point2D, true, false, true);
+ConfigurationMA m_configurationMA(RobotType::Point2D, 2, true, false);
 std::vector<ParamsMA> m_paramsMA;
-
 
 void drawImage(std::shared_ptr<Planner<2>> planner, std::shared_ptr<Environment> env, size_t index) {
     auto workspace2D = cad::create2dspace(workspace, 255);
@@ -55,7 +52,7 @@ std::shared_ptr<Environment> createEnvironment(ParamsMA params) {
 
         cad::MapGenerator<dim> mapGenerator(workspace, std::make_shared<SamplerRandom<2>>(std::make_pair(min, max), params.seed));
         auto meshes = mapGenerator.generateMap(200, Vector2(10, 10), Vector2(80, 80));
-        for (auto &mesh : meshes)
+        for (auto& mesh : meshes)
             envConfigurator.addObstacle(mesh);
     }
 
@@ -84,20 +81,20 @@ void planningThread(size_t startIndex, size_t endIndex) {
         auto env = createEnvironment(*params);
         auto creator = getCreator(env, *params);
 
-        auto planner = std::make_shared<RRTStarInformed<2>>(creator.getEnvironment(), creator.getRRTOptions(params->stepSize),
-                                                            creator.getGraph());
+        auto planner =
+            std::make_shared<RRTStar<2>>(creator.getEnvironment(), creator.getRRTOptions(params->stepSize), creator.getGraph());
 
         planner->computePath(start, goal, 3000, 1);
         if (params->optimize)
             planner->optimize(1000, 1);
 
         drawImage(planner, env, params - m_paramsMA.begin());
-        ui::save("data/"+std::to_string(params - m_paramsMA.begin()) + ".json", Stats::serialize());
+        ui::save("data/" + std::to_string(params - m_paramsMA.begin()) + ".json", Stats::serialize());
     }
 }
 
 void testMobile() {
-    m_configurationMA = ConfigurationMA(RobotType::Point2D, true, false, true);
+    m_configurationMA = ConfigurationMA(RobotType::Point2D, 2, true, false);
     std::cout << m_configurationMA.numParams() << std::endl;
     m_paramsMA = m_configurationMA.getParamsList();
     std::vector<std::thread> threads;

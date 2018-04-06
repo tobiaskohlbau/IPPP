@@ -37,10 +37,9 @@ template <unsigned int dim>
 class FirstOrderRetractionSampling : public Sampling<dim> {
   public:
     FirstOrderRetractionSampling(const std::shared_ptr<Environment> &environment,
-                                 const std::shared_ptr<Constraint<dim>> &constraint,
-
-                                 const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
-                                 const std::shared_ptr<Graph<dim>> &graph, const Transform &taskFrame = Transform::Identity());
+                                 const std::shared_ptr<Constraint<dim>> &constraint, const std::shared_ptr<Sampler<dim>> &sampler,
+                                 size_t attempts, const std::shared_ptr<Graph<dim>> &graph,
+                                 const Transform &taskFrame = Transform::Identity());
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;

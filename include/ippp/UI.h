@@ -19,5 +19,5 @@
 #include <ippp/ui/Configurator.h>
 #include <ippp/ui/EnvironmentConfigurator.h>
 #include <ippp/ui/FileWriterReader.h>
-#include <ippp/ui/JsonSerializer.h>
+#include <ippp/ui/JsonSerializer.hpp>
 #include <ippp/ui/ModuleConfigurator.hpp>

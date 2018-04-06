@@ -19,6 +19,8 @@
 #ifndef STATSCOLLISIONCOLLECTOR_H
 #define STATSCOLLISIONCOLLECTOR_H
 
+#include <atomic>
+
 #include <ippp/statistic/StatsCollector.h>
 #include <ippp/statistic/StatsCountContainer.h>
 
@@ -39,7 +41,7 @@ class StatsCollisionCollector : public StatsCollector {
     void writeData(std::ostream &stream);
 
   private:
-    size_t m_count = 0;
+    std::atomic_size_t m_count;
 };
 
 } /* namespace ippp */
