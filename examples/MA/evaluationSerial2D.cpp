@@ -17,6 +17,7 @@ AABB m_workspace(Vector3(-500, -500, 0), Vector3(500, 500, 1));
 
 ConfigurationMA *m_configurationMA;
 std::vector<ParamsMA> m_paramsMA;
+size_t m_type;
 
 template <unsigned int dim>
 void displayConfig(const Vector<dim> config, SerialRobot &serialRobot, cv::Mat image, const Vector2i &offset) {
@@ -26,7 +27,7 @@ void displayConfig(const Vector<dim> config, SerialRobot &serialRobot, cv::Mat i
 }
 
 template <unsigned int dim>
-std::shared_ptr<Environment> createEnvironment(ParamsMA params) {
+std::shared_ptr<Environment> createEnvironment() {
     Vector<dim> min = Vector<dim>::Constant(dim, 1, -util::pi());
     Vector<dim> max = -min;
     ModelFactoryFcl factory;
@@ -65,7 +66,7 @@ void planningThread(size_t startIndex, size_t endIndex, const Transform taskFram
     for (auto params = m_paramsMA.begin() + startIndex; params < m_paramsMA.begin() + endIndex; ++params) {
         Stats::initializeCollectors();
         m_configurationMA->updatePropertyStats(params - m_paramsMA.begin());
-        auto env = createEnvironment<dim>(*params);
+        auto env = createEnvironment<dim>();
         auto creator = getCreator<dim>(env, *params, taskFrame);
 
         RRTStar<dim> planner(creator.getEnvironment(), creator.getRRTOptions(params->stepSize), creator.getGraph());
@@ -73,7 +74,10 @@ void planningThread(size_t startIndex, size_t endIndex, const Transform taskFram
         if (params->optimize)
             planner.optimize(1000, 1);
 
-        ui::save("data/" + std::to_string(params - m_paramsMA.begin()) + ".json", Stats::serialize());
+        ui::save("data.json", Stats::serialize(), 4, true);
+        // ui::save("data/Dim" + std::to_string(dim) + "_Type" + std::to_string(m_type) + "_" +
+        //         std::to_string(params - m_paramsMA.begin()) + ".json",
+        //         Stats::serialize());
     }
 }
 
@@ -122,6 +126,7 @@ void testSerial() {
     Vector<dim> start;
     Vector<dim> goal;
     for (size_t type = 1; type < 4; ++type) {
+        m_type = type;
         generateConstraintProperties<dim>(type, 10, C, taskFrame, start, goal);
         m_configurationMA = new ConfigurationMA(RobotType::Serial, dim, true, true, C);
         std::cout << m_configurationMA->numParams() << std::endl;
@@ -147,5 +152,9 @@ int main(int argc, char **argv) {
 
     Logging::setLogLevel(LogLevel::info);
 
-    testSerial<4>();
+    // testSerial<4>();
+    // testSerial<5>();
+    // testSerial<6>();
+    testSerial<7>();
+    // testSerial<8>();
 }

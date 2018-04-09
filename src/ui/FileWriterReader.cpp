@@ -32,8 +32,8 @@ namespace ui {
 *  \param[out] validity of the saving
 *  \date       2017-12-01
 */
-bool save(const std::string &filePath, const nlohmann::json &data, int indent) {
-    return save(filePath, data.dump(indent));
+bool save(const std::string &filePath, const nlohmann::json &data, int indent, bool append) {
+    return save(filePath, data.dump(indent), append);
 }
 
 /*!
@@ -44,13 +44,16 @@ bool save(const std::string &filePath, const nlohmann::json &data, int indent) {
 *  \param[out] validity of the saving
 *  \date       2017-12-01
 */
-bool save(const std::string &filePath, const std::string &data) {
+bool save(const std::string &filePath, const std::string &data, bool append) {
     if (data.empty()) {
         Logging::warning("Empty output data", "FileWriterReader");
         return false;
     }
     std::ofstream file;
-    file.open(filePath);
+    if (append)
+        file.open (filePath, std::fstream::out | std::fstream::app);
+    else
+        file.open (filePath, std::fstream::out);
 
     if (!file.is_open()) {
         Logging::error("Could not open file", "FileWriterReader");

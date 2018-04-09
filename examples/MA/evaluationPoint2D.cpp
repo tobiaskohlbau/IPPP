@@ -88,8 +88,8 @@ void planningThread(size_t startIndex, size_t endIndex) {
         if (params->optimize)
             planner->optimize(1000, 1);
 
-        drawImage(planner, env, params - m_paramsMA.begin());
-        ui::save("data/" + std::to_string(params - m_paramsMA.begin()) + ".json", Stats::serialize());
+        //drawImage(planner, env, params - m_paramsMA.begin());
+        ui::save("eval2DPoint.json", Stats::serialize(), 4, true);
     }
 }
 
