@@ -67,7 +67,7 @@ using Translation = Eigen::Translation<double, 3>;
 
 // module type enums
 enum class DistanceMetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
-enum class EvaluatorType { PRMConfig, PRMPose, SingleIteration, Time, TreeConfig, TreePose, TreeConfigOrTime };
+enum class EvaluatorType { PRMConfig, PRMPose, SingleIteration, Time, TreeConfig, TreeConnect, TreePose, TreeConfigOrTime };
 enum class NeighborFinderType { BruteForce, KDTree };
 enum class PathModifierType { Dummy, NodeCut };
 enum class SamplerType { Grid, NormalDist, Random, Uniform, UniformBiased };

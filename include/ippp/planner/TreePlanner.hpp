@@ -96,7 +96,7 @@ TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Env
 template <unsigned int dim>
 bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
     m_plannerCollector->startPlannerTimer();
-    this->setSamplingParams(start, goal);
+    this->initParams(start, goal);
     if (!setInitNode(start))
         return false;
 

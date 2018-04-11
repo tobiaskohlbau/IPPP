@@ -35,7 +35,6 @@ template <unsigned int dim>
 class EllipsoidSampler : public Sampler<dim> {
   public:
     EllipsoidSampler(const std::shared_ptr<Environment> &environment, const std::string &seed = "");
-    EllipsoidSampler(const std::pair<Vector<dim>, Vector<dim>> boundary, const std::string &seed = "");
     Vector<dim> getSample() override;
 
     void setParams(const Vector<dim> &start, const Vector<dim> &goal, double cMax);
@@ -60,24 +59,7 @@ class EllipsoidSampler : public Sampler<dim> {
 */
 template <unsigned int dim>
 EllipsoidSampler<dim>::EllipsoidSampler(const std::shared_ptr<Environment> &environment, const std::string &seed)
-    : Sampler<dim>("SamplerUniform", environment, seed) {
-    for (unsigned int i = 0; i < dim; ++i) {
-        std::uniform_real_distribution<double> dist(-1, 1);
-        m_distUniform.push_back(dist);
-    }
-}
-
-/*!
-*  \brief      Constructor of the class SamplerUniform
-*  \author     Sascha Kaden
-*  \param[in]  minimum boundary
-*  \param[in]  maximum boundary
-*  \param[in]  seed
-*  \date       2016-05-24
-*/
-template <unsigned int dim>
-EllipsoidSampler<dim>::EllipsoidSampler(std::pair<Vector<dim>, Vector<dim>> boundary, const std::string &seed)
-    : Sampler<dim>("SamplerUniform", boundary, seed) {
+    : Sampler<dim>("SamplerUniform", environment, seed), m_CL(Matrix<dim>::Ones()) {
     for (unsigned int i = 0; i < dim; ++i) {
         std::uniform_real_distribution<double> dist(-1, 1);
         m_distUniform.push_back(dist);
@@ -131,6 +113,11 @@ void EllipsoidSampler<dim>::setParams(const Vector<dim> &start, const Vector<dim
     m_C = svd.matrixU() * ones.asDiagonal() * svd.matrixV();
 
     Vector<dim> r = Vector<dim>::Constant((std::sqrt((m_cMax * m_cMax) - (m_cMin * m_cMin))) / 2);
+    if (std::isnan(r[1])) {
+        Logging::error("Wrong maximum path value", this);
+        return;
+    }
+
     r[0] = m_cMax / 2;
     m_L = r.asDiagonal();
 

@@ -70,6 +70,7 @@ class PRM : public Planner<dim> {
     using Planner<dim>::m_trajectory;
     using Planner<dim>::m_sampling;
     using Planner<dim>::updateStats;
+    using Planner<dim>::initParams;
 };
 
 /*!
@@ -106,7 +107,7 @@ bool PRM<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size
         return false;
     }
     m_evaluator->setConfigs(query);
-    this->setSamplingParams(start, goal);
+    initParams(start, goal);
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
@@ -130,7 +131,7 @@ bool PRM<dim>::computePath(const Vector<dim> start, const std::vector<Vector<dim
         return false;
     }
     m_evaluator->setConfigs(query);
-    this->setSamplingParams(start, goals[0]);
+    initParams(start, goals[0]);
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {

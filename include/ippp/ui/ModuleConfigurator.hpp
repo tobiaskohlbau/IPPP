@@ -49,6 +49,7 @@ class ModuleConfigurator : public Configurator {
     std::shared_ptr<Evaluator<dim>> getEvaluator();
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
     std::shared_ptr<Graph<dim>> getGraph();
+    std::shared_ptr<Graph<dim>> getGraphB();
     std::shared_ptr<PathModifier<dim>> getPathModifier();
     std::shared_ptr<Sampler<dim>> getSampler();
     std::shared_ptr<Sampling<dim>> getSampling();
@@ -85,7 +86,9 @@ class ModuleConfigurator : public Configurator {
     std::shared_ptr<Environment> m_env = nullptr;
     std::shared_ptr<Evaluator<dim>> m_evaluator = nullptr;
     std::shared_ptr<Graph<dim>> m_graph = nullptr;
+    std::shared_ptr<Graph<dim>> m_graphB = nullptr;
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr;
+    std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinderB = nullptr;
     std::shared_ptr<PathModifier<dim>> m_pathModifier;
     std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
     std::shared_ptr<Sampling<dim>> m_sampling = nullptr;
@@ -115,7 +118,6 @@ class ModuleConfigurator : public Configurator {
     double m_constraintEpsilon;
     std::pair<Vector6, Vector6> m_C;
     Transform m_taskFrame;
-
 
     bool m_parameterModified = false;
 };
@@ -161,7 +163,7 @@ void ModuleConfigurator<dim>::initializeModules() {
         case ValidityCheckerType::AlwaysValid:
             m_validityChecker = std::make_shared<AlwaysTrueValidity<dim>>(m_env);
             break;
-        case ValidityCheckerType ::BerensonConstraint:
+        case ValidityCheckerType::BerensonConstraint:
             m_validityChecker = std::make_shared<BerensonConstraint<dim>>(m_env, m_taskFrame, m_C);
             break;
         default:
@@ -208,16 +210,20 @@ void ModuleConfigurator<dim>::initializeModules() {
     switch (m_neighborType) {
         case NeighborFinderType::KDTree:
             m_neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(m_metric);
+            m_neighborFinderB = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(m_metric);
             break;
         case NeighborFinderType::BruteForce:
             m_neighborFinder = std::make_shared<BruteForceNF<dim, std::shared_ptr<Node<dim>>>>(m_metric);
+            m_neighborFinderB = std::make_shared<BruteForceNF<dim, std::shared_ptr<Node<dim>>>>(m_metric);
             break;
         default:
             m_neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(m_metric);
+            m_neighborFinderB = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(m_metric);
             break;
     }
 
     m_graph = std::make_shared<Graph<dim>>(m_graphSortCount, m_neighborFinder);
+    m_graphB = std::make_shared<Graph<dim>>(m_graphSortCount, m_neighborFinderB);
 
     switch (m_evaluatorType) {
         case EvaluatorType::SingleIteration:
@@ -229,6 +235,10 @@ void ModuleConfigurator<dim>::initializeModules() {
         case EvaluatorType::TreeConfig:
             m_evaluator = std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
                                                                      m_queryEvaluatorDist);
+            break;
+        case EvaluatorType::TreeConnect:
+            m_evaluator = std::make_shared<TreeConnectEvaluator<dim>>(m_graph, m_graphB, m_trajectory, m_validityChecker,
+                                                                      m_queryEvaluatorDist);
             break;
         case EvaluatorType::TreePose:
             m_evaluator = std::make_shared<TreePoseEvaluator<dim>>(m_graph, m_env, m_C);
@@ -669,6 +679,18 @@ template <unsigned int dim>
 std::shared_ptr<Graph<dim>> ModuleConfigurator<dim>::getGraph() {
     initializeModules();
     return m_graph;
+}
+
+/*!
+*  \brief      Return the pointer to the Graph B instance.
+*  \author     Sascha Kaden
+*  \param[out] Graph
+*  \date       2017-05-22
+*/
+template <unsigned int dim>
+std::shared_ptr<Graph<dim>> ModuleConfigurator<dim>::getGraphB() {
+    initializeModules();
+    return m_graphB;
 }
 
 /*!

@@ -66,6 +66,7 @@ class Graph : public Identifier {
     void updateStats() const;
 
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
+    std::shared_ptr<Graph<dim>> createEmptyGraphClone();
 
     bool operator<(std::shared_ptr<Graph<dim>> const &a) {
         if (a->getNode(0) && this->getNode(0))
@@ -417,6 +418,12 @@ void Graph<dim>::updateStats() const {
 template <unsigned int dim>
 std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> Graph<dim>::getNeighborFinder() {
     return m_neighborFinder;
+}
+
+template <unsigned int dim>
+std::shared_ptr<Graph<dim>> Graph<dim>::createEmptyGraphClone() {
+    auto neighborFinder = std::make_shared<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(*m_neighborFinder);
+    return Graph<dim>(m_sortCount, neighborFinder);
 }
 
 } /* namespace ippp */

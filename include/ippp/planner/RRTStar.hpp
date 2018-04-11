@@ -51,7 +51,6 @@ class RRTStar : public RRT<dim> {
     using Planner<dim>::m_environment;
     using Planner<dim>::m_graph;
     using Planner<dim>::m_metric;
-    using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_trajectory;
     using Planner<dim>::m_sampling;
@@ -81,16 +80,16 @@ bool RRTStar<dim>::optimize(size_t numNodes, size_t numThreads) {
         Logging::warning("No optimization, because no plan is planned", this);
         return false;
     }
-    Logging::debug("Optimization", this);
+    Logging::debug("Run optimization", this);
 
     auto oldSampler = this->m_sampling->getSampler();
     auto ellipsoidSampler = std::make_shared<EllipsoidSampler<dim>>(m_environment);
-    this->m_sampling->setSampler(ellipsoidSampler);
+    m_sampling->setSampler(ellipsoidSampler);
 
     ellipsoidSampler->setParams(m_initNode->getValues(), m_goalNode->getValues(), m_goalNode->getCost());
     this->expand(numNodes, numThreads);
 
-    this->m_sampling->setSampler(oldSampler);
+    m_sampling->setSampler(oldSampler);
 
     this->m_plannerCollector->stopOptimizationTimer();
     this->updateStats();

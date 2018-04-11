@@ -121,13 +121,13 @@ bool RRT<dim>::expand(size_t nbOfNodes, size_t nbOfThreads) {
 template <unsigned int dim>
 void RRT<dim>::computeTreeThread(size_t nbOfNodes) {
     Vector<dim> sample;
+    std::shared_ptr<Node<dim>> newNode;
     for (size_t i = 0; i < nbOfNodes; ++i) {
         sample = m_sampling->getSample();
         if (util::empty<dim>(sample))
             continue;
 
-        std::shared_ptr<Node<dim>> newNode = computeRRTNode(sample);
-
+        newNode = computeRRTNode(sample);
         if (newNode == nullptr)
             continue;
         m_graph->addNode(newNode);

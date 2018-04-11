@@ -37,12 +37,14 @@ bool testTriangleRobot() {
     creator.setEnvironment(environment);
     creator.setGraphSortCount(3000);
     creator.setValidityCheckerType(ValidityCheckerType::FclMobile);
-    creator.setEvaluatorType(EvaluatorType::TreePose);
+    creator.setEvaluatorType(EvaluatorType::TreeConnect);
     creator.setEvaluatorProperties(40, 60);
 
     std::shared_ptr<ippp::Planner<dim>> planner;
     // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
-    planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(40), creator.getGraph());
+    // planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(40), creator.getGraph());
+    planner =
+        std::make_shared<RRTStarConnect<dim>>(environment, creator.getRRTOptions(40), creator.getGraph(), creator.getGraphB());
     // planner = std::make_shared<RRT<dim>>(environment, creator.getRRTOptions(50), creator.getGraph());
     // planner = std::make_shared<SRT<dim>>(environment, creator.getSRTOptions(20), creator.getGraph());
 
@@ -167,13 +169,14 @@ void testPointRobot() {
     creator.setPathModifierType(PathModifierType::NodeCut);
     creator.setValidityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(3000);
-    creator.setEvaluatorType(EvaluatorType::TreeConfig);
+    creator.setEvaluatorType(EvaluatorType::TreeConnect);
     creator.setEvaluatorProperties(stepSize, 30);
-    creator.setSamplerType(SamplerType::Uniform);
+    creator.setSamplerType(SamplerType::UniformBiased);
     creator.setSamplerProperties("slkasjdfsaldfj234;lkj", 1);
     creator.setSamplingProperties(10, 80);
 
-    auto planner = std::make_shared<RRTStar<dim>>(env, creator.getRRTOptions(stepSize), creator.getGraph());
+    auto planner =
+        std::make_shared<RRTStarConnect<dim>>(env, creator.getRRTOptions(stepSize), creator.getGraph(), creator.getGraphB());
     Vector2 start(150, 200);
     Vector2 goal(730, 350);
 
@@ -181,21 +184,26 @@ void testPointRobot() {
     Stats::addCollector(timer);
     timer->start();
     bool connected = planner->computePath(start, goal, 500, 3);
-    planner->optimize(1500, 1);
+
     timer->stop();
 
-    std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
+
     auto workspace2D = cad::create2dspace(env->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
     for (const auto& obstacle : env->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
 
-    drawing::drawGraph2D(image, nodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
-    drawing::drawTree2D(image, nodes, Vector3i(0, 0, 255), Vector3i(125, 125, 200), 1);
+    //std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
+    //drawing::drawTree2D(image, nodes, Vector3i(0, 0, 255), Vector3i(125, 125, 200), 1);
 
-    if (connected)
+    if (connected) {
         drawing::drawPath2D(image, planner->getPath(), Vector3i(255, 0, 0), 2);
+        planner->optimize(5000, 10);
+        drawing::drawPath2D(image, planner->getPath(), Vector3i(0, 0, 255), 2);
+        std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
+        drawing::drawTree2D(image, nodes, Vector3i(0, 0, 255), Vector3i(125, 125, 200), 1);
+    }
 
     cv::namedWindow("Point2D", CV_WINDOW_AUTOSIZE);
     cv::imshow("Point2D", image);
@@ -214,6 +222,4 @@ int main(int argc, char** argv) {
     ui::save("Stats.json", Stats::serialize());
     Stats::writeData(std::cout);
     cv::waitKey(0);
-    std::string str;
-    std::cin >> str;
 }

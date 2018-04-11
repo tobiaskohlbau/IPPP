@@ -19,6 +19,8 @@
 #ifndef UTILPLANNER_HPP
 #define UTILPLANNER_HPP
 
+#include <utility>
+
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/modules/distanceMetrics/DistanceMetric.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
@@ -166,11 +168,12 @@ static bool aStar(const std::shared_ptr<Node<dim>> &sourceNode, const std::share
 }
 
 template <unsigned int dim>
-static std::vector<Vector<dim>> calcConfigPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes, const TrajectoryPlanner<dim> &trajectory) {
+static std::vector<Vector<dim>> calcConfigPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
+                                               const TrajectoryPlanner<dim> &trajectory) {
     std::vector<Vector<dim>> path;
     if (nodes.empty())
         return path;
-    
+
     for (auto node = nodes.begin(); node < nodes.end() - 1; ++node) {
         path.push_back((*node)->getValues());
         auto tmp = trajectory.calcTrajCont((**node), **(node + 1));
@@ -178,7 +181,19 @@ static std::vector<Vector<dim>> calcConfigPath(const std::vector<std::shared_ptr
     }
     path.push_back(nodes.back()->getValues());
     return path;
+}
 
+template <unsigned int dim>
+static std::pair<std::shared_ptr<Node<dim>>, std::shared_ptr<Node<dim>>> findGraphConnection(
+    const Graph<dim> &graphA, const Graph<dim> &graphB, const TrajectoryPlanner<dim> &trajectory,
+    const ValidityChecker<dim> &validityChecker, double range, size_t startIndex = 0) {
+    for (auto &node : graphA.getNodes(startIndex)) {
+        for (auto &nearNode : graphB.getNearNodes(*node, range)) {
+            if (validityChecker.check(trajectory.calcTrajBin(*node, *nearNode)))
+                return std::make_pair(node, nearNode);
+        }
+    }
+    return std::make_pair(nullptr, nullptr);
 }
 
 } /* namespace util */

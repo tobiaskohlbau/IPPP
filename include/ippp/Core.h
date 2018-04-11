@@ -50,6 +50,7 @@
 #include <ippp/modules/evaluator/SingleIterationEvaluator.hpp>
 #include <ippp/modules/evaluator/TimeEvaluator.hpp>
 #include <ippp/modules/evaluator/TreeConfigEvaluator.hpp>
+#include <ippp/modules/evaluator/TreeConnectEvaluator.hpp>
 #include <ippp/modules/evaluator/TreePoseEvaluator.hpp>
 
 #include <ippp/modules/neighborFinders/BruteForceNF.hpp>
