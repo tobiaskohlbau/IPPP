@@ -38,6 +38,7 @@ add_subdirectory(MA)
 
 add_ippp_example(GettingStarted GettingStarted.cpp gflags)
 add_ippp_example(Kuka Kuka.cpp gflags)
+add_ippp_example(cad cad.cpp gflags)
 if(OpenCV_FOUND)
 	add_ippp_example(Planner2D Planner2D.cpp ${OpenCV_LIBS} ui gflags)
     add_ippp_example(Constraint2D Constraint2D.cpp ${OpenCV_LIBS} ui gflags)

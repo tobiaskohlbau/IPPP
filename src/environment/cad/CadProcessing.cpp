@@ -135,6 +135,12 @@ void centerMesh(Mesh &mesh) {
         vertex -= centerPoint;
 }
 
+void transformMesh(Mesh &mesh, Transform transform) {
+    auto translation = transform.translation();
+    for (auto &vertex : mesh.vertices)
+        vertex += translation;
+}
+
 /*!
 *  \brief          Transform vertices with the passed configuration, Vector with position and rotation.
 *  \author         Sascha Kaden

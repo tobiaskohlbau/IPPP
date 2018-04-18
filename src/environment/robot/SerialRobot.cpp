@@ -299,10 +299,10 @@ std::vector<Transform> SerialRobot::getLinkOffsets() const {
 *  \date       2018-01-10
 */
 void SerialRobot::saveMeshConfig(const VectorX &angles) {
-    if (this->m_baseModel != nullptr) {
-        std::vector<Vector3> vertices = this->m_baseModel->m_mesh.vertices;
+    if (m_baseModel != nullptr) {
+        std::vector<Vector3> vertices = m_baseModel->m_mesh.vertices;
         cad::transformVertices(m_pose, vertices);
-        cad::exportCad(cad::ExportFormat::OBJ, "base", vertices, this->m_baseModel->m_mesh.faces);
+        cad::exportCad(cad::ExportFormat::OBJ, "base", vertices, m_baseModel->m_mesh.faces);
     }
 
     auto linkTrafos = getLinkTrafos(angles);
@@ -310,6 +310,13 @@ void SerialRobot::saveMeshConfig(const VectorX &angles) {
         std::vector<Vector3> vertices = m_linkModels[i]->m_mesh.vertices;
         cad::transformVertices(linkTrafos[i], vertices);
         cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), vertices, m_linkModels[i]->m_mesh.faces);
+    }
+
+    if (m_toolModel != nullptr) {
+        auto tcp = getTransformation(angles);
+        std::vector<Vector3> vertices = m_toolModel->m_mesh.vertices;
+        cad::transformVertices(tcp, vertices);
+        cad::exportCad(cad::ExportFormat::OBJ, "tool", vertices, m_toolModel->m_mesh.faces);
     }
 }
 

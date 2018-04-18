@@ -4,8 +4,8 @@
 #include <memory>
 #include <string>
 
-#include <ippp/Environment.h>
 #include <ippp/Core.h>
+#include <ippp/Environment.h>
 #include <ippp/UI.h>
 
 #include <experimental/filesystem>
@@ -37,7 +37,8 @@ std::shared_ptr<RobotBase> createMobileRobot(ModelFactory &factory, const fs::v1
     Vector6 min6, max6;
     min6 = util::Vecd(min[0], min[1], min[2], 0, 0, 0);
     max6 = util::Vecd(max[0], max[1], max[2], util::twoPi(), util::twoPi(), util::twoPi());
-    std::vector<DofType> types = {volumetricPos, volumetricPos, volumetricPos, volumetricRot, volumetricRot, volumetricRot};
+    std::vector<DofType> types = {DofType::volumetricPos, DofType::volumetricPos, DofType::volumetricPos,
+                                  DofType::volumetricRot, DofType::volumetricRot, DofType::volumetricRot};
     auto robotModel = factory.createModelFromFile(path.path().string());
     auto robot = std::make_shared<MobileRobot>(6, std::make_pair(min6, max6), types, fs::path(path).filename().string());
     robot->setBaseModel(robotModel);
@@ -69,11 +70,11 @@ void testCollision() {
     collsion->check(config);
 }
 
-void transformMeshes() {
+void centerMeshes() {
     std::string directory = "C:/develop/tmp/";
     std::vector<fs::v1::directory_entry> filePaths;
     for (auto &p : fs::directory_iterator(directory))
-        if (fs::path(p).extension() == ".dae")
+        if (fs::path(p).extension() == ".obj")
             filePaths.push_back(p);
 
     std::vector<Mesh> meshes;
@@ -104,12 +105,37 @@ void transformMeshes() {
     file.close();
 }
 
+void transformMesh() {
+    std::string directory = "C:/develop/tmp/";
+    std::vector<fs::v1::directory_entry> filePaths;
+    for (auto &p : fs::directory_iterator(directory))
+        if (fs::path(p).extension() == ".obj")
+            filePaths.push_back(p);
+
+    std::vector<Mesh> meshes;
+    Transform transform = util::toTransform(util::Vecd(13, 7, 127, 0, 0, 0));
+    for (auto &filePath : filePaths) {
+        Mesh mesh;
+        if (cad::importMesh(filePath.path().string(), mesh)) {
+            cad::transformMesh(mesh, transform);
+            meshes.push_back(mesh);
+        }
+    }
+
+    size_t count = 0;
+    for (auto &mesh : meshes) {
+        cad::exportCad(cad::ExportFormat::OBJ, directory + "/transformed/" + std::to_string(count), mesh);
+        ++count;
+    }
+}
+
 int main(int /*argc*/, char ** /*argv*/) {
     Logging::setLogLevel(LogLevel::trace);
 
     // splitCad();
-    //testCollision();
-    transformMeshes();
+    // testCollision();
+    // centerMeshes();
+    transformMesh();
     std::string str;
     std::cin >> str;
     return 0;

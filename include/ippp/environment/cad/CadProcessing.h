@@ -39,6 +39,7 @@ Mesh mergeMeshes(const std::vector<Mesh> &meshes);
 Vector3 calcCenterOfMesh(const Mesh &mesh);
 void centerMeshes(std::vector<Mesh> &meshes);
 void centerMesh(Mesh &mesh);
+void transformMesh(Mesh &mesh, Transform transform);
 
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices);
 void transformVertices(const Transform &T, std::vector<Vector3> &vertices);

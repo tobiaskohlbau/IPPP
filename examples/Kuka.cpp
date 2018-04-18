@@ -32,12 +32,10 @@ void simpleRRT() {
                                            DhParameter(util::toRad(90), 0, 400), DhParameter(util::toRad(-90), 0, 0),
                                            DhParameter(util::toRad(-90), 0, 400), DhParameter(util::toRad(90), 0, 0),
                                            DhParameter(0, 0, 126)});
-    std::vector<std::string> linkModelFiles = {
-        FLAGS_assetsDir + "/robotModels/iiwa/link1.obj", FLAGS_assetsDir + "/robotModels/iiwa/link2.obj",
-        FLAGS_assetsDir + "/robotModels/iiwa/link3.obj", FLAGS_assetsDir + "/robotModels/iiwa/link4.obj",
-        FLAGS_assetsDir + "/robotModels/iiwa/link5.obj", FLAGS_assetsDir + "/robotModels/iiwa/link6.obj",
-        FLAGS_assetsDir + "/robotModels/iiwa/link7.obj"};    // 7
-    envConfigurator.setRobotBaseModelFile(FLAGS_assetsDir + "/robotModels/iiwa/link0.obj");
+    std::string iiwa = FLAGS_assetsDir + "/robotModels/iiwa/";
+    std::vector<std::string> linkModelFiles = {iiwa + "link1.obj", iiwa + "link2.obj", iiwa + "link3.obj", iiwa + "link4.obj",
+                                               iiwa + "link5.obj", iiwa + "link6.obj", iiwa + "link7.obj"};
+    envConfigurator.setRobotBaseModelFile(iiwa + "link0.obj");
     envConfigurator.setRobotType(RobotType::Serial);
 
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
@@ -51,17 +49,21 @@ void simpleRRT() {
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::toTransform(linkOffsets);
-    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms);
+    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms, Transform::Identity(),
+                                             util::toTransform(util::Vecd(13, 7, 120, 0, 0, 0)),
+                                             FLAGS_assetsDir + "/robotModels/wesslingHand.obj");
     envConfigurator.saveConfig("KukaEnvConfig.json");
 
     auto environment = envConfigurator.getEnvironment();
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
 
     // Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
-    // Vector<dim> testConfig = util::Vecd(45, 90, 170, 30, 10, 120, 0);
-    // testConfig = util::toRad<dim>(testConfig);
-    // serialRobot->saveMeshConfig(testConfig);
+     Vector<dim> testConfig = util::Vecd(45, 90, 170, 30, 10, 120, 0);
+    //Vector<dim> testConfig = util::Vecd(0, 0, 0, 0, 0, 0, 0);
+    testConfig = util::toRad<dim>(testConfig);
+    serialRobot->saveMeshConfig(testConfig);
 
+    return;
     double stepSize = 2;
     ModuleConfigurator<dim> creator;
     creator.setEvaluatorType(EvaluatorType::TreeConfigOrTime);
