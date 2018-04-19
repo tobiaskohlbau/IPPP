@@ -57,6 +57,7 @@ class EnvironmentConfigurator : public Configurator {
 
     std::shared_ptr<Environment> getEnvironment();
     std::string getRobotBaseModelFile() const;
+    std::string getRobotToolModelFile() const;
     std::vector<std::string> getLinkModelFiles() const;
     std::vector<std::string> getObstaclePaths() const;
     std::vector<Transform> getObstaclePoses() const;

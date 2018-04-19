@@ -251,6 +251,10 @@ std::string EnvironmentConfigurator::getRobotBaseModelFile() const {
     return m_robotBaseModelFile;
 }
 
+std::string EnvironmentConfigurator::getRobotToolModelFile() const {
+    return m_toolModelFile;
+}
+
 std::vector<std::string> EnvironmentConfigurator::getLinkModelFiles() const {
     return m_linkModelFiles;
 }
