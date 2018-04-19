@@ -279,7 +279,7 @@ void Environment::updateMasks() {
     for (auto &robot : m_robots) {
         auto dofTypes = robot->getDofTypes();
         for (auto dof = dofTypes.begin(); dof != dofTypes.end(); ++dof, ++index) {
-            if (*dof == DofType::planarPos || *dof == DofType::volumetricPos || *dof == DofType::position) {
+            if (*dof == DofType::planarPos || *dof == DofType::volumetricPos || *dof == DofType::jointTrans) {
                 m_positionMask[index] = 1;
                 m_rotationMask[index] = 0;
             } else {

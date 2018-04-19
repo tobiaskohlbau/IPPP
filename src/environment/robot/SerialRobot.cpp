@@ -59,10 +59,10 @@ Transform SerialRobot::getTransformation(const VectorX &config) const {
 }
 
 /*!
-*  \brief      Get vector of Jaco transformation matrizes
+*  \brief      Get vector of Jaco transformation matrices
 *  \author     Sascha Kaden
 *  \param[in]  real angles
-*  \param[out] vector of transformation matrizes
+*  \param[out] vector of transformation matrices
 *  \date       2016-10-22
 */
 std::vector<Transform> SerialRobot::getJointTrafos(const VectorX &angles) const {
@@ -89,7 +89,7 @@ Transform SerialRobot::getTrafo(const DhParameter &dhParams, double q) const {
 }
 
 /*!
-*  \brief      Get vector of Jaco transformation matrizes
+*  \brief      Get vector of Jaco transformation matrices
 *  \author     Sascha Kaden
 *  \param[in]  real angles
 *  \param[out] vector of Transforms
@@ -111,14 +111,36 @@ std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
 }
 
 /*!
-*  \brief      Compute tool center pose from transformation matrizes and the basis pose
+*  \brief      Get vector of Jaco transformation matrices
 *  \author     Sascha Kaden
-*  \param[in]  transformation matrizes
+*  \param[in]  real angles
+*  \param[out] vector of Transforms
+*  \date       2016-10-22
+*/
+std::pair<std::vector<Transform>, Transform> SerialRobot::getLinkTrafosAndTcp(const VectorX &angles) const {
+    std::vector<Transform> jointTrafos = getJointTrafos(angles);
+    std::vector<Transform> AsLink(jointTrafos.size());
+    Transform AsJoint = jointTrafos.front();
+
+    AsJoint = m_pose * m_baseOffset * jointTrafos[0];
+    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
+    for (size_t i = 1; i < jointTrafos.size(); ++i) {
+        AsLink[i] = AsJoint * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ()) * m_linkOffsets[i];
+        AsJoint = AsJoint * jointTrafos[i];
+    }
+
+    return std::make_pair(AsLink, getTcp(jointTrafos));
+}
+
+/*!
+*  \brief      Compute tool center pose from transformation matrices and the basis pose
+*  \author     Sascha Kaden
+*  \param[in]  transformation matrices
 *  \param[out] TCP pose as Transform
 *  \date       2016-07-07
 */
 Transform SerialRobot::getTcp(const std::vector<Transform> &jointTrafos) const {
-    // multiply these matrizes together, to get the complete transformation
+    // multiply these matrices together, to get the complete transformation
     // T = A1 * A2 * A3 * A4 * A5 * A6
     Transform robotToTcp = m_pose * m_baseOffset;
     for (const auto &trafo : jointTrafos)

@@ -39,7 +39,7 @@ void simpleRRT() {
     envConfigurator.setRobotType(RobotType::Serial);
 
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
-    std::vector<DofType> dofTypes(7, DofType::joint);
+    std::vector<DofType> dofTypes(7, DofType::jointRot);
     envConfigurator.setRobotBaseProperties(dim, dofTypes, std::make_pair(minRobotBound, maxRobotBound));
     std::vector<Vector6> linkOffsets(7, util::Vecd(0, 0, 0, 0, 0, 0));
     linkOffsets[0] = util::Vecd(0, 0, 150, 0, 0, 0);
@@ -58,22 +58,21 @@ void simpleRRT() {
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
 
     // Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90, 30);
-     Vector<dim> testConfig = util::Vecd(45, 90, 170, 30, 10, 120, 0);
-    //Vector<dim> testConfig = util::Vecd(0, 0, 0, 0, 0, 0, 0);
-    testConfig = util::toRad<dim>(testConfig);
-    serialRobot->saveMeshConfig(testConfig);
+    // Vector<dim> testConfig = util::Vecd(45, 90, 170, 30, 10, 120, 0);
+    // Vector<dim> testConfig = util::Vecd(0, 0, 0, 0, 0, 0, 0);
+    // testConfig = util::toRad<dim>(testConfig);
+    // serialRobot->saveMeshConfig(testConfig);
 
-    return;
     double stepSize = 2;
     ModuleConfigurator<dim> creator;
-    creator.setEvaluatorType(EvaluatorType::TreeConfigOrTime);
-    creator.setEvaluatorProperties(stepSize, 20000);
-    creator.setGraphSortCount(2000);
+    creator.setEvaluatorType(EvaluatorType::TreeConnect);
+    creator.setEvaluatorProperties(stepSize, 500);
+    creator.setGraphSortCount(3000);
     creator.setEnvironment(environment);
     creator.setValidityCheckerType(ValidityCheckerType::FclSerial);
     creator.setSamplingType(SamplingType::NearObstacle);
 
-    RRTStar<dim> planner(environment, creator.getRRTOptions(stepSize), creator.getGraph());
+    RRTStarConnect<dim> planner(environment, creator.getRRTOptions(stepSize), creator.getGraph(), creator.getGraphB());
     Vector<dim> start = util::Vecd(0, 0, 0, 0, 0, 0, 0);
     Vector<dim> goal = util::Vecd(-90, 90, 150, 30, 35, 114, 0);
     start = util::toRad<dim>(start);
@@ -83,7 +82,7 @@ void simpleRRT() {
     auto timer = std::make_shared<StatsTimeCollector>("Planning Time");
     Stats::addCollector(timer);
     timer->start();
-    bool connected = planner.computePath(start, goal, 500, 3);
+    bool connected = planner.computePath(start, goal, 6000, 24);
     timer->stop();
 
     if (connected) {

@@ -29,7 +29,7 @@ std::shared_ptr<Environment> generateEnvironment() {
         auto model = factory.createModelFromFile(FLAGS_assetsDir + "/robotModels/2D/2dLineDim" + std::to_string(dim) + ".obj");
         joints.push_back(Joint(min[i], max[i], dhParameter, model));
     }
-    std::vector<DofType> dofs(dim, DofType::joint);
+    std::vector<DofType> dofs(dim, DofType::jointRot);
     auto robot = std::make_shared<SerialRobot>(dim, joints, dofs);
 
     auto environment = std::make_shared<Environment>(workspaceBounding, robot);

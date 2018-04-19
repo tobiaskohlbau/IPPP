@@ -37,7 +37,7 @@ std::shared_ptr<Environment> createEnvironment() {
         auto model = factory.createModelFromFile(FLAGS_assetsDir + "/robotModels/2D/2dLineDim" + std::to_string(dim) + ".obj");
         joints.push_back(Joint(min[i], max[i], dhParam, model));
     }
-    std::vector<DofType> dofs(dim, DofType::joint);
+    std::vector<DofType> dofs(dim, DofType::jointRot);
     auto robot = std::make_shared<SerialRobot>(dim, joints, dofs);
     // no obstacles
     return std::make_shared<Environment>(m_workspace, robot);

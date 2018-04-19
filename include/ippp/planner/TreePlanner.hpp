@@ -139,6 +139,7 @@ template <unsigned int dim>
 bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose,
                                          const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads) {
     // this->setSamplingParams(start, goal);
+    m_plannerCollector->startPlannerTimer();
     if (!setInitNode(startConfig))
         return false;
 

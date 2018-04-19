@@ -111,7 +111,7 @@ bool CollisionFcl<dim>::checkFCL(const std::shared_ptr<FCLModel> &model1, const 
 
     fcl::CollisionObject o1(model1, fclR1, fclT1);
     fcl::CollisionObject o2(model2, fclR2, fclT2);
-    fcl::CollisionRequest request;// (1000, true);    // default setting
+    fcl::CollisionRequest request;    // (1000, true);    // default setting
     fcl::CollisionResult result;
     fcl::collide(&o1, &o2, request, result);
 

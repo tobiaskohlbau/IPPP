@@ -79,7 +79,7 @@ enum class PlannerType { AdaptedRRT, CiBRRT, EST, RRT, RRTStar, PRM, SRT };
 
 // robot enums
 enum class RobotCategory { serial, mobile };
-enum class DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint, position, rotation };
+enum class DofType { planarPos, planarRot, volumetricPos, volumetricRot, jointRot, jointTrans };
 enum class RobotType { Point2D, Mobile2D, Mobile3D, Serial, Jaco};
 
 enum class FactoryType { ModelFCL, ModelPQP };

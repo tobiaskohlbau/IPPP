@@ -90,8 +90,7 @@ bool test2DSerialRobot() {
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     Vector3 min(-util::pi(), -util::pi(), -util::pi());
     Vector3 max(util::pi(), util::pi(), util::pi());
-    envConfigurator.setRobotBaseProperties(dim, std::vector<DofType>({DofType::joint, DofType::joint, DofType::joint}),
-                                           std::make_pair(min, max));
+    envConfigurator.setRobotBaseProperties(dim, std::vector<DofType>(dim, DofType::jointRot), std::make_pair(min, max));
     std::vector<DhParameter> dhParameters(3, DhParameter(0, 100));
     std::vector<std::string> jointModelFiles(3, std::string(FLAGS_assetsDir + "/robotModels/2dLine.obj"));
     envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles);
@@ -187,15 +186,14 @@ void testPointRobot() {
 
     timer->stop();
 
-
     auto workspace2D = cad::create2dspace(env->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
     for (const auto& obstacle : env->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
 
-    //std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
-    //drawing::drawTree2D(image, nodes, Vector3i(0, 0, 255), Vector3i(125, 125, 200), 1);
+    // std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
+    // drawing::drawTree2D(image, nodes, Vector3i(0, 0, 255), Vector3i(125, 125, 200), 1);
 
     if (connected) {
         drawing::drawPath2D(image, planner->getPath(), Vector3i(255, 0, 0), 2);

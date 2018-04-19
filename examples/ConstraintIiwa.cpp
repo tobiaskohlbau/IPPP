@@ -19,10 +19,10 @@ std::shared_ptr<Environment> generateEnvironment() {
     EnvironmentConfigurator envConfigurator;
 
     envConfigurator.setWorkspaceProperties(AABB(Vector3(-10000, -10000, -10000), Vector3(10000, 10000, 10000)));
-    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(-420, -400, 100, 0, 0,
-    // util::toRad(90)));
-    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(420, -400, 100, 0, 0,
-    // util::toRad(90)));
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(-420, -400, 100, 0, 0,
+    util::toRad(90)));
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(420, -400, 100, 0, 0,
+    util::toRad(90)));
 
     Vector7 minRobotBound = util::Vecd(-170, -120, -170, -120, -170, -120, -175);
     Vector7 maxRobotBound = util::Vecd(170, 120, 170, 120, 170, 120, 175);
@@ -41,8 +41,7 @@ std::shared_ptr<Environment> generateEnvironment() {
     envConfigurator.setRobotType(RobotType::Serial);
 
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
-    std::vector<DofType> dofTypes = {DofType::joint, DofType::joint, DofType::joint, DofType::joint,
-                                     DofType::joint, DofType::joint, DofType::joint};
+    std::vector<DofType> dofTypes(7, DofType::jointRot);
     envConfigurator.setRobotBaseProperties(dim, dofTypes, std::make_pair(minRobotBound, maxRobotBound));
     std::vector<Vector6> linkOffsets(7, util::Vecd(0, 0, 0, 0, 0, 0));
     linkOffsets[0] = util::Vecd(0, 0, 150, 0, 0, 0);
@@ -72,6 +71,8 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     auto metric = std::make_shared<L2Metric<dim>>();
     auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
     auto graph = std::make_shared<Graph<dim>>(graphSortCount, neighborFinder);
+    auto neighborFinderB = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
+    auto graphB = std::make_shared<Graph<dim>>(graphSortCount, neighborFinderB);
     auto sampler = std::make_shared<SamplerUniformBiased<dim>>(env, graph, "sadfsdafasdf4332154sdaf");
 
     // constraint
@@ -90,13 +91,14 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     auto dummyModifier = std::make_shared<DummyPathModifier<dim>>();
     // evaluator
     std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-    evaluators.push_back(std::make_shared<TreeConfigEvaluator<dim>>(metric, graph, trajectory, stilmanConstraint, stepSize));
+    //evaluators.push_back(std::make_shared<TreeConfigEvaluator<dim>>(metric, graph, trajectory, stilmanConstraint, stepSize));
+    evaluators.push_back(std::make_shared<TreeConnectEvaluator<dim>>(graph, graphB, trajectory, validityChecker));
     evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(50));
     auto evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
 
-    RRTOptions<dim> options(stepSize, validityChecker, metric, evaluator, dummyModifier, BS, trajectory);
+    RRTOptions<dim> options(stepSize, validityChecker, metric, evaluator, nodeCut, BS, trajectory);
 
-    return std::make_shared<RRTStar<dim>>(env, options, graph);
+    return std::make_shared<RRTStarConnect<dim>>(env, options, graph, graphB);
 }
 
 bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planner, const Vector<dim>& start,
@@ -106,7 +108,7 @@ bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planne
     auto timer = std::make_shared<StatsTimeCollector>("Planning Time");
     Stats::addCollector(timer);
     timer->start();
-    bool connected = planner->computePath(start, goal, 4000, 3);
+    bool connected = planner->computePath(start, goal, 72000, 24);
     timer->stop();
 
     if (connected) {
@@ -146,8 +148,9 @@ bool test2DSerialRobot() {
     bool connected = false;
 
     // case 1: fixed x
-    Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -0.2, -0.2, -IPPP_MAX);
-    Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, IPPP_MAX, 0.2, 0.2, IPPP_MAX);
+    double rad(util::toRad(2.5));
+    Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -rad, -rad, -IPPP_MAX);
+    Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, IPPP_MAX, rad, rad, IPPP_MAX);
     C = std::make_pair(Cmin, Cmax);
     taskFrame = util::toTransform(util::Vecd(0, 0, 0, 0, 0, 0));
 
@@ -160,7 +163,7 @@ bool test2DSerialRobot() {
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    // Logging::setLogLevel(LogLevel::debug);
+    Logging::setLogLevel(LogLevel::debug);
 
     test2DSerialRobot();
 

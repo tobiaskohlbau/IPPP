@@ -43,7 +43,7 @@ void serial2Joints() {
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     Vector2 min(-util::pi(), -util::pi());
     Vector2 max(util::pi(), util::pi());
-    envConfigurator.setRobotBaseProperties(dim, std::vector<DofType>({DofType::joint, DofType::joint}), std::make_pair(min, max));
+    envConfigurator.setRobotBaseProperties(dim, std::vector<DofType>(2, DofType::jointRot), std::make_pair(min, max));
     std::vector<DhParameter> dhParameters(dim, DhParameter(0, 100));
     std::vector<std::string> jointModelFiles(dim, FLAGS_assetsDir + "/robotModels/2dLine.obj");
     envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles);
@@ -115,8 +115,7 @@ void serial3Joints() {
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     Vector3 min(-util::pi(), -util::pi(), -util::pi());
     Vector3 max(util::pi(), util::pi(), util::pi());
-    envConfigurator.setRobotBaseProperties(dim, std::vector<DofType>({DofType::joint, DofType::joint, DofType::joint}),
-                                           std::make_pair(min, max));
+    envConfigurator.setRobotBaseProperties(dim, std::vector<DofType>(dim, DofType::jointRot), std::make_pair(min, max));
     std::vector<DhParameter> dhParameters(dim, DhParameter(0, 66.66666));
     std::vector<std::string> jointModelFiles(dim, FLAGS_assetsDir + "/robotModels/2D/2dLine66.obj");
     envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles);

@@ -93,10 +93,10 @@ Transform toTransform(const Vector6 &pose) {
 }
 
 /*!
-*  \brief      Convert pose configs to transformation matrizes
+*  \brief      Convert pose configs to transformation matrices
 *  \author     Sascha Kaden
 *  \param[in]  pose Vectors
-*  \param[out] transformation matrizes
+*  \param[out] transformation matrices
 *  \date       2016-07-07
 */
 std::vector<Transform> toTransform(const std::vector<Vector6> poses) {
@@ -131,7 +131,7 @@ Transform poseVecToTransformFromDeg(const Vector6 &pose) {
 */
 Vector6 toPoseVec(const Transform &T) {
     Vector3 vec(T.translation());
-    Vector3 euler(T.rotation().eulerAngles(0,1,2));
+    Vector3 euler(T.rotation().eulerAngles(0, 1, 2));
     return util::append<3, 3>(vec, euler);
 }
 
@@ -205,7 +205,7 @@ MatrixX transformToTaskFrameJ(const MatrixX &jacobian, const Transform taskFrame
     toTaskFrame.block<3, 3>(3, 3) = R.inverse();
 
     Matrix6 E = Matrix6::Identity();
-    //double psi = std::atan2(R(2, 1), R(2, 2));
+    // double psi = std::atan2(R(2, 1), R(2, 2));
     double theta = std::asin(R(2, 0));
     double phi = std::atan2(R(1, 0), R(0, 0));
     E(3, 3) = std::cos(phi) / std::cos(theta);
@@ -218,7 +218,6 @@ MatrixX transformToTaskFrameJ(const MatrixX &jacobian, const Transform taskFrame
     MatrixX J = toTaskFrame * jacobian;
     return E * J;
 }
-
 
 /*!
 *  \brief      Remove duplicate vectors from the passed reference list.
@@ -275,7 +274,7 @@ double toRad(double deg) {
 */
 std::vector<double> toDeg(std::vector<double> rads) {
     for (auto &rad : rads)
-        rad * toDeg();
+        rad *toDeg();
     return rads;
 }
 
@@ -287,7 +286,7 @@ std::vector<double> toDeg(std::vector<double> rads) {
 */
 std::vector<double> toRad(std::vector<double> degs) {
     for (auto &deg : degs)
-        deg * toRad();
+        deg *toRad();
     return degs;
 }
 

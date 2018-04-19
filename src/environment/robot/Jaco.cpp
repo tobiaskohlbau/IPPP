@@ -43,10 +43,10 @@ Jaco::Jaco(unsigned int dim, const std::vector<Joint> &joints, const std::vector
 }
 
 /*!
-*  \brief      Get vector of Jaco transformation matrizes
+*  \brief      Get vector of Jaco transformation matrices
 *  \author     Sascha Kaden
 *  \param[in]  real angles
-*  \param[out] vector of transformation matrizes
+*  \param[out] vector of transformation matrices
 *  \date       2016-07-14
 */
 std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles) const {
@@ -54,7 +54,7 @@ std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles) const {
     Vector6 dhAngles = convertRealToDH(angles);
 
     std::vector<Transform> trafos;
-    // create transformation matrizes
+    // create transformation matrices
     for (size_t i = 0; i < 6; ++i)
         trafos.push_back(getTrafo(m_dhParameters[i], dhAngles[i]));
     return trafos;
@@ -62,7 +62,7 @@ std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles) const {
 
 /*!
 *  \brief      Convert real angles to D-H Angles
-*  \detail     This conversation is a kinova jaco own issue
+*  \detail     This conversation is a Kinova Jaco own issue
 *  \author     Sascha Kaden
 *  \param[in]  real angles
 *  \param[out] D-H angles

@@ -40,9 +40,14 @@ class CollisionFclSerial : public CollisionFcl<dim> {
   private:
     bool check(const Vector<dim> &config, const CollisionRequest &request) const;
 
+    bool m_baseModelExists = false;
+    bool m_toolModelExists = false;
     std::shared_ptr<FCLModel> m_baseModel;
-    bool m_baseMeshAvaible = false;
+    std::shared_ptr<FCLModel> m_toolModel;
     std::vector<std::shared_ptr<FCLModel>> m_linkModels;
+    AABB m_toolAABB;
+    std::vector<AABB> m_linkAABBs;
+    std::shared_ptr<SerialRobot> m_robot;
 
     using CollisionDetection<dim>::m_request;
     using CollisionFcl<dim>::m_environment;
@@ -62,27 +67,40 @@ class CollisionFclSerial : public CollisionFcl<dim> {
 template <unsigned int dim>
 CollisionFclSerial<dim>::CollisionFclSerial(const std::shared_ptr<Environment> &environment, const CollisionRequest &request)
     : CollisionFcl<dim>("FCL Serial", environment, request) {
-    auto robot = m_environment->getRobot();
+    if (m_environment->getRobot()->getRobotCategory() != RobotCategory::serial) {
+        Logging::error("Robot has to be serial!", this);
+        return;
+    }
+    m_robot = std::static_pointer_cast<SerialRobot>(m_environment->getRobot());
 
-    if (robot->getBaseModel() != nullptr && !robot->getBaseModel()->empty()) {
-        m_baseModel = std::static_pointer_cast<ModelFcl>(robot->getBaseModel())->m_fclModel;
-        m_baseMeshAvaible = true;
+    if (m_robot->getBaseModel() != nullptr && !m_robot->getBaseModel()->empty()) {
+        m_baseModel = std::static_pointer_cast<ModelFcl>(m_robot->getBaseModel())->m_fclModel;
+        m_baseModelExists = true;
     } else {
-        Logging::warning("Empty base model", this);
+        Logging::debug("Empty base model", this);
     }
 
-    if (robot->getRobotCategory() == RobotCategory::serial) {
-        std::shared_ptr<SerialRobot> serialRobot(std::static_pointer_cast<SerialRobot>(robot));
-        std::vector<std::shared_ptr<ModelContainer>> linkModels = serialRobot->getLinkModels();
-        if (linkModels.empty())
-            Logging::error("No link models applied", this);
+    if (m_robot->getToolModel() != nullptr && !m_robot->getToolModel()->empty()) {
+        auto model = std::static_pointer_cast<ModelFcl>(m_robot->getToolModel());
+        m_toolModel = model->m_fclModel;
+        m_toolAABB = model->getAABB();
+        m_toolModelExists = true;
+    } else {
+        Logging::debug("Empty tool model", this);
+    }
 
-        for (auto &model : linkModels) {
-            if (!model || model->empty())
-                Logging::error("Emtpy joint model", this);
-            else
-                m_linkModels.push_back(std::static_pointer_cast<ModelFcl>(model)->m_fclModel);
+    auto linkModels = m_robot->getLinkModels();
+    if (linkModels.empty())
+        Logging::error("No link models applied", this);
+
+    for (auto &model : linkModels) {
+        if (!model || model->empty()) {
+            Logging::error("Emtpy link model", this);
+            return;
         }
+        auto fclModel = std::static_pointer_cast<ModelFcl>(model);
+        m_linkModels.push_back(fclModel->m_fclModel);
+        m_linkAABBs.push_back(fclModel->getAABB());
     }
 }
 
@@ -137,22 +155,26 @@ bool CollisionFclSerial<dim>::check(const std::vector<Vector<dim>> &configs) con
 */
 template <unsigned int dim>
 bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRequest &request) const {
-    auto robot = std::dynamic_pointer_cast<SerialRobot>(this->m_environment->getRobot());
-    auto linkTrafos = robot->getLinkTrafos(config);
-    auto pose = robot->getPose();
+    auto linkTrafosAndTcp = m_robot->getLinkTrafosAndTcp(config);
+    auto &linkTrafos = linkTrafosAndTcp.first;
+    auto &tcp = linkTrafosAndTcp.second;
+    auto pose = m_robot->getPose();
 
     // check models against workspace boundaries
-    auto linkModels = robot->getLinkModels();
     for (unsigned int i = 0; i < dim; ++i) {
-        if (!m_workspaceBounding.contains(util::transformAABB(linkModels[i]->m_mesh.aabb, linkTrafos[i]))) {
+        if (!m_workspaceBounding.contains(util::transformAABB(m_linkAABBs[i], linkTrafos[i]))) {
             // Logging::trace("Robot out of workspace boundaries", this);
             return false;
         }
     }
+    if (m_toolModelExists && !m_workspaceBounding.contains(util::transformAABB(m_toolAABB, tcp))) {
+        // Logging::trace("Robot out of workspace boundaries", this);
+        return false;
+    }
 
     // control collision of the robot joints with themselves
     if (request.checkInterRobot) {
-        if (m_baseMeshAvaible) {
+        if (m_baseModelExists) {
             for (unsigned int i = 1; i < dim; ++i) {
                 if (this->checkFCL(m_baseModel, m_linkModels[i], pose, linkTrafos[i])) {
                     // std::cout << pose.matrix() << std::endl;
@@ -162,7 +184,6 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
                 }
             }
         }
-
         for (unsigned int i = 0; i < dim; ++i) {
             for (unsigned int j = i + 2; j < dim; ++j) {
                 if (this->checkFCL(m_linkModels[i], m_linkModels[j], linkTrafos[i], linkTrafos[j])) {
@@ -173,11 +194,21 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
                 }
             }
         }
+        if (m_toolModelExists) {
+            for (unsigned int i = 0; i < dim - 1; ++i) {
+                if (this->checkFCL(m_toolModel, m_linkModels[i], tcp, linkTrafos[i])) {
+                    // std::cout << tcp.matrix() << std::endl;
+                    // std::cout << linkTrafos[i].matrix() << std::endl;
+                    // Logging::trace("Collision between link" + std::to_string(i) + " and tool", this);
+                    return false;
+                }
+            }
+        }
     }
 
     // control collision with workspace
-    if (m_workspaceAvaible && request.checkObstacle) {
-        if (m_baseMeshAvaible) {
+    if (request.checkObstacle) {
+        if (m_baseModelExists) {
             for (auto &obstacle : m_obstacles) {
                 if (this->checkFCL(obstacle.first, m_baseModel, obstacle.second, pose)) {
                     // Logging::trace("Collision between workspace and base", this);
@@ -189,6 +220,14 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
             for (auto &obstacle : m_obstacles) {
                 if (this->checkFCL(obstacle.first, m_linkModels[i], obstacle.second, linkTrafos[i])) {
                     // Logging::trace("Collision between workspace and link" + std::to_string(i), this);
+                    return false;
+                }
+            }
+        }
+        if (m_toolModelExists) {
+            for (auto &obstacle : m_obstacles) {
+                if (this->checkFCL(obstacle.first, m_toolModel, obstacle.second, tcp)) {
+                    // Logging::trace("Collision between workspace and base", this);
                     return false;
                 }
             }
