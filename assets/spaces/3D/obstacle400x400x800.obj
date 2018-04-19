@@ -1,8 +1,6 @@
 # File produced by Open Asset Import Library (http://www.assimp.sf.net)
 # (assimp v4.1.0)
 
-mtllib obstacle400x400x800.mtl
-
 # 12 vertex positions
 v  -400 200 600
 v  -400 -200 -600
