@@ -48,7 +48,7 @@ class CollisionFclMobile : public CollisionFcl<dim> {
     using CollisionFcl<dim>::m_identity;
     using CollisionFcl<dim>::m_workspaceBounding;
     using CollisionFcl<dim>::m_obstacles;
-    using CollisionFcl<dim>::m_workspaceAvaible;
+    using CollisionFcl<dim>::m_obstacleExists;
 };
 
 /*!
@@ -145,7 +145,7 @@ bool CollisionFclMobile<dim>::check(const Vector<dim> &config, const CollisionRe
         }
     }
 
-    if (request.checkObstacle && m_workspaceAvaible) {    // collisions between robots and obstacles
+    if (request.checkObstacle && m_obstacleExists) {    // collisions between robots and obstacles
         for (size_t i = 0; i < m_robotModels.size(); ++i) {
             Transform T = m_robots[i]->getTransformation(configVecs[i]);
             for (auto &obstacle : m_obstacles) {

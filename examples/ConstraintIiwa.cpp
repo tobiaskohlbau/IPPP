@@ -112,7 +112,9 @@ bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planne
         Logging::info("Init and goal could be connected! \n", "Example");
         auto path = planner->getPath(0.001, 0.001);
 
-        auto json = jsonSerializer::serialize<dim>(path);
+        //auto json = jsonSerializer::serialize<dim>(path);
+        //ui::save("kukaPath.json", json);
+        auto json = txtSerializer::serialize<dim>(path);
         ui::save("kukaPath.json", json);
     }
     return connected;
