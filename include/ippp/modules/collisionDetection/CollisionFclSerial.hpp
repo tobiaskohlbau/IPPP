@@ -50,11 +50,11 @@ class CollisionFclSerial : public CollisionFcl<dim> {
     std::shared_ptr<SerialRobot> m_robot;
 
     using CollisionDetection<dim>::m_request;
+    using CollisionFcl<dim>::m_collisionCollector;
     using CollisionFcl<dim>::m_environment;
     using CollisionFcl<dim>::m_identity;
     using CollisionFcl<dim>::m_workspaceBounding;
     using CollisionFcl<dim>::m_obstacles;
-    using CollisionFcl<dim>::m_workspaceAvaible;
 };
 
 /*!
@@ -155,6 +155,7 @@ bool CollisionFclSerial<dim>::check(const std::vector<Vector<dim>> &configs) con
 */
 template <unsigned int dim>
 bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRequest &request) const {
+    m_collisionCollector->add(1);
     auto linkTrafosAndTcp = m_robot->getLinkTrafosAndTcp(config);
     auto &linkTrafos = linkTrafosAndTcp.first;
     auto &tcp = linkTrafosAndTcp.second;
@@ -208,18 +209,10 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
 
     // control collision with workspace
     if (request.checkObstacle) {
-        if (m_baseModelExists) {
+        auto trafo = linkTrafos.begin();
+        for (auto model = m_linkModels.begin(); model < m_linkModels.end(); ++model, ++trafo) {
             for (auto &obstacle : m_obstacles) {
-                if (this->checkFCL(obstacle.first, m_baseModel, obstacle.second, pose)) {
-                    // Logging::trace("Collision between workspace and base", this);
-                    return false;
-                }
-            }
-        }
-        for (unsigned int i = 0; i < dim; ++i) {
-            for (auto &obstacle : m_obstacles) {
-                if (this->checkFCL(obstacle.first, m_linkModels[i], obstacle.second, linkTrafos[i])) {
-                    // Logging::trace("Collision between workspace and link" + std::to_string(i), this);
+                if (this->checkFCL(obstacle.first, *model, obstacle.second, *trafo)) {
                     return false;
                 }
             }
@@ -227,7 +220,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
         if (m_toolModelExists) {
             for (auto &obstacle : m_obstacles) {
                 if (this->checkFCL(obstacle.first, m_toolModel, obstacle.second, tcp)) {
-                    // Logging::trace("Collision between workspace and base", this);
+                    // Logging::trace("Collision between workspace and tool", this);
                     return false;
                 }
             }

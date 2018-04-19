@@ -70,7 +70,7 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, double
         Logging::error("Scene contains no meshes", "CadProcessing");
         return false;
     }
-    Logging::debug("File " + util::getFileName(filePath) + " has: " + std::to_string(scene->mNumMeshes) + " mesh(es)",
+    Logging::trace("File " + util::getFileName(filePath) + " has: " + std::to_string(scene->mNumMeshes) + " mesh(es)",
                    "CadProcessing");
     meshes.clear();
 

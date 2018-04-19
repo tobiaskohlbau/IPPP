@@ -49,7 +49,7 @@ class CollisionFcl : public CollisionDetection<dim> {
     Transform m_identity;
     AABB m_workspaceBounding;
     std::vector<std::pair<std::shared_ptr<FCLModel>, Transform>> m_obstacles;
-    bool m_workspaceAvaible = false;
+    bool m_obstacleExists = false;
     std::shared_ptr<StatsCollisionCollector> m_collisionCollector = nullptr;
 
     using CollisionDetection<dim>::m_environment;
@@ -70,13 +70,11 @@ CollisionFcl<dim>::CollisionFcl(const std::string &name, const std::shared_ptr<E
       m_collisionCollector(std::make_shared<StatsCollisionCollector>("CollisionCount")) {
     Stats::addCollector(m_collisionCollector);
 
-    auto robot = m_environment->getRobot();
     if (environment->numObstacles() > 0) {
-        for (auto &obstacle : environment->getObstacles()) {
+        m_obstacleExists = true;
+        for (auto &obstacle : environment->getObstacles())
             m_obstacles.push_back(
                 std::make_pair(std::static_pointer_cast<ModelFcl>(obstacle->model)->m_fclModel, obstacle->getPose()));
-            m_workspaceAvaible = true;
-        }
     } else {
         Logging::warning("No obstacles set", this);
     }
@@ -97,8 +95,6 @@ CollisionFcl<dim>::CollisionFcl(const std::string &name, const std::shared_ptr<E
 template <unsigned int dim>
 bool CollisionFcl<dim>::checkFCL(const std::shared_ptr<FCLModel> &model1, const std::shared_ptr<FCLModel> &model2,
                                  const Transform &T1, const Transform &T2) const {
-    m_collisionCollector->add(1);
-
     auto &R1 = T1.rotation();
     auto &t1 = T1.translation();
     fcl::Matrix3f fclR1(R1(0, 0), R1(0, 1), R1(0, 2), R1(1, 0), R1(1, 1), R1(1, 2), R1(2, 0), R1(2, 1), R1(2, 2));

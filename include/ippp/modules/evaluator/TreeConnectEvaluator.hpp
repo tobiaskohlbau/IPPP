@@ -38,7 +38,7 @@ class TreeConnectEvaluator : public Evaluator<dim> {
   public:
     TreeConnectEvaluator(const std::shared_ptr<Graph<dim>> &graphA, const std::shared_ptr<Graph<dim>> &graphB,
                          const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double range = 10);
+                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double range = 1);
 
     bool evaluate();
 
