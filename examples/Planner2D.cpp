@@ -50,20 +50,13 @@ bool testTriangleRobot() {
 
     Vector3 start(50, 50, 0);
     Vector3 goal(900, 900, 50 * util::toRad());
-
-    auto timer = std::make_shared<StatsTimeCollector>("Triangle2D Planning Time");
-    Stats::addCollector(timer);
-    timer->start();
     bool connected = planner->computePath(start, goal, 5000, 3);
-    timer->stop();
 
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
-    std::vector<Mesh> meshes;
-    for (const auto& obstacle : environment->getObstacles())
-        meshes.push_back(obstacle->model->m_mesh);
-    cad::drawTriangles(workspace2D, meshes, 50);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
+    for (const auto& obstacle : environment->getObstacles())
+        drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
 
     std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
     if (connected) {
@@ -111,22 +104,14 @@ bool test2DSerialRobot() {
 
     Vector3 start(-55 * util::toRad(), -55 * util::toRad(), -55 * util::toRad());
     Vector3 goal(55 * util::toRad(), 55 * util::toRad(), 55 * util::toRad());
-
-    auto timer = std::make_shared<StatsTimeCollector>("Serial2D Planning Time");
-    Stats::addCollector(timer);
-    timer->start();
     bool connected = planner->computePath(start, goal, 100, 3);
-    timer->stop();
 
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
-    std::vector<Mesh> meshes;
-    for (const auto& obstacle : environment->getObstacles())
-        meshes.push_back(obstacle->model->m_mesh);
-    cad::drawTriangles(workspace2D, meshes, 50);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
+    for (const auto& obstacle : environment->getObstacles())
+        drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
     cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
-    cv::resizeWindow("pathPlanner", 600, 600);
 
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
     if (connected) {
@@ -179,21 +164,13 @@ void testPointRobot() {
     Vector2 start(150, 200);
     Vector2 goal(730, 350);
 
-    auto timer = std::make_shared<StatsTimeCollector>("Point2D Planning Time");
-    Stats::addCollector(timer);
-    timer->start();
     bool connected = planner->computePath(start, goal, 500, 3);
-
-    timer->stop();
 
     auto workspace2D = cad::create2dspace(env->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
     for (const auto& obstacle : env->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
-
-    // std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
-    // drawing::drawTree2D(image, nodes, Vector3i(0, 0, 255), Vector3i(125, 125, 200), 1);
 
     if (connected) {
         drawing::drawPath2D(image, planner->getPath(), Vector3i(255, 0, 0), 2);

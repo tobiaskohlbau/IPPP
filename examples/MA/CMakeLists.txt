@@ -25,6 +25,7 @@ set_target_properties(ConfigurationMA PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "
 if(OpenCV_FOUND)
     add_ippp_example(ConfigSpace configSpace.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
     add_ippp_example(Planning2dFigures planning2dFigures.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationPiano2D evaluationPiano2D.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
     add_ippp_example(EvaluationPoint2D evaluationPoint2D.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
     add_ippp_example(EvaluationSerial2D evaluationSerial2D.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
 endif()

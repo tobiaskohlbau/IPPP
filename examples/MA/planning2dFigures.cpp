@@ -85,12 +85,12 @@ int main(int argc, char** argv) {
     auto PRMnodes = prm->getGraphNodes();
     auto RRTnodes = rrt->getGraphNodes();
     auto RRTSTARnodes = rrtStar->getGraphNodes();
-    drawing::drawGraph2D(PRMimage, PRMnodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
-    drawing::drawGraph2D(RRTimage, RRTnodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
-    drawing::drawGraph2D(RRTSTARimage, RRTSTARnodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
+    drawing::drawGraph2D<dim>(PRMimage, PRMnodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
+    drawing::drawGraph2D<dim>(RRTimage, RRTnodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
+    drawing::drawGraph2D<dim>(RRTSTARimage, RRTSTARnodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
 
     // std::vector<std::shared_ptr<Node<dim>>> nodes = planner->getGraphNodes();
-    // drawing::drawGraph2D(image, nodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
+    // drawing::drawGraph2D<dim>(image, nodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
     // drawing::drawTree2D(image, nodes, Vector3i(0, 0, 255), Vector3i(125, 125, 200), 1);
 
     if (PRMconnected)

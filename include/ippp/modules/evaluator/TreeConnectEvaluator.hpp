@@ -69,7 +69,7 @@ TreeConnectEvaluator<dim>::TreeConnectEvaluator(const std::shared_ptr<Graph<dim>
                                                 const std::shared_ptr<Graph<dim>> &graphB,
                                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double range)
-    : Evaluator<dim>("TreeConfigEvaluator"),
+    : Evaluator<dim>("TreeConnectEvaluator"),
       m_graphA(graphA),
       m_graphB(graphB),
       m_trajectory(trajectory),

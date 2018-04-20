@@ -32,12 +32,34 @@ cv::Mat eigenToCV(Eigen::MatrixXi eigenMat);
 
 void drawTree2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<2>>> &nodes, Vector3i colorNode, Vector3i colorEdge,
                 int thickness);
+template<unsigned int dim>
 void drawGraph2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<2>>> &nodes, Vector3i colorNode, Vector3i colorEdge,
                  int thickness);
+
 void drawNodes2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<2>>> &nodes, Vector2i offset, Vector3i colorNode,
                  int thickness = 1, double scale = 1);
 void drawConfigs2D(cv::Mat &image, const std::vector<Vector2> &configs, Vector2i offset, Vector3i colorNode, int thickness,
                    double scale);
+
+void drawMobile2DGraph(cv::Mat &image, const std::vector<std::shared_ptr<Node<3>>> &nodes, Vector3i colorNode, Vector3i colorEdge,
+                       int thickness);
+
+template<unsigned int dim>
+void drawGraph2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<dim>>> &nodes, Vector3i colorNode, Vector3i colorEdge,
+    int thickness) {
+    assert(dim >= 2);
+
+    for (auto &elem : nodes) {
+        cv::Point point(elem->getValue(0), elem->getValue(1));
+        // cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
+        for (auto &child : elem->getChildNodes()) {
+            if (child != nullptr) {
+                cv::Point point2(child->getValue(0), child->getValue(1));
+                cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
+            }
+        }
+    }
+}
 
 /*!
 *  \brief         Draw a triangle path with the passed triangles and posses in an image

@@ -136,8 +136,8 @@ bool CollisionFclMobile<dim>::check(const Vector<dim> &config, const CollisionRe
                 Transform T1 = m_robots[i]->getTransformation(configVecs[i]);
                 Transform T2 = m_robots[j]->getTransformation(configVecs[j]);
                 if (this->checkFCL(m_robotModels[i], m_robotModels[j], T1, T2)) {
-                    Logging::trace("Collision between robot " + m_robots[i]->getName() + " and robot " + m_robots[j]->getName(),
-                                   this);
+                    // Logging::trace("Collision between robot " + m_robots[i]->getName() + " and robot " +
+                    // m_robots[j]->getName(), this);
                     if (!request.completeCheck)
                         return false;
                 }
@@ -150,7 +150,7 @@ bool CollisionFclMobile<dim>::check(const Vector<dim> &config, const CollisionRe
             Transform T = m_robots[i]->getTransformation(configVecs[i]);
             for (auto &obstacle : m_obstacles) {
                 if (this->checkFCL(m_robotModels[i], obstacle.first, T, obstacle.second)) {
-                    Logging::trace("Collision between robot " + std::to_string(i) + " and obstacle", this);
+                    // Logging::trace("Collision between robot " + std::to_string(i) + " and obstacle", this);
                     if (!request.completeCheck)
                         return false;
                 }

@@ -98,11 +98,11 @@ class ModuleConfigurator : public Configurator {
     DistanceMetricType m_metricType = DistanceMetricType::L2;
     Vector<dim> m_metricWeight = Vector<dim>::Zero();
     EvaluatorType m_evaluatorType = EvaluatorType::SingleIteration;
-    double m_queryEvaluatorDist = 10;
+    double m_queryEvalDist = 10;
     size_t m_evaluatorDuration = 10;
     size_t m_graphSortCount = 3000;
     NeighborFinderType m_neighborType = NeighborFinderType::KDTree;
-    PathModifierType m_pathModifierType = PathModifierType::Dummy;
+    PathModifierType m_pathModifierType = PathModifierType::NodeCut;
     SamplerType m_samplerType = SamplerType::UniformBiased;
     std::string m_samplerSeed = "";
     double m_samplerGridResolution = 1;
@@ -233,30 +233,37 @@ void ModuleConfigurator<dim>::initializeModules() {
             m_evaluator = std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration);
             break;
         case EvaluatorType::TreeConfig:
-            m_evaluator = std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
-                                                                     m_queryEvaluatorDist);
+            m_evaluator =
+                std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker, m_queryEvalDist);
             break;
         case EvaluatorType::TreeConnect:
-            m_evaluator = std::make_shared<TreeConnectEvaluator<dim>>(m_graph, m_graphB, m_trajectory, m_validityChecker,
-                                                                      m_queryEvaluatorDist);
+            m_evaluator =
+                std::make_shared<TreeConnectEvaluator<dim>>(m_graph, m_graphB, m_trajectory, m_validityChecker, m_queryEvalDist);
             break;
         case EvaluatorType::TreePose:
             m_evaluator = std::make_shared<TreePoseEvaluator<dim>>(m_graph, m_env, m_C);
             break;
         case EvaluatorType::PRMConfig:
-            m_evaluator =
-                std::make_shared<PRMConfigEvaluator<dim>>(m_graph, m_trajectory, m_validityChecker, m_queryEvaluatorDist);
+            m_evaluator = std::make_shared<PRMConfigEvaluator<dim>>(m_graph, m_trajectory, m_validityChecker, m_queryEvalDist);
             break;
         case EvaluatorType::PRMPose:
-            m_evaluator = std::make_shared<PRMPoseEvaluator<dim>>(m_env, m_graph, m_trajectory, m_validityChecker, m_C,
-                                                                  m_queryEvaluatorDist);
+            m_evaluator =
+                std::make_shared<PRMPoseEvaluator<dim>>(m_env, m_graph, m_trajectory, m_validityChecker, m_C, m_queryEvalDist);
             break;
-        case EvaluatorType::TreeConfigOrTime:
-            std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-            evaluators.push_back(std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
-                                                                            m_queryEvaluatorDist));
-            evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration));
-            m_evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
+            m_evaluator = std::make_shared<ComposeEvaluator<dim>>(
+                std::vector<std::shared_ptr<Evaluator<dim>>>(
+                    {std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
+                                                                m_queryEvalDist),
+                     std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration)}),
+                ComposeType::OR);
+            break;
+        case EvaluatorType::TreeConnectOrTime:
+            m_evaluator = std::make_shared<ComposeEvaluator<dim>>(
+                std::vector<std::shared_ptr<Evaluator<dim>>>(
+                    {std::make_shared<TreeConnectEvaluator<dim>>(m_graph, m_graphB, m_trajectory, m_validityChecker,
+                                                                 m_queryEvalDist),
+                     std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration)}),
+                ComposeType::OR);
             break;
     }
 
@@ -353,7 +360,7 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     json["DistanceMetricType"] = static_cast<int>(m_metricType);
     json["MetricWeight"] = vectorToString<dim>(m_metricWeight);
     json["EvaluatorType"] = static_cast<int>(m_evaluatorType);
-    json["QueryEvaluatorDist"] = m_queryEvaluatorDist;
+    json["QueryEvaluatorDist"] = m_queryEvalDist;
     json["EvaluatorDuration"] = m_evaluatorDuration;
     json["GraphSortCount"] = m_graphSortCount;
     json["NeighborFinderType"] = static_cast<int>(m_neighborType);
@@ -389,7 +396,7 @@ bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
     m_metricType = static_cast<DistanceMetricType>(json["DistanceMetricType"].get<int>());
     m_metricWeight = stringToVector<dim>(json["MetricWeight"].get<std::string>());
     m_evaluatorType = static_cast<EvaluatorType>(json["EvaluatorType"].get<int>());
-    m_queryEvaluatorDist = json["QueryEvaluatorDist"].get<double>();
+    m_queryEvalDist = json["QueryEvaluatorDist"].get<double>();
     m_evaluatorDuration = json["EvaluatorDuration"].get<size_t>();
     m_graphSortCount = json["GraphSortCount"].get<size_t>();
     m_neighborType = static_cast<NeighborFinderType>(json["NeighborFinderType"].get<int>());
@@ -486,7 +493,7 @@ void ModuleConfigurator<dim>::setEvaluatorType(EvaluatorType type) {
 */
 template <unsigned int dim>
 void ModuleConfigurator<dim>::setEvaluatorProperties(double queryEvaluatorDist, size_t duration) {
-    m_queryEvaluatorDist = queryEvaluatorDist;
+    m_queryEvalDist = queryEvaluatorDist;
     m_evaluatorDuration = duration;
     m_parameterModified = true;
 }

@@ -120,30 +120,6 @@ void drawTree2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<2>>> &nod
 }
 
 /*!
-*  \brief         Draw nodes and there edge to the child Nodes
-*  \author        Sascha Kaden
-*  \param[in]     vector of nodes
-*  \param[in,out] image
-*  \param[in]     color of the nodes
-*  \param[in]     color of the edges
-*  \param[in]     thickness of the points
-*  \date          2016-05-25
-*/
-void drawGraph2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<2>>> &nodes, Vector3i colorNode, Vector3i colorEdge,
-                 int thickness) {
-    for (auto &elem : nodes) {
-        cv::Point point(elem->getValue(0), elem->getValue(1));
-        // cv::circle(image, point, 3, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), 1);
-        for (auto &child : elem->getChildNodes()) {
-            if (child != nullptr) {
-                cv::Point point2(child->getValue(0), child->getValue(1));
-                cv::line(image, point, point2, cv::Scalar(colorEdge[0], colorEdge[1], colorEdge[2]), thickness);
-            }
-        }
-    }
-}
-
-/*!
 *  \brief         Draw nodes
 *  \author        Sascha Kaden
 *  \param[in]     vector of nodes

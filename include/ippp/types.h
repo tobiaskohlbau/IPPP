@@ -67,7 +67,17 @@ using Translation = Eigen::Translation<double, 3>;
 
 // module type enums
 enum class DistanceMetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
-enum class EvaluatorType { PRMConfig, PRMPose, SingleIteration, Time, TreeConfig, TreeConnect, TreePose, TreeConfigOrTime };
+enum class EvaluatorType {
+    PRMConfig,
+    PRMPose,
+    SingleIteration,
+    Time,
+    TreeConfig,
+    TreeConnect,
+    TreePose,
+    TreeConfigOrTime,
+    TreeConnectOrTime
+};
 enum class NeighborFinderType { BruteForce, KDTree };
 enum class PathModifierType { Dummy, NodeCut };
 enum class SamplerType { Grid, NormalDist, Random, Uniform, UniformBiased };
@@ -80,7 +90,7 @@ enum class PlannerType { AdaptedRRT, CiBRRT, EST, RRT, RRTStar, PRM, SRT };
 // robot enums
 enum class RobotCategory { serial, mobile };
 enum class DofType { planarPos, planarRot, volumetricPos, volumetricRot, jointRot, jointTrans };
-enum class RobotType { Point2D, Mobile2D, Mobile3D, Serial, Jaco};
+enum class RobotType { Point2D, Mobile2D, Mobile3D, Serial, Jaco };
 
 enum class FactoryType { ModelFCL, ModelPQP };
 enum class EnvObjectType { Robot, Obstacle };
