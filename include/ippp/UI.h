@@ -21,3 +21,4 @@
 #include <ippp/ui/FileWriterReader.h>
 #include <ippp/ui/JsonSerializer.hpp>
 #include <ippp/ui/ModuleConfigurator.hpp>
+#include <ippp/ui/TxtSerializer.hpp>

@@ -28,7 +28,7 @@ ModuleConfigurator<dim> getCreator() {
     EnvironmentConfigurator envConfigurator;
     AABB workspaceBound(Vector3(0, 0, 0), Vector3(500, 500, 1));
     envConfigurator.setWorkspaceProperties(workspaceBound);
-    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/random2D.obj");
+    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/2d/random2D.obj");
     //generateMap("sfdwefno23423");
     generateMap(workspaceBound, "43708jionskldfsdfsafdsafdsafdq1235");
     envConfigurator.addObstacle("obstacle.obj");

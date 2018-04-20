@@ -84,6 +84,7 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
     m_goalNode = std::make_shared<Node<dim>>(goal);
     m_graphB->addNode(m_goalNode);
 
+    // tmp start and goal config for sampler parameter
     auto tmpStart = start;
     auto tmpGoal = goal;
     size_t loopCount = 1;
@@ -95,14 +96,17 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
         std::swap(tmpStart, tmpGoal);
     }
 
+    // swap graphs to original state und search for the connection
     if (m_graph != m_graphA) {
         m_graphB = m_graph;
         m_graph = m_graphA;
     }
     std::pair<std::shared_ptr<Node<dim>>, std::shared_ptr<Node<dim>>> nodes =
         util::findGraphConnection(*m_graph, *m_graphB, *m_trajectory, *m_validityChecker, m_stepSize);
-    if (nodes.first == nullptr)
+    if (nodes.first == nullptr) {
+        Logging::warning("Found no connection between graphs!", this);
         return false;
+    }
 
     auto treeNode = nodes.first;
     auto pathNode = nodes.second;
@@ -121,11 +125,13 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
     m_goalNode = treeNode;
     m_pathPlanned = true;
 
-    // add path from graph B to graph A
-
+    // stats
     updateStats();
+    m_graphA->updateStats();
+    m_graphB->updateStats();
     m_plannerCollector->stopPlannerTimer();
-    return true;
+
+    return m_pathPlanned;
 }
 
 } /* namespace ippp */

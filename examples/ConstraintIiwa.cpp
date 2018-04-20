@@ -19,10 +19,10 @@ std::shared_ptr<Environment> generateEnvironment() {
     EnvironmentConfigurator envConfigurator;
 
     envConfigurator.setWorkspaceProperties(AABB(Vector3(-10000, -10000, -10000), Vector3(10000, 10000, 10000)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(-420, -400, 100, 0, 0,
-    util::toRad(90)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle400x400x800.obj", util::Vecd(420, -400, 100, 0, 0,
-    util::toRad(90)));
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/cupboard.obj", util::Vecd(-300, 0, 300, 0, 0, util::toRad(90)));
+    //envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/obstacle400x400x800.obj",
+    //                            util::Vecd(420, -400, 100, 0, 0, util::toRad(90)));
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/table.obj");
 
     Vector7 minRobotBound = util::Vecd(-170, -120, -170, -120, -170, -120, -175);
     Vector7 maxRobotBound = util::Vecd(170, 120, 170, 120, 170, 120, 175);
@@ -32,12 +32,10 @@ std::shared_ptr<Environment> generateEnvironment() {
                                            DhParameter(util::toRad(90), 0, 400), DhParameter(util::toRad(-90), 0, 0),
                                            DhParameter(util::toRad(-90), 0, 400), DhParameter(util::toRad(90), 0, 0),
                                            DhParameter(0, 0, 126)});
-    std::vector<std::string> jointModelFiles = {
-        FLAGS_assetsDir + "/robotModels/iiwa/link1.obj", FLAGS_assetsDir + "/robotModels/iiwa/link2.obj",
-        FLAGS_assetsDir + "/robotModels/iiwa/link3.obj", FLAGS_assetsDir + "/robotModels/iiwa/link4.obj",
-        FLAGS_assetsDir + "/robotModels/iiwa/link5.obj", FLAGS_assetsDir + "/robotModels/iiwa/link6.obj",
-        FLAGS_assetsDir + "/robotModels/iiwa/link7.obj"};
-    envConfigurator.setRobotBaseModelFile(FLAGS_assetsDir + "/robotModels/iiwa/link0.obj");
+    std::string iiwa = FLAGS_assetsDir + "/robotModels/iiwa/";
+    std::vector<std::string> linkModelFiles = {iiwa + "link1.obj", iiwa + "link2.obj", iiwa + "link3.obj", iiwa + "link4.obj",
+                                               iiwa + "link5.obj", iiwa + "link6.obj", iiwa + "link7.obj"};
+    envConfigurator.setRobotBaseModelFile(iiwa + "link0.obj");
     envConfigurator.setRobotType(RobotType::Serial);
 
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
@@ -51,7 +49,9 @@ std::shared_ptr<Environment> generateEnvironment() {
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::toTransform(linkOffsets);
-    envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles, linkTransforms);
+    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms, Transform::Identity(),
+                                             util::toTransform(util::Vecd(13, 7, 120, 0, 0, 0)),
+                                             FLAGS_assetsDir + "/robotModels/wesslingHand.obj");
 
     envConfigurator.saveConfig("KukaEnvConfig.json");
     return envConfigurator.getEnvironment();
@@ -60,14 +60,13 @@ std::shared_ptr<Environment> generateEnvironment() {
 std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, const std::pair<Vector6, Vector6>& C,
                                               const Transform& taskFrame) {
     // properties
-    double stepSize = 0.5 + (dim / 5);
+    double stepSize = util::toRad(50);
     size_t graphSortCount = 2500;
     size_t attempts = 50;
 
     // standard modules
-    auto alwaysValid = std::make_shared<AlwaysTrueValidity<dim>>(env);
     auto collision = std::make_shared<CollisionFclSerial<dim>>(env);
-    auto trajectory = std::make_shared<LinearTrajectory<dim>>(env, 1, 0.01);
+    auto trajectory = std::make_shared<LinearTrajectory<dim>>(env, 1, util::toRad(1));
     auto metric = std::make_shared<L2Metric<dim>>();
     auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
     auto graph = std::make_shared<Graph<dim>>(graphSortCount, neighborFinder);
@@ -76,24 +75,22 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     auto sampler = std::make_shared<SamplerUniformBiased<dim>>(env, graph, "sadfsdafasdf4332154sdaf");
 
     // constraint
-    auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
+    //auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
     auto berensonConstraint = std::make_shared<BerensonConstraint<dim>>(env, taskFrame, C);
     std::vector<std::shared_ptr<ValidityChecker<dim>>> checkers = {collision, berensonConstraint};
     auto validityChecker = std::make_shared<ComposeValidity<dim>>(env, checkers, ComposeType::AND);
 
     // sampler
-    auto TS =
-        std::make_shared<TangentSpaceSampling<dim>>(env, stilmanConstraint, sampler, attempts, graph, stepSize, C, taskFrame);
-    auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, stilmanConstraint, sampler, attempts, graph, taskFrame);
+    //auto TS =
+    //    std::make_shared<TangentSpaceSampling<dim>>(env, stilmanConstraint, sampler, attempts, graph, stepSize, C, taskFrame);
+    //auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, stilmanConstraint, sampler, attempts, graph, taskFrame);
     auto BS = std::make_shared<BerensonSampling<dim>>(env, berensonConstraint, sampler, attempts);
 
-    auto nodeCut = std::make_shared<NodeCutPathModifier<dim>>(env, trajectory, stilmanConstraint);
-    auto dummyModifier = std::make_shared<DummyPathModifier<dim>>();
+    auto nodeCut = std::make_shared<NodeCutPathModifier<dim>>(env, trajectory, berensonConstraint);
     // evaluator
     std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-    //evaluators.push_back(std::make_shared<TreeConfigEvaluator<dim>>(metric, graph, trajectory, stilmanConstraint, stepSize));
-    evaluators.push_back(std::make_shared<TreeConnectEvaluator<dim>>(graph, graphB, trajectory, validityChecker));
-    evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(50));
+    evaluators.push_back(std::make_shared<TreeConnectEvaluator<dim>>(graph, graphB, trajectory, validityChecker, util::toRad(50)));
+    evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(80));
     auto evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
 
     RRTOptions<dim> options(stepSize, validityChecker, metric, evaluator, nodeCut, BS, trajectory);
@@ -115,15 +112,15 @@ bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planne
         Logging::info("Init and goal could be connected! \n", "Example");
         auto path = planner->getPath(0.001, 0.001);
 
-        auto json = jsonSerializer::serialize<dim>(path);
+        //auto json = jsonSerializer::serialize<dim>(path);
+        //ui::save("kukaPath.json", json);
+        auto json = txtSerializer::serialize<dim>(path);
         ui::save("kukaPath.json", json);
     }
     return connected;
 }
 
 bool test2DSerialRobot() {
-    const double eps = 2.5;
-    // environment configuration
     auto environment = generateEnvironment();
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
 
@@ -144,20 +141,17 @@ bool test2DSerialRobot() {
     Vector6 Cmin, Cmax;
     std::pair<Vector6, Vector6> C;
     Transform taskFrame;
-    std::shared_ptr<Planner<dim>> planner;
-    bool connected = false;
 
     // case 1: fixed x
-    double rad(util::toRad(2.5));
+    double rad(util::toRad(5));
     Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -rad, -rad, -IPPP_MAX);
     Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, IPPP_MAX, rad, rad, IPPP_MAX);
     C = std::make_pair(Cmin, Cmax);
     taskFrame = util::toTransform(util::Vecd(0, 0, 0, 0, 0, 0));
 
-    planner = generatePlanner(environment, C, taskFrame);
-    connected = run(environment, planner, start, goal);
+    auto planner = generatePlanner(environment, C, taskFrame);
 
-    return connected;
+    return run(environment, planner, start, goal);
 }
 
 int main(int argc, char** argv) {
