@@ -32,10 +32,6 @@ cv::Mat eigenToCV(Eigen::MatrixXi eigenMat);
 
 void drawTree2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<2>>> &nodes, Vector3i colorNode, Vector3i colorEdge,
                 int thickness);
-template<unsigned int dim>
-void drawGraph2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<2>>> &nodes, Vector3i colorNode, Vector3i colorEdge,
-                 int thickness);
-
 void drawNodes2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<2>>> &nodes, Vector2i offset, Vector3i colorNode,
                  int thickness = 1, double scale = 1);
 void drawConfigs2D(cv::Mat &image, const std::vector<Vector2> &configs, Vector2i offset, Vector3i colorNode, int thickness,
