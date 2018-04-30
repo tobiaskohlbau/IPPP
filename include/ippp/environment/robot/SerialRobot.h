@@ -38,7 +38,7 @@ class SerialRobot : public RobotBase {
     virtual Transform getTransformation(const VectorX &config) const;
     virtual std::vector<Transform> getJointTrafos(const VectorX &angles) const;
     std::vector<Transform> getLinkTrafos(const VectorX &angles) const;
-    std::pair<std::vector<Transform>, Transform> getLinkTrafosAndTcp(const VectorX &angles) const;
+    std::pair<std::vector<Transform>, Transform> getLinkAndToolTrafos(const VectorX &angles) const;
     Transform getTrafo(const DhParameter &dhParam, double q) const;
     Transform getTcp(const std::vector<Transform> &trafos) const;
     MatrixX calcJacobian(const VectorX &config) const;
@@ -47,9 +47,13 @@ class SerialRobot : public RobotBase {
     void setBaseOffset(const Transform &baseOffset);
     Transform getBaseOffset() const;
 
-    void setToolOffset(const Vector6 &tcpOffset);
-    void setToolOffset(const Transform &tcpOffset);
-    Transform getToolOffset() const;
+    void setTcpOffset(const Vector6 &tcpOffset);
+    void setTcpOffset(const Transform &tcpOffset);
+    Transform getTcpOffset() const;
+
+    void setToolModelOffset(const Vector6 &toolOffset);
+    void setToolModelOffset(const Transform &toolOffset);
+    Transform getToolModelOffset() const;
     void setToolModel(const std::shared_ptr<ModelContainer> &tool);
     std::shared_ptr<ModelContainer> getToolModel() const;
 
@@ -70,7 +74,8 @@ class SerialRobot : public RobotBase {
     std::vector<Vector3> m_zUnitVectors;
 
     Transform m_baseOffset = Transform::Identity();        /*!< transformation offset of the base model, if used. */
-    Transform m_toolOffset = Transform::Identity();        /*!< transformation offset of the tool model, if used. */
+    Transform m_tcpOffset = Transform::Identity();
+    Transform m_toolModelOffset = Transform::Identity();        /*!< transformation offset of the tool model, if used. */
     std::shared_ptr<ModelContainer> m_toolModel = nullptr; /*!< tool model at the last link */
 };
 

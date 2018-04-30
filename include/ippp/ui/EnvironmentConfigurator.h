@@ -52,8 +52,8 @@ class EnvironmentConfigurator : public Configurator {
                                 const Transform &pose = Transform::Identity());
     void setSerialRobotProperties(const std::vector<DhParameter> &dhParameters, const std::vector<std::string> &linkModelFiles,
                                   const std::vector<Transform> &linkOffsets = std::vector<Transform>(),
-                                  const Transform &baseOffset = Transform::Identity(),
-                                  const Transform &toolOffset = Transform::Identity(), std::string toolModelFile = "");
+                                  const Transform &baseOffset = Transform::Identity(), const Transform &tcpOffset = Transform::Identity(),
+                                  const Transform &toolModelOffset = Transform::Identity(), std::string toolModelFile = "");
 
     std::shared_ptr<Environment> getEnvironment();
     std::string getRobotBaseModelFile() const;
@@ -91,7 +91,8 @@ class EnvironmentConfigurator : public Configurator {
     std::vector<std::string> m_linkModelFiles;
     std::vector<Transform> m_linkOffsets;
     Transform m_baseOffset = Transform::Identity();
-    Transform m_toolOffset = Transform::Identity();
+    Transform m_tcpOffset = Transform::Identity();
+    Transform m_toolModelOffset = Transform::Identity();
     std::string m_toolModelFile;
 };
 

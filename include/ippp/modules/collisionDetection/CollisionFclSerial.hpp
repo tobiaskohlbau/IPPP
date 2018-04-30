@@ -156,7 +156,7 @@ bool CollisionFclSerial<dim>::check(const std::vector<Vector<dim>> &configs) con
 template <unsigned int dim>
 bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRequest &request) const {
     m_collisionCollector->add(1);
-    auto linkTrafosAndTcp = m_robot->getLinkTrafosAndTcp(config);
+    auto linkTrafosAndTcp = m_robot->getLinkAndToolTrafos(config);
     auto &linkTrafos = linkTrafosAndTcp.first;
     auto &tcp = linkTrafosAndTcp.second;
     auto pose = m_robot->getPose();

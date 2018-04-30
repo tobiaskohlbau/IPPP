@@ -138,7 +138,7 @@ void centerMesh(Mesh &mesh) {
 void transformMesh(Mesh &mesh, Transform transform) {
     auto translation = transform.translation();
     for (auto &vertex : mesh.vertices)
-        vertex += translation;
+        vertex = transform * vertex;
 }
 
 /*!

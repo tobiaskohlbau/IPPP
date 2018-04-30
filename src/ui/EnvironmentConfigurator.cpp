@@ -57,7 +57,8 @@ bool EnvironmentConfigurator::saveConfig(const std::string &filePath) {
     json["LinkModelFiles"] = m_linkModelFiles;
     json["LinkOffsets"] = jsonSerializer::serialize(m_linkOffsets);
     json["BaseOffset"] = jsonSerializer::serialize(m_baseOffset);
-    json["ToolOffset"] = jsonSerializer::serialize(m_toolOffset);
+    json["TcpOffset"] = jsonSerializer::serialize(m_tcpOffset);
+    json["ToolModelOffset"] = jsonSerializer::serialize(m_toolModelOffset);
     json["ToolModelFile"] = m_toolModelFile;
 
     return saveJson(filePath, json);
@@ -94,7 +95,8 @@ bool EnvironmentConfigurator::loadConfig(const std::string &filePath) {
     m_linkModelFiles = json["LinkModelFiles"].get<std::vector<std::string>>();
     m_linkOffsets = jsonSerializer::deserializeTransforms(json["LinkOffsets"]);
     m_baseOffset = jsonSerializer::deserializeTransform(json["BaseOffset"]);
-    m_toolOffset = jsonSerializer::deserializeTransform(json["ToolOffset"]);
+    m_tcpOffset = jsonSerializer::deserializeTransform(json["TcpOffset"]);
+    m_toolModelOffset = jsonSerializer::deserializeTransform(json["ToolModelOffset"]);
     m_toolModelFile = json["ToolModelFile"].get<std::string>();
 
     return true;
@@ -169,11 +171,12 @@ void EnvironmentConfigurator::setRobotBaseModelFile(const std::string robotBaseM
 void EnvironmentConfigurator::setSerialRobotProperties(const std::vector<DhParameter> &dhParameters,
                                                        const std::vector<std::string> &linkModelFiles,
                                                        const std::vector<Transform> &linkOffsets, const Transform &baseOffset,
-                                                       const Transform &toolOffset, std::string toolModelFile) {
+                                                       const Transform &tcpOffset, const Transform &toolModelOffset, std::string toolModelFile) {
     m_dhParameters = dhParameters;
     m_linkModelFiles = linkModelFiles;
     m_baseOffset = baseOffset;
-    m_toolOffset = toolOffset;
+    m_tcpOffset = tcpOffset;
+    m_toolModelOffset = toolModelOffset;
     m_toolModelFile = toolModelFile;
 
     if (linkOffsets.empty())
@@ -327,7 +330,8 @@ std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(ModelFacto
     }
 
     if (!m_toolModelFile.empty()) {
-        robot->setToolOffset(m_toolOffset);
+        robot->setTcpOffset(m_tcpOffset);
+        robot->setToolModelOffset(m_toolModelOffset);
         robot->setToolModel(factory.createModelFromFile(m_toolModelFile));
     }
     return robot;

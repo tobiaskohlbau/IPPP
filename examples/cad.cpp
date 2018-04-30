@@ -113,7 +113,7 @@ void transformMesh() {
             filePaths.push_back(p);
 
     std::vector<Mesh> meshes;
-    Transform transform = util::toTransform(util::Vecd(13, 7, 127, 0, 0, 0));
+    Transform transform = util::toTransform(util::Vecd(0, 0, 20, util::toRad(-90), 0, 0));
     for (auto &filePath : filePaths) {
         Mesh mesh;
         if (cad::importMesh(filePath.path().string(), mesh)) {
@@ -134,7 +134,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
     // splitCad();
     // testCollision();
-    // centerMeshes();
+     //centerMeshes();
     transformMesh();
     std::string str;
     std::cin >> str;

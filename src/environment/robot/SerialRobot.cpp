@@ -38,7 +38,8 @@ SerialRobot::SerialRobot(unsigned int dim, const std::vector<Joint> &joints, con
                          const std::string &name)
     : RobotBase(name, dim, RobotCategory::serial, dofTypes),
       m_baseOffset(Transform::Identity()),
-      m_toolOffset(Transform::Identity()),
+      m_tcpOffset(Transform::Identity()),
+      m_toolModelOffset(Transform::Identity()),
       m_joints(joints) {
     if (joints.size() != dim || dofTypes.size() != dim) {
         Logging::error("Dimension to parameter sizes is unequal", this);
@@ -117,7 +118,7 @@ std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
 *  \param[out] vector of Transforms
 *  \date       2016-10-22
 */
-std::pair<std::vector<Transform>, Transform> SerialRobot::getLinkTrafosAndTcp(const VectorX &angles) const {
+std::pair<std::vector<Transform>, Transform> SerialRobot::getLinkAndToolTrafos(const VectorX &angles) const {
     std::vector<Transform> jointTrafos = getJointTrafos(angles);
     std::vector<Transform> AsLink(jointTrafos.size());
     Transform AsJoint = jointTrafos.front();
@@ -129,7 +130,7 @@ std::pair<std::vector<Transform>, Transform> SerialRobot::getLinkTrafosAndTcp(co
         AsJoint = AsJoint * jointTrafos[i];
     }
 
-    return std::make_pair(AsLink, getTcp(jointTrafos));
+    return std::make_pair(AsLink, AsJoint * m_toolModelOffset);
 }
 
 /*!
@@ -146,7 +147,7 @@ Transform SerialRobot::getTcp(const std::vector<Transform> &jointTrafos) const {
     for (const auto &trafo : jointTrafos)
         robotToTcp = robotToTcp * trafo;
 
-    return robotToTcp * m_toolOffset;
+    return robotToTcp * m_tcpOffset;
 }
 
 /*!
@@ -221,8 +222,8 @@ Transform SerialRobot::getBaseOffset() const {
 *  \param[in]  configuration of the tool offset
 *  \date       2018-01-08
 */
-void SerialRobot::setToolOffset(const Vector6 &toolOffset) {
-    setToolOffset(util::toTransform(toolOffset));
+void SerialRobot::setTcpOffset(const Vector6 &tcpOffset) {
+    setTcpOffset(util::toTransform(tcpOffset));
 }
 
 /*!
@@ -231,8 +232,8 @@ void SerialRobot::setToolOffset(const Vector6 &toolOffset) {
 *  \param[in]  Transform of the tool offset
 *  \date       2018-01-08
 */
-void SerialRobot::setToolOffset(const Transform &toolOffset) {
-    m_toolOffset = toolOffset;
+void SerialRobot::setTcpOffset(const Transform &tcpOffset) {
+    m_tcpOffset = tcpOffset;
 }
 
 /*!
@@ -241,8 +242,38 @@ void SerialRobot::setToolOffset(const Transform &toolOffset) {
 *  \param[out] Transform of the tool offset
 *  \date       2018-01-08
 */
-Transform SerialRobot::getToolOffset() const {
-    return m_toolOffset;
+Transform SerialRobot::getTcpOffset() const {
+    return m_tcpOffset;
+}
+
+/*!
+*  \brief      Set the tool offset (rotation and translation) of the tool model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[in]  configuration of the tool offset
+*  \date       2018-01-08
+*/
+void SerialRobot::setToolModelOffset(const Vector6 &toolOffset) {
+    setToolModelOffset(util::toTransform(toolOffset));
+}
+
+/*!
+*  \brief      Set the tool offset (Transform) of the tool model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[in]  Transform of the tool offset
+*  \date       2018-01-08
+*/
+void SerialRobot::setToolModelOffset(const Transform &toolOffset) {
+    m_toolModelOffset = toolOffset;
+}
+
+/*!
+*  \brief      Return the tool offset (Transform) of the tool model of the serial robot.
+*  \author     Sascha Kaden
+*  \param[out] Transform of the tool offset
+*  \date       2018-01-08
+*/
+Transform SerialRobot::getToolModelOffset() const {
+    return m_toolModelOffset;
 }
 
 /*!
