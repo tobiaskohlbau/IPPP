@@ -49,7 +49,7 @@ std::shared_ptr<Environment> generateEnvironment() {
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::toTransform(linkOffsets);
-    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms, Transform::Identity(),
+    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms, Transform::Identity(), Transform::Identity(),
                                              util::toTransform(util::Vecd(13, 7, 120, 0, 0, 0)),
                                              FLAGS_assetsDir + "/robotModels/wesslingHand.obj");
 
