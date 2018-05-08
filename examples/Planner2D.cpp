@@ -68,7 +68,6 @@ bool testTriangleRobot() {
         cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
         cv::imshow("pathPlanner", image);
         cv::imwrite("result.png", image);
-        cv::waitKey(0);
         return true;
     }
     return false;
@@ -124,14 +123,12 @@ bool test2DSerialRobot() {
             cv::Mat imageCopy = image.clone();
             drawing::drawSerialRobot2D<dim>(config, *serialRobot, imageCopy, workspace2D.second, Vector3i(0, 0, 255));
             cv::imshow("pathPlanner", imageCopy);
-            cv::waitKey(0);
         }
     } else {
         drawing::drawSerialRobot2D<dim>(goal, *serialRobot, image, workspace2D.second, Vector3i(0, 0, 255));
     }
 
     cv::imshow("pathPlanner", image);
-    cv::waitKey(0);
 
     return connected;
 }
@@ -162,7 +159,8 @@ void testPointRobot() {
     auto planner =
         std::make_shared<RRTStarConnect<dim>>(env, creator.getRRTOptions(stepSize), creator.getGraph(), creator.getGraphB());
     Vector2 start(150, 200);
-    Vector2 goal(730, 350);
+    //Vector2 goal(730, 350);
+    Vector2 goal(950, 950);
 
     bool connected = planner->computePath(start, goal, 500, 3);
 

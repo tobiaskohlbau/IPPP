@@ -63,6 +63,30 @@ static std::shared_ptr<Node<dim>> findNearValidNode(const Vector<dim> &config, c
 }
 
 /*!
+*  \brief      Try to find Node with smalles cost of the graph with a valid connection to the passed config
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[in]  Graph
+*  \param[in]  ValidityChecker
+*  \param[in]  TrajectoryPlanner
+*  \param[in]  search range
+*  \date       2018-08-05
+*/
+template <unsigned int dim>
+static std::shared_ptr<Node<dim>> getNearLowestCostNode(const Vector<dim> &config, const Graph<dim> &graph,
+                                                        const ValidityChecker<dim> &validityChecker,
+                                                        const TrajectoryPlanner<dim> &trajectory, double range) {
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph.getNearNodes(config, range);
+    std::sort(std::begin(nearNodes), std::end(nearNodes),
+              [](std::shared_ptr<Node<dim>> a, std::shared_ptr<Node<dim>> b) { return a->getCost() < b->getCost(); });
+
+    for (auto &nearNode : nearNodes)
+        if (validityChecker.check(trajectory.calcTrajBin(config, nearNode->getValues())))
+            return nearNode;
+    return nullptr;
+}
+
+/*!
 *  \brief      Try to find nearest Node of the graph with a valid connection to the passed config
 *  \author     Sascha Kaden
 *  \param[in]  configuration

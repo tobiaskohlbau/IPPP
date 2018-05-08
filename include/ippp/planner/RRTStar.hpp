@@ -43,7 +43,7 @@ class RRTStar : public RRT<dim> {
   protected:
     std::shared_ptr<Node<dim>> computeRRTNode(const Vector<dim> &randVec);
     virtual std::shared_ptr<Node<dim>> chooseParent(const Vector<dim> &newVec,
-                                                    const std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
+                                                    std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
     void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
                 const std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
@@ -140,17 +140,17 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randC
 */
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> RRTStar<dim>::chooseParent(const Vector<dim> &newConfig,
-                                                      const std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
-    std::shared_ptr<Node<dim>> nearestNode = nullptr;
-    double nearestNodeCost = std::numeric_limits<double>::max();
-    for (auto &nearNode : nearNodes) {
-        if (nearNode->getCost() < nearestNodeCost &&
-            m_validityChecker->check(m_trajectory->calcTrajBin(newConfig, nearNode->getValues()))) {
-            nearestNodeCost = nearNode->getCost();
-            nearestNode = nearNode;
-        }
-    }
-    return nearestNode;
+                                                      std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
+    // sort nodes by the cost
+
+    std::sort(std::begin(nearNodes), std::end(nearNodes),
+              [](std::shared_ptr<Node<dim>> a, std::shared_ptr<Node<dim>> b) { return a->getCost() < b->getCost(); });
+
+    for (auto &nearNode : nearNodes)
+        if (m_validityChecker->check(m_trajectory->calcTrajBin(newConfig, nearNode->getValues())))
+            return nearNode;
+
+    return nullptr;
 }
 
 /*!
@@ -195,7 +195,7 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
     }
 
     auto nearestNode =
-        util::getNearestValidNode<dim>(goal, *m_graph, *m_validityChecker, *m_trajectory, *m_metric, m_stepSize * 2);
+        util::getNearLowestCostNode<dim>(goal, *m_graph, *m_validityChecker, *m_trajectory, m_stepSize * 2);
 
     if (nearestNode) {
         std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
