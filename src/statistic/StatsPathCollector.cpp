@@ -30,15 +30,10 @@ void StatsPathCollector::setNodeCounts(size_t nodeCount, size_t smoothedNodeCoun
     m_smoothedNodeCount = smoothedNodeCount;
 }
 
-void StatsPathCollector::setConfigCounts(size_t configCount, size_t smoothedConfigCount) {
+void StatsPathCollector::setLengths(double length, double smoothedLength) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_configCount = configCount;
-    m_smoothedConfigCount = smoothedConfigCount;
-}
-
-void StatsPathCollector::setRes(std::pair<double, double> resolution) {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    m_pathRes = resolution;
+    m_length = length;
+    m_smoothedLength = smoothedLength;
 }
 
 void StatsPathCollector::startModificationTimer() {
@@ -54,9 +49,8 @@ void StatsPathCollector::stopModificationTimer() {
 void StatsPathCollector::initialize() {
     m_nodeCount = 0;
     m_smoothedNodeCount = 0;
-    m_configCount = 0;
-    m_smoothedConfigCount = 0;
-    m_pathRes = std::make_pair(-1.0, -1.0);
+    m_length = 0;
+    m_smoothedLength = 0;
     m_startModification = std::chrono::system_clock::now();
     m_stopModification = std::chrono::system_clock::now();
 }
@@ -65,12 +59,10 @@ nlohmann::json StatsPathCollector::serialize() {
     nlohmann::json json;
     json["NodeCount"] = m_nodeCount;
     json["SmoothedNodeCount"] = m_smoothedNodeCount;
-    json["ConfigCount"] = m_configCount;
-    json["SmoothedConfigCount"] = m_smoothedConfigCount;
+    json["Length"] = m_length;
+    json["SmoothedLength"] = m_smoothedLength;
     std::chrono::duration<double> duration = m_stopModification - m_startModification;
     json["ModificationTime"] = duration.count();
-    json["PositionResolution"] = m_pathRes.first;
-    json["OrientationResolution"] = m_pathRes.second;
     return json;
 }
 
@@ -78,12 +70,10 @@ void StatsPathCollector::writeData(std::ostream &stream) {
     stream << getName() << ": " << std::endl;
     stream << "NodeCount: " << m_nodeCount << std::endl;
     stream << "SmoothedNodeCount: " << m_smoothedNodeCount << std::endl;
-    stream << "ConfigCount: " << m_configCount << std::endl;
-    stream << "SmoothedConfigCount: " << m_smoothedConfigCount << std::endl;
+    stream << "Length: " << m_length << std::endl;
+    stream << "SmoothedLength: " << m_smoothedLength << std::endl;
     std::chrono::duration<double> duration = m_stopModification - m_startModification;
     stream << "ModificationTime: " << duration.count() << std::endl;
-    stream << "PositionResolution: " << m_pathRes.first << std::endl;
-    stream << "OrientationResolution: " << m_pathRes.second << std::endl;
 }
 
 } /* namespace ippp */

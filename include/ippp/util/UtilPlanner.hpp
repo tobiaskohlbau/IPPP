@@ -24,15 +24,30 @@
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/modules/distanceMetrics/DistanceMetric.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <ippp/util/Logging.h>
 #include <ippp/util/UtilList.hpp>
 
 namespace ippp {
 namespace util {
 
 template <unsigned int dim>
+static Vector6 calcConfigToPose(const Vector<dim> &config, const Vector6 &pose, RobotBase &robot) {
+    auto transform = util::toTransform(pose);
+    auto startPose = robot.getTransformation(config);
+    AngleAxis angleAxis(startPose.rotation().transpose() * transform.rotation());
+
+    return util::append<3, 3>(pose.block<3, 1>(0, 0) - startPose.translation(), angleAxis.axis() * angleAxis.angle());
+}
+
+template <unsigned int dim>
 static bool checkConfigToPose(const Vector<dim> &config, const Vector6 &pose, RobotBase &robot,
                               const std::pair<Vector6, Vector6> &C) {
-    Vector6 poseDisplacement = pose - util::toPoseVec(robot.getTransformation(config));
+    Vector6 poseDisplacement = calcConfigToPose<dim>(config, pose, robot);
+
+    // Vector6 poseDisplacement = pose - util::toPoseVec(robot.getTransformation(config));
+    // for (size_t i = 0; i < 6; ++i)
+    //    std::cout << poseDisplacement[i] << " ";
+    // std::cout << std::endl;
     for (size_t i = 0; i < 6; ++i)
         if (poseDisplacement[i] < C.first[i] || C.second[i] < poseDisplacement[i])
             return false;
@@ -205,6 +220,14 @@ static std::vector<Vector<dim>> calcConfigPath(const std::vector<std::shared_ptr
     }
     path.push_back(nodes.back()->getValues());
     return path;
+}
+
+template <unsigned int dim>
+static double calcPathLength(const std::vector<std::shared_ptr<Node<dim>>> &nodes, const DistanceMetric<dim> &metric) {
+    double length = 0;
+    for (auto node = nodes.begin(); node < nodes.end() - 1; ++node)
+        length += metric.calcDist((**node), **(node + 1));
+    return length;
 }
 
 template <unsigned int dim>

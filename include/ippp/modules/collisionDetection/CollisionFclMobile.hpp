@@ -44,6 +44,7 @@ class CollisionFclMobile : public CollisionFcl<dim> {
     std::vector<std::shared_ptr<MobileRobot>> m_robots;
 
     using CollisionDetection<dim>::m_request;
+    using CollisionDetection<dim>::m_collisionCollector;
     using CollisionFcl<dim>::m_environment;
     using CollisionFcl<dim>::m_identity;
     using CollisionFcl<dim>::m_workspaceBounding;
@@ -128,6 +129,7 @@ bool CollisionFclMobile<dim>::check(const std::vector<Vector<dim>> &configs) con
 */
 template <unsigned int dim>
 bool CollisionFclMobile<dim>::check(const Vector<dim> &config, const CollisionRequest &request) const {
+    m_collisionCollector->add(1);
     auto configVecs = util::splitVec<dim>(config, m_environment->getRobotDimSizes());
 
     if (request.checkInterRobot) {    // inter robot collisions

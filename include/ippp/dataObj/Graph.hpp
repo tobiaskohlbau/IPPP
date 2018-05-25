@@ -36,7 +36,8 @@ namespace ippp {
 template <unsigned int dim>
 class Graph : public Identifier {
   public:
-    Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder);
+    Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder,
+          const std::string &name = "Graph");
     ~Graph();
 
     bool addNode(const std::shared_ptr<Node<dim>> &node);
@@ -97,11 +98,12 @@ class Graph : public Identifier {
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-Graph<dim>::Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder)
-    : Identifier("Graph"),
+Graph<dim>::Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder,
+                  const std::string &name)
+    : Identifier(name),
       m_sortCount(sortCount),
       m_neighborFinder(neighborFinder),
-      m_collector(std::make_shared<StatsGraphCollector>("GraphStats")) {
+      m_collector(std::make_shared<StatsGraphCollector>(name + "Stats")) {
     Logging::debug("Initialize", this);
     Stats::addCollector(m_collector);
 

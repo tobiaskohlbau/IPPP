@@ -15,7 +15,7 @@ void simpleRRT() {
     const unsigned int dim = 7;
     EnvironmentConfigurator envConfigurator;
 
-    envConfigurator.setWorkspaceProperties(AABB(Vector3(-1000, -1000, -5), Vector3(1000, 1000, 1500)));
+    envConfigurator.setWorkspaceProperties(AABB(Vector3(-1000, -1000, -5), Vector3(1000, 1000, 2000)));
     for (double deg = -157.5; deg < 180; deg += 45) {
         double angle = util::toRad(deg);
         envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/plane.obj",
@@ -53,7 +53,7 @@ void simpleRRT() {
     //                                         util::toTransform(util::Vecd(13, 7, 120, 0, 0, 0)),
     //                                         FLAGS_assetsDir + "/robotModels/wesslingHand.obj");
     envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms, Transform::Identity(),
-        util::toTransform(util::Vecd(0, 0, 205, 0, 0, 0)), Transform::Identity(),
+        util::toTransform(util::Vecd(0, 0, 205, 0, 0, 0)), util::toTransform(util::Vecd(0, 0, 205, 0, 0, 0)),
         FLAGS_assetsDir + "/robotModels/wesslingHand.obj");
 
     envConfigurator.saveConfig("KukaEnvConfig.json");
@@ -67,7 +67,7 @@ void simpleRRT() {
     // testConfig = util::toRad<dim>(testConfig);
     // serialRobot->saveMeshConfig(testConfig);
 
-    double stepSize = 2;
+    double stepSize = util::toRad(70);
     ModuleConfigurator<dim> creator;
     creator.setEvaluatorType(EvaluatorType::TreeConnect);
     creator.setEvaluatorProperties(stepSize, 500);
@@ -75,6 +75,7 @@ void simpleRRT() {
     creator.setEnvironment(environment);
     creator.setValidityCheckerType(ValidityCheckerType::FclSerial);
     creator.setSamplingType(SamplingType::NearObstacle);
+    creator.setTrajectoryProperties(10, util::toRad(2));
 
     RRTStarConnect<dim> planner(environment, creator.getRRTOptions(stepSize), creator.getGraph(), creator.getGraphB());
     Vector<dim> start = util::Vecd(0, 0, 0, 0, 0, 0, 0);
@@ -82,14 +83,7 @@ void simpleRRT() {
     start = util::toRad<dim>(start);
     goal = util::toRad<dim>(goal);
 
-    // compute the tree
-    auto timer = std::make_shared<StatsTimeCollector>("Planning Time");
-    Stats::addCollector(timer);
-    timer->start();
-    bool connected = planner.computePath(start, goal, 6000, 24);
-    timer->stop();
-
-    if (connected) {
+    if (planner.computePath(start, goal, 1200, 24)) {
         std::cout << "Init and goal could be connected!" << std::endl;
         auto path = planner.getPath(0.001, 0.001);
 
@@ -100,7 +94,7 @@ void simpleRRT() {
 
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
-    Logging::setLogLevel(LogLevel::trace);
+    Logging::setLogLevel(LogLevel::debug);
 
     simpleRRT();
     Stats::writeData(std::cout);

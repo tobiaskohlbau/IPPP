@@ -76,14 +76,15 @@ enum class EvaluatorType {
     TreeConnect,
     TreePose,
     TreeConfigOrTime,
-    TreeConnectOrTime
+    TreeConnectOrTime,
+    TreePoseOrTime
 };
 enum class NeighborFinderType { BruteForce, KDTree };
 enum class PathModifierType { Dummy, NodeCut };
-enum class SamplerType { Grid, NormalDist, Random, Uniform, UniformBiased };
+enum class SamplerType { Grid, NormalDist, Random, Uniform, UniformBiased, InverseJacobi };
 enum class SamplingType { Berenson, Bridge, FOR, Gaussian, GaussianDist, MedialAxis, NearObstacle, RGD, Straight, TS };
 enum class TrajectoryPlannerType { Linear, RotateAtS };
-enum class ValidityCheckerType { AABB, AlwaysValid, Dim2, FclMobile, FclSerial, PQP, BerensonConstraint };
+enum class ValidityCheckerType { AABB, AlwaysValid, Dim2, FclMobile, FclSerial, PQP, BerensonConstraint, FclSerialAndConstraint };
 
 enum class PlannerType { AdaptedRRT, CiBRRT, EST, RRT, RRTStar, PRM, SRT };
 

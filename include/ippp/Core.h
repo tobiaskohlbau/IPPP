@@ -64,6 +64,7 @@
 #include <ippp/modules/sampler/EllipsoidSampler.hpp>
 #include <ippp/modules/sampler/GridSampler.hpp>
 #include <ippp/modules/sampler/Sampler.hpp>
+#include <ippp/modules/sampler/SamplerInverseJacobi.hpp>
 #include <ippp/modules/sampler/SamplerNormalDist.hpp>
 #include <ippp/modules/sampler/SamplerRandom.hpp>
 #include <ippp/modules/sampler/SamplerUniform.hpp>

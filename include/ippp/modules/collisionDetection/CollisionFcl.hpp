@@ -25,8 +25,6 @@
 #include <ippp/environment/model/ModelFcl.h>
 #include <ippp/environment/robot/SerialRobot.h>
 #include <ippp/modules/collisionDetection/CollisionDetection.hpp>
-#include <ippp/statistic/Stats.h>
-#include <ippp/statistic/StatsCollisionCollector.h>
 #include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
@@ -50,7 +48,6 @@ class CollisionFcl : public CollisionDetection<dim> {
     AABB m_workspaceBounding;
     std::vector<std::pair<std::shared_ptr<FCLModel>, Transform>> m_obstacles;
     bool m_obstacleExists = false;
-    std::shared_ptr<StatsCollisionCollector> m_collisionCollector = nullptr;
 
     using CollisionDetection<dim>::m_environment;
 };
@@ -66,10 +63,7 @@ CollisionFcl<dim>::CollisionFcl(const std::string &name, const std::shared_ptr<E
                                 const CollisionRequest &request)
     : CollisionDetection<dim>(name, environment, request),
       m_identity(Transform::Identity()),
-      m_workspaceBounding(environment->getSpaceBoundary()),
-      m_collisionCollector(std::make_shared<StatsCollisionCollector>("CollisionCount")) {
-    Stats::addCollector(m_collisionCollector);
-
+      m_workspaceBounding(environment->getSpaceBoundary()) {
     if (environment->numObstacles() > 0) {
         m_obstacleExists = true;
         for (auto &obstacle : environment->getObstacles())

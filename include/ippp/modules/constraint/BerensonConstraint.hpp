@@ -120,6 +120,7 @@ Vector6 BerensonConstraint<dim>::calcEuclideanError(const Vector<dim> &config) c
         else
             eucError[i] = 0;
     }
+    std::cout << eucError << std::endl;
     return eucError;
 }
 

@@ -22,6 +22,8 @@
 #include <ippp/modules/collisionDetection/CollisionRequest.h>
 #include <ippp/modules/collisionDetection/CollisionResult.h>
 #include <ippp/modules/validityChecker/ValidityChecker.hpp>
+#include <ippp/statistic/Stats.h>
+#include <ippp/statistic/StatsCollisionCollector.h>
 
 namespace ippp {
 
@@ -40,6 +42,7 @@ class CollisionDetection : public ValidityChecker<dim> {
 
   protected:
     const CollisionRequest m_request; /*!< Default request for single collision tests (not trajectories) */
+    std::shared_ptr<StatsCollisionCollector> m_collisionCollector = nullptr;
 
     using ValidityChecker<dim>::m_environment;
 };
@@ -54,7 +57,10 @@ class CollisionDetection : public ValidityChecker<dim> {
 template <unsigned int dim>
 CollisionDetection<dim>::CollisionDetection(const std::string &name, const std::shared_ptr<Environment> &environment,
                                             const CollisionRequest &request)
-    : ValidityChecker<dim>(name, environment), m_request(request) {
+    : ValidityChecker<dim>(name, environment),
+      m_request(request),
+      m_collisionCollector(std::make_shared<StatsCollisionCollector>("CollisionCount")) {
+    Stats::addCollector(m_collisionCollector);
 }
 
 } /* namespace ippp */

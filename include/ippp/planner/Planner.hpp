@@ -127,6 +127,12 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
     if (!util::checkDimensions<dim>(environment))
         Logging::error("Robot dimensions are unequal to planner dimension", this);
     assert(util::checkDimensions<dim>(environment));
+
+    // check the existance of all modules
+    if (m_metric == nullptr || m_environment == nullptr || m_evaluator == nullptr || m_graph == nullptr ||
+        m_pathModifier == nullptr || m_pathCollector == nullptr || m_plannerCollector == nullptr || m_sampling == nullptr ||
+        m_trajectory == nullptr || m_validityChecker == nullptr)
+        Logging::error("Not all modules instanced!", this);
 }
 
 template <unsigned int dim>
@@ -171,8 +177,9 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     m_pathCollector->startModificationTimer();
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes = m_pathModifier->smoothPath(nodes);
     m_pathCollector->stopModificationTimer();
+
     m_pathCollector->setNodeCounts(nodes.size(), smoothedNodes.size());
-    m_pathCollector->setRes(std::make_pair(posRes, oriRes));
+    m_pathCollector->setLengths(util::calcPathLength<dim>(nodes, *m_metric), util::calcPathLength<dim>(smoothedNodes, *m_metric));
 
     Logging::info("Path has after smoothing: " + std::to_string(smoothedNodes.size()) + " nodes", this);
 
@@ -180,9 +187,7 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     auto plannerRes = m_trajectory->getResolutions();
     m_trajectory->setResolutions(posRes, oriRes);
 
-    auto path = util::calcConfigPath(nodes, *m_trajectory);
-    auto smoothedPath = util::calcConfigPath(smoothedNodes, *m_trajectory);
-    m_pathCollector->setConfigCounts(path.size(), smoothedPath.size());
+    auto smoothedPath = util::calcConfigPath<dim>(smoothedNodes, *m_trajectory);
 
     // set the resolution again to the planner resolution
     m_trajectory->setResolutions(plannerRes);
@@ -199,9 +204,15 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
 */
 template <unsigned int dim>
 void Planner<dim>::initParams(const Vector<dim> &start, const Vector<dim> &goal) {
+    if (util::empty<dim>(start)) {
+        Logging::error("Empty start configuration at param initialization!", this);
+        return;
+    }
     auto sampler = m_sampling->getSampler();
     sampler->setOrigin(start);
-    sampler->setOptimalPathCost(m_metric->calcDist(start, goal));
+
+    if (!util::empty<dim>(goal))
+        sampler->setOptimalPathCost(m_metric->calcDist(start, goal));
 }
 
 /*!

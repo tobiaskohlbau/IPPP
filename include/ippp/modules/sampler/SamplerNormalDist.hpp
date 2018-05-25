@@ -82,7 +82,7 @@ template <unsigned int dim>
 void SamplerNormalDist<dim>::setOrigin(const Vector<dim> &origin) {
     m_distNormal.clear();
     for (unsigned int i = 0; i < dim; ++i) {
-        std::normal_distribution<double> distribution(origin[i], (m_robotBoundary.second[i] - m_robotBoundary.first[i]) / 2);
+        std::normal_distribution<double> distribution(origin[i], (m_robotBoundary.second[i] - m_robotBoundary.first[i]) / 12);
         m_distNormal.push_back(distribution);
     }
 }

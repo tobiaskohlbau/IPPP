@@ -131,6 +131,7 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
     m_graphB->updateStats();
     m_plannerCollector->stopPlannerTimer();
 
+    Logging::info("Found path", this);
     return m_pathPlanned;
 }
 

@@ -42,6 +42,7 @@ void simpleRRT() {
     envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms);
 
     auto environment = envConfigurator.getEnvironment();
+    envConfigurator.saveConfig("jacoEnv.json");
     auto serialRobot = std::dynamic_pointer_cast<Jaco>(environment->getRobot());
 
     // std::vector<Transform> transforms(6, Transform::Identity());
@@ -83,7 +84,7 @@ void simpleRRT() {
         auto path = planner.getPath(0.001, 0.001);
 
         auto json = jsonSerializer::serialize<dim>(path);
-        ui::save("kukaPath.json", json);
+        ui::save("jacoPath.json", json);
     }
 }
 

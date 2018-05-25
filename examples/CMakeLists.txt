@@ -36,12 +36,9 @@ endmacro()
 add_subdirectory(ui)
 add_subdirectory(MA)
 
-
-add_ippp_example(cad cad.cpp gflags)
 add_ippp_example(GettingStarted GettingStarted.cpp gflags)
 add_ippp_example(Kuka Kuka.cpp gflags)
 add_ippp_example(Jaco Jaco.cpp gflags)
-add_ippp_example(KukaTuc KukaTuc.cpp gflags)
 if(OpenCV_FOUND)
 	add_ippp_example(Planner2D Planner2D.cpp ${OpenCV_LIBS} ui gflags)
     add_ippp_example(Constraint2D Constraint2D.cpp ${OpenCV_LIBS} ui gflags)
@@ -53,5 +50,8 @@ if(OpenCV_FOUND)
 endif()
 add_ippp_example(ParasolBenchmarks ParasolBenchmarks.cpp ui)
 add_ippp_example(ConstraintIiwa ConstraintIiwa.cpp gflags)
+
+add_ippp_example(KukaTuc KukaTuc.cpp ui UDP gflags)
+
 
 #add_subdirectory(gui2D)

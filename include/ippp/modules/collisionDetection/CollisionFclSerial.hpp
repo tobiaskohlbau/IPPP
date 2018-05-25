@@ -50,7 +50,7 @@ class CollisionFclSerial : public CollisionFcl<dim> {
     std::shared_ptr<SerialRobot> m_robot;
 
     using CollisionDetection<dim>::m_request;
-    using CollisionFcl<dim>::m_collisionCollector;
+    using CollisionDetection<dim>::m_collisionCollector;
     using CollisionFcl<dim>::m_environment;
     using CollisionFcl<dim>::m_identity;
     using CollisionFcl<dim>::m_workspaceBounding;
@@ -155,6 +155,9 @@ bool CollisionFclSerial<dim>::check(const std::vector<Vector<dim>> &configs) con
 */
 template <unsigned int dim>
 bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRequest &request) const {
+    if (!this->checkRobotBound(config))
+        return false;
+
     m_collisionCollector->add(1);
     auto linkTrafosAndTcp = m_robot->getLinkAndToolTrafos(config);
     auto &linkTrafos = linkTrafosAndTcp.first;

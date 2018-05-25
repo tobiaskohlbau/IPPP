@@ -173,13 +173,13 @@ MatrixX SerialRobot::calcJacobian(const VectorX &config) const {
         jacobi.block<3, 1>(3, i) = m_zUnitVectors[i];
     }
 #else
-    Vector6 tcp = util::transformToVec(getTcp(getJointTrafos(config)));
+    Vector6 tcp = util::toPoseVec(getTcp(getJointTrafos(config)));
 
     const double diff = 0.0001;
     for (size_t i = 0; i < m_dim; ++i) {
         auto tmpConfig = config;
         tmpConfig[i] += diff;
-        Vector6 tmpTcp = util::transformToVec(getTcp(getJointTrafos(tmpConfig)));
+        Vector6 tmpTcp = util::toPoseVec(getTcp(getJointTrafos(tmpConfig)));
         jacobi.block<6, 1>(0, i) = (tmpTcp - tcp) / diff;
     }
 #endif

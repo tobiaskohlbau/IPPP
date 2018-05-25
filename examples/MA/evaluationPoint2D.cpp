@@ -17,20 +17,26 @@ AABB workspace(Vector3(0, 0, 0), Vector3(2000, 2000, 2000));
 Vector2 start(300, 300);
 Vector2 goal(1500, 1000);
 
-ConfigurationMA m_configurationMA(RobotType::Point2D, 2, true, false);
-std::vector<ParamsMA> m_paramsMA;
+std::pair<Vector2, Vector2> getConfigs(size_t iteration) {
+    if (iteration == 1 || iteration == 2)
+        return std::make_pair(Vector2(100, 200), Vector2(1500, 1200));
+    else if (iteration > 1 && iteration < 11)
+        return std::make_pair(Vector2(300, 300), Vector2(1500, 1000));
 
-void drawImage(std::shared_ptr<Planner<2>> planner, std::shared_ptr<Environment> env, size_t index) {
+    return std::make_pair(Vector2(300, 300), Vector2(1500, 1000));
+}
+
+void drawImage(Planner<2>& planner, Environment& env, size_t index) {
     auto workspace2D = cad::create2dspace(workspace, 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
     cv::cvtColor(image, image, CV_GRAY2BGR);
-    for (const auto& obstacle : env->getObstacles())
+    for (const auto& obstacle : env.getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
 
-    auto nodes = planner->getGraphNodes();
+    auto nodes = planner.getGraphNodes();
     drawing::drawGraph2D(image, nodes, Vector3i(125, 125, 200), Vector3i(125, 125, 200), 1);
 
-    auto path = planner->getPath();
+    auto path = planner.getPath();
     if (!path.empty())
         drawing::drawPath2D(image, path, Vector3i(255, 0, 0), 2);
 
@@ -41,81 +47,86 @@ void drawImage(std::shared_ptr<Planner<2>> planner, std::shared_ptr<Environment>
     cv::imwrite("images/" + std::to_string(index) + ".png", image);
 }
 
-std::shared_ptr<Environment> createEnvironment(ParamsMA params) {
+std::shared_ptr<Environment> createEnvironment(std::string seed) {
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(workspace);
     envConfigurator.setRobotType(RobotType::Point2D);
 
-    if (params.useObstacle) {
-        Vector2 min = Vector2(workspace.min()[0], workspace.min()[1]);
-        Vector2 max = Vector2(workspace.max()[0], workspace.max()[1]);
-
-        cad::MapGenerator<dim> mapGenerator(workspace, std::make_shared<SamplerRandom<2>>(std::make_pair(min, max), params.seed));
-        auto meshes = mapGenerator.generateMap(200, Vector2(10, 10), Vector2(80, 80));
-        for (auto& mesh : meshes)
-            envConfigurator.addObstacle(mesh);
-    }
+    Vector2 min = Vector2(workspace.min()[0], workspace.min()[1]);
+    Vector2 max = Vector2(workspace.max()[0], workspace.max()[1]);
+    cad::MapGenerator<dim> mapGenerator(workspace, std::make_shared<SamplerRandom<2>>(std::make_pair(min, max), seed));
+    auto meshes = mapGenerator.generateMap(400, Vector2(20, 20), Vector2(100, 100));
+    for (auto& mesh : meshes)
+        envConfigurator.addObstacle(mesh);
 
     return envConfigurator.getEnvironment();
 }
 
-ModuleConfigurator<2> getCreator(std::shared_ptr<Environment> env, ParamsMA params) {
+ModuleConfigurator<2> getCreator(std::shared_ptr<Environment> env, ParamsMA params, std::string seed) {
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(env);
     creator.setPathModifierType(PathModifierType::NodeCut);
     creator.setValidityCheckerType(ValidityCheckerType::Dim2);
     creator.setGraphSortCount(5000);
-    creator.setEvaluatorType(EvaluatorType::TreeConfigOrTime);
+    creator.setEvaluatorType(EvaluatorType::TreeConnectOrTime);
     creator.setEvaluatorProperties(params.stepSize, 45);
     creator.setSamplerType(params.samplerType);
     creator.setSamplingType(params.samplingType);
-    creator.setSamplerProperties(params.seed, 1);
+    creator.setSamplerProperties(seed, 1);
     creator.setSamplingProperties(10, 80);
     return creator;
 }
 
-void planningThread(size_t startIndex, size_t endIndex) {
-    for (auto params = m_paramsMA.begin() + startIndex; params < m_paramsMA.begin() + endIndex; ++params) {
+void planningThread(std::vector<ParamsMA> params) {
+    size_t count = 1;
+    for (auto& param : params) {
         Stats::initializeCollectors();
-        m_configurationMA.updatePropertyStats(params - m_paramsMA.begin());
-        auto env = createEnvironment(*params);
-        auto creator = getCreator(env, *params);
+        auto env = createEnvironment(param.seed);
+        std::vector<std::string> seeds = {"234`r5fdsfda", "23r54wedf",  "23894rhwef",  "092yu4re",   "0923ujrpiofesd",
+                                          "02u9r3jes",    "09243rjpef", "23refdss;wf", "2-3r0wepoj", "-243refdsaf"};
+        for (auto seed : seeds) {
+            auto creator = getCreator(env, param, seed);
 
-        auto planner =
-            std::make_shared<RRTStar<2>>(creator.getEnvironment(), creator.getRRTOptions(params->stepSize), creator.getGraph());
-
-        planner->computePath(start, goal, 3000, 1);
-        if (params->optimize)
+            auto planner = std::make_shared<RRTStarConnect<2>>(creator.getEnvironment(), creator.getRRTOptions(param.stepSize),
+                                                               creator.getGraph(), creator.getGraphB());
+            auto configs = getConfigs(count);
+            planner->computePath(configs.first, configs.second, 100, 1);
             planner->optimize(1000, 1);
+            planner->getPath();
 
-        //drawImage(planner, env, params - m_paramsMA.begin());
-        ui::save("eval2DPoint.json", Stats::serialize(), 4, true);
+            drawImage(*planner, *env, count);
+            //Stats::writeData(std::cout);
+            ui::save("eval2DPoint.json", Stats::serialize(), 4, true);
+        }
+        ++count;
     }
 }
 
 void testMobile() {
-    m_configurationMA = ConfigurationMA(RobotType::Point2D, 2, true, false);
-    std::cout << m_configurationMA.numParams() << std::endl;
-    m_paramsMA = m_configurationMA.getParamsList();
-    std::vector<std::thread> threads;
-
-    size_t nbOfThreads = 1;
-    size_t threadAmount = m_configurationMA.numParams() / nbOfThreads;
-
-    auto startTime = std::chrono::system_clock::now();
-    for (size_t i = 0; i < nbOfThreads; ++i)
-        threads.push_back(std::thread(&planningThread, i * threadAmount, (i + 1) * threadAmount));
-
-    for (size_t i = 0; i < nbOfThreads; ++i)
-        threads[i].join();
-    std::chrono::duration<double> duration = std::chrono::system_clock::now() - startTime;
-    std::cout << std::endl << "Evaluation time: " << duration.count() << std::endl;
+    std::vector<std::string> seeds = {"234`r5fdsfda", "23r54wedf",  "23894rhwef",  "092yu4re",   "0923ujrpiofesd",
+                                      "02u9r3jes",    "09243rjpef", "23refdss;wf", "2-3r0wepoj", "-243refdsaf"};
+    std::vector<ParamsMA> params;
+    for (auto seed : seeds) {
+        ParamsMA paramsMA;
+        paramsMA.dim = dim;
+        paramsMA.robotType = RobotType::Point2D;
+        paramsMA.optimize = true;
+        paramsMA.pathModifier = PathModifierType::NodeCut;
+        paramsMA.samplerType = SamplerType::UniformBiased;
+        paramsMA.samplingType = SamplingType::Straight;
+        paramsMA.seed = seed;
+        paramsMA.stepSize = 40;
+        paramsMA.useConstraint = false;
+        paramsMA.useObstacle = true;
+        params.push_back(paramsMA);
+    }
+    planningThread(params);
 }
 
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    Logging::setLogLevel(LogLevel::warn);
+    Logging::setLogLevel(LogLevel::debug);
 
     testMobile();
 }

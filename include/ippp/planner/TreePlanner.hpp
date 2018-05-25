@@ -63,6 +63,7 @@ class TreePlanner : public Planner<dim> {
     using Planner<dim>::m_graph;
     using Planner<dim>::m_options;
     using Planner<dim>::m_pathPlanned;
+    using Planner<dim>::m_sampling;
     using Planner<dim>::m_trajectory;
     using Planner<dim>::updateStats;
     using Planner<dim>::m_plannerCollector;
@@ -138,7 +139,7 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const std::vector<Ve
 template <unsigned int dim>
 bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 goalPose,
                                          const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads) {
-    // this->setSamplingParams(start, goal);
+    this->initParams(startConfig, util::NaNVector<dim>());
     m_plannerCollector->startPlannerTimer();
     if (!setInitNode(startConfig))
         return false;
@@ -152,11 +153,16 @@ bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Ve
     }
 
     // set goal node
+    double minDisplacement = std::numeric_limits<double>::max();
     auto robot = m_environment->getRobot();
     for (auto &node : m_graph->getNodes()) {
         if (util::checkConfigToPose<dim>(node->getValues(), goalPose, *robot, C)) {
-            m_goalNode = node;
-            m_pathPlanned = true;
+            double displacement = util::calcConfigToPose<dim>(node->getValues(), goalPose, *robot).squaredNorm();
+            if (displacement < minDisplacement) {
+                minDisplacement = displacement;
+                m_goalNode = node;
+                m_pathPlanned = true;
+            }
         }
     }
 

@@ -123,6 +123,7 @@ bool test2DSerialRobot() {
             cv::Mat imageCopy = image.clone();
             drawing::drawSerialRobot2D<dim>(config, *serialRobot, imageCopy, workspace2D.second, Vector3i(0, 0, 255));
             cv::imshow("pathPlanner", imageCopy);
+            cv::waitKey(0);
         }
     } else {
         drawing::drawSerialRobot2D<dim>(goal, *serialRobot, image, workspace2D.second, Vector3i(0, 0, 255));
@@ -140,7 +141,7 @@ void testPointRobot() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, 0), Vector3(1000, 1000, 1000)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/random2D.obj");
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/2D/random2D.obj");
     envConfigurator.setRobotType(RobotType::Point2D);
     auto env = envConfigurator.getEnvironment();
 
@@ -190,7 +191,8 @@ int main(int argc, char** argv) {
 
     // while (!testTriangleRobot());
     // testTriangleRobot();
-    // test2DSerialRobot();
+    test2DSerialRobot();
+    cv::waitKey(0);
     testPointRobot();
 
     ui::save("Stats.json", Stats::serialize());

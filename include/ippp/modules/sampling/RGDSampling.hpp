@@ -107,6 +107,7 @@ Vector<dim> RGDSampling<dim>::getSample(const Vector<dim> &prevSample) {
             prevError = error;
             normalSampler.setOrigin(sample);
         }
+        std::cout << "attempt: " << i << std::endl;
     }
     return util::NaNVector<dim>();
 }

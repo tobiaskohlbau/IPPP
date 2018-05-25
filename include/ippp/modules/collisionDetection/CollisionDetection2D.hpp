@@ -45,6 +45,7 @@ class CollisionDetection2D : public CollisionDetection<dim> {
 
     std::vector<Mesh> m_obstacles;
 
+    using CollisionDetection<dim>::m_collisionCollector;
     using ValidityChecker<dim>::m_environment;
     using ValidityChecker<dim>::checkRobotBound;
 };
@@ -134,6 +135,8 @@ bool CollisionDetection2D<dim>::check(const std::vector<Vector<dim>> &configs) c
 */
 template <unsigned int dim>
 bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) const {
+    m_collisionCollector->add(1);
+
     double alpha, beta, gamma;
     Vector3 p1, p2, p3;
     for (auto &obstacle : m_obstacles) {

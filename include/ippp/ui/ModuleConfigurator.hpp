@@ -65,7 +65,8 @@ class ModuleConfigurator : public Configurator {
     void setMetricType(DistanceMetricType type);
     void setMetricWeightVec(const Vector<dim> vector);
     void setEvaluatorType(EvaluatorType type);
-    void setEvaluatorProperties(double queryEvaluatorDist, size_t duration);
+    void setEvaluatorProperties(double queryEvaluatorDist, size_t duration,
+                                const std::pair<Vector6, Vector6> &C = std::make_pair(Vector6::Zero(), Vector6::Zero()));
     void setGraphSortCount(size_t count);
     void setNeighborFinderType(NeighborFinderType type);
     void setPathModifierType(PathModifierType type);
@@ -78,6 +79,7 @@ class ModuleConfigurator : public Configurator {
     void setValidityCheckerType(ValidityCheckerType type);
     void setConstraintProperties(const std::pair<Vector6, Vector6> &C, const Transform &taskFrame,
                                  const double epsilon = IPPP_EPSILON);
+    void setGoalPose(const Vector6 goalPose);
 
   protected:
     void initializeModules();
@@ -116,8 +118,10 @@ class ModuleConfigurator : public Configurator {
     ValidityCheckerType m_validityType = ValidityCheckerType::FclSerial;
     // constraint
     double m_constraintEpsilon;
-    std::pair<Vector6, Vector6> m_C;
+    std::pair<Vector6, Vector6> m_goalC;
+    std::pair<Vector6, Vector6> m_taskFrameC;
     Transform m_taskFrame;
+    Vector6 m_goalPose;
 
     bool m_parameterModified = false;
 };
@@ -164,7 +168,14 @@ void ModuleConfigurator<dim>::initializeModules() {
             m_validityChecker = std::make_shared<AlwaysTrueValidity<dim>>(m_env);
             break;
         case ValidityCheckerType::BerensonConstraint:
-            m_validityChecker = std::make_shared<BerensonConstraint<dim>>(m_env, m_taskFrame, m_C);
+            m_validityChecker = std::make_shared<BerensonConstraint<dim>>(m_env, m_taskFrame, m_taskFrameC);
+            break;
+        case ValidityCheckerType::FclSerialAndConstraint:
+            m_validityChecker = std::make_shared<ComposeValidity<dim>>(
+                m_env, std::vector<std::shared_ptr<ValidityChecker<dim>>>(
+                           {std::make_shared<CollisionFclSerial<dim>>(m_env),
+                            std::make_shared<BerensonConstraint<dim>>(m_env, m_taskFrame, m_taskFrameC)}),
+                ComposeType::AND);
             break;
         default:
             m_validityChecker = std::make_shared<CollisionDetectionPqp<dim>>(m_env);
@@ -223,7 +234,6 @@ void ModuleConfigurator<dim>::initializeModules() {
     }
 
     m_graph = std::make_shared<Graph<dim>>(m_graphSortCount, m_neighborFinder);
-    m_graphB = std::make_shared<Graph<dim>>(m_graphSortCount, m_neighborFinderB);
 
     switch (m_evaluatorType) {
         case EvaluatorType::SingleIteration:
@@ -237,19 +247,21 @@ void ModuleConfigurator<dim>::initializeModules() {
                 std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker, m_queryEvalDist);
             break;
         case EvaluatorType::TreeConnect:
+            m_graphB = std::make_shared<Graph<dim>>(m_graphSortCount, m_neighborFinderB, "GraphB");
             m_evaluator =
                 std::make_shared<TreeConnectEvaluator<dim>>(m_graph, m_graphB, m_trajectory, m_validityChecker, m_queryEvalDist);
             break;
         case EvaluatorType::TreePose:
-            m_evaluator = std::make_shared<TreePoseEvaluator<dim>>(m_graph, m_env, m_C);
+            m_evaluator = std::make_shared<TreePoseEvaluator<dim>>(m_graph, m_env, m_goalC);
             break;
         case EvaluatorType::PRMConfig:
             m_evaluator = std::make_shared<PRMConfigEvaluator<dim>>(m_graph, m_trajectory, m_validityChecker, m_queryEvalDist);
             break;
         case EvaluatorType::PRMPose:
-            m_evaluator =
-                std::make_shared<PRMPoseEvaluator<dim>>(m_env, m_graph, m_trajectory, m_validityChecker, m_C, m_queryEvalDist);
+            m_evaluator = std::make_shared<PRMPoseEvaluator<dim>>(m_env, m_graph, m_trajectory, m_validityChecker, m_goalC,
+                                                                  m_queryEvalDist);
             break;
+        case EvaluatorType::TreeConfigOrTime:
             m_evaluator = std::make_shared<ComposeEvaluator<dim>>(
                 std::vector<std::shared_ptr<Evaluator<dim>>>(
                     {std::make_shared<TreeConfigEvaluator<dim>>(m_metric, m_graph, m_trajectory, m_validityChecker,
@@ -258,11 +270,19 @@ void ModuleConfigurator<dim>::initializeModules() {
                 ComposeType::OR);
             break;
         case EvaluatorType::TreeConnectOrTime:
+            m_graphB = std::make_shared<Graph<dim>>(m_graphSortCount, m_neighborFinderB, "GraphB");
             m_evaluator = std::make_shared<ComposeEvaluator<dim>>(
                 std::vector<std::shared_ptr<Evaluator<dim>>>(
                     {std::make_shared<TreeConnectEvaluator<dim>>(m_graph, m_graphB, m_trajectory, m_validityChecker,
                                                                  m_queryEvalDist),
                      std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration)}),
+                ComposeType::OR);
+            break;
+
+        case EvaluatorType::TreePoseOrTime:
+            m_evaluator = std::make_shared<ComposeEvaluator<dim>>(
+                std::vector<std::shared_ptr<Evaluator<dim>>>({std::make_shared<TreePoseEvaluator<dim>>(m_graph, m_env, m_goalC),
+                                                              std::make_shared<TimeEvaluator<dim>>(m_evaluatorDuration)}),
                 ComposeType::OR);
             break;
     }
@@ -295,6 +315,9 @@ void ModuleConfigurator<dim>::initializeModules() {
         case SamplerType::UniformBiased:
             m_sampler = std::make_shared<SamplerUniformBiased<dim>>(m_env, m_graph, m_samplerSeed);
             break;
+        case SamplerType::InverseJacobi:
+            m_sampler = std::make_shared<SamplerInverseJacobi<dim>>(m_env, m_goalPose, m_samplerSeed);
+            break;
         default:
             m_sampler = std::make_shared<SamplerUniform<dim>>(m_env, m_samplerSeed);
             break;
@@ -326,7 +349,7 @@ void ModuleConfigurator<dim>::initializeModules() {
             break;
         case SamplingType::TS:
             m_sampling = std::make_shared<TangentSpaceSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts,
-                                                                     m_graph, m_samplingDist, m_C, m_taskFrame);
+                                                                     m_graph, m_samplingDist, m_taskFrameC, m_taskFrame);
             break;
         case SamplingType::FOR:
             m_sampling = std::make_shared<FirstOrderRetractionSampling<dim>>(
@@ -443,7 +466,7 @@ void ModuleConfigurator<dim>::setEnvironment(const std::shared_ptr<Environment> 
 template <unsigned int dim>
 void ModuleConfigurator<dim>::setConstraintProperties(const std::pair<Vector6, Vector6> &C, const Transform &taskFrame,
                                                       const double epsilon) {
-    m_C = C;
+    m_taskFrameC = C;
     m_constraintEpsilon = epsilon;
     m_taskFrame = taskFrame;
 }
@@ -492,9 +515,11 @@ void ModuleConfigurator<dim>::setEvaluatorType(EvaluatorType type) {
 *  \date       2017-10-03
 */
 template <unsigned int dim>
-void ModuleConfigurator<dim>::setEvaluatorProperties(double queryEvaluatorDist, size_t duration) {
+void ModuleConfigurator<dim>::setEvaluatorProperties(double queryEvaluatorDist, size_t duration,
+                                                     const std::pair<Vector6, Vector6> &C) {
     m_queryEvalDist = queryEvaluatorDist;
     m_evaluatorDuration = duration;
+    m_goalC = C;
     m_parameterModified = true;
 }
 
@@ -627,6 +652,11 @@ template <unsigned int dim>
 void ModuleConfigurator<dim>::setValidityCheckerType(ValidityCheckerType type) {
     m_validityType = type;
     m_parameterModified = true;
+}
+
+template <unsigned int dim>
+void ModuleConfigurator<dim>::setGoalPose(const Vector6 goalPose) {
+    m_goalPose = goalPose;
 }
 
 /*!
