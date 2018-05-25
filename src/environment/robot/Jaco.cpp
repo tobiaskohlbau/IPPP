@@ -19,6 +19,7 @@
 #include <ippp/environment/robot/Jaco.h>
 
 #include <ippp/util/UtilGeo.hpp>
+#include <ippp/util/Logging.h>
 
 namespace ippp {
 
@@ -30,6 +31,9 @@ namespace ippp {
 */
 Jaco::Jaco(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DofType> &dofTypes)
     : SerialRobot(dim, joints, dofTypes, "Jaco") {
+    if (dim != 6)
+        Logging::error("Jaco dimension has to be 6!", this);
+    
     // m_alpha = util::Vecd(util::pi() / 2, util::pi(), util::pi() / 2, 0.95993f, 0.95993f, util::pi());
     // m_a = util::Vecd(0, 410, 0, 0, 0, 0);
     // m_d = util::Vecd(275.5f, 0, -9.8f, -249.18224f, -83.76448f, -210.58224f);
@@ -74,7 +78,7 @@ Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) const {
     dhAngles[1] = realAngles[1] - util::halfPi();
     dhAngles[2] = realAngles[2] + util::halfPi();
     dhAngles[4] = realAngles[4] - util::pi();
-    dhAngles[5] = realAngles[5] + util::pi();
+    dhAngles[5] = realAngles[5] + util::halfPi();
 
     return dhAngles;
 }

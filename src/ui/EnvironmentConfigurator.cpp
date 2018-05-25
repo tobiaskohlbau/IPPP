@@ -319,9 +319,11 @@ std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(ModelFacto
             Joint(m_robotBoundaries.first[i], m_robotBoundaries.second[i], m_dhParameters[i], model, m_linkOffsets[i]));
     }
 
-    auto robot = std::make_shared<SerialRobot>(m_robotDim, joints, m_dofTypes);
+    std::shared_ptr<SerialRobot> robot;
     if (type == RobotType::Jaco)
-        auto robot = std::make_shared<Jaco>(m_robotDim, joints, m_dofTypes);
+        robot = std::make_shared<Jaco>(m_robotDim, joints, m_dofTypes);
+    else 
+        robot = std::make_shared<SerialRobot>(m_robotDim, joints, m_dofTypes);
 
     if (!m_robotBaseModelFile.empty()) {
         auto robotModel = factory.createModelFromFile(m_robotBaseModelFile);

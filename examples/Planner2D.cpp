@@ -159,8 +159,8 @@ void testPointRobot() {
     auto planner =
         std::make_shared<RRTStarConnect<dim>>(env, creator.getRRTOptions(stepSize), creator.getGraph(), creator.getGraphB());
     Vector2 start(150, 200);
-    //Vector2 goal(730, 350);
-    Vector2 goal(950, 950);
+    Vector2 goal(730, 350);
+    //Vector2 goal(950, 950);
 
     bool connected = planner->computePath(start, goal, 500, 3);
 
@@ -179,6 +179,7 @@ void testPointRobot() {
     }
 
     cv::namedWindow("Point2D", CV_WINDOW_AUTOSIZE);
+    cv::imwrite("result.png", image);
     cv::imshow("Point2D", image);
 }
 

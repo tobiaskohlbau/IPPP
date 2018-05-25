@@ -104,7 +104,7 @@ std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
     AsJoint = m_pose * m_baseOffset * jointTrafos[0];
     AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
     for (size_t i = 1; i < jointTrafos.size(); ++i) {
-        AsLink[i] = AsJoint * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ()) * m_linkOffsets[i];
+        AsLink[i] = AsJoint * m_linkOffsets[i] * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ());
         AsJoint = AsJoint * jointTrafos[i];
     }
 
@@ -352,13 +352,14 @@ std::vector<Transform> SerialRobot::getLinkOffsets() const {
 *  \date       2018-01-10
 */
 void SerialRobot::saveMeshConfig(const VectorX &angles) {
+    auto linkTrafos = getLinkTrafos(angles);
+
     if (m_baseModel != nullptr) {
         std::vector<Vector3> vertices = m_baseModel->m_mesh.vertices;
         cad::transformVertices(m_pose, vertices);
         cad::exportCad(cad::ExportFormat::OBJ, "base", vertices, m_baseModel->m_mesh.faces);
     }
 
-    auto linkTrafos = getLinkTrafos(angles);
     for (size_t i = 0; i < m_joints.size(); ++i) {
         std::vector<Vector3> vertices = m_linkModels[i]->m_mesh.vertices;
         cad::transformVertices(linkTrafos[i], vertices);

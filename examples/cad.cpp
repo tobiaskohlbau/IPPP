@@ -90,7 +90,7 @@ void centerMeshes() {
 
     size_t count = 0;
     for (auto &mesh : meshes) {
-        cad::exportCad(cad::ExportFormat::OBJ, directory + "/centered/" + std::to_string(count), mesh);
+        cad::exportCad(cad::ExportFormat::OBJ, directory + "/centered/jaco_" + std::to_string(count), mesh);
         ++count;
     }
 
@@ -113,18 +113,18 @@ void transformMesh() {
             filePaths.push_back(p);
 
     std::vector<Mesh> meshes;
-    Transform transform = util::toTransform(util::Vecd(0, 0, 20, util::toRad(-90), 0, 0));
-    for (auto &filePath : filePaths) {
+    std::vector<Transform> transforms = jsonSerializer::deserializeTransforms(ui::loadJson("transforms.json"));
+    for (size_t i = 1; i < 5; ++i) {
         Mesh mesh;
-        if (cad::importMesh(filePath.path().string(), mesh)) {
-            cad::transformMesh(mesh, transform);
+        if (cad::importMesh(filePaths[i].path().string(), mesh)) {
+            cad::transformMesh(mesh, transforms[i-1]);
             meshes.push_back(mesh);
         }
     }
 
     size_t count = 0;
     for (auto &mesh : meshes) {
-        cad::exportCad(cad::ExportFormat::OBJ, directory + "/transformed/" + std::to_string(count), mesh);
+        cad::exportCad(cad::ExportFormat::OBJ, directory + "/transformed/jaco_" + std::to_string(count), mesh);
         ++count;
     }
 }
@@ -134,9 +134,9 @@ int main(int /*argc*/, char ** /*argv*/) {
 
     // splitCad();
     // testCollision();
-     //centerMeshes();
+    // centerMeshes();
     transformMesh();
-    std::string str;
-    std::cin >> str;
+    // std::string str;
+    // std::cin >> str;
     return 0;
 }
