@@ -61,7 +61,7 @@ bool EnvironmentConfigurator::saveConfig(const std::string &filePath) {
     json["ToolModelOffset"] = jsonSerializer::serialize(m_toolModelOffset);
     json["ToolModelFile"] = m_toolModelFile;
 
-    return ui::saveJson(filePath, json);
+    return ui::save(filePath, json);
 }
 
 /*!

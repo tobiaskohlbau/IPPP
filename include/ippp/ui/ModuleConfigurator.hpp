@@ -400,7 +400,7 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     json["OriRes"] = m_oriRes;
     json["ValidityType"] = static_cast<int>(m_validityType);
 
-    return ui::saveJson(filePath, json);
+    return ui::save(filePath, json);
 }
 
 /*!
