@@ -22,8 +22,8 @@ target_link_libraries(ui
         IPPP)
 set_target_properties(ui PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}")
 
-add_library(UDP STATIC Udp.cpp)
-target_link_libraries(UDP
-        PRIVATE
-        IPPP)
-set_target_properties(UDP PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}")
+#add_library(UDP STATIC Udp.cpp)
+#target_link_libraries(UDP
+#        PRIVATE
+#        IPPP)
+#set_target_properties(UDP PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}")

@@ -400,7 +400,7 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
     json["OriRes"] = m_oriRes;
     json["ValidityType"] = static_cast<int>(m_validityType);
 
-    return saveJson(filePath, json);
+    return ui::saveJson(filePath, json);
 }
 
 /*!
@@ -412,7 +412,7 @@ bool ModuleConfigurator<dim>::saveConfig(const std::string &filePath) {
 */
 template <unsigned int dim>
 bool ModuleConfigurator<dim>::loadConfig(const std::string &filePath) {
-    nlohmann::json json = loadJson(filePath);
+    nlohmann::json json = ui::loadJson(filePath);
     if (json.empty())
         return false;
 

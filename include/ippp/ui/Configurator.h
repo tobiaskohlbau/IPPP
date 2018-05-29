@@ -26,6 +26,7 @@
 
 #include <ippp/Identifier.h>
 #include <ippp/types.h>
+#include <ippp/ui/FileWriterReader.h>
 
 namespace ippp {
 
@@ -39,9 +40,6 @@ class Configurator : public Identifier {
     Configurator(const std::string &name);
 
   protected:
-    nlohmann::json loadJson(const std::string &filePath);
-    bool saveJson(const std::string &filePath, const nlohmann::json &data);
-
     template <unsigned int dim>
     std::string vectorToString(const Vector<dim> &vector);
     template <unsigned int dim>

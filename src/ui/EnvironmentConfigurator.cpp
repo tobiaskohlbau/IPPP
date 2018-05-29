@@ -61,7 +61,7 @@ bool EnvironmentConfigurator::saveConfig(const std::string &filePath) {
     json["ToolModelOffset"] = jsonSerializer::serialize(m_toolModelOffset);
     json["ToolModelFile"] = m_toolModelFile;
 
-    return saveJson(filePath, json);
+    return ui::saveJson(filePath, json);
 }
 
 /*!
@@ -72,7 +72,7 @@ bool EnvironmentConfigurator::saveConfig(const std::string &filePath) {
 *  \date       2017-10-18
 */
 bool EnvironmentConfigurator::loadConfig(const std::string &filePath) {
-    nlohmann::json json = loadJson(filePath);
+    nlohmann::json json = ui::loadJson(filePath);
     if (json.empty())
         return false;
 

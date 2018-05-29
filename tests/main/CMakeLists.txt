@@ -17,4 +17,7 @@
 #-------------------------------------------------------------------------//
 
 add_ippp_test(clearWorkspace "main")
+if(MSVC)
+        target_compile_options(Test_main_clearWorkspace PUBLIC -bigobj)
+ endif()
 #ADD_IPPP_TEST(obstacleWorkspace "main")
