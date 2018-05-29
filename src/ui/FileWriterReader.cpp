@@ -102,7 +102,7 @@ nlohmann::json loadJson(const std::string &filePath) {
 
     std::ifstream file(filePath);
     if (!file.is_open()) {
-        Logging::error("Could not open file!", "FileWriterReader");
+        Logging::error("Could not open file: " + filePath + " !", "FileWriterReader");
         return nlohmann::json();
     }
 
