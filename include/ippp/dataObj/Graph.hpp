@@ -56,6 +56,7 @@ class Graph : public Identifier {
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, double range) const;
 
     void sortTree();
+    void clear();
     void clearQueryParents();
 
     bool empty() const;
@@ -119,14 +120,7 @@ Graph<dim>::Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::sha
 */
 template <unsigned int dim>
 Graph<dim>::~Graph() {
-    if (!m_preserveNodePtr) {
-        for (auto &&node : m_nodes) {
-            if (node) {
-                node->clearPointer();
-                node = nullptr;
-            }
-        }
-    }
+    clear();
 }
 
 /*!
@@ -310,6 +304,20 @@ void Graph<dim>::sortTree() {
     Logging::debug("Graph has been sorted and has: " + std::to_string(m_nodes.size()) + " Nodes", this);
 }
 
+template <unsigned int dim>
+void Graph<dim>::clear() {
+    if (!m_preserveNodePtr) {
+        for (auto &&node : m_nodes) {
+            if (node) {
+                node->clearPointer();
+                node = nullptr;
+            }
+        }
+    }
+    m_nodes.clear();
+    m_neighborFinder->clear();
+}
+
 /*!
 * \brief      Clear all query parents of the nodes.
 * \author     Sascha Kaden
@@ -424,8 +432,7 @@ std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> Graph<dim>::get
 
 template <unsigned int dim>
 std::shared_ptr<Graph<dim>> Graph<dim>::createEmptyGraphClone() {
-    auto neighborFinder = std::make_shared<NeighborFinder<dim, std::shared_ptr<Node<dim>>>>(*m_neighborFinder);
-    return Graph<dim>(m_sortCount, neighborFinder);
+    return std::make_shared<Graph<dim>>(m_sortCount, m_neighborFinder->clone());
 }
 
 } /* namespace ippp */

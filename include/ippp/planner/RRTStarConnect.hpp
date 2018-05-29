@@ -38,6 +38,8 @@ class RRTStarConnect : public RRTStar<dim> {
     virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads = 1) override;
 
   protected:
+    bool initNodes(const Vector<dim> &start, const Vector<dim> &goal);
+
     std::shared_ptr<Graph<dim>> m_graphA = nullptr;
     std::shared_ptr<Graph<dim>> m_graphB = nullptr;
 
@@ -74,15 +76,8 @@ RRTStarConnect<dim>::RRTStarConnect(const std::shared_ptr<Environment> &environm
 template <unsigned int dim>
 bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads) {
     m_plannerCollector->startPlannerTimer();
-    if (!setInitNode(start))
+    if (!initNodes(start, goal))
         return false;
-
-    if (!m_validityChecker->check(goal)) {
-        Logging::error("Goal configuration is not valid", this);
-        return false;
-    }
-    m_goalNode = std::make_shared<Node<dim>>(goal);
-    m_graphB->addNode(m_goalNode);
 
     // tmp start and goal config for sampler parameter
     auto tmpStart = start;
@@ -133,6 +128,44 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
 
     Logging::info("Found path", this);
     return m_pathPlanned;
+}
+
+/*!
+*  \brief      Set init Node of the TreePlanner
+*  \author     Sascha Kaden
+*  \param[in]  initial Node
+*  \param[out] true, if valid
+*  \date       2017-06-20
+*/
+template <unsigned int dim>
+bool RRTStarConnect<dim>::initNodes(const Vector<dim> &start, const Vector<dim> &goal) {
+    m_evaluator->initialize();
+    if (m_initNode && m_goalNode) {
+        if (start == m_initNode->getValues() && goal == m_goalNode->getValues()) {
+            Logging::debug("Equal start and goal node, tree will be expanded", this);
+            return true;
+        } else {
+            Logging::info("New trees will be created", this);
+            m_graph->clear();
+            m_graphB->clear();
+        }
+    }
+
+    if (!m_validityChecker->check(start)) {
+        Logging::warning("Init Node could not be connected", this);
+        return false;
+    }
+
+    if (!m_validityChecker->check(goal)) {
+        Logging::warning("Goal Node could not be connected", this);
+        return false;
+    }
+
+    m_initNode = std::make_shared<Node<dim>>(start);
+    m_goalNode = std::make_shared<Node<dim>>(goal);
+    m_graph->addNode(m_initNode);
+    m_graphB->addNode(m_goalNode);
+    return true;
 }
 
 } /* namespace ippp */

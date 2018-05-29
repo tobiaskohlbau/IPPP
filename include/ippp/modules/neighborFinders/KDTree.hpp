@@ -43,6 +43,8 @@ class KDTree : public NeighborFinder<dim, T> {
 
     void addNode(const Vector<dim> &config, const T &node);
     void rebaseSorted(std::vector<T> &nodes);
+    void clear();
+    std::shared_ptr<NeighborFinder<dim, T>> clone() const;
 
     T searchNearestNeighbor(const Vector<dim> &config);
     std::vector<T> searchRange(const Vector<dim> &config, double range);
@@ -102,10 +104,7 @@ KDTree<dim, T>::KDTree(const std::shared_ptr<DistanceMetric<dim>> &distanceMetri
 */
 template <unsigned int dim, class T>
 KDTree<dim, T>::~KDTree() {
-    if (m_root != nullptr) {
-        removeNodes(m_root);
-        m_root = nullptr;
-    }
+    clear();
 }
 
 /*!
@@ -131,6 +130,14 @@ void KDTree<dim, T>::rebaseSorted(std::vector<T> &nodes) {
     m_root = root;
     removeNodes(oldRoot);
     oldRoot = nullptr;
+}
+
+template <unsigned int dim, class T>
+void KDTree<dim, T>::clear() {
+    if (m_root != nullptr) {
+        removeNodes(m_root);
+        m_root = nullptr;
+    }
 }
 
 /*!
@@ -270,6 +277,14 @@ std::vector<T> KDTree<dim, T>::searchRange(const Vector<dim> &config, double ran
         nodes.push_back(kdNode->node);
 
     return nodes;
+}
+
+template <unsigned int dim, class T>
+std::shared_ptr<NeighborFinder<dim, T>> KDTree<dim, T>::clone() const {
+    Logging::debug("Derived::CloneImplementation", this);
+    auto finder = std::make_shared<KDTree<dim, T>>(*this);
+    finder->clear();
+    return finder;
 }
 
 /*!

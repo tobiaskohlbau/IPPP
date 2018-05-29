@@ -16,6 +16,10 @@ void simpleRRT() {
     EnvironmentConfigurator envConfigurator;
 
     envConfigurator.setWorkspaceProperties(AABB(Vector3(-1000, -1000, -5), Vector3(1000, 1000, 1500)));
+    std::string objDir = FLAGS_assetsDir + "/spaces/3D/fairObjects/";
+    envConfigurator.addObstacle(objDir + "base.obj");
+    envConfigurator.addObstacle(objDir + "table.obj");
+    envConfigurator.addObstacle(objDir + "shelve.obj");
 
     Vector6 minRobotBound = util::Vecd(-360, -360, -360, -360, -360, -360);
     Vector6 maxRobotBound = util::Vecd(360, 360, 360, 360, 360, 360);
@@ -72,20 +76,27 @@ void simpleRRT() {
     creator.setSamplingType(SamplingType::NearObstacle);
 
     RRTStarConnect<dim> planner(environment, creator.getRRTOptions(stepSize), creator.getGraph(), creator.getGraphB());
-    Vector<dim> start = util::Vecd(180, 180, 180, 180, 180, 180);
-    Vector<dim> goal = util::Vecd(-90, 90, 150, 30, 35, 114);
-    start = util::toRad<dim>(start);
-    goal = util::toRad<dim>(goal);
+    //Vector<dim> start = util::Vecd(180, 180, 180, 180, 180, 180);
+    //Vector<dim> goal = util::Vecd(-90, 90, 150, 30, 35, 114);
+    //start = util::toRad<dim>(start);
+    //goal = util::toRad<dim>(goal);
+    //bool connected = planner.computePath(start, goal, 6000, 24);
 
-    bool connected = planner.computePath(start, goal, 6000, 24);
 
-    if (connected) {
-        std::cout << "Init and goal could be connected!" << std::endl;
-        auto path = planner.getPath(0.001, 0.001);
-
-        auto json = jsonSerializer::serialize<dim>(path);
-        ui::save("jacoPath.json", json);
+    auto configs = jsonSerializer::deserializeVectors<dim>(ui::loadJson("configs.json"));
+    std::vector<bool> results(configs.size()-1, false);
+    std::vector<Vector<dim>> path;
+    for (size_t i = 0; i < configs.size()-1; ++i) {
+        results[i] = planner.computePath(configs[i], configs[i+1], 6000, 24);
+        //serialRobot->saveMeshConfig(configs[i+1]);
+        if (results[i]) {
+            std::cout << "Init and goal could be connected!" << std::endl;
+            auto tmpPath = planner.getPath(0.001, 0.001);
+            path.insert(path.end(), tmpPath.begin(), tmpPath.end());
+        }
     }
+    auto json = jsonSerializer::serialize<dim>(path);
+    ui::save("jacoPath.json", json);
 }
 
 int main(int argc, char** argv) {

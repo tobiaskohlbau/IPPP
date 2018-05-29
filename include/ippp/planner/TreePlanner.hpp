@@ -189,12 +189,11 @@ template <unsigned int dim>
 bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
     if (m_initNode) {
         if (start == m_initNode->getValues()) {
-            Logging::info("Equal start node, tree will be expanded", this);
+            Logging::debug("Equal start node, tree will be expanded", this);
             return true;
         } else {
             Logging::info("New start node, new tree will be created", this);
-            m_graph = std::make_shared<Graph<dim>>(m_graph->getSortCount(), m_graph->getNeighborFinder());
-            m_graph->sortTree();
+            m_graph = m_graph->createEmptyGraphClone();
         }
     }
 

@@ -66,7 +66,7 @@ class EnvironmentConfigurator : public Configurator {
     std::shared_ptr<RobotBase> createPointRobot();
     std::shared_ptr<RobotBase> createTriangleRobot(ModelFactory &factory);
     std::shared_ptr<RobotBase> createMobileRobot(ModelFactory &factory);
-    std::shared_ptr<RobotBase> createSerialRobot(ModelFactory &factory, RobotType type = RobotType::Point2D);
+    std::shared_ptr<RobotBase> createSerialRobot(ModelFactory &factory);
 
     std::shared_ptr<Environment> m_environment = nullptr;
     std::shared_ptr<RobotBase> m_robot = nullptr;

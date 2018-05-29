@@ -42,6 +42,7 @@ class TreeConfigEvaluator : public Evaluator<dim> {
                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double dist = 10);
 
     bool evaluate();
+    void initialize() override;
     void setConfigs(const std::vector<Vector<dim>> &targets) override;
 
   protected:
@@ -113,6 +114,12 @@ bool TreeConfigEvaluator<dim>::evaluate() {
 
     Logging::info("Queries solved.", this);
     return true;
+}
+
+template <unsigned int dim>
+void TreeConfigEvaluator<dim>::initialize() {
+    m_lastNodeIndex = 0;
+    m_validTargets = std::vector<bool>(m_targetConfigs.size(), false);
 }
 
 /*!

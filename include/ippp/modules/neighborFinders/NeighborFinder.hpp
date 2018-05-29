@@ -38,6 +38,8 @@ class NeighborFinder : public Identifier {
 
     virtual void addNode(const Vector<dim> &config, const T &node) = 0;
     virtual void rebaseSorted(std::vector<T> &nodes) = 0;
+    virtual void clear() = 0;
+    virtual std::shared_ptr<NeighborFinder<dim, T>> clone() const = 0;
 
     virtual T searchNearestNeighbor(const Vector<dim> &config) = 0;
     virtual std::vector<T> searchRange(const Vector<dim> &config, double range) = 0;

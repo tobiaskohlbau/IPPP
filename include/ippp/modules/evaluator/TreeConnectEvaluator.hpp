@@ -41,6 +41,7 @@ class TreeConnectEvaluator : public Evaluator<dim> {
                          const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double range = 1);
 
     bool evaluate();
+    void initialize() override;
 
   protected:
     std::shared_ptr<Graph<dim>> m_graphA = nullptr;
@@ -74,10 +75,7 @@ TreeConnectEvaluator<dim>::TreeConnectEvaluator(const std::shared_ptr<Graph<dim>
       m_graphB(graphB),
       m_trajectory(trajectory),
       m_validityChecker(validityChecker),
-      m_range(range),
-      m_lastIndexA(0),
-      m_lastIndexB(0),
-      m_useA(true) {
+      m_range(range) {
 }
 
 /*!
@@ -102,6 +100,13 @@ bool TreeConnectEvaluator<dim>::evaluate() {
 
     Logging::info("Graphs are connectable.", this);
     return true;
+}
+
+template <unsigned int dim>
+void TreeConnectEvaluator<dim>::initialize() {
+    m_lastIndexA = 0;
+    m_lastIndexB = 0;
+    m_useA = true;
 }
 
 } /* namespace ippp */

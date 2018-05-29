@@ -237,7 +237,7 @@ std::shared_ptr<Environment> EnvironmentConfigurator::getEnvironment() {
             m_robot = createSerialRobot(*factory);
             break;
         case RobotType::Jaco:
-            m_robot = createSerialRobot(*factory, RobotType::Jaco);
+            m_robot = createSerialRobot(*factory);
             break;
         default:
             break;
@@ -311,7 +311,7 @@ std::shared_ptr<RobotBase> EnvironmentConfigurator::createMobileRobot(ModelFacto
     return robot;
 }
 
-std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(ModelFactory &factory, RobotType type) {
+std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(ModelFactory &factory) {
     std::vector<Joint> joints;
     for (size_t i = 0; i < m_robotDim; ++i) {
         auto model = factory.createModelFromFile(m_linkModelFiles[i]);
@@ -320,7 +320,7 @@ std::shared_ptr<RobotBase> EnvironmentConfigurator::createSerialRobot(ModelFacto
     }
 
     std::shared_ptr<SerialRobot> robot;
-    if (type == RobotType::Jaco)
+    if (m_robotType == RobotType::Jaco)
         robot = std::make_shared<Jaco>(m_robotDim, joints, m_dofTypes);
     else 
         robot = std::make_shared<SerialRobot>(m_robotDim, joints, m_dofTypes);

@@ -40,6 +40,8 @@ class BruteForceNF : public NeighborFinder<dim, T> {
 
     void addNode(const Vector<dim> &config, const T &node);
     void rebaseSorted(std::vector<T> &nodes);
+    void clear();
+    std::shared_ptr<NeighborFinder<dim, T>> clone() const override;
 
     T searchNearestNeighbor(const Vector<dim> &config);
     std::vector<T> searchRange(const Vector<dim> &config, double range);
@@ -95,6 +97,11 @@ void BruteForceNF<dim, T>::rebaseSorted(std::vector<T> &nodes) {
     }
 }
 
+template <unsigned int dim, class T>
+void BruteForceNF<dim, T>::clear() {
+    m_nodes.clear();
+}
+
 /*!
 *  \brief      Add a Node to the BruteForceNF
 *  \author     Sascha Kaden
@@ -145,6 +152,14 @@ std::vector<T> BruteForceNF<dim, T>::searchRange(const Vector<dim> &config, doub
             nodePtrs.push_back(node.second);
     
     return nodePtrs;
+}
+
+template <unsigned int dim, class T>
+std::shared_ptr<NeighborFinder<dim, T>> BruteForceNF<dim, T>::clone() const {
+    Logging::debug("Derived::CloneImplementation", this);
+    auto finder = std::make_shared<BruteForceNF<dim, T>>(*this);
+    finder->clear();
+    return finder;
 }
 
 } /* namespace ippp */

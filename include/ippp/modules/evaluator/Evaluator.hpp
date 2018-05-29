@@ -20,10 +20,10 @@
 #define EVALUATOR_HPP
 
 #include <ippp/Identifier.h>
-#include <ippp/types.h>
-#include <ippp/util/UtilVec.hpp>
 #include <ippp/environment/Environment.h>
+#include <ippp/types.h>
 #include <ippp/util/Logging.h>
+#include <ippp/util/UtilVec.hpp>
 
 namespace ippp {
 
@@ -38,6 +38,7 @@ class Evaluator : public Identifier {
     Evaluator(const std::string &name);
 
     virtual bool evaluate() = 0;
+    virtual void initialize();
     virtual void setConfigs(const std::vector<Vector<dim>> &targets);
     virtual void setPoses(const std::vector<Vector6> &targets);
 
@@ -56,6 +57,12 @@ class Evaluator : public Identifier {
 template <unsigned int dim>
 Evaluator<dim>::Evaluator(const std::string &name) : Identifier(name) {
     Logging::debug("Initialize", this);
+    initialize();
+}
+
+template <unsigned int dim>
+void Evaluator<dim>::initialize() {
+    // do nothing
 }
 
 /*!
