@@ -91,10 +91,10 @@ void planningThread(std::vector<ParamsMA> params) {
                                                                creator.getGraph(), creator.getGraphB());
             auto configs = getConfigs(count);
             planner->computePath(configs.first, configs.second, 100, 1);
-            planner->optimize(1000, 1);
+            //planner->optimize(1000, 1);
             planner->getPath();
 
-            drawImage(*planner, *env, count);
+            //drawImage(*planner, *env, count);
             //Stats::writeData(std::cout);
             ui::save("eval2DPoint.json", Stats::serialize(), 4, true);
         }

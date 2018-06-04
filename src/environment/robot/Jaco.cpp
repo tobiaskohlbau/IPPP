@@ -74,7 +74,7 @@ std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles) const {
 */
 Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) const {
     Vector6 dhAngles(realAngles);
-    dhAngles[0] = -realAngles[0];
+    //dhAngles[0] = -realAngles[0];
     dhAngles[1] -= util::halfPi();
     dhAngles[2] += util::halfPi();
     dhAngles[4] -= util::pi();

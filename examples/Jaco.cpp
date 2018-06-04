@@ -19,12 +19,10 @@ void simpleRRT() {
     std::string objDir = FLAGS_assetsDir + "/spaces/3D/fairObjects/";
     envConfigurator.addObstacle(objDir + "base.obj");
     envConfigurator.addObstacle(objDir + "table.obj");
-    envConfigurator.addObstacle(objDir + "shelve.obj");
+    envConfigurator.addObstacle(objDir + "shelve.obj", util::Vecd(-850,0,0,0,0,0));
 
-    Vector6 minRobotBound = util::Vecd(-360, -360, -360, -360, -360, -360);
-    Vector6 maxRobotBound = util::Vecd(360, 360, 360, 360, 360, 360);
+    Vector6 minRobotBound = util::Vecd(-370, -370, -370, -370, -370, -370);
     minRobotBound = util::toRad<6>(minRobotBound);
-    maxRobotBound = util::toRad<6>(maxRobotBound);
     std::vector<DhParameter> dhParameters({DhParameter(util::pi() / 2, 0, 275.5), DhParameter(util::pi(), 410, 0),
                                            DhParameter(util::pi() / 2, 0, -9.8), DhParameter(0.95993, 0, -249.18224),
                                            DhParameter(0.95993, 0, -83.76448), DhParameter(util::pi(), 0, -210.58224)});
@@ -36,7 +34,7 @@ void simpleRRT() {
 
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     std::vector<DofType> dofTypes(6, DofType::jointRot);
-    envConfigurator.setRobotBaseProperties(dim, dofTypes, std::make_pair(minRobotBound, maxRobotBound));
+    envConfigurator.setRobotBaseProperties(dim, dofTypes, std::make_pair(minRobotBound, -minRobotBound));
     std::vector<Vector6> linkOffsets(6);
     linkOffsets[0] = util::Vecd(0, 0, 160, 0, 0, 0);
     linkOffsets[3] = util::Vecd(-3, 4, -207.3, 0, 0, 0);
@@ -84,14 +82,18 @@ void simpleRRT() {
 
 
     auto configs = jsonSerializer::deserializeVectors<dim>(ui::loadJson("configs.json"));
+    for (auto &config : configs)
+        config=util::toRad<dim>(config);
     std::vector<bool> results(configs.size()-1, false);
-    std::vector<Vector<dim>> path;
+    std::vector<Vector6> path;
     for (size_t i = 0; i < configs.size()-1; ++i) {
         results[i] = planner.computePath(configs[i], configs[i+1], 6000, 24);
         //serialRobot->saveMeshConfig(configs[i+1]);
         if (results[i]) {
             std::cout << "Init and goal could be connected!" << std::endl;
             auto tmpPath = planner.getPath(0.001, 0.001);
+            auto json = jsonSerializer::serialize<dim>(tmpPath);
+            ui::save(std::to_string(i) + ".json", json);
             path.insert(path.end(), tmpPath.begin(), tmpPath.end());
         }
     }
@@ -104,9 +106,9 @@ int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::trace);
 
     simpleRRT();
-    Stats::writeData(std::cout);
-    std::string string;
-    std::cin >> string;
+//    Stats::writeData(std::cout);
+//    std::string string;
+//    std::cin >> string;
 
     return 0;
 }
