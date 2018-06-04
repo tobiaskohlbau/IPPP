@@ -78,7 +78,7 @@ std::vector<Transform> Jaco::getLinkTrafos(const VectorX &angles) const {
     auto dhAngles = convertRealToDH(angles);
 
     AsJoint = m_pose * m_baseOffset * jointTrafos[0];
-    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
+    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(dhAngles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
     for (size_t i = 1; i < jointTrafos.size(); ++i) {
         AsLink[i] = AsJoint * m_linkOffsets[i] * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ());
         AsJoint = AsJoint * jointTrafos[i];
@@ -101,7 +101,7 @@ std::pair<std::vector<Transform>, Transform> Jaco::getLinkAndToolTrafos(const Ve
     auto dhAngles = convertRealToDH(angles);
 
     AsJoint = m_pose * m_baseOffset * jointTrafos[0];
-    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
+    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(dhAngles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
     for (size_t i = 1; i < jointTrafos.size(); ++i) {
         AsLink[i] = AsJoint * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ()) * m_linkOffsets[i];
         AsJoint = AsJoint * jointTrafos[i];
