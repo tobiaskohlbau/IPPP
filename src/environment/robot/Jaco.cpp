@@ -65,8 +65,54 @@ std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles) const {
 }
 
 /*!
+*  \brief      Get vector of Jaco transformation matrices
+*  \author     Sascha Kaden
+*  \param[in]  real angles
+*  \param[out] vector of Transforms
+*  \date       2016-10-22
+*/
+std::vector<Transform> Jaco::getLinkTrafos(const VectorX &angles) const {
+    std::vector<Transform> jointTrafos = getJointTrafos(angles);
+    std::vector<Transform> AsLink(jointTrafos.size());
+    Transform AsJoint = jointTrafos.front();
+    auto dhAngles = convertRealToDH(angles);
+
+    AsJoint = m_pose * m_baseOffset * jointTrafos[0];
+    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
+    for (size_t i = 1; i < jointTrafos.size(); ++i) {
+        AsLink[i] = AsJoint * m_linkOffsets[i] * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ());
+        AsJoint = AsJoint * jointTrafos[i];
+    }
+
+    return AsLink;
+}
+
+/*!
+*  \brief      Get vector of Jaco transformation matrices
+*  \author     Sascha Kaden
+*  \param[in]  real angles
+*  \param[out] vector of Transforms
+*  \date       2016-10-22
+*/
+std::pair<std::vector<Transform>, Transform> Jaco::getLinkAndToolTrafos(const VectorX &angles) const {
+    std::vector<Transform> jointTrafos = getJointTrafos(angles);
+    std::vector<Transform> AsLink(jointTrafos.size());
+    Transform AsJoint = jointTrafos.front();
+    auto dhAngles = convertRealToDH(angles);
+
+    AsJoint = m_pose * m_baseOffset * jointTrafos[0];
+    AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
+    for (size_t i = 1; i < jointTrafos.size(); ++i) {
+        AsLink[i] = AsJoint * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ()) * m_linkOffsets[i];
+        AsJoint = AsJoint * jointTrafos[i];
+    }
+
+    return std::make_pair(AsLink, AsJoint * m_toolModelOffset);
+}
+
+/*!
 *  \brief      Convert real angles to D-H Angles
-*  \detail     This conversation is a Kinova Jaco own issue
+*  \detail     This conversation is a Kinova Jaco issue
 *  \author     Sascha Kaden
 *  \param[in]  real angles
 *  \param[out] D-H angles
@@ -74,7 +120,7 @@ std::vector<Transform> Jaco::getJointTrafos(const VectorX &angles) const {
 */
 Vector6 Jaco::convertRealToDH(const Vector6 &realAngles) const {
     Vector6 dhAngles(realAngles);
-    //dhAngles[0] = -realAngles[0];
+    dhAngles[0] = -realAngles[0];
     dhAngles[1] -= util::halfPi();
     dhAngles[2] += util::halfPi();
     dhAngles[4] -= util::pi();

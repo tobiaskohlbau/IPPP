@@ -32,6 +32,8 @@ class Jaco : public SerialRobot {
   public:
     Jaco(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DofType> &dofTypes);
     std::vector<Transform> getJointTrafos(const VectorX &angles) const override;
+    virtual std::vector<Transform> getLinkTrafos(const VectorX &angles) const override;
+    virtual std::pair<std::vector<Transform>, Transform> getLinkAndToolTrafos(const VectorX &angles) const override;
 
   private:
     Vector6 convertRealToDH(const Vector6 &realAngles) const;

@@ -23,8 +23,8 @@ void simpleRRT() {
 
     Vector6 minRobotBound = util::Vecd(-370, -370, -370, -370, -370, -370);
     minRobotBound = util::toRad<6>(minRobotBound);
-    std::vector<DhParameter> dhParameters({DhParameter(util::pi() / 2, 0, 275.5), DhParameter(util::pi(), 410, 0),
-                                           DhParameter(util::pi() / 2, 0, -9.8), DhParameter(0.95993, 0, -249.18224),
+    std::vector<DhParameter> dhParameters({DhParameter(util::halfPi(), 0, 275.5), DhParameter(util::pi(), 410, 0),
+                                           DhParameter(util::halfPi(), 0, -9.8), DhParameter(0.95993, 0, -249.18224),
                                            DhParameter(0.95993, 0, -83.76448), DhParameter(util::pi(), 0, -210.58224)});
     std::string jaco = FLAGS_assetsDir + "/robotModels/Jaco/";
     std::vector<std::string> linkModelFiles = {jaco + "jaco_1.obj", jaco + "jaco_2.obj", jaco + "jaco_3.obj",

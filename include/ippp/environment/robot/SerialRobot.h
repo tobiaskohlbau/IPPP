@@ -37,8 +37,8 @@ class SerialRobot : public RobotBase {
 
     virtual Transform getTransformation(const VectorX &config) const;
     virtual std::vector<Transform> getJointTrafos(const VectorX &angles) const;
-    std::vector<Transform> getLinkTrafos(const VectorX &angles) const;
-    std::pair<std::vector<Transform>, Transform> getLinkAndToolTrafos(const VectorX &angles) const;
+    virtual std::vector<Transform> getLinkTrafos(const VectorX &angles) const;
+    virtual std::pair<std::vector<Transform>, Transform> getLinkAndToolTrafos(const VectorX &angles) const;
     Transform getTrafo(const DhParameter &dhParam, double q) const;
     Transform getTcp(const std::vector<Transform> &trafos) const;
     MatrixX calcJacobian(const VectorX &config) const;
