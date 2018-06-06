@@ -17,6 +17,8 @@ Vector2 startPoint(300, 300);
 Vector2 goalPoint(1800, 1500);
 Vector6 startSerial = util::Vecd(util::halfPi(), 0, 0, 0, 0, 0);
 Vector6 goalSerial = util::Vecd(-util::halfPi(), -util::halfPi(), 0, util::halfPi(), 0, 0);
+Vector7 startSerial = util::Vecd(util::halfPi(), 0, 0, 0, 0, 0, 0);
+Vector7 goalSerial = util::Vecd(-util::halfPi(), -util::halfPi(), 0, util::halfPi(), 0, 0, 0);
 
 ModuleConfigurator<2> getPointCreator(std::string seed, EvaluatorType evalType, size_t obstacleType) {
     const unsigned int dim = 2;
@@ -84,27 +86,84 @@ ModuleConfigurator<6> getSerialCreator(std::string seed, EvaluatorType evalType,
 }
 
 void planningThread() {
-    std::vector<std::string> seeds = {"234`r5fdsfda", "23r54wedf",  "23894rhwef",  "092yu4re",   "0923ujrpiofesd",
-                                      "02u9r3jes",    "09243rjpef", "23refdss;wf", "2-3r0wepoj", "-243refdsaf"};
-    for (auto& seed : seeds) {
+    std::vector<PlannerType> planners = {PlannerType::RRT, PlannerType::RRTStar, PlannerType::RRTStarConnect};
+
+    for (auto& plannerType : planners) {
+        // define evaluator
         EvaluatorType evalType = EvaluatorType::TreeConfigOrTime;
+        if (plannerType == PlannerType::RRTStarConnect)
+            evalType = EvaluatorType::TreeConnectOrTime;
 
-        for (size_t i = 0; i < 3; ++i) {
-            Stats::initializeCollectors();
-            auto creator = getPointCreator(seed, evalType, i);
-            auto planner = std::make_shared<RRTStar<2>>(creator.getEnvironment(), creator.getRRTOptions(40), creator.getGraph());
-            planner->computePath(startPoint, goalPoint, 100, 1);
-            planner->getPath();
-            ui::save("evalRRTPointPoint.json", Stats::serialize(), 4, true);
-        }
+        std::vector<std::string> seeds = {"234`r5fdsfda", "23r54wedf",  "23894rhwef",  "092yu4re",   "0923ujrpiofesd",
+                                          "02u9r3jes",    "09243rjpef", "23refdss;wf", "2-3r0wepoj", "-243refdsaf"};
+        for (auto& seed : seeds) {
+            for (size_t i = 0; i < 3; ++i) {
+                Stats::initializeCollectors();
+                auto ctr = getPointCreator(seed, evalType, i);
+                std::shared_ptr<Planner<2>> planner;
+                switch (plannerType) {
+                    case PlannerType::RRT:
+                        planner = std::make_shared<RRT<2>>(ctr.getEnvironment(), ctr.getRRTOptions(40), ctr.getGraph());
+                        break;
+                    case PlannerType::RRTStar:
+                        planner = std::make_shared<RRTStar<2>>(ctr.getEnvironment(), ctr.getRRTOptions(40), ctr.getGraph());
+                        break;
+                    case PlannerType::RRTStarConnect:
+                        planner = std::make_shared<RRTStarConnect<2>>(ctr.getEnvironment(), ctr.getRRTOptions(40), ctr.getGraph(),
+                                                                      ctr.getGraphB());
+                        break;
+                }
 
-        for (size_t i = 0; i < 3; ++i) {
-            Stats::initializeCollectors();
-            auto creator = getSerialCreator(seed, evalType, i);
-            auto planner = std::make_shared<RRTStar<6>>(creator.getEnvironment(), creator.getRRTOptions(util::toRad(90)), creator.getGraph());
-            planner->computePath(startSerial, goalSerial, 100, 1);
-            planner->getPath();
-            ui::save("evalRRTSerialPoint.json", Stats::serialize(), 4, true);
+                planner->computePath(startPoint, goalPoint, 100, 1);
+                planner->getPath();
+                ui::save(planner->getName() + "Point.json", Stats::serialize(), 4, true);
+            }
+
+            for (size_t i = 0; i < 3; ++i) {
+                Stats::initializeCollectors();
+                auto ctr = getSerialCreator(seed, evalType, i);
+                std::shared_ptr<Planner<6>> planner;
+                switch (plannerType) {
+                    case PlannerType::RRT:
+                        planner =
+                            std::make_shared<RRT<6>>(ctr.getEnvironment(), ctr.getRRTOptions(util::toRad(90)), ctr.getGraph());
+                        break;
+                    case PlannerType::RRTStar:
+                        planner = std::make_shared<RRTStar<6>>(ctr.getEnvironment(), ctr.getRRTOptions(util::toRad(90)),
+                                                               ctr.getGraph());
+                        break;
+                    case PlannerType::RRTStarConnect:
+                        planner = std::make_shared<RRTStarConnect<6>>(ctr.getEnvironment(), ctr.getRRTOptions(util::toRad(90)),
+                                                                      ctr.getGraph(), ctr.getGraphB());
+                        break;
+                }
+                planner->computePath(startSerial, goalSerial, 100, 1);
+                planner->getPath();
+                ui::save(planner->getName() + "Serial.json", Stats::serialize(), 4, true);
+            }
+
+            for (size_t i = 0; i < 3; ++i) {
+                Stats::initializeCollectors();
+                auto ctr = getIiwaCreator(seed, evalType, i);
+                std::shared_ptr<Planner<7>> planner;
+                switch (plannerType) {
+                    case PlannerType::RRT:
+                        planner =
+                            std::make_shared<RRT<7>>(ctr.getEnvironment(), ctr.getRRTOptions(util::toRad(90)), ctr.getGraph());
+                        break;
+                    case PlannerType::RRTStar:
+                        planner = std::make_shared<RRTStar<7>>(ctr.getEnvironment(), ctr.getRRTOptions(util::toRad(90)),
+                                                               ctr.getGraph());
+                        break;
+                    case PlannerType::RRTStarConnect:
+                        planner = std::make_shared<RRTStarConnect<7>>(ctr.getEnvironment(), ctr.getRRTOptions(util::toRad(90)),
+                                                                      ctr.getGraph(), ctr.getGraphB());
+                        break;
+                }
+                planner->computePath(startIiwa, goalIiwa, 100, 1);
+                planner->getPath();
+                ui::save(planner->getName() + "Serial.json", Stats::serialize(), 4, true);
+            }
         }
     }
 }

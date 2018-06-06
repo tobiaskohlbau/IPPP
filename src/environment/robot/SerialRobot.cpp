@@ -104,7 +104,7 @@ std::vector<Transform> SerialRobot::getLinkTrafos(const VectorX &angles) const {
     AsJoint = m_pose * m_baseOffset * jointTrafos[0];
     AsLink[0] = m_pose * m_baseOffset * Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitZ()) * m_linkOffsets[0];
     for (size_t i = 1; i < jointTrafos.size(); ++i) {
-        AsLink[i] = AsJoint * m_linkOffsets[i] * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ());
+        AsLink[i] = AsJoint * Eigen::AngleAxisd(angles[i], Eigen::Vector3d::UnitZ()) * m_linkOffsets[i];
         AsJoint = AsJoint * jointTrafos[i];
     }
 

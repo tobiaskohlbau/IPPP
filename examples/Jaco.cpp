@@ -19,7 +19,7 @@ void simpleRRT() {
     std::string objDir = FLAGS_assetsDir + "/spaces/3D/fairObjects/";
     envConfigurator.addObstacle(objDir + "base.obj");
     envConfigurator.addObstacle(objDir + "table.obj");
-    envConfigurator.addObstacle(objDir + "shelve.obj", util::Vecd(-850,0,0,0,0,0));
+    envConfigurator.addObstacle(objDir + "shelve.obj", util::Vecd(-850, 0, 0, 0, 0, 0));
 
     Vector6 minRobotBound = util::Vecd(-370, -370, -370, -370, -370, -370);
     minRobotBound = util::toRad<6>(minRobotBound);
@@ -47,22 +47,13 @@ void simpleRRT() {
     envConfigurator.saveConfig("jacoEnv.json");
     auto serialRobot = std::dynamic_pointer_cast<Jaco>(environment->getRobot());
 
-    // std::vector<Transform> transforms(6, Transform::Identity());
-    // ui::save("transforms.json", jsonSerializer::serialize(transforms));
-    // auto models = serialRobot->getLinkModels();
-    // std::vector<Transform> transforms = jsonSerializer::deserializeTransforms(ui::loadJson("transforms.json"));
-    // for (size_t i = 0; i < dim; ++i) {
-    //    std::cout << transforms[i].matrix() << std::endl;
-    //    models[i]->transformModel(transforms[i]);
-    //    cad::exportCad(cad::ExportFormat::OBJ, "jaco_" + std::to_string(i+1), models[i]->m_mesh);
-    //}
-
     // Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90);
     // Vector<dim> testConfig = util::Vecd(45, 90, 170, 30, 10, 120);
-    // Vector<dim> testConfig = util::Vecd(180, 180, 180, 180, 180, 180);
-    // testConfig = util::toRad<dim>(testConfig);
+    Vector<dim> testConfig = util::Vecd(180, 180, 180, 180, 180, 180);
+    testConfig = util::toRad<dim>(testConfig);
     // Vector<dim> testConfig = util::Vecd(0, util::halfPi(), -util::halfPi(), 0, util::pi(), -util::halfPi());
-    // serialRobot->saveMeshConfig(testConfig);
+    serialRobot->saveMeshConfig(testConfig);
+    return;
 
     double stepSize = 2;
     ModuleConfigurator<dim> creator;
@@ -74,26 +65,20 @@ void simpleRRT() {
     creator.setSamplingType(SamplingType::NearObstacle);
 
     RRTStarConnect<dim> planner(environment, creator.getRRTOptions(stepSize), creator.getGraph(), creator.getGraphB());
-    //Vector<dim> start = util::Vecd(180, 180, 180, 180, 180, 180);
-    //Vector<dim> goal = util::Vecd(-90, 90, 150, 30, 35, 114);
-    //start = util::toRad<dim>(start);
-    //goal = util::toRad<dim>(goal);
-    //bool connected = planner.computePath(start, goal, 6000, 24);
-
 
     auto configs = jsonSerializer::deserializeVectors<dim>(ui::loadJson("configs.json"));
-    for (auto &config : configs)
-        config=util::toRad<dim>(config);
-    std::vector<bool> results(configs.size()-1, false);
+    for (auto& config : configs)
+        config = util::toRad<dim>(config);
+    std::vector<bool> results(configs.size() - 1, false);
     std::vector<Vector6> path;
-    for (size_t i = 0; i < configs.size()-1; ++i) {
-        results[i] = planner.computePath(configs[i], configs[i+1], 6000, 24);
-        //serialRobot->saveMeshConfig(configs[i+1]);
+    for (size_t i = 0; i < configs.size() - 1; ++i) {
+        results[i] = planner.computePath(configs[i], configs[i + 1], 6000, 24);
+        // serialRobot->saveMeshConfig(configs[i+1]);
         if (results[i]) {
             std::cout << "Init and goal could be connected!" << std::endl;
-            auto tmpPath = planner.getPath(0.001, 0.001);
-            auto json = jsonSerializer::serialize<dim>(tmpPath);
+            auto json = jsonSerializer::serialize<dim>(planner.getPath(1, util::toRad(5)));
             ui::save(std::to_string(i) + ".json", json);
+            auto tmpPath = planner.getPath(0.001, 0.001);
             path.insert(path.end(), tmpPath.begin(), tmpPath.end());
         }
     }
@@ -106,9 +91,9 @@ int main(int argc, char** argv) {
     Logging::setLogLevel(LogLevel::trace);
 
     simpleRRT();
-//    Stats::writeData(std::cout);
-//    std::string string;
-//    std::cin >> string;
+    //    Stats::writeData(std::cout);
+    //    std::string string;
+    //    std::cin >> string;
 
     return 0;
 }

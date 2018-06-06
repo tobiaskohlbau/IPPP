@@ -86,7 +86,7 @@ enum class SamplingType { Berenson, Bridge, FOR, Gaussian, GaussianDist, MedialA
 enum class TrajectoryPlannerType { Linear, RotateAtS };
 enum class ValidityCheckerType { AABB, AlwaysValid, Dim2, FclMobile, FclSerial, PQP, BerensonConstraint, FclSerialAndConstraint };
 
-enum class PlannerType { AdaptedRRT, CiBRRT, EST, RRT, RRTStar, PRM, SRT };
+enum class PlannerType { AdaptedRRT, CiBRRT, EST, RRT, RRTStar, RRTStarConnect, PRM, SRT };
 
 // robot enums
 enum class RobotCategory { serial, mobile };

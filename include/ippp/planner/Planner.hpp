@@ -188,6 +188,7 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
     m_trajectory->setResolutions(posRes, oriRes);
 
     auto smoothedPath = util::calcConfigPath<dim>(smoothedNodes, *m_trajectory);
+    m_pathCollector->setConfigCounts(1, smoothedPath.size());
 
     // set the resolution again to the planner resolution
     m_trajectory->setResolutions(plannerRes);

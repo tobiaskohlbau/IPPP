@@ -37,6 +37,7 @@ class StatsPathCollector : public StatsCollector {
     StatsPathCollector(const std::string &name);
 
     void setNodeCounts(size_t nodeCount, size_t smoothedNodeCount);
+    void setConfigCounts(size_t numConfigs, size_t numSmoothedConfigs);
     void setLengths(double length, double smoothedLength);
     void startModificationTimer();
     void stopModificationTimer();
@@ -48,8 +49,10 @@ class StatsPathCollector : public StatsCollector {
   private:
     size_t m_nodeCount = 0;
     size_t m_smoothedNodeCount = 0;
-    size_t m_length = 0;
-    size_t m_smoothedLength = 0;
+    size_t m_numConfigs = 0;
+    size_t m_numSmoothedConfigs = 0;
+    double m_length = 0;
+    double m_smoothedLength = 0;
     std::chrono::system_clock::time_point m_startModification;
     std::chrono::system_clock::time_point m_stopModification;
     std::mutex m_mutex;
