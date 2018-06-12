@@ -50,15 +50,17 @@ static Vector6 serializePosition(const std::string &data, double scale = 1) {
 *  \date       2018-04-19
 */
 template <unsigned int dim>
-std::string serialize(const std::vector<Vector<dim>> &configs, double scale = 1) {
+std::string serialize(const std::vector<Vector<dim>> &configs, double scale = 1, bool writeHeader = true) {
     if (configs.empty())
         return std::string();
 
     std::stringstream stream;
 
-    //stream << "Dimension: " << dim << std::endl;
-    stream << /*"NumberConfigurations: " <<*/ configs.size() << std::endl;
-    //stream << std::endl;
+    if (writeHeader) {
+        stream << "Dimension: " << dim << std::endl;
+        stream << "NumberConfigurations: " << configs.size() << std::endl;
+        stream << std::endl;
+    }
 
     std::vector<std::vector<double>> data;
     for (const auto &config : configs) {

@@ -22,7 +22,7 @@ Vector2 goalPoint(1800, 1500);
 Vector6 startSerial = util::Vecd(util::halfPi(), 0, 0, 0, 0, 0);
 Vector6 goalSerial = util::Vecd(-util::halfPi(), -util::halfPi(), 0, util::halfPi(), 0, 0);
 
-ModuleConfigurator<2> getPointCreator(std::string seed, EvaluatorType evalType, size_t obstacleType) {
+ModuleConfigurator<2> getPointCreator(std::string seed, EvaluatorType evalType, SamplerType samplerType, size_t obstacleType) {
     const unsigned int dim = 2;
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(workspace);
@@ -46,13 +46,13 @@ ModuleConfigurator<2> getPointCreator(std::string seed, EvaluatorType evalType, 
     creator.setGraphSortCount(5000);
     creator.setEvaluatorType(evalType);
     creator.setEvaluatorProperties(40, 45);
-    creator.setSamplerType(SamplerType::UniformBiased);
+    creator.setSamplerType(samplerType);
     creator.setSamplingType(SamplingType::Straight);
     creator.setSamplerProperties(seed, 1);
     return creator;
 }
 
-ModuleConfigurator<6> getSerialCreator(std::string seed, EvaluatorType evalType, size_t obstacleType) {
+ModuleConfigurator<6> getSerialCreator(std::string seed, EvaluatorType evalType, SamplerType samplerType, size_t obstacleType) {
     const unsigned int dim = 6;
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(workspace);
@@ -81,13 +81,13 @@ ModuleConfigurator<6> getSerialCreator(std::string seed, EvaluatorType evalType,
     creator.setGraphSortCount(5000);
     creator.setEvaluatorType(evalType);
     creator.setEvaluatorProperties(util::toRad(45), 45);
-    creator.setSamplerType(SamplerType::UniformBiased);
+    creator.setSamplerType(samplerType);
     creator.setSamplingType(SamplingType::Straight);
     creator.setSamplerProperties(seed, 1);
     return creator;
 }
 
-ModuleConfigurator<7> getIiwaCreator(std::string seed, EvaluatorType evalType, size_t obstacleType) {
+ModuleConfigurator<7> getIiwaCreator(std::string seed, EvaluatorType evalType, SamplerType samplerType, size_t obstacleType) {
     const unsigned int dim = 7;
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(iiwaWorkspace);
@@ -127,101 +127,72 @@ ModuleConfigurator<7> getIiwaCreator(std::string seed, EvaluatorType evalType, s
     creator.setGraphSortCount(5000);
     creator.setEvaluatorType(evalType);
     creator.setEvaluatorProperties(util::toRad(60), 45);
-    creator.setSamplerType(SamplerType::UniformBiased);
+    creator.setSamplerType(samplerType);
     creator.setSamplingType(SamplingType::Straight);
     creator.setSamplerProperties(seed, 1);
     return creator;
 }
 
 void planningThread() {
+    std::vector<SamplerType> samplerTypes = {SamplerType::Uniform, SamplerType::UniformBiased};
     std::vector<PlannerType> planners = {PlannerType::RRT, PlannerType::RRTStar, PlannerType::RRTStarConnect};
 
     for (auto& plannerType : planners) {
-        // define evaluator
         EvaluatorType evalType = EvaluatorType::TreeConfigOrTime;
         if (plannerType == PlannerType::RRTStarConnect)
             evalType = EvaluatorType::TreeConnectOrTime;
 
-        std::vector<std::string> seeds = {"234`r5fdsfda", "23r54wedf",  "23894rhwef",  "092yu4re",   "0923ujrpiofesd",
-                                          "02u9r3jes",    "09243rjpef", "23refdss;wf", "2-3r0wepoj", "-243refdsaf"};
-        for (auto& seed : seeds) {
-            for (size_t i = 0; i < 3; ++i) {
-                // point plane robot
-                Stats::initializeCollectors();
-                auto pCtr = getPointCreator(seed, evalType, i);
-                std::shared_ptr<Planner<2>> pPlanner;
-                switch (plannerType) {
-                    case PlannerType::RRT:
-                        pPlanner = std::make_shared<RRT<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40), pCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStar:
-                        pPlanner = std::make_shared<RRTStar<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40), pCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStarConnect:
-                        pPlanner = std::make_shared<RRTStarConnect<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40),
-                                                                       pCtr.getGraph(), pCtr.getGraphB());
-                        break;
-                }
+        for (auto& samplerType : samplerTypes) {
+            // define evaluator
+            std::string samplerName = "Uniform";
+            if (samplerType == SamplerType::UniformBiased)
+                samplerName = "UniformBiased";
 
-                pPlanner->computePath(startPoint, goalPoint, 100, 1);
-                pPlanner->getPath();
-                ui::save(pPlanner->getName() + "Point.json", Stats::serialize(), 4, true);
+            std::vector<std::string> seeds = {"234`r5fdsfda", "23r54wedf",  "23894rhwef",  "092yu4re",   "0923ujrpiofesd",
+                                              "02u9r3jes",    "09243rjpef", "23refdss;wf", "2-3r0wepoj", "-243refdsaf"};
+            for (auto& seed : seeds) {
+                for (size_t i = 0; i < 3; ++i) {
+                    // point plane robot
+                    Stats::initializeCollectors();
+                    auto pCtr = getPointCreator(seed, evalType, samplerType, i);
+                    auto pPlanner = std::make_shared<RRTStar<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40), pCtr.getGraph());
 
-                // serial plane robot
-                Stats::initializeCollectors();
-                auto sCtr = getSerialCreator(seed, evalType, i);
-                std::shared_ptr<Planner<6>> sPlanner;
-                switch (plannerType) {
-                    case PlannerType::RRT:
-                        sPlanner =
-                            std::make_shared<RRT<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)), sCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStar:
-                        sPlanner = std::make_shared<RRTStar<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)),
-                                                                sCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStarConnect:
-                        sPlanner = std::make_shared<RRTStarConnect<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)),
-                                                                       sCtr.getGraph(), sCtr.getGraphB());
-                        break;
-                }
-                sPlanner->computePath(startSerial, goalSerial, 100, 1);
-                sPlanner->getPath();
-                ui::save(sPlanner->getName() + "Serial.json", Stats::serialize(), 4, true);
+                    pPlanner->computePath(startPoint, goalPoint, 100, 1);
+                    pPlanner->getPath();
+                    ui::save(pPlanner->getName() + samplerName + "Point.json", Stats::serialize(), 4, true);
 
-                // serial iiwa robot
-                Vector<7> start, goal;
-                if (i == 0) {
-                    start = util::toRad<7>(util::Vecd(-46, 54, 9, -81, 125, 48, 130));
-                    goal = util::toRad<7>(util::Vecd(55, 46, 9, -53, 103, -25, 20));
-                } else if (i == 1) {
-                    start = util::toRad<7>(util::Vecd(-46, 54, 9, -81, 125, 48, 130));
-                    goal = util::toRad<7>(util::Vecd(-75, 33, 83, -60, -25, 23, 68));
-                } else {
-                    start = util::toRad<7>(util::Vecd(-59, 64, 74, -116, -32, 96, 68));
-                    goal = util::toRad<7>(util::Vecd(60, 71, 62, -112, -153, -105, -44));
-                }
+                    // serial plane robot
+                    Stats::initializeCollectors();
+                    auto sCtr = getSerialCreator(seed, evalType, samplerType, i);
+                    auto sPlanner =
+                        std::make_shared<RRTStar<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)), sCtr.getGraph());
 
-                Stats::initializeCollectors();
-                auto iCtr = getIiwaCreator(seed, evalType, i);
-                std::shared_ptr<Planner<7>> iPlanner;
-                switch (plannerType) {
-                    case PlannerType::RRT:
-                        iPlanner =
-                            std::make_shared<RRT<7>>(iCtr.getEnvironment(), iCtr.getRRTOptions(util::toRad(90)), iCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStar:
-                        iPlanner = std::make_shared<RRTStar<7>>(iCtr.getEnvironment(), iCtr.getRRTOptions(util::toRad(90)),
-                                                                iCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStarConnect:
-                        iPlanner = std::make_shared<RRTStarConnect<7>>(iCtr.getEnvironment(), iCtr.getRRTOptions(util::toRad(90)),
-                                                                       iCtr.getGraph(), iCtr.getGraphB());
-                        break;
+                    sPlanner->computePath(startSerial, goalSerial, 100, 1);
+                    sPlanner->getPath();
+                    ui::save(sPlanner->getName() + samplerName + "Serial.json", Stats::serialize(), 4, true);
+
+                    // serial iiwa robot
+                    Vector<7> start, goal;
+                    if (i == 0) {
+                        start = util::toRad<7>(util::Vecd(-46, 54, 9, -81, 125, 48, 130));
+                        goal = util::toRad<7>(util::Vecd(55, 46, 9, -53, 103, -25, 20));
+                    } else if (i == 1) {
+                        start = util::toRad<7>(util::Vecd(-46, 54, 9, -81, 125, 48, 130));
+                        goal = util::toRad<7>(util::Vecd(-75, 33, 83, -60, -25, 23, 68));
+                    } else {
+                        start = util::toRad<7>(util::Vecd(-59, 64, 74, -116, -32, 96, 68));
+                        goal = util::toRad<7>(util::Vecd(60, 71, 62, -112, -153, -105, -44));
+                    }
+
+                    Stats::initializeCollectors();
+                    auto iCtr = getIiwaCreator(seed, evalType, samplerType, i);
+                    auto iPlanner =
+                        std::make_shared<RRTStar<7>>(iCtr.getEnvironment(), iCtr.getRRTOptions(util::toRad(90)), iCtr.getGraph());
+
+                    iPlanner->computePath(start, goal, 600, 24);
+                    iPlanner->getPath();
+                    ui::save(iPlanner->getName() + samplerName + "Iiwa.json", Stats::serialize(), 4, true);
                 }
-                iPlanner->computePath(start, goal, 600, 24);
-                iPlanner->getPath();
-                ui::save(iPlanner->getName() + "Iiwa.json", Stats::serialize(), 4, true);
             }
         }
     }

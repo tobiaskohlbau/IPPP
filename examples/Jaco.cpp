@@ -37,9 +37,11 @@ void simpleRRT() {
     envConfigurator.setRobotBaseProperties(dim, dofTypes, std::make_pair(minRobotBound, -minRobotBound));
     std::vector<Vector6> linkOffsets(6);
     linkOffsets[0] = util::Vecd(0, 0, 160, 0, 0, 0);
-    linkOffsets[3] = util::Vecd(-3, 4, -207.3, 0, 0, 0);
+    //linkOffsets[3] = util::Vecd(-3, 4, -207.3, 0, 0, 0);
+    linkOffsets[3] = util::Vecd(0, 0, -207.3, 0, 0, 0);
     linkOffsets[4] = util::Vecd(0, 0, -37.05, 0, 0, 0);
-    linkOffsets[5] = util::Vecd(0, 12, -37.05, 0, 0, 0);
+    //linkOffsets[5] = util::Vecd(0, 12, -37.05, 0, 0, 0);
+    linkOffsets[5] = util::Vecd(0, 0, -37.05, 0, 0, 0);
     auto linkTransforms = util::toTransform(linkOffsets);
     envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms);
 
@@ -49,11 +51,10 @@ void simpleRRT() {
 
     // Vector<dim> testConfig = util::Vecd(-90, 90, 170, 30, 90, 90);
     // Vector<dim> testConfig = util::Vecd(45, 90, 170, 30, 10, 120);
-    Vector<dim> testConfig = util::Vecd(180, 180, 180, 180, 180, 180);
-    testConfig = util::toRad<dim>(testConfig);
+    //Vector<dim> testConfig = util::Vecd(180, 180, 180, 180, 180, 180);
+    //testConfig = util::toRad<dim>(testConfig);
     // Vector<dim> testConfig = util::Vecd(0, util::halfPi(), -util::halfPi(), 0, util::pi(), -util::halfPi());
-    serialRobot->saveMeshConfig(testConfig);
-    return;
+    //serialRobot->saveMeshConfig(testConfig);
 
     double stepSize = 2;
     ModuleConfigurator<dim> creator;
@@ -76,8 +77,8 @@ void simpleRRT() {
         // serialRobot->saveMeshConfig(configs[i+1]);
         if (results[i]) {
             std::cout << "Init and goal could be connected!" << std::endl;
-            auto json = jsonSerializer::serialize<dim>(planner.getPath(1, util::toRad(5)));
-            ui::save(std::to_string(i) + ".json", json);
+            auto stringPath = txtSerializer::serialize<dim>(planner.getPath(1, util::toRad(5)), 1, false);
+            ui::save(std::to_string(i) + ".json", stringPath);
             auto tmpPath = planner.getPath(0.001, 0.001);
             path.insert(path.end(), tmpPath.begin(), tmpPath.end());
         }
