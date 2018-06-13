@@ -104,6 +104,8 @@ bool TreeConnectEvaluator<dim>::evaluate() {
 
 template <unsigned int dim>
 void TreeConnectEvaluator<dim>::initialize() {
+    Logging::debug("Initialize", this);
+
     m_lastIndexA = 0;
     m_lastIndexB = 0;
     m_useA = true;

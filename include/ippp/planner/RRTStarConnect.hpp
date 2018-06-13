@@ -140,12 +140,13 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
 template <unsigned int dim>
 bool RRTStarConnect<dim>::initNodes(const Vector<dim> &start, const Vector<dim> &goal) {
     m_evaluator->initialize();
+
     if (m_initNode && m_goalNode) {
         if (start == m_initNode->getValues() && goal == m_goalNode->getValues()) {
             Logging::debug("Equal start and goal node, tree will be expanded", this);
             return true;
         } else {
-            Logging::info("New trees will be created", this);
+            Logging::info("Trees will be cleared", this);
             m_graph->clear();
             m_graphB->clear();
         }

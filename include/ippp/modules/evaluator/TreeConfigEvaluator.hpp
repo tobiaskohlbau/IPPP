@@ -118,6 +118,8 @@ bool TreeConfigEvaluator<dim>::evaluate() {
 
 template <unsigned int dim>
 void TreeConfigEvaluator<dim>::initialize() {
+    Logging::debug("Initialize", this);
+
     m_lastNodeIndex = 0;
     m_validTargets = std::vector<bool>(m_targetConfigs.size(), false);
 }

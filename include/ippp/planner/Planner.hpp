@@ -205,6 +205,8 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
 */
 template <unsigned int dim>
 void Planner<dim>::initParams(const Vector<dim> &start, const Vector<dim> &goal) {
+    m_pathPlanned = false;
+
     if (util::empty<dim>(start)) {
         Logging::error("Empty start configuration at param initialization!", this);
         return;

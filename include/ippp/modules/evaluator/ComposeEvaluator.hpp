@@ -34,6 +34,7 @@ class ComposeEvaluator : public Evaluator<dim> {
     ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type);
 
     bool evaluate();
+    void initialize() override;
     virtual void setConfigs(const std::vector<Vector<dim>> &targets) override;
     virtual void setPoses(const std::vector<Vector6> &targets) override;
 
@@ -74,6 +75,13 @@ bool ComposeEvaluator<dim>::evaluate() {
 
         return false;
     }
+}
+
+template <unsigned int dim>
+void ComposeEvaluator<dim>::initialize() {
+    Logging::debug("Initialize", this);
+    for (auto &evaluator : m_evaluators)
+        evaluator->initialize();
 }
 
 /*!

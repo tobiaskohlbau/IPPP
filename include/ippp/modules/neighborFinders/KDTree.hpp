@@ -129,15 +129,12 @@ void KDTree<dim, T>::rebaseSorted(std::vector<T> &nodes) {
     auto oldRoot = m_root;
     m_root = root;
     removeNodes(oldRoot);
-    oldRoot = nullptr;
 }
 
 template <unsigned int dim, class T>
 void KDTree<dim, T>::clear() {
-    if (m_root != nullptr) {
+    if (m_root != nullptr)
         removeNodes(m_root);
-        m_root = nullptr;
-    }
 }
 
 /*!
@@ -231,6 +228,7 @@ void KDTree<dim, T>::removeNodes(std::shared_ptr<KDNode<dim, T>> node) {
         removeNodes(node->right);
         node->right = nullptr;
     }
+    node = nullptr;
 };
 
 /*!

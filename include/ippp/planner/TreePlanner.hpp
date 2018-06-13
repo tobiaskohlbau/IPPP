@@ -202,6 +202,7 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
         return false;
     }
 
+    m_evaluator->initialize();
     m_initNode = std::make_shared<Node<dim>>(start);
     m_graph->addNode(m_initNode);
     return true;

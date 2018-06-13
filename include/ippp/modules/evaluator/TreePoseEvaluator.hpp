@@ -44,6 +44,7 @@ class TreePoseEvaluator : public Evaluator<dim> {
                       const std::pair<Vector6, Vector6> &C);
 
     bool evaluate();
+    void initialize() override;
     void setPoses(const std::vector<Vector6> &targets) override;
 
   protected:
@@ -105,6 +106,14 @@ bool TreePoseEvaluator<dim>::evaluate() {
     return true;
 }
 
+template <unsigned int dim>
+void TreePoseEvaluator<dim>::initialize() {
+    Logging::debug("Initialize", this);
+
+    m_validTargets = std::vector<bool>(m_targetPoses.size(), false);
+    m_lastNodeIndex = 0;
+}
+
 /*!
 *  \brief      Set target poses for evaluation.
 *  \author     Sascha Kaden
@@ -125,8 +134,8 @@ void TreePoseEvaluator<dim>::setPoses(const std::vector<Vector6> &targets) {
         }
     }
 
-    m_validTargets = std::vector<bool>(targets.size(), false);
     m_targetPoses = targets;
+    initialize();
 }
 
 } /* namespace ippp */

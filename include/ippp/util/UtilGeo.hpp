@@ -103,6 +103,38 @@ Vector<dim> toDeg(Vector<dim> rad) {
     return rad;
 }
 
+/*!
+*  \brief      Convert vector of deg to rad
+*  \author     Sascha Kaden
+*  \param[in]  vector of deg
+*  \param[out] vector of rad
+*  \date       2016-07-07
+*/
+template <unsigned int dim>
+std::vector<Vector<dim>> toRad(const std::vector<Vector<dim>> &degs) {
+    std::vector<Vector<dim>> rads(degs.size());
+    size_t i = 0;
+    for (auto &deg = degs.begin(); deg != degs.end(); ++deg, ++i)
+        rads[i] = toRad<dim>(*deg);
+    return rads;
+}
+
+/*!
+*  \brief      Convert vector of rad to deg
+*  \author     Sascha Kaden
+*  \param[in]  vector of rad
+*  \param[out] vector of deg
+*  \date       2016-07-07
+*/
+template <unsigned int dim>
+std::vector<Vector<dim>> toDeg(const std::vector<Vector<dim>> &rads) {
+    std::vector<Vector<dim>> degs(rads.size());
+    size_t i = 0;
+    for (auto &rad = rads.begin(); rad != rads.end(); ++rad, ++i)
+        degs[i] = toDeg<dim>(*rad);
+    return degs;
+}
+
 } /* namespace util */
 } /* namespace ippp */
 

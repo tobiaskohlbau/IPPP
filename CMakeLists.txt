@@ -110,6 +110,7 @@ add_library(${PROJECT_NAME}
     src/ui/EnvironmentConfigurator.cpp
     src/ui/FileWriterReader.cpp
     src/ui/JsonSerializer.cpp
+    src/ui/TxtSerializer.cpp
 )
 
 target_compile_features(${PROJECT_NAME}

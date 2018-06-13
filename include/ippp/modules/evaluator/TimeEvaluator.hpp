@@ -36,6 +36,7 @@ class TimeEvaluator : public Evaluator<dim> {
     TimeEvaluator(size_t maxDuration = 30);
 
     bool evaluate();
+    void initialize() override;
 
   protected:
     size_t m_maxDuration;
@@ -75,6 +76,12 @@ bool TimeEvaluator<dim>::evaluate() {
     } else {
         return false;
     }
+}
+
+template <unsigned int dim>
+void TimeEvaluator<dim>::initialize() {
+    Logging::debug("Initialize", this);
+    m_started = false;
 }
 
 } /* namespace ippp */
