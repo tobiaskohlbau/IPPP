@@ -102,7 +102,7 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
         return false;
 
     if (!m_validityChecker->check(goal)) {
-        Logging::error("Goal configuration is not valid", this);
+        Logging::error("Goal configuration isn't valid", this);
         return false;
     }
 
@@ -110,7 +110,7 @@ bool TreePlanner<dim>::computePath(const Vector<dim> start, const Vector<dim> go
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
-        Logging::info("Iteration: " + std::to_string(loopCount++), this);
+        Logging::debug("Iteration: " + std::to_string(loopCount++), this);
         this->expand(numNodes, numThreads);
     }
 
@@ -148,7 +148,7 @@ bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const Ve
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
-        Logging::info("Iteration: " + std::to_string(loopCount++), this);
+        Logging::debug("Iteration: " + std::to_string(loopCount++), this);
         this->expand(numNodes, numThreads);
     }
 
@@ -192,11 +192,12 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
             Logging::debug("Equal start node, tree will be expanded", this);
             return true;
         } else {
-            Logging::info("New start node, new tree will be created", this);
+            Logging::info("New start configuration, new tree will be created", this);
             m_graph = m_graph->createEmptyGraphClone();
         }
     }
 
+    m_pathPlanned = false;
     if (!m_validityChecker->check(start)) {
         Logging::warning("Init Node could not be connected", this);
         return false;
@@ -248,7 +249,7 @@ std::vector<Vector<dim>> TreePlanner<dim>::getPath(double posRes, double oriRes)
     std::vector<std::shared_ptr<Node<dim>>> nodes = getPathNodes();
     path = this->getPathFromNodes(nodes, posRes, oriRes);
 
-    Logging::info("Path has: " + std::to_string(path.size()) + " points", this);
+    Logging::info("Path has: " + std::to_string(path.size()) + " configurations", this);
     return path;
 }
 

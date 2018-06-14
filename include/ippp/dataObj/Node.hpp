@@ -76,7 +76,7 @@ class Node {
 
   private:
     Vector<dim> m_config; /*!< configuration of the Node */
-    double m_cost = -1;   /*!< cost parameter */
+    double m_cost = 0;    /*!< cost parameter */
 
     std::pair<std::shared_ptr<Node<dim>>, double> m_parent =
         std::make_pair(nullptr, 0); /*!< parent edge (pointer to the node + edge cost) */

@@ -85,7 +85,7 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
         initParams(tmpStart, tmpGoal);
-        Logging::info("Iteration: " + std::to_string(loopCount++), this);
+        Logging::debug("Iteration: " + std::to_string(loopCount++), this);
         this->expand(numNodes, numThreads);
         std::swap(m_graph, m_graphB);
         std::swap(tmpStart, tmpGoal);
@@ -99,7 +99,7 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
     std::pair<std::shared_ptr<Node<dim>>, std::shared_ptr<Node<dim>>> nodes =
         util::findGraphConnection(*m_graph, *m_graphB, *m_trajectory, *m_validityChecker, m_stepSize);
     if (nodes.first == nullptr) {
-        Logging::warning("Found no connection between graphs!", this);
+        Logging::warning("Found no connection between trees!", this);
         return false;
     }
 
@@ -143,7 +143,7 @@ bool RRTStarConnect<dim>::initNodes(const Vector<dim> &start, const Vector<dim> 
 
     if (m_initNode && m_goalNode) {
         if (start == m_initNode->getValues() && goal == m_goalNode->getValues()) {
-            Logging::debug("Equal start and goal node, tree will be expanded", this);
+            Logging::debug("Equal start and goal configuration, tree will be expanded", this);
             return true;
         } else {
             Logging::info("Trees will be cleared", this);
@@ -153,12 +153,12 @@ bool RRTStarConnect<dim>::initNodes(const Vector<dim> &start, const Vector<dim> 
     }
 
     if (!m_validityChecker->check(start)) {
-        Logging::warning("Init Node could not be connected", this);
+        Logging::warning("Init configuration could not be connected", this);
         return false;
     }
 
     if (!m_validityChecker->check(goal)) {
-        Logging::warning("Goal Node could not be connected", this);
+        Logging::warning("Goal configuration could not be connected", this);
         return false;
     }
 

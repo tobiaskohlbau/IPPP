@@ -114,7 +114,7 @@ template <unsigned int dim>
 std::vector<Vector<dim>> toRad(const std::vector<Vector<dim>> &degs) {
     std::vector<Vector<dim>> rads(degs.size());
     size_t i = 0;
-    for (auto &deg = degs.begin(); deg != degs.end(); ++deg, ++i)
+    for (auto deg = degs.begin(); deg != degs.end(); ++deg, ++i)
         rads[i] = toRad<dim>(*deg);
     return rads;
 }
@@ -130,7 +130,7 @@ template <unsigned int dim>
 std::vector<Vector<dim>> toDeg(const std::vector<Vector<dim>> &rads) {
     std::vector<Vector<dim>> degs(rads.size());
     size_t i = 0;
-    for (auto &rad = rads.begin(); rad != rads.end(); ++rad, ++i)
+    for (auto rad = rads.begin(); rad != rads.end(); ++rad, ++i)
         degs[i] = toDeg<dim>(*rad);
     return degs;
 }

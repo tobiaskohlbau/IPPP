@@ -144,7 +144,7 @@ void RRT<dim>::computeTreeThread(size_t nbOfNodes) {
 template <unsigned int dim>
 bool RRT<dim>::connectGoalNode(Vector<dim> goal) {
     if (!m_validityChecker->check(goal)) {
-        Logging::warning("Goal Node in collision", this);
+        Logging::warning("Goal configuration isn't valid", this);
         return false;
     }
 

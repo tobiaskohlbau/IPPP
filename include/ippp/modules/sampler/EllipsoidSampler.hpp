@@ -37,14 +37,12 @@ class EllipsoidSampler : public Sampler<dim> {
     EllipsoidSampler(const std::shared_ptr<Environment> &environment, const std::string &seed = "");
     Vector<dim> getSample() override;
 
-    void setParams(const Vector<dim> &start, const Vector<dim> &goal, double cMax);
+    void setParams(const Vector<dim> &start, const Vector<dim> &goal, double cMax, const DistanceMetric<dim> &metric);
 
   private:
     std::vector<std::uniform_real_distribution<double>> m_distUniform;
-    Vector<dim> m_start, m_goal, m_centre;
-    double m_cMin, m_cMax;
-    Matrix<dim> m_C, m_L, m_CL;
-    L2Metric<dim> m_metric;
+    Vector<dim> m_centre;
+    Matrix<dim> m_CL;
 
     using Sampler<dim>::m_robotBoundary;
     using Sampler<dim>::m_generator;
@@ -59,7 +57,7 @@ class EllipsoidSampler : public Sampler<dim> {
 */
 template <unsigned int dim>
 EllipsoidSampler<dim>::EllipsoidSampler(const std::shared_ptr<Environment> &environment, const std::string &seed)
-    : Sampler<dim>("SamplerUniform", environment, seed), m_CL(Matrix<dim>::Ones()) {
+    : Sampler<dim>("EllipsoidSampler", environment, seed), m_CL(Matrix<dim>::Ones()) {
     for (unsigned int i = 0; i < dim; ++i) {
         std::uniform_real_distribution<double> dist(-1, 1);
         m_distUniform.push_back(dist);
@@ -79,49 +77,37 @@ Vector<dim> EllipsoidSampler<dim>::getSample() {
     do {
         for (unsigned int i = 0; i < dim; ++i)
             config[i] = m_distUniform[i](m_generator);
-    } while (config.squaredNorm() > 1);
+    } while (config.squaredNorm() > 1);    // check that config is inside ball
 
-    // check that config is inside ball
-
-    // check that config is inside ellipsoid
-
-    Vector<dim> tmp = m_CL * config;
-    Vector<dim> result = m_centre + tmp;
-    return result;
-
-    // return config;
+    return m_centre + m_CL * config;
 }
 
 template <unsigned int dim>
-void EllipsoidSampler<dim>::setParams(const Vector<dim> &start, const Vector<dim> &goal, double cMax) {
-    m_start = start;
-    m_goal = goal;
-    m_cMax = cMax;
+void EllipsoidSampler<dim>::setParams(const Vector<dim> &start, const Vector<dim> &goal, double cMax,
+                                      const DistanceMetric<dim> &metric) {
+    double cMin = metric.calcDist(start, goal);
+    m_centre = (start + goal) / 2;
 
-    m_cMin = m_metric.calcDist(start, goal);
-    m_centre = (m_start + m_goal) / 2;
-
-    Vector<dim> a1 = (m_goal - m_start) / m_cMin;
-    Vector<dim> firstColoumIdentity = Vector<dim>::Zero();
-    firstColoumIdentity[0] = 1;
-    Matrix<dim> M = a1 * firstColoumIdentity.transpose();
+    Vector<dim> a1 = (goal - start) / cMin;
+    Vector<dim> firstColumnIdentity = Vector<dim>::Zero();
+    firstColumnIdentity[0] = 1;
+    Matrix<dim> M = a1 * firstColumnIdentity.transpose();
     Eigen::JacobiSVD<Matrix<dim>> svd(M, Eigen::ComputeFullU | Eigen::ComputeFullV);
     Vector<dim> ones = Vector<dim>::Constant(1);
     ones[dim - 2] = svd.matrixU().determinant();
     ones[dim - 1] = svd.matrixV().determinant();
-    
-    m_C = svd.matrixU() * ones.asDiagonal() * svd.matrixV();
 
-    Vector<dim> r = Vector<dim>::Constant((std::sqrt((m_cMax * m_cMax) - (m_cMin * m_cMin))) / 2);
+    Matrix<dim> C = svd.matrixU() * ones.asDiagonal() * svd.matrixV();
+
+    Vector<dim> r = Vector<dim>::Constant((std::sqrt((cMax * cMax) - (cMin * cMin))) / 2);
     if (std::isnan(r[1])) {
         Logging::error("Wrong maximum path value", this);
         return;
     }
+    r[0] = cMax / 2;
+    Matrix<dim> L = r.asDiagonal();
 
-    r[0] = m_cMax / 2;
-    m_L = r.asDiagonal();
-
-    m_CL = m_C * m_L;
+    m_CL = C * L;
 }
 
 } /* namespace ippp */

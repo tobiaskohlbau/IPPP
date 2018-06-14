@@ -59,7 +59,7 @@ class Planner : public Identifier {
     virtual bool computePathToPose(const Vector<dim> startConfig, const std::vector<Vector6> pathPoses,
                                    const std::pair<Vector6, Vector6> &C, size_t numNodes, size_t numThreads = 1) = 0;
     virtual bool expand(size_t numNode, size_t numThreads = 1) = 0;
-    virtual bool optimize(size_t numNode, size_t numThreads = 1);
+    virtual bool optimize(size_t numIterations, size_t numNode, size_t numThreads = 1);
 
     virtual std::vector<Vector<dim>> getPath(double posRes = 1, double oriRes = 0.1) = 0;
     virtual std::vector<std::shared_ptr<Node<dim>>> getPathNodes() = 0;
@@ -136,7 +136,7 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
 }
 
 template <unsigned int dim>
-bool Planner<dim>::optimize(size_t numNodes, size_t numThreads) {
+bool Planner<dim>::optimize(size_t numIterations, size_t numNodes, size_t numThreads) {
     Logging::warning("No optimization implemented!", this);
     return true;
 }
@@ -208,7 +208,7 @@ void Planner<dim>::initParams(const Vector<dim> &start, const Vector<dim> &goal)
     m_pathPlanned = false;
 
     if (util::empty<dim>(start)) {
-        Logging::error("Empty start configuration at param initialization!", this);
+        Logging::error("Empty start configuration at parameter initialization!", this);
         return;
     }
     auto sampler = m_sampling->getSampler();

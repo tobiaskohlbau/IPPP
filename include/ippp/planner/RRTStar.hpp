@@ -37,7 +37,7 @@ class RRTStar : public RRT<dim> {
     RRTStar(const std::shared_ptr<Environment> &environment, const RRTOptions<dim> &options,
             const std::shared_ptr<Graph<dim>> &graph, const std::string &name = "RRTStar");
 
-    bool optimize(size_t numNodes, size_t numThreads = 1) override;
+    bool optimize(size_t numIterations, size_t numNodes, size_t numThreads = 1) override;
     bool connectGoalNode(const Vector<dim> goal) override;
 
   protected:
@@ -74,7 +74,7 @@ RRTStar<dim>::RRTStar(const std::shared_ptr<Environment> &environment, const RRT
 }
 
 template <unsigned int dim>
-bool RRTStar<dim>::optimize(size_t numNodes, size_t numThreads) {
+bool RRTStar<dim>::optimize(size_t numIterations, size_t numNodes, size_t numThreads) {
     this->m_plannerCollector->startOptimizationTimer();
     if (!m_pathPlanned) {
         Logging::warning("No optimization, because no plan is planned", this);
@@ -86,8 +86,10 @@ bool RRTStar<dim>::optimize(size_t numNodes, size_t numThreads) {
     auto ellipsoidSampler = std::make_shared<EllipsoidSampler<dim>>(m_environment);
     m_sampling->setSampler(ellipsoidSampler);
 
-    ellipsoidSampler->setParams(m_initNode->getValues(), m_goalNode->getValues(), m_goalNode->getCost());
-    this->expand(numNodes, numThreads);
+    for (size_t i = 0; i < numIterations; ++i) {
+        ellipsoidSampler->setParams(m_initNode->getValues(), m_goalNode->getValues(), m_goalNode->getCost(), *m_metric);
+        this->expand(numNodes, numThreads);
+    }
 
     m_sampling->setSampler(oldSampler);
 
@@ -119,8 +121,8 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randC
         return nullptr;
 
     auto newNode = std::make_shared<Node<dim>>(newConfig);
-    double edgeCost = m_metric->calcDist(*newNode, *nearestNode);
-    newNode->setCost(edgeCost + nearestNode->getCost());
+    double edgeCost = m_metric->calcDist(*nearestNode, *newNode);
+    newNode->setCost(nearestNode->getCost() + edgeCost);
     newNode->setParent(nearestNode, edgeCost);
     m_mutex.lock();
     nearestNode->addChild(newNode, edgeCost);
@@ -142,7 +144,6 @@ template <unsigned int dim>
 std::shared_ptr<Node<dim>> RRTStar<dim>::chooseParent(const Vector<dim> &newConfig,
                                                       std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     // sort nodes by the cost
-
     std::sort(std::begin(nearNodes), std::end(nearNodes),
               [](std::shared_ptr<Node<dim>> a, std::shared_ptr<Node<dim>> b) { return a->getCost() < b->getCost(); });
 
@@ -167,13 +168,14 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
     double oldDist, newDist, edgeCost;
     for (auto &nearNode : nearNodes) {
         if (nearNode != parentNode) {
-            edgeCost = m_metric->calcDist(*nearNode, *newNode);
+            edgeCost = m_metric->calcDist(*newNode, *nearNode);
             oldDist = nearNode->getCost();
-            newDist = edgeCost + newNode->getCost();
-            if (newDist < oldDist && m_validityChecker->check(m_trajectory->calcTrajBin(*nearNode, *newNode))) {
+            newDist = newNode->getCost() + edgeCost;
+            if (newDist < oldDist && m_validityChecker->check(m_trajectory->calcTrajBin(*newNode, *nearNode))) {
                 m_mutex.lock();
                 nearNode->setCost(newDist);
                 nearNode->setParent(newNode, edgeCost);
+                newNode->addChild(nearNode, edgeCost);
                 m_mutex.unlock();
             }
         }
@@ -190,7 +192,7 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
 template <unsigned int dim>
 bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
     if (!m_validityChecker->check(goal)) {
-        Logging::warning("Goal Node in collision", this);
+        Logging::warning("Goal configuration isn't valid", this);
         return false;
     }
 
@@ -198,12 +200,11 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
         util::getNearLowestCostNode<dim>(goal, *m_graph, *m_validityChecker, *m_trajectory, m_stepSize * 2);
 
     if (nearestNode) {
-        std::shared_ptr<Node<dim>> goalNode(new Node<dim>(goal));
-        goalNode->setParent(nearestNode, m_metric->calcDist(*goalNode, *nearestNode));
-        goalNode->setCost(goalNode->getParentEdge().second + nearestNode->getCost());
-        nearestNode->addChild(goalNode, m_metric->calcDist(*goalNode, *nearestNode));
+        m_goalNode = std::make_shared<Node<dim>>(goal);
+        m_goalNode->setParent(nearestNode, m_metric->calcDist(*m_goalNode, *nearestNode));
+        m_goalNode->setCost(m_goalNode->getParentEdge().second + nearestNode->getCost());
+        nearestNode->addChild(m_goalNode, m_metric->calcDist(*nearestNode, *m_goalNode));
 
-        m_goalNode = goalNode;
         m_pathPlanned = true;
         Logging::info("Goal is connected", this);
         return true;

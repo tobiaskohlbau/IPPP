@@ -167,7 +167,7 @@ bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 go
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
-        Logging::info("Iteration: " + std::to_string(loopCount++), this);
+        Logging::debug("Iteration: " + std::to_string(loopCount++), this);
         expand(numNodes, numThreads);
     }
 
@@ -181,7 +181,7 @@ bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const Vector6 go
         }
     }
     if (util::empty<dim>(goalConfig)) {
-        Logging::warning("No goal config to goal pose found!", this);
+        Logging::warning("No goal configuration to passed goal pose found!", this);
         return false;
     }
 
@@ -204,7 +204,7 @@ bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const std::vecto
 
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
-        Logging::info("Iteration: " + std::to_string(loopCount++), this);
+        Logging::debug("Iteration: " + std::to_string(loopCount++), this);
         expand(numNodes, numThreads);
     }
 
@@ -222,7 +222,7 @@ bool PRM<dim>::computePathToPose(const Vector<dim> startConfig, const std::vecto
     }
     for (auto &config : configs) {
         if (util::empty<dim>(config)) {
-            Logging::warning("No goal config to goal pose found!", this);
+            Logging::warning("No goal configuration to passed goal pose found!", this);
             return false;
         }
     }
