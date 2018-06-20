@@ -57,13 +57,14 @@ class Environment : public Identifier {
     std::vector<std::shared_ptr<RobotBase>> getRobots() const;
     std::shared_ptr<RobotBase> getRobot() const;
     std::shared_ptr<RobotBase> getRobot(size_t index) const;
-    
 
     AABB getSpaceBoundary() const;
     std::pair<VectorX, VectorX> getRobotBoundaries() const;
     std::vector<unsigned int> getRobotDimSizes() const;
     unsigned int getConfigDim() const;
     std::pair<VectorX, VectorX> getConfigMasks() const;
+
+    void saveObstacleMeshes(const std::string &prefix = "") const;
 
   protected:
     void update();

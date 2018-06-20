@@ -159,9 +159,9 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
         return false;
 
     m_collisionCollector->add(1);
-    auto linkTrafosAndTcp = m_robot->getLinkAndToolTrafos(config);
-    auto &linkTrafos = linkTrafosAndTcp.first;
-    auto &tcp = linkTrafosAndTcp.second;
+    auto linkAndToolTrafos = m_robot->getLinkAndToolTrafos(config);
+    auto &linkTrafos = linkAndToolTrafos.first;
+    auto &toolTrafo = linkAndToolTrafos.second;
     auto pose = m_robot->getPose();
 
     // check models against workspace boundaries
@@ -171,7 +171,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
             return false;
         }
     }
-    if (m_toolModelExists && !m_workspaceBounding.contains(util::transformAABB(m_toolAABB, tcp))) {
+    if (m_toolModelExists && !m_workspaceBounding.contains(util::transformAABB(m_toolAABB, toolTrafo))) {
         // Logging::trace("Robot out of workspace boundaries", this);
         return false;
     }
@@ -200,8 +200,8 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
         }
         if (m_toolModelExists) {
             for (unsigned int i = 0; i < dim - 1; ++i) {
-                if (this->checkFCL(m_toolModel, m_linkModels[i], tcp, linkTrafos[i])) {
-                    // std::cout << tcp.matrix() << std::endl;
+                if (this->checkFCL(m_toolModel, m_linkModels[i], toolTrafo, linkTrafos[i])) {
+                    // std::cout << toolTrafo.matrix() << std::endl;
                     // std::cout << linkTrafos[i].matrix() << std::endl;
                     // Logging::trace("Collision between link" + std::to_string(i) + " and tool", this);
                     return false;
@@ -222,7 +222,7 @@ bool CollisionFclSerial<dim>::check(const Vector<dim> &config, const CollisionRe
         }
         if (m_toolModelExists) {
             for (auto &obstacle : m_obstacles) {
-                if (this->checkFCL(obstacle.first, m_toolModel, obstacle.second, tcp)) {
+                if (this->checkFCL(obstacle.first, m_toolModel, obstacle.second, toolTrafo)) {
                     // Logging::trace("Collision between workspace and tool", this);
                     return false;
                 }

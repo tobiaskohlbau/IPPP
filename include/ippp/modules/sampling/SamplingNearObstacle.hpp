@@ -20,6 +20,7 @@
 #define SAMPLINGNEAROBSTACLE_HPP
 
 #include <ippp/modules/sampling/Sampling.hpp>
+#include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
 
 namespace ippp {
 
@@ -32,9 +33,8 @@ namespace ippp {
 template <unsigned int dim>
 class SamplingNearObstacle : public Sampling<dim> {
   public:
-    SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
-                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
+    SamplingNearObstacle(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
                          const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     Vector<dim> getSample() override;
@@ -59,10 +59,10 @@ class SamplingNearObstacle : public Sampling<dim> {
 */
 template <unsigned int dim>
 SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
-                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
+                                                const std::shared_ptr<Sampler<dim>> &sampler,
+                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
                                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : Sampling<dim>("SamplingNearObstacle", environment, validityChecker, sampler, attempts), m_trajectory(trajectory) {
+    : Sampling<dim>("SamplingNearObstacle", environment, nullptr, sampler, validityChecker, attempts), m_trajectory(trajectory) {
 }
 
 /*!

@@ -49,6 +49,7 @@ class RRTStarConnect : public RRTStar<dim> {
     using Planner<dim>::m_metric;
     using Planner<dim>::m_pathPlanned;
     using Planner<dim>::m_plannerCollector;
+    using Planner<dim>::m_sampling;
     using Planner<dim>::m_trajectory;
     using Planner<dim>::updateStats;
     using Planner<dim>::initParams;
@@ -85,6 +86,7 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
     size_t loopCount = 1;
     while (!m_evaluator->evaluate()) {
         initParams(tmpStart, tmpGoal);
+        m_sampling->setGraph(m_graph);
         Logging::debug("Iteration: " + std::to_string(loopCount++), this);
         this->expand(numNodes, numThreads);
         std::swap(m_graph, m_graphB);
@@ -95,6 +97,7 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
     if (m_graph != m_graphA) {
         m_graphB = m_graph;
         m_graph = m_graphA;
+        m_sampling->setGraph(m_graph);
     }
     std::pair<std::shared_ptr<Node<dim>>, std::shared_ptr<Node<dim>>> nodes =
         util::findGraphConnection(*m_graph, *m_graphB, *m_trajectory, *m_validityChecker, m_stepSize);

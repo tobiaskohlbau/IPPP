@@ -351,26 +351,25 @@ std::vector<Transform> SerialRobot::getLinkOffsets() const {
 *  \param[in]  joint angles
 *  \date       2018-01-10
 */
-void SerialRobot::saveMeshConfig(const VectorX &angles) {
-    auto linkTrafos = getLinkTrafos(angles);
+void SerialRobot::saveRobotMesh(const VectorX &configuration, const std::string &prefix) const {
+    auto linkAndToolTrafos = getLinkAndToolTrafos(configuration);
 
     if (m_baseModel != nullptr) {
         std::vector<Vector3> vertices = m_baseModel->m_mesh.vertices;
         cad::transformVertices(m_pose, vertices);
-        cad::exportCad(cad::ExportFormat::OBJ, "base", vertices, m_baseModel->m_mesh.faces);
+        cad::exportCad(cad::ExportFormat::OBJ, prefix + "_base", vertices, m_baseModel->m_mesh.faces);
     }
 
     for (size_t i = 0; i < m_joints.size(); ++i) {
         std::vector<Vector3> vertices = m_linkModels[i]->m_mesh.vertices;
-        cad::transformVertices(linkTrafos[i], vertices);
-        cad::exportCad(cad::ExportFormat::OBJ, "link" + std::to_string(i), vertices, m_linkModels[i]->m_mesh.faces);
+        cad::transformVertices(linkAndToolTrafos.first[i], vertices);
+        cad::exportCad(cad::ExportFormat::OBJ, prefix + "_link" + std::to_string(i), vertices, m_linkModels[i]->m_mesh.faces);
     }
 
     if (m_toolModel != nullptr) {
-        auto tcp = getTransformation(angles);
         std::vector<Vector3> vertices = m_toolModel->m_mesh.vertices;
-        cad::transformVertices(tcp, vertices);
-        cad::exportCad(cad::ExportFormat::OBJ, "tool", vertices, m_toolModel->m_mesh.faces);
+        cad::transformVertices(linkAndToolTrafos.second, vertices);
+        cad::exportCad(cad::ExportFormat::OBJ, prefix + "_tool", vertices, m_toolModel->m_mesh.faces);
     }
 }
 

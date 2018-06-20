@@ -36,10 +36,10 @@ namespace ippp {
 template <unsigned int dim>
 class TangentSpaceSampling : public Sampling<dim> {
   public:
-    TangentSpaceSampling(const std::shared_ptr<Environment> &environment,
-                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, const std::shared_ptr<Graph<dim>> &graph,
-                         double maxDisplacement, const std::pair<Vector6, Vector6> &C, const Transform &taskFrame);
+    TangentSpaceSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
+                         const std::shared_ptr<Sampler<dim>> &sampler,
+                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts, double maxDisplacement,
+                         const std::pair<Vector6, Vector6> &C, const Transform &taskFrame);
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
@@ -47,13 +47,13 @@ class TangentSpaceSampling : public Sampling<dim> {
   private:
     std::shared_ptr<SerialRobot> m_serialRobot = nullptr;
     std::shared_ptr<RGDSampling<dim>> m_rgdSampling = nullptr;
-    std::shared_ptr<Graph<dim>> m_graph = nullptr;
     double m_maxDisplacement = 10;
     Matrix<dim> m_I;
     std::pair<Vector6, Vector6> m_C;
     Matrix6 m_matC;
     Transform m_taskFrame;
 
+    using Sampling<dim>::m_graph;
     using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
     using Sampling<dim>::m_validityChecker;
@@ -71,14 +71,14 @@ class TangentSpaceSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 TangentSpaceSampling<dim>::TangentSpaceSampling(const std::shared_ptr<Environment> &environment,
-                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
-                                                const std::shared_ptr<Graph<dim>> &graph, double maxDisplacement,
-                                                const std::pair<Vector6, Vector6> &C, const Transform &taskFrame)
-    : Sampling<dim>("TangentSpaceSampling", environment, validityChecker, sampler, attempts),
+                                                const std::shared_ptr<Graph<dim>> &graph,
+                                                const std::shared_ptr<Sampler<dim>> &sampler,
+                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                                                double maxDisplacement, const std::pair<Vector6, Vector6> &C,
+                                                const Transform &taskFrame)
+    : Sampling<dim>("TangentSpaceSampling", environment, graph, sampler, validityChecker, attempts),
       m_maxDisplacement(maxDisplacement),
-      m_rgdSampling(std::make_shared<RGDSampling<dim>>(environment, validityChecker, sampler, attempts, graph)),
-      m_graph(graph),
+      m_rgdSampling(std::make_shared<RGDSampling<dim>>(environment, graph, sampler, validityChecker, attempts)),
       m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(environment->getRobot())),
       m_I(Matrix<dim>::Identity()),
       m_C(C),

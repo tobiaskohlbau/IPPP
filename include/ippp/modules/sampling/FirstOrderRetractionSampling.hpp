@@ -36,10 +36,9 @@ namespace ippp {
 template <unsigned int dim>
 class FirstOrderRetractionSampling : public Sampling<dim> {
   public:
-    FirstOrderRetractionSampling(const std::shared_ptr<Environment> &environment,
-                                 const std::shared_ptr<Constraint<dim>> &constraint, const std::shared_ptr<Sampler<dim>> &sampler,
-                                 size_t attempts, const std::shared_ptr<Graph<dim>> &graph,
-                                 const Transform &taskFrame = Transform::Identity());
+    FirstOrderRetractionSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
+                                 const std::shared_ptr<Sampler<dim>> &sampler, const std::shared_ptr<Constraint<dim>> &constraint,
+                                 size_t attempts, const Transform &taskFrame = Transform::Identity());
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
@@ -49,12 +48,12 @@ class FirstOrderRetractionSampling : public Sampling<dim> {
 
     std::shared_ptr<SerialRobot> m_serialRobot = nullptr;
     std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
-    std::shared_ptr<Graph<dim>> m_graph = nullptr;
 
     double m_epsilon = 1;
     Transform m_taskFrame;
 
     using Sampling<dim>::m_attempts;
+    using Sampling<dim>::m_graph;
     using Sampling<dim>::m_sampler;
     using Sampling<dim>::m_validityChecker;
 };
@@ -71,14 +70,13 @@ class FirstOrderRetractionSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 FirstOrderRetractionSampling<dim>::FirstOrderRetractionSampling(const std::shared_ptr<Environment> &environment,
-                                                                const std::shared_ptr<Constraint<dim>> &constraint,
-                                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
                                                                 const std::shared_ptr<Graph<dim>> &graph,
-                                                                const Transform &taskFrame)
-    : Sampling<dim>("FirstOrderRetractionSampling", environment, constraint, sampler, attempts),
+                                                                const std::shared_ptr<Sampler<dim>> &sampler,
+                                                                const std::shared_ptr<Constraint<dim>> &constraint,
+                                                                size_t attempts, const Transform &taskFrame)
+    : Sampling<dim>("FirstOrderRetractionSampling", environment, graph, sampler, constraint, attempts),
       m_constraint(constraint),
       m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(environment->getRobot())),
-      m_graph(graph),
       m_taskFrame(taskFrame),
       m_epsilon(constraint->getEpsilon()) {
 }

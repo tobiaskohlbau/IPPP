@@ -34,8 +34,8 @@ namespace ippp {
 template <unsigned int dim>
 class BerensonSampling : public Sampling<dim> {
   public:
-      BerensonSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Constraint<dim>> &constraint,
-                         const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts);
+    BerensonSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                     const std::shared_ptr<Constraint<dim>> &constraint, size_t attempts);
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
@@ -62,9 +62,9 @@ class BerensonSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 BerensonSampling<dim>::BerensonSampling(const std::shared_ptr<Environment> &environment,
-                                                const std::shared_ptr<Constraint<dim>> &constraint,
-                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
-    : Sampling<dim>("BerensonSampling", environment, constraint, sampler, attempts),
+                                        const std::shared_ptr<Sampler<dim>> &sampler,
+                                        const std::shared_ptr<Constraint<dim>> &constraint, size_t attempts)
+    : Sampling<dim>("BerensonSampling", environment, nullptr, sampler, constraint, attempts),
       m_constraint(constraint),
       m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(environment->getRobot())) {
 }

@@ -19,6 +19,7 @@
 #include <ippp/environment/Environment.h>
 
 #include <ippp/util/Logging.h>
+#include <ippp/environment/cad/CadImportExport.h>
 
 namespace ippp {
 
@@ -256,6 +257,16 @@ std::pair<VectorX, VectorX> Environment::getRobotBoundaries() const {
 */
 std::pair<VectorX, VectorX> Environment::getConfigMasks() const {
     return std::make_pair(m_positionMask, m_rotationMask);
+}
+
+void Environment::saveObstacleMeshes(const std::string &folder) const {
+    size_t count = 0;
+    for (auto &obstacle : m_obstacles) {
+        std::vector<Vector3> vertices = obstacle->model->m_mesh.vertices;
+        cad::transformVertices(obstacle->getPose(), vertices);
+        cad::exportCad(cad::ExportFormat::OBJ, folder + "obs" + std::to_string(count), vertices, obstacle->model->m_mesh.faces);
+        ++count;
+    }
 }
 
 void Environment::update() {

@@ -92,12 +92,12 @@ void createSampling() {
 
     std::vector<std::shared_ptr<Sampling<dim>>> samplings;
     for (auto &sampler : samplers) {
-        samplings.push_back(std::make_shared<BridgeSampling<dim>>(environment, validityChecker, sampler, 1));
-        samplings.push_back(std::make_shared<GaussianDistSampling<dim>>(environment, validityChecker, sampler, 1));
-        samplings.push_back(std::make_shared<GaussianSampling<dim>>(environment, validityChecker, sampler, 1));
+        samplings.push_back(std::make_shared<BridgeSampling<dim>>(environment, sampler, validityChecker, 1));
+        // samplings.push_back(std::make_shared<GaussianDistSampling<dim>>(environment, validityChecker, sampler, 1));
+        samplings.push_back(std::make_shared<GaussianSampling<dim>>(environment, sampler, validityChecker, 1));
         // samplings.push_back(std::make_shared<MedialAxisSampling<dim>>(environment, validityChecker, trajectory, sampler, 1));
-        samplings.push_back(std::make_shared<SamplingNearObstacle<dim>>(environment, validityChecker, sampler, 1, trajectory));
-        samplings.push_back(std::make_shared<StraightSampling<dim>>(environment, validityChecker, sampler, 1));
+        samplings.push_back(std::make_shared<SamplingNearObstacle<dim>>(environment, sampler, validityChecker, 1, trajectory));
+        samplings.push_back(std::make_shared<StraightSampling<dim>>(environment, sampler, validityChecker, 1));
     }
 
     for (auto &sampling : samplings)

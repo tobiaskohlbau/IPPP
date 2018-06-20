@@ -69,6 +69,7 @@ add_library(${PROJECT_NAME}
     src/Identifier.cpp
     src/dataObj/DhParameter.cpp
     src/util/Logging.cpp
+    src/util/UtilEnvironment.cpp
     src/util/UtilGeo.cpp
     src/util/UtilList.cpp
     src/util/UtilVec.cpp

@@ -124,9 +124,9 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
     Stats::addCollector(m_plannerCollector);
 
     // check dimensions of the robot to the dimension of the planner
-    if (!util::checkDimensions<dim>(environment))
+    if (!util::checkDimensions<dim>(*environment))
         Logging::error("Robot dimensions are unequal to planner dimension", this);
-    assert(util::checkDimensions<dim>(environment));
+    assert(util::checkDimensions<dim>(*environment));
 
     // check the existance of all modules
     if (m_metric == nullptr || m_environment == nullptr || m_evaluator == nullptr || m_graph == nullptr ||

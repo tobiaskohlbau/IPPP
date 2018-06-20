@@ -55,6 +55,8 @@ class RobotBase : public EnvObject {
     RobotCategory getRobotCategory() const;
     std::vector<DofType> getDofTypes() const;
 
+    virtual void saveRobotMesh(const VectorX &configuration, const std::string &prefix = "") const;
+
   protected:
     const RobotCategory m_robotType;        /*!< category of the robot (serial or mobile) */
     std::pair<VectorX, VectorX> m_boundary; /*!< robot boundary (first min, second max) */

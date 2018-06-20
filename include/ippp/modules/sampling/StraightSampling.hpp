@@ -31,14 +31,13 @@ namespace ippp {
 template <unsigned int dim>
 class StraightSampling : public Sampling<dim> {
   public:
-    StraightSampling(const std::shared_ptr<Environment> &environment,
-                     const std::shared_ptr<ValidityChecker<dim>> &validityChecker, const std::shared_ptr<Sampler<dim>> &sampler,
-                     size_t attempts = 10);
+    StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                     const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts = 10);
 
     virtual Vector<dim> getSample();
 
   protected:
-      using Sampling<dim>::m_attempts;
+    using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
     using Sampling<dim>::m_validityChecker;
 };
@@ -55,9 +54,9 @@ class StraightSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 StraightSampling<dim>::StraightSampling(const std::shared_ptr<Environment> &environment,
-                                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                        const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
-    : Sampling<dim>("StraightSampling", environment, validityChecker, sampler, attempts) {
+                                        const std::shared_ptr<Sampler<dim>> &sampler,
+                                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts)
+    : Sampling<dim>("StraightSampling", environment, nullptr, sampler, validityChecker, attempts) {
 }
 
 /*!

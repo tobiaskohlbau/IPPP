@@ -19,8 +19,8 @@ AABB iiwaWorkspace(Vector3(-2500, -2500, -200), Vector3(2500, 2500, 2500));
 
 Vector2 startPoint(300, 300);
 Vector2 goalPoint(1800, 1500);
-Vector6 startSerial = util::Vecd(util::halfPi(), 0, 0, 0, 0, 0);
-Vector6 goalSerial = util::Vecd(-util::halfPi(), -util::halfPi(), 0, util::halfPi(), 0, 0);
+Vector6 startSerial = util::Vecd(util::halfPi()/2, 0.174, 0.436, 0.174, -util::halfPi(), -0.436);
+Vector6 goalSerial = util::Vecd(-util::halfPi()/2, -util::halfPi(), -0.174, util::halfPi(), -0.174, -0.174);
 
 ModuleConfigurator<2> getPointCreator(std::string seed, EvaluatorType evalType, SamplerType samplerType, size_t obstacleType) {
     const unsigned int dim = 2;
@@ -65,11 +65,11 @@ ModuleConfigurator<6> getSerialCreator(std::string seed, EvaluatorType evalType,
     std::vector<std::string> jointModelFiles(dim, FLAGS_assetsDir + "robotModels/2D/2dLineDim6.obj");
     envConfigurator.setSerialRobotProperties(dhParameters, jointModelFiles);
     if (obstacleType == 1) {
-        envConfigurator.addObstacle(FLAGS_obstacle2dDir + "100x100.obj", util::Vecd(1350, 1000, 0, 0, 0, 0));
-        envConfigurator.addObstacle(FLAGS_obstacle2dDir + "100x100.obj", util::Vecd(1450, 1000, 0, 0, 0, 0));
+        envConfigurator.addObstacle(FLAGS_obstacle2dDir + "100x100.obj", util::Vecd(1200, 1000, 0, 0, 0, 0));
+        envConfigurator.addObstacle(FLAGS_obstacle2dDir + "100x100.obj", util::Vecd(1300, 1000, 0, 0, 0, 0));
     } else if (obstacleType == 2) {
-        envConfigurator.addObstacle(FLAGS_obstacle2dDir + "100x100.obj", util::Vecd(1350, 900, 0, 0, 0, 0));
-        envConfigurator.addObstacle(FLAGS_obstacle2dDir + "100x100.obj", util::Vecd(1350, 1100, 0, 0, 0, 0));
+        envConfigurator.addObstacle(FLAGS_obstacle2dDir + "100x100.obj", util::Vecd(1250, 900, 0, 0, 0, 0));
+        envConfigurator.addObstacle(FLAGS_obstacle2dDir + "100x100.obj", util::Vecd(1250, 1100, 0, 0, 0, 0));
     }
 
     std::shared_ptr<Environment> env = envConfigurator.getEnvironment();

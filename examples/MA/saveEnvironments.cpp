@@ -134,102 +134,64 @@ ModuleConfigurator<7> getIiwaCreator(std::string seed, EvaluatorType evalType, s
 }
 
 void planningThread() {
-    std::vector<PlannerType> planners = {PlannerType::RRT, PlannerType::RRTStar, PlannerType::RRTStarConnect};
+    std::string seed = "234`r5fdsfda";
+    EvaluatorType evalType = EvaluatorType::TreeConfigOrTime;
 
-    for (auto& plannerType : planners) {
-        // define evaluator
-        EvaluatorType evalType = EvaluatorType::TreeConfigOrTime;
-        if (plannerType == PlannerType::RRTStarConnect)
-            evalType = EvaluatorType::TreeConnectOrTime;
+    for (size_t i = 0; i < 3; ++i) {
+        // point plane robot
+        auto pCtr = getPointCreator(seed, evalType, i);
+        std::shared_ptr<Planner<2>> pPlanner =
+            std::make_shared<RRTStar<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40), pCtr.getGraph());
 
-        std::vector<std::string> seeds = {"234`r5fdsfda", "23r54wedf",  "23894rhwef",  "092yu4re",   "0923ujrpiofesd",
-                                          "02u9r3jes",    "09243rjpef", "23refdss;wf", "2-3r0wepoj", "-243refdsaf"};
-        for (auto& seed : seeds) {
-            for (size_t i = 0; i < 3; ++i) {
-                // point plane robot
-                Stats::initializeCollectors();
-                auto pCtr = getPointCreator(seed, evalType, i);
-                std::shared_ptr<Planner<2>> pPlanner;
-                switch (plannerType) {
-                    case PlannerType::RRT:
-                        pPlanner = std::make_shared<RRT<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40), pCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStar:
-                        pPlanner = std::make_shared<RRTStar<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40), pCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStarConnect:
-                        pPlanner = std::make_shared<RRTStarConnect<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40),
-                                                                       pCtr.getGraph(), pCtr.getGraphB());
-                        break;
-                }
+        pPlanner->computePath(startPoint, goalPoint, 10000, 24);
+        auto workspace2D = cad::create2dspace(pCtr.getEnvironment()->getSpaceBoundary(), 255);
+        cv::Mat imagePoint = drawing::eigenToCV(workspace2D.first);
+        cv::cvtColor(imagePoint, imagePoint, CV_GRAY2BGR);
+        for (const auto& obstacle : pCtr.getEnvironment()->getObstacles())
+            drawing::drawPolygons(imagePoint, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
+        drawing::drawPath2D(imagePoint, pPlanner->getPath(), Vector3i(255, 0, 0), 2);
+        cv::imwrite("point" + std::to_string(i) + ".png", imagePoint);
 
-                pPlanner->computePath(startPoint, goalPoint, 100, 1);
-                pPlanner->getPath();
-                ui::save(pPlanner->getName() + "Point.json", Stats::serialize(), 4, true);
+        // serial plane robot
+        auto sCtr = getSerialCreator(seed, evalType, i);
+        std::shared_ptr<Planner<6>> sPlanner =
+            std::make_shared<RRTStar<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)), sCtr.getGraph());
 
-                // serial plane robot
-                Stats::initializeCollectors();
-                auto sCtr = getSerialCreator(seed, evalType, i);
-                std::shared_ptr<Planner<6>> sPlanner;
-                switch (plannerType) {
-                    case PlannerType::RRT:
-                        sPlanner =
-                            std::make_shared<RRT<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)), sCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStar:
-                        sPlanner = std::make_shared<RRTStar<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)),
-                                                                sCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStarConnect:
-                        sPlanner = std::make_shared<RRTStarConnect<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)),
-                                                                       sCtr.getGraph(), sCtr.getGraphB());
-                        break;
-                }
-                sPlanner->computePath(startSerial, goalSerial, 100, 1);
-                sPlanner->getPath();
-                ui::save(sPlanner->getName() + "Serial.json", Stats::serialize(), 4, true);
+        //sPlanner->computePath(startSerial, goalSerial, 4000, 24);
+        //sPlanner->getPath();
+        auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(sCtr.getEnvironment()->getRobot());
+        workspace2D = cad::create2dspace(sCtr.getEnvironment()->getSpaceBoundary(), 255);
+        cv::Mat image = drawing::eigenToCV(workspace2D.first);
+        cv::cvtColor(image, image, CV_GRAY2BGR);
+        for (const auto& obstacle : sCtr.getEnvironment()->getObstacles())
+            drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
+        drawing::drawSerialRobot2D<6>(startSerial, *serialRobot, image, workspace2D.second, Vector3i(0, 0, 255));
+        drawing::drawSerialRobot2D<6>(goalSerial, *serialRobot, image, workspace2D.second, Vector3i(0, 0, 255));
+        cv::imwrite("serial" + std::to_string(i) + ".png", image);
 
-                // serial iiwa robot
-                Vector<7> start, goal;
-                if (i == 0) {
-                    start = util::toRad<7>(util::Vecd(-46, 54, 9, -81, 125, 48, 130));
-                    goal = util::toRad<7>(util::Vecd(55, 46, 9, -53, 103, -25, 20));
-                } else if (i == 1) {
-                    start = util::toRad<7>(util::Vecd(-46, 54, 9, -81, 125, 48, 130));
-                    goal = util::toRad<7>(util::Vecd(-75, 33, 83, -60, -25, 23, 68));
-                } else {
-                    start = util::toRad<7>(util::Vecd(-59, 64, 74, -116, -32, 96, 68));
-                    goal = util::toRad<7>(util::Vecd(60, 71, 62, -112, -153, -105, -44));
-                }
 
-                Stats::initializeCollectors();
-                auto iCtr = getIiwaCreator(seed, evalType, i);
-                std::shared_ptr<Planner<7>> iPlanner;
-                switch (plannerType) {
-                    case PlannerType::RRT:
-                        iPlanner =
-                            std::make_shared<RRT<7>>(iCtr.getEnvironment(), iCtr.getRRTOptions(util::toRad(90)), iCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStar:
-                        iPlanner = std::make_shared<RRTStar<7>>(iCtr.getEnvironment(), iCtr.getRRTOptions(util::toRad(90)),
-                                                                iCtr.getGraph());
-                        break;
-                    case PlannerType::RRTStarConnect:
-                        iPlanner = std::make_shared<RRTStarConnect<7>>(iCtr.getEnvironment(), iCtr.getRRTOptions(util::toRad(90)),
-                                                                       iCtr.getGraph(), iCtr.getGraphB());
-                        break;
-                }
-                iPlanner->computePath(start, goal, 600, 24);
-                iPlanner->getPath();
-                ui::save(iPlanner->getName() + "Iiwa.json", Stats::serialize(), 4, true);
-            }
+        // serial iiwa robot
+        Vector<7> start, goal;
+        if (i == 0) {
+            start = util::toRad<7>(util::Vecd(-46, 54, 9, -81, 125, 48, 130));
+            goal = util::toRad<7>(util::Vecd(55, 46, 9, -53, 103, -25, 20));
+        } else if (i == 1) {
+            start = util::toRad<7>(util::Vecd(-46, 54, 9, -81, 125, 48, 130));
+            goal = util::toRad<7>(util::Vecd(-75, 33, 83, -60, -25, 23, 68));
+        } else {
+            start = util::toRad<7>(util::Vecd(-59, 64, 74, -116, -32, 96, 68));
+            goal = util::toRad<7>(util::Vecd(60, 71, 62, -112, -153, -105, -44));
         }
+
+        auto iCtr = getIiwaCreator(seed, evalType, i);
+        //util::saveMeshes(*iCtr.getEnvironment(), start, "start" + std::to_string(i));
+        //util::saveMeshes(*iCtr.getEnvironment(), goal, "goal" + std::to_string(i));
     }
 }
 
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    Logging::setLogLevel(LogLevel::debug);
+    Logging::setLogLevel(LogLevel::info);
     planningThread();
 }

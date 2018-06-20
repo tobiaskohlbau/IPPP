@@ -58,9 +58,9 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
 
     // sampler
     auto TS =
-        std::make_shared<TangentSpaceSampling<dim>>(env, stilmanConstraint, sampler, attempts, graph, stepSize, C, taskFrame);
-    auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, stilmanConstraint, sampler, attempts, graph, taskFrame);
-    auto BS = std::make_shared<BerensonSampling<dim>>(env, berensonConstraint, sampler, attempts);
+        std::make_shared<TangentSpaceSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, stepSize, C, taskFrame);
+    auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, taskFrame);
+    auto BS = std::make_shared<BerensonSampling<dim>>(env, sampler, berensonConstraint, attempts);
 
     auto nodeCut = std::make_shared<NodeCutPathModifier<dim>>(env, trajectory, stilmanConstraint);
     auto dummyModifier = std::make_shared<DummyPathModifier<dim>>();

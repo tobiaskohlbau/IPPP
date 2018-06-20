@@ -135,7 +135,7 @@ template <unsigned int dim>
 bool ValidityChecker<dim>::checkRobotBound(const Vector<dim> &config) const {
     for (unsigned int i = 0; i < dim; ++i) {
         if (config[i] < m_robotBounding.first[i] || m_robotBounding.second[i] < config[i]) {
-            Logging::trace("Robot out of robot boundary", this);
+            //Logging::trace("Robot out of robot boundary", this);
             return false;
         }
     }
