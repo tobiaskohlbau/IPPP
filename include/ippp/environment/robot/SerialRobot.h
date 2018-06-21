@@ -62,7 +62,7 @@ class SerialRobot : public RobotBase {
     std::vector<std::shared_ptr<ModelContainer>> getLinkModels() const;
     std::vector<Transform> getLinkOffsets() const;
 
-    void saveMeshConfig(const VectorX &angles);
+    void saveRobotMesh(const VectorX &configuration, const std::string &prefix = "") const override;
 
   protected:
     void updateJointParams();
@@ -73,9 +73,9 @@ class SerialRobot : public RobotBase {
     std::vector<std::shared_ptr<ModelContainer>> m_linkModels;
     std::vector<Vector3> m_zUnitVectors;
 
-    Transform m_baseOffset = Transform::Identity();        /*!< transformation offset of the base model, if used. */
+    Transform m_baseOffset = Transform::Identity(); /*!< transformation offset of the base model, if used. */
     Transform m_tcpOffset = Transform::Identity();
-    Transform m_toolModelOffset = Transform::Identity();        /*!< transformation offset of the tool model, if used. */
+    Transform m_toolModelOffset = Transform::Identity();   /*!< transformation offset of the tool model, if used. */
     std::shared_ptr<ModelContainer> m_toolModel = nullptr; /*!< tool model at the last link */
 };
 

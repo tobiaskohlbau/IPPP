@@ -19,33 +19,55 @@
 #ifndef UTILENVIRONMENT_HPP
 #define UTILENVIRONMENT_HPP
 
+#include <ippp/dataObj/Graph.hpp>
 #include <ippp/environment/Environment.h>
+#include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 namespace util {
+
+void saveMeshes(const Environment &env, const VectorX config, const std::string &prefix = "");
 
 /*!
 *  \brief      Check the summation of the robot dimensions to the planner dimension (template), return true if valid.
 *  \author     Sascha Kaden
 *  \param[in]  environment pointer
-*  \param[out] dimension validty
+*  \param[out] dimension validity
 *  \date       2017-05-25
 */
 template <unsigned int dim>
-bool checkDimensions(const std::shared_ptr<Environment> &environment) {
+bool checkDimensions(const Environment &environment) {
     unsigned int robotDims = 0;
-    for (auto &robot : environment->getRobots()) {
+    for (auto &robot : environment.getRobots())
         robotDims += robot->getDim();
-    }
-    if (robotDims == dim) {
+
+    if (robotDims == dim)
         return true;
-    } else {
+    else
         return false;
-    }
+}
+
+/*!
+*  \brief      Generate a list of tcp poses from the graph and the robot.
+*  \author     Sascha Kaden
+*  \param[in]  graph
+*  \param[in]  robot
+*  \param[out] list of transformations vectors
+*  \date       2018-06-19
+*/
+template <unsigned int dim>
+std::vector<Vector6> calcTcpList(const Graph<dim> &graph, const RobotBase &robot) {
+    auto nodes = graph.getNodes();
+    std::vector<Vector6> tcps;
+    tcps.reserve(nodes.size());
+
+    for (auto &node : nodes)
+        tcps.push_back(util::toPoseVec(robot.getTransformation(node->getValues())));
+
+    return tcps;
 }
 
 } /* namespace util */
-
 } /* namespace ippp */
 
 #endif /* ENVIRONMENT_H */

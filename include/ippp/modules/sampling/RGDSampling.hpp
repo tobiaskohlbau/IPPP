@@ -34,17 +34,18 @@ namespace ippp {
 template <unsigned int dim>
 class RGDSampling : public Sampling<dim> {
   public:
-    RGDSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, const std::shared_ptr<Graph<dim>> &graph);
+    RGDSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
+                const std::shared_ptr<Sampler<dim>> &sampler, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+                size_t attempts);
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
 
   private:
     double m_epsilon;
-    std::shared_ptr<Graph<dim>> m_graph = nullptr;
 
     using Sampling<dim>::m_attempts;
+    using Sampling<dim>::m_graph;
     using Sampling<dim>::m_sampler;
     using Sampling<dim>::m_validityChecker;
 };
@@ -60,12 +61,10 @@ class RGDSampling : public Sampling<dim> {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-RGDSampling<dim>::RGDSampling(const std::shared_ptr<Environment> &environment,
-                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                              const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts,
-                              const std::shared_ptr<Graph<dim>> &graph)
-    : Sampling<dim>("RGDSampling", environment, validityChecker, sampler, attempts),
-      m_graph(graph),
+RGDSampling<dim>::RGDSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
+                              const std::shared_ptr<Sampler<dim>> &sampler,
+                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts)
+    : Sampling<dim>("RGDSampling", environment, graph, sampler, validityChecker, attempts),
       m_epsilon(validityChecker->getEpsilon()) {
 }
 
@@ -107,7 +106,6 @@ Vector<dim> RGDSampling<dim>::getSample(const Vector<dim> &prevSample) {
             prevError = error;
             normalSampler.setOrigin(sample);
         }
-        std::cout << "attempt: " << i << std::endl;
     }
     return util::NaNVector<dim>();
 }

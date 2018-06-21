@@ -16,11 +16,11 @@ void simpleRRT() {
     EnvironmentConfigurator envConfigurator;
 
     envConfigurator.setWorkspaceProperties(AABB(Vector3(-1000, -1000, -5), Vector3(1000, 1000, 2000)));
-//    for (double deg = -157.5; deg < 180; deg += 45) {
-//        double angle = util::toRad(deg);
-//        envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/plane.obj",
-//                                    util::Vecd(std::cos(angle) * 550, std::sin(angle) * 550, 320, 0, 0, angle));
-//    }
+    for (double deg = -157.5; deg < 180; deg += 45) {
+        double angle = util::toRad(deg);
+        envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/plane.obj",
+                                    util::Vecd(std::cos(angle) * 550, std::sin(angle) * 550, 320, 0, 0, angle));
+    }
     // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/obstacle400x400x800.obj",
     //                            util::Vecd(420, -400, 100, 0, 0, util::toRad(90)));
 
@@ -49,9 +49,9 @@ void simpleRRT() {
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::toTransform(linkOffsets);
-    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms);//, Transform::Identity(),
-//        util::toTransform(util::Vecd(0, 0, 205, 0, 0, 0)), util::toTransform(util::Vecd(0, 0, 205, 0, 0, 0)),
-//        FLAGS_assetsDir + "/robotModels/wesslingHand.obj");
+    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms);    //, Transform::Identity(),
+    //        util::toTransform(util::Vecd(0, 0, 205, 0, 0, 0)), util::toTransform(util::Vecd(0, 0, 205, 0, 0, 0)),
+    //        FLAGS_assetsDir + "/robotModels/wesslingHand.obj");
 
     envConfigurator.saveConfig("KukaEnvConfig.json");
 
@@ -72,7 +72,7 @@ void simpleRRT() {
     // Vector<dim> testConfig = util::Vecd(45, 90, 170, 30, 10, 120, 0);
     // Vector<dim> testConfig = util::Vecd(0, 0, 0, 0, 0, 0, 0);
     // testConfig = util::toRad<dim>(testConfig);
-    serialRobot->saveMeshConfig(a);
+    util::saveMeshes(*environment, a);
 
     double stepSize = util::toRad(70);
     ModuleConfigurator<dim> creator;

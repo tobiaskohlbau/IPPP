@@ -326,45 +326,45 @@ void ModuleConfigurator<dim>::initializeModules() {
     switch (m_samplingType) {
         case SamplingType::Bridge:
             m_sampling =
-                std::make_shared<BridgeSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts, m_samplingDist);
+                std::make_shared<BridgeSampling<dim>>(m_env, m_sampler, m_validityChecker, m_samplingAttempts, m_samplingDist);
             break;
         case SamplingType::Gaussian:
             m_sampling =
-                std::make_shared<GaussianSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts, m_samplingDist);
+                std::make_shared<GaussianSampling<dim>>(m_env, m_sampler, m_validityChecker, m_samplingAttempts, m_samplingDist);
             break;
         case SamplingType::GaussianDist:
-            m_sampling = std::make_shared<GaussianDistSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts,
-                                                                     m_samplingDist);
+            m_sampling = std::make_shared<GaussianDistSampling<dim>>(m_env, m_graph, m_sampler, m_validityChecker,
+                                                                     m_samplingAttempts, m_samplingDist);
             break;
         case SamplingType::Straight:
-            m_sampling = std::make_shared<StraightSampling<dim>>(m_env, m_validityChecker, m_sampler);
+            m_sampling = std::make_shared<StraightSampling<dim>>(m_env, m_sampler, m_validityChecker);
             break;
         case SamplingType::MedialAxis:
-            m_sampling = std::make_shared<MedialAxisSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts,
+            m_sampling = std::make_shared<MedialAxisSampling<dim>>(m_env, m_sampler, m_validityChecker, m_samplingAttempts,
                                                                    m_medialAxisDirs);
             break;
         case SamplingType::NearObstacle:
-            m_sampling = std::make_shared<SamplingNearObstacle<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts,
+            m_sampling = std::make_shared<SamplingNearObstacle<dim>>(m_env, m_sampler, m_validityChecker, m_samplingAttempts,
                                                                      m_trajectory);
             break;
         case SamplingType::TS:
-            m_sampling = std::make_shared<TangentSpaceSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts,
-                                                                     m_graph, m_samplingDist, m_taskFrameC, m_taskFrame);
+            m_sampling = std::make_shared<TangentSpaceSampling<dim>>(
+                m_env, m_graph, m_sampler, m_validityChecker, m_samplingAttempts, m_samplingDist, m_taskFrameC, m_taskFrame);
             break;
         case SamplingType::FOR:
             m_sampling = std::make_shared<FirstOrderRetractionSampling<dim>>(
-                m_env, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_sampler, m_samplingAttempts, m_graph,
+                m_env, m_graph, m_sampler, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_samplingAttempts,
                 m_taskFrame);
             break;
         case SamplingType::RGD:
-            m_sampling = std::make_shared<RGDSampling<dim>>(m_env, m_validityChecker, m_sampler, m_samplingAttempts, m_graph);
+            m_sampling = std::make_shared<RGDSampling<dim>>(m_env, m_graph, m_sampler, m_validityChecker, m_samplingAttempts);
             break;
         case SamplingType::Berenson:
             m_sampling = std::make_shared<BerensonSampling<dim>>(
-                m_env, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_sampler, m_samplingAttempts);
+                m_env, m_sampler, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_samplingAttempts);
             break;
         default:
-            m_sampling = std::make_shared<StraightSampling<dim>>(m_env, m_validityChecker, m_sampler);
+            m_sampling = std::make_shared<StraightSampling<dim>>(m_env, m_sampler, m_validityChecker);
             break;
     }
 }

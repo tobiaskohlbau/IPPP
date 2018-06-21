@@ -32,7 +32,7 @@ template <unsigned int dim>
 class GaussianSampling : public Sampling<dim> {
   public:
     GaussianSampling(const std::shared_ptr<Environment> &environment,
-                     const std::shared_ptr<ValidityChecker<dim>> &validityChecker, const std::shared_ptr<Sampler<dim>> &sampler,
+                      const std::shared_ptr<Sampler<dim>> &sampler,const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                      size_t attempts = 10, double distance = 15);
 
     Vector<dim> getSample() override;
@@ -57,9 +57,8 @@ class GaussianSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 GaussianSampling<dim>::GaussianSampling(const std::shared_ptr<Environment> &environment,
-                                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                        const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double distance)
-    : Sampling<dim>("GaussianSampling", environment, validityChecker, sampler, attempts), m_distance(distance) {
+                                        const std::shared_ptr<Sampler<dim>> &sampler, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,size_t attempts, double distance)
+    : Sampling<dim>("GaussianSampling", environment, nullptr, sampler, validityChecker, attempts), m_distance(distance) {
 }
 
 /*!

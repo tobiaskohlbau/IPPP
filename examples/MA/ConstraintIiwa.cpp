@@ -9,7 +9,7 @@
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../assets", "assets directory");
+DEFINE_string(assetsDir, "../../assets", "assets directory");
 
 double maxLength = 500;
 size_t imageCount = 0;
@@ -19,10 +19,8 @@ std::shared_ptr<Environment> generateEnvironment() {
     EnvironmentConfigurator envConfigurator;
 
     envConfigurator.setWorkspaceProperties(AABB(Vector3(-10000, -10000, -10000), Vector3(10000, 10000, 10000)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/cupboard.obj", util::Vecd(-300, 0, 300, 0, 0, util::toRad(90)));
-    //envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/obstacle400x400x800.obj",
-    //                            util::Vecd(420, -400, 100, 0, 0, util::toRad(90)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/table.obj");
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/iiwaEvaluation/narrowPassage.obj");
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/iiwaEvaluation/floor.obj");
 
     Vector7 minRobotBound = util::Vecd(-170, -120, -170, -120, -170, -120, -175);
     Vector7 maxRobotBound = util::Vecd(170, 120, 170, 120, 170, 120, 175);
@@ -49,9 +47,9 @@ std::shared_ptr<Environment> generateEnvironment() {
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::toTransform(linkOffsets);
-    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms, Transform::Identity(), Transform::Identity(),
-                                             util::toTransform(util::Vecd(13, 7, 120, 0, 0, 0)),
-                                             FLAGS_assetsDir + "/robotModels/wesslingHand.obj");
+    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms, Transform::Identity(),
+                                             util::toTransform(util::Vecd(0, 0, 120, 0, 0, 0)), Transform::Identity(),
+                                             iiwa + "handGuidingTool.obj");
 
     envConfigurator.saveConfig("KukaEnvConfig.json");
     return envConfigurator.getEnvironment();
@@ -60,7 +58,7 @@ std::shared_ptr<Environment> generateEnvironment() {
 std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, const std::pair<Vector6, Vector6>& C,
                                               const Transform& taskFrame) {
     // properties
-    double stepSize = util::toRad(50);
+    double stepSize = util::toRad(100);
     size_t graphSortCount = 2500;
     size_t attempts = 50;
 
@@ -69,60 +67,57 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     auto trajectory = std::make_shared<LinearTrajectory<dim>>(env, 1, util::toRad(1));
     auto metric = std::make_shared<L2Metric<dim>>();
     auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
-    auto graph = std::make_shared<Graph<dim>>(graphSortCount, neighborFinder);
+    auto graph = std::make_shared<Graph<dim>>(graphSortCount, neighborFinder, "Graph A");
     auto neighborFinderB = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
-    auto graphB = std::make_shared<Graph<dim>>(graphSortCount, neighborFinderB);
+    auto graphB = std::make_shared<Graph<dim>>(graphSortCount, neighborFinderB, "Graph B");
     auto sampler = std::make_shared<SamplerUniformBiased<dim>>(env, graph, "sadfsdafasdf4332154sdaf");
 
     // constraint
-    //auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
+    auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
     auto berensonConstraint = std::make_shared<BerensonConstraint<dim>>(env, taskFrame, C);
     std::vector<std::shared_ptr<ValidityChecker<dim>>> checkers = {collision, berensonConstraint};
     auto validityChecker = std::make_shared<ComposeValidity<dim>>(env, checkers, ComposeType::AND);
 
     // sampler
-    //auto TS =
-    //    std::make_shared<TangentSpaceSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, stepSize, C, taskFrame);
-    //auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, taskFrame);
+    auto TS =
+        std::make_shared<TangentSpaceSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, stepSize, C, taskFrame);
+    // auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts,
+    // taskFrame);
     auto BS = std::make_shared<BerensonSampling<dim>>(env, sampler, berensonConstraint, attempts);
 
-    auto nodeCut = std::make_shared<NodeCutPathModifier<dim>>(env, trajectory, berensonConstraint);
+    auto nodeCut = std::make_shared<NodeCutPathModifier<dim>>(env, trajectory, validityChecker);
     // evaluator
     std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-    evaluators.push_back(std::make_shared<TreeConnectEvaluator<dim>>(graph, graphB, trajectory, validityChecker, util::toRad(50)));
-    evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(80));
+    evaluators.push_back(
+        std::make_shared<TreeConnectEvaluator<dim>>(graph, graphB, trajectory, validityChecker, util::toRad(90)));
+    evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(6000));
     auto evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
 
-    RRTOptions<dim> options(stepSize, validityChecker, metric, evaluator, nodeCut, BS, trajectory);
+    RRTOptions<dim> options(stepSize, validityChecker, metric, evaluator, nodeCut, TS, trajectory);
 
     return std::make_shared<RRTStarConnect<dim>>(env, options, graph, graphB);
 }
 
 bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planner, const Vector<dim>& start,
          const Vector<dim>& goal) {
-    auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(env->getRobot());
-
-    auto timer = std::make_shared<StatsTimeCollector>("Planning Time");
-    Stats::addCollector(timer);
-    timer->start();
-    bool connected = planner->computePath(start, goal, 72000, 24);
-    timer->stop();
+    bool connected = planner->computePath(start, goal, 6000, 24);
 
     if (connected) {
         Logging::info("Init and goal could be connected! \n", "Example");
         auto path = planner->getPath(0.001, 0.001);
 
-        //auto json = jsonSerializer::serialize<dim>(path);
-        //ui::save("kukaPath.json", json);
-        auto json = txtSerializer::serialize<dim>(path);
+        auto json = jsonSerializer::serialize<dim>(path);
         ui::save("kukaPath.json", json);
+    } else {
+        auto json = jsonSerializer::serialize<6>(util::calcTcpList(*planner->getGraph(), *env->getRobot()));
+        ui::save("kukaNodes.json", json);
     }
     return connected;
 }
 
 bool test2DSerialRobot() {
-    auto environment = generateEnvironment();
-    auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
+    auto env = generateEnvironment();
+    auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(env->getRobot());
 
     // display configuration
     // auto test = util::toRad<dim>(util::Vecd(0, 0, 0, 0, 0, 0, 0));
@@ -136,33 +131,34 @@ bool test2DSerialRobot() {
     // std::cout << "test:" << constraint->calc(test) << std::endl;
     // std::cout << "test2:" << constraint->calc(test2) << std::endl;
 
-    Vector<dim> start = util::toRad<dim>(util::Vecd(90, 90, 150, 30, 35, 114, 0));
-    Vector<dim> goal = util::toRad<dim>(util::Vecd(-90, 90, 150, 30, 35, 114, 0));
+    Vector<dim> start = util::toRad<dim>(util::Vecd(135, 70, 0, -50, 0, 60, 0));
+    Vector<dim> goal = util::toRad<dim>(util::Vecd(45, 70, 0, -50, 0, 60, 0));
     Vector6 Cmin, Cmax;
     std::pair<Vector6, Vector6> C;
     Transform taskFrame;
 
     // case 1: fixed x
     double rad(util::toRad(5));
-    Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -rad, -rad, -IPPP_MAX);
-    Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, IPPP_MAX, rad, rad, IPPP_MAX);
+    Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -40, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX);
+    Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, 40, IPPP_MAX, IPPP_MAX, IPPP_MAX);
     C = std::make_pair(Cmin, Cmax);
-    taskFrame = util::toTransform(util::Vecd(0, 0, 0, 0, 0, 0));
+    taskFrame = util::toTransform(util::Vecd(0, 0, 50, 0, 0, 0));
 
-    auto planner = generatePlanner(environment, C, taskFrame);
+    auto planner = generatePlanner(env, C, taskFrame);
+    util::saveMeshes(*env, start, "start");
+    util::saveMeshes(*env, goal, "goal");
 
-    return run(environment, planner, start, goal);
+    return run(env, planner, start, goal);
 }
 
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    Logging::setLogLevel(LogLevel::debug);
+    Logging::setLogLevel(LogLevel::trace);
 
     test2DSerialRobot();
 
-    Stats::writeData(std::cout);
-
-    std::string str;
-    std::cin >> str;
+    // Stats::writeData(std::cout);
+    // std::string str;
+    // std::cin >> str;
 }

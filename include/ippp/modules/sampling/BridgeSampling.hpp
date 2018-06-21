@@ -31,8 +31,8 @@ namespace ippp {
 template <unsigned int dim>
 class BridgeSampling : public Sampling<dim> {
   public:
-    BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                   const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts = 10, double distance = 15);
+    BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                   const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts = 10, double distance = 15);
 
     Vector<dim> getSample() override;
 
@@ -56,11 +56,10 @@ class BridgeSampling : public Sampling<dim> {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-BridgeSampling<dim>::BridgeSampling(const std::shared_ptr<Environment> &environment,
-                                    const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-
-                                    const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double distance)
-    : Sampling<dim>("BridgeSampling", environment, validityChecker, sampler, attempts), m_distance(distance) {
+BridgeSampling<dim>::BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                                    const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                                    double distance)
+    : Sampling<dim>("BridgeSampling", environment, nullptr, sampler, validityChecker, attempts), m_distance(distance) {
 }
 
 /*!

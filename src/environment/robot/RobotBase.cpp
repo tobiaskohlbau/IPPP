@@ -20,6 +20,7 @@
 
 #include <utility>
 
+#include <ippp/environment/cad/CadImportExport.h>
 #include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
@@ -123,6 +124,14 @@ RobotCategory RobotBase::getRobotCategory() const {
 */
 std::vector<DofType> RobotBase::getDofTypes() const {
     return m_dofTypes;
+}
+
+void RobotBase::saveRobotMesh(const VectorX &configuration, const std::string &prefix) const {
+    if (m_baseModel != nullptr) {
+        std::vector<Vector3> vertices = m_baseModel->m_mesh.vertices;
+        cad::transformVertices(m_pose, vertices);
+        cad::exportCad(cad::ExportFormat::OBJ, prefix + "_base", vertices, m_baseModel->m_mesh.faces);
+    }
 }
 
 } /* namespace ippp */
