@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/ui/JsonSerializer.h>
+#include <ippp/ui/JsonSerializer.hpp>
 
 namespace ippp {
 namespace jsonSerializer {
@@ -71,7 +71,7 @@ nlohmann::json serialize(const std::vector<Transform> &transforms) {
         return std::string();
 
     nlohmann::json json;
-    json["NumberTransformations"] = transforms.size();
+    json["NumberOfTransforms"] = transforms.size();
 
     std::vector<std::vector<double>> data;
     for (const auto &transform : transforms) {
@@ -91,11 +91,11 @@ nlohmann::json serialize(const std::vector<Transform> &transforms) {
 */
 std::vector<Transform> deserializeTransforms(const nlohmann::json &data) {
     std::vector<Transform> transforms;
-    if (data.empty())
+    if (data.empty() || data.dump().size() == 0)
         return transforms;
 
     std::vector<std::vector<double>> stdVectors = data["Transforms"].get<std::vector<std::vector<double>>>();
-    size_t size = data["NumberTransformations"].get<size_t>();
+    size_t size = data["NumberOfTransforms"].get<size_t>();
     if (stdVectors.size() != size) {
         Logging::error("Wrong transforms size of file", "JsonSerializer");
         return transforms;
@@ -281,6 +281,25 @@ std::vector<DofType> deserializeDofTypes(const nlohmann::json &data) {
         dofTypes.push_back(static_cast<DofType>(vector[i]));
 
     return dofTypes;
+}
+
+nlohmann::json serialize(const std::pair<Vector6, Vector6> &C) {
+    nlohmann::json json;
+
+    json["MinBound"] = serialize(static_cast<VectorX>(C.first));
+    json["MaxBound"] = serialize(static_cast<VectorX>(C.second));
+
+    return json;
+}
+
+std::pair<Vector6, Vector6> deserializeC(const nlohmann::json &data) {
+    if (data.empty())
+        return std::make_pair(Vector6(), Vector6());
+
+    Vector6 min = jsonSerializer::deserializeVector(data["MinBound"]);
+    Vector6 max = jsonSerializer::deserializeVector(data["MaxBound"]);
+
+    return std::make_pair(min, max);
 }
 
 } /* namespace jsonSerializer */

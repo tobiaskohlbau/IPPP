@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #include <ippp/environment/Environment.h>
 
 #include <ippp/util/Logging.h>
+#include <ippp/environment/cad/CadImportExport.h>
 
 namespace ippp {
 
@@ -41,11 +42,11 @@ Environment::Environment(const AABB &spaceBoundary) : Identifier("Environment"),
 *  \param[in]  robot
 *  \date       2017-05-17
 */
-Environment::Environment(const AABB &spaceBoundary, const std::shared_ptr<EnvObject> &object)
+Environment::Environment(const AABB &spaceBoundary, const std::shared_ptr<RobotBase> &robot)
     : Identifier("Environment"), m_spaceBoundary(spaceBoundary) {
     Logging::debug("Initialize", this);
 
-    addEnvObject(object);
+    addRobot(robot);
 }
 
 /*!
@@ -56,77 +57,59 @@ Environment::Environment(const AABB &spaceBoundary, const std::shared_ptr<EnvObj
 *  \param[in]  list of robots
 *  \date       2017-05-17
 */
-Environment::Environment(const AABB &spaceBoundary, const std::vector<std::shared_ptr<EnvObject>> &objects)
+Environment::Environment(const AABB &spaceBoundary, const std::vector<std::shared_ptr<RobotBase>> &robots)
     : Identifier("Environment"), m_spaceBoundary(spaceBoundary) {
     Logging::debug("Initialize", this);
 
-    addEnvObjects(objects);
+    addRobot(robots);
 }
 
 Environment::~Environment() = default;
 
-/*!
-*  \brief      Add an EnvObject to the Environment and update the robot parameter.
-*  \author     Sascha Kaden
-*  \param[in]  EnvObject
-*  \date       2018-01-10
-*/
-void Environment::addEnvObject(const std::shared_ptr<EnvObject> &object) {
-    if (!object) {
-        Logging::error("Empty environment object", this);
-        return;
+bool Environment::addObstacle(const std::shared_ptr<ObstacleObject> &obstacle) {
+    if (!obstacle) {
+        Logging::error("Empty obstacle object!", this);
+        return false;
     }
-
-    m_envObjects.push_back(object);
+    m_obstacles.push_back(obstacle);
     update();
+    return true;
 }
 
-/*!
-*  \brief      Add EnvObjects to the Environment and update the robot parameter.
-*  \author     Sascha Kaden
-*  \param[in]  vector of EnvObject
-*  \date       2018-01-10
-*/
-void Environment::addEnvObjects(const std::vector<std::shared_ptr<EnvObject>> &objects) {
-    if (objects.empty()) {
-        Logging::error("Emtpy object vector passed", this);
-        return;
+bool Environment::addObstacle(const std::vector<std::shared_ptr<ObstacleObject>> &obstacles) {
+    if (obstacles.empty()) {
+        Logging::error("Empty obstacle list!", this);
+        return false;
     }
 
-    for (auto &object : objects) {
-        if (!object) {
-            Logging::error("Empty environment object", this);
-            return;
-        }
-    }
+    for (auto &obstacle : obstacles)
+        if (!addObstacle(obstacle))
+            return false;
 
-    m_envObjects.insert(std::end(m_envObjects), std::begin(objects), std::end(objects));
+    return true;
+}
+
+bool Environment::addRobot(const std::shared_ptr<RobotBase> &robot) {
+    if (!robot) {
+        Logging::error("Empty robot object!", this);
+        return false;
+    }
+    m_robots.push_back(robot);
     update();
+    return true;
 }
 
-/*!
-*  \brief      Return the EnvObjects to the passed index
-*  \author     Sascha Kaden
-*  \param[in]  index
-*  \param[out] EnvObject
-*  \date       2018-01-10
-*/
-std::shared_ptr<EnvObject> Environment::getObject(size_t index) const {
-    if (index >= m_envObjects.size()) {
-        Logging::error("Index to large of the environment objects", this);
-        return nullptr;
+bool Environment::addRobot(const std::vector<std::shared_ptr<RobotBase>> &robots) {
+    if (robots.empty()) {
+        Logging::error("Empty robot list!", this);
+        return false;
     }
-    return m_envObjects[index];
-}
 
-/*!
-*  \brief      Return vector of EnvObjects of the Environment.
-*  \author     Sascha Kaden
-*  \param[out] EnvObjects
-*  \date       2018-01-10
-*/
-std::vector<std::shared_ptr<EnvObject>> Environment::getObjects() const {
-    return m_envObjects;
+    for (auto &robot : robots)
+        if (!addRobot(robot))
+            return false;
+
+    return true;
 }
 
 /*!
@@ -136,23 +119,7 @@ std::vector<std::shared_ptr<EnvObject>> Environment::getObjects() const {
 *  \date       2018-01-10
 */
 size_t Environment::numObjects() const {
-    return m_envObjects.size();
-}
-
-/*!
-*  \brief      Return vector of ObstacleObjects of the Environment.
-*  \author     Sascha Kaden
-*  \param[out] vector of ObstacleObject
-*  \date       2018-01-10
-*/
-std::vector<std::shared_ptr<ObstacleObject>> Environment::getObstacles() const {
-    std::vector<std::shared_ptr<ObstacleObject>> obstacles;
-    for (auto &object : m_envObjects) {
-        if (object->m_type == EnvObjectType::Obstacle) {
-            obstacles.push_back(std::dynamic_pointer_cast<ObstacleObject>(object));
-        }
-    }
-    return obstacles;
+    return m_obstacles.size() + m_robots.size();
 }
 
 /*!
@@ -162,37 +129,7 @@ std::vector<std::shared_ptr<ObstacleObject>> Environment::getObstacles() const {
 *  \date       2018-01-10
 */
 size_t Environment::numObstacles() const {
-    return getObstacles().size();
-}
-
-/*!
-*  \brief      Return vector of robots of the Environment.
-*  \author     Sascha Kaden
-*  \param[out] vector of shared_ptr of RobotBase
-*  \date       2018-01-10
-*/
-std::vector<std::shared_ptr<RobotBase>> Environment::getRobots() const {
-    std::vector<std::shared_ptr<RobotBase>> robots;
-    for (auto &object : m_envObjects) {
-        if (object->m_type == EnvObjectType::Robot) {
-            robots.push_back(std::dynamic_pointer_cast<RobotBase>(object));
-        }
-    }
-    return robots;
-}
-
-/*!
-*  \brief      Return the first robot
-*  \author     Sascha Kaden
-*  \param[out] RobotBase
-*  \date       2018-01-10
-*/
-std::shared_ptr<RobotBase> Environment::getRobot() const {
-    auto robots = getRobots();
-    if (robots.size() > 0)
-        return robots.front();
-
-    return nullptr;
+    return m_obstacles.size();
 }
 
 /*!
@@ -202,7 +139,71 @@ std::shared_ptr<RobotBase> Environment::getRobot() const {
 *  \date       2018-01-10
 */
 size_t Environment::numRobots() const {
-    return getRobots().size();
+    return m_robots.size();
+}
+
+/*!
+*  \brief      Return vector of ObstacleObjects of the Environment.
+*  \author     Sascha Kaden
+*  \param[out] vector of ObstacleObject
+*  \date       2018-01-10
+*/
+std::vector<std::shared_ptr<ObstacleObject>> Environment::getObstacles() const {
+    return m_obstacles;
+}
+
+/*!
+*  \brief      Return the robot by index
+*  \author     Sascha Kaden
+*  \param[in]  index
+*  \param[out] RobotBase
+*  \date       2018-01-10
+*/
+std::shared_ptr<ObstacleObject> Environment::getObstacle(size_t index) const {
+    if (m_obstacles.size() <= index) {
+        Logging::error("Obstacle index to large!", this);
+        return nullptr;
+    }
+    return m_obstacles[index];
+}
+
+/*!
+*  \brief      Return vector of robots of the Environment.
+*  \author     Sascha Kaden
+*  \param[out] vector of shared_ptr of RobotBase
+*  \date       2018-01-10
+*/
+std::vector<std::shared_ptr<RobotBase>> Environment::getRobots() const {
+    return m_robots;
+}
+
+/*!
+*  \brief      Return the first robot
+*  \author     Sascha Kaden
+*  \param[out] RobotBase
+*  \date       2018-01-10
+*/
+std::shared_ptr<RobotBase> Environment::getRobot() const {
+    if (m_robots.empty()) {
+        Logging::error("No robot is set!", this);
+        return nullptr;
+    }
+    return m_robots.front();
+}
+
+/*!
+*  \brief      Return the robot by index
+*  \author     Sascha Kaden
+*  \param[in]  index
+*  \param[out] RobotBase
+*  \date       2018-01-10
+*/
+std::shared_ptr<RobotBase> Environment::getRobot(size_t index) const {
+    if (m_robots.size() <= index) {
+        Logging::error("Robot index to large!", this);
+        return nullptr;
+    }
+    return m_robots[index];
 }
 
 /*!
@@ -258,23 +259,23 @@ std::pair<VectorX, VectorX> Environment::getConfigMasks() const {
     return std::make_pair(m_positionMask, m_rotationMask);
 }
 
-void Environment::update() {
-    updateConfigDim();
-    updateMasks();
-    updateRobotBoundaries();
+void Environment::saveObstacleMeshes(const std::string &folder) const {
+    size_t count = 0;
+    for (auto &obstacle : m_obstacles) {
+        std::vector<Vector3> vertices = obstacle->model->m_mesh.vertices;
+        cad::transformVertices(obstacle->getPose(), vertices);
+        cad::exportCad(cad::ExportFormat::OBJ, folder + "obs" + std::to_string(count), vertices, obstacle->model->m_mesh.faces);
+        ++count;
+    }
 }
 
-/*!
-*  \brief      Update the complete configuration dimensions of all robots inside of the environment.
-*  \author     Sascha Kaden
-*  \date       2017-09-30
-*/
-void Environment::updateConfigDim() {
+void Environment::update() {
     m_configDim = 0;
-    for (const auto &robot : getRobots())
+    for (const auto &robot : m_robots)
         m_configDim += robot->getDim();
 
     updateMasks();
+    updateRobotBoundaries();
 }
 
 /*!
@@ -286,10 +287,10 @@ void Environment::updateMasks() {
     m_positionMask = VectorX(m_configDim, 1);
     m_rotationMask = VectorX(m_configDim, 1);
     size_t index = 0;
-    for (auto &robot : getRobots()) {
+    for (auto &robot : m_robots) {
         auto dofTypes = robot->getDofTypes();
         for (auto dof = dofTypes.begin(); dof != dofTypes.end(); ++dof, ++index) {
-            if (*dof == DofType::planarPos || *dof == DofType::volumetricPos || *dof == DofType::position) {
+            if (*dof == DofType::planarPos || *dof == DofType::volumetricPos || *dof == DofType::jointTrans) {
                 m_positionMask[index] = 1;
                 m_rotationMask[index] = 0;
             } else {
@@ -305,12 +306,11 @@ void Environment::updateRobotBoundaries() {
     m_robotBoundaries.second = VectorX(m_configDim, 1);
 
     size_t index = 0;
-    for (auto &robot : getRobots()) {
-        auto min = robot->getMinBoundary();
-        auto max = robot->getMaxBoundary();
+    for (auto &robot : m_robots) {
+        auto boundary = robot->getBoundary();
         for (unsigned int dim = 0; dim < robot->getDim(); ++dim, ++index) {
-            m_robotBoundaries.first[index] = min[dim];
-            m_robotBoundaries.second[index] = max[dim];
+            m_robotBoundaries.first[index] = boundary.first[dim];
+            m_robotBoundaries.second[index] = boundary.second[dim];
         }
     }
 }

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,19 +25,18 @@ namespace ippp {
 
 /*!
 * \brief   Class LinearTrajectory plans a path between the passed nodes/configs. Start and end point aren't part of the path.
-* \details The rotation in the path will be at the rotation point, percent value of the value.
- * The values of the rotation will be taken from the robot, which is saved in the environment.
+* \details The rotation in the path will be at the rotation point (value between 0 and 1).
+ * The configuration entries of the rotation will be taken from the robot, which is saved in the environment.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
 template <unsigned int dim>
 class RotateAtS : public TrajectoryPlanner<dim> {
   public:
-    RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<Environment> &environment,
-              double posRes = 1, double oriRes = 0.1, double rotPoint = 0.5);
+    RotateAtS(const std::shared_ptr<Environment> &environment, double posRes = 1, double oriRes = 0.1, double rotPoint = 0.5);
 
-    std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) const;
-    std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) const;
+    std::vector<Vector<dim>> calcTrajCont(const Vector<dim> &source, const Vector<dim> &target) const;
+    std::vector<Vector<dim>> calcTrajBin(const Vector<dim> &source, const Vector<dim> &target) const;
 
     void setRotationPoint(double rotPoint);
     double getRotationPoint() const;
@@ -45,7 +44,6 @@ class RotateAtS : public TrajectoryPlanner<dim> {
   private:
     double m_rotationPoint = 0.5;
 
-    using TrajectoryPlanner<dim>::m_collision;
     using TrajectoryPlanner<dim>::m_environment;
     using TrajectoryPlanner<dim>::m_posRes;
     using TrajectoryPlanner<dim>::m_oriRes;
@@ -66,9 +64,8 @@ class RotateAtS : public TrajectoryPlanner<dim> {
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-RotateAtS<dim>::RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collision,
-                          const std::shared_ptr<Environment> &environment, double posRes, double oriRes, double rotPoint)
-    : TrajectoryPlanner<dim>("RotateAtS", collision, environment, posRes, oriRes) {
+RotateAtS<dim>::RotateAtS(const std::shared_ptr<Environment> &environment, double posRes, double oriRes, double rotPoint)
+    : TrajectoryPlanner<dim>("RotateAtS", environment, posRes, oriRes) {
     setRotationPoint(rotPoint);
 }
 
@@ -82,9 +79,9 @@ RotateAtS<dim>::RotateAtS(const std::shared_ptr<CollisionDetection<dim>> &collis
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) const {
+std::vector<Vector<dim>> RotateAtS<dim>::calcTrajBin(const Vector<dim> &source, const Vector<dim> &target) const {
     // Todo: implementation of binary rotate at s trajectory
-    return calcTrajectoryCont(source, target);
+    return calcTrajCont(source, target);
 }
 
 /*!
@@ -97,7 +94,7 @@ std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryBin(const Vector<dim> &so
 *  \date       2017-06-20
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> RotateAtS<dim>::calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) const {
+std::vector<Vector<dim>> RotateAtS<dim>::calcTrajCont(const Vector<dim> &source, const Vector<dim> &target) const {
     std::vector<Vector<dim>> configs;
 
     Vector<dim> posSource = util::multiplyElementWise<dim>(source, m_posMask);

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the >License>);
 // you may not use this file except in compliance with the License.
@@ -20,11 +20,10 @@
 #include <ippp/environment/cad/CadDrawing.h>
 #include <ippp/environment/cad/CadImportExport.h>
 #include <ippp/environment/cad/CadProcessing.h>
-#include <ippp/util/MapGenerator.hpp>
+#include <ippp/environment/cad/MapGenerator.hpp>
 
 #include <ippp/environment/model/ModelFactoryFcl.h>
 #include <ippp/environment/model/ModelFactoryPqp.h>
-#include <ippp/environment/model/ModelFactoryTriangle2D.h>
 #include <ippp/environment/model/ModelPqp.h>
 #include <ippp/environment/model/ModelTriangle2D.h>
 
@@ -35,3 +34,5 @@
 #include <ippp/environment/robot/RobotBase.h>
 #include <ippp/environment/robot/SerialRobot.h>
 #include <ippp/environment/robot/TriangleRobot2D.h>
+
+#include <ippp/dataObj/DhParameter.h>

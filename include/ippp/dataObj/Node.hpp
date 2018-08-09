@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,8 +32,9 @@
 namespace ippp {
 
 /*!
-* \brief   Class Node to present nodes of the path planner.
-* \details Consists of the position by an Vec, a cost parameter, an Edge to the parent and a list of child Edges
+* \brief   Class Node to present nodes of the MotionPlanner inside of the Graph.
+* \details The Node contains a configuration by a Vector, furthermore does it contain all edges of the Graph the and a optional
+* cost parameter.
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
@@ -46,9 +47,13 @@ class Node {
     bool empty() const;
     void clearPointer();
 
-    void setCost(double cost);
-    void addCost(double cost);
-    double getCost() const;
+    void setPathCost(double pathCost);
+    void addPathCost(double pathCost);
+    double getPathCost() const;
+
+    void setStateCost(double stateCost);
+    void addStateCost(double stateCost);
+    double getStateCost() const;
 
     void setParent(const std::shared_ptr<Node> &parent, double edgeCost);
     std::shared_ptr<Node> getParentNode() const;
@@ -76,7 +81,8 @@ class Node {
 
   private:
     Vector<dim> m_config; /*!< configuration of the Node */
-    double m_cost = -1;   /*!< cost parameter */
+    double m_pathCost = 0;    /*!< path cost parameter */
+    double m_stateCost = 0;    /*!< state cost parameter */
 
     std::pair<std::shared_ptr<Node<dim>>, double> m_parent =
         std::make_pair(nullptr, 0); /*!< parent edge (pointer to the node + edge cost) */
@@ -99,9 +105,9 @@ Node<dim>::Node() {
 }
 
 /*!
-*  \brief      Constructor of the class Node
+*  \brief      Constructor of the class Node.
 *  \author     Sascha Kaden
-*  \param[in]  Eigen Vector
+*  \param[in]  Vector
 *  \date       2016-05-24
 */
 template <unsigned int dim>
@@ -110,7 +116,7 @@ Node<dim>::Node(const Vector<dim> &config) {
 }
 
 /*!
-*  \brief      Return true, if the vector is empty
+*  \brief      Return true, if the vector is empty.
 *  \author     Sascha Kaden
 *  \param[out] State of the Node
 *  \date       2016-05-24
@@ -121,7 +127,7 @@ bool Node<dim>::empty() const {
 }
 
 /*!
-*  \brief      Clear all pointers to parents and children.
+*  \brief      Clear all pointers to other nodes.
 *  \author     Sascha Kaden
 *  \date       2016-05-24
 */
@@ -134,46 +140,80 @@ void Node<dim>::clearPointer() {
 }
 
 /*!
-*  \brief      Set cost of Node
+*  \brief      Set path cost of Node.
 *  \author     Sascha Kaden
-*  \param[in]  cost
+*  \param[in]  pathCost
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-void Node<dim>::setCost(double cost) {
-    if (cost >= 0) {
-        m_cost = cost;
-    }
+void Node<dim>::setPathCost(double pathCost) {
+    if (pathCost >= 0)
+        m_pathCost = pathCost;
 }
 
 /*!
-*  \brief      Add cost to Node
+*  \brief      Add path path cost to Node.
 *  \author     Sascha Kaden
-*  \param[in]  cost
+*  \param[in]  pathCost
 *  \date       2016-10-22
 */
 template <unsigned int dim>
-void Node<dim>::addCost(double cost) {
-    if (cost >= 0) {
-        m_cost += cost;
-    }
+void Node<dim>::addPathCost(double pathCost) {
+    if (pathCost > 0)
+        m_pathCost += pathCost;
 }
 
 /*!
-*  \brief      Return cost of the Node
+*  \brief      Return path cost of the Node.
 *  \author     Sascha Kaden
-*  \param[out] cost
+*  \param[out] pathCost
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-double Node<dim>::getCost() const {
-    return m_cost;
+double Node<dim>::getPathCost() const {
+    return m_pathCost;
 }
 
 /*!
-*  \brief      Set parent of the Node
+*  \brief      Set state cost of Node.
 *  \author     Sascha Kaden
-*  \param[in]  shared_ptr parent Node
+*  \param[in]  stateCost
+*  \date       2018-08-09
+*/
+template <unsigned int dim>
+void Node<dim>::setStateCost(double stateCost) {
+    if (stateCost >= 0)
+        m_stateCost = stateCost;
+}
+
+/*!
+*  \brief      Add path state cost to Node.
+*  \author     Sascha Kaden
+*  \param[in]  stateCost
+*  \date       2018-08-09
+*/
+template <unsigned int dim>
+void Node<dim>::addStateCost(double stateCost) {
+    if (stateCost > 0)
+        m_stateCost += stateCost;
+}
+
+/*!
+*  \brief      Return state cost of the Node.
+*  \author     Sascha Kaden
+*  \param[out] stateCost
+*  \date       2018-08-09
+*/
+template <unsigned int dim>
+double Node<dim>::getStateCost() const {
+    return m_stateCost;
+}
+
+/*!
+*  \brief      Set parent of the Node.
+*  \author     Sascha Kaden
+*  \param[in]  parent Node
+*  \param[in]  edgeCost
 *  \date       2016-07-15
 */
 template <unsigned int dim>
@@ -183,9 +223,9 @@ void Node<dim>::setParent(const std::shared_ptr<Node> &parent, double edgeCost) 
 }
 
 /*!
-*  \brief      Return parent Node
+*  \brief      Return parent Node.
 *  \author     Sascha Kaden
-*  \param[out] shared_ptr of parent Node
+*  \param[out] parent Node
 *  \date       2016-07-15
 */
 template <unsigned int dim>
@@ -194,7 +234,7 @@ std::shared_ptr<Node<dim>> Node<dim>::getParentNode() const {
 }
 
 /*!
-*  \brief      Return parent Edge
+*  \brief      Return parent Edge.
 *  \author     Sascha Kaden
 *  \param[out] Edge
 *  \date       2016-10-22
@@ -205,7 +245,7 @@ std::pair<std::shared_ptr<Node<dim>>, double> Node<dim>::getParentEdge() const {
 }
 
 /*!
-*  \brief      Removes the parent and set it as nullptr
+*  \brief      Removes the parent and set it to nullptr.
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */
@@ -215,9 +255,10 @@ void Node<dim>::clearParent() {
 }
 
 /*!
-*  \brief      Set query parent of the Node
+*  \brief      Set query parent of the Node.
 *  \author     Sascha Kaden
 *  \param[in]  shared_ptr query parent Node
+*  \param[in]  edgeCost
 *  \date       2016-07-15
 */
 template <unsigned int dim>
@@ -227,7 +268,7 @@ void Node<dim>::setQueryParent(const std::shared_ptr<Node> &queryParent, double 
 }
 
 /*!
-*  \brief      Return query parent Node
+*  \brief      Return query parent Node.
 *  \author     Sascha Kaden
 *  \param[out] shared_ptr of query parent Node
 *  \date       2016-07-15
@@ -238,7 +279,7 @@ std::shared_ptr<Node<dim>> Node<dim>::getQueryParentNode() const {
 }
 
 /*!
-*  \brief      Return query parent Edge
+*  \brief      Return query parent Edge.
 *  \author     Sascha Kaden
 *  \param[out] Edge
 *  \date       2016-10-22
@@ -249,7 +290,7 @@ std::pair<std::shared_ptr<Node<dim>>, double> Node<dim>::getQueryParentEdge() co
 }
 
 /*!
-*  \brief      Removes the parent and set it as nullptr
+*  \brief      Removes the parent and set it to nullptr.
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */
@@ -259,19 +300,19 @@ void Node<dim>::clearQueryParent() {
 }
 
 /*!
-*  \brief      Add a child Node to the child list
+*  \brief      Add a child Node to the child list.
 *  \author     Sascha Kaden
 *  \param[in]  shared_ptr child Node
+*  \param[in]  edgeCost
 *  \date       2016-07-15
 */
 template <unsigned int dim>
 void Node<dim>::addChild(const std::shared_ptr<Node<dim>> &child, double edgeCost) {
-    if (!child->empty())
-        m_children.push_back(std::make_pair(child, edgeCost));
+    m_children.push_back(std::make_pair(child, edgeCost));
 }
 
 /*!
-*  \brief      Return list of child nodes
+*  \brief      Return list of child nodes.
 *  \author     Sascha Kaden
 *  \param[out] list of child nodes
 *  \date       2016-07-15
@@ -286,7 +327,7 @@ std::vector<std::shared_ptr<Node<dim>>> Node<dim>::getChildNodes() const {
 }
 
 /*!
-*  \brief      Return list of child edges
+*  \brief      Return list of child edges.
 *  \author     Sascha Kaden
 *  \param[out] list of child edges
 *  \date       2016-07-15
@@ -297,7 +338,7 @@ std::vector<std::pair<std::shared_ptr<Node<dim>>, double>> Node<dim>::getChildEd
 }
 
 /*!
-*  \brief      Return size of the child edges
+*  \brief      Return size of the child edges.
 *  \author     Sascha Kaden
 *  \param[out] child size
 *  \date       2017-10-24
@@ -308,7 +349,7 @@ size_t Node<dim>::getChildSize() const {
 }
 
 /*!
-*  \brief      Check if passed node is child
+*  \brief      Check if passed node is child.
 *  \author     Sascha Kaden
 *  \param[in]  node
 *  \param[out] true if existing child
@@ -324,7 +365,7 @@ bool Node<dim>::isChild(const std::shared_ptr<Node<dim>> &node) const {
 }
 
 /*!
-*  \brief      Clear list of children
+*  \brief      Clear list of children.
 *  \author     Sascha Kaden
 *  \date       2016-07-15
 */
@@ -334,21 +375,21 @@ void Node<dim>::clearChildren() {
 }
 
 /*!
-*  \brief      Add an invalid child Node to the invalid children list
+*  \brief      Add an invalid child Node to the invalid children list.
 *  \author     Sascha Kaden
 *  \param[in]  shared_ptr child Node
 *  \date       2017-10-12
 */
 template <unsigned int dim>
 void Node<dim>::addInvalidChild(const std::shared_ptr<Node<dim>> &child) {
-    if (child->empty())
+    if (child && child->empty())
         return;
 
     m_invalidChildren.push_back(child);
 }
 
 /*!
-*  \brief      Check if passed node is invalid child of the Node
+*  \brief      Check if passed node is invalid child of the Node.
 *  \author     Sascha Kaden
 *  \param[in]  node
 *  \param[out] true if existing invalid child
@@ -364,7 +405,7 @@ bool Node<dim>::isInvalidChild(const std::shared_ptr<Node<dim>> &node) const {
 }
 
 /*!
-*  \brief      Clear list of invalid children
+*  \brief      Clear list of invalid children.
 *  \author     Sascha Kaden
 *  \date       2017-10-12
 */
@@ -374,7 +415,7 @@ void Node<dim>::clearInvalidChildren() {
 }
 
 /*!
-*  \brief      Return const Vector of the Node
+*  \brief      Return const Vector of the Node.
 *  \author     Sascha Kaden
 *  \param[out] Vec
 *  \date       2016-05-24
@@ -385,7 +426,7 @@ Vector<dim> Node<dim>::getValues() const {
 }
 
 /*!
-*  \brief      Return value from index
+*  \brief      Return value from index.
 *  \author     Sascha Kaden
 *  \param[in]  index
 *  \param[out] value

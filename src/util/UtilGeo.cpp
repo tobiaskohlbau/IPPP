@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 //-------------------------------------------------------------------------//
 
 #include <ippp/util/UtilGeo.hpp>
+
+#include <ippp/util/UtilVec.hpp>
 
 namespace ippp {
 namespace util {
@@ -83,7 +85,7 @@ void decomposeT(const Matrix4 &T, Matrix3 &R, Vector3 &t) {
 *  \param[out] transformation matrix
 *  \date       2016-07-07
 */
-Transform poseVecToTransform(const Vector6 &pose) {
+Transform toTransform(const Vector6 &pose) {
     Transform T;
     T = Translation(Vector3(pose[0], pose[1], pose[2])) * Eigen::AngleAxisd(pose[3], Eigen::Vector3d::UnitX()) *
         Eigen::AngleAxisd(pose[4], Eigen::Vector3d::UnitY()) * Eigen::AngleAxisd(pose[5], Eigen::Vector3d::UnitZ());
@@ -91,17 +93,17 @@ Transform poseVecToTransform(const Vector6 &pose) {
 }
 
 /*!
-*  \brief      Convert pose configs to transformation matrizes
+*  \brief      Convert pose configs to transformation matrices
 *  \author     Sascha Kaden
 *  \param[in]  pose Vectors
-*  \param[out] transformation matrizes
+*  \param[out] transformation matrices
 *  \date       2016-07-07
 */
-std::vector<Transform> convertPosesToTransforms(const std::vector<Vector6> poses) {
+std::vector<Transform> toTransform(const std::vector<Vector6> poses) {
     std::vector<Transform> transforms;
     transforms.reserve(poses.size());
     for (const auto &pose : poses)
-        transforms.push_back(poseVecToTransform(pose));
+        transforms.push_back(toTransform(pose));
 
     return transforms;
 }
@@ -117,7 +119,7 @@ Transform poseVecToTransformFromDeg(const Vector6 &pose) {
     auto poseVec = pose;
     for (size_t i = 3; i < 6; ++i)
         poseVec[i] *= toRad();
-    return poseVecToTransform(poseVec);
+    return toTransform(poseVec);
 }
 
 /*!
@@ -127,10 +129,11 @@ Transform poseVecToTransformFromDeg(const Vector6 &pose) {
 *  \param[out] pose Vector (angles)
 *  \date       2016-07-07
 */
-Vector6 transformToVec(const Transform &T) {
+Vector6 toPoseVec(const Transform &T) {
     Vector3 vec(T.translation());
     Vector3 euler(T.rotation().eulerAngles(0, 1, 2));
-    return util::append<3, 3>(vec, euler);
+    //AngleAxis angleAxis(T.rotation());
+    return util::append<3, 3>(vec, euler); // euler
 }
 
 /*!
@@ -196,6 +199,27 @@ AABB translateAABB(const AABB &a, const Transform &T) {
     return result;
 }
 
+MatrixX transformToTaskFrameJ(const MatrixX &jacobian, const Transform taskFrame) {
+    Matrix6 toTaskFrame = Matrix6::Zero();
+    Matrix3 R = taskFrame.rotation();
+    toTaskFrame.block<3, 3>(0, 0) = R.inverse();
+    toTaskFrame.block<3, 3>(3, 3) = R.inverse();
+
+    Matrix6 E = Matrix6::Identity();
+    // double psi = std::atan2(R(2, 1), R(2, 2));
+    double theta = std::asin(R(2, 0));
+    double phi = std::atan2(R(1, 0), R(0, 0));
+    E(3, 3) = std::cos(phi) / std::cos(theta);
+    E(3, 4) = std::sin(phi) / std::cos(theta);
+    E(4, 3) = -std::sin(phi);
+    E(4, 4) = std::cos(phi);
+    E(5, 3) = (std::cos(phi) * std::sin(theta)) / std::cos(theta);
+    E(5, 4) = (std::sin(phi) * std::sin(theta)) / std::cos(theta);
+
+    MatrixX J = toTaskFrame * jacobian;
+    return E * J;
+}
+
 /*!
 *  \brief      Remove duplicate vectors from the passed reference list.
 *  \author     Sascha Kaden
@@ -223,23 +247,48 @@ void removeDuplicates(std::vector<Vector3> &vectors) {
     }
 }
 
+/*!
+*  \brief      Convert radian to degree value.
+*  \author     Sascha Kaden
+*  \param[in]  radian
+*  \date       2017-04-07
+*/
 double toDeg(double rad) {
     return rad * toDeg();
 }
 
+/*!
+*  \brief      Convert degree to radian value.
+*  \author     Sascha Kaden
+*  \param[in]  degree
+*  \date       2017-04-07
+*/
 double toRad(double deg) {
     return deg * toRad();
 }
 
 /*!
-*  \brief      Convert degree to radian
+*  \brief      Convert radian to degree value.
 *  \author     Sascha Kaden
-*  \param[in]  deg
-*  \param[out] rad
-*  \date       2016-11-16
+*  \param[in]  radian
+*  \date       2017-04-07
 */
-double degToRad(double deg) {
-    return deg * toRad();
+std::vector<double> toDeg(std::vector<double> rads) {
+    for (auto &rad : rads)
+        rad *toDeg();
+    return rads;
+}
+
+/*!
+*  \brief      Convert degree to radian value.
+*  \author     Sascha Kaden
+*  \param[in]  degree
+*  \date       2017-04-07
+*/
+std::vector<double> toRad(std::vector<double> degs) {
+    for (auto &deg : degs)
+        deg *toRad();
+    return degs;
 }
 
 } /* namespace util */

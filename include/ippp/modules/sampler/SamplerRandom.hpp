@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,12 +32,11 @@ template <unsigned int dim>
 class SamplerRandom : public Sampler<dim> {
   public:
     SamplerRandom(const std::shared_ptr<Environment> &environment, const std::string &seed = "");
-    SamplerRandom(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::string &seed = "");
+    SamplerRandom(const std::pair<Vector<dim>, Vector<dim>> boundary, const std::string &seed = "");
     virtual Vector<dim> getSample();
 
   protected:
-    using Sampler<dim>::m_minBoundary;
-    using Sampler<dim>::m_maxBoundary;
+    using Sampler<dim>::m_robotBoundary;
     using Sampler<dim>::m_generator;
 };
 
@@ -62,8 +61,8 @@ SamplerRandom<dim>::SamplerRandom(const std::shared_ptr<Environment> &environmen
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerRandom<dim>::SamplerRandom(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::string &seed)
-    : Sampler<dim>("RandomSampler", minBoundary, maxBoundary, seed) {
+SamplerRandom<dim>::SamplerRandom(const std::pair<Vector<dim>, Vector<dim>> boundary, const std::string &seed)
+    : Sampler<dim>("RandomSampler", boundary, seed) {
 }
 
 /*!
@@ -77,7 +76,7 @@ Vector<dim> SamplerRandom<dim>::getSample() {
     Vector<dim> config;
     for (unsigned int i = 0; i < dim; ++i)
         config[i] =
-            this->m_minBoundary[i] + (double)(this->m_generator() % (int)(this->m_maxBoundary[i] - this->m_minBoundary[i]));
+            m_robotBoundary.first[i] + (double)(m_generator() % (int)(m_robotBoundary.second[i] - m_robotBoundary.first[i]));
     return config;
 }
 

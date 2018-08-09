@@ -34,20 +34,20 @@ int main(int argc, char** argv) {
     std::shared_ptr<RobotBase> robot(new MobileRobot(2, std::make_pair(minBoundary, maxBoundary), dofTypes));
     robot->setBaseModel(robotModel);
     std::shared_ptr<Environment> environment(new Environment(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
-    environment->addEnvObject(std::make_shared<ObstacleObject>("obstacle", obstacleModel));
+    environment->addObstacle(std::make_shared<ObstacleObject>("obstacle", obstacleModel));
 
     // define step size of the trajectories and create trajectory planner
     double stepSize = 3;
     // create all required core modules with the ModuleConfigurator
     ModuleConfigurator<dim> creator;
     creator.setEnvironment(environment);
-    creator.setCollisionType(CollisionType::PQP);
-    creator.setMetricType(MetricType::L2);
+    creator.setValidityCheckerType(ValidityCheckerType::PQP);
+    creator.setMetricType(DistanceMetricType::L2);
     creator.setPathModifierType(PathModifierType::NodeCut);
-    creator.setSamplerType(SamplerType::SamplerUniform);
+    creator.setSamplerType(SamplerType::Uniform);
     creator.setSamplingType(SamplingType::Straight);
     creator.setSamplingProperties(5, 10);
-    creator.setTrajectoryType(TrajectoryType::Linear);
+    creator.setTrajectoryType(TrajectoryPlannerType::Linear);
 
     // define the options of the path planner
     double rrtStepSize = 30;

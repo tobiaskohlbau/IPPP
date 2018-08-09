@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@
 namespace ippp {
 namespace ui {
 
-bool save(const std::string &filePath, const nlohmann::json &data, int intend = 4);
-bool save(const std::string &filePath, const std::string &data);
+bool save(const std::string &filePath, const nlohmann::json &data, int intend = 4, bool append = false);
+bool save(const std::string &filePath, const std::string &data, bool append = false);
 std::string load(const std::string &filePath);
 nlohmann::json loadJson(const std::string &filePath);
 

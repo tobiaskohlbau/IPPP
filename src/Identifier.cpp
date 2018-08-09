@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,11 +20,6 @@
 
 namespace ippp {
 
-/*!
-*  \brief      Standard destructor of the Identifier
-*  \author     Sascha Kaden
-*  \date       2016-05-30
-*/
 Identifier::~Identifier() = default;
 
 /*!

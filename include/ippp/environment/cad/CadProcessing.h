@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,20 +23,23 @@
 #include <vector>
 
 #include <ippp/dataObj/PointList.hpp>
+#include <ippp/environment/model/Mesh.h>
 #include <ippp/types.h>
 #include <ippp/util/UtilList.hpp>
-#include <ippp/environment/model/Mesh.h>
 
 namespace ippp {
 namespace cad {
+
+bool checkMesh(const Mesh &mesh);
 
 std::vector<Triangle2D> generateTriangles(const Mesh &mesh);
 Mesh generateMesh(const std::vector<Triangle2D> &triangles);
 Mesh mergeMeshes(const std::vector<Mesh> &meshes);
 
-Vector3 getCenterOfMesh(const Mesh &mesh);
+Vector3 calcCenterOfMesh(const Mesh &mesh);
 void centerMeshes(std::vector<Mesh> &meshes);
 void centerMesh(Mesh &mesh);
+void transformMesh(Mesh &mesh, Transform transform);
 
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices);
 void transformVertices(const Transform &T, std::vector<Vector3> &vertices);

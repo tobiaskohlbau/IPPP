@@ -1,0 +1,20 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v4.0.0)
+
+mtllib simpleTriangleRobot.mtl
+
+# 4 vertex positions
+v  0 -5 0
+v  55.5555555 -5 0
+v  55.5555555 5 0
+v  0 5 0
+
+# 0 UV coordinates
+
+# 0 vertex normals
+
+# Mesh '' with 2 faces
+usemtl $Material_0
+f  1/ 2/ 3/
+f  1/ 4/ 3/
+

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ namespace ippp {
 */
 ObstacleObject::ObstacleObject(const std::string &name, std::shared_ptr<ModelContainer> &modelContainer)
     : EnvObject(name, EnvObjectType::Obstacle), model(modelContainer) {
+}
+
+ObstacleObject::ObstacleObject(const std::string &name, std::shared_ptr<ModelContainer> &modelContainer, const Transform &pose)
+    : EnvObject(name, EnvObjectType::Obstacle, pose), model(modelContainer) {
 }
 
 /*!

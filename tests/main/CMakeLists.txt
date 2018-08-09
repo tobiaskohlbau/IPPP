@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2017 Sascha Kaden
+# Copyright 2018 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,4 +17,7 @@
 #-------------------------------------------------------------------------//
 
 add_ippp_test(clearWorkspace "main")
+if(MSVC)
+        target_compile_options(Test_main_clearWorkspace PUBLIC -bigobj)
+ endif()
 #ADD_IPPP_TEST(obstacleWorkspace "main")

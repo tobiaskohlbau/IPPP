@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #include <gtest/gtest.h>
 
 #include <ippp/ui/FileWriterReader.h>
-#include <ippp/ui/JsonSerializer.h>
+#include <ippp/ui/JsonSerializer.hpp>
 
 using namespace ippp;
 
@@ -65,7 +65,7 @@ void testDeserialization() {
     for (auto &vec : vectors) {
         double value = -1.23456789;
         for (unsigned int j = 0; j < dim; ++j, ++value)
-            EXPECT_NEAR(vec[j], value, EPSILON);
+            EXPECT_NEAR(vec[j], value, IPPP_EPSILON);
     }
 }
 

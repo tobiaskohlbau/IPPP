@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,15 +18,21 @@
 
 #include <ippp/environment/cad/CadProcessing.h>
 
-#include <numeric>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 
 #include <ippp/util/Logging.h>
 #include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
 namespace cad {
+
+bool checkMesh(const Mesh &mesh) {
+    if (mesh.vertices.empty() || mesh.faces.empty())
+        return false;
+    return true;
+}
 
 /*!
 *  \brief      Generate a Triangle2D from the passed Mesh.
@@ -85,7 +91,7 @@ Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
         vertexCount = mesh.vertices.size();
         for (auto &vertex : tmpMesh.vertices)
             mesh.vertices.push_back(vertex);
-        
+
         for (auto &face : tmpMesh.faces)
             mesh.faces.emplace_back(face[0] + vertexCount, face[1] + vertexCount, face[2] + vertexCount);
     }
@@ -99,7 +105,7 @@ Mesh mergeMeshes(const std::vector<Mesh> &meshes) {
 *  \param[out] center point
 *  \date       2017-10-07
 */
-Vector3 getCenterOfMesh(const Mesh &mesh) {
+Vector3 calcCenterOfMesh(const Mesh &mesh) {
     Vector3 zero(0, 0, 0);
     return std::accumulate(mesh.vertices.begin(), mesh.vertices.end(), zero) / mesh.vertices.size();
 }
@@ -122,11 +128,17 @@ void centerMeshes(std::vector<Mesh> &meshes) {
 *  \date           2017-10-07
 */
 void centerMesh(Mesh &mesh) {
-    Vector3 centerPoint = getCenterOfMesh(mesh);
+    Vector3 centerPoint = calcCenterOfMesh(mesh);
 
     // set the vertices to the new center point
     for (auto &vertex : mesh.vertices)
         vertex -= centerPoint;
+}
+
+void transformMesh(Mesh &mesh, Transform transform) {
+    auto translation = transform.translation();
+    for (auto &vertex : mesh.vertices)
+        vertex = transform * vertex;
 }
 
 /*!
@@ -139,7 +151,7 @@ void centerMesh(Mesh &mesh) {
 void transformVertices(const Vector6 &config, std::vector<Vector3> &vertices) {
     if (config[0] == 0 && config[1] == 0 && config[2] == 0 && config[3] == 0 && config[4] == 0 && config[5] == 0)
         return;
-    auto T = util::poseVecToTransform(config);
+    auto T = util::toTransform(config);
     transformVertices(T, vertices);
 }
 

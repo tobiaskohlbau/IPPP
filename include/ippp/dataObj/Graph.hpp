@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@
 #include <ippp/Identifier.h>
 #include <ippp/dataObj/Node.hpp>
 #include <ippp/modules/neighborFinders/KDTree.hpp>
+#include <ippp/statistic/Stats.h>
+#include <ippp/statistic/StatsGraphCollector.h>
 #include <ippp/util/Logging.h>
 
 namespace ippp {
@@ -34,39 +36,39 @@ namespace ippp {
 template <unsigned int dim>
 class Graph : public Identifier {
   public:
-    Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder);
+    Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder,
+          const std::string &name = "Graph");
     ~Graph();
 
     bool addNode(const std::shared_ptr<Node<dim>> &node);
     void addNodeList(const std::vector<std::shared_ptr<Node<dim>>> &nodes);
     bool containNode(const std::shared_ptr<Node<dim>> &node);
+    double getMaxNodeCost() const;
 
     std::shared_ptr<Node<dim>> getNode(size_t index) const;
     std::shared_ptr<Node<dim>> getNode(const Vector<dim> &config) const;
     std::vector<std::shared_ptr<Node<dim>>> getNodes() const;
+    std::vector<std::shared_ptr<Node<dim>>> getNodes(size_t startIndex, size_t endIndex = 0) const;
 
     std::shared_ptr<Node<dim>> getNearestNode(const Vector<dim> &config) const;
     std::shared_ptr<Node<dim>> getNearestNode(const Node<dim> &node) const;
-    std::shared_ptr<Node<dim>> getNearestNode(const std::shared_ptr<Node<dim>> &node) const;
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Vector<dim> &config, double range) const;
     std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const Node<dim> &node, double range) const;
-    std::vector<std::shared_ptr<Node<dim>>> getNearNodes(const std::shared_ptr<Node<dim>> node, double range) const;
 
     void sortTree();
-    bool eraseNode(const std::shared_ptr<Node<dim>> &node);
+    void clear();
+    void clearQueryParents();
 
     bool empty() const;
-    size_t nodeSize() const;
-    size_t edgeSize() const;
+    size_t numNodes() const;
+    size_t numEdges() const;
     size_t getSortCount() const;
     bool autoSort() const;
     void preserveNodePtr();
-
-    void clearParents();
-    void clearQueryParents();
-    void clearChildes();
+    void updateStats() const;
 
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> getNeighborFinder();
+    std::shared_ptr<Graph<dim>> createEmptyGraphClone();
 
     bool operator<(std::shared_ptr<Graph<dim>> const &a) {
         if (a->getNode(0) && this->getNode(0))
@@ -76,13 +78,17 @@ class Graph : public Identifier {
     }
 
   private:
+    void clearPointer();
+
     std::vector<std::shared_ptr<Node<dim>>> m_nodes;                                             /*!< vector of all graph nodes */
     std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> m_neighborFinder = nullptr; /*!< search module */
+    std::shared_ptr<StatsGraphCollector> m_collector = nullptr;
     std::mutex m_mutex; /*!< mutex for adding and changing of the vector of nodes */
 
     const size_t m_sortCount = 0;   /*!< divider, when the NeighborFinder has to be sorted */
     bool m_autoSort = false;        /*!< Flag to set the auto sorting */
     bool m_preserveNodePtr = false; /*!< Flag to save all pointers inside of the nodes */
+    double m_maxNodeCost = 0;
 };
 
 /*!
@@ -93,11 +99,18 @@ class Graph : public Identifier {
 *  \date       2016-06-02
 */
 template <unsigned int dim>
-Graph<dim>::Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder)
-    : Identifier("Graph"), m_sortCount(sortCount), m_neighborFinder(neighborFinder) {
+Graph<dim>::Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> neighborFinder,
+                  const std::string &name)
+    : Identifier(name),
+      m_sortCount(sortCount),
+      m_neighborFinder(neighborFinder),
+      m_collector(std::make_shared<StatsGraphCollector>(name + "Stats")) {
+    Logging::debug("Initialize", this);
+    Stats::addCollector(m_collector);
+
     m_autoSort = (sortCount != 0);
     // reserve memory for the node vector to reduce computation time at new memory allocation
-    m_nodes.reserve(10000);
+    m_nodes.reserve(1000);
 }
 
 /*!
@@ -107,14 +120,7 @@ Graph<dim>::Graph(size_t sortCount, std::shared_ptr<NeighborFinder<dim, std::sha
 */
 template <unsigned int dim>
 Graph<dim>::~Graph() {
-    if (!m_preserveNodePtr) {
-        for (auto &&node : m_nodes) {
-            if (node) {
-                node->clearPointer();
-                node = nullptr;
-            }
-        }
-    }
+    clear();
 }
 
 /*!
@@ -128,6 +134,8 @@ template <unsigned int dim>
 bool Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_mutex.lock();
     m_neighborFinder->addNode(node->getValues(), node);
+    if (node->getPathCost() > m_maxNodeCost)
+        m_maxNodeCost = node->getPathCost();
     m_nodes.push_back(node);
     m_mutex.unlock();
     if (m_autoSort && (m_nodes.size() % m_sortCount) == 0)
@@ -164,6 +172,17 @@ bool Graph<dim>::containNode(const std::shared_ptr<Node<dim>> &node) {
 }
 
 /*!
+* \brief      Returns the maximum node cost of all nodes
+* \author     Sascha Kaden
+* \param[out] maximum node cost
+* \date       2017-10-01
+*/
+template <unsigned int dim>
+double Graph<dim>::getMaxNodeCost() const {
+    return m_maxNodeCost;
+}
+
+/*!
 * \brief      Return Node from index
 * \author     Sascha Kaden
 * \param[in]  index
@@ -188,7 +207,7 @@ template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const {
     // todo: at the time brute force search over all nodes, add a more clever search
     for (const auto &node : m_nodes)
-        if (node->getValues().isApprox(config, EPSILON))
+        if (node->getValues().isApprox(config, IPPP_EPSILON))
             return node;
     return nullptr;
 }
@@ -202,6 +221,25 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNode(const Vector<dim> &config) const 
 template <unsigned int dim>
 std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes() const {
     return m_nodes;
+}
+
+/*!
+* \brief      Returns the list of all nodes from the Graph
+* \author     Sascha Kaden
+* \param[out] vector of nodes
+* \date       2016-05-25
+*/
+template <unsigned int dim>
+std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNodes(size_t startIndex, size_t endIndex) const {
+    if (startIndex >= m_nodes.size())
+        return std::vector<std::shared_ptr<Node<dim>>>();
+
+    if (endIndex == 0)
+        return std::vector<std::shared_ptr<Node<dim>>>(m_nodes.begin() + startIndex, m_nodes.end());
+    else if (startIndex < m_nodes.size())
+        return std::vector<std::shared_ptr<Node<dim>>>(m_nodes.begin() + startIndex, m_nodes.begin() + endIndex);
+
+    return std::vector<std::shared_ptr<Node<dim>>>();
 }
 
 /*!
@@ -226,18 +264,6 @@ std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Vector<dim> &config)
 template <unsigned int dim>
 std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const Node<dim> &node) const {
     return m_neighborFinder->searchNearestNeighbor(node.getValues());
-}
-
-/*!
-* \brief      Search for nearest neighbor
-* \author     Sascha Kaden
-* \param[in]  Node from where the search starts
-* \param[out] nearest neighbor Node
-* \date       2016-05-25
-*/
-template <unsigned int dim>
-std::shared_ptr<Node<dim>> Graph<dim>::getNearestNode(const std::shared_ptr<Node<dim>> &node) const {
-    return m_neighborFinder->searchNearestNeighbor(node->getValues());
 }
 
 /*!
@@ -267,19 +293,6 @@ std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const Node<dim>
 }
 
 /*!
-* \brief      Search range
-* \author     Sascha Kaden
-* \param[in]  Node for the search
-* \param[in]  range around the passed Node
-* \param[out] list of nodes inside the range
-* \date       2016-05-25
-*/
-template <unsigned int dim>
-std::vector<std::shared_ptr<Node<dim>>> Graph<dim>::getNearNodes(const std::shared_ptr<Node<dim>> node, double range) const {
-    return m_neighborFinder->searchRange(node->getValues(), range);
-}
-
-/*!
 * \brief      Rebase the NeighborFinder with the node list from the graph.
 * \author     Sascha Kaden
 * \date       2017-01-09
@@ -292,22 +305,34 @@ void Graph<dim>::sortTree() {
 }
 
 /*!
-* \brief      Remove Node from Graph, erasing from the vector of Nodes
-* \details    KDTree has to be sorted after erasing of the Nodes.
+* \brief      Remove all nodes and the pointer inside of them (parent and children).
+* \details    If preserveNodePtr is true, the nodes will be cleared, but not the pointer of them.
 * \author     Sascha Kaden
-* \param[in]  Node pointer
-* \param[out] true, if node was found and erased
-* \date       2017-04-18
+* \date       2017-01-09
 */
 template <unsigned int dim>
-bool Graph<dim>::eraseNode(const std::shared_ptr<Node<dim>> &node) {
-    for (auto &&graphNode : m_nodes) {
-        if (graphNode == node) {
-            m_nodes.erase(graphNode);
-            return true;
+void Graph<dim>::clear() {
+    if (!m_preserveNodePtr) {
+        for (auto &&node : m_nodes) {
+            if (node) {
+                node->clearPointer();
+                node = nullptr;
+            }
         }
     }
-    return false;
+    m_nodes.clear();
+    m_neighborFinder->clear();
+}
+
+/*!
+* \brief      Clear all query parents of the nodes.
+* \author     Sascha Kaden
+* \date       2017-01-09
+*/
+template <unsigned int dim>
+void Graph<dim>::clearQueryParents() {
+    for (auto &&node : m_nodes)
+        node->clearQueryParent();
 }
 
 /*!
@@ -330,7 +355,7 @@ bool Graph<dim>::empty() const {
 * \date       2016-08-09
 */
 template <unsigned int dim>
-size_t Graph<dim>::nodeSize() const {
+size_t Graph<dim>::numNodes() const {
     return m_nodes.size();
 }
 
@@ -341,7 +366,7 @@ size_t Graph<dim>::nodeSize() const {
 * \date       2016-08-09
 */
 template <unsigned int dim>
-size_t Graph<dim>::edgeSize() const {
+size_t Graph<dim>::numEdges() const {
     size_t edgeSize = 0;
     for (auto &node : m_nodes) {
         edgeSize += node->getChildSize();
@@ -379,31 +404,9 @@ bool Graph<dim>::autoSort() const {
 * \date       2017-04-03
 */
 template <unsigned int dim>
-void Graph<dim>::clearParents() {
+void Graph<dim>::clearPointer() {
     for (auto &&node : m_nodes)
-        node->clearParent();
-}
-
-/*!
-* \brief      Clear all query parent pointer from the nodes
-* \author     Sascha Kaden
-* \date       2017-04-03
-*/
-template <unsigned int dim>
-void Graph<dim>::clearQueryParents() {
-    for (auto &&node : m_nodes)
-        node->clearQueryParent();
-}
-
-/*!
-* \brief      Clear all child pointer from the nodes
-* \author     Sascha Kaden
-* \date       2017-04-03
-*/
-template <unsigned int dim>
-void Graph<dim>::clearChildes() {
-    for (auto &&node : m_nodes)
-        node->clearChildes();
+        node->clearPointer();
 }
 
 /*!
@@ -417,6 +420,17 @@ void Graph<dim>::preserveNodePtr() {
 }
 
 /*!
+* \brief      Update the current Graph status to the StatsContainer.
+* \author     Sascha Kaden
+* \date       2017-04-03
+*/
+template <unsigned int dim>
+void Graph<dim>::updateStats() const {
+    m_collector->setNodeCount(m_nodes.size());
+    m_collector->setEdgeCount(numEdges());
+}
+
+/*!
 * \brief      Return the NeighborFinder instance of the Graph
 * \author     Sascha Kaden
 * \param[out] NeighborFinder
@@ -425,6 +439,17 @@ void Graph<dim>::preserveNodePtr() {
 template <unsigned int dim>
 std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> Graph<dim>::getNeighborFinder() {
     return m_neighborFinder;
+}
+
+/*!
+* \brief      Generate an empty clone of the Graph with a same empty NeighborFinder.
+* \author     Sascha Kaden
+* \param[out] Graph
+* \date       2017-04-03
+*/
+template <unsigned int dim>
+std::shared_ptr<Graph<dim>> Graph<dim>::createEmptyGraphClone() {
+    return std::make_shared<Graph<dim>>(m_sortCount, m_neighborFinder->clone());
 }
 
 } /* namespace ippp */

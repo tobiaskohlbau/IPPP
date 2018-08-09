@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,20 +33,20 @@ void testConstructor() {
     Graph<dim> graph1(0, neighborFinder);
     EXPECT_FALSE(graph1.autoSort());
     EXPECT_EQ(graph1.getSortCount(), 0);
-    EXPECT_EQ(graph1.nodeSize(), 0);
+    EXPECT_EQ(graph1.numNodes(), 0);
 
     Graph<dim> graph2(10, neighborFinder);
     EXPECT_TRUE(graph2.autoSort());
     EXPECT_EQ(graph2.getSortCount(), 10);
-    EXPECT_EQ(graph2.nodeSize(), 0);
+    EXPECT_EQ(graph2.numNodes(), 0);
 
     for (size_t i = 0; i < 5; ++i) {
         graph1.addNode(std::make_shared<Node<dim>>());
         graph2.addNode(std::make_shared<Node<dim>>());
     }
 
-    EXPECT_EQ(graph1.nodeSize(), 5);
-    EXPECT_EQ(graph2.nodeSize(), 5);
+    EXPECT_EQ(graph1.numNodes(), 5);
+    EXPECT_EQ(graph2.numNodes(), 5);
 }
 
 TEST(GRAPH, constructor) {
@@ -68,14 +68,13 @@ void NNS() {
     Graph<dim> graph1(0, neighborFinder1);
     std::vector<Vector<dim>> vecs;
     std::vector<std::shared_ptr<Node<dim>>> nodes;
-    for (int i = 0; i < 100; i+=5) {
+    for (int i = 0; i < 100; i += 5) {
         Vector<dim> vec = Vector<dim>::Constant(dim, 1, i);
         vecs.push_back(vec);
         std::shared_ptr<Node<dim>> node(new Node<dim>(vec));
         nodes.push_back(node);
         graph1.addNode(node);
     }
-    EXPECT_EQ(nodes[1], graph1.getNearestNode(nodes[0]));
     EXPECT_EQ(nodes[1], graph1.getNearestNode(*(nodes[0])));
     EXPECT_EQ(nodes[1], graph1.getNearestNode(vecs[0]));
 
@@ -83,7 +82,6 @@ void NNS() {
     Graph<dim> graph2(0, neighborFinder2);
     for (int i = 1; i < 10; ++i)
         graph2.addNode(nodes[i]);
-    EXPECT_EQ(nodes[1], graph2.getNearestNode(nodes[0]));
     EXPECT_EQ(nodes[1], graph2.getNearestNode(*(nodes[0])));
     EXPECT_EQ(nodes[1], graph2.getNearestNode(vecs[0]));
 }
@@ -129,9 +127,7 @@ void RS() {
         nodes.push_back(node);
         graph1.addNode(node);
     }
-    auto result = graph1.getNearNodes(nodes[4], 21);
-    contains(result, nodes);
-    result = graph1.getNearNodes(*(nodes[4]), 21);
+    auto result = graph1.getNearNodes(*(nodes[4]), 21);
     contains(result, nodes);
     result = graph1.getNearNodes(nodes[4]->getValues(), 21);
     contains(result, nodes);
@@ -148,7 +144,7 @@ TEST(GRAPH, RS) {
     RS<9>();
 }
 
-template<unsigned int dim>
+template <unsigned int dim>
 void getNode() {
     auto metric = std::make_shared<L2Metric<dim>>();
     auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
@@ -161,7 +157,7 @@ void getNode() {
         graph.addNode(node);
         nodes.push_back(node);
     }
-    
+
     for (size_t i = 0; i < 10; ++i) {
         Vector<dim> vec = Eigen::VectorXd::Constant(dim, 1, i);
         auto node = graph.getNode(vec);

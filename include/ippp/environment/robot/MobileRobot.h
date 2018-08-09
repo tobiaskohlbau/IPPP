@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@
 namespace ippp {
 
 /*!
-* \brief   Superclass of all mobile robots. If the class is used as robot, it should have six dimensions, like the eucliedean
-* space.
+* \brief   Base class of all mobile robots.
+* \details In the standard case it is interpreted as six dimensional robot inside of 3D space.
 * \author  Sascha Kaden
 * \date    2017-11-10
 */

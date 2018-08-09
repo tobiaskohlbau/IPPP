@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #define UTILTRAJECTORY_HPP
 
 #include <ippp/util/UtilGeo.hpp>
+#include <ippp/util/UtilVec.hpp>
 
 namespace ippp {
 namespace util {
@@ -62,11 +63,11 @@ static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, 
 template <unsigned int dim>
 static std::vector<Vector<dim>> linearTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target, double posRes,
                                                      double oriRes, const Vector<dim> &posMask, const Vector<dim> &oriMask) {
-    if (util::equal<dim>(source, target))
+    if (equal<dim>(source, target))
         return std::vector<Vector<dim>>();
 
-    double uNormPos = (util::multiplyElementWise<dim>((target - source), posMask)).squaredNorm();
-    double uNormOri = (util::multiplyElementWise<dim>((target - source), oriMask)).squaredNorm();
+    double uNormPos = (multiplyElementWise<dim>((target - source), posMask)).squaredNorm();
+    double uNormOri = (multiplyElementWise<dim>((target - source), oriMask)).squaredNorm();
 
     // check resolutions of position and orientation resolution and take the smaller one
     auto oRes = uNormOri / oriRes;
@@ -118,11 +119,11 @@ static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, c
 template <unsigned int dim>
 static std::vector<Vector<dim>> linearTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target, double posRes,
                                                     double oriRes, const Vector<dim> &posMask, const Vector<dim> &oriMask) {
-    if ((source - target).isZero(EPSILON))
+    if ((source - target).isZero(IPPP_EPSILON))
         return std::vector<Vector<dim>>();
 
-    double uNormPos = (util::multiplyElementWise<dim>((target - source), posMask)).squaredNorm();
-    double uNormOri = (util::multiplyElementWise<dim>((target - source), oriMask)).squaredNorm();
+    double uNormPos = (multiplyElementWise<dim>((target - source), posMask)).squaredNorm();
+    double uNormOri = (multiplyElementWise<dim>((target - source), oriMask)).squaredNorm();
 
     // check resolutions of position and orientation resolution and take the smaller one
     auto oRes = uNormOri / oriRes;

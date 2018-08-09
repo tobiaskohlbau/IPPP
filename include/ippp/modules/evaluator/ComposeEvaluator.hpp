@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,35 +23,40 @@
 
 namespace ippp {
 
-enum class ComposeType { AND, OR };
-
 /*!
-* \brief   ComposeEvaluator which runs only one Iteration.
+* \brief   The ComposeEvaluator combines different Evaluators by AND or OR.
+* \details At a initialization step it init all owned evaluators and all poses and configurations will be passed to the owned
+* evaluators.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
 template <unsigned int dim>
 class ComposeEvaluator : public Evaluator<dim> {
   public:
-    ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, const ComposeType type);
+    ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type,
+                     const std::string &name = "ComposeEvaluator");
 
     bool evaluate();
-    void setQuery(const std::vector<Vector<dim>> &targets) override;
+    void initialize() override;
+    virtual void setConfigs(const std::vector<Vector<dim>> &targets) override;
+    virtual void setPoses(const std::vector<Vector6> &targets) override;
 
   protected:
     std::vector<std::shared_ptr<Evaluator<dim>>> m_evaluators;
-    ComposeType m_type = ComposeType::AND;
+    const ComposeType m_type = ComposeType::AND;
 };
 
 /*!
-*  \brief      Constructor of the class SingleIterationEvaluator
+*  \brief      Constructor of the class ComposeEvaluator
 *  \author     Sascha Kaden
-*  \param[in]  Environment
+*  \param[in]  List of Evaluator
+*  \param[in]  type of composing
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-ComposeEvaluator<dim>::ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, const ComposeType type)
-    : Evaluator<dim>("ComposeEvaluator"), m_evaluators(evaluators), m_type(type) {
+ComposeEvaluator<dim>::ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type,
+                                        const std::string &name)
+    : Evaluator<dim>(name), m_evaluators(evaluators), m_type(type) {
 }
 
 /*!
@@ -66,27 +71,46 @@ bool ComposeEvaluator<dim>::evaluate() {
         for (auto &evaluator : m_evaluators)
             if (!evaluator->evaluate())
                 return false;
-        
+
         return true;
     } else {    // OR
         for (auto &evaluator : m_evaluators)
             if (evaluator->evaluate())
                 return true;
-        
+
         return false;
     }
 }
 
+template <unsigned int dim>
+void ComposeEvaluator<dim>::initialize() {
+    Logging::debug("Initialize", this);
+    for (auto &evaluator : m_evaluators)
+        evaluator->initialize();
+}
+
 /*!
-*  \brief      Set target nodes for evaluation inside list of evaluators.
+*  \brief      Set target configurations for evaluation to the owned list of evaluators.
 *  \author     Sascha Kaden
 *  \param[in]  target Nodes
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-void ComposeEvaluator<dim>::setQuery(const std::vector<Vector<dim>> &targets) {
+void ComposeEvaluator<dim>::setConfigs(const std::vector<Vector<dim>> &targets) {
     for (auto &evaluator : m_evaluators)
-        evaluator->setQuery(targets);
+        evaluator->setConfigs(targets);
+}
+
+/*!
+*  \brief      Set target poses for evaluation to the owned list of evaluators.
+*  \author     Sascha Kaden
+*  \param[in]  target Nodes
+*  \date       2017-09-30
+*/
+template <unsigned int dim>
+void ComposeEvaluator<dim>::setPoses(const std::vector<Vector6> &targets) {
+    for (auto &evaluator : m_evaluators)
+        evaluator->setPoses(targets);
 }
 
 } /* namespace ippp */

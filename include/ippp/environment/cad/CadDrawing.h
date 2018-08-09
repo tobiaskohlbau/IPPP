@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,17 +27,9 @@
 namespace ippp {
 namespace cad {
 
-Eigen::MatrixXi create2dspace(const AABB &boundary, const int fillValue);
-void drawTriangles(Eigen::MatrixXi &space, const Mesh &mesh, const int fillValue);
-void drawTriangles(Eigen::MatrixXi &space, std::vector<Mesh> &meshes, const int fillValue);
-void drawTriangles(Eigen::MatrixXi &space, const std::vector<Triangle2D> &triangles, const int fillValue);
-
-void fillBottomFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
-void fillTopFlatTriangle(Eigen::MatrixXi &space, Vector2 v1, Vector2 v2, Vector2 v3, int value);
-void drawLine(Eigen::MatrixXi &space, int x1, int x2, int y, int value);
+std::pair<MatrixXi, Vector2i> create2dspace(const AABB &boundary, const int fillValue);
 
 } /* namespace cad */
-
 } /* namespace ippp */
 
 #endif    // CADDRAWING_H

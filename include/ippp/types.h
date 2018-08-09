@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,15 +19,16 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <memory>
-
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
+// global definitions
+constexpr double IPPP_EPSILON = 0.00001;
+constexpr double IPPP_MAX = std::numeric_limits<double>::max();
+
 namespace ippp {
 
-// global definitions
-constexpr double EPSILON = 0.00001;
+enum class ComposeType { AND, OR };
 
 // Eigen Vectors
 template <unsigned int dim>
@@ -41,21 +42,60 @@ using Vector7 = Eigen::Matrix<double, 7, 1>;
 using Vector8 = Eigen::Matrix<double, 8, 1>;
 using Vector9 = Eigen::Matrix<double, 9, 1>;
 using VectorX = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-using Vector3i = Eigen::Matrix<size_t, 3, 1>;
+
+using Vector2i = Eigen::Matrix<int, 2, 1>;
+using Vector3i = Eigen::Matrix<int, 3, 1>;
 
 // Eigen Matrices
 template <unsigned int dim>
 using Matrix = Eigen::Matrix<double, dim, dim>;
-using Matrix2 = Eigen::Matrix2d;
-using Matrix3 = Eigen::Matrix3d;
-using Matrix4 = Eigen::Matrix4d;
+using Matrix2 = Eigen::Matrix<double, 2, 2>;
+using Matrix3 = Eigen::Matrix<double, 3, 3>;
+using Matrix4 = Eigen::Matrix<double, 4, 4>;
+using Matrix5 = Eigen::Matrix<double, 5, 5>;
+using Matrix6 = Eigen::Matrix<double, 6, 6>;
 using MatrixX = Eigen::MatrixXd;
+using MatrixXi = Eigen::MatrixXi;
 
 // Eigen Geometry
 using AABB = Eigen::AlignedBox<double, 3>;
+using AngleAxis = Eigen::AngleAxisd;
+using Quaternion = Eigen::Quaterniond;
+using Rotation2D = Eigen::Rotation2D<double>;
 using Transform = Eigen::Transform<double, 3, Eigen::AffineCompact>;
 using Translation = Eigen::Translation<double, 3>;
-using Rotation2D = Eigen::Rotation2D<double>;
+
+// module type enums
+enum class DistanceMetricType { L1, L2, Inf, L1Weighted, L2Weighted, InfWeighted };
+enum class EvaluatorType {
+    PRMConfig,
+    PRMPose,
+    SingleIteration,
+    Time,
+    TreeConfig,
+    TreeConnect,
+    TreePose,
+    TreeConfigOrTime,
+    TreeConnectOrTime,
+    TreePoseOrTime
+};
+enum class NeighborFinderType { BruteForce, KDTree };
+enum class PathModifierType { Dummy, NodeCut };
+enum class SamplerType { Grid, NormalDist, Random, Uniform, UniformBiased, InverseJacobi };
+enum class SamplingType { Berenson, Bridge, FOR, Gaussian, GaussianDist, MedialAxis, NearObstacle, RGD, Straight, TS };
+enum class TrajectoryPlannerType { Linear, RotateAtS };
+enum class ValidityCheckerType { AABB, AlwaysValid, Dim2, FclMobile, FclSerial, PQP, BerensonConstraint, FclSerialAndConstraint };
+
+enum class PlannerType { AdaptedRRT, CiBRRT, EST, RRT, RRTStar, RRTStarConnect, PRM, SRT };
+
+// robot enums
+enum class RobotCategory { serial, mobile };
+enum class DofType { planarPos, planarRot, volumetricPos, volumetricRot, jointRot, jointTrans };
+enum class RobotType { Point2D, Mobile2D, Mobile3D, Serial, Jaco };
+
+enum class FactoryType { ModelFCL, ModelPQP };
+enum class EnvObjectType { Robot, Obstacle };
+enum class BodyType { Planar, Volumetric };
 
 } /* namespace ippp */
 

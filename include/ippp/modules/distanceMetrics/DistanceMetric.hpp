@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,8 @@ template <unsigned int dim>
 class Node;
 
 /*!
-* \brief   Interface class for the computation of the distance costs between two nodes/configurations.
+* \brief   Interface class for the computation of the distance or cost between two nodes/configurations.
+* \details If the subclass supports it, a simplified computation is provided, otherwise the normal computation will be done.
 * \author  Sascha Kaden
 * \date    2017-01-02
 */
@@ -40,11 +41,11 @@ template <unsigned int dim>
 class DistanceMetric : public Identifier {
   public:
     DistanceMetric(const std::string &name);
-    double calcDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
-    double calcSimpleDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
+    double calcDist(const Node<dim> &source, const Node<dim> &target) const;
+    double calcSimpleDist(const Node<dim> &source, const Node<dim> &target) const;
     virtual double calcDist(const Vector<dim> &source, const Vector<dim> &target) const = 0;
-    virtual double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const = 0;
-    virtual void simplifyDist(double &dist) const = 0;
+    virtual double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
+    virtual void simplifyDist(double &dist) const;
 };
 
 /*!
@@ -59,7 +60,7 @@ DistanceMetric<dim>::DistanceMetric(const std::string &name) : Identifier(name) 
 }
 
 /*!
-*  \brief      Calculates the distance cost of an Edge from the source and target Node.
+*  \brief      Calculates the distance cost between two Nodes.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
@@ -67,12 +68,12 @@ DistanceMetric<dim>::DistanceMetric(const std::string &name) : Identifier(name) 
 *  \date       2017-01-02
 */
 template <unsigned int dim>
-double DistanceMetric<dim>::calcDist(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const {
-    return calcDist(source->getValues(), target->getValues());
+double DistanceMetric<dim>::calcDist(const Node<dim> &source, const Node<dim> &target) const {
+    return calcDist(source.getValues(), target.getValues());
 }
 
 /*!
-*  \brief      Calculates the simplified distance cost of an Edge from the source and target Node.
+*  \brief      Calculates the simplified distance cost between two Nodes.
 *  \author     Sascha Kaden
 *  \param[in]  source Node
 *  \param[in]  target Node
@@ -80,9 +81,31 @@ double DistanceMetric<dim>::calcDist(const std::shared_ptr<Node<dim>> &source, c
 *  \date       2017-10-08
 */
 template <unsigned int dim>
-double DistanceMetric<dim>::calcSimpleDist(const std::shared_ptr<Node<dim>> &source,
-                                           const std::shared_ptr<Node<dim>> &target) const {
-    return calcSimpleDist(source->getValues(), target->getValues());
+double DistanceMetric<dim>::calcSimpleDist(const Node<dim> &source, const Node<dim> &target) const {
+    return calcSimpleDist(source.getValues(), target.getValues());
+}
+
+/*!
+*  \brief      Calculates the simplified distance cost between two configurations.
+*  \author     Sascha Kaden
+*  \param[in]  source configuration
+*  \param[in]  target configuration
+*  \param[out] simplified distance cost
+*  \date       2018-07-25
+*/
+template <unsigned int dim>
+double DistanceMetric<dim>::calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const {
+    return calcDist(source, target);
+}
+
+/*!
+*  \brief         Calculates the simplified distance of the passed distance (do nothing).
+*  \author        Sascha Kaden
+*  \param[in,out] distance
+*  \date          2018-07-25
+*/
+template <unsigned int dim>
+void DistanceMetric<dim>::simplifyDist(double &dist) const {
 }
 
 } /* namespace ippp */

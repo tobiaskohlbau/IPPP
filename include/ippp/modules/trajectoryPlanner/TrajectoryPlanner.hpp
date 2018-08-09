@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,48 +20,41 @@
 #define TRAJECTORYPLANNER_HPP
 
 #include <ippp/Identifier.h>
+#include <ippp/dataObj/Node.hpp>
 #include <ippp/environment/Environment.h>
-#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/types.h>
 #include <ippp/util/UtilTrajectory.hpp>
 
 namespace ippp {
 
 /*!
-* \brief   Class LinearTrajectory plans a path between the passed nodes/configs. Start and end point aren't part of the path.
+* \brief   Interface TrajectoryPlanner plans a discrete trajectory between the passed nodes/configs. Start and end config aren't
+* part of the path.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
 template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
-    TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                      const std::shared_ptr<Environment> &environment, double posRes = 1, double oriRes = 0.1);
+    TrajectoryPlanner(const std::string &name, const std::shared_ptr<Environment> &environment, double posRes = 1,
+                      double oriRes = util::toRad(5));
 
-    bool checkTrajectory(const Node<dim> &source, const Node<dim> &target) const;
-    bool checkTrajectory(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
-    bool checkTrajectory(const Vector<dim> &source, const Vector<dim> &target) const;
+    std::vector<Vector<dim>> calcTrajCont(const Node<dim> &source, const Node<dim> &target) const;
+    std::vector<Vector<dim>> calcTrajBin(const Node<dim> &source, const Node<dim> &target) const;
+    virtual std::vector<Vector<dim>> calcTrajCont(const Vector<dim> &source, const Vector<dim> &target) const = 0;
+    virtual std::vector<Vector<dim>> calcTrajBin(const Vector<dim> &source, const Vector<dim> &target) const = 0;
 
-    Vector<dim> checkTrajCont(const Node<dim> &source, const Node<dim> &target) const;
-    Vector<dim> checkTrajCont(const std::shared_ptr<Node<dim>> &source, const std::shared_ptr<Node<dim>> &target) const;
-    Vector<dim> checkTrajCont(const Vector<dim> &source, const Vector<dim> &target) const;
-
-    virtual std::vector<Vector<dim>> calcTrajectoryCont(const Vector<dim> &source, const Vector<dim> &target) const = 0;
-    virtual std::vector<Vector<dim>> calcTrajectoryBin(const Vector<dim> &source, const Vector<dim> &target) const = 0;
-
-    void setResolutions(double posRes, double oriRes = 0.1);
-    double getPosRes() const;
-    double getOriRes() const;
+    void setResolutions(double posRes, double oriRes = util::toRad(5));
+    void setResolutions(std::pair<double, double> resolutions);
     std::pair<double, double> getResolutions() const;
 
   protected:
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
 
     double m_posRes = 1;
-    double m_oriRes = 0.1;
+    double m_oriRes = util::toRad(5);
     double m_sqPosRes = 1;
-    double m_sqOriRes = 1;
+    double m_sqOriRes = util::toRad(5) * util::toRad(5);
 
     Vector<dim> m_posMask;
     Vector<dim> m_oriMask;
@@ -78,9 +71,9 @@ class TrajectoryPlanner : public Identifier {
 *  \date       2016-05-25
 */
 template <unsigned int dim>
-TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                          const std::shared_ptr<Environment> &environment, double posRes, double oriRes)
-    : Identifier(name), m_collision(collision), m_environment(environment) {
+TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::shared_ptr<Environment> &environment, double posRes,
+                                          double oriRes)
+    : Identifier(name), m_environment(environment) {
     Logging::debug("Initialize", this);
 
     setResolutions(posRes, oriRes);
@@ -90,99 +83,27 @@ TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::sh
 }
 
 /*!
-*  \brief      Control the trajectory and return if possible or not
+*  \brief      Calculates a continuous discrete trajectory.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] possibility of trajectory, true if possible
-*  \date       2016-05-31
+*  \param[in]  start Node
+*  \param[in]  goal Node
+*  \date       2017-10-07
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::checkTrajectory(const Node<dim> &source, const Node<dim> &target) const {
-    return checkTrajectory(source.getValues(), target.getValues());
+std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajCont(const Node<dim> &source, const Node<dim> &target) const {
+    return calcTrajCont(source.getValues(), target.getValues());
 }
 
 /*!
-*  \brief      Control the trajectory and return if possible or not
+*  \brief      Calculates a binary (section wise) discrete trajectory.
 *  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] possibility of trajectory, true if possible
-*  \date       2016-05-31
+*  \param[in]  start Node
+*  \param[in]  goal Node
+*  \date       2017-10-07
 */
 template <unsigned int dim>
-bool TrajectoryPlanner<dim>::checkTrajectory(const std::shared_ptr<Node<dim>> &source,
-                                             const std::shared_ptr<Node<dim>> &target) const {
-    return checkTrajectory(source->getValues(), target->getValues());
-}
-
-/*!
-*  \brief      Control the trajectory and return if possible or not
-*  \author     Sascha Kaden
-*  \param[in]  source Vector
-*  \param[in]  target Vector
-*  \param[out] possibility of trajectory, true if possible
-*  \date       2016-05-31
-*/
-template <unsigned int dim>
-bool TrajectoryPlanner<dim>::checkTrajectory(const Vector<dim> &source, const Vector<dim> &target) const {
-    auto path = calcTrajectoryBin(source, target);
-    if (m_collision->checkTrajectory(path))
-        return false;
-
-    return true;
-}
-
-/*!
-*  \brief      Control the linear trajectory and return the last collision valid point.
-*  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] last collision valid point (NaN Vector, if no point is valid)
-*  \date       2016-05-31
-*/
-template <unsigned int dim>
-Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Node<dim> &source, const Node<dim> &target) const {
-    return checkTrajCont(source.getValues(), target.getValues());
-}
-
-/*!
-*  \brief      Control the linear trajectory and return the last collision valid point.
-*  \author     Sascha Kaden
-*  \param[in]  source Node
-*  \param[in]  target Node
-*  \param[out] last collision valid point (NaN Vector, if no point is valid)
-*  \date       2016-05-31
-*/
-template <unsigned int dim>
-Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const std::shared_ptr<Node<dim>> &source,
-                                                  const std::shared_ptr<Node<dim>> &target) const {
-    return checkTrajCont(source->getValues(), target->getValues());
-}
-
-/*!
-*  \brief      Control the linear trajectory and return the last collision valid point.
-*  \author     Sascha Kaden
-*  \param[in]  source Vector
-*  \param[in]  target Vector
-*  \param[out] last collision valid point (NaN Vector, if no point is valid)
-*  \date       2016-05-31
-*/
-template <unsigned int dim>
-Vector<dim> TrajectoryPlanner<dim>::checkTrajCont(const Vector<dim> &source, const Vector<dim> &target) const {
-    auto path = calcTrajectoryCont(source, target);
-    path.push_back(target);
-    unsigned int count = -1;
-    for (auto point : path)
-        if (m_collision->checkConfig(point))
-            break;
-        else
-            ++count;
-
-    if (count == -1)
-        return util::NaNVector<dim>();
-    else
-        return path[count];
+std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajBin(const Node<dim> &source, const Node<dim> &target) const {
+    return calcTrajBin(source.getValues(), target.getValues());
 }
 
 /*!
@@ -197,13 +118,13 @@ template <unsigned int dim>
 void TrajectoryPlanner<dim>::setResolutions(double posRes, double oriRes) {
     if (posRes <= 0) {
         m_posRes = 1;
-        Logging::warning("Position resolution has to be larger than 0, it was set to 1!", this);
+        Logging::error("Position resolution has to be larger than 0, it is set to 1!", this);
     } else {
         m_posRes = posRes;
     }
     if (oriRes <= 0) {
         m_oriRes = 0.1;
-        Logging::warning("Orientation resolution has to be larger than 0, it was set to 0.1!", this);
+        Logging::error("Orientation resolution has to be larger than 0, it is set to 0.1!", this);
     } else {
         m_oriRes = oriRes;
     }
@@ -213,32 +134,22 @@ void TrajectoryPlanner<dim>::setResolutions(double posRes, double oriRes) {
 }
 
 /*!
-*  \brief      Return position resolution
+*  \brief      Set position and orientation resolutions.
+*  \details    If values are smaller or equal to zero, standard parameter will be set.
 *  \author     Sascha Kaden
-*  \param[out] position resolution
-*  \date       2017-10-07
+*  \param[in]  position and orientation resolution
+*  \date       2018-02-20
 */
 template <unsigned int dim>
-double TrajectoryPlanner<dim>::getPosRes() const {
-    return m_posRes;
+void TrajectoryPlanner<dim>::setResolutions(std::pair<double, double> resolutions) {
+    setResolutions(resolutions.first, resolutions.second);
 }
 
 /*!
-*  \brief      Return orientation resolution
+*  \brief      Return the resolutions, pair of position and orientation resolution
 *  \author     Sascha Kaden
-*  \param[out] orientation resolution
-*  \date       2017-10-07
-*/
-template <unsigned int dim>
-double TrajectoryPlanner<dim>::getOriRes() const {
-    return m_oriRes;
-}
-
-/*!
-*  \brief      Return orientation resolution
-*  \author     Sascha Kaden
-*  \param[out] orientation resolution
-*  \date       2017-10-07
+*  \param[out] position and orientation resolution
+*  \date       2018-02-20
 */
 template <unsigned int dim>
 std::pair<double, double> TrajectoryPlanner<dim>::getResolutions() const {

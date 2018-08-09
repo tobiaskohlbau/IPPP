@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,11 +32,14 @@ template <unsigned int dim>
 class SamplerUniform : public Sampler<dim> {
   public:
     SamplerUniform(const std::shared_ptr<Environment> &environment, const std::string &seed = "");
-    SamplerUniform(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::string &seed = "");
+    SamplerUniform(const std::pair<Vector<dim>, Vector<dim>> boundary, const std::string &seed = "");
     Vector<dim> getSample() override;
 
   private:
     std::vector<std::uniform_real_distribution<double>> m_distUniform;
+
+    using Sampler<dim>::m_robotBoundary;
+    using Sampler<dim>::m_generator;
 };
 
 /*!
@@ -50,7 +53,7 @@ template <unsigned int dim>
 SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<Environment> &environment, const std::string &seed)
     : Sampler<dim>("SamplerUniform", environment, seed) {
     for (unsigned int i = 0; i < dim; ++i) {
-        std::uniform_real_distribution<double> dist(this->m_minBoundary[i], this->m_maxBoundary[i]);
+        std::uniform_real_distribution<double> dist(m_robotBoundary.first[i], m_robotBoundary.second[i]);
         m_distUniform.push_back(dist);
     }
 }
@@ -64,10 +67,10 @@ SamplerUniform<dim>::SamplerUniform(const std::shared_ptr<Environment> &environm
 *  \date       2016-05-24
 */
 template <unsigned int dim>
-SamplerUniform<dim>::SamplerUniform(const Vector<dim> &minBoundary, const Vector<dim> &maxBoundary, const std::string &seed)
-    : Sampler<dim>("SamplerUniform", minBoundary, maxBoundary, seed) {
+SamplerUniform<dim>::SamplerUniform(std::pair<Vector<dim>, Vector<dim>> boundary, const std::string &seed)
+    : Sampler<dim>("SamplerUniform", boundary, seed) {
     for (unsigned int i = 0; i < dim; ++i) {
-        std::uniform_real_distribution<double> dist(this->m_minBoundary[i], this->m_maxBoundary[i]);
+        std::uniform_real_distribution<double> dist(m_robotBoundary.first[i], m_robotBoundary.second[i]);
         m_distUniform.push_back(dist);
     }
 }
@@ -82,7 +85,7 @@ template <unsigned int dim>
 Vector<dim> SamplerUniform<dim>::getSample() {
     Vector<dim> config;
     for (unsigned int i = 0; i < dim; ++i)
-        config[i] = m_distUniform[i](this->m_generator);
+        config[i] = m_distUniform[i](m_generator);
 
     return config;
 }

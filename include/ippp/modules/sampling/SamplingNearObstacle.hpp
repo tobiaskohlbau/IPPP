@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #define SAMPLINGNEAROBSTACLE_HPP
 
 #include <ippp/modules/sampling/Sampling.hpp>
+#include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
 
 namespace ippp {
 
@@ -32,18 +33,19 @@ namespace ippp {
 template <unsigned int dim>
 class SamplingNearObstacle : public Sampling<dim> {
   public:
-    SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
-                         const std::shared_ptr<CollisionDetection<dim>> &collision,
-                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                         size_t attempts = 10);
+    SamplingNearObstacle(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                         const std::string &name = "SamplingNearObstacle");
 
     Vector<dim> getSample() override;
 
   private:
+    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
+
     using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
-    using Sampling<dim>::m_collision;
-    using Sampling<dim>::m_trajectory;
+    using Sampling<dim>::m_validityChecker;
 };
 
 /*!
@@ -58,10 +60,11 @@ class SamplingNearObstacle : public Sampling<dim> {
 */
 template <unsigned int dim>
 SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
-                                                const std::shared_ptr<CollisionDetection<dim>> &collision,
+                                                const std::shared_ptr<Sampler<dim>> &sampler,
+                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
                                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
-    : Sampling<dim>("SamplingNearObstacle", environment, collision, trajectory, sampler, attempts) {
+                                                const std::string &name)
+    : Sampling<dim>(name, environment, nullptr, sampler, validityChecker, attempts), m_trajectory(trajectory) {
 }
 
 /*!
@@ -75,23 +78,22 @@ SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environmen
 template <unsigned int dim>
 Vector<dim> SamplingNearObstacle<dim>::getSample() {
     Vector<dim> sample1 = m_sampler->getSample();
-    if (!m_collision->checkConfig(sample1)) {
+    if (m_validityChecker->check(sample1)) {
         return sample1;
     } else {
         Vector<dim> sample2;
-        do {
+        for (size_t count = 0; count < m_attempts; ++count) {
             sample2 = m_sampler->getSample();
-        } while (m_collision->checkConfig(sample2));
-        std::vector<Vector<dim>> path = m_trajectory->calcTrajectoryBin(sample2, sample1);
-        sample1 = path[0];
-        for (auto point : path) {
-            if (!m_collision->checkConfig(point))
-                sample1 = point;
-            else
-                break;
+            if (!m_validityChecker->check(sample2)) {
+                std::vector<Vector<dim>> path = m_trajectory->calcTrajCont(sample1, sample2);
+                for (auto &point : path)
+                    if (m_validityChecker->check(point))
+                        return point;
+                return sample2;
+            }
         }
-        return sample1;
     }
+    return util::NaNVector<dim>();
 }
 
 } /* namespace ippp */

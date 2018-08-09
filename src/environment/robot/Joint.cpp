@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ std::shared_ptr<ModelContainer> Joint::getLinkModel() const {
 *  \date       2018-10-11
 */
 void Joint::setLinkOffset(const Vector6 &offset) {
-    setLinkOffset(util::poseVecToTransform(offset));
+    setLinkOffset(util::toTransform(offset));
 }
 
 /*!

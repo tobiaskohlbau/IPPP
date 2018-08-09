@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #include <ippp/environment/EnvObject.h>
 #include <ippp/util/Logging.h>
 #include <ippp/util/UtilGeo.hpp>
+#include <ippp/util/UtilVec.hpp>
 
 namespace ippp {
 
@@ -29,13 +30,12 @@ namespace ippp {
 */
 EnvObject::~EnvObject() = default;
 
-/*!
-*  \brief      Standard constructor of EnvObject
-*  \author     Sascha Kaden
-*  \date       2018-01-10
-*/
 EnvObject::EnvObject(const std::string &name, EnvObjectType type)
     : Identifier(name), m_type(type), m_pose(Transform::Identity()) {
+}
+
+EnvObject::EnvObject(const std::string &name, EnvObjectType type, const Transform &pose)
+    : Identifier(name), m_type(type), m_pose(pose) {
 }
 
 /*!
@@ -51,7 +51,7 @@ void EnvObject::setPose(const Vector6 &pose) {
         return;
     }
 
-    m_pose = util::poseVecToTransform(pose);
+    m_pose = util::toTransform(pose);
 }
 
 /*!

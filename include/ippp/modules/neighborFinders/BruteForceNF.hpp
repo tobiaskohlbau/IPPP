@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@
 namespace ippp {
 
 /*!
-* \brief   Class BruteForceNF for a brute force search
-* \details The brute force approach goes through all nodes and returns the matches of the search.
+* \brief   Class BruteForceNF for a brute force search of near nodes.
+* \details The brute force approach goes through all nodes and returns the best matches of the search.
 * \author  Sascha Kaden
 * \date    2017-05-16
 */
@@ -40,6 +40,8 @@ class BruteForceNF : public NeighborFinder<dim, T> {
 
     void addNode(const Vector<dim> &config, const T &node);
     void rebaseSorted(std::vector<T> &nodes);
+    void clear();
+    std::shared_ptr<NeighborFinder<dim, T>> clone() const override;
 
     T searchNearestNeighbor(const Vector<dim> &config);
     std::vector<T> searchRange(const Vector<dim> &config, double range);
@@ -48,11 +50,6 @@ class BruteForceNF : public NeighborFinder<dim, T> {
     std::vector<std::pair<const Vector<dim>, T>> m_nodes;
 };
 
-/*!
-*  \brief      Default constructor of the class BruteForceNF
-*  \author     Sascha Kaden
-* \date        2017-05-16
-*/
 template <unsigned int dim, class T>
 BruteForceNF<dim, T>::BruteForceNF(const std::shared_ptr<DistanceMetric<dim>> &distanceMetric)
     : NeighborFinder<dim, T>("BruteForceNF", distanceMetric) {
@@ -95,6 +92,11 @@ void BruteForceNF<dim, T>::rebaseSorted(std::vector<T> &nodes) {
     }
 }
 
+template <unsigned int dim, class T>
+void BruteForceNF<dim, T>::clear() {
+    m_nodes.clear();
+}
+
 /*!
 *  \brief      Add a Node to the BruteForceNF
 *  \author     Sascha Kaden
@@ -119,7 +121,7 @@ T BruteForceNF<dim, T>::searchNearestNeighbor(const Vector<dim> &config) {
     double minDist = std::numeric_limits<double>::max();
     T nodePtr = nullptr;
     for (auto &node : m_nodes) {
-        if (this->m_metric->calcSimpleDist(config, node.first) < minDist && !config.isApprox(node.first, EPSILON)) {
+        if (this->m_metric->calcSimpleDist(config, node.first) < minDist && !config.isApprox(node.first, IPPP_EPSILON)) {
             minDist = this->m_metric->calcSimpleDist(config, node.first);
             nodePtr = node.second;
         }
@@ -141,10 +143,18 @@ std::vector<T> BruteForceNF<dim, T>::searchRange(const Vector<dim> &config, doub
     this->m_metric->simplifyDist(range);
 
     for (auto &node : m_nodes)
-        if (this->m_metric->calcSimpleDist(config, node.first) < range && !config.isApprox(node.first, EPSILON))
+        if (this->m_metric->calcSimpleDist(config, node.first) < range && !config.isApprox(node.first, IPPP_EPSILON))
             nodePtrs.push_back(node.second);
     
     return nodePtrs;
+}
+
+template <unsigned int dim, class T>
+std::shared_ptr<NeighborFinder<dim, T>> BruteForceNF<dim, T>::clone() const {
+    Logging::debug("Derived::CloneImplementation", this);
+    auto finder = std::make_shared<BruteForceNF<dim, T>>(*this);
+    finder->clear();
+    return finder;
 }
 
 } /* namespace ippp */

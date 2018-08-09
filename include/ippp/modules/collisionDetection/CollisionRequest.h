@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ namespace ippp {
 struct CollisionRequest {
     bool checkInterRobot = true;          /*!< check inner collision of the robot */
     bool checkObstacle = true;            /*!< check collision to the obstacles */
+    bool completeCheck = false;
     bool computeDistance = false;         /*!< compute the distance to obstacles and inner robot collisions */
     bool computePenetrationDepth = false; /*!< compute depth of collisions */
 };

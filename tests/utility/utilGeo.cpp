@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,30 +33,30 @@ TEST(GEO, pi) {
 
 TEST(GEO, poseVecToMat) {
     Vector6 poseZero = util::Vecd(0, 0, 0, 0, 0, 0);
-    ippp::Transform pose = util::poseVecToTransform(poseZero);
+    ippp::Transform pose = util::toTransform(poseZero);
     for (size_t i = 0; i < 3; ++i)
         EXPECT_EQ(pose.translation()(i), 0);
 
-    Vector6 poseVec = util::transformToVec(pose);
+    Vector6 poseVec = util::toPoseVec(pose);
     for (int i = 0; i < 6; ++i)
-        if (poseVec[i] < ippp::EPSILON && poseVec[i] > -ippp::EPSILON)
+        if (poseVec[i] < IPPP_EPSILON && poseVec[i] > -IPPP_EPSILON)
             poseVec[i] = 0;
     for (int i = 0; i < 6; ++i)
         EXPECT_EQ(poseZero[i], poseVec[i]);
 
     Vector6 poseTwo = util::Vecd(1, 1, 1, 0, 0, 0);
-    pose = util::poseVecToTransform(poseTwo);
+    pose = util::toTransform(poseTwo);
     for (size_t i = 0; i < 3; ++i)
         EXPECT_EQ(pose.translation()(i), 1);
 
     for (double x = 0; x < 359; x += 5) {
         for (double y = 0; y < 359; y += 5) {
             for (double z = 0; z < 359; z += 5) {
-                pose = util::poseVecToTransform(poseTwo);
-                poseVec = util::transformToVec(pose);
+                pose = util::toTransform(poseTwo);
+                poseVec = util::toPoseVec(pose);
                 for (int i = 0; i < 6; ++i) {
-                    EXPECT_TRUE(poseTwo[i] <= poseVec[i] + ippp::EPSILON);
-                    EXPECT_TRUE(poseTwo[i] >= poseVec[i] - ippp::EPSILON);
+                    EXPECT_TRUE(poseTwo[i] <= poseVec[i] + IPPP_EPSILON);
+                    EXPECT_TRUE(poseTwo[i] >= poseVec[i] - IPPP_EPSILON);
                 }
             }
         }
@@ -69,15 +69,15 @@ TEST(GEO, degToRad) {
     double a2[11] = {0, pi / 6, pi / 4, pi / 3, pi / 2, 2 * pi / 3, 3 * pi / 4, 5 * pi / 6, pi, 3 * pi / 2, 2 * pi};
     VectorX deg = util::Vecd(11, a1);
     VectorX rad = util::Vecd(11, a2);
-    VectorX temp1 = util::degToRad<11>(deg);
+    VectorX temp1 = util::toRad<11>(deg);
     Vector<11> temp2;
     for (int i = 0; i < 11; ++i)
         temp2[i] = deg[i] * util::toRad();
     for (int i = 0; i < deg.rows(); ++i) {
-        EXPECT_TRUE(rad[i] <= temp1[i] + ippp::EPSILON);
-        EXPECT_TRUE(rad[i] >= temp1[i] - ippp::EPSILON);
-        EXPECT_TRUE(rad[i] <= temp2[i] + ippp::EPSILON);
-        EXPECT_TRUE(rad[i] >= temp2[i] - ippp::EPSILON);
+        EXPECT_TRUE(rad[i] <= temp1[i] + IPPP_EPSILON);
+        EXPECT_TRUE(rad[i] >= temp1[i] - IPPP_EPSILON);
+        EXPECT_TRUE(rad[i] <= temp2[i] + IPPP_EPSILON);
+        EXPECT_TRUE(rad[i] >= temp2[i] - IPPP_EPSILON);
     }
 }
 
@@ -87,14 +87,14 @@ TEST(GEO, radToDeg) {
     double a2[11] = {0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360};
     VectorX rad = util::Vecd(11, a1);
     VectorX deg = util::Vecd(11, a2);
-    VectorX temp1 = util::radToDeg<11>(rad);
+    VectorX temp1 = util::toDeg<11>(rad);
     Vector<11> temp2;
     for (int i = 0; i < 11; ++i)
         temp2[i] = rad[i] * util::toDeg();
     for (int i = 0; i < deg.rows(); ++i) {
-        EXPECT_TRUE(deg[i] <= temp1[i] + ippp::EPSILON);
-        EXPECT_TRUE(deg[i] >= temp1[i] - ippp::EPSILON);
-        EXPECT_TRUE(deg[i] <= temp2[i] + ippp::EPSILON);
-        EXPECT_TRUE(deg[i] >= temp2[i] - ippp::EPSILON);
+        EXPECT_TRUE(deg[i] <= temp1[i] + IPPP_EPSILON);
+        EXPECT_TRUE(deg[i] >= temp1[i] - IPPP_EPSILON);
+        EXPECT_TRUE(deg[i] <= temp2[i] + IPPP_EPSILON);
+        EXPECT_TRUE(deg[i] >= temp2[i] - IPPP_EPSILON);
     }
 }

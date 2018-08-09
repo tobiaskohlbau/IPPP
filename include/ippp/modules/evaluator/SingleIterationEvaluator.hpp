@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   SingleIterationEvaluator which runs only one Iteration.
+* \brief   SingleIterationEvaluator which runs only one iteration and returns only true after the first one.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
@@ -36,15 +36,9 @@ class SingleIterationEvaluator : public Evaluator<dim> {
     bool evaluate();
 
   protected:
-    bool m_firstEvaluation = true;
+    bool m_firstRun = true;
 };
 
-/*!
-*  \brief      Constructor of the class SingleIterationEvaluator
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \date       2017-09-30
-*/
 template <unsigned int dim>
 SingleIterationEvaluator<dim>::SingleIterationEvaluator() : Evaluator<dim>("SingleIterationEvaluator") {
 }
@@ -57,12 +51,11 @@ SingleIterationEvaluator<dim>::SingleIterationEvaluator() : Evaluator<dim>("Sing
 */
 template <unsigned int dim>
 bool SingleIterationEvaluator<dim>::evaluate() {
-    if (m_firstEvaluation) {
-        m_firstEvaluation = false;
+    if (m_firstRun) {
+        m_firstRun = false;
         return false;
-    } else {
-        return true;
     }
+    return true;
 }
 
 } /* namespace ippp */

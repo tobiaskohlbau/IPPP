@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,8 +33,7 @@ namespace ippp {
 MobileRobot::MobileRobot(unsigned int dim, const std::pair<VectorX, VectorX> &boundary, const std::vector<DofType> &dofTypes,
                          const std::string &name)
     : RobotBase(name, dim, RobotCategory::mobile, dofTypes) {
-    m_minBoundary = boundary.first;
-    m_maxBoundary = boundary.second;
+    m_boundary = boundary;
 }
 
 /*!
@@ -48,7 +47,7 @@ Transform MobileRobot::getTransformation(const VectorX &config) const {
     if (m_dim != 6)
         return Transform::Identity();
 
-    return util::poseVecToTransform(config);
+    return util::toTransform(config);
 }
 
 } /* namespace ippp */

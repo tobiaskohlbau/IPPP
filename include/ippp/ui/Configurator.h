@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,11 +20,13 @@
 #define CONFIGURATOR_H
 
 #include <string>
+#include <vector>
 
 #include <json.hpp>
 
 #include <ippp/Identifier.h>
 #include <ippp/types.h>
+#include <ippp/ui/FileWriterReader.h>
 
 namespace ippp {
 
@@ -38,9 +40,6 @@ class Configurator : public Identifier {
     Configurator(const std::string &name);
 
   protected:
-    nlohmann::json loadJson(const std::string &filePath);
-    bool saveJson(const std::string &filePath, const nlohmann::json &data);
-
     template <unsigned int dim>
     std::string vectorToString(const Vector<dim> &vector);
     template <unsigned int dim>

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,18 +33,17 @@ TEST(TRAJECTORY, computeTrajectory) {
     std::shared_ptr<MobileRobot> robot(new MobileRobot(
         dim, std::make_pair(util::Vecd(-10, -10, -10, -10, -10, -10), util::Vecd(10, 10, 10, 10, 10, 10)), dofTypes));
     std::shared_ptr<Environment> environment(new Environment(AABB(Vector3(-200, -200, -200), Vector3(200, 200, 200)), robot));
-    std::shared_ptr<CollisionDetection<dim>> collision(new CollisionDetectionPqp<dim>(environment));
-    std::shared_ptr<TrajectoryPlanner<dim>> planner(new LinearTrajectory<dim>(collision, environment, 0.1));
+    std::shared_ptr<TrajectoryPlanner<dim>> planner(new LinearTrajectory<dim>(environment, 0.1));
 
     // test trajectories
     Vector6 init = util::Vecd(0, 0, 0, 0, 0, 0);
     Vector6 goal = util::Vecd(0, 0, 0, 0, 0, 0);
     std::vector<Vector6> path;
-    path = planner->calcTrajectoryCont(init, goal);
+    path = planner->calcTrajCont(init, goal);
     EXPECT_EQ(path.size(), 0);
 
     goal = util::Vecd(1, 1, 1, 1, 1, 1);
-    path = planner->calcTrajectoryCont(init, goal);
+    path = planner->calcTrajCont(init, goal);
     double dist = 1 / goal.norm() * 0.1;
     for (double i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {
@@ -55,7 +54,7 @@ TEST(TRAJECTORY, computeTrajectory) {
     }
 
     goal = util::Vecd(-1, -1, -1, -1, -1, -1);
-    path = planner->calcTrajectoryCont(init, goal);
+    path = planner->calcTrajCont(init, goal);
     dist = -1 / goal.norm() * 0.1;
     for (double i = 0; i < path.size(); ++i) {
         for (int j = 0; j < 6; ++j) {

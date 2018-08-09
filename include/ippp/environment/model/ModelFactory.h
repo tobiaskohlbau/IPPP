@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ class ModelFactory : public Identifier {
   public:
     ModelFactory(const std::string &name) : Identifier(name){};
 
+    virtual std::shared_ptr<ModelContainer> createModel(const Mesh &mesh) = 0;
     virtual std::shared_ptr<ModelContainer> createModelFromFile(const std::string &filePath) = 0;
     virtual std::vector<std::shared_ptr<ModelContainer>> createModelsFromFile(const std::string &filePath) = 0;
     virtual std::vector<std::shared_ptr<ModelContainer>> createModelsFromFiles(const std::vector<std::string> &filePaths) = 0;

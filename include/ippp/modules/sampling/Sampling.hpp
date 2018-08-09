@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,44 +24,44 @@
 #include <Eigen/Core>
 
 #include <ippp/Identifier.h>
+#include <ippp/dataObj/Graph.hpp>
 #include <ippp/environment/Environment.h>
-#include <ippp/modules/collisionDetection/CollisionDetection.hpp>
 #include <ippp/modules/sampler/Sampler.hpp>
-#include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <ippp/modules/validityChecker/ValidityChecker.hpp>
 
 namespace ippp {
 
 /*!
 * \brief   Class Sampling creates sample Vectors with the passed strategy, for creating single Vectors the Sampler is used.
+* \details Samples are always valid, otherwise they are empty NAN Vectors.
 * \author  Sascha Kaden
 * \date    2016-12-20
 */
 template <unsigned int dim>
 class Sampling : public Identifier {
   public:
-    Sampling(const std::string &name, const std::shared_ptr<Environment> &environment,
-             const std::shared_ptr<CollisionDetection<dim>> &collision, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-             const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts = 10);
+    Sampling(const std::string &name, const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
+             const std::shared_ptr<Sampler<dim>> &sampler, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+             size_t attempts);
 
     virtual Vector<dim> getSample() = 0;
     virtual Vector<dim> getSample(const Vector<dim> &prevSample);
     virtual std::vector<Vector<dim>> getSamples(size_t amount);
-
-    std::shared_ptr<Sampler<dim>> getSampler() const;
     double getRandomNumber() const;
-    void setOrigin(const Vector<dim> &origin);
 
-    void setRobotBoundings(const std::pair<Vector<dim>, Vector<dim>> &robotBoundings);
-    bool checkRobotBounding(const Vector<dim> &config) const;
+    void setGraph(const std::shared_ptr<Graph<dim>> &graph);
+    std::shared_ptr<Graph<dim>> getGraph();
+    void setSampler(const std::shared_ptr<Sampler<dim>> &sampler);
+    std::shared_ptr<Sampler<dim>> getSampler();
 
   protected:
     const size_t m_attempts;                             /*!< number of attempts for each sampling generation */
     std::pair<Vector<dim>, Vector<dim>> m_robotBounding; /*!< min, max robot boundaries */
 
-    std::shared_ptr<CollisionDetection<dim>> m_collision = nullptr;
     std::shared_ptr<Environment> m_environment = nullptr;
+    std::shared_ptr<Graph<dim>> m_graph = nullptr;
     std::shared_ptr<Sampler<dim>> m_sampler = nullptr;
-    std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
+    std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
 };
 
 /*!
@@ -77,16 +77,15 @@ class Sampling : public Identifier {
 */
 template <unsigned int dim>
 Sampling<dim>::Sampling(const std::string &name, const std::shared_ptr<Environment> &environment,
-                        const std::shared_ptr<CollisionDetection<dim>> &collision,
-                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                        size_t attempts)
+                        const std::shared_ptr<Graph<dim>> &graph,
+                        const std::shared_ptr<Sampler<dim>> &sampler, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,size_t attempts)
     : Identifier(name),
       m_environment(environment),
-      m_collision(collision),
-      m_trajectory(trajectory),
+      m_graph(graph),
       m_sampler(sampler),
-      m_attempts(attempts) {
-    setRobotBoundings(m_environment->getRobotBoundaries());
+      m_validityChecker(validityChecker),
+      m_attempts(attempts),
+      m_robotBounding(environment->getRobotBoundaries()) {
     Logging::debug("Initialize", this);
 }
 
@@ -119,14 +118,43 @@ std::vector<Vector<dim>> Sampling<dim>::getSamples(size_t amount) {
     return samples;
 }
 
+template <unsigned int dim>
+void Sampling<dim>::setGraph(const std::shared_ptr<Graph<dim>> &graph) {
+    if (!graph) {
+        Logging::error("Empty Graph passed!", this);
+        return;
+    }
+    m_graph = graph;
+}
+
+template <unsigned int dim>
+std::shared_ptr<Graph<dim>> Sampling<dim>::getGraph() {
+    return m_graph;
+}
+
 /*!
-*  \brief      Return the Sampler of the Sampling strategy.
+*  \brief      Sets the Sampler of the Sampling strategy.
+*  \author     Sascha Kaden
+*  \param[in]  Sampler instance
+*  \date       2018-03-23
+*/
+template <unsigned int dim>
+void Sampling<dim>::setSampler(const std::shared_ptr<Sampler<dim>> &sampler) {
+    if (!sampler) {
+        Logging::error("Empty Sampler passed!", this);
+        return;
+    }
+    m_sampler = sampler;
+}
+
+/*!
+*  \brief      Returns the Sampler of the Sampling strategy.
 *  \author     Sascha Kaden
 *  \param[out] Sampler instance
 *  \date       2017-11-14
 */
 template <unsigned int dim>
-std::shared_ptr<Sampler<dim>> Sampling<dim>::getSampler() const {
+std::shared_ptr<Sampler<dim>> Sampling<dim>::getSampler() {
     return m_sampler;
 }
 
@@ -139,46 +167,6 @@ std::shared_ptr<Sampler<dim>> Sampling<dim>::getSampler() const {
 template <unsigned int dim>
 double Sampling<dim>::getRandomNumber() const {
     return m_sampler->getRandomNumber();
-}
-
-/*!
-*  \brief      Set the origin of the Sampler
-*  \author     Sascha Kaden
-*  \param[in]  origin
-*  \date       2016-12-20
-*/
-template <unsigned int dim>
-void Sampling<dim>::setOrigin(const Vector<dim> &origin) {
-    m_sampler->setOrigin(origin);
-}
-
-/*!
-*  \brief      Sets the robot boundings of all robots, dimension should be the same.
-*  \author     Sascha Kaden
-*  \param[in]  pair of min and max boundary Vector
-*  \date       2017-11-14
-*/
-template <unsigned int dim>
-void Sampling<dim>::setRobotBoundings(const std::pair<Vector<dim>, Vector<dim>> &robotBoundings) {
-    m_robotBounding = robotBoundings;
-}
-
-/*!
-*  \brief      Checks the boundaries of the robot to the passed configuration, return true if valid.
-*  \author     Sascha Kaden
-*  \param[in]  configuration
-*  \param[out] validity of boundary check.
-*  \date       2017-11-14
-*/
-template <unsigned int dim>
-bool Sampling<dim>::checkRobotBounding(const Vector<dim> &config) const {
-    for (unsigned int i = 0; i < dim; ++i) {
-        if (config[i] <= m_robotBounding.first[i] || m_robotBounding.second[i] <= config[i]) {
-            Logging::trace("Robot out of robot boundary", this);
-            return true;
-        }
-    }
-    return false;
 }
 
 } /* namespace ippp */

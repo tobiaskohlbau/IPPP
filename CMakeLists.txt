@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2017 Sascha Kaden
+# Copyright 2018 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -69,14 +69,22 @@ add_library(${PROJECT_NAME}
     src/Identifier.cpp
     src/dataObj/DhParameter.cpp
     src/util/Logging.cpp
+    src/util/UtilEnvironment.cpp
     src/util/UtilGeo.cpp
     src/util/UtilList.cpp
     src/util/UtilVec.cpp
-    src/statistic/Statistics.cpp
-    src/statistic/StatisticCollector.cpp
-    src/statistic/StatisticCountCollector.cpp
-    src/statistic/StatisticContainer.cpp
-    src/statistic/StatisticSizeTContainer.cpp
+
+    src/statistic/Stats.cpp
+    src/statistic/StatsCollector.cpp
+    src/statistic/StatsCollisionCollector.cpp
+    src/statistic/StatsContainer.cpp
+    src/statistic/StatsCountContainer.cpp
+    src/statistic/StatsGraphCollector.cpp
+    src/statistic/StatsPathCollector.cpp
+    src/statistic/StatsPlannerCollector.cpp
+    src/statistic/StatsPropertyCollector.cpp
+    src/statistic/StatsTimeCollector.cpp
+    src/statistic/StatsTimeContainer.cpp
 
     src/environment/cad/CadDrawing.cpp
     src/environment/cad/CadImportExport.cpp
@@ -93,7 +101,6 @@ add_library(${PROJECT_NAME}
     src/environment/robot/TriangleRobot2D.cpp
     src/environment/model/ModelContainer.cpp
     src/environment/model/ModelFactoryPqp.cpp
-    src/environment/model/ModelFactoryTriangle2D.cpp
     src/environment/model/ModelFactoryFcl.cpp
     src/environment/model/ModelFcl.cpp
     src/environment/model/ModelPqp.cpp
@@ -104,6 +111,7 @@ add_library(${PROJECT_NAME}
     src/ui/EnvironmentConfigurator.cpp
     src/ui/FileWriterReader.cpp
     src/ui/JsonSerializer.cpp
+    src/ui/TxtSerializer.cpp
 )
 
 target_compile_features(${PROJECT_NAME}

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 namespace ippp {
 
 enum LogLevel { off, fatal, error, warn, info, debug, trace, all };
-enum class LogOutput { terminal, file, terminlAndFile };
+enum class LogOutput { terminal, file, terminalAndFile };
 
 /*!
 * \brief   Logging class for the complete framework

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,14 +31,16 @@ namespace ippp {
 template <unsigned int dim>
 class StraightSampling : public Sampling<dim> {
   public:
-    StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                     const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                     size_t attempts = 10);
+    StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                     const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts = 10,
+                     const std::string &name = "StraightSampling");
 
     virtual Vector<dim> getSample();
 
   protected:
+    using Sampling<dim>::m_attempts;
     using Sampling<dim>::m_sampler;
+    using Sampling<dim>::m_validityChecker;
 };
 
 /*!
@@ -53,10 +55,10 @@ class StraightSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 StraightSampling<dim>::StraightSampling(const std::shared_ptr<Environment> &environment,
-                                        const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                        const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                        const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts)
-    : Sampling<dim>("StraightSampling", environment, collision, trajectory, sampler, attempts) {
+                                        const std::shared_ptr<Sampler<dim>> &sampler,
+                                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                                        const std::string &name)
+    : Sampling<dim>(name, environment, nullptr, sampler, validityChecker, attempts) {
 }
 
 /*!
@@ -67,7 +69,13 @@ StraightSampling<dim>::StraightSampling(const std::shared_ptr<Environment> &envi
 */
 template <unsigned int dim>
 Vector<dim> StraightSampling<dim>::getSample() {
-    return m_sampler->getSample();
+    Vector<dim> sample;
+    for (size_t i = 0; i < m_attempts; ++i) {
+        sample = m_sampler->getSample();
+        if (m_validityChecker->check(sample))
+            return sample;
+    }
+    return util::NaNVector<dim>();
 }
 
 } /* namespace ippp */

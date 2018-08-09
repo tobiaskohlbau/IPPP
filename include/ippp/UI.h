@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the >License>);
 // you may not use this file except in compliance with the License.
@@ -19,5 +19,6 @@
 #include <ippp/ui/Configurator.h>
 #include <ippp/ui/EnvironmentConfigurator.h>
 #include <ippp/ui/FileWriterReader.h>
-#include <ippp/ui/JsonSerializer.h>
+#include <ippp/ui/JsonSerializer.hpp>
 #include <ippp/ui/ModuleConfigurator.hpp>
+#include <ippp/ui/TxtSerializer.hpp>

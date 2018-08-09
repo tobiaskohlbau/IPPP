@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ namespace ippp {
 struct CollisionResult {
     bool collision = false;
 
+    std::vector<std::pair<size_t, size_t>> interRobotCollisions;
     double penetrationDepth = std::numeric_limits<double>::max(); /*!< collision depth, valid if in collision */
     double minDist = std::numeric_limits<double>::max();          /*!< minimum distance to obstacles and robot bodies */
     double minObstacleDist = std::numeric_limits<double>::max();  /*!< minimum distance to obstacles */

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@
 namespace ippp {
 
 /*!
-* \brief   Class for the Jaco robot
+* \brief   Class for the serial robot Jaco.
+* \details It works just like a normal serial robot, but contains a additional conversion from DH-parameter to jaco angles.
 * \author  Sascha Kaden
 * \date    2017-12-15
 */
@@ -32,6 +33,8 @@ class Jaco : public SerialRobot {
   public:
     Jaco(unsigned int dim, const std::vector<Joint> &joints, const std::vector<DofType> &dofTypes);
     std::vector<Transform> getJointTrafos(const VectorX &angles) const override;
+    virtual std::vector<Transform> getLinkTrafos(const VectorX &angles) const override;
+    virtual std::pair<std::vector<Transform>, Transform> getLinkAndToolTrafos(const VectorX &angles) const override;
 
   private:
     Vector6 convertRealToDH(const Vector6 &realAngles) const;

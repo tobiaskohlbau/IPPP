@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -70,8 +70,8 @@ bool importMeshes(const std::string &filePath, std::vector<Mesh> &meshes, double
         Logging::error("Scene contains no meshes", "CadProcessing");
         return false;
     }
-    Logging::info("File " + util::getFileName(filePath) + "has: " + std::to_string(scene->mNumMeshes) + " mesh(es)",
-                  "CadProcessing");
+    Logging::trace("File " + util::getFileName(filePath) + " has: " + std::to_string(scene->mNumMeshes) + " mesh(es)",
+                   "CadProcessing");
     meshes.clear();
 
     aiMatrix4x4 trafo;
@@ -142,9 +142,8 @@ void getMeshes(const aiScene *scene, const aiNode *node, aiMatrix4x4 *trafo, std
         meshes.push_back(mesh);
     }
 
-    for (size_t i = 0; i < node->mNumChildren; ++i) {
+    for (size_t i = 0; i < node->mNumChildren; ++i)
         getMeshes(scene, node->mChildren[i], trafo, meshes);
-    }
     *trafo = prevTrafo;
 }
 

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,10 +31,10 @@ namespace ippp {
 template <unsigned int dim>
 class GaussianDistSampling : public Sampling<dim> {
   public:
-    GaussianDistSampling(const std::shared_ptr<Environment> &environment,
-                         const std::shared_ptr<CollisionDetection<dim>> &collision,
-                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                         size_t attempts = 10, double maxDist = 15);
+    GaussianDistSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
+                         const std::shared_ptr<Sampler<dim>> &sampler,
+                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts, double maxDist = 15,
+                         const std::string &name = "GaussianDistSampling");
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
@@ -43,8 +43,9 @@ class GaussianDistSampling : public Sampling<dim> {
     double m_maxDist;
 
     using Sampling<dim>::m_attempts;
-    using Sampling<dim>::m_collision;
+    using Sampling<dim>::m_graph;
     using Sampling<dim>::m_sampler;
+    using Sampling<dim>::m_validityChecker;
 };
 
 /*!
@@ -60,10 +61,11 @@ class GaussianDistSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 GaussianDistSampling<dim>::GaussianDistSampling(const std::shared_ptr<Environment> &environment,
-                                                const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                                const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double maxDist)
-    : Sampling<dim>("GaussianDistSampling", environment, collision, trajectory, sampler, attempts), m_maxDist(maxDist) {
+                                                const std::shared_ptr<Graph<dim>> &graph,
+                                                const std::shared_ptr<Sampler<dim>> &sampler,
+                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                                                double maxDist, const std::string &name)
+    : Sampling<dim>(name, environment, graph, sampler, validityChecker, attempts), m_maxDist(maxDist) {
 }
 
 /*!
@@ -74,7 +76,7 @@ GaussianDistSampling<dim>::GaussianDistSampling(const std::shared_ptr<Environmen
 */
 template <unsigned int dim>
 Vector<dim> GaussianDistSampling<dim>::getSample() {
-    return m_sampler->getSample();
+    return getSample(m_graph->getNode(static_cast<size_t>(this->getRandomNumber() * m_graph->numNodes()))->getValues());
 }
 
 /*!
@@ -92,7 +94,7 @@ Vector<dim> GaussianDistSampling<dim>::getSample(const Vector<dim> &prevSample) 
         ray = m_sampler->getRandomRay();
         ray *= m_maxDist * m_sampler->getRandomNumber();
         sample = prevSample + ray;
-        if (this->checkRobotBounding(sample) && !m_collision->checkConfig(sample))
+        if (m_validityChecker->checkRobotBound(sample) && m_validityChecker->check(sample))
             return sample;
     }
     return util::NaNVector<dim>();

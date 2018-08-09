@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,34 +24,22 @@
 namespace ippp {
 
 /*!
-* \brief   DummyPathModifier is dummy PathModifier, which only returns the passed path.
+* \brief   DummyPathModifier is dummy PathModifier, it only returns the passed path.
 * \author  Sascha Kaden
 * \date    2017-05-23
 */
 template <unsigned int dim>
 class DummyPathModifier : public PathModifier<dim> {
   public:
-    DummyPathModifier(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                      const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    DummyPathModifier();
 
     std::vector<std::shared_ptr<Node<dim>>> smoothPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes) const;
 
   protected:
 };
 
-/*!
-*  \brief      Constructor of the DummyPathModifier.
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \param[in]  CollisionDetection
-*  \param[in]  TrajectoryPlanner
-*  \date       2017-05-23
-*/
 template <unsigned int dim>
-DummyPathModifier<dim>::DummyPathModifier(const std::shared_ptr<Environment> &environment,
-                                          const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                          const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PathModifier<dim>("Dummy PathModifier", environment, collision, trajectory) {
+DummyPathModifier<dim>::DummyPathModifier() : PathModifier<dim>("Dummy PathModifier", nullptr, nullptr, nullptr) {
 }
 
 /*!

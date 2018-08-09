@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ namespace ippp {
 template <unsigned int dim>
 class BridgeSampling : public Sampling<dim> {
   public:
-    BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<CollisionDetection<dim>> &collision,
-                   const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory, const std::shared_ptr<Sampler<dim>> &sampler,
-                   size_t attempts = 10, double distance = 15);
+    BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                   const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts = 10, double distance = 15,
+                   const std::string &name = "BridgeSampling");
 
     Vector<dim> getSample() override;
 
@@ -41,7 +41,7 @@ class BridgeSampling : public Sampling<dim> {
     double m_distance;
 
     using Sampling<dim>::m_attempts;
-    using Sampling<dim>::m_collision;
+    using Sampling<dim>::m_validityChecker;
     using Sampling<dim>::m_sampler;
 };
 
@@ -57,11 +57,10 @@ class BridgeSampling : public Sampling<dim> {
 *  \date       2016-12-20
 */
 template <unsigned int dim>
-BridgeSampling<dim>::BridgeSampling(const std::shared_ptr<Environment> &environment,
-                                    const std::shared_ptr<CollisionDetection<dim>> &collision,
-                                    const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                    const std::shared_ptr<Sampler<dim>> &sampler, size_t attempts, double distance)
-    : Sampling<dim>("BridgeSampling", environment, collision, trajectory, sampler, attempts), m_distance(distance) {
+BridgeSampling<dim>::BridgeSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                                    const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                                    double distance, const std::string &name)
+    : Sampling<dim>(name, environment, nullptr, sampler, validityChecker, attempts), m_distance(distance) {
 }
 
 /*!
@@ -81,8 +80,7 @@ Vector<dim> BridgeSampling<dim>::getSample() {
             ++count;
 
         sample1 = m_sampler->getSample();
-        ++count;
-    } while (!m_collision->checkConfig(sample1));
+    } while (!m_validityChecker->check(sample1));
 
     do {
         if (count > m_attempts)
@@ -93,7 +91,8 @@ Vector<dim> BridgeSampling<dim>::getSample() {
         ray = m_sampler->getRandomRay();
         ray *= m_distance * m_sampler->getRandomNumber();
         sample2 = sample1 + ray;
-    } while (!m_collision->checkConfig(sample2) && m_collision->checkConfig(sample1 + (ray / 2)));
+    } while (!m_validityChecker->checkRobotBound(sample2) || m_validityChecker->check(sample2) ||
+             !m_validityChecker->check(sample1 + (ray / 2)));
 
     return sample1 + (ray / 2);
 }

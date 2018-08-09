@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 #include <utility>
 
+#include <ippp/environment/cad/CadImportExport.h>
 #include <ippp/util/UtilGeo.hpp>
 
 namespace ippp {
@@ -86,23 +87,13 @@ std::shared_ptr<ModelContainer> RobotBase::getBaseModel() const {
 }
 
 /*!
-*  \brief      Get minimum boundary of the robot
+*  \brief      Get boundary of the robot (pair with min and max boundary).
 *  \author     Sascha Kaden
-*  \param[out] minimum Boundaries
-*  \date       2016-07-15
+*  \param[out] boundaries
+*  \date       2018-02-15
 */
-VectorX RobotBase::getMinBoundary() const {
-    return m_minBoundary;
-}
-
-/*!
-*  \brief      Get maximum boundary of the robot
-*  \author     Sascha Kaden
-*  \param[out] maximum Boundaries
-*  \date       2016-07-15
-*/
-VectorX RobotBase::getMaxBoundary() const {
-    return m_maxBoundary;
+std::pair<VectorX, VectorX> RobotBase::getBoundary() const {
+    return m_boundary;
 }
 
 /*!
@@ -133,6 +124,14 @@ RobotCategory RobotBase::getRobotCategory() const {
 */
 std::vector<DofType> RobotBase::getDofTypes() const {
     return m_dofTypes;
+}
+
+void RobotBase::saveRobotMesh(const VectorX &configuration, const std::string &prefix) const {
+    if (m_baseModel != nullptr) {
+        std::vector<Vector3> vertices = m_baseModel->m_mesh.vertices;
+        cad::transformVertices(m_pose, vertices);
+        cad::exportCad(cad::ExportFormat::OBJ, prefix + "_base", vertices, m_baseModel->m_mesh.faces);
+    }
 }
 
 } /* namespace ippp */

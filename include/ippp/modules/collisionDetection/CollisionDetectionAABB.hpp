@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,12 +36,14 @@ template <unsigned int dim>
 class CollisionDetectionAABB : public CollisionDetection<dim> {
   public:
     CollisionDetectionAABB(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr) override;
-    bool checkTrajectory(std::vector<Vector<dim>> &configs) override;
+
+    bool check(const Vector<dim> &config) const;
+    bool check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const;
+    bool check(const std::vector<Vector<dim>> &configs) const;
 
   private:
-    bool checkObstacles(const AABB &robotAABB, CollisionResult *result);
-    bool checkRobots(const std::vector<AABB> &robotAABB, CollisionResult *result);
+    bool checkObstacles(const AABB &robotAABB, CollisionResult *result = nullptr) const;
+    bool checkRobots(const std::vector<AABB> &robotAABB, CollisionResult *result = nullptr) const;
 
     bool m_multiRobot = false;
     std::vector<AABB> m_robotAABBs;
@@ -49,6 +51,7 @@ class CollisionDetectionAABB : public CollisionDetection<dim> {
     std::vector<std::shared_ptr<RobotBase>> m_robots;
 
     using CollisionDetection<dim>::m_environment;
+    using CollisionDetection<dim>::m_request;
 };
 
 /*!
@@ -77,16 +80,12 @@ CollisionDetectionAABB<dim>::CollisionDetectionAABB(const std::shared_ptr<Enviro
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision or config is empty)
-*  \date       2016-05-25
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetectionAABB<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
-    CollisionRequest collisionRequest = this->m_request;
-    if (request)
-        collisionRequest = *request;
-
-    if (m_multiRobot && collisionRequest.checkInterRobot) {
+bool CollisionDetectionAABB<dim>::check(const Vector<dim> &config) const {
+    if (m_multiRobot && m_request.checkInterRobot) {
         // compute the new AABBs of the robots with the configuration
         std::vector<VectorX> singleConfigs = util::splitVec<dim>(config, m_environment->getRobotDimSizes());
         std::vector<AABB> robotAABBs;
@@ -95,42 +94,78 @@ bool CollisionDetectionAABB<dim>::checkConfig(const Vector<dim> &config, Collisi
             robotAABBs.push_back(util::transformAABB(m_robotAABBs[i], trafo));
         }
         // check collisions
-        if (checkRobots(robotAABBs, result))
-            return true;
+        if (checkRobots(robotAABBs))
+            return false;
         for (auto &robotAABB : robotAABBs)
-            if (checkObstacles(robotAABB, result))
-                return true;
+            if (checkObstacles(robotAABB))
+                return false;
     }
-    if (collisionRequest.checkObstacle) {
+    if (m_request.checkObstacle) {
         auto trafo = m_robots[0]->getTransformation(config);
         AABB robotAABB = util::transformAABB(m_robotAABBs[0], trafo);
-        return checkObstacles(robotAABB, result);
+        return !checkObstacles(robotAABB);
     }
 
-    return false;
+    return true;
+}
+
+/*!
+*  \brief      Check for collision
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[in]  CollisionRequest
+*  \param[out] CollisionResult
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
+*/
+template <unsigned int dim>
+bool CollisionDetectionAABB<dim>::check(const Vector<dim> &config, const CollisionRequest &request,
+                                        CollisionResult &result) const {
+    if (m_multiRobot && request.checkInterRobot) {
+        // compute the new AABBs of the robots with the configuration
+        std::vector<VectorX> singleConfigs = util::splitVec<dim>(config, m_environment->getRobotDimSizes());
+        std::vector<AABB> robotAABBs;
+        for (unsigned int i = 0; i < m_robots.size(); ++i) {
+            auto trafo = m_robots[i]->getTransformation(singleConfigs[i]);
+            robotAABBs.push_back(util::transformAABB(m_robotAABBs[i], trafo));
+        }
+        // check collisions
+        if (checkRobots(robotAABBs, &result))
+            return false;
+        for (auto &robotAABB : robotAABBs)
+            if (checkObstacles(robotAABB, &result))
+                return false;
+    }
+    if (request.checkObstacle) {
+        auto trafo = m_robots[0]->getTransformation(config);
+        AABB robotAABB = util::transformAABB(m_robotAABBs[0], trafo);
+        return !checkObstacles(robotAABB, &result);
+    }
+
+    return true;
 }
 
 /*!
 *  \brief      Check collision of a trajectory of configurations
 *  \author     Sascha Kaden
 *  \param[in]  vector of configurations
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2016-05-25
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetectionAABB<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
+bool CollisionDetectionAABB<dim>::check(const std::vector<Vector<dim>> &configs) const {
     if (configs.empty())
         return false;
 
     for (auto &config : configs)
-        if (checkConfig(config))
-            return true;
+        if (!check(config))
+            return false;
 
-    return false;
+    return true;
 }
 
 template <unsigned int dim>
-bool CollisionDetectionAABB<dim>::checkRobots(const std::vector<AABB> &robots, CollisionResult *result) {
+bool CollisionDetectionAABB<dim>::checkRobots(const std::vector<AABB> &robots, CollisionResult *result) const {
     if (result) {
         double dist;
         for (auto a = robots.begin(); a != robots.end() - 1; ++a) {
@@ -157,7 +192,7 @@ bool CollisionDetectionAABB<dim>::checkRobots(const std::vector<AABB> &robots, C
 }
 
 template <unsigned int dim>
-bool CollisionDetectionAABB<dim>::checkObstacles(const AABB &robotAABB, CollisionResult *result) {
+bool CollisionDetectionAABB<dim>::checkObstacles(const AABB &robotAABB, CollisionResult *result) const {
     if (result) {
         double dist;
         for (auto &obstacle : m_obstacleAABBs) {

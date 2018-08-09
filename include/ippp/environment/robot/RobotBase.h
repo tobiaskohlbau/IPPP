@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #ifndef ROBOTBASE_H
 #define ROBOTBASE_H
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -30,11 +31,9 @@
 
 namespace ippp {
 
-enum RobotCategory { serial, mobile };
-enum DofType { planarPos, planarRot, volumetricPos, volumetricRot, joint, position, rotation };
-
 /*!
-* \brief   Base class of all robots
+* \brief   Base class of all robots (mobile and serial).
+* \details It contains the base model container and the current pose and the min max boundary of the robot.
 * \author  Sascha Kaden
 * \date    2016-06-30
 */
@@ -52,16 +51,16 @@ class RobotBase : public EnvObject {
     void setBaseModel(const std::shared_ptr<ModelContainer> &model);
     std::shared_ptr<ModelContainer> getBaseModel() const;
 
-    VectorX getMinBoundary() const;
-    VectorX getMaxBoundary() const;
+    std::pair<VectorX, VectorX> getBoundary() const;
     unsigned int getDim() const;
     RobotCategory getRobotCategory() const;
     std::vector<DofType> getDofTypes() const;
 
+    virtual void saveRobotMesh(const VectorX &configuration, const std::string &prefix = "") const;
+
   protected:
-    const RobotCategory m_robotType; /*!< category of the robot (serial or mobile) */
-    VectorX m_minBoundary;           /*!< minimal boundaries of the robot */
-    VectorX m_maxBoundary;           /*!< maximal boundaries of the robot */
+    const RobotCategory m_robotType;        /*!< category of the robot (serial or mobile) */
+    std::pair<VectorX, VectorX> m_boundary; /*!< robot boundary (first min, second max) */
 
     const unsigned int m_dim;              /*!< dimension of the robot */
     const std::vector<DofType> m_dofTypes; /*!< list of the types of every dimension  */

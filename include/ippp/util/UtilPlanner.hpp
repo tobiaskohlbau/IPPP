@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,29 +19,109 @@
 #ifndef UTILPLANNER_HPP
 #define UTILPLANNER_HPP
 
+#include <utility>
+
 #include <ippp/dataObj/Graph.hpp>
 #include <ippp/modules/distanceMetrics/DistanceMetric.hpp>
 #include <ippp/modules/trajectoryPlanner/TrajectoryPlanner.hpp>
+#include <ippp/util/Logging.h>
+#include <ippp/util/UtilList.hpp>
 
 namespace ippp {
 namespace util {
 
+template <unsigned int dim>
+static Vector6 calcConfigToPose(const Vector<dim> &config, const Vector6 &pose, RobotBase &robot) {
+    auto transform = util::toTransform(pose);
+    auto startPose = robot.getTransformation(config);
+    AngleAxis angleAxis(startPose.rotation().transpose() * transform.rotation());
+
+    return util::append<3, 3>(pose.block<3, 1>(0, 0) - startPose.translation(), angleAxis.axis() * angleAxis.angle());
+}
+
+template <unsigned int dim>
+static bool checkConfigToPose(const Vector<dim> &config, const Vector6 &pose, RobotBase &robot,
+                              const std::pair<Vector6, Vector6> &C) {
+    Vector6 poseDisplacement = calcConfigToPose<dim>(config, pose, robot);
+
+    // Vector6 poseDisplacement = pose - util::toPoseVec(robot.getTransformation(config));
+    // for (size_t i = 0; i < 6; ++i)
+    //    std::cout << poseDisplacement[i] << " ";
+    // std::cout << std::endl;
+    for (size_t i = 0; i < 6; ++i)
+        if (poseDisplacement[i] < C.first[i] || C.second[i] < poseDisplacement[i])
+            return false;
+
+    return true;
+}
+
+/*!
+*  \brief      Check if a valid connection to a near Node of the graph is possible.
+*  \param[in]  configuration
+*  \param[in]  Graph
+*  \param[in]  ValidityChecker
+*  \param[in]  TrajectoryPlanner
+*  \param[in]  search range
+*  \param[out] near valid node, nullptr if no node was found
+*  \date       2018-03-17
+*/
+template <unsigned int dim>
+static std::shared_ptr<Node<dim>> findNearValidNode(const Vector<dim> &config, const Graph<dim> &graph,
+                                                    const TrajectoryPlanner<dim> &trajectory,
+                                                    const ValidityChecker<dim> &validityChecker, double range) {
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph.getNearNodes(config, range);
+    for (auto &nearNode : nearNodes)
+        if (validityChecker.check(trajectory.calcTrajBin(config, nearNode->getValues())))
+            return nearNode;
+
+    return nullptr;
+}
+
+/*!
+*  \brief      Try to find Node with smalles cost of the graph with a valid connection to the passed config
+*  \author     Sascha Kaden
+*  \param[in]  configuration
+*  \param[in]  Graph
+*  \param[in]  ValidityChecker
+*  \param[in]  TrajectoryPlanner
+*  \param[in]  search range
+*  \date       2018-08-05
+*/
+template <unsigned int dim>
+static std::shared_ptr<Node<dim>> getNearLowestCostNode(const Vector<dim> &config, const Graph<dim> &graph,
+                                                        const ValidityChecker<dim> &validityChecker,
+                                                        const TrajectoryPlanner<dim> &trajectory, double range) {
+    std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph.getNearNodes(config, range);
+    std::sort(std::begin(nearNodes), std::end(nearNodes),
+              [](std::shared_ptr<Node<dim>> a, std::shared_ptr<Node<dim>> b) { return a->getPathCost() < b->getPathCost(); });
+
+    for (auto &nearNode : nearNodes)
+        if (validityChecker.check(trajectory.calcTrajBin(config, nearNode->getValues())))
+            return nearNode;
+    return nullptr;
+}
+
 /*!
 *  \brief      Try to find nearest Node of the graph with a valid connection to the passed config
 *  \author     Sascha Kaden
-*  \param[in]  Node
-*  \param[in]  nearest Node
+*  \param[in]  configuration
+*  \param[in]  Graph
+*  \param[in]  ValidityChecker
+*  \param[in]  TrajectoryPlanner
+*  \param[in]  DistanceMetric
+*  \param[in]  search range
 *  \date       2016-08-09
 */
 template <unsigned int dim>
 static std::shared_ptr<Node<dim>> getNearestValidNode(const Vector<dim> &config, const Graph<dim> &graph,
-                                                      const TrajectoryPlanner<dim> &trajectory,
-                                                      const DistanceMetric<dim> &metric, double range) {
+                                                      const ValidityChecker<dim> &validityChecker,
+                                                      const TrajectoryPlanner<dim> &trajectory, const DistanceMetric<dim> &metric,
+                                                      double range) {
     std::shared_ptr<Node<dim>> nearestNode = nullptr;
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph.getNearNodes(config, range);
     double dist = std::numeric_limits<double>::max();
     for (auto &nearNode : nearNodes) {
-        if (trajectory.checkTrajectory(config, nearNode->getValues()) &&
+        if (validityChecker.check(trajectory.calcTrajBin(config, nearNode->getValues())) &&
             metric.calcDist(config, nearNode->getValues()) < dist) {
             dist = metric.calcDist(config, nearNode->getValues());
             nearestNode = nearNode;
@@ -60,7 +140,7 @@ static std::shared_ptr<Node<dim>> getNearestValidNode(const Vector<dim> &config,
 *  \date          2016-08-09
 */
 template <unsigned int dim>
-static void expandNode(const std::shared_ptr<Node<dim>> currentNode, std::vector<std::shared_ptr<Node<dim>>> &openList,
+static void expandNode(const std::shared_ptr<Node<dim>> &currentNode, std::vector<std::shared_ptr<Node<dim>>> &openList,
                        std::vector<std::shared_ptr<Node<dim>>> &closedList, const DistanceMetric<dim> &metric) {
     double dist, edgeCost;
     auto successors = currentNode->getChildNodes();
@@ -71,14 +151,14 @@ static void expandNode(const std::shared_ptr<Node<dim>> currentNode, std::vector
         if (util::contains(closedList, successor))
             continue;
 
-        edgeCost = metric.calcDist(currentNode, successor);
-        dist = currentNode->getCost() + edgeCost;
+        edgeCost = metric.calcDist(*currentNode, *successor);
+        dist = currentNode->getPathCost() + edgeCost;
 
-        if (util::contains(openList, successor) && dist >= successor->getCost())
+        if (util::contains(openList, successor) && dist >= successor->getPathCost())
             continue;
 
         successor->setQueryParent(currentNode, edgeCost);
-        successor->setCost(dist);
+        successor->setPathCost(dist);
         if (!util::contains(openList, successor))
             openList.push_back(successor);
     }
@@ -95,7 +175,7 @@ static void expandNode(const std::shared_ptr<Node<dim>> currentNode, std::vector
 *  \date       2016-08-09
 */
 template <unsigned int dim>
-static bool aStar(const std::shared_ptr<Node<dim>> sourceNode, const std::shared_ptr<Node<dim>> targetNode,
+static bool aStar(const std::shared_ptr<Node<dim>> &sourceNode, const std::shared_ptr<Node<dim>> &targetNode,
                   const DistanceMetric<dim> &metric) {
     std::vector<std::shared_ptr<Node<dim>>> openList, closedList;
 
@@ -104,8 +184,8 @@ static bool aStar(const std::shared_ptr<Node<dim>> sourceNode, const std::shared
         edges.push_back(sourceNode->getParentEdge());
 
     for (size_t i = 0; i < edges.size(); ++i) {
-        edges[i].first->setCost(edges[i].second);
-        edges[i].first->setQueryParent(sourceNode, metric.calcDist(edges[i].first, sourceNode));
+        edges[i].first->setPathCost(edges[i].second);
+        edges[i].first->setQueryParent(sourceNode, metric.calcDist(*(edges[i].first), *sourceNode));
         openList.push_back(edges[i].first);
     }
     closedList.push_back(sourceNode);
@@ -124,6 +204,47 @@ static bool aStar(const std::shared_ptr<Node<dim>> sourceNode, const std::shared
         expandNode<dim>(currentNode, openList, closedList, metric);
     }
     return false;
+}
+
+template <unsigned int dim>
+static std::vector<Vector<dim>> calcConfigPath(const std::vector<std::shared_ptr<Node<dim>>> &nodes,
+                                               const TrajectoryPlanner<dim> &trajectory) {
+    std::vector<Vector<dim>> path;
+    if (nodes.empty())
+        return path;
+
+    for (auto node = nodes.begin(); node < nodes.end() - 1; ++node) {
+        path.push_back((*node)->getValues());
+        auto tmp = trajectory.calcTrajCont((**node), **(node + 1));
+        path.insert(path.end(), tmp.begin(), tmp.end());
+    }
+    path.push_back(nodes.back()->getValues());
+    return path;
+}
+
+template <unsigned int dim>
+static double calcPathLength(const std::vector<std::shared_ptr<Node<dim>>> &nodes, const DistanceMetric<dim> &metric) {
+    double length = 0;
+    for (auto node = nodes.begin(); node < nodes.end() - 1; ++node)
+        length += metric.calcDist((**node), **(node + 1));
+    return length;
+}
+
+template <unsigned int dim>
+static std::pair<std::shared_ptr<Node<dim>>, std::shared_ptr<Node<dim>>> findGraphConnection(
+    const Graph<dim> &graphA, const Graph<dim> &graphB, const TrajectoryPlanner<dim> &trajectory,
+    const ValidityChecker<dim> &validityChecker, double range, size_t startIndex = 0) {
+    for (auto &node : graphA.getNodes(startIndex)) {
+        for (auto &nearNode : graphB.getNearNodes(*node, range)) {
+            if (validityChecker.check(trajectory.calcTrajBin(*node, *nearNode))) {
+                auto v1 = node->getValues();
+                auto v2 = nearNode->getValues();
+                auto traj = trajectory.calcTrajBin(*node, *nearNode);
+                return std::make_pair(node, nearNode);
+            }
+        }
+    }
+    return std::make_pair(nullptr, nullptr);
 }
 
 } /* namespace util */

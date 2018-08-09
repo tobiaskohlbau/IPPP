@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ class ModelFactoryPqp : public ModelFactory {
   public:
     ModelFactoryPqp();
 
+    std::shared_ptr<ModelContainer> createModel(const Mesh &mesh);
     std::shared_ptr<ModelContainer> createModelFromFile(const std::string &filePath);
     std::vector<std::shared_ptr<ModelContainer>> createModelsFromFile(const std::string &filePath);
     std::vector<std::shared_ptr<ModelContainer>> createModelsFromFiles(const std::vector<std::string> &filePaths);

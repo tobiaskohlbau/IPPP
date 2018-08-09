@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,17 +35,19 @@ template <unsigned int dim>
 class CollisionDetection2D : public CollisionDetection<dim> {
   public:
     CollisionDetection2D(const std::shared_ptr<Environment> &environment, const CollisionRequest &request = CollisionRequest());
-    bool checkConfig(const Vector<dim> &config, CollisionRequest *request = nullptr, CollisionResult *result = nullptr);
-    bool checkTrajectory(std::vector<Vector<dim>> &configs);
+
+    bool check(const Vector<dim> &config) const;
+    bool check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const;
+    bool check(const std::vector<Vector<dim>> &configs) const;
 
   private:
-    bool checkPoint2D(double x, double y);
+    bool checkPoint2D(double x, double y) const;
 
-    Vector2 m_minBoundary;
-    Vector2 m_maxBoundary;
     std::vector<Mesh> m_obstacles;
 
-    using CollisionDetection<dim>::m_environment;
+    using CollisionDetection<dim>::m_collisionCollector;
+    using ValidityChecker<dim>::m_environment;
+    using ValidityChecker<dim>::checkRobotBound;
 };
 
 /*!
@@ -58,25 +60,19 @@ template <unsigned int dim>
 CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environment> &environment, const CollisionRequest &request)
     : CollisionDetection<dim>("CollisionDetection2D", environment, request) {
     assert(dim % 2 == 0);
-    // set boundaries
-    auto bound = m_environment->getSpaceBoundary();
-    m_minBoundary = Vector2(bound.min()[0], bound.min()[1]);
-    m_maxBoundary = Vector2(bound.max()[0], bound.max()[1]);
-
     if (m_environment->numObstacles() == 0) {
-        Logging::warning("Empty workspace", this);
+        Logging::info("Empty workspace", this);
     } else {
         for (auto obstacle : m_environment->getObstacles())
             m_obstacles.push_back(obstacle->model->m_mesh);
-    }
-
-    // update obstacle models for the 2D collision check, extends the AABB of the obstacle in z direction
-    for (auto &obstacle : m_obstacles) {
-        Vector3 bottomLeft = obstacle.aabb.corner(AABB::CornerType::BottomLeft);
-        Vector3 topRight = obstacle.aabb.corner(AABB::CornerType::TopRight);
-        bottomLeft[2] = -1;
-        topRight[2] = 1;
-        obstacle.aabb = AABB(bottomLeft, topRight);
+        // update obstacle models for the 2D collision check, extends the AABB of the obstacle in z direction
+        for (auto &obstacle : m_obstacles) {
+            Vector3 min = obstacle.aabb.min();
+            Vector3 max = obstacle.aabb.max();
+            min[2] = -1;
+            max[2] = 1;
+            obstacle.aabb = AABB(min, max);
+        }
     }
 }
 
@@ -84,31 +80,49 @@ CollisionDetection2D<dim>::CollisionDetection2D(const std::shared_ptr<Environmen
 *  \brief      Check for collision
 *  \author     Sascha Kaden
 *  \param[in]  configuration
-*  \param[out] binary result of collision (true if in collision or vec is empty)
-*  \date       2016-05-25
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetection2D<dim>::checkConfig(const Vector<dim> &config, CollisionRequest *request, CollisionResult *result) {
+bool CollisionDetection2D<dim>::check(const Vector<dim> &config) const {
+    if (!checkRobotBound(config))
+        return false;
     return checkPoint2D(config[0], config[1]);
 }
 
 /*!
-*  \brief      Check collision of a trajectory of points
+*  \brief      Check for collision
 *  \author     Sascha Kaden
-*  \param[in]  vector of configurations
-*  \param[out] binary result of collision (true if in collision)
-*  \date       2016-05-25
+*  \param[in]  configuration
+*  \param[in]  CollisionRequest
+*  \param[out] CollisionResult
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
 */
 template <unsigned int dim>
-bool CollisionDetection2D<dim>::checkTrajectory(std::vector<Vector<dim>> &configs) {
-    if (configs.empty())
+bool CollisionDetection2D<dim>::check(const Vector<dim> &config, const CollisionRequest &request, CollisionResult &result) const {
+    if (!checkRobotBound(config))
+        return false;
+    return checkPoint2D(config[0], config[1]);
+}
+
+/*!
+*  \brief      Check collision of a trajectory of configurations
+*  \author     Sascha Kaden
+*  \param[in]  vector of configurations
+*  \param[out] binary result of collision (true if valid)
+*  \date       2018-02-12
+*/
+template <unsigned int dim>
+bool CollisionDetection2D<dim>::check(const std::vector<Vector<dim>> &configs) const {
+    if (configs.empty() || !checkRobotBound(configs))
         return false;
 
     for (auto &config : configs)
-        if (checkPoint2D(config[0], config[1]))
-            return true;
+        if (!checkPoint2D(config[0], config[1]))
+            return false;
 
-    return false;
+    return true;
 }
 
 /*!
@@ -116,15 +130,12 @@ bool CollisionDetection2D<dim>::checkTrajectory(std::vector<Vector<dim>> &config
 *  \author     Sascha Kaden
 *  \param[in]  x
 *  \param[in]  y
-*  \param[out] binary result of collision (true if in collision)
+*  \param[out] binary result of collision (true if valid)
 *  \date       2016-06-30
 */
 template <unsigned int dim>
-bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) {
-    if (m_minBoundary[0] >= x || x >= m_maxBoundary[0] || m_minBoundary[1] >= y || y >= m_maxBoundary[1]) {
-        Logging::trace("Config out of bound", this);
-        return true;
-    }
+bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) const {
+    m_collisionCollector->add(1);
 
     double alpha, beta, gamma;
     Vector3 p1, p2, p3;
@@ -145,10 +156,10 @@ bool CollisionDetection2D<dim>::checkPoint2D(double x, double y) {
             gamma = 1.0f - alpha - beta;
 
             if (alpha > 0 && beta > 0 && gamma > 0)
-                return true;
+                return false;
         }
     }
-    return false;
+    return true;
 }
 
 } /* namespace ippp */

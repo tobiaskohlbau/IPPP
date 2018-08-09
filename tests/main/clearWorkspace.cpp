@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,7 @@
 #include <ippp/Core.h>
 #include <ippp/Environment.h>
 #include <ippp/Planner.h>
-#include <ippp/ui/ModuleConfigurator.hpp>
-#include <ippp/ui/EnvironmentConfigurator.h>
+#include <ippp/UI.h>
 
 using namespace ippp;
 
@@ -33,28 +32,28 @@ TEST(MAIN, clearWorkspace2D) {
     EnvironmentConfigurator environmentConfig;
     AABB workspaceBounding(Vector3(0, 0, 0), Vector3(100, 100, 100));
     environmentConfig.setWorkspaceProperties(workspaceBounding);
-    environmentConfig.setRobotType(RobotType::Point);
+    environmentConfig.setRobotType(RobotType::Point2D);
     auto environment = environmentConfig.getEnvironment();
 
     ModuleConfigurator<dim> modulConfig;
     modulConfig.setEnvironment(environment);
-    modulConfig.setCollisionType(CollisionType::Dim2);
+    modulConfig.setValidityCheckerType(ValidityCheckerType::AlwaysValid);
     modulConfig.setSamplerProperties("asldkf2o345;lfdnsa;f", 1);
 
-    std::vector<MetricType> metricTypes;
+    std::vector<DistanceMetricType> metricTypes;
     std::vector<EvaluatorType> evalTypes;
-    std::vector<NeighborType> neighborTypes;
+    std::vector<NeighborFinderType> neighborTypes;
     std::vector<PathModifierType> modifierTypes;
     std::vector<SamplerType> samplerTypes;
     std::vector<SamplingType> samplingTypes;
-    std::vector<TrajectoryType> trajectoryTypes;
+    std::vector<TrajectoryPlannerType> trajectoryTypes;
 
-    metricTypes.push_back(MetricType::L1);
-    metricTypes.push_back(MetricType::L2);
-    metricTypes.push_back(MetricType::Inf);
-    metricTypes.push_back(MetricType::L1Weighted);
-    metricTypes.push_back(MetricType::L2Weighted);
-    metricTypes.push_back(MetricType::InfWeighted);
+    metricTypes.push_back(DistanceMetricType::L1);
+    metricTypes.push_back(DistanceMetricType::L2);
+    metricTypes.push_back(DistanceMetricType::Inf);
+    metricTypes.push_back(DistanceMetricType::L1Weighted);
+    metricTypes.push_back(DistanceMetricType::L2Weighted);
+    metricTypes.push_back(DistanceMetricType::InfWeighted);
 
     evalTypes.push_back(EvaluatorType::SingleIteration);
     //evalTypes.push_back(EvaluatorType::Time);
@@ -62,14 +61,15 @@ TEST(MAIN, clearWorkspace2D) {
     //evalTypes.push_back(EvaluatorType::QueryOrTime);
     modulConfig.setEvaluatorProperties(10, 3);
 
-    neighborTypes.push_back(NeighborType::BruteForce);
-    neighborTypes.push_back(NeighborType::KDTree);
+    neighborTypes.push_back(NeighborFinderType::BruteForce);
+    neighborTypes.push_back(NeighborFinderType::KDTree);
 
     modifierTypes.push_back(PathModifierType::Dummy);
     modifierTypes.push_back(PathModifierType::NodeCut);
 
-    samplerTypes.push_back(SamplerType::SamplerRandom);
-    samplerTypes.push_back(SamplerType::SamplerUniform);
+    samplerTypes.push_back(SamplerType::Random);
+    samplerTypes.push_back(SamplerType::Uniform);
+    samplerTypes.push_back(SamplerType::UniformBiased);
     //samplerTypes.push_back(SamplerType::SamplerNormalDist);
 
     samplingTypes.push_back(SamplingType::Straight);
@@ -78,8 +78,8 @@ TEST(MAIN, clearWorkspace2D) {
     //samplingTypes.push_back(SamplingType::Gaussian);
     //samplingTypes.push_back(SamplingType::GaussianDist);
 
-    trajectoryTypes.push_back(TrajectoryType::Linear);
-    trajectoryTypes.push_back(TrajectoryType::RotateAtS);
+    trajectoryTypes.push_back(TrajectoryPlannerType::Linear);
+    trajectoryTypes.push_back(TrajectoryPlannerType::RotateAtS);
 
     Vector2 start(5, 5);
     Vector2 goal(95, 95);

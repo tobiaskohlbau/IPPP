@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -306,16 +306,15 @@ void Logging::sendString(const std::string& message, LogLevel level) {
     if (level > m_level)
         return;
 
-    m_mutex.lock();
+    std::lock_guard<std::mutex> lock(m_mutex);
     if (m_output == LogOutput::file) {
         writeToFile(message);
-    } else if (m_output == LogOutput::terminlAndFile) {
+    } else if (m_output == LogOutput::terminalAndFile) {
         printToTerminal(message);
         writeToFile(message);
     } else {
         printToTerminal(message);
     }
-    m_mutex.unlock();
 }
 
 /*!
