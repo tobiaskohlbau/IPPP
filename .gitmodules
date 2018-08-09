@@ -13,3 +13,6 @@
 [submodule "third_party/PQP"]
 	path = third_party/PQP
 	url = https://github.com/tobiaskohlbau/PQP-1.git
+[submodule "IPPP_assets"]
+	path = IPPP_assets
+	url = https://github.com/SaschaKaden/IPPP_assets.git
