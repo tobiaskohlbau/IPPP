@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +24,11 @@
 
 namespace ippp {
 
+/*!
+* \brief   Base class of all objects inside of the Environment. It contains basically the pose of the objects.
+* \author  Sascha Kaden
+* \date    2018-07-25
+*/
 class EnvObject : public Identifier {
   public:
     virtual ~EnvObject();

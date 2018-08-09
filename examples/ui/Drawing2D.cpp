@@ -94,6 +94,7 @@ cv::Mat eigenToCV(Eigen::MatrixXi eigenMat) {
 
     cv::Mat dst;
     cvMat.convertTo(dst, CV_8UC1);
+    cv::cvtColor(dst, dst, CV_GRAY2BGR);
 
     return dst;
 }
@@ -153,6 +154,21 @@ void drawConfigs2D(cv::Mat &image, const std::vector<Vector2> &configs, Vector2i
         double y = (elem[1] * scale) + offset[1];
         cv::circle(image, cv::Point(x, y), 1, cv::Scalar(colorNode[0], colorNode[1], colorNode[2]), thickness);
     }
+}
+
+bool imwrite(const std::string &name, const cv::Mat &image){
+    // convert BGR image to BRRA
+    cv::Mat result;
+    cv::cvtColor(image, result, CV_BGR2BGRA);
+    // convert white background to transparent
+    for (size_t i = 0; i < result.rows; ++i) {
+        for (size_t j = 0; j < result.cols; ++j) {
+            cv::Vec4b &bgra = result.at<cv::Vec4b>(i,j);
+            if (bgra[0] > 240 && bgra[1] > 240 && bgra[2] > 240)
+                bgra[3] = 0;
+        }
+    }
+    return cv::imwrite(name, result);
 }
 
 } /* namespace drawing */

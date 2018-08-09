@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,36 +16,36 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef PRMOPTIONS_HPP
-#define PRMOPTIONS_HPP
+#ifndef RRTOPTIONS_HPP
+#define RRTOPTIONS_HPP
 
-#include <ippp/planner/options/PlannerOptions.hpp>
+#include <ippp/motionPlanner/options/MPOptions.hpp>
 
 namespace ippp {
 
 /*!
-* \brief   Class PRMOptions determines special options for the Pipppanner
+* \brief   Class RRTOptions determines special options for the RRTPlanner
 * \author  Sascha Kaden
 * \date    2016-08-29
 */
 template <unsigned int dim>
-class PRMOptions : public PlannerOptions<dim> {
+class RRTOptions : public MPOptions<dim> {
   public:
-    PRMOptions(double rangeSize, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+    RRTOptions(double stepSize, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
-    void setRangeSize(double rangeSize);
-    double getRangeSize() const;
+    void setStepSize(double stepSize);
+    double getStepSize() const;
 
   private:
-    double m_rangeSize = 30;
+    double m_stepSize = 30;
 };
 
 /*!
-*  \brief      Standard constructor of the class PRMOptions
-*  \param[in]  rangeSize
+*  \brief      Standard constructor of the class RRTOptions
+*  \param[in]  RRT step size
 *  \param[in]  CollisionDetection
 *  \param[in]  DistanceMetric
 *  \param[in]  Evaluator
@@ -56,42 +56,42 @@ class PRMOptions : public PlannerOptions<dim> {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-PRMOptions<dim>::PRMOptions(double rangeSize, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+RRTOptions<dim>::RRTOptions(double stepSize, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                             const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
                             const std::shared_ptr<PathModifier<dim>> &pathModifier,
                             const std::shared_ptr<Sampling<dim>> &sampling,
                             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PlannerOptions<dim>(validityChecker, metric, evaluator, pathModifier, sampling, trajectory) {
-    setRangeSize(rangeSize);
+    : MPOptions<dim>(validityChecker, metric, evaluator, pathModifier, sampling, trajectory) {
+    setStepSize(stepSize);
 }
 
 /*!
-*  \brief      Sets the range size of the local planner from the Pipppanner
-*  \param[in]  rangeSize
+*  \brief      Sets the step size of the RRTPlanner
+*  \param[in]  stepSize
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-void PRMOptions<dim>::setRangeSize(double rangeSize) {
-    if (rangeSize <= 0) {
-        Logging::warning("Step size was equal or smaller than 0 and is set up to 1", this);
-        m_rangeSize = 1;
+void RRTOptions<dim>::setStepSize(double stepSize) {
+    if (stepSize <= 0) {
+        Logging::warning("Step size was smaller than 0 and was set up to 1", this);
+        m_stepSize = 1;
     } else {
-        m_rangeSize = rangeSize;
+        m_stepSize = stepSize;
     }
 }
 
 /*!
-*  \brief      Returns the range size of the local planner from the Pipppanner
-*  \param[out] rangeSize
+*  \brief      Returns the step size of the RRTPlanner
+*  \param[out] stepSize
 *  \author     Sascha Kaden
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-double PRMOptions<dim>::getRangeSize() const {
-    return m_rangeSize;
+double RRTOptions<dim>::getStepSize() const {
+    return m_stepSize;
 }
 
 } /* namespace ippp */
 
-#endif    // PRMOPTIONS_HPP
+#endif    // RRTOPTIONS_HPP

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,14 +26,14 @@
 namespace ippp {
 
 /*!
-* \brief   SingleIterationEvaluator which runs only one Iteration.
+* \brief   TimeEvaluator returns true after the defined time.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
 template <unsigned int dim>
 class TimeEvaluator : public Evaluator<dim> {
   public:
-    TimeEvaluator(size_t maxDuration = 30);
+    TimeEvaluator(size_t maxDuration = 30, const std::string &name = "TimeEvaluator");
 
     bool evaluate();
     void initialize() override;
@@ -44,20 +44,15 @@ class TimeEvaluator : public Evaluator<dim> {
     std::chrono::time_point<std::chrono::system_clock> m_startTime;
 };
 
-/*!
-*  \brief      Constructor of the class SingleIterationEvaluator
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \date       2017-09-30
-*/
 template <unsigned int dim>
-TimeEvaluator<dim>::TimeEvaluator(size_t maxDuration) : Evaluator<dim>("TimeEvaluator"), m_maxDuration(maxDuration) {
+TimeEvaluator<dim>::TimeEvaluator(size_t maxDuration, const std::string &name)
+    : Evaluator<dim>(name), m_maxDuration(maxDuration) {
 }
 
 /*!
-*  \brief      Return always true at the second iteration
+*  \brief      Return true after the defined time has passed.
 *  \author     Sascha Kaden
-*  \param[out] evaluation
+*  \param[out] evaluation result
 *  \date       2017-09-30
 */
 template <unsigned int dim>
@@ -73,9 +68,8 @@ bool TimeEvaluator<dim>::evaluate() {
             "Maximum duration achieved with: " + std::to_string(static_cast<double>(duration.count() / 1000)) + " seconds.",
             this);
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 template <unsigned int dim>

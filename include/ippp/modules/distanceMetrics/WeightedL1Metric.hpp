@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,8 +34,6 @@ class WeightedL1Metric : public DistanceMetric<dim> {
     WeightedL1Metric();
     WeightedL1Metric(const Vector<dim> &weightVec);
     double calcDist(const Vector<dim> &source, const Vector<dim> &target) const;
-    double calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const;
-    void simplifyDist(double &dist) const;
 
     void setWeightVec(const Vector<dim> &weight);
     Vector<dim> getWeightVec() const;
@@ -75,30 +73,6 @@ WeightedL1Metric<dim>::WeightedL1Metric(const Vector<dim> &weightVec) : Distance
 template <unsigned int dim>
 double WeightedL1Metric<dim>::calcDist(const Vector<dim> &source, const Vector<dim> &target) const {
     return (source - target).cwiseProduct(m_weightVec).sum();
-}
-
-/*!
-*  \brief      Calculates the squared distance cost of an Edge from the source and target Node by the specified metric.
-*  \author     Sascha Kaden
-*  \param[in]  source vector
-*  \param[in]  target vector
-*  \param[out] distance cost
-*  \date       2017-10-08
-*/
-template <unsigned int dim>
-double WeightedL1Metric<dim>::calcSimpleDist(const Vector<dim> &source, const Vector<dim> &target) const {
-    return (source - target).cwiseProduct(m_weightVec).sum();
-}
-
-/*!
-*  \brief      Calculates the simplified distance of the passed distance.
-*  \author     Sascha Kaden
-*  \param[in]  distance
-*  \param[out] simplified distance
-*  \date       2017-10-08
-*/
-template <unsigned int dim>
-void WeightedL1Metric<dim>::simplifyDist(double &dist) const {
 }
 
 /*!

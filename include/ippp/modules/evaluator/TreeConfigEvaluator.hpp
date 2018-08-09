@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
 namespace ippp {
 
 /*!
-* \brief   Evaluator interface.
+* \brief   Evaluation of the TreePlanner Graph by searching a connection between the tree and the goal configuration.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
@@ -39,7 +39,8 @@ class TreeConfigEvaluator : public Evaluator<dim> {
   public:
     TreeConfigEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Graph<dim>> &graph,
                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double dist = 10);
+                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double dist = 10,
+                        const std::string &name = "TreeConfigEvaluator");
 
     bool evaluate();
     void initialize() override;
@@ -59,21 +60,13 @@ class TreeConfigEvaluator : public Evaluator<dim> {
     using Evaluator<dim>::m_targetConfigs;
 };
 
-/*!
-*  \brief      Constructor of the class TreeConfigEvaluator
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \param[in]  DistanceMetric
-*  \param[in]  Graph
-*  \param[in]  maximum distance
-*  \date       2017-09-30
-*/
 template <unsigned int dim>
 TreeConfigEvaluator<dim>::TreeConfigEvaluator(const std::shared_ptr<DistanceMetric<dim>> &metric,
                                               const std::shared_ptr<Graph<dim>> &graph,
                                               const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double dist)
-    : Evaluator<dim>("TreeConfigEvaluator"),
+                                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double dist,
+                                              const std::string &name)
+    : Evaluator<dim>(name),
       m_graph(graph),
       m_metric(metric),
       m_trajectory(trajectory),
@@ -84,7 +77,7 @@ TreeConfigEvaluator<dim>::TreeConfigEvaluator(const std::shared_ptr<DistanceMetr
 }
 
 /*!
-*  \brief      Evaluation of the new nodes inside of the graph and checking of the distance to target node.
+*  \brief      Evaluation of the new nodes inside of the graph and checking of the distance to the target configuration.
 *  \author     Sascha Kaden
 *  \param[out] Evaluation result
 *  \date       2017-09-30
@@ -125,7 +118,7 @@ void TreeConfigEvaluator<dim>::initialize() {
 }
 
 /*!
-*  \brief      Set target nodes for evaluation.
+*  \brief      Set target configurations for evaluation.
 *  \author     Sascha Kaden
 *  \param[in]  target Nodes
 *  \date       2017-09-30

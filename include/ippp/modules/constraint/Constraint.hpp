@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   Base class of all constraint checker and projections.
+* \brief   Base class of all constraint checker.
 * \author  Sascha Kaden
 * \date    2018-01-08
 */
@@ -34,8 +34,6 @@ class Constraint : public ValidityChecker<dim> {
     Constraint(const std::string &name, const std::shared_ptr<Environment> &environment, double epsilon = IPPP_EPSILON);
 
     virtual Vector6 calcEuclideanError(const Vector<dim> &config) const = 0;
-
-  protected:
 };
 
 /*!

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ namespace ippp {
 
 /*!
 * \brief   Class LinearTrajectory plans a path between the passed nodes/configs. Start and end point aren't part of the path.
-* \details The rotation in the path will be at the rotation point, percent value of the value.
- * The values of the rotation will be taken from the robot, which is saved in the environment.
+* \details The rotation in the path will be at the rotation point (value between 0 and 1).
+ * The configuration entries of the rotation will be taken from the robot, which is saved in the environment.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */

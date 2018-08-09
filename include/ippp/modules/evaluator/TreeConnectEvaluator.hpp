@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
 namespace ippp {
 
 /*!
-* \brief   Evaluator interface.
+* \brief   Evaluation of the RRT*Connect Graphs by searching a connection between the two trees.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
@@ -38,7 +38,8 @@ class TreeConnectEvaluator : public Evaluator<dim> {
   public:
     TreeConnectEvaluator(const std::shared_ptr<Graph<dim>> &graphA, const std::shared_ptr<Graph<dim>> &graphB,
                          const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double range = 1);
+                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double range = 1,
+                         const std::string &name = "TreeConnectEvaluator");
 
     bool evaluate();
     void initialize() override;
@@ -56,21 +57,13 @@ class TreeConnectEvaluator : public Evaluator<dim> {
     bool m_useA;
 };
 
-/*!
-*  \brief      Constructor of the class TreeConfigEvaluator
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \param[in]  DistanceMetric
-*  \param[in]  Graph
-*  \param[in]  maximum distance
-*  \date       2017-09-30
-*/
 template <unsigned int dim>
 TreeConnectEvaluator<dim>::TreeConnectEvaluator(const std::shared_ptr<Graph<dim>> &graphA,
                                                 const std::shared_ptr<Graph<dim>> &graphB,
                                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
-                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double range)
-    : Evaluator<dim>("TreeConnectEvaluator"),
+                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker, double range,
+                                                const std::string &name)
+    : Evaluator<dim>(name),
       m_graphA(graphA),
       m_graphB(graphB),
       m_trajectory(trajectory),
@@ -79,7 +72,7 @@ TreeConnectEvaluator<dim>::TreeConnectEvaluator(const std::shared_ptr<Graph<dim>
 }
 
 /*!
-*  \brief      Evaluation of the new nodes inside of the graph and checking of the distance to target node.
+*  \brief      Evaluation of the two trees and try to find a connection.
 *  \author     Sascha Kaden
 *  \param[out] Evaluation result
 *  \date       2017-09-30
@@ -94,6 +87,7 @@ bool TreeConnectEvaluator<dim>::evaluate() {
         nodes = util::findGraphConnection(*m_graphB, *m_graphA, *m_trajectory, *m_validityChecker, m_range, m_lastIndexB);
         m_lastIndexB = m_graphB->numNodes() - 1;
     }
+    m_useA = !m_useA;
 
     if (nodes.first == nullptr)
         return false;

@@ -20,7 +20,7 @@ std::shared_ptr<Environment> generateEnvironment() {
 
     envConfigurator.setWorkspaceProperties(AABB(Vector3(-10000, -10000, -10000), Vector3(10000, 10000, 10000)));
     envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/cupboard.obj", util::Vecd(-300, 0, 300, 0, 0, util::toRad(90)));
-    //envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/obstacle400x400x800.obj",
+    // envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/obstacle400x400x800.obj",
     //                            util::Vecd(420, -400, 100, 0, 0, util::toRad(90)));
     envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/table.obj");
 
@@ -49,15 +49,15 @@ std::shared_ptr<Environment> generateEnvironment() {
     linkOffsets[4] = util::Vecd(0, 0, 200, 0, 0, 0);
     linkOffsets[5] = util::Vecd(0, 0, 0, util::halfPi(), 0, 0);
     auto linkTransforms = util::toTransform(linkOffsets);
-    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms, Transform::Identity(), Transform::Identity(),
-                                             util::toTransform(util::Vecd(13, 7, 120, 0, 0, 0)),
+    envConfigurator.setSerialRobotProperties(dhParameters, linkModelFiles, linkTransforms, Transform::Identity(),
+                                             Transform::Identity(), util::toTransform(util::Vecd(13, 7, 120, 0, 0, 0)),
                                              FLAGS_assetsDir + "/robotModels/wesslingHand.obj");
 
     envConfigurator.saveConfig("KukaEnvConfig.json");
     return envConfigurator.getEnvironment();
 }
 
-std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, const std::pair<Vector6, Vector6>& C,
+std::shared_ptr<MotionPlanner<dim>> generatePlanner(std::shared_ptr<Environment> env, const std::pair<Vector6, Vector6>& C,
                                               const Transform& taskFrame) {
     // properties
     double stepSize = util::toRad(50);
@@ -75,21 +75,23 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     auto sampler = std::make_shared<SamplerUniformBiased<dim>>(env, graph, "sadfsdafasdf4332154sdaf");
 
     // constraint
-    //auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
+    auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
     auto berensonConstraint = std::make_shared<BerensonConstraint<dim>>(env, taskFrame, C);
     std::vector<std::shared_ptr<ValidityChecker<dim>>> checkers = {collision, berensonConstraint};
     auto validityChecker = std::make_shared<ComposeValidity<dim>>(env, checkers, ComposeType::AND);
 
-    // sampler
-    //auto TS =
-    //    std::make_shared<TangentSpaceSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, stepSize, C, taskFrame);
-    //auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, taskFrame);
-    auto BS = std::make_shared<BerensonSampling<dim>>(env, sampler, berensonConstraint, attempts);
+    // sampling
+    auto TS = std::make_shared<TangentSpaceSampling<dim>>(env, graph, sampler, validityChecker, attempts, stepSize, C, taskFrame);
+    auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, graph, sampler, stilmanConstraint, validityChecker,
+                                                                   attempts, stepSize, taskFrame);
+    auto BS = std::make_shared<BerensonSampling<dim>>(env, graph, sampler, berensonConstraint, validityChecker, metric, attempts,
+                                                      stepSize);
 
     auto nodeCut = std::make_shared<NodeCutPathModifier<dim>>(env, trajectory, berensonConstraint);
     // evaluator
     std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-    evaluators.push_back(std::make_shared<TreeConnectEvaluator<dim>>(graph, graphB, trajectory, validityChecker, util::toRad(50)));
+    evaluators.push_back(
+        std::make_shared<TreeConnectEvaluator<dim>>(graph, graphB, trajectory, validityChecker, util::toRad(50)));
     evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(80));
     auto evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
 
@@ -98,7 +100,7 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     return std::make_shared<RRTStarConnect<dim>>(env, options, graph, graphB);
 }
 
-bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planner, const Vector<dim>& start,
+bool run(std::shared_ptr<Environment> env, std::shared_ptr<MotionPlanner<dim>>& planner, const Vector<dim>& start,
          const Vector<dim>& goal) {
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(env->getRobot());
 
@@ -112,8 +114,8 @@ bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planne
         Logging::info("Init and goal could be connected! \n", "Example");
         auto path = planner->getPath(0.001, 0.001);
 
-        //auto json = jsonSerializer::serialize<dim>(path);
-        //ui::save("kukaPath.json", json);
+        // auto json = jsonSerializer::serialize<dim>(path);
+        // ui::save("kukaPath.json", json);
         auto json = txtSerializer::serialize<dim>(path);
         ui::save("kukaPath.json", json);
     }

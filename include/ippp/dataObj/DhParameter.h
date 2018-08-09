@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@
 namespace ippp {
 
 /*!
-* \brief   DH parameter class contains the four parameter alpha, theta, d offset and a offset from the parameter definition.
+* \brief   DH parameter class contains the four parameter alpha, theta, d offset and a offset from the parameter definition of a
+* serial robot.
 * \author  Sascha Kaden
 * \date    2017-12-13
 */

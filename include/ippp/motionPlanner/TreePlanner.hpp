@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@
 
 #include <mutex>
 
-#include <ippp/planner/Planner.hpp>
-#include <ippp/planner/options/RRTOptions.hpp>
+#include <ippp/motionPlanner/MotionPlanner.hpp>
+#include <ippp/motionPlanner/options/RRTOptions.hpp>
 
 namespace ippp {
 
@@ -32,9 +32,9 @@ namespace ippp {
 * \date    2017-06-20
 */
 template <unsigned int dim>
-class TreePlanner : public Planner<dim> {
+class TreePlanner : public MotionPlanner<dim> {
   public:
-    TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
+    TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment, const MPOptions<dim> &options,
                 const std::shared_ptr<Graph<dim>> &graph);
 
     virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads = 1);
@@ -57,16 +57,16 @@ class TreePlanner : public Planner<dim> {
     std::shared_ptr<Node<dim>> m_initNode = nullptr;
     std::shared_ptr<Node<dim>> m_goalNode = nullptr;
 
-    using Planner<dim>::m_validityChecker;
-    using Planner<dim>::m_environment;
-    using Planner<dim>::m_evaluator;
-    using Planner<dim>::m_graph;
-    using Planner<dim>::m_options;
-    using Planner<dim>::m_pathPlanned;
-    using Planner<dim>::m_sampling;
-    using Planner<dim>::m_trajectory;
-    using Planner<dim>::updateStats;
-    using Planner<dim>::m_plannerCollector;
+    using MotionPlanner<dim>::m_validityChecker;
+    using MotionPlanner<dim>::m_environment;
+    using MotionPlanner<dim>::m_evaluator;
+    using MotionPlanner<dim>::m_graph;
+    using MotionPlanner<dim>::m_options;
+    using MotionPlanner<dim>::m_pathPlanned;
+    using MotionPlanner<dim>::m_sampling;
+    using MotionPlanner<dim>::m_trajectory;
+    using MotionPlanner<dim>::updateStats;
+    using MotionPlanner<dim>::m_plannerCollector;
 };
 
 /*!
@@ -80,8 +80,8 @@ class TreePlanner : public Planner<dim> {
 */
 template <unsigned int dim>
 TreePlanner<dim>::TreePlanner(const std::string &name, const std::shared_ptr<Environment> &environment,
-                              const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
-    : Planner<dim>(name, environment, options, graph) {
+                              const MPOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
+    : MotionPlanner<dim>(name, environment, options, graph) {
 }
 
 /*!
@@ -187,6 +187,8 @@ bool TreePlanner<dim>::computePathToPose(const Vector<dim> startConfig, const st
 */
 template <unsigned int dim>
 bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
+    m_pathPlanned = false;
+
     if (m_initNode) {
         if (start == m_initNode->getValues()) {
             Logging::debug("Equal start node, tree will be expanded", this);
@@ -197,7 +199,6 @@ bool TreePlanner<dim>::setInitNode(const Vector<dim> start) {
         }
     }
 
-    m_pathPlanned = false;
     if (!m_validityChecker->check(start)) {
         Logging::warning("Init Node could not be connected", this);
         return false;
@@ -222,8 +223,8 @@ std::vector<std::shared_ptr<Node<dim>>> TreePlanner<dim>::getPathNodes() {
         return nodes;
 
     nodes.push_back(m_goalNode);
-    for (std::shared_ptr<Node<dim>> temp = m_goalNode->getParentNode(); temp != nullptr; temp = temp->getParentNode())
-        nodes.push_back(temp);
+    for (auto tmp = m_goalNode->getParentNode(); tmp != nullptr; tmp = tmp->getParentNode())
+        nodes.push_back(tmp);
 
     std::reverse(nodes.begin(), nodes.end());
 

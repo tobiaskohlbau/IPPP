@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 #ifndef RRTSTARCONNECT_HPP
 #define RRTSTARCONNECT_HPP
 
-#include <ippp/planner/RRTStar.hpp>
+#include <ippp/motionPlanner/RRTStar.hpp>
 
 namespace ippp {
 
@@ -35,7 +35,7 @@ class RRTStarConnect : public RRTStar<dim> {
                    const std::shared_ptr<Graph<dim>> &graphA, const std::shared_ptr<Graph<dim>> &graphB,
                    const std::string &name = "RRTStarConnect");
 
-    virtual bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads = 1) override;
+    bool computePath(const Vector<dim> start, const Vector<dim> goal, size_t numNodes, size_t numThreads = 1) override;
 
   protected:
     bool initNodes(const Vector<dim> &start, const Vector<dim> &goal);
@@ -43,20 +43,20 @@ class RRTStarConnect : public RRTStar<dim> {
     std::shared_ptr<Graph<dim>> m_graphA = nullptr;
     std::shared_ptr<Graph<dim>> m_graphB = nullptr;
 
-    using Planner<dim>::m_validityChecker;
-    using Planner<dim>::m_evaluator;
-    using Planner<dim>::m_graph;
-    using Planner<dim>::m_metric;
-    using Planner<dim>::m_pathPlanned;
-    using Planner<dim>::m_plannerCollector;
-    using Planner<dim>::m_sampling;
-    using Planner<dim>::m_trajectory;
-    using Planner<dim>::updateStats;
-    using Planner<dim>::initParams;
+    using MotionPlanner<dim>::m_validityChecker;
+    using MotionPlanner<dim>::m_evaluator;
+    using MotionPlanner<dim>::m_graph;
+    using MotionPlanner<dim>::m_metric;
+    using MotionPlanner<dim>::m_pathPlanned;
+    using MotionPlanner<dim>::m_plannerCollector;
+    using MotionPlanner<dim>::m_sampling;
+    using MotionPlanner<dim>::m_trajectory;
+    using MotionPlanner<dim>::updateStats;
+    using MotionPlanner<dim>::initParams;
     using TreePlanner<dim>::setInitNode;
     using TreePlanner<dim>::connectGoalNode;
-    using RRT<dim>::m_initNode;
-    using RRT<dim>::m_goalNode;
+    using TreePlanner<dim>::m_initNode;
+    using TreePlanner<dim>::m_goalNode;
     using RRT<dim>::m_stepSize;
 };
 
@@ -99,10 +99,16 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
         m_graph = m_graphA;
         m_sampling->setGraph(m_graph);
     }
+    // stats
+    updateStats();
+    m_graphA->updateStats();
+    m_graphB->updateStats();
+
     std::pair<std::shared_ptr<Node<dim>>, std::shared_ptr<Node<dim>>> nodes =
         util::findGraphConnection(*m_graph, *m_graphB, *m_trajectory, *m_validityChecker, m_stepSize);
     if (nodes.first == nullptr) {
         Logging::warning("Found no connection between trees!", this);
+        m_plannerCollector->stopPlannerTimer();
         return false;
     }
 
@@ -113,7 +119,7 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
         dist = m_metric->calcDist(*treeNode, *pathNode);
         auto tmpNode = std::make_shared<Node<dim>>(pathNode->getValues());
         tmpNode->setParent(treeNode, dist);
-        tmpNode->setCost(treeNode->getCost() + dist);
+        tmpNode->setPathCost(treeNode->getPathCost() + dist);
         m_graph->addNode(tmpNode);
 
         treeNode->addChild(tmpNode, dist);
@@ -122,11 +128,6 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
     }
     m_goalNode = treeNode;
     m_pathPlanned = true;
-
-    // stats
-    updateStats();
-    m_graphA->updateStats();
-    m_graphB->updateStats();
     m_plannerCollector->stopPlannerTimer();
 
     Logging::info("Found path", this);
@@ -143,6 +144,7 @@ bool RRTStarConnect<dim>::computePath(const Vector<dim> start, const Vector<dim>
 template <unsigned int dim>
 bool RRTStarConnect<dim>::initNodes(const Vector<dim> &start, const Vector<dim> &goal) {
     m_evaluator->initialize();
+    m_pathPlanned = false;
 
     if (m_initNode && m_goalNode) {
         if (start == m_initNode->getValues() && goal == m_goalNode->getValues()) {
@@ -152,16 +154,18 @@ bool RRTStarConnect<dim>::initNodes(const Vector<dim> &start, const Vector<dim> 
             Logging::info("Trees will be cleared", this);
             m_graph->clear();
             m_graphB->clear();
+            m_initNode = nullptr;
+            m_goalNode = nullptr;
         }
     }
 
     if (!m_validityChecker->check(start)) {
-        Logging::warning("Init configuration could not be connected", this);
+        Logging::error("Init configuration is not valid!", this);
         return false;
     }
 
     if (!m_validityChecker->check(goal)) {
-        Logging::warning("Goal configuration could not be connected", this);
+        Logging::error("Goal configuration is not valid", this);
         return false;
     }
 

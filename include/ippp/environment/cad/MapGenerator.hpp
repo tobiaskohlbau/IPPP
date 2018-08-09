@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ namespace cad {
 /*!
 * \brief   MapGenerator creates 2D and 3D maps with random rectangles or cubes.
 * \details The rectangles and cubes are build of triangles and will be saved in a Mesh container class. For every
- * obstacle will be a new random extension size between 0 and maxExtension computed.
+ * obstacle will be a new random extension size between 0 and maxExtension calculated.
 * \author  Sascha Kaden
 * \date    2017-06-99
 */

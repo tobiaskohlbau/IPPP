@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <limits>
 
 #include <ippp/modules/sampler/EllipsoidSampler.hpp>
-#include <ippp/planner/RRT.hpp>
+#include <ippp/motionPlanner/RRT.hpp>
 
 namespace ippp {
 
@@ -47,13 +47,13 @@ class RRTStar : public RRT<dim> {
     void reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<Node<dim>> &nearestNode,
                 const std::vector<std::shared_ptr<Node<dim>>> &nearNodes);
 
-    using Planner<dim>::m_validityChecker;
-    using Planner<dim>::m_environment;
-    using Planner<dim>::m_graph;
-    using Planner<dim>::m_metric;
-    using Planner<dim>::m_pathPlanned;
-    using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_sampling;
+    using MotionPlanner<dim>::m_validityChecker;
+    using MotionPlanner<dim>::m_environment;
+    using MotionPlanner<dim>::m_graph;
+    using MotionPlanner<dim>::m_metric;
+    using MotionPlanner<dim>::m_pathPlanned;
+    using MotionPlanner<dim>::m_trajectory;
+    using MotionPlanner<dim>::m_sampling;
     using RRT<dim>::m_initNode;
     using RRT<dim>::m_goalNode;
     using RRT<dim>::m_stepSize;
@@ -82,16 +82,19 @@ bool RRTStar<dim>::optimize(size_t numIterations, size_t numNodes, size_t numThr
     }
     Logging::debug("Run optimization", this);
 
+#if 0
     auto oldSampler = this->m_sampling->getSampler();
     auto ellipsoidSampler = std::make_shared<EllipsoidSampler<dim>>(m_environment);
     m_sampling->setSampler(ellipsoidSampler);
-
     for (size_t i = 0; i < numIterations; ++i) {
         ellipsoidSampler->setParams(m_initNode->getValues(), m_goalNode->getValues(), m_goalNode->getCost(), *m_metric);
         this->expand(numNodes, numThreads);
     }
-
     m_sampling->setSampler(oldSampler);
+#else
+    for (size_t i = 0; i < numIterations; ++i)
+        this->expand(numNodes, numThreads);
+#endif
 
     this->m_plannerCollector->stopOptimizationTimer();
     this->updateStats();
@@ -122,7 +125,7 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::computeRRTNode(const Vector<dim> &randC
 
     auto newNode = std::make_shared<Node<dim>>(newConfig);
     double edgeCost = m_metric->calcDist(*nearestNode, *newNode);
-    newNode->setCost(nearestNode->getCost() + edgeCost);
+    newNode->setPathCost(nearestNode->getPathCost() + edgeCost);
     newNode->setParent(nearestNode, edgeCost);
     m_mutex.lock();
     nearestNode->addChild(newNode, edgeCost);
@@ -145,7 +148,7 @@ std::shared_ptr<Node<dim>> RRTStar<dim>::chooseParent(const Vector<dim> &newConf
                                                       std::vector<std::shared_ptr<Node<dim>>> &nearNodes) {
     // sort nodes by the cost
     std::sort(std::begin(nearNodes), std::end(nearNodes),
-              [](std::shared_ptr<Node<dim>> a, std::shared_ptr<Node<dim>> b) { return a->getCost() < b->getCost(); });
+              [](std::shared_ptr<Node<dim>> a, std::shared_ptr<Node<dim>> b) { return a->getPathCost() < b->getPathCost(); });
 
     for (auto &nearNode : nearNodes)
         if (m_validityChecker->check(m_trajectory->calcTrajBin(newConfig, nearNode->getValues())))
@@ -169,11 +172,11 @@ void RRTStar<dim>::reWire(std::shared_ptr<Node<dim>> &newNode, std::shared_ptr<N
     for (auto &nearNode : nearNodes) {
         if (nearNode != parentNode) {
             edgeCost = m_metric->calcDist(*newNode, *nearNode);
-            oldDist = nearNode->getCost();
-            newDist = newNode->getCost() + edgeCost;
+            oldDist = nearNode->getPathCost();
+            newDist = newNode->getPathCost() + edgeCost;
             if (newDist < oldDist && m_validityChecker->check(m_trajectory->calcTrajBin(*newNode, *nearNode))) {
                 m_mutex.lock();
-                nearNode->setCost(newDist);
+                nearNode->setPathCost(newDist);
                 nearNode->setParent(newNode, edgeCost);
                 newNode->addChild(nearNode, edgeCost);
                 m_mutex.unlock();
@@ -196,13 +199,12 @@ bool RRTStar<dim>::connectGoalNode(Vector<dim> goal) {
         return false;
     }
 
-    auto nearestNode =
-        util::getNearLowestCostNode<dim>(goal, *m_graph, *m_validityChecker, *m_trajectory, m_stepSize * 2);
+    auto nearestNode = util::getNearLowestCostNode<dim>(goal, *m_graph, *m_validityChecker, *m_trajectory, m_stepSize * 2);
 
     if (nearestNode) {
         m_goalNode = std::make_shared<Node<dim>>(goal);
         m_goalNode->setParent(nearestNode, m_metric->calcDist(*m_goalNode, *nearestNode));
-        m_goalNode->setCost(m_goalNode->getParentEdge().second + nearestNode->getCost());
+        m_goalNode->setPathCost(m_goalNode->getParentEdge().second + nearestNode->getPathCost());
         nearestNode->addChild(m_goalNode, m_metric->calcDist(*nearestNode, *m_goalNode));
 
         m_pathPlanned = true;

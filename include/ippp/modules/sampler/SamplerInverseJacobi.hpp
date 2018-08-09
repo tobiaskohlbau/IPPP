@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -123,6 +123,8 @@ Vector<dim> SamplerInverseJacobi<dim>::incrementSample(Vector<dim> &start) {
         AngleAxis angleAxis(startTransform.rotation().transpose() * goalRotation);
         diff = util::append<3, 3>(goalTranslation - startTransform.translation(), angleAxis.axis() * angleAxis.angle());
 
+        if (diff.squaredNorm() < 0.001)
+            break;
 //        if (i == 199999) {
 //            for (size_t j = 0; j < 6; ++j)
 //                std::cout << diff[j] << " ";
@@ -130,12 +132,11 @@ Vector<dim> SamplerInverseJacobi<dim>::incrementSample(Vector<dim> &start) {
 //        }
 
         diff.block<3,1>(3,0) *= 10;
-        while (diff.norm() > 10)
-            diff /= 100;
-        while (diff.norm() > 1)
+        while (diff.squaredNorm() > 10)
             diff /= 10;
-        if (diff.norm() < 0.001)
-            break;
+        while (diff.squaredNorm() > 2)
+            diff /= 2;
+
         MatrixX invJ = m_robot->calcJacobian(start).completeOrthogonalDecomposition().pseudoInverse();
         start += (invJ * diff) * 0.5;
     }

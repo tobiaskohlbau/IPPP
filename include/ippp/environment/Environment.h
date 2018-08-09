@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,10 +30,8 @@
 
 namespace ippp {
 
-enum class BodyType { Planar, Volumetric };
-
 /*!
-* \brief   Environment class, contains a list of obstacles, the workspace boundaries and the robot.
+* \brief   Environment class, contains a list of obstacles, the workspace boundaries and the robots.
 * \author  Sascha Kaden
 * \date    2017-05-16
 */

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ static std::shared_ptr<Node<dim>> getNearLowestCostNode(const Vector<dim> &confi
                                                         const TrajectoryPlanner<dim> &trajectory, double range) {
     std::vector<std::shared_ptr<Node<dim>>> nearNodes = graph.getNearNodes(config, range);
     std::sort(std::begin(nearNodes), std::end(nearNodes),
-              [](std::shared_ptr<Node<dim>> a, std::shared_ptr<Node<dim>> b) { return a->getCost() < b->getCost(); });
+              [](std::shared_ptr<Node<dim>> a, std::shared_ptr<Node<dim>> b) { return a->getPathCost() < b->getPathCost(); });
 
     for (auto &nearNode : nearNodes)
         if (validityChecker.check(trajectory.calcTrajBin(config, nearNode->getValues())))
@@ -152,13 +152,13 @@ static void expandNode(const std::shared_ptr<Node<dim>> &currentNode, std::vecto
             continue;
 
         edgeCost = metric.calcDist(*currentNode, *successor);
-        dist = currentNode->getCost() + edgeCost;
+        dist = currentNode->getPathCost() + edgeCost;
 
-        if (util::contains(openList, successor) && dist >= successor->getCost())
+        if (util::contains(openList, successor) && dist >= successor->getPathCost())
             continue;
 
         successor->setQueryParent(currentNode, edgeCost);
-        successor->setCost(dist);
+        successor->setPathCost(dist);
         if (!util::contains(openList, successor))
             openList.push_back(successor);
     }
@@ -184,7 +184,7 @@ static bool aStar(const std::shared_ptr<Node<dim>> &sourceNode, const std::share
         edges.push_back(sourceNode->getParentEdge());
 
     for (size_t i = 0; i < edges.size(); ++i) {
-        edges[i].first->setCost(edges[i].second);
+        edges[i].first->setPathCost(edges[i].second);
         edges[i].first->setQueryParent(sourceNode, metric.calcDist(*(edges[i].first), *sourceNode));
         openList.push_back(edges[i].first);
     }
@@ -236,8 +236,12 @@ static std::pair<std::shared_ptr<Node<dim>>, std::shared_ptr<Node<dim>>> findGra
     const ValidityChecker<dim> &validityChecker, double range, size_t startIndex = 0) {
     for (auto &node : graphA.getNodes(startIndex)) {
         for (auto &nearNode : graphB.getNearNodes(*node, range)) {
-            if (validityChecker.check(trajectory.calcTrajBin(*node, *nearNode)))
+            if (validityChecker.check(trajectory.calcTrajBin(*node, *nearNode))) {
+                auto v1 = node->getValues();
+                auto v2 = nearNode->getValues();
+                auto traj = trajectory.calcTrajBin(*node, *nearNode);
                 return std::make_pair(node, nearNode);
+            }
         }
     }
     return std::make_pair(nullptr, nullptr);

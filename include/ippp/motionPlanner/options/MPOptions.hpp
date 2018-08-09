@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef PLANNEROPTIONS_HPP
-#define PLANNEROPTIONS_HPP
+#ifndef MPOPTIONS_HPP
+#define MPOPTIONS_HPP
 
 #include <memory>
 
@@ -33,17 +33,16 @@
 namespace ippp {
 
 /*!
-* \brief   Class PlannerOptions holds all module instances for the path planner.
+* \brief   Class MPOptions holds all module instances from the MotionPlanner.
 * \author  Sascha Kaden
 * \date    2016-08-29
 */
 template <unsigned int dim>
-class PlannerOptions : public Identifier {
+class MPOptions : public Identifier {
   public:
-    PlannerOptions(const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                   const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evalutor,
-                   const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
-                   const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+    MPOptions(const std::shared_ptr<ValidityChecker<dim>> &validityChecker, const std::shared_ptr<DistanceMetric<dim>> &metric,
+              const std::shared_ptr<Evaluator<dim>> &evalutor, const std::shared_ptr<PathModifier<dim>> &pathModifier,
+              const std::shared_ptr<Sampling<dim>> &sampling, const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
 
     void setValidityChecker(const std::shared_ptr<ValidityChecker<dim>> &collision);
     std::shared_ptr<ValidityChecker<dim>> getValidityChecker() const;
@@ -84,12 +83,10 @@ class PlannerOptions : public Identifier {
 *  \date       2017-05-26
 */
 template <unsigned int dim>
-PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                                    const std::shared_ptr<DistanceMetric<dim>> &metric,
-                                    const std::shared_ptr<Evaluator<dim>> &evaluator,
-                                    const std::shared_ptr<PathModifier<dim>> &pathModifier,
-                                    const std::shared_ptr<Sampling<dim>> &sampling,
-                                    const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
+MPOptions<dim>::MPOptions(const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+                          const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
+                          const std::shared_ptr<PathModifier<dim>> &pathModifier, const std::shared_ptr<Sampling<dim>> &sampling,
+                          const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
     : Identifier("PlannerOptions"),
       m_validityChecker(validityChecker),
       m_metric(metric),
@@ -106,7 +103,7 @@ PlannerOptions<dim>::PlannerOptions(const std::shared_ptr<ValidityChecker<dim>> 
 *  \date       2016-01-29
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setValidityChecker(const std::shared_ptr<ValidityChecker<dim>> &validityChecker) {
+void MPOptions<dim>::setValidityChecker(const std::shared_ptr<ValidityChecker<dim>> &validityChecker) {
     m_validityChecker = validityChecker;
 }
 
@@ -117,7 +114,7 @@ void PlannerOptions<dim>::setValidityChecker(const std::shared_ptr<ValidityCheck
 *  \date       2016-01-29
 */
 template <unsigned int dim>
-std::shared_ptr<ValidityChecker<dim>> PlannerOptions<dim>::getValidityChecker() const {
+std::shared_ptr<ValidityChecker<dim>> MPOptions<dim>::getValidityChecker() const {
     return m_validityChecker;
 }
 
@@ -128,7 +125,7 @@ std::shared_ptr<ValidityChecker<dim>> PlannerOptions<dim>::getValidityChecker() 
 *  \date       2017-01-01
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setDistanceMetric(const std::shared_ptr<DistanceMetric<dim>> &metric) {
+void MPOptions<dim>::setDistanceMetric(const std::shared_ptr<DistanceMetric<dim>> &metric) {
     m_metric = metric;
 }
 
@@ -139,7 +136,7 @@ void PlannerOptions<dim>::setDistanceMetric(const std::shared_ptr<DistanceMetric
 *  \date       2017-01-01
 */
 template <unsigned int dim>
-std::shared_ptr<DistanceMetric<dim>> PlannerOptions<dim>::getDistanceMetric() const {
+std::shared_ptr<DistanceMetric<dim>> MPOptions<dim>::getDistanceMetric() const {
     return m_metric;
 }
 
@@ -150,7 +147,7 @@ std::shared_ptr<DistanceMetric<dim>> PlannerOptions<dim>::getDistanceMetric() co
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setEvaluator(const std::shared_ptr<Evaluator<dim>> &evaluator) {
+void MPOptions<dim>::setEvaluator(const std::shared_ptr<Evaluator<dim>> &evaluator) {
     m_evaluator = evaluator;
 }
 
@@ -161,7 +158,7 @@ void PlannerOptions<dim>::setEvaluator(const std::shared_ptr<Evaluator<dim>> &ev
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-std::shared_ptr<Evaluator<dim>> PlannerOptions<dim>::getEvaluator() const {
+std::shared_ptr<Evaluator<dim>> MPOptions<dim>::getEvaluator() const {
     return m_evaluator;
 }
 
@@ -172,7 +169,7 @@ std::shared_ptr<Evaluator<dim>> PlannerOptions<dim>::getEvaluator() const {
 *  \date       2017-05-26
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setPathModifier(const std::shared_ptr<PathModifier<dim>> &pathModifier) {
+void MPOptions<dim>::setPathModifier(const std::shared_ptr<PathModifier<dim>> &pathModifier) {
     m_pathModifier = pathModifier;
 }
 
@@ -183,7 +180,7 @@ void PlannerOptions<dim>::setPathModifier(const std::shared_ptr<PathModifier<dim
 *  \date       2017-05-26
 */
 template <unsigned int dim>
-std::shared_ptr<PathModifier<dim>> PlannerOptions<dim>::getPathModifier() const {
+std::shared_ptr<PathModifier<dim>> MPOptions<dim>::getPathModifier() const {
     return m_pathModifier;
 }
 
@@ -194,7 +191,7 @@ std::shared_ptr<PathModifier<dim>> PlannerOptions<dim>::getPathModifier() const 
 *  \date       2016-12-15
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
+void MPOptions<dim>::setSampling(const std::shared_ptr<Sampling<dim>> &sampling) {
     m_sampling = sampling;
 }
 
@@ -205,7 +202,7 @@ void PlannerOptions<dim>::setSampling(const std::shared_ptr<Sampling<dim>> &samp
 *  \date       2016-12-15
 */
 template <unsigned int dim>
-std::shared_ptr<Sampling<dim>> PlannerOptions<dim>::getSampling() const {
+std::shared_ptr<Sampling<dim>> MPOptions<dim>::getSampling() const {
     return m_sampling;
 }
 
@@ -216,7 +213,7 @@ std::shared_ptr<Sampling<dim>> PlannerOptions<dim>::getSampling() const {
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-void PlannerOptions<dim>::setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory) {
+void MPOptions<dim>::setTrajectoryPlanner(const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory) {
     m_trajectory = trajectory;
 }
 
@@ -227,10 +224,10 @@ void PlannerOptions<dim>::setTrajectoryPlanner(const std::shared_ptr<TrajectoryP
 *  \date       2016-08-29
 */
 template <unsigned int dim>
-std::shared_ptr<TrajectoryPlanner<dim>> PlannerOptions<dim>::getTrajectoryPlanner() const {
+std::shared_ptr<TrajectoryPlanner<dim>> MPOptions<dim>::getTrajectoryPlanner() const {
     return m_trajectory;
 }
 
 } /* namespace ippp */
 
-#endif    // PLANNEROPTIONS_HPP
+#endif    // MPOPTIONS_HPP

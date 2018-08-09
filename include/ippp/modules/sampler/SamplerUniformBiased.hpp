@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,9 +25,10 @@
 namespace ippp {
 
 /*!
-* \brief   Class SamplerUniformBiased creates uniform samples, area is from the robot boundaries defined.
+* \brief   Class SamplerUniformBiased creates uniform samples with a bias towards the goal.
+* \details The sample area is from the robot boundaries defined.
 * \author  Sascha Kaden
-* \date    2016-05-23
+* \date    2018-05-23
 */
 template <unsigned int dim>
 class SamplerUniformBiased : public Sampler<dim> {
@@ -46,13 +47,6 @@ class SamplerUniformBiased : public Sampler<dim> {
     using Sampler<dim>::m_robotBoundary;
 };
 
-/*!
-*  \brief      Constructor of the class SamplerUniform
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \param[in]  seed
-*  \date       2016-05-24
-*/
 template <unsigned int dim>
 SamplerUniformBiased<dim>::SamplerUniformBiased(const std::shared_ptr<Environment> &environment,
                                                 const std::shared_ptr<Graph<dim>> &graph, const std::string &seed)
@@ -63,14 +57,6 @@ SamplerUniformBiased<dim>::SamplerUniformBiased(const std::shared_ptr<Environmen
     }
 }
 
-/*!
-*  \brief      Constructor of the class SamplerUniform
-*  \author     Sascha Kaden
-*  \param[in]  minimum boundary
-*  \param[in]  maximum boundary
-*  \param[in]  seed
-*  \date       2016-05-24
-*/
 template <unsigned int dim>
 SamplerUniformBiased<dim>::SamplerUniformBiased(std::pair<Vector<dim>, Vector<dim>> boundary, const std::string &seed)
     : Sampler<dim>("SamplerUniformBiased", boundary, seed) {
@@ -81,7 +67,7 @@ SamplerUniformBiased<dim>::SamplerUniformBiased(std::pair<Vector<dim>, Vector<di
 }
 
 /*!
-*  \brief      Return uniform sample
+*  \brief      Return uniform biased sample
 *  \author     Sascha Kaden
 *  \param[out] sample
 *  \date       2016-05-24
@@ -95,7 +81,7 @@ Vector<dim> SamplerUniformBiased<dim>::getSample() {
             config[i] = m_distUniform[i](m_generator);
 
         auto nearest = m_graph->getNearestNode(config);
-        if (!nearest || this->getRandomNumber() > 1 - (nearest->getCost() - m_optimalPathCost) / (maxCost - m_optimalPathCost))
+        if (!nearest || this->getRandomNumber() > 1 - (nearest->getPathCost() - m_optimalPathCost) / (maxCost - m_optimalPathCost))
             return config;
     }
     return config;

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,15 +26,13 @@ namespace ippp {
 /*!
 *  \brief      Constructor of the 2D PointRobot
 *  \author     Sascha Kaden
+*  param[in]   robot boundary
 *  \date       2016-06-30
 */
 PointRobot::PointRobot(const std::pair<Vector2, Vector2> &boundary)
     : MobileRobot(2, boundary, std::vector<DofType>({DofType::planarPos, DofType::planarPos}),
                   "PointRobot") {
-    // generate minimum bounding box for robot model
-
-    std::shared_ptr<ModelContainer> model(new PointModel());
-    setBaseModel(model);
+    // let the base model as nullptr
 }
 
 /*!

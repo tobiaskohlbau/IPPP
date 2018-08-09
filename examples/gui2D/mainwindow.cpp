@@ -178,8 +178,7 @@ void MainWindow::computePath() {
 
 void MainWindow::viewPath() {
     cv::Mat image = m_image.clone();
-    cv::cvtColor(image, image, CV_GRAY2BGR);
-
+    
     if (m_robotTypeLabel == 1) {
         if (m_connected) {
             std::vector<Vector3> path = m_planner3d->getPath(80);

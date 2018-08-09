@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,8 @@
 namespace ippp {
 
 /*!
-* \brief   Base class of all robots
+* \brief   Base class of all robots (mobile and serial).
+* \details It contains the base model container and the current pose and the min max boundary of the robot.
 * \author  Sascha Kaden
 * \date    2016-06-30
 */

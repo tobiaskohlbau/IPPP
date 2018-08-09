@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,14 +24,17 @@
 namespace ippp {
 
 /*!
-* \brief   ComposeEvaluator which runs only one Iteration.
+* \brief   The ComposeEvaluator combines different Evaluators by AND or OR.
+* \details At a initialization step it init all owned evaluators and all poses and configurations will be passed to the owned
+* evaluators.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
 template <unsigned int dim>
 class ComposeEvaluator : public Evaluator<dim> {
   public:
-    ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type);
+    ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type,
+                     const std::string &name = "ComposeEvaluator");
 
     bool evaluate();
     void initialize() override;
@@ -44,14 +47,16 @@ class ComposeEvaluator : public Evaluator<dim> {
 };
 
 /*!
-*  \brief      Constructor of the class SingleIterationEvaluator
+*  \brief      Constructor of the class ComposeEvaluator
 *  \author     Sascha Kaden
-*  \param[in]  Environment
+*  \param[in]  List of Evaluator
+*  \param[in]  type of composing
 *  \date       2017-09-30
 */
 template <unsigned int dim>
-ComposeEvaluator<dim>::ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type)
-    : Evaluator<dim>("ComposeEvaluator"), m_evaluators(evaluators), m_type(type) {
+ComposeEvaluator<dim>::ComposeEvaluator(const std::vector<std::shared_ptr<Evaluator<dim>>> evaluators, ComposeType type,
+                                        const std::string &name)
+    : Evaluator<dim>(name), m_evaluators(evaluators), m_type(type) {
 }
 
 /*!
@@ -85,7 +90,7 @@ void ComposeEvaluator<dim>::initialize() {
 }
 
 /*!
-*  \brief      Set target nodes for evaluation inside list of evaluators.
+*  \brief      Set target configurations for evaluation to the owned list of evaluators.
 *  \author     Sascha Kaden
 *  \param[in]  target Nodes
 *  \date       2017-09-30
@@ -97,7 +102,7 @@ void ComposeEvaluator<dim>::setConfigs(const std::vector<Vector<dim>> &targets) 
 }
 
 /*!
-*  \brief      Set target nodes for evaluation inside list of evaluators.
+*  \brief      Set target poses for evaluation to the owned list of evaluators.
 *  \author     Sascha Kaden
 *  \param[in]  target Nodes
 *  \date       2017-09-30

@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2017 Sascha Kaden
+# Copyright 2018 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,12 +25,19 @@ set_target_properties(ConfigurationMA PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "
 if(OpenCV_FOUND)
     add_ippp_example(ConfigSpace configSpace.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
     add_ippp_example(Planning2dFigures planning2dFigures.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
-    add_ippp_example(EvaluationPiano2D evaluationPiano2D.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
-    add_ippp_example(EvaluationPoint2D evaluationPoint2D.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
-    add_ippp_example(EvaluationSerial2D evaluationSerial2D.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationConstraint evaluationConstraint.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationConstraintObs evaluationConstraintObs.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
     add_ippp_example(EvaluationRRTs evaluationRRTs.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
     add_ippp_example(EvaluationRRTOptimization evaluationRRTOptimization.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
     add_ippp_example(EvaluationSampler evaluationSampler.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationStepSize evaluationStepSize.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationThreads evaluationThreads.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationConstStepSize evaluationConstStepSize.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationConstThreads evaluationConstThreads.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationConstTest evaluationConstTest.cpp ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationEndTestConst evaluationEndTestConst.cpp ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationEndTestConst2 evaluationEndTestConst2.cpp ui ConfigurationMA gflags)
+    add_ippp_example(EvaluationEndTest evaluationEndTest.cpp ui ConfigurationMA gflags)
     add_ippp_example(SaveEnvironments saveEnvironments.cpp ${OpenCV_LIBS} ui ConfigurationMA gflags)
     add_ippp_example(const ConstraintIiwa.cpp ui ConfigurationMA gflags)
 endif()

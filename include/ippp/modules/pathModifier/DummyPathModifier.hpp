@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   DummyPathModifier is dummy PathModifier, which only returns the passed path.
+* \brief   DummyPathModifier is dummy PathModifier, it only returns the passed path.
 * \author  Sascha Kaden
 * \date    2017-05-23
 */
@@ -38,14 +38,6 @@ class DummyPathModifier : public PathModifier<dim> {
   protected:
 };
 
-/*!
-*  \brief      Constructor of the DummyPathModifier.
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \param[in]  CollisionDetection
-*  \param[in]  TrajectoryPlanner
-*  \date       2017-05-23
-*/
 template <unsigned int dim>
 DummyPathModifier<dim>::DummyPathModifier() : PathModifier<dim>("Dummy PathModifier", nullptr, nullptr, nullptr) {
 }

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ namespace ippp {
 enum Direction { left, right };
 
 /*!
-* \brief   Class KDTree for a fast binary search
-* \details Class uses KDNode<dim> to save the points
+* \brief   Class KDTree for a fast binary search of near nodes.
+* \details Class uses KDNode<dim> to save the points and the pointer to the Node.
 * \author  Sascha Kaden
 * \date    2016-05-27
 */

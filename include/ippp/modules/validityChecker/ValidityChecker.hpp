@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
 namespace ippp {
 
 /*!
-* \brief   Base class of all ValidityChecker.
+* \brief   Base class of all ValidityChecker. It checks, if a passed config is valid.
 * \author  Sascha Kaden
 * \date    2018-01-17
 */
@@ -51,7 +51,7 @@ class ValidityChecker : public Identifier {
     double getEpsilon() const;
 
   protected:
-    double m_epsilon = 0.1;
+    double m_epsilon = IPPP_EPSILON;
     std::shared_ptr<Environment> m_environment;
     std::pair<Vector<dim>, Vector<dim>> m_robotBounding; /*!< Boundaries of the robot, fetched from the Environment */
 };
@@ -82,7 +82,10 @@ ValidityChecker<dim>::~ValidityChecker() = default;
 */
 template <unsigned int dim>
 double ValidityChecker<dim>::calc(const Vector<dim> &config) const {
-    return static_cast<double>(check(config));
+    if (check(config))
+        return 0;
+    else
+        return 100;
 }
 
 /*!
@@ -94,7 +97,10 @@ double ValidityChecker<dim>::calc(const Vector<dim> &config) const {
 */
 template <unsigned int dim>
 double ValidityChecker<dim>::calc(const std::vector<Vector<dim>> &configs) const {
-    return static_cast<double>(check(configs));
+    if (check(configs))
+        return 0;
+    else;
+        return 100;
 }
 
 /*!
@@ -135,7 +141,7 @@ template <unsigned int dim>
 bool ValidityChecker<dim>::checkRobotBound(const Vector<dim> &config) const {
     for (unsigned int i = 0; i < dim; ++i) {
         if (config[i] < m_robotBounding.first[i] || m_robotBounding.second[i] < config[i]) {
-            //Logging::trace("Robot out of robot boundary", this);
+            // Logging::trace("Robot out of robot boundary", this);
             return false;
         }
     }

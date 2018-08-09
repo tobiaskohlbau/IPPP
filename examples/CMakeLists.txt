@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2017 Sascha Kaden
+# Copyright 2018 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ add_subdirectory(MA)
 
 add_ippp_example(GettingStarted GettingStarted.cpp gflags)
 add_ippp_example(Kuka Kuka.cpp gflags)
+add_ippp_example(KukaTuc KukaTuc.cpp gflags UDP)
 add_ippp_example(Jaco Jaco.cpp gflags)
 add_ippp_example(ParasolBenchmarks ParasolBenchmarks.cpp ui)
 add_ippp_example(ConstraintIiwa ConstraintIiwa.cpp gflags)

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 #ifndef SRTOPTIONS_HPP
 #define SRTOPTIONS_HPP
 
-#include <ippp/planner/options/PlannerOptions.hpp>
+#include <ippp/motionPlanner/options/MPOptions.hpp>
 
 namespace ippp {
 
@@ -29,7 +29,7 @@ namespace ippp {
 * \date    2017-04-02
 */
 template <unsigned int dim>
-class SRTOptions : public PlannerOptions<dim> {
+class SRTOptions : public MPOptions<dim> {
   public:
     SRTOptions(unsigned int nbOfTrees, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
                const std::shared_ptr<DistanceMetric<dim>> &metric, const std::shared_ptr<Evaluator<dim>> &evaluator,
@@ -62,7 +62,7 @@ SRTOptions<dim>::SRTOptions(unsigned int nbOfTrees, const std::shared_ptr<Validi
                             const std::shared_ptr<PathModifier<dim>> &pathModifier,
                             const std::shared_ptr<Sampling<dim>> &sampling,
                             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : PlannerOptions<dim>(validityChecker, metric, evaluator, pathModifier, sampling, trajectory) {
+    : MPOptions<dim>(validityChecker, metric, evaluator, pathModifier, sampling, trajectory) {
     setNbOfTrees(nbOfTrees);
 }
 

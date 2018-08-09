@@ -40,7 +40,7 @@ bool testTriangleRobot() {
     creator.setEvaluatorType(EvaluatorType::TreeConnect);
     creator.setEvaluatorProperties(40, 60);
 
-    std::shared_ptr<ippp::Planner<dim>> planner;
+    std::shared_ptr<MotionPlanner<dim>> planner;
     // planner = std::make_shared<PRM<dim>>(environment, creator.getPRMOptions(30), creator.getGraph());
     // planner = std::make_shared<RRTStar<dim>>(environment, creator.getRRTOptions(40), creator.getGraph());
     planner =
@@ -54,7 +54,6 @@ bool testTriangleRobot() {
 
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
-    cv::cvtColor(image, image, CV_GRAY2BGR);
     for (const auto& obstacle : environment->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
 
@@ -107,7 +106,6 @@ bool test2DSerialRobot() {
 
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
-    cv::cvtColor(image, image, CV_GRAY2BGR);
     for (const auto& obstacle : environment->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
     cv::namedWindow("pathPlanner", CV_WINDOW_AUTOSIZE);
@@ -167,7 +165,6 @@ void testPointRobot() {
 
     auto workspace2D = cad::create2dspace(env->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
-    cv::cvtColor(image, image, CV_GRAY2BGR);
     for (const auto& obstacle : env->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
 

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,7 +35,8 @@ class SamplingNearObstacle : public Sampling<dim> {
   public:
     SamplingNearObstacle(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
                          const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
-                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory);
+                         const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                         const std::string &name = "SamplingNearObstacle");
 
     Vector<dim> getSample() override;
 
@@ -61,8 +62,9 @@ template <unsigned int dim>
 SamplingNearObstacle<dim>::SamplingNearObstacle(const std::shared_ptr<Environment> &environment,
                                                 const std::shared_ptr<Sampler<dim>> &sampler,
                                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
-                                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory)
-    : Sampling<dim>("SamplingNearObstacle", environment, nullptr, sampler, validityChecker, attempts), m_trajectory(trajectory) {
+                                                const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
+                                                const std::string &name)
+    : Sampling<dim>(name, environment, nullptr, sampler, validityChecker, attempts), m_trajectory(trajectory) {
 }
 
 /*!

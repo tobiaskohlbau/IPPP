@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@
 
 #include <mutex>
 
-#include <ippp/planner/TreePlanner.hpp>
-#include <ippp/planner/options/RRTOptions.hpp>
+#include <ippp/motionPlanner/TreePlanner.hpp>
+#include <ippp/motionPlanner/options/RRTOptions.hpp>
 
 namespace ippp {
 
@@ -50,14 +50,14 @@ class RRT : public TreePlanner<dim> {
     double m_simplifiedStepSize = 1;
     std::mutex m_mutex;
 
-    using Planner<dim>::m_environment;
-    using Planner<dim>::m_graph;
-    using Planner<dim>::m_metric;
-    using Planner<dim>::m_options;
-    using Planner<dim>::m_pathPlanned;
-    using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_sampling;
-    using Planner<dim>::m_validityChecker;
+    using MotionPlanner<dim>::m_environment;
+    using MotionPlanner<dim>::m_graph;
+    using MotionPlanner<dim>::m_metric;
+    using MotionPlanner<dim>::m_options;
+    using MotionPlanner<dim>::m_pathPlanned;
+    using MotionPlanner<dim>::m_trajectory;
+    using MotionPlanner<dim>::m_sampling;
+    using MotionPlanner<dim>::m_validityChecker;
     using TreePlanner<dim>::m_initNode;
     using TreePlanner<dim>::m_goalNode;
 };

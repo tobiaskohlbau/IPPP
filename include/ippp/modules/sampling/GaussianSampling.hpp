@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ namespace ippp {
 template <unsigned int dim>
 class GaussianSampling : public Sampling<dim> {
   public:
-    GaussianSampling(const std::shared_ptr<Environment> &environment,
-                      const std::shared_ptr<Sampler<dim>> &sampler,const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                     size_t attempts = 10, double distance = 15);
+    GaussianSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
+                     const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts = 10, double distance = 15,
+                     const std::string &name = "GaussSampling");
 
     Vector<dim> getSample() override;
 
@@ -57,8 +57,10 @@ class GaussianSampling : public Sampling<dim> {
 */
 template <unsigned int dim>
 GaussianSampling<dim>::GaussianSampling(const std::shared_ptr<Environment> &environment,
-                                        const std::shared_ptr<Sampler<dim>> &sampler, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,size_t attempts, double distance)
-    : Sampling<dim>("GaussianSampling", environment, nullptr, sampler, validityChecker, attempts), m_distance(distance) {
+                                        const std::shared_ptr<Sampler<dim>> &sampler,
+                                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                                        double distance, const std::string &name)
+    : Sampling<dim>(name, environment, nullptr, sampler, validityChecker, attempts), m_distance(distance) {
 }
 
 /*!

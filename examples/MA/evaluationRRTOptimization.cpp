@@ -148,7 +148,7 @@ void planningThread() {
                 // point plane robot
                 Stats::initializeCollectors();
                 auto pCtr = getPointCreator(seed, evalType, i);
-                std::shared_ptr<Planner<2>> pPlanner;
+                std::shared_ptr<MotionPlanner<2>> pPlanner;
                 switch (plannerType) {
                     case PlannerType::RRTStar:
                         pPlanner = std::make_shared<RRTStar<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40), pCtr.getGraph());
@@ -162,12 +162,12 @@ void planningThread() {
                 pPlanner->computePath(startPoint, goalPoint, 100, 1);
                 pPlanner->optimize(50, 100);
                 pPlanner->getPath();
-                ui::save("Opt" + pPlanner->getName() + "Point.json", Stats::serialize(), 4, true);
+                ui::save("OptStd" + pPlanner->getName() + "Point.json", Stats::serialize(), 4, true);
 
                 // serial plane robot
                 Stats::initializeCollectors();
                 auto sCtr = getSerialCreator(seed, evalType, i);
-                std::shared_ptr<Planner<6>> sPlanner;
+                std::shared_ptr<MotionPlanner<6>> sPlanner;
                 switch (plannerType) {
                     case PlannerType::RRTStar:
                         sPlanner = std::make_shared<RRTStar<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)),
@@ -181,7 +181,7 @@ void planningThread() {
                 sPlanner->computePath(startSerial, goalSerial, 100, 1);
                 sPlanner->optimize(50, 100);
                 sPlanner->getPath();
-                ui::save("Opt" + sPlanner->getName() + "Serial.json", Stats::serialize(), 4, true);
+                ui::save("OptStd" + sPlanner->getName() + "Serial.json", Stats::serialize(), 4, true);
 
                 // serial iiwa robot
                 Vector<7> start, goal;
@@ -198,7 +198,7 @@ void planningThread() {
 
                 Stats::initializeCollectors();
                 auto iCtr = getIiwaCreator(seed, evalType, i);
-                std::shared_ptr<Planner<7>> iPlanner;
+                std::shared_ptr<MotionPlanner<7>> iPlanner;
                 switch (plannerType) {
                     case PlannerType::RRTStar:
                         iPlanner = std::make_shared<RRTStar<7>>(iCtr.getEnvironment(), iCtr.getRRTOptions(util::toRad(90)),
@@ -212,7 +212,7 @@ void planningThread() {
                 iPlanner->computePath(start, goal, 600, 24);
                 iPlanner->optimize(50, 100, 24);
                 iPlanner->getPath();
-                ui::save("Opt" + iPlanner->getName() + "Iiwa.json", Stats::serialize(), 4, true);
+                ui::save("OptStd" + iPlanner->getName() + "Iiwa.json", Stats::serialize(), 4, true);
             }
         }
     }

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ template <unsigned int dim>
 class TreePoseEvaluator : public Evaluator<dim> {
   public:
     TreePoseEvaluator(const std::shared_ptr<Graph<dim>> &graph, const std::shared_ptr<Environment> &env,
-                      const std::pair<Vector6, Vector6> &C);
+                      const std::pair<Vector6, Vector6> &C, const std::string &name = "TreePoseEvaluator");
 
     bool evaluate();
     void initialize() override;
@@ -70,8 +70,8 @@ class TreePoseEvaluator : public Evaluator<dim> {
 */
 template <unsigned int dim>
 TreePoseEvaluator<dim>::TreePoseEvaluator(const std::shared_ptr<Graph<dim>> &graph, const std::shared_ptr<Environment> &env,
-                                          const std::pair<Vector6, Vector6> &C)
-    : Evaluator<dim>("TreePoseEvaluator"), m_C(C), m_environment(env), m_graph(graph), m_robot(env->getRobot()) {
+                                          const std::pair<Vector6, Vector6> &C, const std::string &name)
+    : Evaluator<dim>(name), m_C(C), m_environment(env), m_graph(graph), m_robot(env->getRobot()) {
 }
 
 /*!

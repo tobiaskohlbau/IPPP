@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,15 +24,15 @@
 namespace ippp {
 
 /*!
-* \brief   Class LinearTrajectory plans a linear path between the passed nodes/configs. Start and end point aren't part of the
-* path.
+* \brief   Class LinearTrajectory plans a linear discrete trajectory between the passed nodes/configs.
+* \details Start and end configuration aren't part of the path.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
 template <unsigned int dim>
 class LinearTrajectory : public TrajectoryPlanner<dim> {
   public:
-    LinearTrajectory(const std::shared_ptr<Environment> &environment, double posRes = 1, double oriRes = 0.1);
+    LinearTrajectory(const std::shared_ptr<Environment> &environment, double posRes = 1, double oriRes = util::toRad(5));
 
     std::vector<Vector<dim>> calcTrajCont(const Vector<dim> &source, const Vector<dim> &target) const;
     std::vector<Vector<dim>> calcTrajBin(const Vector<dim> &source, const Vector<dim> &target) const;
@@ -61,12 +61,12 @@ LinearTrajectory<dim>::LinearTrajectory(const std::shared_ptr<Environment> &envi
 }
 
 /*!
-*  \brief      Compute the binary (section wise) trajectory between source and target. Return vector of points.
+*  \brief      Compute the binary (section wise) trajectory between source and target. Return vector of configs.
 *  \details    The trajectory doesn't contain source or target vector.
 *  \author     Sascha Kaden
 *  \param[in]  source Vector
 *  \param[in]  target Vector
-*  \param[out] trajectory
+*  \param[out] discrete trajectory of configs
 *  \date       2016-12-21
 */
 template <unsigned int dim>
@@ -75,12 +75,12 @@ std::vector<Vector<dim>> LinearTrajectory<dim>::calcTrajBin(const Vector<dim> &s
 }
 
 /*!
-*  \brief      Compute the continuous trajectory between source and target. Return vector of points.
+*  \brief      Compute the continuous trajectory between source and target. Return vector of configs.
 *  \details    The trajectory doesn't contain source or target vector.
 *  \author     Sascha Kaden
 *  \param[in]  source Vector
 *  \param[in]  target Vector
-*  \param[out] trajectory
+*  \param[out] discrete trajectory of configs
 *  \date       2016-12-21
 */
 template <unsigned int dim>

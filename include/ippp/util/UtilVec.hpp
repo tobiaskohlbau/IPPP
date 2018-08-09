@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -186,8 +186,8 @@ Vector<dim> NaNVector() {
 *  \param[out] true if equal
 *  \date       2017-04-04
 */
-template <unsigned int N>
-static bool equal(const Vector<N> &vec1, const Vector<N> &vec2) {
+template <unsigned int dim>
+bool equal(const Vector<dim> &vec1, const Vector<dim> &vec2) {
     return (vec1 - vec2).isZero(IPPP_EPSILON);
 }
 

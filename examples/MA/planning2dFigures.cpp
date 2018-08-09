@@ -71,7 +71,6 @@ int main(int argc, char** argv) {
 
     auto workspace2D = cad::create2dspace(RRTcreator.getEnvironment()->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
-    cv::cvtColor(image, image, CV_GRAY2BGR);
     for (const auto& obstacle : RRTcreator.getEnvironment()->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
     cv::namedWindow("PRM", CV_WINDOW_AUTOSIZE);
@@ -103,9 +102,9 @@ int main(int argc, char** argv) {
     cv::imshow("PRM", PRMimage);
     cv::imshow("RRT", RRTimage);
     cv::imshow("RRTSTAR", RRTSTARimage);
-    cv::imwrite("PRM.png", PRMimage);
-    cv::imwrite("RRT.png", RRTimage);
-    cv::imwrite("RRTSTAR.png", RRTSTARimage);
+    drawing::imwrite("PRM.png", PRMimage);
+    drawing::imwrite("RRT.png", RRTimage);
+    drawing::imwrite("RRTSTAR.png", RRTSTARimage);
 
     Stats::writeData(std::cout);
     ui::save("Stats.json", Stats::serialize(), 0);

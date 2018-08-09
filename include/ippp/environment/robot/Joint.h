@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -51,11 +51,11 @@ class Joint {
     std::pair<double, double> getBoundaries() const;
 
   private:
-    DhParameter m_dhParameter;
+    DhParameter m_dhParameter;                             /*!< DH-parameter of the single joint */
     double m_minBound = 0;                                 /*!< minimal joint boundary */
     double m_maxBound = 0;                                 /*!< maximal joint boundary */
     std::shared_ptr<ModelContainer> m_linkModel = nullptr; /*!< model container of the link related to the joint */
-    Transform m_linkOffset = Transform::Identity();
+    Transform m_linkOffset = Transform::Identity();        /*!< optional offset to the link model */
 };
 
 } /* namespace ippp */

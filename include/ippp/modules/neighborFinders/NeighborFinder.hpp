@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 namespace ippp {
 
 /*!
-* \brief   Interface for NeighborFinder
+* \brief   Interface of the NeighborFinder. It represent the search engine for near Nodes inside of the Graph.
 * \author  Sascha Kaden
 * \date    2017-05-09
 */
@@ -48,12 +48,6 @@ class NeighborFinder : public Identifier {
     std::shared_ptr<DistanceMetric<dim>> m_metric;
 };
 
-/*!
-*  \brief      Default constructor of the class NeighborFinder
-*  \author     Sascha Kaden
-*  \param[in]  name
-*  \date       2017-05-09
-*/
 template <unsigned int dim, class T>
 NeighborFinder<dim, T>::NeighborFinder(const std::string &name, const std::shared_ptr<DistanceMetric<dim>> &distanceMetric)
     : Identifier(name), m_metric(distanceMetric) {

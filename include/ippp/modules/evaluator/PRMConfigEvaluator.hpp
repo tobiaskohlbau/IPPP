@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@
 namespace ippp {
 
 /*!
-* \brief   Evaluator interface.
+* \brief   Evaluator for the check of the PRM with a configuration as goal.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */
@@ -56,15 +56,6 @@ class PRMConfigEvaluator : public Evaluator<dim> {
     using Evaluator<dim>::m_targetConfigs;
 };
 
-/*!
-*  \brief      Constructor of the class TreeConfigEvaluator
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \param[in]  DistanceMetric
-*  \param[in]  Graph
-*  \param[in]  maximum distance
-*  \date       2017-09-30
-*/
 template <unsigned int dim>
 PRMConfigEvaluator<dim>::PRMConfigEvaluator(const std::shared_ptr<Graph<dim>> &graph,
                                             const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
@@ -77,7 +68,7 @@ PRMConfigEvaluator<dim>::PRMConfigEvaluator(const std::shared_ptr<Graph<dim>> &g
 }
 
 /*!
-*  \brief      Evaluation of the new nodes inside of the graph and checking of the distance to target node.
+*  \brief      Evaluation of new nodes inside of the graph. Try to find a solution path with the A*.
 *  \author     Sascha Kaden
 *  \param[out] Evaluation result
 *  \date       2017-09-30
@@ -115,7 +106,7 @@ bool PRMConfigEvaluator<dim>::evaluate() {
 /*!
 *  \brief      Set target nodes for evaluation.
 *  \author     Sascha Kaden
-*  \param[in]  target Nodes
+*  \param[in]  target configurations
 *  \date       2017-09-30
 */
 template <unsigned int dim>

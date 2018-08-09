@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,9 +55,9 @@ std::shared_ptr<Node<dim>> removeMinFromList(std::vector<std::shared_ptr<Node<di
     double min = std::numeric_limits<double>::max();
     std::shared_ptr<Node<dim>> minNode = nullptr;
     for (size_t i = 0; i < list.size(); ++i) {
-        if (list[i]->getCost() < min) {
+        if (list[i]->getPathCost() < min) {
             minNode = list[i];
-            min = list[i]->getCost();
+            min = list[i]->getPathCost();
         }
     }
     if (minNode != nullptr)

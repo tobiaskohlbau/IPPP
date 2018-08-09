@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,8 @@ class GaussianDistSampling : public Sampling<dim> {
   public:
     GaussianDistSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
                          const std::shared_ptr<Sampler<dim>> &sampler,
-                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts, double maxDist = 15);
+                         const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts, double maxDist = 15,
+                         const std::string &name = "GaussianDistSampling");
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
@@ -63,8 +64,8 @@ GaussianDistSampling<dim>::GaussianDistSampling(const std::shared_ptr<Environmen
                                                 const std::shared_ptr<Graph<dim>> &graph,
                                                 const std::shared_ptr<Sampler<dim>> &sampler,
                                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
-                                                double maxDist)
-    : Sampling<dim>("GaussianDistSampling", environment, graph, sampler, validityChecker, attempts), m_maxDist(maxDist) {
+                                                double maxDist, const std::string &name)
+    : Sampling<dim>(name, environment, graph, sampler, validityChecker, attempts), m_maxDist(maxDist) {
 }
 
 /*!

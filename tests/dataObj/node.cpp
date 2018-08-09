@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ void testStandardConstrurctor() {
     EXPECT_TRUE(node.empty());
     EXPECT_EQ(node.getParentNode(), nullptr);
     EXPECT_EQ(node.getChildNodes().size(), 0);
-    EXPECT_EQ(node.getCost(), -1);
+    EXPECT_EQ(node.getPathCost(), 0);
 }
 
 TEST(NODE, standardConstructor) {
@@ -48,7 +48,7 @@ void testVectorConstructor(Node<dim> node) {
     EXPECT_FALSE(node.empty());
     EXPECT_EQ(node.getParentNode(), nullptr);
     EXPECT_EQ(node.getChildNodes().size(), 0);
-    EXPECT_EQ(node.getCost(), -1);
+    EXPECT_EQ(node.getPathCost(), 0);
     for (int i = 0; i < dim; ++i)
         EXPECT_EQ(node.getValues()[i], i);
 }
@@ -109,7 +109,7 @@ void testChildes() {
     EXPECT_TRUE(util::contains(childes, resultEdges[0].first));
     EXPECT_TRUE(util::contains(childes, resultEdges[1].first));
     EXPECT_TRUE(util::contains(childes, resultEdges[2].first));
-    node.clearChildes();
+    node.clearChildren();
     EXPECT_EQ(node.getChildNodes().size(), 0);
     EXPECT_EQ(node.getChildEdges().size(), 0);
 }

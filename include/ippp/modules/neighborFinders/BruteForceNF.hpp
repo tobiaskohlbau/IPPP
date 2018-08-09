@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@
 namespace ippp {
 
 /*!
-* \brief   Class BruteForceNF for a brute force search
-* \details The brute force approach goes through all nodes and returns the matches of the search.
+* \brief   Class BruteForceNF for a brute force search of near nodes.
+* \details The brute force approach goes through all nodes and returns the best matches of the search.
 * \author  Sascha Kaden
 * \date    2017-05-16
 */
@@ -50,11 +50,6 @@ class BruteForceNF : public NeighborFinder<dim, T> {
     std::vector<std::pair<const Vector<dim>, T>> m_nodes;
 };
 
-/*!
-*  \brief      Default constructor of the class BruteForceNF
-*  \author     Sascha Kaden
-* \date        2017-05-16
-*/
 template <unsigned int dim, class T>
 BruteForceNF<dim, T>::BruteForceNF(const std::shared_ptr<DistanceMetric<dim>> &distanceMetric)
     : NeighborFinder<dim, T>("BruteForceNF", distanceMetric) {

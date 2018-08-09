@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 #ifndef PRM_HPP
 #define PRM_HPP
 
-#include <ippp/planner/Planner.hpp>
-#include <ippp/planner/options/PRMOptions.hpp>
+#include <ippp/motionPlanner/MotionPlanner.hpp>
+#include <ippp/motionPlanner/options/PRMOptions.hpp>
 
 namespace ippp {
 
@@ -30,7 +30,7 @@ namespace ippp {
 * \date    2016-08-09
 */
 template <unsigned int dim>
-class PRM : public Planner<dim> {
+class PRM : public MotionPlanner<dim> {
   public:
     PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
@@ -59,18 +59,18 @@ class PRM : public Planner<dim> {
     double m_rangeSize;
     std::vector<std::shared_ptr<Node<dim>>> m_nodePath;
 
-    using Planner<dim>::m_validityChecker;
-    using Planner<dim>::m_environment;
-    using Planner<dim>::m_evaluator;
-    using Planner<dim>::m_graph;
-    using Planner<dim>::m_metric;
-    using Planner<dim>::m_options;
-    using Planner<dim>::m_pathPlanned;
-    using Planner<dim>::m_plannerCollector;
-    using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_sampling;
-    using Planner<dim>::updateStats;
-    using Planner<dim>::initParams;
+    using MotionPlanner<dim>::m_validityChecker;
+    using MotionPlanner<dim>::m_environment;
+    using MotionPlanner<dim>::m_evaluator;
+    using MotionPlanner<dim>::m_graph;
+    using MotionPlanner<dim>::m_metric;
+    using MotionPlanner<dim>::m_options;
+    using MotionPlanner<dim>::m_pathPlanned;
+    using MotionPlanner<dim>::m_plannerCollector;
+    using MotionPlanner<dim>::m_trajectory;
+    using MotionPlanner<dim>::m_sampling;
+    using MotionPlanner<dim>::updateStats;
+    using MotionPlanner<dim>::initParams;
 };
 
 /*!
@@ -84,7 +84,7 @@ class PRM : public Planner<dim> {
 template <unsigned int dim>
 PRM<dim>::PRM(const std::shared_ptr<Environment> &environment, const PRMOptions<dim> &options,
               const std::shared_ptr<Graph<dim>> &graph)
-    : Planner<dim>("PRM", environment, options, graph) {
+    : MotionPlanner<dim>("PRM", environment, options, graph) {
     m_rangeSize = options.getRangeSize();
 }
 

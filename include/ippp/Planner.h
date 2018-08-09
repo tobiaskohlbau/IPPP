@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the >License>);
 // you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 //
 //-------------------------------------------------------------------------//
 
-#include <ippp/planner/EST.hpp>
-#include <ippp/planner/PRM.hpp>
-#include <ippp/planner/RRT.hpp>
-#include <ippp/planner/RRTStar.hpp>
-#include <ippp/planner/RRTStarConnect.hpp>
-#include <ippp/planner/SRT.hpp>
+#include <ippp/motionPlanner/EST.hpp>
+#include <ippp/motionPlanner/PRM.hpp>
+#include <ippp/motionPlanner/RRT.hpp>
+#include <ippp/motionPlanner/RRTStar.hpp>
+#include <ippp/motionPlanner/RRTStarConnect.hpp>
+#include <ippp/motionPlanner/SRT.hpp>

@@ -149,7 +149,7 @@ void planningThread() {
                 // point plane robot
                 Stats::initializeCollectors();
                 auto pCtr = getPointCreator(seed, evalType, i);
-                std::shared_ptr<Planner<2>> pPlanner;
+                std::shared_ptr<MotionPlanner<2>> pPlanner;
                 switch (plannerType) {
                     case PlannerType::RRT:
                         pPlanner = std::make_shared<RRT<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40), pCtr.getGraph());
@@ -170,7 +170,7 @@ void planningThread() {
                 // serial plane robot
                 Stats::initializeCollectors();
                 auto sCtr = getSerialCreator(seed, evalType, i);
-                std::shared_ptr<Planner<6>> sPlanner;
+                std::shared_ptr<MotionPlanner<6>> sPlanner;
                 switch (plannerType) {
                     case PlannerType::RRT:
                         sPlanner =
@@ -204,7 +204,7 @@ void planningThread() {
 
                 Stats::initializeCollectors();
                 auto iCtr = getIiwaCreator(seed, evalType, i);
-                std::shared_ptr<Planner<7>> iPlanner;
+                std::shared_ptr<MotionPlanner<7>> iPlanner;
                 switch (plannerType) {
                     case PlannerType::RRT:
                         iPlanner =

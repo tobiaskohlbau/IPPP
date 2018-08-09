@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -120,7 +120,6 @@ Vector6 BerensonConstraint<dim>::calcEuclideanError(const Vector<dim> &config) c
         else
             eucError[i] = 0;
     }
-    //std::cout << eucError << std::endl;
     return eucError;
 }
 

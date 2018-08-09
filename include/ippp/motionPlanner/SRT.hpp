@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@
 
 #include <mutex>
 
-#include <ippp/planner/Planner.hpp>
-#include <ippp/planner/options/SRTOptions.hpp>
+#include <ippp/motionPlanner/MotionPlanner.hpp>
+#include <ippp/motionPlanner/options/SRTOptions.hpp>
 #include <ippp/util/UtilPlanner.hpp>
 
 namespace ippp {
@@ -33,7 +33,7 @@ namespace ippp {
 * \date    2017-04-02
 */
 template <unsigned int dim>
-class SRT : public Planner<dim> {
+class SRT : public MotionPlanner<dim> {
   public:
     SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<dim> &options,
         const std::shared_ptr<Graph<dim>> &graph);
@@ -59,15 +59,15 @@ class SRT : public Planner<dim> {
 
     std::mutex m_mutex;
 
-    using Planner<dim>::m_validityChecker;
-    using Planner<dim>::m_environment;
-    using Planner<dim>::m_evaluator;
-    using Planner<dim>::m_graph;
-    using Planner<dim>::m_metric;
-    using Planner<dim>::m_options;
-    using Planner<dim>::m_pathPlanned;
-    using Planner<dim>::m_trajectory;
-    using Planner<dim>::m_sampling;
+    using MotionPlanner<dim>::m_validityChecker;
+    using MotionPlanner<dim>::m_environment;
+    using MotionPlanner<dim>::m_evaluator;
+    using MotionPlanner<dim>::m_graph;
+    using MotionPlanner<dim>::m_metric;
+    using MotionPlanner<dim>::m_options;
+    using MotionPlanner<dim>::m_pathPlanned;
+    using MotionPlanner<dim>::m_trajectory;
+    using MotionPlanner<dim>::m_sampling;
 };
 
 /*!
@@ -80,7 +80,7 @@ class SRT : public Planner<dim> {
 template <unsigned int dim>
 SRT<dim>::SRT(const std::shared_ptr<Environment> &environment, const SRTOptions<dim> &options,
               const std::shared_ptr<Graph<dim>> &graph)
-    : Planner<dim>("SRT", environment, options, graph) {
+    : MotionPlanner<dim>("SRT", environment, options, graph) {
     m_nbOfTrees = options.getNbOfTrees();
 }
 

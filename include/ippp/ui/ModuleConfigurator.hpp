@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ class ModuleConfigurator : public Configurator {
     std::shared_ptr<TrajectoryPlanner<dim>> getTrajectoryPlanner();
     std::shared_ptr<ValidityChecker<dim>> getValidityChecker();
 
-    PlannerOptions<dim> getPlannerOptions();
+    MPOptions<dim> getPlannerOptions();
     PRMOptions<dim> getPRMOptions(double rangeSize);
     RRTOptions<dim> getRRTOptions(double stepSize);
     SRTOptions<dim> getSRTOptions(unsigned int nbOfTrees);
@@ -71,7 +71,7 @@ class ModuleConfigurator : public Configurator {
     void setNeighborFinderType(NeighborFinderType type);
     void setPathModifierType(PathModifierType type);
     void setSamplerType(SamplerType type);
-    void setSamplerProperties(const std::string &seed, double gridResolution);
+    void setSamplerProperties(const std::string &seed, double gridResolution = 1);
     void setSamplingProperties(size_t samplingAttempts = 10, double samplingDist = 10, size_t medialAxisDirs = 15);
     void setSamplingType(SamplingType type);
     void setTrajectoryType(TrajectoryPlannerType type);
@@ -114,7 +114,7 @@ class ModuleConfigurator : public Configurator {
     size_t m_medialAxisDirs = 15;
     TrajectoryPlannerType m_trajectoryType = TrajectoryPlannerType::Linear;
     double m_posRes = 1;
-    double m_oriRes = 0.1;
+    double m_oriRes = util::toRad(2.5);
     ValidityCheckerType m_validityType = ValidityCheckerType::FclSerial;
     // constraint
     double m_constraintEpsilon;
@@ -351,17 +351,38 @@ void ModuleConfigurator<dim>::initializeModules() {
             m_sampling = std::make_shared<TangentSpaceSampling<dim>>(
                 m_env, m_graph, m_sampler, m_validityChecker, m_samplingAttempts, m_samplingDist, m_taskFrameC, m_taskFrame);
             break;
-        case SamplingType::FOR:
-            m_sampling = std::make_shared<FirstOrderRetractionSampling<dim>>(
-                m_env, m_graph, m_sampler, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_samplingAttempts,
-                m_taskFrame);
-            break;
         case SamplingType::RGD:
             m_sampling = std::make_shared<RGDSampling<dim>>(m_env, m_graph, m_sampler, m_validityChecker, m_samplingAttempts);
             break;
+        case SamplingType::FOR:
+            if (m_validityType == ValidityCheckerType::FclSerialAndConstraint) {
+                auto checker = std::dynamic_pointer_cast<ComposeValidity<dim>>(m_validityChecker);
+                m_sampling = std::make_shared<FirstOrderRetractionSampling<dim>>(
+                    m_env, m_graph, m_sampler, std::dynamic_pointer_cast<Constraint<dim>>(checker->getChecker(1)),
+                    m_validityChecker, m_samplingAttempts, m_samplingDist, m_taskFrame);
+            } else if (m_validityType == ValidityCheckerType::BerensonConstraint) {
+                m_sampling = std::make_shared<FirstOrderRetractionSampling<dim>>(
+                    m_env, m_graph, m_sampler, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_validityChecker,
+                    m_samplingAttempts, m_samplingDist, m_taskFrame);
+            } else {
+                Logging::error("This module nesting ist not possible, set StraightSampling", this);
+                m_sampling = std::make_shared<StraightSampling<dim>>(m_env, m_sampler, m_validityChecker);
+            }
+            break;
         case SamplingType::Berenson:
-            m_sampling = std::make_shared<BerensonSampling<dim>>(
-                m_env, m_sampler, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_samplingAttempts);
+            if (m_validityType == ValidityCheckerType::FclSerialAndConstraint) {
+                auto checker = std::dynamic_pointer_cast<ComposeValidity<dim>>(m_validityChecker);
+                m_sampling = std::make_shared<BerensonSampling<dim>>(
+                    m_env, m_graph, m_sampler, std::dynamic_pointer_cast<Constraint<dim>>(checker->getChecker(1)),
+                    m_validityChecker, m_metric, m_samplingAttempts, m_samplingDist);
+            } else if (m_validityType == ValidityCheckerType::BerensonConstraint) {
+                m_sampling = std::make_shared<BerensonSampling<dim>>(
+                    m_env, m_graph, m_sampler, std::dynamic_pointer_cast<Constraint<dim>>(m_validityChecker), m_validityChecker,
+                    m_metric, m_samplingAttempts, m_samplingDist);
+            } else {
+                Logging::error("This module nesting ist not possible, set StraightSampling", this);
+                m_sampling = std::make_shared<StraightSampling<dim>>(m_env, m_sampler, m_validityChecker);
+            }
             break;
         default:
             m_sampling = std::make_shared<StraightSampling<dim>>(m_env, m_sampler, m_validityChecker);
@@ -797,9 +818,9 @@ std::shared_ptr<ValidityChecker<dim>> ModuleConfigurator<dim>::getValidityChecke
 *  \date       2017-05-22
 */
 template <unsigned int dim>
-PlannerOptions<dim> ModuleConfigurator<dim>::getPlannerOptions() {
+MPOptions<dim> ModuleConfigurator<dim>::getPlannerOptions() {
     initializeModules();
-    return PlannerOptions<dim>(m_validityChecker, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
+    return MPOptions<dim>(m_validityChecker, m_metric, m_evaluator, m_pathModifier, m_sampling, m_trajectory);
 }
 
 /*!

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 //
 //-------------------------------------------------------------------------//
 
-#ifndef PLANNER_HPP
-#define PLANNER_HPP
+#ifndef MOTIONPLANNER_HPP
+#define MOTIONPLANNER_HPP
 
 #include <thread>
 
@@ -25,7 +25,7 @@
 
 #include <ippp/Identifier.h>
 #include <ippp/dataObj/Graph.hpp>
-#include <ippp/planner/options/PlannerOptions.hpp>
+#include <ippp/motionPlanner/options/MPOptions.hpp>
 #include <ippp/statistic/Stats.h>
 #include <ippp/statistic/StatsPathCollector.h>
 #include <ippp/statistic/StatsPlannerCollector.h>
@@ -41,13 +41,13 @@ namespace ippp {
 * \date    2016-05-27
 */
 template <unsigned int dim>
-class Planner : public Identifier {
+class MotionPlanner : public Identifier {
   public:
-    ~Planner();
+    ~MotionPlanner();
 
   protected:
-    Planner(const std::string &name, const std::shared_ptr<Environment> &environment, const PlannerOptions<dim> &options,
-            const std::shared_ptr<Graph<dim>> &graph);
+    MotionPlanner(const std::string &name, const std::shared_ptr<Environment> &environment, const MPOptions<dim> &options,
+                  const std::shared_ptr<Graph<dim>> &graph);
 
   public:
     virtual bool computePath(const Vector<dim> startConfig, const Vector<dim> goalConfig, size_t numNodes,
@@ -83,7 +83,7 @@ class Planner : public Identifier {
     std::shared_ptr<TrajectoryPlanner<dim>> m_trajectory = nullptr;
     std::shared_ptr<ValidityChecker<dim>> m_validityChecker = nullptr;
 
-    const PlannerOptions<dim> m_options;
+    const MPOptions<dim> m_options;
     bool m_pathPlanned = false; /*!< true flag, if a plan could be computed */
 };
 
@@ -93,11 +93,11 @@ class Planner : public Identifier {
 *  \date       2016-12-23
 */
 template <unsigned int dim>
-Planner<dim>::~Planner() {
+MotionPlanner<dim>::~MotionPlanner() {
 }
 
 /*!
-*  \brief      Constructor of the class Planner
+*  \brief      Constructor of the class MotionPlanner
 *  \author     Sascha Kaden
 *  \param[in]  name
 *  \param[in]  robot
@@ -105,8 +105,8 @@ Planner<dim>::~Planner() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment> &environment,
-                      const PlannerOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
+MotionPlanner<dim>::MotionPlanner(const std::string &name, const std::shared_ptr<Environment> &environment,
+                                  const MPOptions<dim> &options, const std::shared_ptr<Graph<dim>> &graph)
     : Identifier(name),
       m_pathCollector(std::make_shared<StatsPathCollector>("PathStats")),
       m_plannerCollector(std::make_shared<StatsPlannerCollector>("PlannerStats")),
@@ -136,7 +136,7 @@ Planner<dim>::Planner(const std::string &name, const std::shared_ptr<Environment
 }
 
 template <unsigned int dim>
-bool Planner<dim>::optimize(size_t numIterations, size_t numNodes, size_t numThreads) {
+bool MotionPlanner<dim>::optimize(size_t numIterations, size_t numNodes, size_t numThreads) {
     Logging::warning("No optimization implemented!", this);
     return true;
 }
@@ -148,7 +148,7 @@ bool Planner<dim>::optimize(size_t numIterations, size_t numNodes, size_t numThr
 *  \date       2016-09-27
 */
 template <unsigned int dim>
-std::shared_ptr<Graph<dim>> Planner<dim>::getGraph() {
+std::shared_ptr<Graph<dim>> MotionPlanner<dim>::getGraph() {
     return m_graph;
 }
 
@@ -159,7 +159,7 @@ std::shared_ptr<Graph<dim>> Planner<dim>::getGraph() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
+std::vector<std::shared_ptr<Node<dim>>> MotionPlanner<dim>::getGraphNodes() {
     return m_graph->getNodes();
 }
 
@@ -172,8 +172,8 @@ std::vector<std::shared_ptr<Node<dim>>> Planner<dim>::getGraphNodes() {
 *  \date       2016-05-27
 */
 template <unsigned int dim>
-std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, double posRes,
-                                                        double oriRes) {
+std::vector<Vector<dim>> MotionPlanner<dim>::getPathFromNodes(const std::vector<std::shared_ptr<Node<dim>>> &nodes, double posRes,
+                                                              double oriRes) {
     m_pathCollector->startModificationTimer();
     std::vector<std::shared_ptr<Node<dim>>> smoothedNodes = m_pathModifier->smoothPath(nodes);
     m_pathCollector->stopModificationTimer();
@@ -204,7 +204,7 @@ std::vector<Vector<dim>> Planner<dim>::getPathFromNodes(const std::vector<std::s
 *  \date       2018-03-04
 */
 template <unsigned int dim>
-void Planner<dim>::initParams(const Vector<dim> &start, const Vector<dim> &goal) {
+void MotionPlanner<dim>::initParams(const Vector<dim> &start, const Vector<dim> &goal) {
     m_pathPlanned = false;
 
     if (util::empty<dim>(start)) {
@@ -224,10 +224,10 @@ void Planner<dim>::initParams(const Vector<dim> &start, const Vector<dim> &goal)
 *  \date       2018-03-29
 */
 template <unsigned int dim>
-void Planner<dim>::updateStats() const {
+void MotionPlanner<dim>::updateStats() const {
     m_graph->updateStats();
 }
 
 } /* namespace ippp */
 
-#endif /* PLANNER_HPP */
+#endif /* MOTIONPLANNER_HPP */

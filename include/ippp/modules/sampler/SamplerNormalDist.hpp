@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -87,6 +87,14 @@ void SamplerNormalDist<dim>::setOrigin(const Vector<dim> &origin) {
     }
 }
 
+/*!
+*  \brief      Calculate single value of the normal distribution.
+*  \details    The calculation will be done 20 times and if not successful a NAN will be returned.
+*  \author     Sascha Kaden
+*  \param[in]  index
+*  \param[out] distribution value
+*  \date       2016-11-14
+*/
 template <unsigned int dim>
 double SamplerNormalDist<dim>::calcValue(unsigned int index) {
     double value;

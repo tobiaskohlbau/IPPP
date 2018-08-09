@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the >License>);
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@
 #include <ippp/modules/collisionDetection/CollisionDetection2D.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionAABB.hpp>
 #include <ippp/modules/collisionDetection/CollisionDetectionPqp.hpp>
-#include <ippp/modules/collisionDetection/CollisionDetectionTriangleRobot.hpp>
 #include <ippp/modules/collisionDetection/CollisionFclMobile.hpp>
 #include <ippp/modules/collisionDetection/CollisionFclSerial.hpp>
 

@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------//
 #
-# Copyright 2017 Sascha Kaden
+# Copyright 2018 Sascha Kaden
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ target_link_libraries(ui
         IPPP)
 set_target_properties(ui PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}")
 
-#add_library(UDP STATIC Udp.cpp)
-#target_link_libraries(UDP
-#        PRIVATE
-#        IPPP)
-#set_target_properties(UDP PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}")
+add_library(UDP STATIC Udp.cpp)
+target_link_libraries(UDP
+    PRIVATE
+        IPPP)
+set_target_properties(UDP PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}")

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class RGDSampling : public Sampling<dim> {
   public:
     RGDSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
                 const std::shared_ptr<Sampler<dim>> &sampler, const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
-                size_t attempts);
+                size_t attempts, const std::string &name = "RGDSampling");
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
@@ -63,9 +63,9 @@ class RGDSampling : public Sampling<dim> {
 template <unsigned int dim>
 RGDSampling<dim>::RGDSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
                               const std::shared_ptr<Sampler<dim>> &sampler,
-                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts)
-    : Sampling<dim>("RGDSampling", environment, graph, sampler, validityChecker, attempts),
-      m_epsilon(validityChecker->getEpsilon()) {
+                              const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                              const std::string &name)
+    : Sampling<dim>(name, environment, graph, sampler, validityChecker, attempts), m_epsilon(validityChecker->getEpsilon()) {
 }
 
 /*!
@@ -99,8 +99,9 @@ Vector<dim> RGDSampling<dim>::getSample(const Vector<dim> &prevSample) {
             continue;
 
         error = m_validityChecker->calc(sample);
-        if (error <= 0)
+        if (error <= 0) {
             return sample;
+        }
 
         if (error < prevError) {
             prevError = error;

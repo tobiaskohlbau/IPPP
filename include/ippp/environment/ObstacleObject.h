@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,15 +26,18 @@
 
 namespace ippp {
 
+/*!
+* \brief   Base class of all obstacles inside of the Environment. It is normally a static object.
+* \author  Sascha Kaden
+* \date    2018-07-25
+*/
 class ObstacleObject : public EnvObject {
   public:
     ObstacleObject(const std::string &name, std::shared_ptr<ModelContainer> &model);
     ObstacleObject(const std::string &name, std::shared_ptr<ModelContainer> &model, const Transform &pose);
-    bool isStatic() const;
+    virtual bool isStatic() const;
 
     std::shared_ptr<ModelContainer> model = nullptr;
-
-  protected:
 };
 
 } /* namespace ippp */

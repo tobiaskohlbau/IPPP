@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,10 +26,14 @@ Vector6 deserializePosition(const std::string &data, double scale) {
     std::stringstream stream(data);
     std::string line;
     std::getline(stream, line);
-    for (size_t i = 0; i < 3; ++i) {
-        std::getline(stream, line);
-        pose[i] = std::stof(line) * scale;
-    }
+    std::getline(stream, line);
+
+    std::string::size_type sz;
+    pose[0] = std::stof(line, &sz);
+    line = line.substr(sz);
+    pose[1] = std::stof(line, &sz);
+    line = line.substr(sz);
+    pose[2] = std::stof(line, &sz);
     return pose;
 }
 

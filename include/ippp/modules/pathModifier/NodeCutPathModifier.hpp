@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 namespace ippp {
 
 /*!
-* \brief   NodeCutPathModifier smooths the path by cutting nodes from the passed path, if a path to the following node is valid.
+* \brief   NodeCutPathModifier smooths the path by cutting unneeded nodes from the passed path.
 * \author  Sascha Kaden
 * \date    2017-05-23
 */
@@ -44,14 +44,6 @@ class NodeCutPathModifier : public PathModifier<dim> {
     using PathModifier<dim>::m_trajectory;
 };
 
-/*!
-*  \brief      Constructor of the NodeCutPathModifier.
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \param[in]  CollisionDetection
-*  \param[in]  TrajectoryPlanner
-*  \date       2017-05-23
-*/
 template <unsigned int dim>
 NodeCutPathModifier<dim>::NodeCutPathModifier(const std::shared_ptr<Environment> &environment,
                                               const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
@@ -60,7 +52,9 @@ NodeCutPathModifier<dim>::NodeCutPathModifier(const std::shared_ptr<Environment>
 }
 
 /*!
-*  \brief      Try to cut nodes from the path, if a valid path to the following node exists.
+*  \brief      Tries to cut nodes from the path.
+*  \details    Tries to find a path between Node A and C, if possible Node B will be cut. This will be tried for the complete
+* path.
 *  \author     Sascha Kaden
 *  \param[in]  list of path nodes
 *  \param[out] shorted node path

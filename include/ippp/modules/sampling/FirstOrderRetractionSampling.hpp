@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,18 +38,19 @@ class FirstOrderRetractionSampling : public Sampling<dim> {
   public:
     FirstOrderRetractionSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
                                  const std::shared_ptr<Sampler<dim>> &sampler, const std::shared_ptr<Constraint<dim>> &constraint,
-                                 size_t attempts, const Transform &taskFrame = Transform::Identity());
+                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                                 double maxDisplacement, const Transform &taskFrame = Transform::Identity(),
+                                 const std::string &name = "FOR-Sampling");
 
     Vector<dim> getSample() override;
     Vector<dim> getSample(const Vector<dim> &prevSample) override;
 
   private:
-    void retractConfig(Vector<dim> &config, const Vector6 eucError);
-
     std::shared_ptr<SerialRobot> m_serialRobot = nullptr;
     std::shared_ptr<Constraint<dim>> m_constraint = nullptr;
 
     double m_epsilon = 1;
+    double m_maxDisplacement;
     Transform m_taskFrame;
 
     using Sampling<dim>::m_attempts;
@@ -73,12 +74,15 @@ FirstOrderRetractionSampling<dim>::FirstOrderRetractionSampling(const std::share
                                                                 const std::shared_ptr<Graph<dim>> &graph,
                                                                 const std::shared_ptr<Sampler<dim>> &sampler,
                                                                 const std::shared_ptr<Constraint<dim>> &constraint,
-                                                                size_t attempts, const Transform &taskFrame)
-    : Sampling<dim>("FirstOrderRetractionSampling", environment, graph, sampler, constraint, attempts),
+                                                                const std::shared_ptr<ValidityChecker<dim>> &validityChecker,
+                                                                size_t attempts, double maxDisplacement,
+                                                                const Transform &taskFrame, const std::string &name)
+    : Sampling<dim>(name, environment, graph, sampler, validityChecker, attempts),
       m_constraint(constraint),
       m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(environment->getRobot())),
       m_taskFrame(taskFrame),
-      m_epsilon(constraint->getEpsilon()) {
+      m_epsilon(constraint->getEpsilon()),
+      m_maxDisplacement(maxDisplacement) {
 }
 
 /*!
@@ -91,27 +95,26 @@ FirstOrderRetractionSampling<dim>::FirstOrderRetractionSampling(const std::share
 */
 template <unsigned int dim>
 Vector<dim> FirstOrderRetractionSampling<dim>::getSample() {
-    Vector<dim> randSample = m_sampler->getSample();
-    if (m_constraint->check(randSample))
-        return randSample;
+    Vector<dim> qR = m_sampler->getSample();
+    auto vNearVec = m_graph->getNearestNode(qR)->getValues();
+    Vector<dim> qS = vNearVec + ((qR - vNearVec) / (qR - vNearVec).norm()) * m_maxDisplacement;
 
-    auto nearNode = m_graph->getNearestNode(randSample);
-    if (!nearNode)
-        return util::NaNVector<dim>();
-    double origDisplacement = (randSample - nearNode->getValues()).squaredNorm();
+    qR = qS;
+    double initDist = (qR - vNearVec).squaredNorm();
 
-    Vector<dim> sample(randSample);
-    Vector6 eucError = m_constraint->calcEuclideanError(sample);
     for (size_t i = 0; i < m_attempts; ++i) {
-        retractConfig(sample, eucError);
-        // stop if the current displacement is larger than the original one to the nearest node
-        if ((sample - randSample).squaredNorm() > origDisplacement)
+        if (m_constraint->check(qS))
+            break;
+        Vector6 deltaX = m_constraint->calcEuclideanError(qS);
+        auto J = m_serialRobot->calcJacobian(qS);
+        J = util::transformToTaskFrameJ(J, m_taskFrame);
+        qS -= J.completeOrthogonalDecomposition().pseudoInverse() * deltaX;    // qs -= invJ * deltaX
+        if ((qS - qR).squaredNorm() > initDist)
             return util::NaNVector<dim>();
-
-        eucError = m_constraint->calcEuclideanError(sample);
-        if (eucError.cwiseAbs().maxCoeff() < m_epsilon)
-            return sample;
     }
+
+    if (m_validityChecker->check(qS))
+        return qS;
 
     return util::NaNVector<dim>();
 }
@@ -119,16 +122,6 @@ Vector<dim> FirstOrderRetractionSampling<dim>::getSample() {
 template <unsigned int dim>
 Vector<dim> FirstOrderRetractionSampling<dim>::getSample(const Vector<dim> &prevSample) {
     return getSample();
-}
-
-template <unsigned int dim>
-void FirstOrderRetractionSampling<dim>::retractConfig(Vector<dim> &sample, const Vector6 eucError) {
-    auto J = m_serialRobot->calcJacobian(sample);
-    J = util::transformToTaskFrameJ(J, m_taskFrame);
-    MatrixX invJ = J.completeOrthogonalDecomposition().pseudoInverse();
-
-    Vector<dim> error = invJ * eucError;
-    sample = sample - error;
 }
 
 } /* namespace ippp */

@@ -10,7 +10,7 @@
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../assets", "assets directory");
+DEFINE_string(assetsDir, "../../assets", "assets directory");
 
 std::shared_ptr<ValidityChecker<3>> m_validityChecker;
 std::shared_ptr<GridSampler<3>> m_sampler;
@@ -38,7 +38,7 @@ void serial2Joints() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, -1), Vector3(450, 450, 1)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle100x100.obj", util::Vecd(175, 30, 0, 0, 0, 0));
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/2D/100x100.obj", util::Vecd(225, 80, 0, 0, 0, 0));
     envConfigurator.setRobotType(RobotType::Serial);
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     Vector2 min(-util::pi(), -util::pi());
@@ -73,12 +73,11 @@ void serial2Joints() {
     drawing::drawConfigs2D(configSpace, samples, Vector2i(400, 400), Vector3i(0, 0, 255), -1, 100);
     cv::namedWindow("configSpace2Joints");
     cv::imshow("configSpace2Joints", configSpace);
-    cv::imwrite("configSpace2Joints.png", configSpace);
+    drawing::imwrite("configSpace2Joints.png", configSpace);
     // work space
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
-    cv::cvtColor(image, image, CV_GRAY2BGR);
     for (const auto& obstacle : environment->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
     cv::Mat imageCopy = image.clone();
@@ -86,10 +85,7 @@ void serial2Joints() {
     // drawing::drawSerialRobot2D<dim>(goal, *serialRobot, imageCopy, workspace2D.second, Vector3i(0, 0, 255), 8);
     cv::namedWindow("workspace2Joints");
     cv::imshow("workspace2Joints", imageCopy);
-    cv::imwrite("workspace2Joints.png", imageCopy);
-
-    Stats::writeData(std::cout);
-    writeData<dim>("configs2Joints.txt", samples);
+    drawing::imwrite("workspace2Joints.png", imageCopy);
     cv::waitKey(0);
 }
 
@@ -110,7 +106,7 @@ void serial3Joints() {
 
     EnvironmentConfigurator envConfigurator;
     envConfigurator.setWorkspaceProperties(AABB(Vector3(0, 0, -1), Vector3(450, 450, 1)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/obstacle100x100.obj", util::Vecd(175, 30, 0, 0, 0, 0));
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/2D/100x100.obj", util::Vecd(225, 80, 0, 0, 0, 0));
     envConfigurator.setRobotType(RobotType::Serial);
     envConfigurator.setFactoryType(FactoryType::ModelFCL);
     Vector3 min(-util::pi(), -util::pi(), -util::pi());
@@ -150,7 +146,6 @@ void serial3Joints() {
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
     auto workspace2D = cad::create2dspace(environment->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
-    cv::cvtColor(image, image, CV_GRAY2BGR);
     for (const auto& obstacle : environment->getObstacles())
         drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
     cv::Mat imageCopy = image.clone();
@@ -158,7 +153,7 @@ void serial3Joints() {
     // drawing::drawSerialRobot2D<dim>(goal, *serialRobot, imageCopy, workspace2D.second, Vector3i(0, 0, 255), 8);
     cv::namedWindow("workspace3Joints");
     cv::imshow("workspace3Joints", imageCopy);
-    cv::imwrite("workspace3Joints.png", imageCopy);
+    drawing::imwrite("workspace3Joints.png", imageCopy);
 
     Stats::writeData(std::cout);
     writeData<dim>("configs3Joints.txt", m_samples);

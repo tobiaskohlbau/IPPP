@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,10 @@
 namespace ippp {
 
 /*!
-* \brief   Base class of all serial robots
+* \brief   Base class of all serial robots, it contains the direct kinematic with the DH parameter.
+* \details The serial robot consists basically from a list of joints, furthermore a tool from the robot. The tool is split in two
+* things, as first the model with the optional transformation offset and secondly the transformation from the last joint to the
+* tool center point.
 * \author  Sascha Kaden
 * \date    2016-08-25
 */

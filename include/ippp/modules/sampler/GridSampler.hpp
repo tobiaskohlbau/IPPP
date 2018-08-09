@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 namespace ippp {
 
 /*!
-* \brief   GridSampler, creates uniform grid samples between the boudaries of the robot(s).
+* \brief   GridSampler, creates uniform grid samples between the boundaries of the robot(s).
 * \details All samples will generated at the construction of the module.
 * \author  Sascha Kaden
 * \date    2017-11-13

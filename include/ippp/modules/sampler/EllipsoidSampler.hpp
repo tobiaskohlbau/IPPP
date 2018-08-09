@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,14 +27,17 @@
 namespace ippp {
 
 /*!
-* \brief   Class SamplerUniform creates uniform samples, area is from the robot boundaries defined.
+* \brief   Class EllipsoidSampler generates samples inside of a n-dimensional hyperellipsoid.
+* \details The EllipsoidSampler is used for the Informed RRT*. The ellipsoid is calculated from the cost of the best path and the
+* start and goal configuration.
 * \author  Sascha Kaden
 * \date    2016-05-23
 */
 template <unsigned int dim>
 class EllipsoidSampler : public Sampler<dim> {
   public:
-    EllipsoidSampler(const std::shared_ptr<Environment> &environment, const std::string &seed = "");
+    EllipsoidSampler(const std::shared_ptr<Environment> &environment, const std::string &seed = "",
+                     const std::string &name = "EllipsoidSampler");
     Vector<dim> getSample() override;
 
     void setParams(const Vector<dim> &start, const Vector<dim> &goal, double cMax, const DistanceMetric<dim> &metric);
@@ -48,16 +51,10 @@ class EllipsoidSampler : public Sampler<dim> {
     using Sampler<dim>::m_generator;
 };
 
-/*!
-*  \brief      Constructor of the class SamplerUniform
-*  \author     Sascha Kaden
-*  \param[in]  Environment
-*  \param[in]  seed
-*  \date       2016-05-24
-*/
 template <unsigned int dim>
-EllipsoidSampler<dim>::EllipsoidSampler(const std::shared_ptr<Environment> &environment, const std::string &seed)
-    : Sampler<dim>("EllipsoidSampler", environment, seed), m_CL(Matrix<dim>::Ones()) {
+EllipsoidSampler<dim>::EllipsoidSampler(const std::shared_ptr<Environment> &environment, const std::string &seed,
+                                        const std::string &name)
+    : Sampler<dim>(name, environment, seed), m_CL(Matrix<dim>::Ones()) {
     for (unsigned int i = 0; i < dim; ++i) {
         std::uniform_real_distribution<double> dist(-1, 1);
         m_distUniform.push_back(dist);
@@ -65,23 +62,34 @@ EllipsoidSampler<dim>::EllipsoidSampler(const std::shared_ptr<Environment> &envi
 }
 
 /*!
-*  \brief      Return uniform sample
+*  \brief      Returns a sample inside of the calculated ellipsoid.
 *  \author     Sascha Kaden
 *  \param[out] sample
-*  \date       2016-05-24
+*  \date       2018-06-24
 */
 template <unsigned int dim>
 Vector<dim> EllipsoidSampler<dim>::getSample() {
     Vector<dim> config;
 
+    // generate a sample inside of a n-dimensional ball
     do {
         for (unsigned int i = 0; i < dim; ++i)
             config[i] = m_distUniform[i](m_generator);
-    } while (config.squaredNorm() > 1);    // check that config is inside ball
+    } while (config.squaredNorm() > 1);
 
+    // project the sample inside of the target ellipsoid
     return m_centre + m_CL * config;
 }
 
+/*!
+*  \brief      Calculate the internal ellipsoid parameter of the Sampler.
+*  \author     Sascha Kaden
+*  \param[in]  start configuration
+*  \param[in]  goal configuration
+*  \param[in]  maximal path costs
+*  \param[in]  DistanceMetric
+*  \date       2018-06-24
+*/
 template <unsigned int dim>
 void EllipsoidSampler<dim>::setParams(const Vector<dim> &start, const Vector<dim> &goal, double cMax,
                                       const DistanceMetric<dim> &metric) {

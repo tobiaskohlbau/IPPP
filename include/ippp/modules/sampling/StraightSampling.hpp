@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,8 @@ template <unsigned int dim>
 class StraightSampling : public Sampling<dim> {
   public:
     StraightSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Sampler<dim>> &sampler,
-                     const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts = 10);
+                     const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts = 10,
+                     const std::string &name = "StraightSampling");
 
     virtual Vector<dim> getSample();
 
@@ -55,8 +56,9 @@ class StraightSampling : public Sampling<dim> {
 template <unsigned int dim>
 StraightSampling<dim>::StraightSampling(const std::shared_ptr<Environment> &environment,
                                         const std::shared_ptr<Sampler<dim>> &sampler,
-                                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts)
-    : Sampling<dim>("StraightSampling", environment, nullptr, sampler, validityChecker, attempts) {
+                                        const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
+                                        const std::string &name)
+    : Sampling<dim>(name, environment, nullptr, sampler, validityChecker, attempts) {
 }
 
 /*!

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,10 +39,10 @@ class TangentSpaceSampling : public Sampling<dim> {
     TangentSpaceSampling(const std::shared_ptr<Environment> &environment, const std::shared_ptr<Graph<dim>> &graph,
                          const std::shared_ptr<Sampler<dim>> &sampler,
                          const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts, double maxDisplacement,
-                         const std::pair<Vector6, Vector6> &C, const Transform &taskFrame);
+                         const std::pair<Vector6, Vector6> &C, const Transform &taskFrame,
+                         const std::string &name = "TS-Sampling");
 
     Vector<dim> getSample() override;
-    Vector<dim> getSample(const Vector<dim> &prevSample) override;
 
   private:
     std::shared_ptr<SerialRobot> m_serialRobot = nullptr;
@@ -75,8 +75,8 @@ TangentSpaceSampling<dim>::TangentSpaceSampling(const std::shared_ptr<Environmen
                                                 const std::shared_ptr<Sampler<dim>> &sampler,
                                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker, size_t attempts,
                                                 double maxDisplacement, const std::pair<Vector6, Vector6> &C,
-                                                const Transform &taskFrame)
-    : Sampling<dim>("TangentSpaceSampling", environment, graph, sampler, validityChecker, attempts),
+                                                const Transform &taskFrame, const std::string &name)
+    : Sampling<dim>(name, environment, graph, sampler, validityChecker, attempts),
       m_maxDisplacement(maxDisplacement),
       m_rgdSampling(std::make_shared<RGDSampling<dim>>(environment, graph, sampler, validityChecker, attempts)),
       m_serialRobot(std::dynamic_pointer_cast<SerialRobot>(environment->getRobot())),
@@ -102,20 +102,17 @@ TangentSpaceSampling<dim>::TangentSpaceSampling(const std::shared_ptr<Environmen
 */
 template <unsigned int dim>
 Vector<dim> TangentSpaceSampling<dim>::getSample() {
-    return getSample(m_graph->getNode(static_cast<size_t>(this->getRandomNumber() * m_graph->numNodes()))->getValues());
-}
+    Vector<dim> qRand = m_sampler->getSample();
+    auto vNearVec = m_graph->getNearestNode(qRand)->getValues();
+    Vector<dim> qDisplacement = ((qRand - vNearVec) / (qRand - vNearVec).norm()) * m_maxDisplacement;
 
-template <unsigned int dim>
-Vector<dim> TangentSpaceSampling<dim>::getSample(const Vector<dim> &prevSample) {
-    Vector<dim> displacement = m_sampler->getRandomRay() * m_sampler->getRandomNumber() * m_maxDisplacement;
-
-    auto J = m_serialRobot->calcJacobian(prevSample);
+    auto J = m_serialRobot->calcJacobian(vNearVec);
     J = util::transformToTaskFrameJ(J, m_taskFrame);
     MatrixX invJ = J.completeOrthogonalDecomposition().pseudoInverse();
 
-    Vector<dim> projectedDisplacement = (m_I - invJ * m_matC * J) * displacement;
+    Vector<dim> projectedDisplacement = qDisplacement - (m_I - invJ * m_matC * J) * qDisplacement;
 
-    return m_rgdSampling->getSample(prevSample + projectedDisplacement);
+    return m_rgdSampling->getSample(vNearVec + projectedDisplacement);
 }
 
 } /* namespace ippp */

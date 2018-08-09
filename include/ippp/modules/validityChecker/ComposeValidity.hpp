@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,14 +31,19 @@ namespace ippp {
 template <unsigned int dim>
 class ComposeValidity : public ValidityChecker<dim> {
   public:
-    ComposeValidity(const std::shared_ptr<Environment> &environment, const std::vector<std::shared_ptr<ValidityChecker<dim>>> &checker, ComposeType type);
+    ComposeValidity(const std::shared_ptr<Environment> &environment,
+                    const std::vector<std::shared_ptr<ValidityChecker<dim>>> &checker, ComposeType type);
 
     bool check(const Vector<dim> &config) const;
     bool check(const std::vector<Vector<dim>> &configs) const;
+    virtual double calc(const Vector<dim> &config) const override;
+    virtual double calc(const std::vector<Vector<dim>> &config) const override;
+
+    std::shared_ptr<ValidityChecker<dim>> getChecker(size_t index);
 
   protected:
-      std::vector<std::shared_ptr<ValidityChecker<dim>>> m_checkers;
-      const ComposeType m_type = ComposeType::AND;
+    std::vector<std::shared_ptr<ValidityChecker<dim>>> m_checkers;
+    const ComposeType m_type = ComposeType::AND;
 };
 
 /*!
@@ -49,7 +54,8 @@ class ComposeValidity : public ValidityChecker<dim> {
 *  \date       2018-01-17
 */
 template <unsigned int dim>
-ComposeValidity<dim>::ComposeValidity(const std::shared_ptr<Environment> &environment, const std::vector<std::shared_ptr<ValidityChecker<dim>>> &checker, ComposeType type)
+ComposeValidity<dim>::ComposeValidity(const std::shared_ptr<Environment> &environment,
+                                      const std::vector<std::shared_ptr<ValidityChecker<dim>>> &checker, ComposeType type)
     : ValidityChecker<dim>("ComposeValidity", environment), m_checkers(checker), m_type(type) {
 }
 
@@ -68,8 +74,7 @@ bool ComposeValidity<dim>::check(const Vector<dim> &config) const {
                 return false;
 
         return true;
-    }
-    else {    // OR
+    } else {    // OR
         for (auto &checker : m_checkers)
             if (checker->check(config))
                 return true;
@@ -91,6 +96,41 @@ bool ComposeValidity<dim>::check(const std::vector<Vector<dim>> &configs) const 
         if (!check(config))
             return false;
     return true;
+}
+
+template <unsigned int dim>
+double ComposeValidity<dim>::calc(const Vector<dim> &config) const {
+    double error = 0;
+    double tmpError;
+    for (auto &checker : m_checkers) {
+        tmpError = checker->calc(config);
+        if (tmpError > error)
+            error = tmpError;
+    }
+    return error;
+}
+
+template <unsigned int dim>
+double ComposeValidity<dim>::calc(const std::vector<Vector<dim>> &configs) const {
+    double error = 0;
+    double tmpError;
+    for (auto &config : configs) {
+        for (auto &checker : m_checkers) {
+            tmpError = checker->calc(config);
+            if (tmpError > error)
+                error = tmpError;
+        }
+    }
+    return error;
+}
+
+template <unsigned int dim>
+std::shared_ptr<ValidityChecker<dim>> ComposeValidity<dim>::getChecker(size_t index) {
+    if (index >= m_checkers.size()) {
+        Logging::error("Index to large!", this);
+        return nullptr;
+    }
+    return m_checkers[index];
 }
 
 } /* namespace ippp */

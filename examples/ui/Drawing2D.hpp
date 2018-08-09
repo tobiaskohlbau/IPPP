@@ -36,9 +36,10 @@ void drawNodes2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<2>>> &no
                  int thickness = 1, double scale = 1);
 void drawConfigs2D(cv::Mat &image, const std::vector<Vector2> &configs, Vector2i offset, Vector3i colorNode, int thickness,
                    double scale);
-
 void drawMobile2DGraph(cv::Mat &image, const std::vector<std::shared_ptr<Node<3>>> &nodes, Vector3i colorNode, Vector3i colorEdge,
                        int thickness);
+
+bool imwrite(const std::string &name, const cv::Mat &image);
 
 template<unsigned int dim>
 void drawGraph2D(cv::Mat &image, const std::vector<std::shared_ptr<Node<dim>>> &nodes, Vector3i colorNode, Vector3i colorEdge,
@@ -77,8 +78,14 @@ void drawSerialRobot2D(const Vector<dim> &config, const SerialRobot &robot, cv::
 
     auto linkModel = robot.getLinkModels();
     auto AsLinks = robot.getLinkTrafos(config);
-    for (size_t i = 0; i < AsLinks.size(); ++i)
+    for (size_t i = 0; i < AsLinks.size(); ++i) {
         drawPolygons(image, linkModel[i]->m_mesh, AsLinks[i], offset, colorPoint, lineType);
+        cv::Point point(AsLinks[i].translation()[0] + offset[0], AsLinks[i].translation()[1] + offset[1]);
+        cv::circle(image, point, 3, cv::Scalar(0, 0, 0), 3);
+    }
+
+    cv::Point point(robot.getPose().translation()[0] + offset[0], robot.getPose().translation()[1] + offset[1]);
+    cv::circle(image, point, 6, cv::Scalar(0, 0, 0), 6);
 }
 
 } /* namespace drawing */

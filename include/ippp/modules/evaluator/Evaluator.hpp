@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,9 @@
 namespace ippp {
 
 /*!
-* \brief   Evaluator interface.
+* \brief   The evaluator checks after each iteration of the MotionPlanner, that the criterion is met and stops the process of the
+* MotionPlanner.
+* \details Goal poses and configuration for evaluation have to be passed by the MotionPlanner.
 * \author  Sascha Kaden
 * \date    2017-09-30
 */

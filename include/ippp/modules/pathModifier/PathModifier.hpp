@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
 namespace ippp {
 
 /*!
-* \brief   Base interface of all path modifier or path smoother.
+* \brief   Interface of the PathModifier, which shortens or smooths a existing path of nodes.
 * \author  Sascha Kaden
 * \date    2017-05-23
 */
@@ -58,7 +58,6 @@ class PathModifier : public Identifier {
 */
 template <unsigned int dim>
 PathModifier<dim>::PathModifier(const std::string &name, const std::shared_ptr<Environment> &environment,
-
                                 const std::shared_ptr<TrajectoryPlanner<dim>> &trajectory,
                                 const std::shared_ptr<ValidityChecker<dim>> &validityChecker)
     : Identifier(name), m_environment(environment), m_validityChecker(validityChecker), m_trajectory(trajectory) {

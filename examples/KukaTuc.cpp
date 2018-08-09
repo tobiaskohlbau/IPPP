@@ -13,16 +13,26 @@ using namespace ippp;
 DEFINE_string(assetsDir, "../assets", "assets directory");
 DEFINE_string(workDir, "/media/nfs/debussy/data_raid6/smb_public_share/Tmp/openDoor/", "work directory");
 
+// predefined parameter
 const unsigned int dim = 7;
-const double oriRes = util::toRad(0.5);
+double stepSize = util::toRad(90);
+Vector<dim> start = util::toRad<dim>(util::Vecd(18.4, 2.17, 19.55, 103.33, 1.28, 105.48, -0.73));
+Vector<dim> tmpGoal = util::toRad<dim>(util::Vecd(-120.4, 2.17, 19.55, 83.33, 1.28, 75.48, 60.1));
+const double oriRes = util::toRad(5);
+double epsOri = util::toRad(10);
+double epsPos = 5;
+Vector6 cMin = util::Vecd(-epsPos, -epsPos, -epsPos, -epsOri, -epsOri, -epsOri);
+auto goalC = std::make_pair(cMin, -cMin);
 
 std::shared_ptr<Environment> getEnv() {
     EnvironmentConfigurator envConfigurator;
 
     envConfigurator.setWorkspaceProperties(AABB(Vector3(-1500, -1500, -5), Vector3(1500, 1500, 2000)));
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/tableOriginal.obj");
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/camera.obj");
-    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/coffee.obj");
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/iiwaEvaluation/floor.obj");
+    envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/iiwaEvaluation/floor.obj", util::Vecd(0, 0, 1210, 0, 0, 0));
+    //envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/tableOriginal.obj");
+    //envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/camera.obj");
+    //envConfigurator.addObstacle(FLAGS_assetsDir + "/spaces/3D/coffee.obj");
 
     Vector7 minRobotBound = util::Vecd(-165, -115, -165, -115, -165, -115, -170);
     Vector7 maxRobotBound = util::Vecd(165, 115, 165, 115, 165, 115, 170);
@@ -64,32 +74,44 @@ Vector<dim> getGoal(SerialRobot &robot, Vector<dim> startConfig, Vector6 goalPos
     auto goalTransform = util::toTransform(goalPose);
     auto goalRotation = goalTransform.rotation();
     Vector3 goalTranslation = goalTransform.translation();
-    auto goalInverse = goalTransform.inverse();
+    Transform goalInverse = goalTransform.inverse();
 
-    for (size_t i = 0; i < 200000; ++i) {
+    size_t maxIterations = 300000;
+    for (size_t i = 0; i < maxIterations; ++i) {
         // for (size_t i = 0; i < 200; ++i) {
         // auto T =goalInverse *  robot->getTransformation(start);
         // AngleAxis angleAxis(T.rotation());
         // Vector6 diff = util::append<3, 3>(T.translation(), angleAxis.axis() * angleAxis.angle());
 
-        auto startPose = robot.getTransformation(start);
-        auto diffRot = startPose.rotation().transpose() * goalRotation;
-        AngleAxis angleAxis(diffRot);
-        Vector6 diff = util::append<3, 3>(goalTranslation - startPose.translation(), angleAxis.axis() * angleAxis.angle());
+        //auto startPose = robot.getTransformation(start);
+        //auto diffRot = startPose.rotation().transpose() * goalRotation;
+        //AngleAxis angleAxis(diffRot);
 
-        if (i == 199999) {
-            for (size_t j = 0; j < 6; ++j)
-                std::cout << diff[j] << " ";
-            std::cout << std::endl;
-        }
+        Transform pose = robot.getTransformation(start);
+        auto rotation = pose.rotation();
+        //AngleAxis angleAxis(pose.rotation());
+
+        Vector6 diff = util::append<3, 3>(pose.translation() - goalTranslation, rotation.eulerAngles(0,1,2));
+        //Vector6 diff = util::append<3, 3>(goalTranslation - startPose.translation(), angleAxis.axis() * angleAxis.angle());
+
+        if (i == maxIterations - 1)
+            std::cout << "pose difference: " << diff.transpose() << std::endl;
+        if (diff.squaredNorm() < 0.01)
+            break;
 
         diff.block<3, 1>(3, 0) *= 10;
-        while (diff.norm() > 1)
+        while (diff.squaredNorm() > 1)
             diff /= 10;
-        if (diff.norm() < 0.001)
-            break;
+
         MatrixX invJ = robot.calcJacobian(start).completeOrthogonalDecomposition().pseudoInverse();
-        start += (invJ * diff) * 0.5;
+        start -= (invJ * diff);
+
+        for (size_t j = 0; j < dim; ++j) {
+            while (goal[j] > util::pi())
+                goal[j] -= util::twoPi();
+            while (goal[j] < -util::pi())
+                goal[j] += util::twoPi();
+        }
     }
     goal = start;
     // reduce multiply of pi
@@ -114,113 +136,103 @@ Vector<dim> getGoal(SerialRobot &robot, Vector<dim> startConfig, Vector6 goalPos
     return goal;
 }
 
+std::vector<Vector<dim>> planPath(std::shared_ptr<Environment> &env, const Vector6 &goalPose) {
+    auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(env->getRobot());
+    Vector<dim> goal;
+
+    // first connection
+    ModuleConfigurator<dim> connectCreator;
+    connectCreator.setEvaluatorType(EvaluatorType::TreeConnectOrTime);
+    connectCreator.setEvaluatorProperties(stepSize, 30);
+    connectCreator.setGraphSortCount(1500);
+    connectCreator.setEnvironment(env);
+    connectCreator.setValidityCheckerType(ValidityCheckerType::FclSerial);
+    // computation to pose
+    ModuleConfigurator<dim> freeCreator;
+    freeCreator.setEvaluatorType(EvaluatorType::TreePoseOrTime);
+    freeCreator.setEvaluatorProperties(stepSize, 180);
+    freeCreator.setGraphSortCount(4000);
+    freeCreator.setEnvironment(env);
+    freeCreator.setValidityCheckerType(ValidityCheckerType::FclSerial);
+    freeCreator.setSamplerType(SamplerType::InverseJacobi);
+    freeCreator.setSamplingType(SamplingType::NearObstacle);
+    freeCreator.setGoalPose(goalPose);
+
+    // create planner
+    RRTStarConnect<dim> connectPlanner(env, connectCreator.getRRTOptions(stepSize), connectCreator.getGraph(),
+                                       connectCreator.getGraphB());
+    RRTStar<dim> freePlanner(env, freeCreator.getRRTOptions(stepSize), freeCreator.getGraph());
+
+    // generate goal configuration
+    //goal = getGoal(*serialRobot, start, goalPose);
+    //goal = getGoal(*serialRobot, goal, goalPose);
+    goal = tmpGoal;
+    std::cout << "goal configuration" << goal.transpose() << std::endl;
+
+    Logging::info("Start planning of first path", "KUKA");
+    bool connected1 = connectPlanner.computePath(start, goal, 240, 24);
+    Logging::info("Start planning of second path", "KUKA");
+    bool connected2 = true;//freePlanner.computePathToPose(goal, goalPose, goalC, 120, 24);
+
+    std::vector<Vector<dim>> path;
+    if (!connected1 || !connected2)
+        return path;
+
+    path = connectPlanner.getPath(oriRes, oriRes);
+    auto path2 = freePlanner.getPath(oriRes, oriRes);
+    //path.insert(path.begin(), path2.begin(), path2.end());
+    return path;
+}
+
+std::string savePath(const std::vector<Vector<dim>> &path) {
+    auto pathData = txtSerializer::serialize<dim>(path);
+    ui::save(FLAGS_workDir + "freePath.txt", pathData);
+
+    auto json = jsonSerializer::serialize<dim>(path);
+    ui::save("kukaPath.json", json);
+
+    return pathData;
+}
+
 void simpleRRT() {
-    auto environment = getEnv();
-    auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(environment->getRobot());
+    // generate environment and get robot
+    auto env = getEnv();
 
-    // set step size and goal pose constraint
-    double stepSize = util::toRad(90);
-    auto epsRad = util::toRad(5);
-    Vector6 cMin = util::Vecd(-5, -5, -5, -epsRad + IPPP_EPSILON, -epsRad + IPPP_EPSILON, -IPPP_MAX);
-    auto goalC = std::make_pair(cMin, -cMin);
+    // init upd
+    std::vector<unsigned char> ip{127, 0, 0, 1}, msg;
+    Udp udp(ip, 30006);
+    std::string stringMsg = "true \n 1 1 1";
 
-    // set the task frame and the tolerance
-    auto taskFrame = util::toTransform(util::Vecd(0, 0, 0, util::toRad(180), 0, 0));
-    cMin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -IPPP_MAX, -epsRad, -epsRad, -IPPP_MAX);
-    auto taskFrameC = std::make_pair(cMin, -cMin);
-
-    // set start and goal
-    Vector<dim> start = util::Vecd(9.69, 18.39, -9.69, -64, 2.51, 96.3, 0.35);
-    start = util::toRad<dim>(start);
-
-    // init upd properties
-    std::vector<unsigned char> ip{127, 0, 0, 1};
-    Udp udp(ip, 30005);
-    // ip = {127,0,0,1};
-    // udp.setRemoteDevice(ip, 30008);		//optional: only allow data from address, port
-
-    std::vector<unsigned char> msg;
-    while (1) {
+    while (true) {
         std::cout << "Waiting for UDP-packet..." << std::endl;
-        udp.recvMsg(msg);
-        std::string stringMsg = udp.msgToString(msg);
-        std::cout << udp.msgToString(msg) << std::endl;
+        //udp.recvMsg(msg);
+        //stringMsg = udp.msgToString(msg);
+        std::cout << "stringMsg: " << stringMsg << std::endl << std::endl;
         if (stringMsg.find("true") == std::string::npos)
             continue;
 
         // read goal pose from file
-        Vector6 goalPose = txtSerializer::serializePosition(stringMsg, 1000);
-        goalPose[2] = 278;                 // add offset in z direction
-        goalPose[3] = util::toRad(180);    // flip x axis to set gripper upside down
-        std::cout << "goal pose: ";
-        for (size_t i = 0; i < 6; ++i)
-            std::cout << goalPose[i] << " ";
-        std::cout << std::endl;
+        Vector6 goalPose = txtSerializer::deserializePosition(stringMsg, 1000);
+        goalPose[1] = -goalPose[1];
+        goalPose[2] = -goalPose[2];
+        //goalPose[2] = 278;    // add offset in z direction
+        //goalPose[3] = util::toRad(180);    // flip x axis to set gripper upside down
+//        auto goalTransform = util::toTransform(goalPose);
+//        std::cout << "goal pose: " << goalTransform.translation().transpose() << std::endl;
+//        goalTransform = goalTransform * toRobotBase;
+//        std::cout << "goal pose: " << goalTransform.translation().transpose() << std::endl;
+//        goalPose = util::toPoseVec(goalTransform);
+        std::cout << "goal pose: " << goalPose.transpose() << std::endl;
 
-        // first connection
-        ModuleConfigurator<dim> connectCreator;
-        connectCreator.setEvaluatorType(EvaluatorType::TreeConnectOrTime);
-        connectCreator.setEvaluatorProperties(stepSize, 30, goalC);
-        connectCreator.setGraphSortCount(1500);
-        connectCreator.setEnvironment(environment);
-        connectCreator.setValidityCheckerType(ValidityCheckerType::FclSerial);
-        connectCreator.setConstraintProperties(taskFrameC, taskFrame);
+        auto path = planPath(env, goalPose);
 
-        // computation to pose
-        ModuleConfigurator<dim> freeCreator;
-        freeCreator.setEvaluatorType(EvaluatorType::TreePoseOrTime);
-        freeCreator.setEvaluatorProperties(stepSize, 180, goalC);
-        freeCreator.setGraphSortCount(4000);
-        freeCreator.setEnvironment(environment);
-        freeCreator.setValidityCheckerType(ValidityCheckerType::FclSerial);
-        freeCreator.setSamplerType(SamplerType::InverseJacobi);
-        freeCreator.setSamplingType(SamplingType::NearObstacle);
-        freeCreator.setConstraintProperties(taskFrameC, taskFrame);
-        freeCreator.setGoalPose(goalPose);
-
-        // constrained planning
-        //        ModuleConfigurator<dim> constrainedCreator;
-        //        constrainedCreator.setEvaluatorType(EvaluatorType::TreeConnectOrTime);
-        //        constrainedCreator.setEvaluatorProperties(stepSize, 90, goalC);
-        //        constrainedCreator.setGraphSortCount(2000);
-        //        constrainedCreator.setEnvironment(environment);
-        //        constrainedCreator.setValidityCheckerType(ValidityCheckerType::FclSerialAndConstraint);
-        //        constrainedCreator.setSamplerType(SamplerType::UniformBiased);
-        //        constrainedCreator.setSamplingType(SamplingType::Berenson);
-        //        constrainedCreator.setConstraintProperties(taskFrameC, taskFrame);
-
-        // create planner
-        RRTStarConnect<dim> connectPlanner(environment, connectCreator.getRRTOptions(stepSize), connectCreator.getGraph(),
-                                           connectCreator.getGraphB());
-        RRTStar<dim> freePlanner(environment, freeCreator.getRRTOptions(stepSize), freeCreator.getGraph());
-        //        RRTStarConnect<dim> constrainedPlanner(environment, constrainedCreator.getRRTOptions(stepSize),
-        //                                               constrainedCreator.getGraph(), constrainedCreator.getGraphB(),
-        //                                               "Constrained RRTStar");
-
-        // generate goal configuration
-        auto goal = getGoal(*std::dynamic_pointer_cast<SerialRobot>(environment->getRobot()), start, goalPose);
-        goal = getGoal(*std::dynamic_pointer_cast<SerialRobot>(environment->getRobot()), goal, goalPose);
-
-        bool connected1 = connectPlanner.computePath(start, goal, 600, 24);
-        bool connected2 = freePlanner.computePathToPose(goal, goalPose, goalC, 120, 24);
-        //        bool connected3 = false;
-
-        std::vector<Vector<dim>> path, pathConstrained;
-        Vector<dim> constrainedGoal;
-        if (!connected1 || !connected2) {
+        if (path.empty()) {
             udp.sendMsg(udp.msgToChar("STOP!"), udp.getRemoteIp(), udp.getRemotePort());
             continue;
         }
 
+        auto pathData = savePath(path);
         Logging::info("First and second Path planned!", "KUKA");
-        path = connectPlanner.getPath(oriRes, oriRes);
-        auto path2 = freePlanner.getPath(oriRes, oriRes);
-        path.insert(path.begin(), path2.begin(), path2.end());
-        auto pathData = txtSerializer::serialize<dim>(path);
-        ui::save(FLAGS_workDir + "freePath.txt", pathData);
-
-        auto json = jsonSerializer::serialize<dim>(path);
-        ui::save("kukaPath.json", json);
 
         udp.sendMsg(udp.msgToChar("MOVE!"), udp.getRemoteIp(), udp.getRemotePort());
         udp.recvMsg(msg);
@@ -238,17 +250,6 @@ void simpleRRT() {
             std::cout << udp.msgToString(msg) << std::endl;
         }
         udp.sendMsg(udp.msgToChar("STOP!"), udp.getRemoteIp(), udp.getRemotePort());
-
-
-        // constrainedGoal = path.back();
-        // connected3 = constrainedPlanner.computePath(start, constrainedGoal, 1200, 24);
-        // Logging::info("Constrained Path planned!", "KUKA");
-        // pathConstrained = constrainedPlanner.getPath(oriRes, oriRes);
-        // auto json = jsonSerializer::serialize<dim>(pathConstrained);
-        // ui::save("kukaPathConstrained.json", json);
-
-//        auto json = jsonSerializer::serialize<dim>(path);
-//        ui::save("kukaPath.json", json);
     }
 }
 
@@ -257,9 +258,6 @@ int main(int argc, char **argv) {
     Logging::setLogLevel(LogLevel::info);
 
     simpleRRT();
-    Stats::writeData(std::cout);
-    //    std::string string;
-    //    std::cin >> string;
 
     return 0;
 }

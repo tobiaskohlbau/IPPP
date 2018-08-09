@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@
 #ifndef POINTROBOT_H
 #define POINTROBOT_H
 
-#include <ippp/environment/model/PointModel.h>
 #include <ippp/environment/robot/MobileRobot.h>
 
 namespace ippp {
 
 /*!
-* \brief   Class for the 2D point robot (this robot owns no model).
+* \brief   Class of the planar point robot.
+* \details This robot owns no body model. It has only two dimensions, moving in x or y direction.
 * \author  Sascha Kaden
 * \date    2016-06-30
 */

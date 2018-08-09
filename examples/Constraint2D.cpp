@@ -37,7 +37,7 @@ std::shared_ptr<Environment> generateEnvironment() {
 }
 
 template <unsigned int dim>
-std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, const std::pair<Vector6, Vector6>& C,
+std::shared_ptr<MotionPlanner<dim>> generatePlanner(std::shared_ptr<Environment> env, const std::pair<Vector6, Vector6>& C,
                                               const Transform& taskFrame) {
     // properties
     double stepSize = 0.5 + (dim / 5);
@@ -46,6 +46,7 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
 
     // standard modules
     auto alwaysValid = std::make_shared<AlwaysTrueValidity<dim>>(env);
+    auto collision = std::make_shared<CollisionFclSerial<dim>>(env);
     auto trajectory = std::make_shared<LinearTrajectory<dim>>(env, 1, 0.01);
     auto metric = std::make_shared<L2Metric<dim>>();
     auto neighborFinder = std::make_shared<KDTree<dim, std::shared_ptr<Node<dim>>>>(metric);
@@ -55,12 +56,15 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     // constraint
     auto stilmanConstraint = std::make_shared<StilmanConstraint<dim>>(env, taskFrame, C, IPPP_EPSILON);
     auto berensonConstraint = std::make_shared<BerensonConstraint<dim>>(env, taskFrame, C);
+    std::vector<std::shared_ptr<ValidityChecker<dim>>> checkers = {collision, berensonConstraint};
+    auto validityChecker = std::make_shared<ComposeValidity<dim>>(env, checkers, ComposeType::AND);
 
     // sampler
-    auto TS =
-        std::make_shared<TangentSpaceSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, stepSize, C, taskFrame);
-    auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, taskFrame);
-    auto BS = std::make_shared<BerensonSampling<dim>>(env, sampler, berensonConstraint, attempts);
+    auto TS = std::make_shared<TangentSpaceSampling<dim>>(env, graph, sampler, validityChecker, attempts, stepSize, C, taskFrame);
+    auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, graph, sampler, stilmanConstraint, validityChecker,
+                                                                   attempts, stepSize, taskFrame);
+    auto BS = std::make_shared<BerensonSampling<dim>>(env, graph, sampler, berensonConstraint, validityChecker, metric, attempts,
+                                                      stepSize);
 
     auto nodeCut = std::make_shared<NodeCutPathModifier<dim>>(env, trajectory, stilmanConstraint);
     auto dummyModifier = std::make_shared<DummyPathModifier<dim>>();
@@ -82,22 +86,18 @@ void displayConfig(const Vector<dim> config, SerialRobot& serialRobot, cv::Mat i
 
     std::stringstream ss;
     ss << std::setw(5) << std::setfill('0') << imageCount++;
-    cv::imwrite("images/" + ss.str() + ".jpg", image);
+    drawing::imwrite("images/" + ss.str() + ".jpg", image);
     cv::waitKey(2);
 }
 
 template <unsigned int dim>
-bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planner, const Vector<dim>& start,
+bool run(std::shared_ptr<Environment> env, std::shared_ptr<MotionPlanner<dim>>& planner, const Vector<dim>& start,
          const Vector<dim>& goal) {
     auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(env->getRobot());
     auto workspace2D = cad::create2dspace(env->getSpaceBoundary(), 255);
     cv::Mat image = drawing::eigenToCV(workspace2D.first);
-    cv::cvtColor(image, image, CV_GRAY2BGR);
-
-    auto startTime = std::chrono::system_clock::now();
+    
     bool connected = planner->computePath(start, goal, 8000, 3);
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
-    std::cout << "Computation time: " << std::chrono::milliseconds(duration).count() / 1000.0 << std::endl;
     if (connected) {
         Logging::info("Init and goal could be connected! \n", "Example");
         for (const auto& config : planner->getPath(10, 0.03))
@@ -137,7 +137,7 @@ bool test2DSerialRobot() {
     Vector6 Cmin, Cmax;
     std::pair<Vector6, Vector6> C;
     Transform taskFrame;
-    std::shared_ptr<Planner<dim>> planner;
+    std::shared_ptr<MotionPlanner<dim>> planner;
     bool connected = false;
     double q1Angle;
 

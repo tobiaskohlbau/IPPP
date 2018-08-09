@@ -140,21 +140,20 @@ void planningThread() {
     for (size_t i = 0; i < 3; ++i) {
         // point plane robot
         auto pCtr = getPointCreator(seed, evalType, i);
-        std::shared_ptr<Planner<2>> pPlanner =
+        std::shared_ptr<MotionPlanner<2>> pPlanner =
             std::make_shared<RRTStar<2>>(pCtr.getEnvironment(), pCtr.getRRTOptions(40), pCtr.getGraph());
 
         pPlanner->computePath(startPoint, goalPoint, 10000, 24);
         auto workspace2D = cad::create2dspace(pCtr.getEnvironment()->getSpaceBoundary(), 255);
         cv::Mat imagePoint = drawing::eigenToCV(workspace2D.first);
-        cv::cvtColor(imagePoint, imagePoint, CV_GRAY2BGR);
         for (const auto& obstacle : pCtr.getEnvironment()->getObstacles())
             drawing::drawPolygons(imagePoint, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
         drawing::drawPath2D(imagePoint, pPlanner->getPath(), Vector3i(255, 0, 0), 2);
-        cv::imwrite("point" + std::to_string(i) + ".png", imagePoint);
+        drawing::imwrite("point" + std::to_string(i) + ".png", imagePoint);
 
         // serial plane robot
         auto sCtr = getSerialCreator(seed, evalType, i);
-        std::shared_ptr<Planner<6>> sPlanner =
+        std::shared_ptr<MotionPlanner<6>> sPlanner =
             std::make_shared<RRTStar<6>>(sCtr.getEnvironment(), sCtr.getRRTOptions(util::toRad(90)), sCtr.getGraph());
 
         //sPlanner->computePath(startSerial, goalSerial, 4000, 24);
@@ -162,12 +161,11 @@ void planningThread() {
         auto serialRobot = std::dynamic_pointer_cast<SerialRobot>(sCtr.getEnvironment()->getRobot());
         workspace2D = cad::create2dspace(sCtr.getEnvironment()->getSpaceBoundary(), 255);
         cv::Mat image = drawing::eigenToCV(workspace2D.first);
-        cv::cvtColor(image, image, CV_GRAY2BGR);
         for (const auto& obstacle : sCtr.getEnvironment()->getObstacles())
             drawing::drawPolygons(image, obstacle->model->m_mesh, obstacle->getPose(), workspace2D.second, Vector3i(50, 50, 50));
         drawing::drawSerialRobot2D<6>(startSerial, *serialRobot, image, workspace2D.second, Vector3i(0, 0, 255));
         drawing::drawSerialRobot2D<6>(goalSerial, *serialRobot, image, workspace2D.second, Vector3i(0, 0, 255));
-        cv::imwrite("serial" + std::to_string(i) + ".png", image);
+        drawing::imwrite("serial" + std::to_string(i) + ".png", image);
 
 
         // serial iiwa robot

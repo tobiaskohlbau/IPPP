@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,9 +30,10 @@
 namespace ippp {
 
 /*!
-* \brief   Base class of all Sampler modules, return random samples.
-* \details The sampler used the std::minstd_rand0 generator for the generation of the samples. If no seed is passed, a random seed
-* will be generated.
+* \brief   Base class of all Sampler modules, it returns random generated samples.
+* \details The sampler is using the std::minstd_rand0 generator for the calculation of the samples. If no seed is passed, a random
+* seed will be generated. The Sampler has to be used to generate random numbers to guarantee the determinableness of the
+* MotionPlanner
 * \author  Sascha Kaden
 * \date    2016-05-23
 */

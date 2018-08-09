@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,8 @@
 namespace ippp {
 
 /*!
-* \brief   Class LinearTrajectory plans a path between the passed nodes/configs. Start and end point aren't part of the path.
+* \brief   Interface TrajectoryPlanner plans a discrete trajectory between the passed nodes/configs. Start and end config aren't
+* part of the path.
 * \author  Sascha Kaden
 * \date    2016-05-25
 */
@@ -36,14 +37,14 @@ template <unsigned int dim>
 class TrajectoryPlanner : public Identifier {
   public:
     TrajectoryPlanner(const std::string &name, const std::shared_ptr<Environment> &environment, double posRes = 1,
-                      double oriRes = 0.1);
+                      double oriRes = util::toRad(5));
 
     std::vector<Vector<dim>> calcTrajCont(const Node<dim> &source, const Node<dim> &target) const;
     std::vector<Vector<dim>> calcTrajBin(const Node<dim> &source, const Node<dim> &target) const;
     virtual std::vector<Vector<dim>> calcTrajCont(const Vector<dim> &source, const Vector<dim> &target) const = 0;
     virtual std::vector<Vector<dim>> calcTrajBin(const Vector<dim> &source, const Vector<dim> &target) const = 0;
 
-    void setResolutions(double posRes, double oriRes = 0.1);
+    void setResolutions(double posRes, double oriRes = util::toRad(5));
     void setResolutions(std::pair<double, double> resolutions);
     std::pair<double, double> getResolutions() const;
 
@@ -51,9 +52,9 @@ class TrajectoryPlanner : public Identifier {
     std::shared_ptr<Environment> m_environment = nullptr;
 
     double m_posRes = 1;
-    double m_oriRes = 0.1;
+    double m_oriRes = util::toRad(5);
     double m_sqPosRes = 1;
-    double m_sqOriRes = 0.01;
+    double m_sqOriRes = util::toRad(5) * util::toRad(5);
 
     Vector<dim> m_posMask;
     Vector<dim> m_oriMask;
@@ -81,10 +82,25 @@ TrajectoryPlanner<dim>::TrajectoryPlanner(const std::string &name, const std::sh
     m_oriMask = masks.second;
 }
 
+/*!
+*  \brief      Calculates a continuous discrete trajectory.
+*  \author     Sascha Kaden
+*  \param[in]  start Node
+*  \param[in]  goal Node
+*  \date       2017-10-07
+*/
 template <unsigned int dim>
 std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajCont(const Node<dim> &source, const Node<dim> &target) const {
     return calcTrajCont(source.getValues(), target.getValues());
 }
+
+/*!
+*  \brief      Calculates a binary (section wise) discrete trajectory.
+*  \author     Sascha Kaden
+*  \param[in]  start Node
+*  \param[in]  goal Node
+*  \date       2017-10-07
+*/
 template <unsigned int dim>
 std::vector<Vector<dim>> TrajectoryPlanner<dim>::calcTrajBin(const Node<dim> &source, const Node<dim> &target) const {
     return calcTrajBin(source.getValues(), target.getValues());
@@ -102,13 +118,13 @@ template <unsigned int dim>
 void TrajectoryPlanner<dim>::setResolutions(double posRes, double oriRes) {
     if (posRes <= 0) {
         m_posRes = 1;
-        Logging::warning("Position resolution has to be larger than 0, it was set to 1!", this);
+        Logging::error("Position resolution has to be larger than 0, it is set to 1!", this);
     } else {
         m_posRes = posRes;
     }
     if (oriRes <= 0) {
         m_oriRes = 0.1;
-        Logging::warning("Orientation resolution has to be larger than 0, it was set to 0.1!", this);
+        Logging::error("Orientation resolution has to be larger than 0, it is set to 0.1!", this);
     } else {
         m_oriRes = oriRes;
     }

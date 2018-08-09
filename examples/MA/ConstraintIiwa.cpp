@@ -55,12 +55,12 @@ std::shared_ptr<Environment> generateEnvironment() {
     return envConfigurator.getEnvironment();
 }
 
-std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, const std::pair<Vector6, Vector6>& C,
+std::shared_ptr<MotionPlanner<dim>> generatePlanner(std::shared_ptr<Environment> env, const std::pair<Vector6, Vector6>& C,
                                               const Transform& taskFrame) {
     // properties
-    double stepSize = util::toRad(100);
+    double stepSize = util::toRad(50);
     size_t graphSortCount = 2500;
-    size_t attempts = 50;
+    size_t attempts = 100;
 
     // standard modules
     auto collision = std::make_shared<CollisionFclSerial<dim>>(env);
@@ -79,17 +79,16 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     auto validityChecker = std::make_shared<ComposeValidity<dim>>(env, checkers, ComposeType::AND);
 
     // sampler
-    auto TS =
-        std::make_shared<TangentSpaceSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts, stepSize, C, taskFrame);
-    // auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, graph, sampler, stilmanConstraint, attempts,
-    // taskFrame);
-    auto BS = std::make_shared<BerensonSampling<dim>>(env, sampler, berensonConstraint, attempts);
+    auto TS = std::make_shared<TangentSpaceSampling<dim>>(env, graph, sampler, validityChecker, attempts, stepSize, C, taskFrame);
+    auto FOR = std::make_shared<FirstOrderRetractionSampling<dim>>(env, graph, sampler, stilmanConstraint, validityChecker,
+                                                                   attempts, stepSize, taskFrame);
+    auto BS = std::make_shared<BerensonSampling<dim>>(env, graph, sampler, berensonConstraint, validityChecker, metric, attempts,
+                                                      stepSize);
 
     auto nodeCut = std::make_shared<NodeCutPathModifier<dim>>(env, trajectory, validityChecker);
     // evaluator
     std::vector<std::shared_ptr<Evaluator<dim>>> evaluators;
-    evaluators.push_back(
-        std::make_shared<TreeConnectEvaluator<dim>>(graph, graphB, trajectory, validityChecker, util::toRad(90)));
+    evaluators.push_back(std::make_shared<TreeConnectEvaluator<dim>>(graph, graphB, trajectory, validityChecker, stepSize));
     evaluators.push_back(std::make_shared<TimeEvaluator<dim>>(6000));
     auto evaluator = std::make_shared<ComposeEvaluator<dim>>(evaluators, ComposeType::OR);
 
@@ -98,9 +97,9 @@ std::shared_ptr<Planner<dim>> generatePlanner(std::shared_ptr<Environment> env, 
     return std::make_shared<RRTStarConnect<dim>>(env, options, graph, graphB);
 }
 
-bool run(std::shared_ptr<Environment> env, std::shared_ptr<Planner<dim>>& planner, const Vector<dim>& start,
+bool run(std::shared_ptr<Environment> env, std::shared_ptr<MotionPlanner<dim>>& planner, const Vector<dim>& start,
          const Vector<dim>& goal) {
-    bool connected = planner->computePath(start, goal, 6000, 24);
+    bool connected = planner->computePath(start, goal, 2400, 24);
 
     if (connected) {
         Logging::info("Init and goal could be connected! \n", "Example");
@@ -139,14 +138,14 @@ bool test2DSerialRobot() {
 
     // case 1: fixed x
     double rad(util::toRad(5));
-    Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -40, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX);
-    Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, 40, IPPP_MAX, IPPP_MAX, IPPP_MAX);
+    Cmin = util::Vecd(-IPPP_MAX, -IPPP_MAX, -20, -IPPP_MAX, -IPPP_MAX, -IPPP_MAX);
+    Cmax = util::Vecd(IPPP_MAX, IPPP_MAX, 20, IPPP_MAX, IPPP_MAX, IPPP_MAX);
     C = std::make_pair(Cmin, Cmax);
     taskFrame = util::toTransform(util::Vecd(0, 0, 50, 0, 0, 0));
 
     auto planner = generatePlanner(env, C, taskFrame);
-    util::saveMeshes(*env, start, "start");
-    util::saveMeshes(*env, goal, "goal");
+    // util::saveMeshes(*env, start, "start");
+    // util::saveMeshes(*env, goal, "goal");
 
     return run(env, planner, start, goal);
 }
@@ -158,7 +157,7 @@ int main(int argc, char** argv) {
 
     test2DSerialRobot();
 
-    // Stats::writeData(std::cout);
+    Stats::writeData(std::cout);
     // std::string str;
     // std::cin >> str;
 }

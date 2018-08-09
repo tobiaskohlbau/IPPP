@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------//
 //
-// Copyright 2017 Sascha Kaden
+// Copyright 2018 Sascha Kaden
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -134,8 +134,8 @@ template <unsigned int dim>
 bool Graph<dim>::addNode(const std::shared_ptr<Node<dim>> &node) {
     m_mutex.lock();
     m_neighborFinder->addNode(node->getValues(), node);
-    if (node->getCost() > m_maxNodeCost)
-        m_maxNodeCost = node->getCost();
+    if (node->getPathCost() > m_maxNodeCost)
+        m_maxNodeCost = node->getPathCost();
     m_nodes.push_back(node);
     m_mutex.unlock();
     if (m_autoSort && (m_nodes.size() % m_sortCount) == 0)
@@ -304,6 +304,12 @@ void Graph<dim>::sortTree() {
     Logging::debug("Graph has been sorted and has: " + std::to_string(m_nodes.size()) + " Nodes", this);
 }
 
+/*!
+* \brief      Remove all nodes and the pointer inside of them (parent and children).
+* \details    If preserveNodePtr is true, the nodes will be cleared, but not the pointer of them.
+* \author     Sascha Kaden
+* \date       2017-01-09
+*/
 template <unsigned int dim>
 void Graph<dim>::clear() {
     if (!m_preserveNodePtr) {
@@ -413,6 +419,11 @@ void Graph<dim>::preserveNodePtr() {
     m_preserveNodePtr = true;
 }
 
+/*!
+* \brief      Update the current Graph status to the StatsContainer.
+* \author     Sascha Kaden
+* \date       2017-04-03
+*/
 template <unsigned int dim>
 void Graph<dim>::updateStats() const {
     m_collector->setNodeCount(m_nodes.size());
@@ -430,6 +441,12 @@ std::shared_ptr<NeighborFinder<dim, std::shared_ptr<Node<dim>>>> Graph<dim>::get
     return m_neighborFinder;
 }
 
+/*!
+* \brief      Generate an empty clone of the Graph with a same empty NeighborFinder.
+* \author     Sascha Kaden
+* \param[out] Graph
+* \date       2017-04-03
+*/
 template <unsigned int dim>
 std::shared_ptr<Graph<dim>> Graph<dim>::createEmptyGraphClone() {
     return std::make_shared<Graph<dim>>(m_sortCount, m_neighborFinder->clone());
