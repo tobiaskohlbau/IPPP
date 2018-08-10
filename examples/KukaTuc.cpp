@@ -10,7 +10,7 @@
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../assets", "assets directory");
+DEFINE_string(assetsDir, "../IPPP_assets", "assets directory");
 DEFINE_string(workDir, "/media/nfs/debussy/data_raid6/smb_public_share/Tmp/openDoor/", "work directory");
 
 // predefined parameter

@@ -9,7 +9,7 @@
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../assets", "assets directory");
+DEFINE_string(assetsDir, "../IPPP_assets", "assets directory");
 
 void simpleRRT() {
     const unsigned int dim = 6;

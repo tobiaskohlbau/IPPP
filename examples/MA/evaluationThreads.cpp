@@ -1,6 +1,5 @@
 #include <thread>
 
-#include <ConfigurationMA.h>
 #include <Drawing2D.hpp>
 #include <gflags/gflags.h>
 #include <ippp/Core.h>
@@ -10,7 +9,7 @@
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../../assets/", "assets directory");
+DEFINE_string(assetsDir, "../../IPPP_assets/", "assets directory");
 DEFINE_string(obstacle3dDir, FLAGS_assetsDir + "spaces/3D/", "obstacle directory");
 
 AABB iiwaWorkspace(Vector3(-2500, -2500, -200), Vector3(2500, 2500, 2500));

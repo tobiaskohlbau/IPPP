@@ -9,7 +9,7 @@
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../assets", "assets directory");
+DEFINE_string(assetsDir, "../IPPP_assets", "assets directory");
 
 void generateMap(AABB workspace) {
     Vector2 min = Vector2(workspace.min()[0], workspace.min()[1]);

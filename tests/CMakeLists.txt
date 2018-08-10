@@ -19,6 +19,11 @@
 add_library(GTest::GTest ALIAS gtest)
 add_library(GTest::Main ALIAS gtest_main)
 
+# copy assets
+execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/testAssets
+        ${CMAKE_CURRENT_BINARY_DIR}/testAssets/)
+
 macro(ADD_IPPP_TEST TEST_NAME BRANCH)
     set(EXE_NAME Test_${BRANCH}_${TEST_NAME})
     
@@ -36,5 +41,5 @@ endmacro(ADD_IPPP_TEST)
 add_subdirectory(dataObj)
 add_subdirectory(main)
 add_subdirectory(module)
-#add_subdirectory(ui)
+add_subdirectory(ui)
 add_subdirectory(utility)

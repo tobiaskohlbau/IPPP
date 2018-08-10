@@ -9,7 +9,6 @@
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../assets", "assets directory");
 const unsigned int dim = 2;
 const double stepSize = 40;//40
 

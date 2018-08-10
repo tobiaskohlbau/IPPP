@@ -61,8 +61,8 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/third_party/gflags
 
 # copy assets
 execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
-             ${CMAKE_SOURCE_DIR}/assets
-             ${CMAKE_CURRENT_BINARY_DIR}/assets/)
+             ${CMAKE_SOURCE_DIR}/IPPP_assets
+             ${CMAKE_CURRENT_BINARY_DIR}/IPPP_assets/)
 
 # generate library
 add_library(${PROJECT_NAME}

@@ -10,7 +10,7 @@
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../../assets", "assets directory");
+DEFINE_string(assetsDir, "../../IPPP_assets", "assets directory");
 
 std::shared_ptr<ValidityChecker<3>> m_validityChecker;
 std::shared_ptr<GridSampler<3>> m_sampler;

@@ -24,9 +24,9 @@ script: if [ "$COVERITY_SCAN_BRANCH_PATTERN" != "coverity_scan" ]; then
 
 deploy:
   provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  local_dir: /html
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  local-dir: /html
   on:
     branch: master
 

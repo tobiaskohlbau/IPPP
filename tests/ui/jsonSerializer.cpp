@@ -24,7 +24,7 @@
 
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../../assets", "assets directory");
+DEFINE_string(assetsDir, "../testAssets", "assets directory");
 
 template <unsigned int dim>
 void testSerialization() {
@@ -39,7 +39,7 @@ void testSerialization() {
     }
     auto serializedData = jsonSerializer::serialize<dim>(vectors);
     auto stringData = jsonSerializer::serialize(serializedData);
-    auto data = ui::load(FLAGS_assetsDir + "/tests/jsonSerializationTestDim" + std::to_string(dim) + ".json");
+    auto data = ui::load(FLAGS_assetsDir + "/jsonSerializationTestDim" + std::to_string(dim) + ".json");
 
     EXPECT_TRUE(!stringData.compare(data));
 }
@@ -57,7 +57,7 @@ TEST(JSONSERIALIZER, serialize) {
 
 template <unsigned int dim>
 void testDeserialization() {
-    std::string serializedData = ui::load(FLAGS_assetsDir + "/tests/jsonSerializationTestDim" + std::to_string(dim) + ".json");
+    std::string serializedData = ui::load(FLAGS_assetsDir + "/jsonSerializationTestDim" + std::to_string(dim) + ".json");
     nlohmann::json json;
     std::istringstream iss(serializedData);
     iss >> json;

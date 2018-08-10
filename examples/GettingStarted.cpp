@@ -9,7 +9,7 @@
 // set namespace of the motion planner lib
 using namespace ippp;
 
-DEFINE_string(assetsDir, "../assets", "assets directory");
+DEFINE_string(assetsDir, "../IPPP_assets", "assets directory");
 
 int main(int argc, char** argv) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
