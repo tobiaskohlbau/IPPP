@@ -28,6 +28,9 @@ macro(ADD_IPPP_TEST TEST_NAME BRANCH)
     set(EXE_NAME Test_${BRANCH}_${TEST_NAME})
     
     add_executable(${EXE_NAME} ${TEST_NAME}.cpp)
+	if(WIN32)
+		target_compile_definitions(${EXE_NAME} PRIVATE _ENABLE_EXTENDED_ALIGNED_STORAGE)
+	endif()
     target_link_libraries(${EXE_NAME} 
         PRIVATE
              IPPP
