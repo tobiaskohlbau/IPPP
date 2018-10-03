@@ -36,13 +36,17 @@ find_package(fcl REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 # workarround: generated cmake config does not provide library target
- add_library(assimp::assimp UNKNOWN IMPORTED)
- set_target_properties(assimp::assimp PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${ASSIMP_INCLUDE_DIRS}")
- if(WIN32)
-	set_target_properties(assimp::assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_LIBRARIES_RELEASE}")
- else()
+add_library(assimp::assimp UNKNOWN IMPORTED)
+set_target_properties(assimp::assimp PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${ASSIMP_INCLUDE_DIRS}")
+if(WIN32)
+	separate_arguments(ASSIMP_LIBRARIES)
+	list(GET ASSIMP_LIBRARIES 1 ASSIMP_LIBRARIES_RELEASE)
+	list(GET ASSIMP_LIBRARIES 3 ASSIMP_LIBRARIES_DEBUG)
+	set_target_properties(assimp::assimp PROPERTIES IMPORTED_LOCATION_RELEASE "${ASSIMP_LIBRARIES_RELEASE}")
+	set_target_properties(assimp::assimp PROPERTIES IMPORTED_LOCATION_DEBUG "${ASSIMP_LIBRARIES_DEBUG}")
+else()
 	set_target_properties(assimp::assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_LIBRARIES}")
- endif()
+endif()
 
 # workarround: older versions of eigen does not provide interface target
 if(NOT TARGET Eigen3::Eigen)
